@@ -974,12 +974,20 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     @Override
     public List<String> getInspectiors(TaskDto taskDto) {
         List<String> inspectiors = IaisCommonUtils.genNewArrayList();
-        String workGrpId = taskDto.getWkGrpId();
-        List<OrgUserDto> orgDtos = organizationClient.getUsersByWorkGroupName(workGrpId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-        if(!IaisCommonUtils.isEmpty(orgDtos)){
-            for(OrgUserDto temp:orgDtos){
-                inspectiors.add(temp.getDisplayName());
+        List<TaskDto> taskDtos  = organizationClient.getTaskByRefNoStatus(taskDto.getRefNo(),TaskConsts.TASK_STATUS_COMPLETED,TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
+        if(!IaisCommonUtils.isEmpty(taskDtos)){
+            List<String> userIds = new ArrayList<>(taskDtos.size());
+            for(TaskDto taskDto1 : taskDtos){
+                if( !userIds.contains(taskDto1.getUserId()))
+                    userIds.add(taskDto1.getUserId());
             }
+            List< OrgUserDto> orgDtos =  organizationClient.retrieveOrgUserAccount( userIds).getEntity();
+            if(!IaisCommonUtils.isEmpty(orgDtos)){
+                for(OrgUserDto temp:orgDtos){
+                    inspectiors.add(temp.getDisplayName());
+                }
+            }
+
         }
         return inspectiors;
     }

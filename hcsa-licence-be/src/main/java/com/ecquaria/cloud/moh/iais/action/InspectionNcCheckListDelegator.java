@@ -290,18 +290,25 @@ public class InspectionNcCheckListDelegator {
                     }else {
                         appIntranetDocDto.setDocSize(Integer.MAX_VALUE);
                     }
-                    serListDto.setFile(file);
+                     //delete file
+                    insepctionNcCheckListService.deleteInvalidFile(serListDto);
+                    //save file
+                    appIntranetDocDto.setFileRepoId(insepctionNcCheckListService.saveFiles(file));
                     serListDto.setAppPremisesSpecialDocDto(appIntranetDocDto);
                 }
             }
         }else {
+            //delete file
+            insepctionNcCheckListService.deleteInvalidFile(serListDto);
             serListDto.setAppPremisesSpecialDocDto(null);
-            serListDto.setFile(null);
+           // serListDto.setFile(null);
         }
 
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
         return serListDto;
     }
+
+
 
 
     public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) throws IOException {

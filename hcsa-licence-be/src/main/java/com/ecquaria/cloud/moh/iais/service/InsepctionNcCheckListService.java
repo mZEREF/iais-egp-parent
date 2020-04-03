@@ -8,6 +8,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 /**
@@ -27,4 +29,7 @@ public interface InsepctionNcCheckListService {
     AdCheckListShowDto getAdhocCheckListDto(String appPremCorrId);
     boolean isHaveNcOrBestPractice(InspectionFDtosDto serListDto, InspectionFillCheckListDto comDto, AdCheckListShowDto showDto);
     void  getInspectionFillCheckListDtoForShow(InspectionFillCheckListDto inspectionFillCheckListDto);
+    String saveFiles( MultipartFile multipartFile);
+    void removeFiles(String id);
+    void deleteInvalidFile( InspectionFDtosDto serListDto);
 }

@@ -584,7 +584,7 @@ public class InspectEmailAo1Delegator {
         temp.setRemark(remark);
     }
 
-    private InspectionFDtosDto getOtherInfo(MultipartHttpServletRequest request) throws IOException{
+    private InspectionFDtosDto getOtherInfo(MultipartHttpServletRequest request) throws IOException {
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SER_LIST_DTO);
         String tcuflag = ParamUtil.getString(request,"tcuType");
         String tcu = null;
@@ -640,13 +640,18 @@ public class InspectEmailAo1Delegator {
                     }else {
                         appIntranetDocDto.setDocSize(Integer.MAX_VALUE);
                     }
-                    serListDto.setFile(file);
+                    //delete file
+                    insepctionNcCheckListService.deleteInvalidFile(serListDto);
+                    //save file
+                    appIntranetDocDto.setFileRepoId(insepctionNcCheckListService.saveFiles(file));
                     serListDto.setAppPremisesSpecialDocDto(appIntranetDocDto);
                 }
             }
         }else {
+            //delete file
+            insepctionNcCheckListService.deleteInvalidFile(serListDto);
             serListDto.setAppPremisesSpecialDocDto(null);
-            serListDto.setFile(null);
+            // serListDto.setFile(null);
         }
 
         ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
