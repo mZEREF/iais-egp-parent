@@ -813,6 +813,8 @@ public class HcsaApplicationDelegator {
           if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(getHistoryStatus)){
               getHistoryStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
               nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+          }else if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(getHistoryStatus)){
+              nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
           }
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(
                 applicationViewDto.getApplicationDto().getApplicationNo(),getHistoryStatus);
