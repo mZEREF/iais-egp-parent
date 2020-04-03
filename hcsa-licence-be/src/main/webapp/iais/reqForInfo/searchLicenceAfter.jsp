@@ -132,7 +132,7 @@
 
                                             <td>
                                                 <c:if test="${pool.licenceStatus=='Active'}">
-                                                    <iais:action style="text-align:center;">
+                                                    <iais:action style="text-align:right;">
                                                         <a onclick="javascript:doReqForInfo('${pool.licPremId}');" >ReqForInfo</a>
                                                     </iais:action>
                                                 </c:if>

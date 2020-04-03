@@ -75,7 +75,7 @@
                                                 <iais:datePicker  name = "Due_date" ></iais:datePicker>
                                             </iais:value>
                                         </iais:row>
-                                        <iais:action style="text-align:center;">
+                                        <iais:action style="text-align:right;">
                                             <button class="btn btn-lg btn-login-submit" type="button"  onclick="javascript:doRemind()">Remind</button>
                                             <button class="btn btn-lg btn-login-submit" type="button"  onclick="javascript:doSubmit()">Submit Request</button>
                                         </iais:action>

@@ -94,7 +94,7 @@
                                                 </iais:value>
                                             </iais:row>
                                         </c:if>
-                                        <iais:action style="text-align:center;">
+                                        <iais:action style="text-align:right;">
                                             <a  onclick="javascript:doBack()" >< Back</a>
                                             <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit('${licPreReqForInfoDto.reqInfoId}')">Proceed to Submit</button>
                                         </iais:action>

@@ -71,7 +71,7 @@
                                                 </tbody>
                                             </table>
                                             <p class="text-right text-center-mobile">
-                                                <iais:action style="text-align:center;">
+                                                <iais:action style="text-align:right;">
                                                     <button type="button" class="btn btn-primary"
                                                             onclick="javascript:doPreview();">Preview
                                                     </button>
@@ -150,7 +150,7 @@
                                                 </tbody>
                                             </table>
                                             <p class="text-right text-center-mobile">
-                                                <iais:action style="text-align:center;">
+                                                <iais:action style="text-align:right;">
                                                     <button type="button" class="btn btn-primary"
                                                             onclick="javascript:doSend();">Submit
                                                     </button>

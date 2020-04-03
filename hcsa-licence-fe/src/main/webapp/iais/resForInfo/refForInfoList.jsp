@@ -54,7 +54,7 @@
                                             <td><c:out value="${pool.requestDate}"/></td>
                                             <td><c:out value="${pool.requestUser}" /></td>
                                             <td>
-                                                <iais:action style="text-align:center;">
+                                                <iais:action style="text-align:right;">
                                                     <a onclick="javascript:doView('${pool.reqInfoId}');" >View</a>
                                                 </iais:action>
                                             </td>
