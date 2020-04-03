@@ -813,11 +813,11 @@ public class HcsaApplicationDelegator {
         String nextStatus = ApplicationConsts.APPLICATION_STATUS_REPLY;
         String getHistoryStatus = applicationViewDto.getApplicationDto().getStatus();
           if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(getHistoryStatus)){
-              getHistoryStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+              //getHistoryStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
               nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
           }
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(
-                applicationViewDto.getApplicationDto().getApplicationNo(),getHistoryStatus);
+                applicationViewDto.getApplicationDto().getApplicationNo());
         String wrkGrpId=appPremisesRoutingHistoryDto.getWrkGrpId();
         String roleId=appPremisesRoutingHistoryDto.getRoleId();
         String stageId=appPremisesRoutingHistoryDto.getStageId();
