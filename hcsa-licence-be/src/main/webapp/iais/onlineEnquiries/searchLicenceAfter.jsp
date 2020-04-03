@@ -79,6 +79,8 @@
                                             <iais:value width="18">
                                                 <iais:datePicker id = "sub_date" name = "sub_date" value="${SearchParam.filters['subDate']}" ></iais:datePicker>
                                             </iais:value>
+                                        </iais:row>
+                                        <iais:row>
                                             <iais:field value="Application Submitted Date To"/>
                                             <iais:value width="18">
                                                 <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['toDate']}"></iais:datePicker>
@@ -133,6 +135,8 @@
                                             <iais:value width="18">
                                                 <iais:datePicker id = "start_date" name = "start_date" value="${SearchParam.filters['start_date']}" ></iais:datePicker>
                                             </iais:value>
+                                        </iais:row>
+                                        <iais:row>
                                             <iais:field value="Licence Start Date To"/>
                                             <iais:value width="18">
                                                 <iais:datePicker id = "start_to_date" name = "start_to_date" value="${SearchParam.filters['start_to_date']}"></iais:datePicker>
@@ -140,7 +144,7 @@
                                         </iais:row>
                                         <iais:row>
                                             <p style="color:#ff0000; display: none" id="startDateError">
-                                                Licence Start From cannot be later than Licence Start To.                                            </p>
+                                                Licence Start Date From cannot be later than Licence Start Date To.                                            </p>
                                             </p>
                                         </iais:row>
                                         <iais:row>
@@ -148,7 +152,8 @@
                                             <iais:value width="18">
                                                 <iais:datePicker id = "expiry_start_date" name = "expiry_start_date" value="${SearchParam.filters['expiry_start_date']}" ></iais:datePicker>
                                             </iais:value>
-
+                                        </iais:row>
+                                        <iais:row>
                                             <iais:field value="Licence Expiry Date To"/>
                                             <iais:value width="18">
                                                 <iais:datePicker id = "expiry_date" name = "expiry_date" value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
@@ -156,7 +161,7 @@
                                         </iais:row>
                                         <iais:row>
                                             <p style="color:#ff0000; display: none" id="expiryDateError">
-                                                Licence Expiry From cannot be later than Licence Expiry To.                                            </p>
+                                                Licence Expiry Date From cannot be later than Licence Expiry Date To.                                            </p>
                                             </p>
                                         </iais:row>
                                     </iais:section>

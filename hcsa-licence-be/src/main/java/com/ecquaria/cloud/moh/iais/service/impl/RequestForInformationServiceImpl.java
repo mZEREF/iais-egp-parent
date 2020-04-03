@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
@@ -196,13 +197,13 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     @Override
     public List<SelectOption> getLicSvcSubTypeOption() {
-        List<String> subTypeNames= hcsaChklClient.listSubTypeName().getEntity();
+        List<HcsaServiceSubTypeDto> subTypeNames= hcsaChklClient.listSubTypePhase1().getEntity();
         List<SelectOption> selectOptions= IaisCommonUtils.genNewArrayList();
-        for (String subTypeName:subTypeNames
+        for (HcsaServiceSubTypeDto subTypeName:subTypeNames
         ) {
             SelectOption selectOption=new SelectOption();
-            selectOption.setText(subTypeName);
-            selectOption.setValue(subTypeName);
+            selectOption.setText(subTypeName.getSubtypeName());
+            selectOption.setValue(subTypeName.getId());
             selectOptions.add(selectOption);
         }
         return selectOptions;

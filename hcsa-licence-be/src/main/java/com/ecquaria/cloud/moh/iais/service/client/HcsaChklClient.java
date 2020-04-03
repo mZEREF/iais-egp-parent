@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.RegulationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -72,6 +73,9 @@ public interface HcsaChklClient {
 
     @GetMapping(path = "/iais-hcsa-service/subtype-name-results")
     FeignResponseEntity<List<String>> listSubTypeName();
+
+    @GetMapping(path = "/iais-hcsa-service//subtype-phase1-results")
+    FeignResponseEntity<List<HcsaServiceSubTypeDto>> listSubTypePhase1();
 
     @GetMapping(path = "/iais-hcsa-checklist/regulation/results")
     FeignResponseEntity<List<HcsaChklSvcRegulationDto>> getRegulationClauseListIsActive();
