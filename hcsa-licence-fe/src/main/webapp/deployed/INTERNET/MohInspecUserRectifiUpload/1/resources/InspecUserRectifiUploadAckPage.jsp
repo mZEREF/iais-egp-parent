@@ -1,1 +1,1 @@
-<%@include file = "/iais/inspecUserRecUpload/userRecUploadPre.jsp"%>
+<%@include file = "/iais/inspecUserRecUpload/recSuccessAckPage.jsp"%>
