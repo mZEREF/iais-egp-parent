@@ -90,7 +90,10 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         appPremisesPreInspectionNcItemDto.setRemarks(inspecUserRecUploadDto.getUploadRemarks());
         appPremisesPreInspectionNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesPreInspectionNcItemDto = applicationClient.updateAppPreItemNc(appPremisesPreInspectionNcItemDto).getEntity();
+
         inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
+        inspecUserRecUploadDto.setFileDelCelIds(null);
+        inspecUserRecUploadDto.setFileRepoDelIds(null);
     }
 
     private List<AppPremPreInspectionNcDocDto> removeNcDocByDelFileId(InspecUserRecUploadDto inspecUserRecUploadDto) {
