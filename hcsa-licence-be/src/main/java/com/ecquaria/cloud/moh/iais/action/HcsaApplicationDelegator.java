@@ -172,10 +172,7 @@ public class HcsaApplicationDelegator {
         String newCorrelationId = appPremisesCorrelationDto.getId();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
-        //set internal files
-//        List<AppIntranetDocDto> intranetDocDtos = uploadFileClient.getAppIntranetDocListByPremIdAndStatus(correlationId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-//        applicationViewDto.setAppIntranetDocDtoList(intranetDocDtos);
-//        get routing stage dropdown send to page.
+        //get routing stage dropdown send to page.
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
 
         Map<String,String> routingStage=IaisCommonUtils.genNewHashMap();
@@ -317,9 +314,14 @@ public class HcsaApplicationDelegator {
         }
         //62875
         if(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast"));
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS"));
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
+            if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationViewDto.getApplicationType())){
+                nextStageList.add(new SelectOption("ROLLBACK", "Internal Route Back"));
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REJECT, "Reject"));
+            }else{
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast"));
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS"));
+            }
         }
 
         ParamUtil.setSessionAttr(bpc.request, "nextStages", (Serializable)nextStageList);
