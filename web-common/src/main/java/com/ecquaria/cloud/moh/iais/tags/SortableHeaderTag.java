@@ -46,7 +46,12 @@ public class SortableHeaderTag extends DivTagSupport {
             param = "searchParam";
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("<th class=\"sorting\">");
+        sb.append("<th class=\"sorting\" ");
+        if(!StringUtil.isEmpty(style)){
+            sb.append("style=\"").append(style).append("\" >");
+        }else{
+            sb.append(">");
+        }
 
         if (needSort) {
             sb.append("<span class=\"column-sort\">");

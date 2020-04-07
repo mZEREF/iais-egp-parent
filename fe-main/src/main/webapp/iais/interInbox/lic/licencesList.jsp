@@ -104,11 +104,11 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <iais:sortableHeader needSort="false" field="" value=" "></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false" field="" value=" " ></iais:sortableHeader>
                         <iais:sortableHeader needSort="true" field="LICENCE_NO"
                                              value="Licence No."></iais:sortableHeader>
                         <iais:sortableHeader needSort="true" field="SVC_NAME" value="Type"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true" field="STATUS" value="Status"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="STATUS" value="Status" style="width:9%;"></iais:sortableHeader>
                         <iais:sortableHeader needSort="true" field="PREMISE" value="Premises"></iais:sortableHeader>
                         <iais:sortableHeader needSort="true" field="START_DATE"
                                              value="Start Date"></iais:sortableHeader>
