@@ -51,9 +51,9 @@
         $('#preview').click(function(){
             submit('preview',null,null);
         });
-        $('#payment').click(function(){
+        /*$('#payment').click(function(){
             submit('payment',null,null);
-        });
+        });*/
 
         <c:if test="${requestInformationConfig==null && ('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
             <c:choose>
