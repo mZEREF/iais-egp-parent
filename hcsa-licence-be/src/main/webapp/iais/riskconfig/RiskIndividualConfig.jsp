@@ -265,16 +265,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-6">
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <a class="back" href="javascript:void(0);" onclick="javascript:doBack()"><em class="fa fa-angle-left"> Back</em></a><
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doNext();">Next</a></div>
-                            </div>
+                    <div>
+                    <div style="float:left"> <span><a href="javascript:void(0);" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a></span></div>
+                        <div style="float:right">
+                            <button class="btn btn-primary next" type="button" onclick="javascript:doNext();">Submit</button>
                         </div>
-                    </div>
+                        </div>
                 </div>
             </div>
         </div>

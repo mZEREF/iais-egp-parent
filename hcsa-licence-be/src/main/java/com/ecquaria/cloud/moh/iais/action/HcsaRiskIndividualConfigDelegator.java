@@ -1,13 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.InspectionShowDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.HcsaInspectionValidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -53,18 +51,6 @@ public class HcsaRiskIndividualConfigDelegator {
 
     }
 
-    public void confirm(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the PreConfirm start ...."));
-        HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        String common = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE);
-        String type = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE);
-        String svcName = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE);
-        String svcSubType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE);
-
-
-        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "next");
-    }
 
     public void doNext(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doNext start ...."));
