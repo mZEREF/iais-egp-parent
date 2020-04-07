@@ -78,7 +78,6 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         //remove file and ncDoc, by delete file
         List<AppPremPreInspectionNcDocDto> appNcDocDtoList = removeNcDocByDelFileId(inspecUserRecUploadDto);
         for(AppPremPreInspectionNcDocDto appNcDocDto : appNcDocDtoList) {
-            appNcDocDto.setId(null);
             appNcDocDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appNcDocDto.setSubmitBy(loginContext.getUserId());
             appNcDocDto.setSubmitDt(new Date());
