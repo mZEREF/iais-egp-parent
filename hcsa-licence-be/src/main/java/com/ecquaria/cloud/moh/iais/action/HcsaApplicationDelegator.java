@@ -1171,10 +1171,10 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto.setApplicationDto(applicationDto);
         String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
         String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
-        if(RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId)){
-            TaskUrl = TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION;
-            taskType = TaskConsts.TASK_TYPE_INSPECTION;
-        }
+//        if(RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId)){
+//            TaskUrl = TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION;
+//            taskType = TaskConsts.TASK_TYPE_INSPECTION;
+//        }
 
         TaskDto newTaskDto = TaskUtil.getTaskDto(stageId,taskType,
                 taskDto.getRefNo(),wrkGpId, userId,new Date(),0,TaskUrl,roleId,
