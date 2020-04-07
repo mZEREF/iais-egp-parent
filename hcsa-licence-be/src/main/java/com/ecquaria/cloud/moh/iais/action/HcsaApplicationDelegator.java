@@ -1171,7 +1171,7 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto.setApplicationDto(applicationDto);
         String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
         String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
-        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(appStatus)){
+        if(RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId)){
             TaskUrl = TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION;
             taskType = TaskConsts.TASK_TYPE_INSPECTION;
         }
