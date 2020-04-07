@@ -261,7 +261,7 @@
                                         <iais:field value="Select Public Holiday" width="12"/>
                                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
                                             <iais:select name="${premValue}onSitePubHoliday${phStat.index}" options="publicHolidaySelect" value="${ph.phDateStr}" firstOption="Please Select"></iais:select>
-                                            <span class="error-msg" name="iaisErrorMsg" id="error_onsitephDate${phStat.index}"></span>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_onsitephDate${premValue}${phStat.index}"></span>
                                         </iais:value>
 
                                         <c:if test="${!phStat.first}">
@@ -288,7 +288,7 @@
                                         </div>
                                         <div class="col-xs-12 col-md-4 "></div>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
-                                            <span class="error-msg" name="iaisErrorMsg" id="error_onsiteStartToMM${phStat.index}"></span>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_onsiteStartToMM${premValue}${phStat.index}"></span>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -307,7 +307,7 @@
                                         </div>
                                         <div class="col-xs-12 col-md-4 "></div>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
-                                            <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndToMM${phStat.index}"></span>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndToMM${premValue}${phStat.index}"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -319,7 +319,7 @@
                                     <iais:field value="Select Public Holiday" width="12"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
                                         <iais:select name="${premValue}onSitePubHoliday0" options="publicHolidaySelect" value="${ph.phDateStr}" cssClass="form_datetime public-holiday" firstOption="Please Select"></iais:select>
-                                        <span  class="error-msg"  name="iaisErrorMsg" id="error_onsitephDate${phStat.index}"></span>
+                                        <span  class="error-msg"  name="iaisErrorMsg" id="error_onsitephDate${premValue}${phStat.index}"></span>
                                     </iais:value>
                                 </iais:row>
                                 <div class="form-group">
@@ -336,7 +336,7 @@
                                         </div>
                                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                                         <div class="col-xs-12 col-md-4 "></div>
-                                        <span  class="error-msg"  name="iaisErrorMsg" id="error_onsiteStartToMM${phStat.index}"></span>
+                                        <span  class="error-msg"  name="iaisErrorMsg" id="error_onsiteStartToMM${premValue}${phStat.index}"></span>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -355,7 +355,7 @@
                                     </div>
                                     <div class="col-xs-12 col-md-4 "></div>
                                     <div class="col-xs-9 col-sm-5 col-md-6">
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndToMM${phStat.index}"></span>
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndToMM${premValue}${phStat.index}"></span>
                                     </div>
                                 </div>
                             </div>
@@ -491,7 +491,7 @@
                                         <iais:field value="Select Public Holiday" width="12"/>
                                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
                                             <iais:select name="${premValue}conveyancePubHoliday${phStat.index}" options="publicHolidaySelect" value="${ph.phDateStr}" cssClass="form_datetime public-holiday" firstOption="Please Select"></iais:select>
-                                            <span  class="error-msg"  name="iaisErrorMsg" id="error_convphDate${phStat.index}"></span>
+                                            <span  class="error-msg"  name="iaisErrorMsg" id="error_convphDate${premValue}${phStat.index}"></span>
                                         </iais:value>
                                         <c:if test="${!phStat.first}">
                                             <div class=" col-xs-7 col-sm-4 col-md-3">
@@ -517,7 +517,7 @@
                                         </div>
                                         <div  class="col-xs-12 col-md-4 "></div>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
-                                            <span class="error-msg" name="iaisErrorMsg" id="error_convStartToHH${phStat.index}"></span>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_convStartToHH${premValue}${phStat.index}"></span>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -536,7 +536,7 @@
                                         </div>
                                         <div  class="col-xs-12 col-md-4 "></div>
                                         <div class="col-xs-9 col-sm-5 col-md-6">
-                                            <span class="error-msg" name="iaisErrorMsg" id="error_convEndToHH${phStat.index}"></span>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_convEndToHH${premValue}${phStat.index}"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -548,7 +548,7 @@
                                     <iais:field value="Select Public Holiday" width="12"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
                                         <iais:select name="${premValue}conveyancePubHoliday0" options="publicHolidaySelect" value="${ph.phDateStr}" firstOption="Please Select"></iais:select>
-                                        <span  class="error-msg"  name="iaisErrorMsg" id="error_convphDate${phStat.index}"></span>
+                                        <span  class="error-msg"  name="iaisErrorMsg" id="error_convphDate${premValue}${phStat.index}"></span>
                                     </iais:value>
                                 </iais:row>
                                 <div class="form-group">
@@ -564,6 +564,10 @@
                                             <iais:select name="${premValue}conveyancePbHolDayStartMM0" options="premiseMinute" value="" firstOption="--"></iais:select>
                                         </div>
                                         <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                    </div>
+                                    <div  class="col-xs-12 col-md-4 "></div>
+                                    <div class="col-xs-9 col-sm-5 col-md-6">
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_convStartToHH${premValue}${phStat.index}"></span>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -582,7 +586,7 @@
                                     </div>
                                     <div  class="col-xs-12 col-md-4 "></div>
                                     <div class="col-xs-9 col-sm-5 col-md-6">
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_convEndToHH${phStat.index}"></span>
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_convEndToHH${premValue}${phStat.index}"></span>
                                     </div>
                                 </div>
                             </div>
