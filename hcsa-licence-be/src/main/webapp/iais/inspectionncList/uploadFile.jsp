@@ -100,7 +100,7 @@
                     }
                     var tr = "<tr>"+"<td><p>" +data.docDesc+"</p></td>" +"<td><p>"+  data.url +data.docName+"."+data.docType+"</p></td>"+
                         "<td><p>" +data.docSize+"KB"+"</p></td>"+ "<td><p>" +data.submitByName+"</p></td>"+ "<td><p>" +data.submitDtString+"</p></td>"
-                        + "<td>" +  " <a  onclick =\"javascript:deleteFile(this,'"+data.id+"');\""+"><label style=\"color: #D22727; font-size: 2rem; cursor:pointer;\">X</label></a>"+"</td>"+"</tr>";
+                        + "<td>" + "  <button type=\"button\" class=\"btn btn-danger btn-sm\" onclick=\"javascript:deleteFile(this,'"+data.id+"');\"><i class=\"fa fa-times\"></i></button>" +"</td>"+"</tr>";
                     doAddTr(tr);
                     $("#cancelDoc").click();
                 }else if(data != null && data.fileSn ==-1){

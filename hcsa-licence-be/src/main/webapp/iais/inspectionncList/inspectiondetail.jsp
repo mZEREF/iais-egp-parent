@@ -80,7 +80,7 @@
         <div class="ax_default text_area">
             <h4><strong>Letter Written to Licensee</strong></h4>
             <div class="file-upload-gp">
-                <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                <input id="selectedFileView" name="selectedFileView" type="file" style="display: none;" aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
                 <span id="licFileName"> &nbsp; &nbsp; &nbsp; &nbsp;${serListDto.appPremisesSpecialDocDto.docName}</span>
                 <span id="licFileNameDe" <c:if test="${empty serListDto.appPremisesSpecialDocDto}">hidden</c:if> >
                                 &nbsp;&nbsp;<button type="button" onclick="javascript:doDeleteFile()">Delete</button>
@@ -133,7 +133,7 @@
         return o.substring(pos + 1);
     }
 
-    $('#selectedFile').change(function () {
+    $('#selectedFileView').change(function () {
         var file = $(this).val();
         var  fileName = getFileName(file);
         if( fileName != null && fileName.trim() != ""){

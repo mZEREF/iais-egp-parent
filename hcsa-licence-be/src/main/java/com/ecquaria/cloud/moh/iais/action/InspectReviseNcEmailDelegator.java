@@ -57,8 +57,8 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -605,9 +605,10 @@ public class InspectReviseNcEmailDelegator {
         String litterFile =  ParamUtil.getString(request,"litterFile" );
         if(!StringUtil.isEmpty(litterFile)){
             String litterFileId =  ParamUtil.getString(request,"litterFileId" );
-            MultipartFile file= (MultipartFile) request.getFile("selectedFile");
+            CommonsMultipartFile file= (CommonsMultipartFile) request.getFile("selectedFileView");
             if(StringUtil.isEmpty(litterFileId) && file != null && file.getSize() != 0){
                 if (!StringUtil.isEmpty(file.getOriginalFilename())) {
+                    file.getFileItem().setFieldName("selectedFile");
                     TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, TASK_DTO);
                     String correlationId = taskDto.getRefNo();
                     AppPremisesSpecialDocDto appIntranetDocDto = new AppPremisesSpecialDocDto();
