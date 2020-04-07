@@ -15,7 +15,7 @@
                         </c:if>
                         <c:if test="${po.psnType=='DPO'}">
                             <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Deputy Principal Officer ${dpoIndex+1}:</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Deputy Principal Officer ${dpoIndex+1} :</p>
                                 <c:set var="dpoIndex" value="${dpoIndex=dpoIndex+1}"></c:set>
                             </div>
                         </c:if>
@@ -54,7 +54,7 @@
                                     </tr>
                                     <tr>
                                         <td class="col-xs-8">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No. :</p>
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No.:</p>
                                         </td>
                                         <td>
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.idNo}</p>
@@ -70,7 +70,7 @@
                                     </tr>
                                     <tr>
                                         <td class="col-xs-8">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone No :</p>
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone No.:</p>
                                         </td>
                                         <td>
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.officeTelNo}</p>
@@ -78,7 +78,7 @@
                                     </tr>
                                     <tr>
                                         <td class="col-xs-8">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No :</p>
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.:</p>
                                         </td>
                                         <td>
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.mobileNo}</p>
@@ -121,7 +121,7 @@
                                     </tr>
                                     <tr>
                                         <td class="col-xs-8">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No. :</p>
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No.:</p>
                                         </td>
                                         <td>
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.idNo}</p>
@@ -137,7 +137,7 @@
                                     </tr>
                                     <tr>
                                         <td class="col-xs-8">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone No :</p>
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone No.:</p>
                                         </td>
                                         <td>
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.officeTelNo}</p>
@@ -145,7 +145,7 @@
                                     </tr>
                                     <tr>
                                         <td class="col-xs-8">
-                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No :</p>
+                                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.:</p>
                                         </td>
                                         <td>
                                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.mobileNo}</p>

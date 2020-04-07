@@ -2823,7 +2823,7 @@ public class NewApplicationDelegator {
                                 if(!StringUtil.isEmpty(stringBuilder.toString())){
                                     stringBuilder.append(postalCode);
                                     if(list.contains(stringBuilder.toString())){
-                                        errorMap.put("postalCode"+i,"There is a duplicated entry for this premises address.");
+                                        errorMap.put("postalCode"+i,"There is a duplicated entry for this premises address");
 
                                     }else {
                                         list.add(stringBuilder.toString());
@@ -3023,15 +3023,15 @@ public class NewApplicationDelegator {
                             }else {
                                 if(!StringUtil.isEmpty(stringBuilder.toString())){
                                     stringBuilder.append(conveyancePostalCode);
+                                    if(list.contains(stringBuilder.toString())){
+                                        errorMap.put("conveyancePostalCode"+i,"There is a duplicated entry for this premises address.");
+                                    }else {
+                                        list.add(stringBuilder.toString());
+                                    }
                                 }
-
                             }
                         }
-                        if(list.contains(stringBuilder.toString())){
-                            errorMap.put("conveyancePostalCode"+i,"There is a duplicated entry for this premises address.");
-                        }else {
-                            list.add(stringBuilder.toString());
-                        }
+
                     }
                 } else {
                     //premiseSelect = organization hci code
