@@ -5,3 +5,8 @@
   Time: 17:34
   To change this template use File | Settings | File Templates.
 --%>
+
+<%--
+<%
+    response.sendRedirect(request.getContextPath()+"/main-web/eservice/INTERNET/MohInternetInbox");
+%>--%>

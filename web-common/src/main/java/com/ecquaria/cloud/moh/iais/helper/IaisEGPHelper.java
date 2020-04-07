@@ -30,6 +30,16 @@ import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.egp.api.EGPHelper;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.sqlite.date.FastDateFormat;
+import sop.iwe.SessionManager;
+import sop.rbac.user.User;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -37,14 +47,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.sqlite.date.FastDateFormat;
-import sop.iwe.SessionManager;
-import sop.rbac.user.User;
 
 @Slf4j
 public final class IaisEGPHelper extends EGPHelper {
@@ -254,6 +256,7 @@ public final class IaisEGPHelper extends EGPHelper {
     public static void sendRedirect(HttpServletRequest request, HttpServletResponse response, String url){
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url, request);
         try {
+            response.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
             response.sendRedirect(tokenUrl);
         } catch (IOException e) {
             log.error(e.getMessage());
