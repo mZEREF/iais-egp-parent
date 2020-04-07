@@ -6,7 +6,12 @@
             <div class="row">
                 <div class="control control-caption-horizontal">
                     <div class=" form-group form-horizontal formgap">
-                        <div class="text-right">
+                        <div class="col-sm-6 control-label formtext col-md-5">
+                             <div class="cgo-header">
+                                <strong>MedAlert Person <label class="assign-psn-item">(0)</label></strong>
+                            </div>
+                        </div>
+                        <div class="col-sm-5 col-md-7 text-right">
                             <h4 class="text-danger"><em class="fa fa-times-circle mapDelBtn cursorPointer"></em></h4>
                         </div>
                     </div>
@@ -103,19 +108,19 @@
                                 <span class="mandatory">*</span>
                             </div>
                             <div class="preferredModeDiv">
-                                <input class="preferredModeVal" type="hidden" value="" name="preferredModeVal"/>
+                                <input class="preferredModes" type="hidden" name="preferredModes" value="" />
                                 <div class="col-md-3">
                                     <div class="form-check">
-                                        <input class="form-check-input preferredMode" type="radio" name="preferredMode" value="Email" aria-invalid="false">
-                                        <label class="form-check-label"><span class="check-circle"></span>
+                                        <input class="form-check-input preferredMode" type="checkbox" name="preferredMode(0)" value="Email" aria-invalid="false">
+                                        <label class="form-check-label"><span class="check-square"></span>
                                             Email
                                         </label>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-check">
-                                        <input class="form-check-input preferredMode" type="radio" name="preferredMode" value="SMS" aria-invalid="false">
-                                        <label class="form-check-label"><span class="check-circle"></span>
+                                        <input class="form-check-input preferredMode" type="checkbox" name="preferredMode(0)" value="SMS" aria-invalid="false">
+                                        <label class="form-check-label"><span class="check-square"></span>
                                             SMS
                                         </label>
                                     </div>
