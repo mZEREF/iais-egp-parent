@@ -865,10 +865,19 @@ public class NewApplicationAjaxController {
             idTypeAttr.put("name", "idType");
             idTypeAttr.put("style", "display: none;");
             String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
+            //pre mode
+            List<SelectOption> medAlertSelectList = ClinicalLaboratoryDelegator.getMedAlertSelectList();
+            Map<String,String>   medAlertAttr = IaisCommonUtils.genNewHashMap();
+            medAlertAttr.put("class", "preferredMode");
+            medAlertAttr.put("name", "preferredMode");
+            medAlertAttr.put("style", "display: none;");
+            String medAlertSelectStr = NewApplicationHelper.generateDropDownHtml(medAlertAttr, medAlertSelectList, null);
 
+            sql = sql.replace("(0)",String.valueOf(hasNumber));
             sql = sql.replace("(1)", principalOfficerSelStr);
             sql = sql.replace("(2)", salutationSelectStr);
             sql = sql.replace("(3)", idTypeSelectStr);
+            sql = sql.replace("(4)", medAlertSelectStr);
             resp.put("sucInfo",sql);
             resp.put("res","success");
         }else{
