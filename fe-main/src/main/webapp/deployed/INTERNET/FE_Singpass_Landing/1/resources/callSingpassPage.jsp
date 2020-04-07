@@ -1,1 +1,0 @@
-<%@include file="/iais/felanding/callSingpassPage.jsp"%>

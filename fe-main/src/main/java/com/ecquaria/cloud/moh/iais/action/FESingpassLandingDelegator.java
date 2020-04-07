@@ -1,7 +1,12 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.EngineHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
@@ -14,6 +19,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
 
 @Delegator(value = "singpassLandingDelegator")
 @Slf4j
@@ -57,34 +65,26 @@ public class FESingpassLandingDelegator {
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
 
-       /* String nric = ParamUtil.getString(request, FESingpassLandingDelegator.NRIC);
+        String nric = ParamUtil.getString(request, "entityId");
 
-        IaisApiResult<List<String>> apiResult = orgUserManageService.createSingpassAccount(nric);
-        if (apiResult.isHasError()){
-            int errorCode = apiResult.getErrorCode();
-            if (IaisApiStatusCode.FIND_UEN_BY_SINGPASS_ID.getStatusCode() == errorCode){
-                List<String> uenList = apiResult.getEntity();
-
-                ParamUtil.setSessionAttr(request, "uenList", (Serializable) uenList);
-
-                try {
-                    RedirectUtil.redirect("https://egp.sit.inter.iais.com" + EngineHelper.getContextPath()
-                            + "/eservice/INTERNET/FE_Landing/1/preload", request, response);
-                } catch (IOException e) {
-                    log.error(e.getMessage());
-                }
-
+        List<String> mohIssueUenList = orgUserManageService.getUenListByNric(nric);
+        if (!IaisCommonUtils.isEmpty(mohIssueUenList)){
+            ParamUtil.setSessionAttr(request, "uenList", (Serializable) mohIssueUenList);
+            try {
+                RedirectUtil.redirect("https://egp.sit.inter.iais.com" + EngineHelper.getContextPath()
+                        + "/eservice/INTERNET/FE_Landing/1/croppass", request, response);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }finally {
+                return;
             }
+        }
 
-        }*/
-
+        OrgUserDto userDto = orgUserManageService.createSingpassAccount(nric);
         User user = new User();
         user.setDisplayName("Internet User");
-        user.setMobileNo("888888");
-        user.setEmail("sop6_internet@ecquaria.com");
         user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
-        user.setPassword("$2a$12$BaTEVyvwaRuop2SdFoK5jOZvK8tnycxVNx1MYVGjbd1vPEQLcaK4K");
-        user.setId(AppConsts.USER_DOMAIN_INTERNET);
+        user.setId(userDto.getUserId());
 
         SessionManager.getInstance(bpc.request).imitateLogin(user, true, true);
         SessionManager.getInstance(bpc.request).initSopLoginInfo(bpc.request);

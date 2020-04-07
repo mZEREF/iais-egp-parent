@@ -1,13 +1,13 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.JsonKeyConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
@@ -86,7 +86,12 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-	public IaisApiResult<List<String>> createSingpassAccount(String nric) {
+    public List<String> getUenListByNric(String nric) {
+        return feUserClient.getUenListByNric(nric).getEntity();
+    }
+
+    @Override
+	public OrgUserDto createSingpassAccount(String nric) {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put(JsonKeyConstants.SINGPASS_ID, nric);
 
@@ -94,7 +99,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 	}
 
     @Override
-    public IaisApiResult<String> createCropUser(String jsonStr) {
+    public OrgUserDto createCropUser(String jsonStr) {
         return feUserClient.createCropUser(jsonStr).getEntity();
     }
 

@@ -22,7 +22,7 @@
 <webui:setLayout name="iais-internet"/>
 
 <div class="main-content">
-  <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
+  <form id="mainForm" method="post" action="https://egp.sit.inter.iais.com/main-web/eservice/INTERNET/FE_Croppass_Landing/1/croppassCallBack"">
     <%@ include file="/include/formHidden.jsp" %>
     <div class="prelogin" style="background-image: url('/web/themes/fe/img/prelogin-masthead-banner.jpg');">
       <div class="container">

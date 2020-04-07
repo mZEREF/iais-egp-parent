@@ -59,6 +59,8 @@ public class RegulationDelegator {
     public void startStep(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction("Checklist Regulation", "Regulation");
         HttpServletRequest request = bpc.request;
+
+        ParamUtil.setSessionAttr(bpc.request, "isUpdate", null);
     }
 
 
@@ -162,7 +164,7 @@ public class RegulationDelegator {
      * @author: yichen
      */
     public void preUpdate(BaseProcessClass bpc){
-
+        ParamUtil.setSessionAttr(bpc.request, "isUpdate", "Y");
     }
 
     /**
@@ -172,7 +174,7 @@ public class RegulationDelegator {
      * @author: yichen
      */
     public void preCreate(BaseProcessClass bpc){
-
+        ParamUtil.setSessionAttr(bpc.request, "isUpdate", "N");
     }
 
     /**
@@ -182,7 +184,16 @@ public class RegulationDelegator {
      * @author: yichen
      */
     public void doCreateOrUpdate(BaseProcessClass bpc){
+        String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        switch (action){
+            case "Update":
 
+                break;
+            case "Create":
+
+                break;
+            default:
+        }
     }
 
     @GetMapping(value = "regulation-result-file")

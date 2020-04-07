@@ -18,20 +18,9 @@ public class INTERNET___FE_Croppass_Landing___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="croppassLandingDelegator";
 
 	
-	public void callCroppass_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "callCroppass", this);
-	}
-
-	
-
 	public void croppassCallBack_OnStepProcess_1() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "croppassCallBack", this);
 	}
-
-	public void step1_OnStepProcess_1() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "startStep", this);
-	}
-
 
 	public void isDeclare_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "isDeclare", this);

@@ -23,11 +23,37 @@
         <%@ include file="/include/formHidden.jsp" %>
         <input type="hidden" name="currentValidateId" value="">
         <br><br>
-        <div class="bg-title"><h2>Regulation Update</h2></div>
+        <div class="bg-title">
+            <c:choose>
+            <c:when test="${isUpdate = 'Y'}">
+                <h2>Regulation Update</h2>
+            </c:when>
+            <c:otherwise>
+                <h2>Regulation Create</h2>
+            </c:otherwise>
+        </c:choose>
+
+        </div>
         <span id="error_customErrorMessage" name="iaisErrorMsg" class="error-msg"></span>
         <br><br>
         <div class="form-horizontal">
+            <div class="form-group">
+                <iais:field value="Regulation Clause Number" required="true"/>
+                <div class="col-xs-5 col-md-3" >
+                    <input type="text" name="regulationClauseNo" maxlength="100" value="" />
+                    <span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
+            </div>
 
+
+            <div class="form-group">
+                <iais:field value="Regulations" required="true" />
+                <div class="col-xs-5 col-md-3" >
+                    <textarea cols="70" rows="7" maxlength="2000" name="regulationClause" id="regulationClause"></textarea>
+
+                    <span id="error_regulationClause" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
+            </div>
 
         </div>
         <div class="row">
@@ -36,7 +62,7 @@
             </div>
             <div class="col-xs-3 col-sm-3 col-md-offset-3">
                 <div class="button-group">
-                    <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doEdit', '${parameterRequestDto.id}')">Edit</a></div>
+                    <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doEdit', 'Update')">Update</a></div>
             </div>
         </div>
     </form>

@@ -17,10 +17,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class INTERNET___FE_Singpass_Landing___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="singpassLandingDelegator";
 
-	public void callSingpass_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "callSingpass", this);
-	}
-
 	public void singpassCallBack_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "singpassCallBack", this);
 	}

@@ -3,18 +3,23 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.JsonKeyConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 @Delegator(value = "croppassLandingDelegator")
 @Slf4j
@@ -58,30 +63,30 @@ public class FECorppassLandingDelegator {
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
 
-        /*String uen = ParamUtil.getRequestString(request, "");
-        String nric =  ParamUtil.getRequestString(request, "");
+        String uen = ParamUtil.getRequestString(request, "entityId");
+        String nric =  ParamUtil.getRequestString(request, "corpPassId");
+
+        ParamUtil.setSessionAttr(request, "entityId", uen);
+        ParamUtil.setSessionAttr(request, "corpPassId", nric);
 
         Map<String, Object> userInfo =  orgUserManageService.getUserByNricAndUen(uen, nric);
 
         log.info(" croppass login -> user info " + userInfo.toString());
         //already have user
         if (!userInfo.isEmpty()){
-            String isAdmin = (String) userInfo.get("isAdmin");
-            if ("Y".equals(isAdmin)){
-                User user = new User();
-                user.setDisplayName((String) userInfo.get("displayName"));
-                user.setMobileNo((String) userInfo.get("mobileNo"));
-                user.setEmail((String) userInfo.get("email"));
-                user.setUserDomain((String) userInfo.get("userDomain"));
-                user.setId(AppConsts.USER_DOMAIN_INTERNET);
+            User user = new User();
+            user.setDisplayName("Internet User");
+            user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
+            String userId = userInfo.get("userId").toString();
+            user.setId(userId);
 
-                LoginHelper.login(request, response, user, "/main-web");
-            }
+            LoginHelper.login(request, response, user, "/main-web");
+            return;
         }
 
         // a key appointment holder
-        boolean isKeyAppointment = orgUserManageService.isKeyappointment(uen, nric);*/
-        boolean isKeyAppointment = true;
+        //boolean isKeyAppointment = orgUserManageService.isKeyappointment(uen, nric);
+        boolean isKeyAppointment = false;
         if (isKeyAppointment){
             ParamUtil.setRequestAttr(request, FECorppassLandingDelegator.IS_KEY_APPOINTMENT, "Y");
         }else {
@@ -102,32 +107,25 @@ public class FECorppassLandingDelegator {
         HttpServletResponse response = bpc.response;
         ParamUtil.setSessionAttr(bpc.request, "uenList", null);
 
-        String uen = ParamUtil.getString(request, "");
-        String nric = ParamUtil.getString(request, "");
-/*
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("uen", uen);
-        jsonObject.put("nric", nric);
-        jsonObject.put(JsonKeyConstants.USER_ID, AppConsts.USER_DOMAIN_INTERNET);
+        String uen = (String) ParamUtil.getScopeAttr(request, "entityId");
+        String nric = (String) ParamUtil.getScopeAttr(request, "corpPassId");
 
-        orgUserManageService.createCropUser(jsonObject.toString());*/
+        if (!StringUtils.isEmpty(uen) && !StringUtil.isEmpty(nric)){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("uen", uen);
+            jsonObject.put("nric", nric);
+            jsonObject.put(JsonKeyConstants.USER_ID, AppConsts.USER_DOMAIN_INTERNET);
 
-        User user = new User();
-        user.setDisplayName("Internet User");
-        user.setMobileNo("888888");
-        user.setEmail("sop6_internet@ecquaria.com");
-        user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
-        user.setPassword("$2a$12$BaTEVyvwaRuop2SdFoK5jOZvK8tnycxVNx1MYVGjbd1vPEQLcaK4K");
-        user.setId(AppConsts.USER_DOMAIN_INTERNET);
+            OrgUserDto orgUserDto = orgUserManageService.createCropUser(jsonObject.toString());
 
-        SessionManager.getInstance(bpc.request).imitateLogin(user, true, true);
-        SessionManager.getInstance(bpc.request).initSopLoginInfo(bpc.request);
+            User user = new User();
+            user.setDisplayName("Internet User");
+            user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
+            user.setId(orgUserDto.getUserId());
 
-        StringBuilder url = new StringBuilder();
-        url.append("https://").append(bpc.request.getServerName())
-                .append("/main-web/eservice/INTERNET/MohInternetInbox");
+            LoginHelper.login(request, response, user, "/main-web");
+        }
 
-        IaisEGPHelper.sendRedirect(request, response, url.toString());
     }
 
     /**

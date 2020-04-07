@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="3" minorVersion="0" name="FE_Landing" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="5" minorVersion="0" name="FE_Landing" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
@@ -23,13 +23,13 @@
     <JavaCode defClass="" executor="" methodName="switchAction_OnStepProcess_0" name="switchAction_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <InvokeStep defClass="" executor="" icon="" name="Step4" processname="FE_Singpass_Landing" project="" version="-1" x="800" y="490">
+  <InvokeStep defClass="" executor="" icon="" name="Step4" processname="FE_Singpass_Landing" project="" version="-1" x="920" y="430">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <InvokeStep defClass="" executor="" icon="" name="Step5" processname="FE_Croppass_Landing" project="" version="-1" x="1000" y="280">
+  <InvokeStep defClass="" executor="" icon="" name="Step5" processname="FE_Croppass_Landing" project="" version="-1" x="1010" y="340">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
@@ -91,14 +91,8 @@
   <SynchronousLink destinationName="/Pages/WebPage/croppass" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(750,120)(870,200)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/InvokeStep/Step5" linkstyle="Direct" name="" sourceName="/Pages/WebPage/croppass" style="oblique">
-   <position>{(870,200)(1020,300)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/singpass" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(560,370)(690,440)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/InvokeStep/Step4" linkstyle="Direct" name="" sourceName="/Pages/WebPage/singpass" style="oblique">
-   <position>{(690,440)(820,510)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>

@@ -1,12 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 
@@ -28,9 +28,11 @@ public interface OrgUserManageService {
 
     Boolean isKeyappointment(String uen, String nricNumber);
 
-	IaisApiResult<List<String>> createSingpassAccount(String nric);
+    List<String> getUenListByNric(String nric);
 
-	IaisApiResult<String> createCropUser(String jsonStr);
+    OrgUserDto createSingpassAccount(String nric);
+
+    OrgUserDto createCropUser(String jsonStr);
 
     Map<String, Object>  getUserByNricAndUen(String uen, String nric);
 }
