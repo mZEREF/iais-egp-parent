@@ -111,4 +111,11 @@
     function cancelSaveDraft() {
         submit('premises','saveDraft','cancelSaveDraft');
     }
+
+    var changePsnItem = function () {
+        $('.assign-psn-item').each(function (k,v) {
+            $(this).html(k+1);
+        });
+
+    }
 </script>
