@@ -498,10 +498,13 @@ public class OfficerOnlineEnquiriesDelegator {
 
             }
             if(!StringUtil.isEmpty(uenNo)){
-                LicenseeDto licenseeDto= organizationClient.getLicenseeDtoByUen(uenNo).getEntity();
-                if(licenseeDto!=null) {
+                List<LicenseeDto> licenseeDtos= organizationClient.getLicenseeDtoByUen(uenNo).getEntity();
+                if(licenseeDtos!=null) {
                     licenseeIds = IaisCommonUtils.genNewArrayList();
-                    licenseeIds.add(licenseeDto.getId());
+                    for (LicenseeDto licensee:licenseeDtos
+                         ) {
+                        licenseeIds.add(licensee.getId());
+                    }
                 }
             }
         }
@@ -544,17 +547,7 @@ public class OfficerOnlineEnquiriesDelegator {
             if(!StringUtil.isEmpty(personnelRole)){
                 filters.put("personnelRole", personnelRole);
             }
-//            serviceParameter.setFilters(filters);
-//            SearchParam serviceParam = SearchResultHelper.getSearchParam(request, serviceParameter,true);
-//            QueryHelp.setMainSql(RFI_QUERY,"serviceQuery",serviceParam);
-//            if (!serviceParam.getFilters().isEmpty()) {
-//                SearchResult<HcsaSvcQueryDto> serviceParamResult = onlineEnquiriesService.searchSvcNamesParam(serviceParam);
-//                for (HcsaSvcQueryDto r:serviceParamResult.getRows()
-//                ) {
-//                    svcNames.add(r.getServiceName());
-//                }
-//
-//            }
+
         }
         if (Arrays.equals(count, new int[]{0, 0, 0, 0, 0})) {
             count= new int[]{1, 2, 3, 4, 5};
