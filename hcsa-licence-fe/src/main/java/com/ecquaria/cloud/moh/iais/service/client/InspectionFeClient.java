@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -49,4 +50,8 @@ public interface InspectionFeClient {
     @PostMapping(value = "/iais-appt-inspec-fe/appt-systemdate-dtos", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesInspecApptDto>> getSystemDtosByAppPremCorrIdList(@RequestBody List<String> appPremCorrIds);
+
+    @DeleteMapping(value = "/iais-inspection-fe/rem-nc-doc", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> deleteNcDocByIds(@RequestBody List<String> ids);
 }
