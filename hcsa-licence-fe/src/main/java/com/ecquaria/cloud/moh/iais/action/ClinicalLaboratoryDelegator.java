@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 
 
 /**
@@ -1790,12 +1791,10 @@ public class ClinicalLaboratoryDelegator {
         return assignSelectList;
     }
 
-    public static List<SelectOption> getMedAlertSelectList(boolean needFirstOp){
+    public static List<SelectOption> getMedAlertSelectList(){
         List<SelectOption> MedAlertSelectList = IaisCommonUtils.genNewArrayList();
-        if(needFirstOp){
-            SelectOption idType0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
-            MedAlertSelectList.add(idType0);
-        }
+        SelectOption idType0 = new SelectOption("", NewApplicationDelegator.FIRESTOPTION);
+        MedAlertSelectList.add(idType0);
         SelectOption idType1 = new SelectOption("Email", "Email");
         MedAlertSelectList.add(idType1);
         SelectOption idType2 = new SelectOption("SMS", "SMS");
@@ -1838,11 +1837,12 @@ public class ClinicalLaboratoryDelegator {
         String [] idNo = ParamUtil.getStrings(request, "idNo");
         String [] mobileNo = ParamUtil.getStrings(request, "mobileNo");
         String [] emailAddress = ParamUtil.getStrings(request, "emailAddress");
-        String [] preferredMode = ParamUtil.getStrings(request,"preferredModeVal");
+
         int length = assignSelect.length;
         List<AppSvcPrincipalOfficersDto> medAlertPersons = IaisCommonUtils.genNewArrayList();
         for(int i=0; i<length; i++){
             AppSvcPrincipalOfficersDto medAlertPerson = new AppSvcPrincipalOfficersDto();
+            String [] preferredModes = ParamUtil.getStrings(request,"preferredMode"+i);
             medAlertPerson.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
             medAlertPerson.setAssignSelect(assignSelect[i]);
             medAlertPerson.setSalutation(salutation[i]);
@@ -1851,7 +1851,13 @@ public class ClinicalLaboratoryDelegator {
             medAlertPerson.setIdNo(idNo[i]);
             medAlertPerson.setMobileNo(mobileNo[i]);
             medAlertPerson.setEmailAddr(emailAddress[i]);
-            medAlertPerson.setPreferredMode(preferredMode[i]);
+            if(preferredModes != null && preferredModes.length>0){
+                StringJoiner joiner = new StringJoiner(";");
+                for(String preferredMode:preferredModes ){
+                    joiner.add(preferredMode);
+                }
+                medAlertPerson.setPreferredMode(joiner.toString());
+            }
             medAlertPersons.add(medAlertPerson);
         }
         return medAlertPersons;
