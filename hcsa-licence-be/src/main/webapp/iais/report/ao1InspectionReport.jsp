@@ -65,7 +65,7 @@
                                                                     <tbody>
                                                                     <tr>
                                                                         <td align="right">Application Type</td>
-                                                                        <td><iais:code code="${applicationViewDto.applicationType}"></iais:code></td>
+                                                                        <td>${applicationViewDto.applicationType}</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td class="col-xs-6" align="right">Application No. (Overall)
@@ -137,89 +137,7 @@
                                                 </div>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <div class="alert alert-info" role="alert"><strong>
-                                                    <h4>Supporting Document</h4>
-                                                </strong></div>
-                                                <div id="u8522_text" class="text ">
-                                                    <p><span>These are documents uploaded by the applicant or an officer on behalf of the applicant. Listed
-												documents are those defined for this digital service only.</span></p>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-xs-12">
-                                                        <div class="table-gp">
-                                                            <table class="table">
-                                                                <thead>
-                                                                <tr>
-                                                                    <th>Document</th>
-                                                                    <th>File</th>
-                                                                    <th>Size</th>
-                                                                    <th>Submitted By</th>
-                                                                    <th>Date Submitted</th>
-                                                                </tr>
-                                                                </thead>
-
-                                                                <tbody>
-                                                                <c:forEach items="${applicationViewDto.appSupDocDtoList}"
-                                                                           var="appSupDocDto">
-                                                                    <tr>
-                                                                        <td>
-                                                                            <p><c:out value="${appSupDocDto.file}"></c:out></p>
-                                                                        </td>
-                                                                        <td>
-                                                                            <p><a href="#"><c:out
-                                                                                    value="${appSupDocDto.document}"></c:out></a></p>
-                                                                        </td>
-                                                                        <td>
-                                                                            <p><c:out value="${appSupDocDto.size}"></c:out></p>
-                                                                        </td>
-                                                                        <td>
-                                                                            <p><c:out value="${appSupDocDto.submittedBy}"></c:out></p>
-                                                                        </td>
-                                                                        <td>
-                                                                            <p><c:out value="${appSupDocDto.dateSubmitted}"></c:out></p>
-                                                                        </td>
-                                                                    </tr>
-                                                                </c:forEach>
-                                                                <c:if test="${appSupDocDtoListNull == 'Y'}">
-                                                                    <tr>
-                                                                        <td colspan="5" align="center">
-                                                                            <p>No record found.</p>
-                                                                        </td>
-                                                                    </tr>
-                                                                </c:if>
-                                                                </tbody>
-
-                                                            </table>
-                                                            <div class="alert alert-info" role="alert"><strong>
-                                                                <h4>Internal Document</h4>
-                                                            </strong></div>
-                                                            <div class="text ">
-                                                                <p><span>These are documents uploaded by an agency officer to support back office processing.</span>
-                                                                </p>
-                                                            </div>
-                                                            <table class="table">
-                                                                <thead>
-                                                                <tr>
-                                                                    <th>Document</th>
-                                                                    <th>File</th>
-                                                                    <th>Size</th>
-                                                                    <th>Submitted By</th>
-                                                                    <th>Date Submitted</th>
-                                                                    <th>Action</th>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                <tr>
-                                                                    <td colspan="5" align="center">
-                                                                        <p>No record found.</p>
-                                                                    </td>
-                                                                </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
+                                                <%@include file="/iais/inspectionncList/tabDocuments.jsp"%>
                                             </div>
                                             <div class="${reportClassBelow}" id="tabInspectionReport" role="tabpanel">
                                                 <jsp:include page="/iais/report/ao1Report.jsp"></jsp:include>
@@ -325,6 +243,7 @@
         </div>
     </div>
 </form>
+    <%@ include file="../inspectionncList/uploadFile.jsp" %>
 </div>
 <script>
     function aoSubmit() {

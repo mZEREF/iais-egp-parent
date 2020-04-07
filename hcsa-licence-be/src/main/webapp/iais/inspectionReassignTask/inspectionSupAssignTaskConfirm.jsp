@@ -24,63 +24,13 @@
             <div class="intranet-content">
               <div class="bg-title">
                 <h2>
-                  <span>Task Details</span>
+                  <span>Task Re-assignment Confirm</span>
                 </h2>
               </div>
               <iais:body >
                 <iais:section title="" id = "assign_Task">
                   <iais:row>
-                    <iais:field value="Application Number"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.applicationNo}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Application Type"/>
-                    <iais:value width="7">
-                      <p><label><iais:code code="${inspectionTaskPoolListDto.applicationType}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Application Status"/>
-                    <iais:value width="7">
-                      <p><label><iais:code code="${inspectionTaskPoolListDto.applicationStatus}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="HCI Code"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.hciCode}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="HCI Name / Address"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.hciName}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Service Name"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.serviceName}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Submission Date"/>
-                    <iais:value width="7">
-                      <p><label><fmt:formatDate value='${inspectionTaskPoolListDto.submitDt}' pattern='dd/MM/yyyy' /></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Inspection Lead"/>
-                    <iais:value width="7">
-                      <c:forEach var="lead" items="${inspectionTaskPoolListDto.inspectorLeads}">
-                        <p><label><c:out value="${lead}"/></label></p>
-                      </c:forEach>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Inspector"/>
+                    <iais:field value="Assign To"/>
                     <iais:value width="10">
                       <c:forEach items="${inspectionTaskPoolListDto.inspectorCheck}" var="name">
                         <p><label><c:out value="${name.text}"/></label></p>
@@ -88,9 +38,9 @@
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <iais:field value="Inspection Type"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.inspectionTypeName}"/></label></p>
+                    <iais:field value="Internal Remarks"/>
+                    <iais:value width="6">
+                      <textarea disabled style="resize:none" name="reassignRemarks" cols="65" rows="6" title="content" MAXLENGTH="2000"><c:out value="${inspectionTaskPoolListDto.reassignRemarks}"/></textarea>
                     </iais:value>
                   </iais:row>
                   <iais:action>

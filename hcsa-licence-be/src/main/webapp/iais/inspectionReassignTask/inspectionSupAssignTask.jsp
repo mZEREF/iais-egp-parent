@@ -25,67 +25,13 @@
                         <div class="intranet-content">
                             <div class="bg-title">
                                 <h2>
-                                    <span>Task Details</span>
+                                    <span>Task Re-assignment</span>
                                 </h2>
                             </div>
                             <iais:body >
                                 <iais:section title="" id = "assign_Task">
                                     <iais:row>
-                                        <iais:field value="Application Number"/>
-                                        <iais:value width="7">
-                                            <p>
-                                                <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService" target="_blank">
-                                                    <u><c:out value="${inspectionTaskPoolListDto.applicationNo}"/></u>
-                                                </a>
-                                            </p>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Application Type"/>
-                                        <iais:value width="7">
-                                            <p><label><iais:code code="${inspectionTaskPoolListDto.applicationType}"/></label></p>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Application Status"/>
-                                        <iais:value width="7">
-                                            <p><label><iais:code code="${inspectionTaskPoolListDto.applicationStatus}"/></label></p>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="HCI Code"/>
-                                        <iais:value width="7">
-                                            <p><label><c:out value="${inspectionTaskPoolListDto.hciCode}"/></label></p>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="HCI Name / Address"/>
-                                        <iais:value width="7">
-                                            <p><label><c:out value="${inspectionTaskPoolListDto.hciName}"/></label></p>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Service Name"/>
-                                        <iais:value width="7">
-                                            <p><label><c:out value="${inspectionTaskPoolListDto.serviceName}"/></label></p>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Submission Date"/>
-                                        <iais:value width="7">
-                                            <p><label><fmt:formatDate value='${inspectionTaskPoolListDto.submitDt}' pattern='dd/MM/yyyy' /></label></p>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="${groupRoleFieldDto.groupLeadName}"/>
-                                        <iais:value width="7">
-                                            <c:forEach var="lead" items="${inspectionTaskPoolListDto.inspectorLeads}">
-                                                <p><label><c:out value="${lead}"/></label></p>
-                                            </c:forEach>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Inspector" required="true"/>
+                                        <iais:field value="Assign To" required="true"/>
                                         <iais:value width="10">
                                             <c:if test="${'true' == inspectionTaskPoolListDto.inspectorFlag}">
                                                 <c:if test="${inspectionTaskPoolListDto.inspectorCheck == null}">
@@ -111,19 +57,14 @@
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Inspection Type"/>
-                                        <iais:value width="7">
-                                            <p><label><c:out value="${inspectionTaskPoolListDto.inspectionTypeName}"/></label></p>
+                                        <iais:field value="Internal Remarks"/>
+                                        <iais:value width="6">
+                                            <textarea style="resize:none" name="reassignRemarks" cols="65" rows="6" title="content" MAXLENGTH="2000"><c:out value="${inspectionTaskPoolListDto.reassignRemarks}"/></textarea>
                                         </iais:value>
                                     </iais:row>
                                     <iais:action >
                                         <a class="back" id="Back" onclick="javascript:doInspectionSupAssignTaskBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
-                                        <c:if test="${'true' == inspectionTaskPoolListDto.inspectorFlag}">
                                             <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionSupAssignTaskNext()">Next</button>
-                                        </c:if>
-                                        <c:if test="${'true' != inspectionTaskPoolListDto.inspectorFlag}">
-                                            <button class="btn btn-primary disabled" style="float:right" type="button" disabled>Next</button>
-                                        </c:if>
                                     </iais:action>
                                 </iais:section>
                             </iais:body>
@@ -133,9 +74,8 @@
             </div>
         </div>
     </form>
+    <%@ include file="/include/validation.jsp" %>
 </div>
-
-<%@ include file="/include/validation.jsp" %>
 <script>
     function doInspectionSupAssignTaskBack() {
         clearErrorMsg();
