@@ -67,6 +67,7 @@ public class InspecUserRecUploadDelegator {
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", null);
         ParamUtil.setSessionAttr(bpc.request, "buttonFlag", null);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "submitButtonFlag", null);
     }
 
     /**
@@ -89,9 +90,24 @@ public class InspecUserRecUploadDelegator {
             ApplicationDto applicationDto = inspecUserRecUploadService.getApplicationByCorrId(appPremCorrId);
             inspecUserRecUploadDtos = inspecUserRecUploadService.getNcItemData(version, appPremCorrId, checklistItemDtos, applicationDto.getApplicationNo());
         }
+        String submitButtonFlag = ncIsAllRectified(inspecUserRecUploadDtos);
 
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
-        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"List of Rectifications");
+        ParamUtil.setSessionAttr(bpc.request, "submitButtonFlag", submitButtonFlag);
+        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"List of Rectifications");
+    }
+
+    private String ncIsAllRectified(List<InspecUserRecUploadDto> inspecUserRecUploadDtos) {
+        String submitButtonFlag = InspectionConstants.SWITCH_ACTION_SUBMIT;
+        if(!IaisCommonUtils.isEmpty(inspecUserRecUploadDtos)){
+            for(InspecUserRecUploadDto inspecUserRecUploadDto : inspecUserRecUploadDtos){
+                String rectifyFlag = inspecUserRecUploadDto.getRectifyFlag();
+                if(StringUtil.isEmpty(rectifyFlag) || rectifyFlag.equals(AppConsts.FAIL)){
+                    return InspectionConstants.SWITCH_ACTION_REJECT;
+                }
+            }
+        }
+        return submitButtonFlag;
     }
 
     /**
@@ -129,6 +145,12 @@ public class InspecUserRecUploadDelegator {
                 }
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
             }
+        } else if(InspectionConstants.SWITCH_ACTION_CANCEL.equals(actionValue)){
+            //remove new add file
+            inspecUserRecUploadDto = inspecUserRecUploadService.removeFileAndNcDocs(inspecUserRecUploadDto);
+            //recover delete file
+            inspecUserRecUploadDto = inspecUserRecUploadService.recoverFile(inspecUserRecUploadDto);
+            ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.TRUE);
         } else {
             ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.TRUE);
         }
@@ -269,14 +291,37 @@ public class InspecUserRecUploadDelegator {
         InspecUserRecUploadDto inspecUserRecUploadDto = (InspecUserRecUploadDto)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDto");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         inspecUserRecUploadService.submitRecByUser(loginContext, inspecUserRecUploadDto);
+        int recSuccessCount = 0;
         for(InspecUserRecUploadDto iDto : inspecUserRecUploadDtos){
             if(iDto.getId().equals(inspecUserRecUploadDto.getId())){
-                iDto.setButtonFlag(AppConsts.SUCCESS);
+                iDto = inspecUserRecUploadDto;
+            }
+            if(!IaisCommonUtils.isEmpty(iDto.getAppPremPreInspectionNcDocDtos())){
+                recSuccessCount = recSuccessCount + 1;
             }
         }
-        inspecUserRecUploadDto.setButtonFlag(AppConsts.SUCCESS);
+        if(recSuccessCount == inspecUserRecUploadDtos.size()){
+            ParamUtil.setSessionAttr(bpc.request, "submitButtonFlag", InspectionConstants.SWITCH_ACTION_SUBMIT);
+        } else {
+            ParamUtil.setSessionAttr(bpc.request, "submitButtonFlag", InspectionConstants.SWITCH_ACTION_REJECT);
+        }
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
         log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
+    }
+
+    /**
+     * StartStep: inspecUserRectifiUploadSubmit
+     *
+     * @param bpc
+     * @throws
+     */
+    public void inspecUserRectifiUploadSubmit(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadSubmit start ...."));
+        List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        inspecUserRecUploadService.submitAllRecNc(inspecUserRecUploadDtos, loginContext);
+        ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
+        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"Acknowledgement");
     }
 }

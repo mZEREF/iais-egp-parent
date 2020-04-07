@@ -62,6 +62,8 @@
                                   <td>
                                     <button class="btn btn-secondary btn-md disabled" type="button" disabled>Rectify</button>
                                   </td>
+                                </c:if>
+                                <c:if test="${'SUCCESS' eq feRecNc.rectifyFlag}">
                                   <td>
                                     <h4 class="text-success"><i class="fa fa-check-circle"></i></h4>
                                   </td>
@@ -70,6 +72,8 @@
                                   <td>
                                     <button class="btn btn-secondary btn-md" type="button" onclick="javascript:doUserRecUploadRectify('<iais:mask name="ncItemId" value="${feRecNc.id}"/>')">Rectify</button>
                                   </td>
+                                </c:if>
+                                <c:if test="${'SUCCESS' ne feRecNc.rectifyFlag}">
                                   <td>
                                     <h4 class="text-danger"><i class="fa fa-times-circle"></i></h4>
                                   </td>
@@ -81,6 +85,11 @@
                         </tbody>
                       </table>
                     </div>
+                    <c:if test="${'submit' eq submitButtonFlag}">
+                      <iais:action >
+                        <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doUserRecUploadSubmit()">Submit</button>
+                      </iais:action>
+                    </c:if>
                   </iais:section>
                 </iais:body>
               </div>
@@ -103,5 +112,10 @@
         $("#ncItemId").val(ncItemId);
         $("#actionValue").val('confirm');
         userRecUploadSubmit('confirm');
+    }
+
+    function doUserRecUploadSubmit() {
+        $("#actionValue").val('submit');
+        userRecUploadSubmit('submit');
     }
 </script>

@@ -121,7 +121,7 @@
     }
 
     function doUserRecUploadConfirmCancel() {
-        $("#actionValue").val('review');
+        $("#actionValue").val('cancel');
         userRecUploadConfirmSubmit('review');
     }
 
@@ -149,6 +149,4 @@
         var pos = o.lastIndexOf("\\");
         return o.substring(pos + 1);
     }
-
-
 </script>

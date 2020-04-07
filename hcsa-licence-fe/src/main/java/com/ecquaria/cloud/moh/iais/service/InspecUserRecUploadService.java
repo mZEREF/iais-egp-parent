@@ -67,4 +67,31 @@ public interface InspecUserRecUploadService {
      * @Descripation: removeFileByFileId
      */
     InspecUserRecUploadDto removeFileByFileId(InspecUserRecUploadDto inspecUserRecUploadDto, String removeId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/4/3
+      * @Param: loginContext, inspecUserRecUploadDtos
+      * @return: void
+      * @Descripation: submitAllRecNc
+      */
+    void submitAllRecNc(List<InspecUserRecUploadDto> inspecUserRecUploadDtos, LoginContext loginContext);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/4/7
+      * @Param: inspecUserRecUploadDto
+      * @return: InspecUserRecUploadDto
+      * @Descripation: removeFileAndNcDocs
+      */
+    InspecUserRecUploadDto removeFileAndNcDocs(InspecUserRecUploadDto inspecUserRecUploadDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/4/7
+      * @Param: inspecUserRecUploadDto
+      * @return: InspecUserRecUploadDto
+      * @Descripation: recover File
+      */
+    InspecUserRecUploadDto recoverFile(InspecUserRecUploadDto inspecUserRecUploadDto);
 }
