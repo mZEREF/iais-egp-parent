@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
@@ -198,6 +199,19 @@ public class LicenceViewServiceDelegator {
         for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
             Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
             Time wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
+            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+            for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList){
+                Time startFrom = appPremPhOpenPeriodDto.getStartFrom();
+                Time endTo = appPremPhOpenPeriodDto.getEndTo();
+                if(startFrom!=null&&endTo!=null){
+                    String string = startFrom.toString();
+                    String string1 = endTo.toString();
+                    appPremPhOpenPeriodDto.setConvEndToMM(string1.split(":")[1]);
+                    appPremPhOpenPeriodDto.setConvStartFromMM(string.split(":")[1]);
+                    appPremPhOpenPeriodDto.setConvStartFromHH(string.split(":")[0]);
+                    appPremPhOpenPeriodDto.setConvEndToHH(string1.split(":")[0]);
+                }
+            }
             if(wrkTimeFrom!=null&&wrkTimeTo!=null){
                 String s = wrkTimeFrom.toString();
                 String s1 = wrkTimeTo.toString();
@@ -211,14 +225,29 @@ public class LicenceViewServiceDelegator {
         if(oldAppSubmissionDto!=null){
             List<AppGrpPremisesDto> appGrpPremisesDtoList1 = oldAppSubmissionDto.getAppGrpPremisesDtoList();
             for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
+                List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+                for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList){
+                    Time startFrom = appPremPhOpenPeriodDto.getStartFrom();
+                    Time endTo = appPremPhOpenPeriodDto.getEndTo();
+                    if(startFrom!=null&&endTo!=null){
+                        String string = startFrom.toString();
+                        String string1 = endTo.toString();
+                        appPremPhOpenPeriodDto.setConvEndToMM(string1.split(":")[1]);
+                        appPremPhOpenPeriodDto.setConvStartFromMM(string.split(":")[1]);
+                        appPremPhOpenPeriodDto.setConvStartFromHH(string.split(":")[0]);
+                        appPremPhOpenPeriodDto.setConvEndToHH(string1.split(":")[0]);
+                    }
+                }
                 Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
                 Time wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
-                String s = wrkTimeFrom.toString();
-                String s1 = wrkTimeTo.toString();
-                appGrpPremisesDto.setOnsiteEndMM(s1.split(":")[1]);
-                appGrpPremisesDto.setOnsiteStartMM(s.split(":")[1]);
-                appGrpPremisesDto.setOnsiteStartHH(s.split(":")[0]);
-                appGrpPremisesDto.setOnsiteEndHH(s1.split(":")[0]);
+                if(wrkTimeFrom!=null&&wrkTimeTo!=null){
+                    String s = wrkTimeFrom.toString();
+                    String s1 = wrkTimeTo.toString();
+                    appGrpPremisesDto.setOnsiteEndMM(s1.split(":")[1]);
+                    appGrpPremisesDto.setOnsiteStartMM(s.split(":")[1]);
+                    appGrpPremisesDto.setOnsiteStartHH(s.split(":")[0]);
+                    appGrpPremisesDto.setOnsiteEndHH(s1.split(":")[0]);
+                }
             }
         }
 
@@ -231,7 +260,6 @@ public class LicenceViewServiceDelegator {
             stringList.add(hcsaServiceStepSchemeDto.getStepCode());
         }
         bpc.request.getSession().setAttribute("hcsaServiceStepSchemeDtoList",stringList);
-
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData end ..."));
     }

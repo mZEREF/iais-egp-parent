@@ -24,7 +24,7 @@
       <label style="font-size: 2.2rem">LABORATORY DISCIPLINES</label>
       <c:forEach var="appSvcLaboratoryDisciplinesDto" items="${currentPreviewSvcInfo.appSvcLaboratoryDisciplinesDtoList}" varStatus="status">
         <div class="amend-preview-info">
-          <p><span class="preview-title col-xs-12 col-md-4">Premises ${status.index+1}: ${appGrpPremisesDtoList[status.index].address} </span><%--${appSvcLaboratoryDisciplinesDto.premiseGetAddress}--%>
+          <p><span class="preview-title col-xs-2 col-md-4" style="padding-right: 0%">Premises ${status.index+1}:</span><span>${appGrpPremisesDtoList[status.index].address} </span><%--${appSvcLaboratoryDisciplinesDto.premiseGetAddress}--%>
             <wrms:value width="7">
               <span class="newVal " attr="${appGrpPremisesDtoList[status.index].address}" style="display: none" ><label><c:out value=""/></label></span>
               <span class="oldVal compareTdStyle" attr="${oldAppGrpPremisesDtoList[status.index].address}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].premiseGetAddress}"/></label></span>
@@ -60,7 +60,7 @@
       <label style="font-size: 2.2rem">CLINICAL GOVERNANCE OFFICER</label>
       <div class="amend-preview-info">
         <c:forEach var="cgo" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
-        <p> <strong>Clinical Governance Officer ${status.index+1}: </strong> ${cgo.name }</p>
+        <p> <strong class="col-xs-8">Clinical Governance Officer ${status.index+1}:</strong><span class="col-xs-6">${cgo.name }</span></p>
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">
@@ -68,7 +68,6 @@
                 <tr>
                   <td class="col-xs-8">
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation :
-                    </p></p>
                   </td>
                   <td>
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-4"><iais:code code="${cgo.salutation}" /></span>
@@ -351,7 +350,7 @@
           <div class="row">
             <div class="col-xs-12">
               <c:forEach items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" var="po" varStatus="status">
-                <p><strong>Principal Officers: </strong> ${po.name}</p>
+                <p><strong class="col-xs-6">Principal Officers: </strong><span class="col-xs-6">${po.name}</span></p>
                 <table class="col-xs-12">
                   <tr>
                     <td class="col-xs-6">
@@ -491,11 +490,6 @@
                     </td>
                   </tr>
                 </table>
-                <div class="row">
-                  <div class="col-xs-8">
-                    <hr>
-                  </div>
-                </div>
               </c:forEach>
             </div>
           </div>
@@ -579,6 +573,67 @@
               <div class="col-xs-12">
                 <table class="col-xs-8">
                   <c:choose>
+                    <c:when test="${currentPreviewSvcInfo.serviceCode=='BLB'}">
+                      <tr>
+                        <td class="col-xs-8">
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation :</p>
+                        </td>
+                        <td>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.designation}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="col-xs-8">
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name :</p>
+                        </td>
+                        <td>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="col-xs-8">
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Registration No.:</p>
+                        </td>
+                        <td>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.profRegNo}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="col-xs-8">
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) :</p>
+                        </td>
+                        <td>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
+                        </td>
+                      </tr>
+                    </c:when>
+                    <c:when test="${currentPreviewSvcInfo.serviceCode=='TCB'}">
+                      <tr>
+                        <td class="col-xs-8">
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name :</p>
+                        </td>
+                        <td>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="col-xs-8">
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification :</p>
+                        </td>
+                        <td>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.quaification}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="col-xs-8">
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) :</p>
+                        </td>
+                        <td>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
+                        </td>
+                      </tr>
+
+                    </c:when>
                     <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT001'}">
                       <tr>
                         <td class="col-xs-8">

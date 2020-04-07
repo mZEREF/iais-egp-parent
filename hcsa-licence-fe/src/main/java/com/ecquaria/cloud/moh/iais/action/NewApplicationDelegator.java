@@ -2626,9 +2626,12 @@ public class NewApplicationDelegator {
                         }else {
                              endDate = validateTime(errorMap, onsiteEndHH, onsiteEndMM, endDate, "onsiteEndMM", i);
                         }
-                        if(endDate<startDate){
-                            errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR008");
+                        if(!StringUtil.isEmpty(onsiteStartHH)&&!StringUtil.isEmpty(onsiteStartMM)&&!StringUtil.isEmpty(onsiteEndHH)&&!StringUtil.isEmpty(onsiteEndMM)){
+                            if(endDate<startDate){
+                                errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR008");
+                            }
                         }
+
                         /*Boolean isOtherLic = appGrpPremisesDtoList.get(i).isLocateWithOthers();
                         if(StringUtil.isEmpty(isOtherLic)){
                             errorMap.put("isOtherLic"+i,"UC_CHKLMD001_ERR002");
@@ -2851,9 +2854,12 @@ public class NewApplicationDelegator {
                         }else {
                             conEndDate = validateTime(errorMap, conEndHH, conEndMM, conEndDate, "conEndMM", i);
                         }
-                        if(conEndDate<conStartDate){
-                            errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR008");
+                        if(!StringUtil.isEmpty(conStartHH)&&!StringUtil.isEmpty(conStartMM)&&!StringUtil.isEmpty(conEndHH)&&!StringUtil.isEmpty(conEndMM)){
+                            if(conEndDate<conStartDate){
+                                errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR008");
+                            }
                         }
+
 
                         //set  time
                         String errorStartMM = errorMap.get("conStartMM"+i);

@@ -8,6 +8,67 @@
           <div class="col-xs-12">
             <table class="col-xs-8">
               <c:choose>
+                <c:when test="${currentPreviewSvcInfo.serviceCode=='BLB'}">
+                  <tr>
+                    <td class="col-xs-8">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation :</p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.designation}</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-8">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name :</p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-8">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Registration No.:</p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.profRegNo}</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-8">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) :</p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
+                    </td>
+                  </tr>
+                </c:when>
+                <c:when test="${currentPreviewSvcInfo.serviceCode=='TCB'}">
+                  <tr>
+                    <td class="col-xs-8">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name :</p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-8">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification :</p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.quaification}</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-8">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) :</p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
+                    </td>
+                  </tr>
+
+                </c:when>
                 <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT001'}">
                   <tr>
                     <td class="col-xs-8">

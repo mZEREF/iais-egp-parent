@@ -57,21 +57,23 @@
                                          varStatus="status">
                                 <div class="panel-main-content">
                                   <div class="preview-info">
-                                    <p>
-                                      <span><strong>Premises ${status.index+1}:</strong>
-                                      <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">On-site</c:if>
-                                      <c:if test="${appGrpPremDto.premisesType=='CONVEYANCE'}">Conveyance</c:if>
-                                    </span>
-                                      <wrms:value width="7">
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        <label>Premises ${status.index+1}:</label>
+                                      </div>
+                                      <div class="col-md-6">
+                                        <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">On-site</c:if>
+                                        <c:if test="${appGrpPremDto.premisesType=='CONVEYANCE'}">Conveyance</c:if>
+                                        <wrms:value width="7">
                                         <span class="newVal " attr="${appGrpPremDto.premisesType}"
                                               style="display: none"><label><c:out value=""/></label></span>
-                                        <span class="oldVal compareTdStyle"
-                                              attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"
-                                              style="display: none"><label><c:out
-                                                value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"/></label></span>
-                                      </wrms:value>
-                                    </p>
-
+                                          <span class="oldVal compareTdStyle"
+                                                attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"
+                                                style="display: none"><label><c:out
+                                                  value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"/></label></span>
+                                        </wrms:value>
+                                      </div>
+                                    </div>
 
 
                                     <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
@@ -277,7 +279,7 @@
                                       <div class="col-md-6">
                                           ${appGrpPremDto.onsiteEndHH} (HH): ${appGrpPremDto.onsiteEndMM} (MM)
                                             <wrms:value width="7">
-                                        <span class="newVal " attr="${appGrpPremDto.wrkTimeTo}"
+                                              <span class="newVal " attr="${appGrpPremDto.wrkTimeTo}"
                                               style="display: none"><label><c:out value=""/></label></span>
                                               <span class="oldVal compareTdStyle"
                                                     attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"
@@ -297,14 +299,14 @@
                                       <label>Public Holidays Operating Hours (Start)</label>
                                     </div>
                                     <div class="col-md-6">
-                                        ${appPremPhOpenPeriod.startFrom}
+                                        ${appPremPhOpenPeriod.convStartFromHH} (HH):  ${appPremPhOpenPeriod.convStartFromMM} (MM)
                                           <wrms:value width="7">
-                                          <span class="newVal " attr="${appPremPhOpenPeriod.startFrom}" style="display: none"><label><c:out
+                                          <span class="newVal " attr="${appPremPhOpenPeriod.convStartFromHH}" style="display: none"><label><c:out
                                                   value=""/></label></span>
                                             <span class="oldVal compareTdStyle"
-                                                  attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index][statu.index].startFrom}"
+                                                  attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH}"
                                                   style="display: none"><label><c:out
-                                                    value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index][statu.index].startFrom}"/></label></span>
+                                                    value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH}"/></label></span>
                                           </wrms:value>
                                     </div>
                                   </div>
@@ -314,14 +316,15 @@
                                       <label>Public Holidays Operating Hours (End)</label>
                                     </div>
                                     <div class="col-md-6">
-                                        ${appPremPhOpenPeriod.startFrom}
+                                        ${appPremPhOpenPeriod.convEndToHH} (HH):  ${appPremPhOpenPeriod.convEndToMM} (MM)
+
                                           <wrms:value width="7">
                                           <span class="newVal " attr="${appPremPhOpenPeriod.endTo}"
                                                 style="display: none"><label><c:out value=""/></label></span>
                                             <span class="oldVal compareTdStyle"
-                                                  attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index][statu.index].endTo}"
+                                                  attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}"
                                                   style="display: none"><label><c:out
-                                                    value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index][statu.index].endTo}"/></label></span>
+                                                    value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}"/></label></span>
                                           </wrms:value>
                                     </div>
                                   </div>
@@ -378,30 +381,6 @@
                                         <p><strong>MedAlert Contact Person:</strong></p>
                                         <p><span class="col-xs-6">Name:</span>Shun Qiu</p>
                                       </div>
-
-                                      <c:forEach var="appGrpPrimaryDocDto"
-                                                 items="${appSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
-                                        <div class="content-body fileUploadContainer">
-                                          <div class="control col-sm-5">
-                                            <div class="fileList">
-                                              <span class="filename server-site col-xs-6 col-md-6" id="130">
-
-                                              <span class="col-xs-6 col-md-6">
-                                                <wrms:value width="7">
-                                                  <span class="newVal compareTdStyle"
-                                                        attr="${appGrpPrimaryDocDto.docSize}${appGrpPrimaryDocDto.docName}"
-                                                        style="display: none"><label><c:out
-                                                          value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/></label></span>
-                                                  <span class="oldVal compareTdStyle"
-                                                        attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}"
-                                                        style="display: none"><label><c:out
-                                                          value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/></label></span>
-                                                </wrms:value></span>
-                                              </span>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </c:forEach>
                                     </div>
                                   </div>
                                 </div>
@@ -425,7 +404,7 @@
                               <p class="text-right">
 
                                 <c:if test="${appEdit.serviceEdit}">
-                                    <c:if test="${rfi=='fri'}">
+                                    <c:if test="${rfi=='rfi'}">
                                     <input class="form-check-input" id="serviceCheckbox" type="checkbox"
                                            name="editCheckbox" aria-invalid="false" value="service">
                                     </c:if>
