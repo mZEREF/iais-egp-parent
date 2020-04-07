@@ -196,7 +196,7 @@ public class OrganizationClientFallback implements OrganizationClient {
     }
 
     @Override
-    public FeignResponseEntity<LicenseeDto> getLicenseeDtoByUen(String uenNo) {
+    public FeignResponseEntity<List<LicenseeDto>> getLicenseeDtoByUen(String uenNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

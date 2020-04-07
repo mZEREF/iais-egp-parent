@@ -146,10 +146,11 @@
             </c:if>
         </c:if>
 
-        $(window).on( "load", function() {
-            $('.button-group').removeClass('hidden');
-        })
     });
+
+    $(window).on( "load", function() {
+        $('.button-group').removeClass('hidden');
+    })
 
     $('.svc-pannel-collapse').click(function () {
         $svcContenEle = $(this).closest('div.svc-content');

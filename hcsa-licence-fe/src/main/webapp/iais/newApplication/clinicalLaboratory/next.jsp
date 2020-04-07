@@ -102,10 +102,12 @@
                 submitFormTabs('${serviceStepDto.nextStep.stepCode}');
             }
         }else{
+            var controlFormLi = $('#controlFormLi').val();
             submitForms('${serviceStepDto.nextStep.stepCode}',null,null,controlFormLi);
         }
     }
     function saveDraft() {
+        var controlFormLi = $('#controlFormLi').val();
         submitForms('${serviceStepDto.currentStep.stepCode}','saveDraft',$('#selectDraftNo').val(),controlFormLi);
     }
     function cancelSaveDraft() {
