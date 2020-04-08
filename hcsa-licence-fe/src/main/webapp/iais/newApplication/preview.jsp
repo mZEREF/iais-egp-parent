@@ -10,7 +10,7 @@
 <%@ include file="./dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-  <input type="hidden" name="crud_action_type_tab" value="">
+    <input type="hidden" name="crud_action_type_tab" value="">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -37,18 +37,19 @@
                                                     <div class="panel panel-default svc-content">
 
                                                         <div class="panel-heading  <c:if test="${fn:contains(serviceConfig,hcsaServiceDto.id)}">incompleted</c:if> <c:if test="${fn:contains(serviceConfig,hcsaServiceDto.id)==false}">completed</c:if>  "  id="headingServiceInfo" role="tab">
-                                                            <h4 class="panel-title"><a  class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${hcsaServiceDto.svcName}</a></h4>
+                                                            <h4 class="panel-title" onclick="setIframeUrl('<iais:mask name="svc${status.index}" value="${hcsaServiceDto.id}"/>','svc${status.index}',$(this))"><a  class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${hcsaServiceDto.svcName}</a></h4>
                                                         </div>
 
-                                                        <div class=" panel-collapse collapse" id="collapseServiceInfo${status.index}" role="tabpanel" aria-labelledby="headingServiceInfo${status.index}">
+                                                        <div class=" panel-collapse collapse" id="collapseServiceInfo${status.index}" role="tabpanel" aria-labelledby="headingServiceInfo${status.index}" >
                                                             <div class="panel-body">
                                                                 <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.serviceEdit}">
-                                                                <p class="text-right mb-0">
-                                                                    <a href="#" class="doSvcEdit"><em class="fa fa-pencil-square-o"></em>Edit</a>
-                                                                    <input type="hidden" value="${hcsaServiceDto.svcCode}" name="svcCode" />
-                                                                </p>
+                                                                    <p class="text-right mb-0">
+                                                                        <a href="#" class="doSvcEdit"><em class="fa fa-pencil-square-o"></em>Edit</a>
+                                                                        <input type="hidden" value="${hcsaServiceDto.svcCode}" name="svcCode" />
+                                                                    </p>
                                                                 </c:if>
-                                                                <iframe class="svc-iframe" title="" src="${pageContext.request.contextPath}<%=RedirectUtil.changeUrlToCsrfGuardUrlUrl("/eservice/INTERNET/MohServiceRelatedInformation/1/PrepareView",request)%>&svcId=${hcsaServiceDto.id}" id="elemId-${status.index}" width="100%" height="100%" ></iframe> <!--scrolling="no" scrollbar="no" -->
+                                                                <input type="hidden" value="0" name="svcCount"/>
+                                                                <iframe id="svcIframe"  class="svc-iframe" title="" src=""  width="100%" height="400px" style="height:400px;" ></iframe>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -75,10 +76,10 @@
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-6"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
                                         <div class="col-xs-12 col-sm-6">
-                                            <div class="button-group hidden">
+                                            <div class="button-group">
                                                 <c:if test="${requestInformationConfig==null}">
                                                     <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
-                                                <a class="btn btn-secondary" id = "SaveDraft" data-toggle="modal" data-target= "#saveDraft" >Save as Draft</a>
+                                                    <a class="btn btn-secondary" id = "SaveDraft" data-toggle="modal" data-target= "#saveDraft" >Save as Draft</a>
                                                 </c:if>
                                                 <a class="next btn btn-primary" id = "Next">SUBMIT & PAY </a></div>
                                         </div>
@@ -124,38 +125,35 @@
         });
 
         <c:if test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
-            <c:if test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
-                $('#docEdit').unbind();
-                $('.doSvcEdit').unbind();
-                $('#Back').unbind();
-                $('#Back').click(function(){
-                    submit('premises',null,null);
-                });
-            </c:if>
-            <c:if test="${AppSubmissionDto.appEditSelectDto.docEdit}">
-                $('#premisesEdit').unbind();
-                $('.doSvcEdit').unbind();
-                $('#Back').unbind();
-                $('#Back').click(function(){
-                    submit('documents',null,null);
-                });
-            </c:if>
-            <c:if test="${AppSubmissionDto.appEditSelectDto.serviceEdit}">
-                $('#premisesEdit').unbind();
-                $('#docEdit').unbind();
-            </c:if>
+        <c:if test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
+        $('#docEdit').unbind();
+        $('.doSvcEdit').unbind();
+        $('#Back').unbind();
+        $('#Back').click(function(){
+            submit('premises',null,null);
+        });
         </c:if>
+        <c:if test="${AppSubmissionDto.appEditSelectDto.docEdit}">
+        $('#premisesEdit').unbind();
+        $('.doSvcEdit').unbind();
+        $('#Back').unbind();
+        $('#Back').click(function(){
+            submit('documents',null,null);
+        });
+        </c:if>
+        <c:if test="${AppSubmissionDto.appEditSelectDto.serviceEdit}">
+        $('#premisesEdit').unbind();
+        $('#docEdit').unbind();
+        </c:if>
+        </c:if>
+
 
     });
 
-    $(window).on( "load", function() {
-        $('.button-group').removeClass('hidden');
-    })
 
     $('.svc-pannel-collapse').click(function () {
-        $svcContenEle = $(this).closest('div.svc-content');
-        $svcContenEle.find('.svc-iframe').css('height','400px');
-
+        var $svcContenEle = $(this).closest('div.svc-content');
+        $svcContenEle.find('.svc-iframe').attr('height','400px');
     });
 
 
@@ -169,5 +167,21 @@
     function cancelSaveDraft() {
         submit('preview','saveDraft','cancelSaveDraft');
     }
+
+    function setIframeUrl(maskId,maskName,svcDOM) {
+        var $svcContenEle = svcDOM.closest('div.svc-content');
+        var svcCount = $svcContenEle.find('input[name="svcCount"]').val();
+        if(0 != svcCount){
+            return;
+        }
+        showWaiting();
+        $svcContenEle.find('input[name="svcCount"]').val(1);
+        var url ='${pageContext.request.contextPath}<%=RedirectUtil.changeUrlToCsrfGuardUrlUrl("/eservice/INTERNET/MohServiceRelatedInformation/1/PrepareView",request)%>&'+maskName+'='+maskId+'&maskName='+maskName;
+        var $Iframe =  $svcContenEle.find('.svc-iframe');
+        $Iframe.prop('src',url);
+        $Iframe.css('height','400px');
+
+    }
+
 
 </script>

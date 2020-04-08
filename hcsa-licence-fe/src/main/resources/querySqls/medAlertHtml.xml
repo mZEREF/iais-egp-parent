@@ -108,10 +108,9 @@
                                 <span class="mandatory">*</span>
                             </div>
                             <div class="preferredModeDiv">
-                                <input class="preferredModes" type="hidden" name="preferredModes" value="" />
                                 <div class="col-md-3">
                                     <div class="form-check">
-                                        <input class="form-check-input preferredMode" type="checkbox" name="preferredMode(0)" value="Email" aria-invalid="false">
+                                        <input class="form-check-input preferredMode" type="checkbox" name="preferredMode(0)" value="1" aria-invalid="false">
                                         <label class="form-check-label"><span class="check-square"></span>
                                             Email
                                         </label>
@@ -119,7 +118,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-check">
-                                        <input class="form-check-input preferredMode" type="checkbox" name="preferredMode(0)" value="SMS" aria-invalid="false">
+                                        <input class="form-check-input preferredMode" type="checkbox" name="preferredMode(0)" value="2" aria-invalid="false">
                                         <label class="form-check-label"><span class="check-square"></span>
                                             SMS
                                         </label>

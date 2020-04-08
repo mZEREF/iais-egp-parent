@@ -130,17 +130,16 @@
                                     <span class="mandatory">*</span>
                                 </div>
                                 <div class="col-sm-3 control-label formtext col-md-7 preferredModeDiv">
-                                    <input class="preferredModes" type="hidden" name="preferredModes" value="${medAlertPsn.preferredMode}" />
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-check">
-                                                <input class="form-check-input preferredMode" id="EmailCheckbox" type="checkbox" name="preferredMode${status.index}" value = "Email" aria-invalid="false">
+                                                <input class="form-check-input preferredMode" id="EmailCheckbox" type="checkbox" name="preferredMode${status.index}" value = "1" aria-invalid="false" <c:if test="${'1' ==medAlertPsn.preferredMode || '3' ==medAlertPsn.preferredMode}">checked="checked"</c:if> >
                                                 <label class="form-check-label" for="EmailCheckbox"><span class="check-square"></span>Email</label>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-check">
-                                                <input class="form-check-input preferredMode" id="SMSCheckbox" type="checkbox" name="preferredMode${status.index}" value = "SMS" aria-invalid="false">
+                                                <input class="form-check-input preferredMode" id="SMSCheckbox" type="checkbox" name="preferredMode${status.index}" value = "2" aria-invalid="false" <c:if test="${'2' ==medAlertPsn.preferredMode || '3' ==medAlertPsn.preferredMode}">checked="checked"</c:if>>
                                                 <label class="form-check-label" for="SMSCheckbox"><span class="check-square"></span>SMS</label>
                                             </div>
                                         </div>
@@ -183,7 +182,7 @@
         $('select.assignSel').trigger('change');
 
         //reload preferred Mode
-        $('.preferredModes').each(function () {
+        /*$('.preferredModes').each(function () {
             var preferredMode = $(this).val();
             if(preferredMode != null && preferredMode !='undefined' && preferredMode != ''){
                 var $currentPreModeEle = $(this).closest('div.preferredModeDiv');
@@ -197,7 +196,7 @@
                     });
                 });
             }
-        });
+        });*/
 
 
     })

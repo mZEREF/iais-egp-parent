@@ -36,7 +36,7 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-
+        window.parent.dismissWaiting();
 
     });
 

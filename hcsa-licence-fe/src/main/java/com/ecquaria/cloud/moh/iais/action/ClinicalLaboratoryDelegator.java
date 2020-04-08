@@ -47,7 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringJoiner;
 
 
 /**
@@ -419,7 +418,8 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareView(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareView start ...."));
-        String svcId = ParamUtil.getMaskedString(bpc.request, "svcId");
+        String maskName = ParamUtil.getString(bpc.request,"maskName");
+        String svcId = ParamUtil.getMaskedString(bpc.request, maskName);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, svcId);
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
         appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
@@ -1877,7 +1877,6 @@ public class ClinicalLaboratoryDelegator {
         String [] idNo = ParamUtil.getStrings(request, "idNo");
         String [] mobileNo = ParamUtil.getStrings(request, "mobileNo");
         String [] emailAddress = ParamUtil.getStrings(request, "emailAddress");
-
         int length = assignSelect.length;
         List<AppSvcPrincipalOfficersDto> medAlertPersons = IaisCommonUtils.genNewArrayList();
         for(int i=0; i<length; i++){
@@ -1891,12 +1890,12 @@ public class ClinicalLaboratoryDelegator {
             medAlertPerson.setIdNo(idNo[i]);
             medAlertPerson.setMobileNo(mobileNo[i]);
             medAlertPerson.setEmailAddr(emailAddress[i]);
-            if(preferredModes != null && preferredModes.length>0){
-                StringJoiner joiner = new StringJoiner(";");
-                for(String preferredMode:preferredModes ){
-                    joiner.add(preferredMode);
+            if(preferredModes != null){
+                if(preferredModes.length == 2){
+                    medAlertPerson.setPreferredMode("3");
+                }else{
+                    medAlertPerson.setPreferredMode(preferredModes[0]);
                 }
-                medAlertPerson.setPreferredMode(joiner.toString());
             }
             medAlertPersons.add(medAlertPerson);
         }
