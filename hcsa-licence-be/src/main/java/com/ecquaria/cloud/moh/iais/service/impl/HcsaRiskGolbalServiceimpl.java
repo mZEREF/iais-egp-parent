@@ -52,7 +52,6 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
     public GolbalRiskShowDto getGolbalRiskShowDto() {
         List<HcsaServiceDto> serviceDtoList = hcsaConfigClient.getActiveServices().getEntity();
         GolbalRiskShowDto showDto = hcsaConfigClient.getgolbalshow(serviceDtoList).getEntity();
-        List<GobalRiskTotalDto> gobalRiskTotalDtoList = showDto.getGoalbalTotalList();
         return showDto;
     }
 
