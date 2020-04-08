@@ -8,8 +8,8 @@
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-
-  <div class="main-content">
+<%@include file="./dashboard.jsp" %>
+  <div class="main-content" style="margin-right: 5%;margin-left: 5%">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
@@ -36,16 +36,28 @@
         <td style="text-align: center">HCI Name</td>
         <td style="text-align: center">HCI Address</td>
       </tr>
-        <c:forEach items="${hciNames}" var="hciName" varStatus="stauts">
-        <tr>
-          <c:if test="${type=='application'}"><td style="text-align: center">${applicationNo}</td>  </c:if>
-
-          <c:if test="${type=='licence'}"><td style="text-align: center">${licenceNo}</td></c:if>
-          <td style="text-align: center">${serviceName}</td>
-          <td style="text-align: center">${hciName}</td>
-          <td style="text-align: center">${hciAddress[stauts.index]}</td>
-        </tr>
-        </c:forEach>
+        <c:choose>
+          <c:when test="${not empty hciNames}">
+            <c:forEach items="${hciNames}" var="hciName" varStatus="stauts">
+              <tr>
+                <c:if test="${type=='application'}"><td style="text-align: center">${applicationNo}</td>  </c:if>
+                <c:if test="${type=='licence'}"><td style="text-align: center">${licenceNo}</td></c:if>
+                <td style="text-align: center">${serviceName}</td>
+                <td style="text-align: center">${hciName}</td>
+                <td style="text-align: center">${hciAddress[stauts.index]}</td>
+              </tr>
+            </c:forEach>
+          </c:when>
+          <c:when test="${empty hciNames}">
+            <c:if test="${type=='application'}"><td style="text-align: center">${applicationNo}</td>  </c:if>
+            <c:if test="${type=='licence'}"><td style="text-align: center">${licenceNo}</td></c:if>
+            <td style="text-align: center">${serviceName}</td>
+            <td style="text-align: center"></td>
+            <td style="text-align: center"></td>
+          </c:when>
+        </c:choose>
+        
+     
       </table>
 
 

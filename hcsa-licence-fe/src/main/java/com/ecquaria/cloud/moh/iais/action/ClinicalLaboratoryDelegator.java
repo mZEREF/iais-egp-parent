@@ -1407,7 +1407,7 @@ public class ClinicalLaboratoryDelegator {
                         }
                     }
                     if(StringUtil.isEmpty(quaification)){
-                        errorMap.put("quaification"+i,"UC_CHKLMD001_ERR001");
+                        errorMap.put("qualification"+i,"UC_CHKLMD001_ERR001");
                     }
                 }
                 if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)){
