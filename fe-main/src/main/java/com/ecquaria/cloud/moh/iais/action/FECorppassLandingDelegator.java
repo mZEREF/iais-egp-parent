@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.JsonKeyConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
@@ -81,7 +80,7 @@ public class FECorppassLandingDelegator {
             String userId = userInfo.get("userId").toString();
             user.setId(userId);
 
-            LoginHelper.login(request, response, user, "/main-web/eservice/INTERNET/MohInternetInbox");
+            LoginHelper.login(request, response, user);
             return;
         }
 
@@ -128,8 +127,7 @@ public class FECorppassLandingDelegator {
         user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
         user.setId(orgUserDto.getUserId());
 
-        AccessUtil.initLoginUserInfo(request);
-        LoginHelper.login(request, response, user, "/main-web/eservice/INTERNET/MohInternetInbox");
+        LoginHelper.login(request, response, user);
     }
 
     /**

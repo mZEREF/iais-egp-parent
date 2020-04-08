@@ -7,14 +7,12 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -76,27 +74,17 @@ public class FESingpassLandingDelegator {
                         + "/eservice/INTERNET/FE_Landing/1/croppass", request, response);
             } catch (IOException e) {
                 log.error(e.getMessage());
-            }finally {
-                return;
             }
+        }else {
+            OrgUserDto userDto = orgUserManageService.createSingpassAccount(nric);
+            orgUserManageService.createClientUser(userDto);
+
+            User user = new User();
+            user.setDisplayName("Internet User");
+            user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
+            user.setId(userDto.getUserId());
+
+            LoginHelper.login(request, response, user);
         }
-
-        OrgUserDto userDto = orgUserManageService.createSingpassAccount(nric);
-        orgUserManageService.createClientUser(userDto);
-
-        User user = new User();
-        user.setDisplayName("Internet User");
-        user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
-        user.setId(userDto.getUserId());
-
-        SessionManager.getInstance(bpc.request).imitateLogin(user, true, true);
-        SessionManager.getInstance(bpc.request).initSopLoginInfo(bpc.request);
-
-        StringBuilder url = new StringBuilder();
-        url.append("https://").append(bpc.request.getServerName())
-                .append("/main-web/eservice/INTERNET/MohInternetInbox");
-
-        AccessUtil.initLoginUserInfo(request);
-        IaisEGPHelper.sendRedirect(request, response, url.toString());
     }
 }

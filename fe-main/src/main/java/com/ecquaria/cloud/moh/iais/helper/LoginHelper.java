@@ -9,13 +9,17 @@ import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 public final class LoginHelper {
+    private static final String INBOX_URL = "/main-web/eservice/INTERNET/MohInternetInbox";
 
     private LoginHelper(){}
 
-    public static void login(HttpServletRequest request, HttpServletResponse response, User user, String utl){
+    public static void login(HttpServletRequest request, HttpServletResponse response, User user){
         SessionManager.getInstance(request).imitateLogin(user, true, true);
         SessionManager.getInstance(request).initSopLoginInfo(request);
-        IaisEGPHelper.sendRedirect(request, response, utl);
+
+        AccessUtil.initLoginUserInfo(request);
+
+        IaisEGPHelper.sendRedirect(request, response, INBOX_URL);
     }
 
 }
