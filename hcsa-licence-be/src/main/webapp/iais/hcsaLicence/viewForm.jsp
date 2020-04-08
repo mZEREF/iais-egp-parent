@@ -19,6 +19,11 @@
   }
 </style>
 <div class="panel-main-content">
+
+  <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST007')}">
+
+  </c:if>
+
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST001')}">
     <div class="amended-service-info-gp">
       <label style="font-size: 2.2rem">LABORATORY DISCIPLINES</label>
@@ -44,7 +49,6 @@
                         </wrms:value>
                       </p>
                     </c:if>
-
                   </div>
                 </c:forEach>
               </div>
@@ -60,7 +64,7 @@
       <label style="font-size: 2.2rem">CLINICAL GOVERNANCE OFFICER</label>
       <div class="amend-preview-info">
         <c:forEach var="cgo" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
-        <p> <strong class="col-xs-8">Clinical Governance Officer ${status.index+1}:</strong><span class="col-xs-6">${cgo.name }</span></p>
+        <p><strong class="col-xs-8">Clinical Governance Officer ${status.index+1}:</strong><span class="col-xs-4 col-md-4">${cgo.name }</span></p>
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">

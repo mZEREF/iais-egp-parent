@@ -848,6 +848,7 @@ public class NewApplicationDelegator {
                 bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
                 return;
             }else {
+                log.info("crud_action_additional draftNo-----"+crud_action_additional);
                 appSubmissionDto.setOldDraftNo(crud_action_additional);
                 bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
             }

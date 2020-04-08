@@ -296,6 +296,23 @@
 
                                   <div class="row">
                                     <div class="col-md-6">
+                                      <label>Select Public Holiday</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        ${appPremPhOpenPeriod.phDate}
+                                      <wrms:value width="7">
+                                          <span class="newVal " attr="${appPremPhOpenPeriod.phDate}" style="display: none"><label><c:out
+                                                  value=""/></label></span>
+                                        <span class="oldVal compareTdStyle"
+                                              attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].phDate}"
+                                              style="display: none"><label><c:out
+                                                value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].phDate}"/></label></span>
+                                      </wrms:value>
+                                    </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <div class="col-md-6">
                                       <label>Public Holidays Operating Hours (Start)</label>
                                     </div>
                                     <div class="col-md-6">
