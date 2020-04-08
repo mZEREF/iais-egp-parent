@@ -84,7 +84,7 @@ public class InterInboxDelegator {
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
         IaisEGPHelper.clearSessionAttr(bpc.request,InboxConst.class);
-        AccessUtil.initLoginUserInfo(bpc.request);
+//        AccessUtil.initLoginUserInfo(bpc.request);
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         interInboxUserDto = inboxService.getUserInfoByUserId(loginContext.getUserId());
         log.debug(StringUtil.changeForLog("Login role information --->> ##User-Id:"+interInboxUserDto.getUserId()+"### Licensee-Id:"+interInboxUserDto.getLicenseeId()));
