@@ -22,10 +22,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * AccessUtil
@@ -124,7 +125,7 @@ public class AccessUtil {
             loginContext.setOrgId(orgUser.getOrgId());
             if (userRoles != null && !userRoles.isEmpty()) {
                 loginContext.getRoleIds().addAll(userRoles);
-                loginContext.setCurRoleId(userRoles.get(0));
+                //loginContext.setCurRoleId(userRoles.get(0));
             }
             if (AppConsts.USER_DOMAIN_INTRANET.equals(orgUser.getUserDomain())) {
                 List<String> wrkGrps = client.getWorkGrpsByUserId(orgUser.getId()).getEntity();

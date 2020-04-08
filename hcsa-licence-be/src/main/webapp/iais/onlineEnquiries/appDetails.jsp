@@ -233,6 +233,6 @@
                 </div>
             </div>
         </div>
-        <a  onclick="javascript:SOP.Crud.cfxSubmit('mainForm');" >< BACK</a>
+        <a  onclick="javascript:SOP.Crud.cfxSubmit('mainForm');" >< Back</a>
     </div>
 </form>

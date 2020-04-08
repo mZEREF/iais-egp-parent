@@ -157,10 +157,11 @@
                                                 <iais:datePicker id = "expiry_date" name = "expiry_date" value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
                                             </iais:value>
                                         </iais:row>
-                                        <iais:row>
-                                            <p style="color:#ff0000; display: none" id="expiryDateError">
-                                                Licence Expiry Date From cannot be later than Licence Expiry Date To.                                            </p>
-                                            </p>
+                                        <iais:row style="color:#ff0000; display: none" id="expiryDateError">
+                                            <iais:field value=""/>
+                                            <iais:value width="18">
+                                                Licence Expiry Date From cannot be later than Licence Expiry Date To.                                            </div>
+                                            </iais:value>
                                         </iais:row>
                                     </iais:section>
                                 </div>

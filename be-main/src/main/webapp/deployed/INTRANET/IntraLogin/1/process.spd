@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="IntraLogin" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="100" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preLogin" x="250" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preLogin_OnStepProcess_0" name="preLogin_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doLogin" x="540" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doLogin_OnStepProcess_0" name="doLogin_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="ToBackendInbox" processname="MohBackendInbox" project="INTRANET" version="-1" x="770" y="350">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preRole" x="550" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preRole_OnStepProcess_0" name="preRole_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doRole" x="800" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doRole_OnStepProcess_0" name="doRole_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="validRole" x="400" y="350">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="validRole_OnStepProcess_0" name="validRole_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="LoginPage" stageIndicator="" x="400" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="RolePage" stageIndicator="" x="660" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preLogin" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(120,120)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/LoginPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preLogin" style="oblique">
+   <position>{(270,120)(420,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doLogin" linkstyle="Direct" name="" sourceName="/Pages/WebPage/LoginPage" style="oblique">
+   <position>{(420,120)(560,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/ToBackendInbox" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(570,370)(790,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/validRole" style="oblique">
+   <position>{(445,400)(570,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preRole" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(570,370)(570,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/RolePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preRole" style="oblique">
+   <position>{(570,220)(680,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doRole" linkstyle="Direct" name="" sourceName="/Pages/WebPage/RolePage" style="oblique">
+   <position>{(680,120)(820,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/ToBackendInbox" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doRole" style="rectanular">
+   <position>{(820,120)(790,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doLogin" style="oblique">
+   <position>{(560,120)(445,280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preLogin" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(445,280)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/validRole" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(445,280)(445,400)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/preRole" componentIfTrue="/Steps/InvokeStep/ToBackendInbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="550" y="350">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/preLogin" componentIfTrue="/Steps/AutomaticStep/validRole" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="400" y="230">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches/>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

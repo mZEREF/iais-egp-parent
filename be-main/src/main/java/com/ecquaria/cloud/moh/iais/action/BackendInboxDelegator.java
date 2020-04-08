@@ -34,7 +34,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -98,7 +97,6 @@ public class BackendInboxDelegator {
     private SearchParam searchParamGroup;
     private List<TaskDto> commPools;
     public void start(BaseProcessClass bpc){
-        AccessUtil.initLoginUserInfo(bpc.request);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
         for (String item : loginContext.getRoleIds()) {
