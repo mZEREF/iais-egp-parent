@@ -80,7 +80,7 @@ public class FECorppassLandingDelegator {
             String userId = userInfo.get("userId").toString();
             user.setId(userId);
 
-            LoginHelper.login(request, response, user, "/main-web");
+            LoginHelper.login(request, response, user, "/main-web/eservice/INTERNET/MohInternetInbox");
             return;
         }
 
@@ -124,7 +124,7 @@ public class FECorppassLandingDelegator {
             user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
             user.setId(orgUserDto.getUserId());
 
-            LoginHelper.login(request, response, user, "/main-web");
+            LoginHelper.login(request, response, user, "/main-web/eservice/INTERNET/MohInternetInbox");
         }
 
     }
