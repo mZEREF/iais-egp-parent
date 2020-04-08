@@ -30,7 +30,7 @@
                         <c:choose>
                             <c:when test="${fn:contains(item.url,'INTERNET')}">
                                 <li>
-                                    <a href="<c:out value="${item.url}" />">
+                                    <a href="<c:out value="${item.url}" />" onclick="clickMenu('${item.displayLabel}','appPageMenu')">
                                         <egov-smc:commonLabel><c:out
                                                 value="${item.displayLabel}"/></egov-smc:commonLabel>
                                     </a>
@@ -38,7 +38,7 @@
                             </c:when>
                             <c:otherwise>
                                 <li>
-                                    <a href="#" id="${item.displayLabel}">
+                                    <a href="#" id="${item.displayLabel}" onclick="clickMenu('${item.displayLabel}','appPageMenu')">
                                         <egov-smc:commonLabel><c:out value="${item.displayLabel}"/></egov-smc:commonLabel>
                                     </a>
                                 </li>
@@ -49,7 +49,7 @@
                         <c:choose>
                             <c:when test="${fn:contains(item.url,'INTERNET')}">
                                 <li>
-                                    <a href="<c:out value="${item.url}" />">
+                                    <a href="<c:out value="${item.url}" />" onclick="clickMenu('${item.displayLabel}','appPageMenu')">
                                         <egov-smc:commonLabel><c:out
                                                 value="${item.displayLabel}"/></egov-smc:commonLabel>
                                     </a>
@@ -57,14 +57,14 @@
                             </c:when>
                             <c:otherwise>
                                 <li>
-                                    <a href="#" id="${item.displayLabel}">
+                                    <a href="#" id="${item.displayLabel}" onclick="clickMenu('${item.displayLabel}','appPageMenu')">
                                         <egov-smc:commonLabel><c:out value="${item.displayLabel}"/></egov-smc:commonLabel>
                                     </a>
                                 </li>
                             </c:otherwise>
                         </c:choose>
                         <li class="divider" role="separator"></li>
-                        <li><a href="#">Step-by-step guide to eServices</a></li>
+                        <li><a href="#" onclick="clickMenu('${item.displayLabel}','appPageMenu')">Step-by-step guide to eServices</a></li>
                         </ol>
                     </c:if>
                 </c:when>
@@ -77,7 +77,7 @@
                         </c:if>
                         <c:if test="${nextDepth == currDepth}">
                         <li>
-                            <a href="<c:out value="${item.url}" />">
+                            <a href="<c:out value="${item.url}" />" onclick="clickMenu('${item.displayLabel}','appPageMenu')">
                                 <egov-smc:commonLabel><c:out
                                         value="${item.displayLabel}"/></egov-smc:commonLabel>
                             </a>

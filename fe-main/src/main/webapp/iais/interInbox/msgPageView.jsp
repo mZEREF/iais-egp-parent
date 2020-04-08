@@ -16,6 +16,7 @@
 
 <%@ include file="msg/msgDashboard.jsp" %>
 <%@ include file="msg/msgMainContent.jsp" %>
+<%@ include file="commonFile.jsp" %>
 <style>
     .table-info-display {
         margin: 20px 0px 5px 0px;

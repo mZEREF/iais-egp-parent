@@ -15,6 +15,7 @@
 
 <%@ include file="app/appDashboard.jsp" %>
 <%@ include file="app/appMainContent.jsp" %>
+<%@ include file="commonFile.jsp" %>
 <style>
     .table-info-display {
         margin: 20px 0px 5px 0px;
@@ -54,6 +55,10 @@
 
     function appToLicPage() {
         submit("appToLic");
+    }
+
+    function scrollIntoAppView() {
+        $("#appForm")[0].scrollIntoView(true);
     }
 
     function doSearchApp() {

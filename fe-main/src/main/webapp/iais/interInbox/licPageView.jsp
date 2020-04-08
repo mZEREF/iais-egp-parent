@@ -16,6 +16,7 @@
 
 <%@ include file="lic/licDashboard.jsp" %>
 <%@ include file="lic/licMainContent.jsp" %>
+<%@ include file="commonFile.jsp" %>
 <style>
     .table-info-display {
         margin: 20px 0px 5px 0px;
@@ -98,6 +99,10 @@
         showWaiting();
         $("[name='crud_action_value']").val(licNo);
         submit('licDoAppeal');
+    }
+    
+    function scrollIntoLicView() {
+        $("#licForm")[0].scrollIntoView(true);
     }
     
     function sortRecords(sortFieldName,sortType){
