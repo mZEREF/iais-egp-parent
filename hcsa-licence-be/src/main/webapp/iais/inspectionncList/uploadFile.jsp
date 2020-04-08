@@ -74,7 +74,7 @@
             function (data) {
                 if(data != null && data.fileSn != -1){
                     if(data.fileSn == 0){
-                        var tr ="<tr><td colspan='6'> " +data.noFilesMessage +"</td></tr> " ;
+                        var tr ="<tr><td colspan='6'  align=\"center\" > " +data.noFilesMessage +"</td></tr> " ;
                         doAddTr(tr);
                     }
                 }
@@ -94,7 +94,7 @@
             dataType: "json",
             success: function (data) {
 
-                if(data != null && data.fileSn != -1){
+                if(data != null && data.fileSn != null && data.fileSn != -1){
                     if(data.fileSn == 0){
                         removeNoData();
                     }
@@ -105,6 +105,8 @@
                     $("#cancelDoc").click();
                 }else if(data != null && data.fileSn ==-1){
                     $('#selectedFileShow').html(data.noFilesMessage);
+                }else if(data != null && data.fileSn == null){
+                    $('#selectedFileShow').html('The file size must less than 4M.');
                 }
             },
             error: function (msg) {
@@ -131,8 +133,13 @@
         $('#selectedFileShow').html('')
         $('#fileRemarkShow').html('')
         var selectedFile = $('#uploadDoc').find('[name="selectedFile"]').val();
+        var file = $('#selectedFile').get(0).files[0];
+        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
         if(selectedFile == null || selectedFile== ""){
             $('#selectedFileShow').html('The file cannot be empty.');
+            return false;
+        }else if (fileSize> 4){
+            $('#selectedFileShow').html('The file size must less than 4M.');
             return false;
         }
         var fileRemarkMaxLength = 50;
