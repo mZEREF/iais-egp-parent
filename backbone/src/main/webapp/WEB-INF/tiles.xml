@@ -18,6 +18,7 @@
   <definition name="iais-intranet" template="/WEB-INF/layouts/iais-intranet/layout.jsp" extends="_parent" />
   <definition name="iais-internet" template="/WEB-INF/layouts/iais-internet/layout.jsp" extends="_parent" />
   <definition name="iais-blank" template="/WEB-INF/layouts/iais-blank/layout.jsp" extends="_parent" />
+  <definition name="iais-intranet-blank" template="/WEB-INF/layouts/iais-intranet-blank/layout.jsp" extends="_parent" />
   <definition name="egp-payment" template="/WEB-INF/layouts/egp-payment/layout.jsp"
 		extends="_parent" />
   <definition name="blank" template="/WEB-INF/layouts/blank/layout.jsp" extends="_parent" />
