@@ -82,7 +82,7 @@
                                     <iais:row>
                                         <iais:field value="Mobile No:" width="11"/>
                                         <iais:value width="11">
-                                            <iais:input type="text" name="mobileNo" id="mobileNo" value="${user.mobileNo}"/>
+                                            <iais:input type="text" name="mobileNo" id="mobileNo" maxLength="8" value="${user.mobileNo}"/>
                                             <div class="col-xs-12">
                                                 <span class="error-msg" name="errorMsg" id="error_mobileNo"></span>
                                             </div>
@@ -91,7 +91,7 @@
                                     <iais:row>
                                         <iais:field value="Office/Telephone No:" width="11"/>
                                         <iais:value width="11">
-                                            <iais:input type="text" name="officeNo" id="officeNo" value="${user.officeNo}"/>
+                                            <iais:input type="text" name="officeNo" id="officeNo" maxLength="8" value="${user.officeNo}"/>
                                             <div class="col-xs-12">
                                                 <span class="error-msg" name="errorMsg" id="error_officeTelNo"></span>
                                             </div>
@@ -106,9 +106,17 @@
                                             </div>
                                         </iais:value>
                                     </iais:row>
-                                    <iais:action>
-                                        <button type="button" class="search btn" onclick="save();">Save</button>
-                                    </iais:action>
+                                    <div class="application-tab-footer">
+                                        <div class="row">
+                                            <div class="col-xs-11 col-md-11">
+                                                <div class="text-right col-xs-1 col-md-1">
+                                                    <a align="left" class="back" href="#" onclick="cancel()"><em class="fa fa-angle-left"></em> Back</a></div>
+                                                <div class="text-right col-xs-10 col-md-10">
+                                                    <button class="btn btn-primary" id="savebtn" onclick="javascript:save()">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -124,11 +132,16 @@
     <input hidden name="userId" value="${user.userId}">
     <input hidden name="firstName" value="${user.firstName}">
     <input hidden name="lastName" value="${user.lastName}">
+    <input hidden name="action" id="action" value="">
 </form>
 <%@include file="/include/validation.jsp"%>
 <script type="text/javascript">
     function save() {
+        $("#action").val("save");
         SOP.Crud.cfxSubmit("mainForm");
     }
-
+    function cancel() {
+        $("#action").val("cancel");
+        SOP.Crud.cfxSubmit("mainForm");
+    }
 </script>

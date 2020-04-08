@@ -90,13 +90,13 @@
    <position>{(560,430)(550,550)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/EditValidation" style="oblique">
-   <position>{(550,550)(460,550)}</position>
+   <position>{(550,550)(450,430)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/EditPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
-   <position>{(460,550)(560,430)}</position>
+   <position>{(450,430)(560,430)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrePage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
-   <position>{(460,550)(240,120)}</position>
+   <position>{(450,430)(240,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrePage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
    <position>{(240,550)(240,120)}</position>
@@ -127,10 +127,10 @@
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Pages/WebPage/CreatePage" componentIfTrue="/Steps/AutomaticStep/PrePage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;ture&quot;" x="220" y="530">
+  <Condition componentIfFalse="/Pages/WebPage/CreatePage" componentIfTrue="/Steps/AutomaticStep/PrePage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="220" y="530">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Pages/WebPage/EditPage" componentIfTrue="/Steps/AutomaticStep/PrePage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="440" y="530">
+  <Condition componentIfFalse="/Pages/WebPage/EditPage" componentIfTrue="/Steps/AutomaticStep/PrePage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="430" y="410">
    <Description/>
   </Condition>
  </Conditions>

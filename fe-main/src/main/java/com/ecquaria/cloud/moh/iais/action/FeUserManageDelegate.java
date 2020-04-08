@@ -20,11 +20,12 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * FeAdminManageDelegate
@@ -99,73 +100,78 @@ public class FeUserManageDelegate {
     }
 
     public void editValidation(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("*******************insertDatabase end"));
-        String name = ParamUtil.getString(bpc.request,"name");
-        String salutation = ParamUtil.getString(bpc.request,"salutation");
-        String idType = ParamUtil.getString(bpc.request,"idType");
-        String idNo = ParamUtil.getString(bpc.request,"idNo");
-        String designation = ParamUtil.getString(bpc.request,"designation");
-        String mobileNo = ParamUtil.getString(bpc.request,"mobileNo");
-        String officeNo = ParamUtil.getString(bpc.request,"officeNo");
-        String email = ParamUtil.getString(bpc.request,"email");
-        String id = ParamUtil.getString(bpc.request,"id");
-        String orgId = ParamUtil.getString(bpc.request,"orgId");
-        String userId = ParamUtil.getString(bpc.request,"userId");
-        String firstName = ParamUtil.getString(bpc.request,"firstName");
-        String lastName = ParamUtil.getString(bpc.request,"lastName");
-
-        FeUserDto feUserDto = new FeUserDto();
-        feUserDto.setName(name);
-        if(StringUtil.isEmpty(salutation)){
-            feUserDto.setSalutation( ParamUtil.getString(bpc.request,"firstsolutationvalue"));
-        }else{
-            feUserDto.setSalutation(salutation);
-        }
-        if(StringUtil.isEmpty(idType)){
-            feUserDto.setIdType( ParamUtil.getString(bpc.request,"firstidType"));
-        }else{
-            feUserDto.setIdType(idType);
-        }
-        feUserDto.setId(id);
-        feUserDto.setUserId(userId);
-        feUserDto.setOrgId(orgId);
-        feUserDto.setIdNo(idNo);
-        feUserDto.setDesignation(designation);
-        feUserDto.setMobileNo(mobileNo);
-        feUserDto.setOfficeNo(officeNo);
-        feUserDto.setEmailAddr(email);
-        feUserDto.setLastName(lastName);
-        feUserDto.setFirstName(firstName);
-
-        ParamUtil.setRequestAttr(bpc.request, "user", feUserDto);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(feUserDto, "edit");
-
-        if (validationResult.isHasErrors()){
-            log.error("****************Error");
-            Map<String,String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, "email", email);
-            ParamUtil.setRequestAttr(bpc.request, "mobileNo", mobileNo);
-            ParamUtil.setRequestAttr(bpc.request, "officeNo", officeNo);
-            ParamUtil.setRequestAttr(bpc.request, "idNo", idNo);
-            ParamUtil.setRequestAttr(bpc.request, "idTypeSelect", feUserDto.getIdType());
-            String salutationDesc = MasterCodeUtil.getCodeDesc(feUserDto.getSalutation());
-            ParamUtil.setRequestAttr(bpc.request, "salutationDesc", salutationDesc);
-            ParamUtil.setRequestAttr(bpc.request, "sulationSelect", feUserDto.getSalutation());
-            ParamUtil.setRequestAttr(bpc.request, "name", name);
-            ParamUtil.setRequestAttr(bpc.request, "designation", designation);
-
-            List<SelectOption> mcStatusSelectList = IaisCommonUtils.genNewArrayList();
-            mcStatusSelectList.add(new SelectOption("NRIC", "NRIC"));
-            mcStatusSelectList.add(new SelectOption("FIN", "FIN"));
-            ParamUtil.setRequestAttr(bpc.request, "mcStatusSelectList", mcStatusSelectList);
-
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.FALSE);
-        }else{
-            Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
-            successMap.put("save","suceess");
-            orgUserManageService.editUserAccount(feUserDto);
+        String action = ParamUtil.getString(bpc.request,"action");
+        if("cancel".equals(action)){
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);
+        }else {
+            log.debug(StringUtil.changeForLog("*******************insertDatabase end"));
+            String name = ParamUtil.getString(bpc.request, "name");
+            String salutation = ParamUtil.getString(bpc.request, "salutation");
+            String idType = ParamUtil.getString(bpc.request, "idType");
+            String idNo = ParamUtil.getString(bpc.request, "idNo");
+            String designation = ParamUtil.getString(bpc.request, "designation");
+            String mobileNo = ParamUtil.getString(bpc.request, "mobileNo");
+            String officeNo = ParamUtil.getString(bpc.request, "officeNo");
+            String email = ParamUtil.getString(bpc.request, "email");
+            String id = ParamUtil.getString(bpc.request, "id");
+            String orgId = ParamUtil.getString(bpc.request, "orgId");
+            String userId = ParamUtil.getString(bpc.request, "userId");
+            String firstName = ParamUtil.getString(bpc.request, "firstName");
+            String lastName = ParamUtil.getString(bpc.request, "lastName");
+
+            FeUserDto feUserDto = new FeUserDto();
+            feUserDto.setName(name);
+            if (StringUtil.isEmpty(salutation)) {
+                feUserDto.setSalutation(ParamUtil.getString(bpc.request, "firstsolutationvalue"));
+            } else {
+                feUserDto.setSalutation(salutation);
+            }
+            if (StringUtil.isEmpty(idType)) {
+                feUserDto.setIdType(ParamUtil.getString(bpc.request, "firstidType"));
+            } else {
+                feUserDto.setIdType(idType);
+            }
+            feUserDto.setId(id);
+            feUserDto.setUserId(userId);
+            feUserDto.setOrgId(orgId);
+            feUserDto.setIdNo(idNo);
+            feUserDto.setDesignation(designation);
+            feUserDto.setMobileNo(mobileNo);
+            feUserDto.setOfficeNo(officeNo);
+            feUserDto.setEmailAddr(email);
+            feUserDto.setLastName(lastName);
+            feUserDto.setFirstName(firstName);
+
+            ParamUtil.setRequestAttr(bpc.request, "user", feUserDto);
+            ValidationResult validationResult = WebValidationHelper.validateProperty(feUserDto, "edit");
+
+            if (validationResult.isHasErrors()) {
+                log.error("****************Error");
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, "email", email);
+                ParamUtil.setRequestAttr(bpc.request, "mobileNo", mobileNo);
+                ParamUtil.setRequestAttr(bpc.request, "officeNo", officeNo);
+                ParamUtil.setRequestAttr(bpc.request, "idNo", idNo);
+                ParamUtil.setRequestAttr(bpc.request, "idTypeSelect", feUserDto.getIdType());
+                String salutationDesc = MasterCodeUtil.getCodeDesc(feUserDto.getSalutation());
+                ParamUtil.setRequestAttr(bpc.request, "salutationDesc", salutationDesc);
+                ParamUtil.setRequestAttr(bpc.request, "sulationSelect", feUserDto.getSalutation());
+                ParamUtil.setRequestAttr(bpc.request, "name", name);
+                ParamUtil.setRequestAttr(bpc.request, "designation", designation);
+
+                List<SelectOption> mcStatusSelectList = IaisCommonUtils.genNewArrayList();
+                mcStatusSelectList.add(new SelectOption("NRIC", "NRIC"));
+                mcStatusSelectList.add(new SelectOption("FIN", "FIN"));
+                ParamUtil.setRequestAttr(bpc.request, "mcStatusSelectList", mcStatusSelectList);
+
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, AppConsts.FALSE);
+            } else {
+                Map<String, String> successMap = IaisCommonUtils.genNewHashMap();
+                successMap.put("save", "suceess");
+                orgUserManageService.editUserAccount(feUserDto);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, AppConsts.TRUE);
+            }
         }
     }
 

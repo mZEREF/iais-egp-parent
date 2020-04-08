@@ -102,9 +102,17 @@
                                         </div>
                                     </iais:row>
 
-                                    <iais:action>
-                                        <button type="button" class="search btn" onclick="create()">Create</button>
-                                    </iais:action>
+                                    <div class="application-tab-footer">
+                                        <div class="row">
+                                            <div class="col-xs-11 col-md-11">
+                                                <div class="text-right col-xs-1 col-md-1">
+                                                    <a align="left" class="back" href="#" onclick="cancel()"><em class="fa fa-angle-left"></em> Back</a></div>
+                                                <div class="text-right col-xs-10 col-md-10">
+                                                    <button class="btn btn-primary" id="savebtn" onclick="javascript:save()">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -113,11 +121,16 @@
             </div>
         </div>
     </div>
+    <input hidden name="action" id="action" value="">
 </form>
 <%@include file="/include/validation.jsp"%>
 <script type="text/javascript">
     function create() {
+        $("#action").val("create");
         SOP.Crud.cfxSubmit("mainForm");
     }
-
+    function cancel() {
+        $("#action").val("cancel");
+        SOP.Crud.cfxSubmit("mainForm");
+    }
 </script>

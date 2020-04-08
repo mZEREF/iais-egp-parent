@@ -51,7 +51,7 @@
                                 <th>Email</th>
                                 <th>Is Administrator</th>
                                 <th>Activate</th>
-                                <th>Edit</th>
+                                <th>Action</th>
                                 <th>De-activate</th>
                             </tr>
                             </thead>
@@ -121,9 +121,16 @@
                             </c:choose>
                             </tbody>
                         </table>
-                        <iais:action>
-                            <button type="button" class="search btn" onclick="javascript:create();">Create</button>
-                        </iais:action>
+                        <div class="application-tab-footer">
+                            <div class="row">
+                                <div class="col-xs-11 col-md-11">
+                                    <div class="text-right">
+                                        <button class="btn btn-primary" id="savebtn"
+                                                onclick="javascript:create()">Create</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

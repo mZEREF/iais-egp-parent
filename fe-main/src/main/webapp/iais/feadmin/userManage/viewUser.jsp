@@ -51,7 +51,7 @@
                                 <th>Office/Telephone No</th>
                                 <th>Email</th>
                                 <th>Role</th>
-                                <th>Edit</th>
+                                <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
