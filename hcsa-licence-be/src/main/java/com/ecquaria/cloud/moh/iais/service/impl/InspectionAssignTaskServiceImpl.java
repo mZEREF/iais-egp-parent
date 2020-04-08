@@ -416,13 +416,13 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         String result = "";
         if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
             if(!StringUtil.isEmpty(appGrpPremisesDto.getBlkNo())){
-                result = result + appGrpPremisesDto.getBlkNo() + " ";
+                result = result + appGrpPremisesDto.getBlkNo();
             }
             if(!StringUtil.isEmpty(appGrpPremisesDto.getStreetName())){
-                result = result + appGrpPremisesDto.getStreetName() + " ";
+                result = result + " " + appGrpPremisesDto.getStreetName();
             }
             if(!StringUtil.isEmpty(appGrpPremisesDto.getBuildingName())){
-                result = result + appGrpPremisesDto.getBuildingName() + " ";
+                result = result + " " + appGrpPremisesDto.getBuildingName();
             }
             if(!StringUtil.isEmpty(appGrpPremisesDto.getFloorNo())){
                 String floorNo = appGrpPremisesDto.getFloorNo();
@@ -433,15 +433,15 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                         int floorNum = Integer.valueOf(floorNo);
                         if (10 > floorNum) {
                             floorNo = "0" + floorNum;
-                            result = result + " # " + floorNo;
+                            result = result + " " + " # " + floorNo;
                         } else {
-                            result = result + " # " + floorNo;
+                            result = result + " " + " # " + floorNo;
                         }
                     } else {
-                        result = result + " # " + floorNo;
+                        result = result + " " + " # " + floorNo;
                     }
                 } else {
-                    result = result + " # " + floorNo;
+                    result = result + " " + " # " + floorNo;
                 }
             }
             if(!StringUtil.isEmpty(appGrpPremisesDto.getUnitNo())){
@@ -495,13 +495,13 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     private String getOtherAddress(AppGrpPremisesDto appGrpPremisesDto, String result) {
         if(!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceBlockNo())){
-            result = result + appGrpPremisesDto.getConveyanceBlockNo() + " ";
+            result = result + appGrpPremisesDto.getConveyanceBlockNo();
         }
         if(!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceStreetName())){
-            result = result + appGrpPremisesDto.getConveyanceStreetName() + " ";
+            result = result + " " + appGrpPremisesDto.getConveyanceStreetName();
         }
         if(!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceBuildingName())){
-            result = result + appGrpPremisesDto.getConveyanceBuildingName() + " ";
+            result = result + " " + appGrpPremisesDto.getConveyanceBuildingName();
         }
         if(!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceFloorNo())){
             String floorNo = appGrpPremisesDto.getConveyanceFloorNo();
@@ -512,15 +512,15 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     int floorNum = Integer.valueOf(floorNo);
                     if (10 > floorNum) {
                         floorNo = "0" + floorNum;
-                        result = result + " # " + floorNo;
+                        result = result + " " + " # " + floorNo;
                     } else {
-                        result = result + " # " + floorNo;
+                        result = result + " " + " # " + floorNo;
                     }
                 } else {
-                    result = result + " # " + floorNo;
+                    result = result + " " + " # " + floorNo;
                 }
             } else {
-                result = result + " # " + floorNo;
+                result = result + " " + " # " + floorNo;
             }
         }
         if(!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceUnitNo())){
