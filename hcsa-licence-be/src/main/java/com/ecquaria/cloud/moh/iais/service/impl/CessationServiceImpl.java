@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
@@ -13,17 +15,27 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
+import com.ecquaria.cloudfeign.FeignException;
+import jdk.nashorn.internal.runtime.logging.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,6 +45,7 @@ import org.springframework.stereotype.Service;
  * @date 2020/2/26 16:29
  */
 @Service
+@Slf4j
 public class CessationServiceImpl implements CessationService {
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
@@ -44,6 +57,8 @@ public class CessationServiceImpl implements CessationService {
     private BeEicGatewayClient beEicGatewayClient;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
+    @Autowired
+    private TaskService taskService;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -83,7 +98,7 @@ public class CessationServiceImpl implements CessationService {
                         String floorNo = premisesDto.getFloorNo();
                         String unitNo = premisesDto.getUnitNo();
                         String postalCode = premisesDto.getPostalCode();
-                        String hciAddress = IaisCommonUtils.appendPremisesAddress(blkNo,streetName,buildingName,floorNo,unitNo,postalCode);
+                        String hciAddress = IaisCommonUtils.appendPremisesAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
                         AppCessHciDto appCessHciDto = new AppCessHciDto();
                         String hciName = premisesDto.getHciName();
                         appCessHciDto.setHciName(hciName);
@@ -115,7 +130,7 @@ public class CessationServiceImpl implements CessationService {
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.clear();
             licIds.add(licId);
-            String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+            String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
             List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
             AppSubmissionDto appSubmissionDto = appSubmissionDtoList.get(0);
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -137,7 +152,7 @@ public class CessationServiceImpl implements CessationService {
             AppSubmissionDto appSubmissionDtoSave = applicationClient.saveSubmision(entity).getEntity();
             List<ApplicationDto> applicationDtos = appSubmissionDtoSave.getApplicationDtos();
             String appId = applicationDtos.get(0).getId();
-            setMiscData(appCessationDto,appCessMiscDto,appId);
+            setMiscData(appCessationDto, appCessMiscDto, appId);
             appCessMiscDtos.add(appCessMiscDto);
         }
         cessationClient.saveCessation(appCessMiscDtos).getEntity();
@@ -183,8 +198,8 @@ public class CessationServiceImpl implements CessationService {
     public void updateLicence(List<String> licNos) {
         List<LicenceDto> licenceDtos = hcsaLicenceClient.getLicDtosByLicNos(licNos).getEntity();
         List<LicenceDto> licenceDtoNew = IaisCommonUtils.genNewArrayList();
-        if(licenceDtos!=null&&!licenceDtos.isEmpty()){
-            for(LicenceDto licenceDto :licenceDtos){
+        if (licenceDtos != null && !licenceDtos.isEmpty()) {
+            for (LicenceDto licenceDto : licenceDtos) {
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
                 licenceDtoNew.add(licenceDto);
             }
@@ -193,15 +208,29 @@ public class CessationServiceImpl implements CessationService {
     }
 
     @Override
+    public void routingTaskToAo3(List<ApplicationDto> applicationDtos, LoginContext loginContext) throws FeignException {
+        String curRoleId = loginContext.getCurRoleId();
+        log.info("=============>>>roleId"+curRoleId);
+        TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtos,HcsaConsts.ROUTING_STAGE_AO3,RoleConsts.USER_ROLE_AO3,IaisEGPHelper.getCurrentAuditTrailDto());
+        List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+        List<TaskDto> tasks = taskService.createTasks(taskDtos);
+        String id = tasks.get(0).getId();
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+        appPremisesRoutingHistoryDtos.get(0).setRoleId(curRoleId);
+        appPremisesRoutingHistoryDtos.get(0).setProcessDecision("VERIFIED");
+        taskService.createHistorys(appPremisesRoutingHistoryDtos);
+    }
+
+    @Override
     public List<String> listLicIdsCeased(List<String> licIds) {
-        for(String licId :licIds){
+        for (String licId : licIds) {
 
         }
         return null;
     }
 
 
-    private ApplicationGroupDto getApplicationGroupDto(String appNo,String appType) {
+    private ApplicationGroupDto getApplicationGroupDto(String appNo, String appType) {
         ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
         applicationGroupDto.setSubmitDt(new Date());
         applicationGroupDto.setGroupNo(appNo);
@@ -233,7 +262,7 @@ public class CessationServiceImpl implements CessationService {
         return appGrpPremisesDtos;
     }
 
-    private AppCessMiscDto setMiscData(AppCessationDto appCessationDto,AppCessMiscDto appCessMiscDto,String appLid){
+    private AppCessMiscDto setMiscData(AppCessationDto appCessationDto, AppCessMiscDto appCessMiscDto, String appLid) {
         Date effectiveDate = appCessationDto.getEffectiveDate();
         String reason = appCessationDto.getReason();
         String otherReason = appCessationDto.getOtherReason();
@@ -252,11 +281,13 @@ public class CessationServiceImpl implements CessationService {
         appCessMiscDto.setPatNoReason(patNoRemarks);
         appCessMiscDto.setPatTransType(patientSelect);
         appCessMiscDto.setAppPremCorreId(appLid);
-        if(!StringUtil.isEmpty(patHciName)){
+        if (!StringUtil.isEmpty(patHciName)) {
             appCessMiscDto.setPatTransTo(patHciName);
-        }if(!StringUtil.isEmpty(patRegNo)){
+        }
+        if (!StringUtil.isEmpty(patRegNo)) {
             appCessMiscDto.setPatTransTo(patRegNo);
-        }if(!StringUtil.isEmpty(patOthers)){
+        }
+        if (!StringUtil.isEmpty(patOthers)) {
             appCessMiscDto.setPatTransTo(patOthers);
         }
         return appCessMiscDto;
@@ -265,7 +296,7 @@ public class CessationServiceImpl implements CessationService {
     private void setRiskToDto(AppSubmissionDto appSubmissionDto) {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<RiskAcceptiionDto> riskAcceptiionDtoList = new ArrayList();
-        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
             riskAcceptiionDto.setScvCode(appSvcRelatedInfoDto.getServiceCode());
             riskAcceptiionDto.setApptype(appSubmissionDto.getAppType());
@@ -274,24 +305,24 @@ public class CessationServiceImpl implements CessationService {
 
         List<RiskResultDto> riskResultDtoList = hcsaConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
 
-        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             String serviceCode = appSvcRelatedInfoDto.getServiceCode();
-            RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList,serviceCode);
-            if(riskResultDto!= null){
+            RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList, serviceCode);
+            if (riskResultDto != null) {
                 appSvcRelatedInfoDto.setScore(riskResultDto.getScore());
                 appSvcRelatedInfoDto.setDoRiskDate(riskResultDto.getDoRiskDate());
             }
         }
     }
 
-    private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList,String serviceCode){
+    private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList, String serviceCode) {
         RiskResultDto result = null;
-        if(riskResultDtoList == null || StringUtil.isEmpty(serviceCode)){
+        if (riskResultDtoList == null || StringUtil.isEmpty(serviceCode)) {
             return result;
         }
-        for(RiskResultDto riskResultDto : riskResultDtoList){
-            if(serviceCode.equals(riskResultDto.getSvcCode())){
-                result = riskResultDto ;
+        for (RiskResultDto riskResultDto : riskResultDtoList) {
+            if (serviceCode.equals(riskResultDto.getSvcCode())) {
+                result = riskResultDto;
             }
         }
         return result;

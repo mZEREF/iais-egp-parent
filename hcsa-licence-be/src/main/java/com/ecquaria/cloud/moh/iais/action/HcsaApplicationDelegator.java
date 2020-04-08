@@ -315,7 +315,7 @@ public class HcsaApplicationDelegator {
         //62875
         if(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
-            if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationViewDto.getApplicationType())){
+            if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationViewDto.getApplicationDto().getApplicationType())){
                 nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REJECT, "Reject"));
             }else{
                 nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast"));

@@ -622,7 +622,6 @@
                                                     </div>
                                                     <div id="recommendationDropdown">
                                                         <iais:row>
-
                                                             <div id="recommendationFieldTrue" class="hidden"><iais:field value="Recommendation" required="true"/></div>
                                                             <div id="recommendationFieldFalse"><iais:field value="Recommendation" required="false"/></div>
                                                             <iais:value width="10">
@@ -773,6 +772,11 @@
             $('#processingDecision').addClass('hidden');
             // $('#recommendationDropdown').addClass('hidden');
             $('#replytr').removeClass('hidden');
+            $('#licenceStartDate').addClass('hidden');
+        }
+        //cessation
+        if ('${applicationViewDto.applicationDto.applicationType}' == 'APTY008'){
+            $('#recommendationDropdown').addClass('hidden');
             $('#licenceStartDate').addClass('hidden');
         }
         $('#rfiSelect').hide();

@@ -18,7 +18,7 @@
     <div class="main-content">
         <div class="panel-heading"><h2><strong>Cessation Confirmation Form</strong></h2></div>
         <div class="panel-heading"><h4><strong>Please key in to cessation information</strong></h4></div>
-        <div class="row">
+        <div class="row" style="margin-left: 1%;margin-right: 1%">
             <table border="1">
                 <thead>
                 <tr style="padding: 1%">

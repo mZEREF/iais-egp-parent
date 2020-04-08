@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -13,10 +14,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmD
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
@@ -61,6 +65,7 @@ public class CessationApplicationDelegator {
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>CessationApplicationDelegator");
+        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Cessation Application", "Cessation Application");
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, null);
     }
@@ -69,8 +74,7 @@ public class CessationApplicationDelegator {
         List<String> licIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "licIds");
         if(licIds==null||licIds.size()==0){
             licIds = IaisCommonUtils.genNewArrayList();
-            licIds.add("ACB51822-A656-EA11-BE7F-000C29F371DC");
-            licIds.add("4083B3AD-B04D-EA11-BE7F-000C29F371DC");
+            licIds.add("1D83B3AD-B04D-EA11-BE7F-000C29F371DC");
         }
         List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
         int size = appCessDtosByLicIds.size();
@@ -163,15 +167,17 @@ public class CessationApplicationDelegator {
 
     }
 
-    public void saveData(BaseProcessClass bpc){
+    public void saveData(BaseProcessClass bpc) throws FeignException {
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
         cessationService.saveCessations(appCessationDtos);
         List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         for (AppCessationDto appCessationDto : appCessationDtos) {
             String licId = appCessationDto.getWhichTodo();
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.add(licId);
             ApplicationDto applicationDto = applicationClient.getApplicationByLicId(licId).getEntity();
+            applicationDtos.add(applicationDto);
             List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
             String licenceNo = appCessLicDto.getLicenceNo();
@@ -189,6 +195,8 @@ public class CessationApplicationDelegator {
             appCessatonConfirmDto.setHciName(hciName);
             appCessationDtosConfirms.add(appCessatonConfirmDto);
         }
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        cessationService.routingTaskToAo3(applicationDtos,loginContext);
         List<String> licNos = IaisCommonUtils.genNewArrayList();
         for(AppCessatonConfirmDto appCessatonConfirmDto :appCessationDtosConfirms){
             String licenceNo = appCessatonConfirmDto.getLicenceNo();
