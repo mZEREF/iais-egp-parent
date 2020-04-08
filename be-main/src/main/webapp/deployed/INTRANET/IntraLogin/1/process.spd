@@ -43,7 +43,7 @@
     <JavaCode defClass="" executor="" methodName="doRole_OnStepProcess_0" name="doRole_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="validRole" x="400" y="350">
+  <AutomaticStep defClass="" executor="" icon="" name="validRole" x="400" y="310">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -67,8 +67,8 @@
  </Pages>
  <Forms/>
  <Links>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preLogin" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
-   <position>{(120,120)(270,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preLogin" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond3" style="oblique">
+   <position>{(215,400)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/LoginPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preLogin" style="oblique">
    <position>{(270,120)(420,120)}</position>
@@ -77,13 +77,13 @@
    <position>{(420,120)(560,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/ToBackendInbox" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(570,370)(790,370)}</position>
+   <position>{(570,330)(790,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/validRole" style="oblique">
-   <position>{(445,400)(570,370)}</position>
+   <position>{(445,360)(570,330)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preRole" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(570,370)(570,220)}</position>
+   <position>{(570,330)(570,220)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/RolePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preRole" style="oblique">
    <position>{(570,220)(680,120)}</position>
@@ -101,14 +101,23 @@
    <position>{(445,280)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/validRole" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
-   <position>{(445,280)(445,400)}</position>
+   <position>{(445,280)(445,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond3" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(120,120)(215,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/ToBackendInbox" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
+   <position>{(215,400)(790,370)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/preRole" componentIfTrue="/Steps/InvokeStep/ToBackendInbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="550" y="350">
+  <Condition componentIfFalse="/Steps/AutomaticStep/preRole" componentIfTrue="/Steps/InvokeStep/ToBackendInbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="550" y="310">
    <Description/>
   </Condition>
   <Condition componentIfFalse="/Steps/AutomaticStep/preLogin" componentIfTrue="/Steps/AutomaticStep/validRole" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="400" y="230">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/preLogin" componentIfTrue="/Steps/InvokeStep/ToBackendInbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="170" y="350">
    <Description/>
   </Condition>
  </Conditions>

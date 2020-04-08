@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -36,7 +35,18 @@ public class BackendLoginDelegator {
     OrganizationMainClient organizationMainClient;
 
     public void Start(BaseProcessClass bpc){
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
 
+        if(loginContext!=null){
+            if(loginContext.getUserDomain().equals(IntranetUserConstant.DOMAIN_INTRANET)){
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
+            }else {
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
+            }
+        }else {
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
+
+        }
     }
     public void preLogin(BaseProcessClass bpc){
 
@@ -128,12 +138,12 @@ public class BackendLoginDelegator {
         if(orgUserDto==null){
             errMap.put("login","Please key in a valid userId");
         }
-        String role=ParamUtil.getString(request,"decisionRole");
-        if(StringUtil.isEmpty(role)){
-            if ("Select".equals(role)){
-                errMap.put("role","ERR0010");
-            }
-        }
+//        String role=ParamUtil.getString(request,"decisionRole");
+//        if(StringUtil.isEmpty(role)){
+//            if ("Select".equals(role)){
+//                errMap.put("role","ERR0010");
+//            }
+//        }
         return errMap;
     }
 }

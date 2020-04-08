@@ -6,7 +6,7 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
-<webui:setLayout name="iais-intranet"/>
+<webui:setLayout name="iais-intranet-blank"/>
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
@@ -22,14 +22,13 @@
                         </div>
                         <div id="login" class="login-area" style="display:block;">
                             <div class="form-group">
-                                <label class="sr-only" for="login_role">Role<</label>
+                                <label class="sr-only" for="login_role">Role</label>
                                 <select id="login_role" name="decisionRole">
-                                    <option value="Select" selected>Please Select
-                                    </option>
                                     <c:forEach items="${roleTypeOption}" var="decision">
                                         <option value="${decision.value}">${decision.text}</option>
                                     </c:forEach>
                                 </select>
+                                <br>
                             </div>
                             <span class="error-msg" name="iaisErrorMsg" id="error_role"></span>
 
