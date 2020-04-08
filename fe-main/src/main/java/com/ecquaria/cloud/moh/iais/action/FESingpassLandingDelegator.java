@@ -81,6 +81,9 @@ public class FESingpassLandingDelegator {
         }
 
         OrgUserDto userDto = orgUserManageService.createSingpassAccount(nric);
+
+        orgUserManageService.createClientUser(userDto);
+
         User user = new User();
         user.setDisplayName("Internet User");
         user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);

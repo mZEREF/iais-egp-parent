@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.client.rbac.ClientUser;
+import com.ecquaria.cloud.client.rbac.UserClient;
 import com.ecquaria.cloud.moh.iais.common.constant.JsonKeyConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -10,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.FeAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
@@ -18,6 +21,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +36,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Autowired
     FeUserClient feUserClient;
 
+    @Autowired
+    UserClient userClient;
 
     @Override
     public SearchResult<FeUserQueryDto> getFeUserList(SearchParam searchParam){
@@ -106,5 +113,36 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public Map<String, Object> getUserByNricAndUen(String uen, String nric) {
         return feUserClient.getUserByNricAndUen(uen, nric).getEntity();
+    }
+
+    @Override
+    public void createClientUser(OrgUserDto orgUserDto) {
+
+        //TODO : simple create
+        ClientUser clientUser = userClient.findUser("internet", orgUserDto.getUserId()).getEntity();
+        if (clientUser != null){
+            return;
+        }
+
+        clientUser = MiscUtil.transferEntityDto(orgUserDto, ClientUser.class);
+        clientUser.setUserDomain(orgUserDto.getUserDomain());
+        clientUser.setId(orgUserDto.getUserId());
+        clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+        String email = orgUserDto.getEmail();
+        String salutation = orgUserDto.getSalutation();
+        clientUser.setSalutation(salutation);
+        clientUser.setEmail(email);
+        clientUser.setPassword("password$2");
+        clientUser.setPasswordChallengeQuestion("A");
+        clientUser.setPasswordChallengeAnswer("A");
+
+        Date activeDate = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(activeDate);
+        calendar.add(Calendar.DAY_OF_MONTH, 12);
+        clientUser.setAccountActivateDatetime(activeDate);
+        clientUser.setAccountDeactivateDatetime(calendar.getTime());
+
+        userClient.createClientUser(clientUser);
     }
 }

@@ -117,6 +117,7 @@ public class FECorppassLandingDelegator {
             jsonObject.put(JsonKeyConstants.USER_ID, AppConsts.USER_DOMAIN_INTERNET);
 
             OrgUserDto orgUserDto = orgUserManageService.createCropUser(jsonObject.toString());
+            orgUserManageService.createClientUser(orgUserDto);
 
             User user = new User();
             user.setDisplayName("Internet User");

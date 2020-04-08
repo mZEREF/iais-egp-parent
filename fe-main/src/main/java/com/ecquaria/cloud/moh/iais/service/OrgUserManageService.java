@@ -35,4 +35,6 @@ public interface OrgUserManageService {
     OrgUserDto createCropUser(String jsonStr);
 
     Map<String, Object>  getUserByNricAndUen(String uen, String nric);
+
+    void createClientUser(OrgUserDto orgUserDto);
 }
