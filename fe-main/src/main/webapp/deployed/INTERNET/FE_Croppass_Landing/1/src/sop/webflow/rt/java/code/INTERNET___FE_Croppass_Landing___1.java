@@ -37,4 +37,12 @@ public class INTERNET___FE_Croppass_Landing___1 extends BaseProcessClass {
 	public void createCropUser_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "createCropUser", this);
 	}
+
+	public void loginUser_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "loginUser", this);
+	}
+
+	public void validateKeyAppointment_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "validateKeyAppointment", this);
+	}
 }

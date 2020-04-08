@@ -1,10 +1,14 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.IaisApiStatusCode;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaRegulationConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.RegulationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -185,15 +189,42 @@ public class RegulationDelegator {
      */
     public void doCreateOrUpdate(BaseProcessClass bpc){
         String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        switch (action){
-            case "Update":
 
-                break;
-            case "Create":
-
-                break;
-            default:
+        String clauseNo = ParamUtil.getString(bpc.request, "clauseNo");
+        String clause = ParamUtil.getString(bpc.request, "clause");
+        HcsaChklSvcRegulationDto dto = (HcsaChklSvcRegulationDto) ParamUtil.getSessionAttr(bpc.request, "regulationAttr");
+        if (dto == null){
+            dto = new HcsaChklSvcRegulationDto();
         }
+
+        dto.setClauseNo(clauseNo);
+        dto.setClause(clause);
+
+        ValidationResult validationResult = WebValidationHelper.validateProperty(dto, action);
+        if (validationResult.isHasErrors()) {
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+        }else {
+            switch (action){
+                case "Update":
+                    break;
+                case "Create":
+                    IaisApiResult<HcsaChklSvcRegulationDto> apiResult =  regulationService.createRegulation(dto);
+                    if (apiResult.isHasError()){
+                        if (apiResult.getErrorCode().equals(IaisApiStatusCode.DUPLICATION_RECORD.getStatusCode())){
+                            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("customErrorMessage", "CHKL_ERR007"));
+                        }
+                        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                    }
+
+                    break;
+                default:
+            }
+
+        }
+
+
     }
 
     @GetMapping(value = "regulation-result-file")

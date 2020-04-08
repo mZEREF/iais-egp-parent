@@ -25,13 +25,13 @@
         <br><br>
         <div class="bg-title">
             <c:choose>
-            <c:when test="${isUpdate = 'Y'}">
-                <h2>Regulation Update</h2>
-            </c:when>
-            <c:otherwise>
-                <h2>Regulation Create</h2>
-            </c:otherwise>
-        </c:choose>
+                <c:when test="${isUpdate = 'Y'}">
+                    <h2>Regulation Update</h2>
+                </c:when>
+                <c:otherwise>
+                    <h2>Regulation Create</h2>
+                </c:otherwise>
+            </c:choose>
 
         </div>
         <span id="error_customErrorMessage" name="iaisErrorMsg" class="error-msg"></span>
@@ -62,7 +62,15 @@
             </div>
             <div class="col-xs-3 col-sm-3 col-md-offset-3">
                 <div class="button-group">
-                    <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doEdit', 'Update')">Update</a></div>
+                    <c:choose>
+                        <c:when test="${isUpdate = 'Y'}">
+                             <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doEdit', 'update')">Update</a></div>
+                        </c:when>
+                        <c:otherwise>
+                            <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doEdit', 'create')">Create</a></div>
+                        </c:otherwise>
+                    </c:choose>
+
             </div>
         </div>
     </form>

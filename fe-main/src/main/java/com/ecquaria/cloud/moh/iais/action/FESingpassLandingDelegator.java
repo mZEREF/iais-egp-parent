@@ -70,7 +70,7 @@ public class FESingpassLandingDelegator {
         if (!IaisCommonUtils.isEmpty(mohIssueUenList)){
             ParamUtil.setSessionAttr(request, "uenList", (Serializable) mohIssueUenList);
             try {
-                RedirectUtil.redirect("https://egp.sit.inter.iais.com" + EngineHelper.getContextPath()
+                RedirectUtil.redirect(EngineHelper.getContextPath()
                         + "/eservice/INTERNET/FE_Landing/1/croppass", request, response);
             } catch (IOException e) {
                 log.error(e.getMessage());

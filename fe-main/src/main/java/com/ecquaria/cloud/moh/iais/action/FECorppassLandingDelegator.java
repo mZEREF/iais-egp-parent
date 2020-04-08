@@ -5,9 +5,11 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.JsonKeyConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
@@ -69,20 +71,25 @@ public class FECorppassLandingDelegator {
         ParamUtil.setSessionAttr(request, "entityId", uen);
         ParamUtil.setSessionAttr(request, "corpPassId", nric);
 
-        Map<String, Object> userInfo =  orgUserManageService.getUserByNricAndUen(uen, nric);
-
-        log.info(" croppass login -> user info " + userInfo.toString());
-        //already have user
-        if (!userInfo.isEmpty()){
-            User user = new User();
-            user.setDisplayName("Internet User");
-            user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
-            String userId = userInfo.get("userId").toString();
-            user.setId(userId);
-
-            LoginHelper.login(request, response, user);
-            return;
+        OrganizationDto organizationDto = orgUserManageService.findOrganizationByUen(uen);
+        if (organizationDto != null){
+            ParamUtil.setRequestAttr(request, "isFirstLogin", "N");
+        }else {
+            ParamUtil.setRequestAttr(request, "isFirstLogin", "Y");
         }
+    }
+
+    /**
+     * StartStep: validateKeyAppointment
+     *
+     * @param bpc
+     * @throws
+     */
+    public void validateKeyAppointment(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        HttpServletResponse response = bpc.response;
+        String uen = ParamUtil.getRequestString(request, "entityId");
+        String nric =  ParamUtil.getRequestString(request, "corpPassId");
 
         // a key appointment holder
         //boolean isKeyAppointment = orgUserManageService.isKeyappointment(uen, nric);
@@ -95,6 +102,37 @@ public class FECorppassLandingDelegator {
     }
 
 
+    /**
+     * StartStep: loginUser
+     *
+     * @param bpc
+     * @throws
+     */
+    public void loginUser(BaseProcessClass bpc){
+        String uen = ParamUtil.getRequestString(bpc.request, "entityId");
+        String nric =  ParamUtil.getRequestString(bpc.request, "corpPassId");
+
+        Map<String, Object> userInfo =  orgUserManageService.getUserByNricAndUen(uen, nric);
+        log.info(" croppass login -> user info " + userInfo.toString());
+
+        boolean isAdminRole = false;
+        if (!userInfo.isEmpty()){
+            if (userInfo.containsKey("isAdmin")){
+                isAdminRole = true;
+            }
+        }
+
+        if (isAdminRole){
+            User user = new User();
+            user.setDisplayName("Internet User");
+            user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
+            String userId = userInfo.get("userId").toString();
+            user.setId(userId);
+            LoginHelper.login(bpc.request, bpc.response, user);
+        }else {
+            IaisEGPHelper.sendRedirect(bpc.request, bpc.response, "/main-web/");
+        }
+    }
 
     /**
      * StartStep: createCropUser

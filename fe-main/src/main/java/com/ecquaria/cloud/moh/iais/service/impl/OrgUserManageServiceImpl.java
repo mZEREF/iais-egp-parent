@@ -145,4 +145,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
         userClient.createClientUser(clientUser);
     }
+
+    @Override
+    public OrganizationDto findOrganizationByUen(String uen) {
+        return feUserClient.findOrganizationByUen(uen).getEntity();
+    }
 }
