@@ -36,7 +36,11 @@
                             <p><c:out value="${appSupDocDto.file}"></c:out></p>
                         </td>
                         <td>
-                            <p><a href="#"><c:out value="${appSupDocDto.document}"></c:out></a></p>
+                            <p>
+                                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${appSupDocDto.fileRepoId}"/>&fileRepoName=${appSupDocDto.document}" title="Download" class="downloadFile">
+                                    <c:out value="${appSupDocDto.document}"></c:out>
+                                </a>
+                            </p>
                         </td>
                         <td>
                             <p><c:out value="${appSupDocDto.size}"></c:out></p>
