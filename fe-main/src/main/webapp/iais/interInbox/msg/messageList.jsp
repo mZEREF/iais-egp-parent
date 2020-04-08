@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="search-wrap">
+                <div class="search-wrap" style="width: 100%">
                     <iais:value>
                         <div class="input-group">
                             <input class="form-control" id="inboxAdvancedSearch" type="text"
@@ -46,11 +46,11 @@
                         <C:if test="${msgPage == 'msgView'}">
                             <iais:sortableHeader needSort="false" field="" value=" "></iais:sortableHeader>
                         </C:if>
-                        <iais:sortableHeader needSort="true" field="subject" value="Subject"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true" field="message_type"
+                        <iais:sortableHeader needSort="false" field="subject" value="Subject"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false" field="message_type"
                                              value="Message Type"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true" field="ref_no" value="Ref. No."></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true" field="service_id" value="Service"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false" field="ref_no" value="Ref. No."></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false" field="service_id" value="Service"></iais:sortableHeader>
                         <iais:sortableHeader needSort="true" field="CREATED_DT" value="Date"></iais:sortableHeader>
                     </tr>
                     </thead>

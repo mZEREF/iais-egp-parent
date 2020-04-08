@@ -599,7 +599,7 @@ public class InterInboxDelegator {
      */
     private void prepareMsgSelectOption(HttpServletRequest request){
         List<SelectOption> inboxServiceSelectList = IaisCommonUtils.genNewArrayList();
-        inboxServiceSelectList.add(new SelectOption("All", "Select a service"));
+        inboxServiceSelectList.add(new SelectOption("All", "All"));
         inboxServiceSelectList.add(new SelectOption("34F99D15-820B-EA11-BE7D-000C29F371DC", "Blood Banking"));
         inboxServiceSelectList.add(new SelectOption("35F99D15-820B-EA11-BE7D-000C29F371DC", "Clinical Laboratory"));
         inboxServiceSelectList.add(new SelectOption("A21ADD49-820B-EA11-BE7D-000C29F371DC", "Nuclear Medicine (Assay)"));
@@ -607,7 +607,7 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request, "inboxServiceSelect", inboxServiceSelectList);
 
         List<SelectOption> inboxTypSelectList = IaisCommonUtils.genNewArrayList();
-        inboxTypSelectList.add(new SelectOption("All", "Select a type"));
+        inboxTypSelectList.add(new SelectOption("All", "All"));
         inboxTypSelectList.add(new SelectOption("MESTYPE001", "Notification"));
         inboxTypSelectList.add(new SelectOption("MESTYPE002", "Announcement"));
         inboxTypSelectList.add(new SelectOption("MESTYPE003", "Action Required"));
