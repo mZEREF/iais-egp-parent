@@ -6,13 +6,13 @@
                     <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                         <li class="complete" role="presentation"><a href="#" aria-controls="tabInbox" role="tab" data-toggle="tab" onclick="appToMsgPage()">Inbox (${unreadAndresponseNum})</a></li>
                         <li class="active" role="presentation"><a href="#" aria-controls="tabApp" role="tab" data-toggle="tab">Applications</a></li>
-                        <li class="incomplete" role="presentation"><a href="#" aria-controls="tabLic" role="tab" data-toggle="tab" onclick="appToLicPage()">Licences (${licActiveNum})</a></li>
+                        <li class="incomplete" role="presentation"><a href="#" aria-controls="tabLic" role="tab" data-toggle="tab" onclick="appToLicPage()">Licences</a></li>
                     </ul>
                     <div class="tab-nav-mobile visible-xs visible-sm">
                         <div class="swiper-wrapper" role="tablist">
                             <div class="swiper-slide"><a href="#tabInbox" aria-controls="tabInbox" role="tab" data-toggle="tab">Inbox (${unreadAndresponseNum})</a></div>
                             <div class="swiper-slide"><a href="#tabApp" aria-controls="tabApplication" role="tab" data-toggle="tab">Applications</a></div>
-                            <div class="swiper-slide"><a href="#tabLic" aria-controls="tabLicence" role="tab" data-toggle="tab">Licences (${licActiveNum})</a></div>
+                            <div class="swiper-slide"><a href="#tabLic" aria-controls="tabLicence" role="tab" data-toggle="tab">Licences</a></div>
                         </div>
                         <div class="swiper-button-prev"></div>
                         <div class="swiper-button-next"></div>
