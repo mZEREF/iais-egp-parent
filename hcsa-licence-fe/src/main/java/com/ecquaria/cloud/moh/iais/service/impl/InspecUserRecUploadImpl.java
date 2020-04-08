@@ -94,20 +94,27 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
         inspecUserRecUploadDto.setFileDelCelIds(null);
         inspecUserRecUploadDto.setFileRepoDelIds(null);
+        inspecUserRecUploadDto.setRectifyFlag(AppConsts.SUCCESS);
     }
 
     private List<AppPremPreInspectionNcDocDto> removeNcDocByDelFileId(InspecUserRecUploadDto inspecUserRecUploadDto) {
         List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = inspecUserRecUploadDto.getAppPremPreInspectionNcDocDtos();
         List<String> removeIds = inspecUserRecUploadDto.getFileDelCelIds();
         if(!IaisCommonUtils.isEmpty(removeIds)){
-            for(String removeId : removeIds){
+            for(int r = 0; r < removeIds.size(); r++){
                 for(int i= 0; i < appPremPreInspectionNcDocDtos.size(); i++){
-                    if(removeId.equals(appPremPreInspectionNcDocDtos.get(i).getFileRepoId())){
+                    if(removeIds.get(r).equals(appPremPreInspectionNcDocDtos.get(i).getFileRepoId())){
+                        AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto = appPremPreInspectionNcDocDtos.get(i);
+                        if(!StringUtil.isEmpty(appPremPreInspectionNcDocDto.getId())){
+                            List<String> ids = IaisCommonUtils.genNewArrayList();
+                            ids.add(appPremPreInspectionNcDocDto.getId());
+                            inspectionFeClient.deleteNcDocByIds(ids);
+                        }
                         appPremPreInspectionNcDocDtos.remove(i);
+                        i--;
                     }
                 }
-                fileRepoClient.removeFileById(removeId);
-                inspectionFeClient.deleteByFileReportId(removeId);
+                fileRepoClient.removeFileById(removeIds.get(r));
             }
         }
         return appPremPreInspectionNcDocDtos;
@@ -125,6 +132,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         applicationClient.updateApplication(applicationDto).getEntity();
 
         for(InspecUserRecUploadDto inspecUserRecUploadDto : inspecUserRecUploadDtos){
+            inspecUserRecUploadDto.setButtonFlag(AppConsts.SUCCESS);
             //update nc item
             AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = inspecUserRecUploadDto.getAppPremisesPreInspectionNcItemDto();
             appPremisesPreInspectionNcItemDto.setFeRectifiedFlag(1);
@@ -282,7 +290,9 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                             }
                             List<FileRepoDto> fileRepoDtos = fileRepoClient.getFilesByIds(fileReportIds).getEntity();
                             inspecUserRecUploadDto.setFileRepoDtos(fileRepoDtos);
-                            inspecUserRecUploadDto.setRectifyFlag(AppConsts.SUCCESS);
+                            if(!IaisCommonUtils.isEmpty(fileRepoDtos)) {
+                                inspecUserRecUploadDto.setRectifyFlag(AppConsts.SUCCESS);
+                            }
                             inspecUserRecUploadDto.setAppPremPreInspectionNcDocDtos(appPremPreInspectionNcDocDtos);
                         } else {
                             inspecUserRecUploadDto.setRectifyFlag(AppConsts.FAIL);

@@ -63,14 +63,14 @@
                                     <button class="btn btn-secondary btn-md disabled" type="button" disabled>Rectify</button>
                                   </td>
                                 </c:if>
-                                <c:if test="${'SUCCESS' eq feRecNc.rectifyFlag}">
-                                  <td>
-                                    <h4 class="text-success"><i class="fa fa-check-circle"></i></h4>
-                                  </td>
-                                </c:if>
                                 <c:if test="${'SUCCESS' ne feRecNc.buttonFlag}">
                                   <td>
                                     <button class="btn btn-secondary btn-md" type="button" onclick="javascript:doUserRecUploadRectify('<iais:mask name="ncItemId" value="${feRecNc.id}"/>')">Rectify</button>
+                                  </td>
+                                </c:if>
+                                <c:if test="${'SUCCESS' eq feRecNc.rectifyFlag}">
+                                  <td>
+                                    <h4 class="text-success"><i class="fa fa-check-circle"></i></h4>
                                   </td>
                                 </c:if>
                                 <c:if test="${'SUCCESS' ne feRecNc.rectifyFlag}">

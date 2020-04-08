@@ -119,7 +119,7 @@ public class InspectionSearchDelegator {
         groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
         //First search
         if(searchResult == null || IaisCommonUtils.isEmpty(searchResult.getRows())) {
-            List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds);
+            List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
             List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
             StringBuilder sb = new StringBuilder("(");
             for (int i = 0; i < appCorrId_list.size(); i++) {
@@ -179,6 +179,7 @@ public class InspectionSearchDelegator {
     public void inspectionSupSearchDoSearch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchDoSearch start ...."));
         SearchParam searchParam = getSearchParam(bpc, true);
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<String> workGroupIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "workGroupIds");
         GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto)ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
         //get search filter
@@ -199,7 +200,7 @@ public class InspectionSearchDelegator {
             memberValue = inspectionService.getMemberValueByWorkGroupUserId(userId);
             ParamUtil.setSessionAttr(bpc.request, "memberId", userId);
         }
-        List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds);
+        List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
         List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
         StringBuilder sb = new StringBuilder("(");
         for(int i = 0; i < appCorrId_list.size(); i++){
@@ -246,14 +247,17 @@ public class InspectionSearchDelegator {
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
     }
 
-    private List<TaskDto> getSupervisorPoolByGroupWordId(List<String> workGroupIds) {
+    private List<TaskDto> getSupervisorPoolByGroupWordId(List<String> workGroupIds, LoginContext loginContext) {
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isEmpty(workGroupIds)){
             return null;
         }
+        String curRole = loginContext.getCurRoleId();
         for(String workGrpId:workGroupIds){
             for(TaskDto tDto:inspectionService.getSupervisorPoolByGroupWordId(workGrpId)){
-                taskDtoList.add(tDto);
+                if(tDto.getRoleId().equals(curRole)){
+                    taskDtoList.add(tDto);
+                }
             }
         }
         return taskDtoList;

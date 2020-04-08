@@ -89,6 +89,16 @@ public class InspecUserRecUploadDelegator {
             List<ChecklistItemDto> checklistItemDtos = inspecUserRecUploadService.getQuesAndClause(appPremCorrId);
             ApplicationDto applicationDto = inspecUserRecUploadService.getApplicationByCorrId(appPremCorrId);
             inspecUserRecUploadDtos = inspecUserRecUploadService.getNcItemData(version, appPremCorrId, checklistItemDtos, applicationDto.getApplicationNo());
+        } else {
+            for(InspecUserRecUploadDto inspecUserRecUploadDto : inspecUserRecUploadDtos){
+                List<FileRepoDto> fileRepoDtos = inspecUserRecUploadDto.getFileRepoDtos();
+                if(!IaisCommonUtils.isEmpty(fileRepoDtos)){
+                    inspecUserRecUploadDto.setRectifyFlag(AppConsts.SUCCESS);
+                } else {
+                    inspecUserRecUploadDto.setRectifyFlag(AppConsts.FAIL);
+                }
+            }
+
         }
         String submitButtonFlag = ncIsAllRectified(inspecUserRecUploadDtos);
 
@@ -102,7 +112,11 @@ public class InspecUserRecUploadDelegator {
         if(!IaisCommonUtils.isEmpty(inspecUserRecUploadDtos)){
             for(InspecUserRecUploadDto inspecUserRecUploadDto : inspecUserRecUploadDtos){
                 String rectifyFlag = inspecUserRecUploadDto.getRectifyFlag();
-                if(StringUtil.isEmpty(rectifyFlag) || rectifyFlag.equals(AppConsts.FAIL)){
+                String buttonFlag = inspecUserRecUploadDto.getButtonFlag();
+                if(StringUtil.isEmpty(rectifyFlag) || AppConsts.FAIL.equals(rectifyFlag)){
+                    return InspectionConstants.SWITCH_ACTION_REJECT;
+                }
+                if(!StringUtil.isEmpty(buttonFlag) && AppConsts.SUCCESS.equals(buttonFlag)){
                     return InspectionConstants.SWITCH_ACTION_REJECT;
                 }
             }
@@ -122,7 +136,6 @@ public class InspecUserRecUploadDelegator {
         InspecUserRecUploadDto inspecUserRecUploadDto = (InspecUserRecUploadDto)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDto");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String actionValue = mulReq.getParameter("actionValue");
-        ParamUtil.setRequestAttr(bpc.request, "inspecUserRecUploadType", actionValue);
         //get file from page
         CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("selectedFile");
         //do validate
@@ -151,10 +164,12 @@ public class InspecUserRecUploadDelegator {
             //recover delete file
             inspecUserRecUploadDto = inspecUserRecUploadService.recoverFile(inspecUserRecUploadDto);
             ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.TRUE);
+            actionValue = "review";
         } else {
             ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.TRUE);
         }
         log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
+        ParamUtil.setRequestAttr(bpc.request, "inspecUserRecUploadType", actionValue);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
     }
@@ -292,12 +307,18 @@ public class InspecUserRecUploadDelegator {
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         inspecUserRecUploadService.submitRecByUser(loginContext, inspecUserRecUploadDto);
         int recSuccessCount = 0;
+        List<InspecUserRecUploadDto> inspecUserRecUploadDtoList = IaisCommonUtils.genNewArrayList();
         for(InspecUserRecUploadDto iDto : inspecUserRecUploadDtos){
             if(iDto.getId().equals(inspecUserRecUploadDto.getId())){
-                iDto = inspecUserRecUploadDto;
-            }
-            if(!IaisCommonUtils.isEmpty(iDto.getAppPremPreInspectionNcDocDtos())){
-                recSuccessCount = recSuccessCount + 1;
+                if(!IaisCommonUtils.isEmpty(inspecUserRecUploadDto.getAppPremPreInspectionNcDocDtos())){
+                    recSuccessCount = recSuccessCount + 1;
+                }
+                inspecUserRecUploadDtoList.add(inspecUserRecUploadDto);
+            } else {
+                if(!IaisCommonUtils.isEmpty(iDto.getAppPremPreInspectionNcDocDtos())){
+                    recSuccessCount = recSuccessCount + 1;
+                }
+                inspecUserRecUploadDtoList.add(iDto);
             }
         }
         if(recSuccessCount == inspecUserRecUploadDtos.size()){
@@ -305,7 +326,7 @@ public class InspecUserRecUploadDelegator {
         } else {
             ParamUtil.setSessionAttr(bpc.request, "submitButtonFlag", InspectionConstants.SWITCH_ACTION_REJECT);
         }
-        ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
+        ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtoList);
         log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
     }

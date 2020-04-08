@@ -82,6 +82,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @Override
     public List<TaskDto> getCommPoolByGroupWordId(LoginContext loginContext) {
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
+        String curRole = loginContext.getCurRoleId();
         Set<String> workGrpIds = loginContext.getWrkGrpIds();
         if(workGrpIds == null || workGrpIds.size() <= 0){
             return null;
@@ -89,7 +90,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         List<String> workGrpIdList = new ArrayList<>(workGrpIds);
         for(String workGrpId:workGrpIdList){
             for(TaskDto tDto:taskService.getCommPoolByGroupWordId(workGrpId)){
-                taskDtoList.add(tDto);
+                if(tDto.getRoleId().equals(curRole)) {
+                    taskDtoList.add(tDto);
+                }
             }
         }
         return taskDtoList;
