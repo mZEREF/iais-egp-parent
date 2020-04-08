@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.JsonKeyConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
@@ -110,23 +111,25 @@ public class FECorppassLandingDelegator {
         String uen = (String) ParamUtil.getScopeAttr(request, "entityId");
         String nric = (String) ParamUtil.getScopeAttr(request, "corpPassId");
 
-        if (!StringUtils.isEmpty(uen) && !StringUtil.isEmpty(nric)){
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("uen", uen);
-            jsonObject.put("nric", nric);
-            jsonObject.put(JsonKeyConstants.USER_ID, AppConsts.USER_DOMAIN_INTERNET);
-
-            OrgUserDto orgUserDto = orgUserManageService.createCropUser(jsonObject.toString());
-            orgUserManageService.createClientUser(orgUserDto);
-
-            User user = new User();
-            user.setDisplayName("Internet User");
-            user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
-            user.setId(orgUserDto.getUserId());
-
-            LoginHelper.login(request, response, user, "/main-web/eservice/INTERNET/MohInternetInbox");
+        if (StringUtils.isEmpty(uen) && StringUtil.isEmpty(nric)){
+            return;
         }
 
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("uen", uen);
+        jsonObject.put("nric", nric);
+        jsonObject.put(JsonKeyConstants.USER_ID, AppConsts.USER_DOMAIN_INTERNET);
+
+        OrgUserDto orgUserDto = orgUserManageService.createCropUser(jsonObject.toString());
+        orgUserManageService.createClientUser(orgUserDto);
+
+        User user = new User();
+        user.setDisplayName("Internet User");
+        user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
+        user.setId(orgUserDto.getUserId());
+
+        AccessUtil.initLoginUserInfo(request);
+        LoginHelper.login(request, response, user, "/main-web/eservice/INTERNET/MohInternetInbox");
     }
 
     /**

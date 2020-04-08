@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
@@ -81,7 +82,6 @@ public class FESingpassLandingDelegator {
         }
 
         OrgUserDto userDto = orgUserManageService.createSingpassAccount(nric);
-
         orgUserManageService.createClientUser(userDto);
 
         User user = new User();
@@ -96,6 +96,7 @@ public class FESingpassLandingDelegator {
         url.append("https://").append(bpc.request.getServerName())
                 .append("/main-web/eservice/INTERNET/MohInternetInbox");
 
+        AccessUtil.initLoginUserInfo(request);
         IaisEGPHelper.sendRedirect(request, response, url.toString());
     }
 }
