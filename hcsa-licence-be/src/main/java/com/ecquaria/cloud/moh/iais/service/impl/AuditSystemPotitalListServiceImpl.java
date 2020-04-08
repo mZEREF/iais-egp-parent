@@ -130,8 +130,8 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             for (AuditTaskDataDto temp : searchResult.getRows()) {
                 String licId = temp.getLicId();
                 String svcCode = hcsaConfigClient.getServiceCodeByName(temp.getSvcName()).getEntity();
-                Date startDate = getInspectionStartDate(licId, svcCode, true);
-                Date endDate = getInspectionStartDate(licId, svcCode, false);
+                Date startDate = getInspectionStartDate(licId,  true);
+                Date endDate = getInspectionStartDate(licId,  false);
                 getAduitTaskDtoByInspecitonDate(endDate, startDate, dto, auditTaskDtos, temp);
             }
         }
@@ -188,8 +188,8 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             for (AuditTaskDataFillterDto temp : dtoList) {
                 String licId = temp.getLicId();
                 String svcCode = hcsaConfigClient.getServiceCodeByName(temp.getSvcName()).getEntity();
-                Date startDate = getInspectionStartDate(licId, svcCode, true);
-                Date endDate = getInspectionStartDate(licId, svcCode, false);
+                Date startDate = getInspectionStartDate(licId, true);
+                Date endDate = getInspectionStartDate(licId, false);
                 temp.setLastInspEnd(Formatter.formatDate(endDate));
                 temp.setLastInspStart(Formatter.formatDate(startDate));
                 temp.setRiskType(dto.getTypeOfRisk());
@@ -397,7 +397,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         }
     }
 
-    private Date getInspectionStartDate(String licId, String svcCode, boolean isStartDate) {
+    private Date getInspectionStartDate(String licId, boolean isStartDate) {
         Date inspectionDate = null;
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = IaisCommonUtils.genNewArrayList();
         List<InspectionInfoDto> inspInfoList = new ArrayList<InspectionInfoDto>();

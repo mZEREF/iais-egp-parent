@@ -2,32 +2,33 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditInspectorDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +47,21 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private TaskService taskService;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
+    @Autowired
+    private GenerateIdClient generateIdClient;
+    @Autowired
+    private EventBusHelper eventBusHelper;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     @Override
     public void getInspectors(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
@@ -100,11 +116,30 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     }
 
     private void assignTask(AuditTaskDataFillterDto temp) {
+        String submitId = generateIdClient.getSeqId().getEntity();
+        //create auditType data  and create grop info
+        createAudit(temp,submitId);
+        //create grop info
+        // createInspectionGroupInfo(temp,submitId);
+
+        // create app
+        List<String> licIds = new ArrayList<>(1);
+        if( !StringUtil.isEmpty(temp.getLicId())){
+            licIds.add(temp.getLicId());
+            createAuditTaskApp(licIds,submitId);
+        }
+
+        //create task
+        createTask(temp,submitId);
+    }
+
+    public void createTask(AuditTaskDataFillterDto temp,String submitId){
         TaskDto taskDto = new TaskDto();
+        taskDto.setId(generateIdClient.getSeqId().getEntity());
         taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
         taskDto.setUserId(temp.getInspectorId());
         taskDto.setProcessUrl("todo");//todo
-        taskDto.setTaskType(TaskConsts.TASK_TYPE_MAIN_FLOW);
+        taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION_SUPER);
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         taskDto.setSlaDateCompleted(null);
         taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
@@ -117,29 +152,15 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         taskDto.setScore(4);
         taskDto.setRefNo(temp.getId());
         taskDto.setPriority(0);
-        //createauditTypedata
-        createAudit(temp);
-
-        //
-        //create
-        String preInspecRemarks = null;//todo
-        HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(temp.getSvcName()).getEntity();
-        String svcId = svcDto.getId();
-        String stgId = HcsaConsts.ROUTING_STAGE_INS;
-        HcsaSvcStageWorkingGroupDto dto = new HcsaSvcStageWorkingGroupDto();
-        dto.setType("APTY002");//todo
-        dto.setStageId(stgId);
-        dto.setServiceId(svcId);
-        dto.setOrder(1);
-        dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(dto).getEntity();
-        String workGrp = dto.getGroupId();
-        String subStage = HcsaConsts.ROUTING_STAGE_PRE;
-        String status = ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING;
-        //create grop info
-        createInspectionGroupInfo(temp);
         List<TaskDto> createTaskDtoList = IaisCommonUtils.genNewArrayList();
         createTaskDtoList.add(taskDto);
-      //  taskService.createTasks(createTaskDtoList);
+        //taskService.createTasks(createTaskDtoList);
+        log.info("========================>>>>> create task !!!!");
+        try {
+            eventBusHelper.submitAsyncRequest(createTaskDtoList,submitId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,null,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public void updateLicPremisesAuditDto(AuditTaskDataFillterDto temp,String status){
         LicPremisesAuditDto licPremisesAuditDto = hcsaLicenceClient.getLicPremAuditByGuid(temp.getAuditId()).getEntity();
@@ -147,9 +168,9 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         licPremisesAuditDto.setRemarks( temp.getCancelReason());
         hcsaLicenceClient.createLicPremAudit(licPremisesAuditDto);
     }
-    private void createAudit(AuditTaskDataFillterDto temp) {
+    private void createAudit(AuditTaskDataFillterDto temp,String submitId) {
+        AuditCombinationDto auditCombinationDto = new AuditCombinationDto();
         LicPremisesAuditDto licPremisesAuditDto = new LicPremisesAuditDto();
-        LicPremisesAuditInspectorDto licPremisesAuditInspectorDto = new LicPremisesAuditInspectorDto();
         licPremisesAuditDto.setAuditRiskType(temp.getRiskType());
         licPremisesAuditDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         licPremisesAuditDto.setRemarks(null);
@@ -158,12 +179,32 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         licPremisesAuditDto.setLicPremId(temp.getId());
         licPremisesAuditDto.setAuditType(temp.getAuditType());
         licPremisesAuditDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        licPremisesAuditDto = hcsaLicenceClient.createLicPremAudit(licPremisesAuditDto).getEntity();
+        // create audit event bus
+        //licPremisesAuditDto = hcsaLicenceClient.createLicPremAudit(licPremisesAuditDto).getEntity();
         LicPremisesAuditInspectorDto audinspDto = new LicPremisesAuditInspectorDto();
         audinspDto.setInspectorId(temp.getInspectorId());
         audinspDto.setAuditId(licPremisesAuditDto.getId());
         audinspDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        hcsaLicenceClient.createLicPremisesAuditInspector(audinspDto);
+         //hcsaLicenceClient.createLicPremisesAuditInspector(audinspDto);
+        LicInspectionGroupDto dto = new LicInspectionGroupDto();
+        dto.setId(generateIdClient.getSeqId().getEntity());
+        dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        dto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        LicPremInspGrpCorrelationDto dtocorre = new LicPremInspGrpCorrelationDto();
+        dtocorre.setInsGrpId(dto.getId());
+        dtocorre.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        dtocorre.setLicPremId(temp.getId());
+        dtocorre.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        auditCombinationDto.setLicPremisesAuditDto(licPremisesAuditDto);
+        auditCombinationDto.setLicPremisesAuditInspectorDto(audinspDto);
+        auditCombinationDto.setLicInspectionGroupDto(dto);
+        auditCombinationDto.setLicPremInspGrpCorrelationDto(dtocorre);
+        log.info("========================>>>>> create audit !!!!");
+        try {
+            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,null,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void createInspectionGroupInfo(AuditTaskDataFillterDto temp) {
@@ -259,5 +300,73 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             }
         }
         return selectOptions;
+    }
+
+    @Override
+    public String createAuditTaskApp(List<String> licIds, String submissionId) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
+        String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+        for(AppSubmissionDto entity : appSubmissionDtoList){
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.getAppSvcRelatedInfoDtoList();
+            String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+            String svcId = hcsaServiceDto.getId();
+            String svcCode = hcsaServiceDto.getSvcCode();
+            appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
+            appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+            entity.setAppGrpNo(grpNo);
+            entity.setAppType(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK);
+            entity.setAmount(0.0);
+            entity.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            entity.setPreInspection(true);
+            entity.setRequirement(true);
+            entity.setStatus(ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK);
+            setRiskToDto(entity);
+        }
+        log.info("========================>>>>> creat application!!!!");
+        try {
+            eventBusHelper.submitAsyncRequest(appSubmissionDtoList,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,grpNo,null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void setRiskToDto(AppSubmissionDto appSubmissionDto) {
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        List<RiskAcceptiionDto> riskAcceptiionDtoList = new ArrayList();
+        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+            RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
+            riskAcceptiionDto.setScvCode(appSvcRelatedInfoDto.getServiceCode());
+            riskAcceptiionDto.setApptype(appSubmissionDto.getAppType());
+            riskAcceptiionDtoList.add(riskAcceptiionDto);
+        }
+
+        List<RiskResultDto> riskResultDtoList = hcsaConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
+
+        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+            String serviceCode = appSvcRelatedInfoDto.getServiceCode();
+            RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList,serviceCode);
+            if(riskResultDto!= null){
+                appSvcRelatedInfoDto.setScore(riskResultDto.getScore());
+                appSvcRelatedInfoDto.setDoRiskDate(riskResultDto.getDoRiskDate());
+            }
+        }
+    }
+
+
+    private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList,String serviceCode){
+        RiskResultDto result = null;
+        if(riskResultDtoList == null || StringUtil.isEmpty(serviceCode)){
+            return result;
+        }
+        for(RiskResultDto riskResultDto : riskResultDtoList){
+            if(serviceCode.equals(riskResultDto.getSvcCode())){
+                result = riskResultDto ;
+            }
+        }
+        return result;
     }
 }
