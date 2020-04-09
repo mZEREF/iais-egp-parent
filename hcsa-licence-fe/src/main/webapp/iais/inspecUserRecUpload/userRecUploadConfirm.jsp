@@ -54,7 +54,7 @@
                       <c:if test="${inspecUserRecUploadDto != null}">
                         <div style="padding:10px">
                           <iais:row>
-                            <iais:field value="Choose a file to attach"/>
+                            <label class="col-xs-0 col-md-6 control-label">Choose a file to attach (Maximum file size is 4mb)<span style="color: red"> *</span></label>
                           </iais:row>
                           <iais:row>
                             <iais:value width="7">
