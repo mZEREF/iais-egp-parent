@@ -97,6 +97,7 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request,"serListDto", null);
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, null);
         ParamUtil.setSessionAttr(bpc.request, "actionValue", null);
+        ParamUtil.setSessionAttr(bpc.request,"licenceDto", null);
     }
 
     /**
