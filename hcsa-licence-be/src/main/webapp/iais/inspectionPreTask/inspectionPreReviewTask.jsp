@@ -184,10 +184,10 @@
                                           <table class="table">
                                             <thead>
                                             <tr>
-                                              <th>Regulation Clause Number</th>
-                                              <th>Regulations</th>
-                                              <th>Checklist Item</th>
-                                              <th>Risk Level</th>
+                                              <th width="10%">Regulation Clause Number</th>
+                                              <th width="40%">Regulations</th>
+                                              <th width="40%">Checklist Item</th>
+                                              <th width="10%">Risk Level</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -216,7 +216,7 @@
                                 </c:forEach>
                                 <c:if test="${!empty adhocCheckListAttr}">
                                   <div class="panel panel-default">
-                                    <div class="panel-heading"  role="tab">
+                                    <div class="panel-heading" role="tab">
                                       <h4 class="panel-title">Adhoc Item</h4>
                                     </div>
                                     <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPremise">
@@ -224,9 +224,9 @@
                                         <table class="table">
                                           <thead>
                                           <tr>
-                                            <th>Checklist Item</th>
-                                            <th>Answer Type</th>
-                                            <th>Risk Level</th>
+                                            <th width="10%">Checklist Item</th>
+                                            <th width="70%">Answer Type</th>
+                                            <th width="20%">Risk Level</th>
                                           </tr>
                                           </thead>
                                           <tbody>
@@ -265,22 +265,43 @@
                             <iais:row>
                               <iais:field value="Current Status"/>
                               <iais:value width="7">
-                                <p><label><iais:code code="${inspectionPreTaskDto.appStatus}"/></label></p>
+                                <p><label style="font-size: 16px"><iais:code code="${inspectionPreTaskDto.appStatus}"/></label></p>
                               </iais:value>
                             </iais:row>
                             <iais:row>
                               <iais:field value="Remarks"/>
                               <iais:value width="300">
-                                <textarea maxlength="300" id="preInspecRemarks" name="preInspecRemarks" cols="70" rows="7" ><c:out value="${inspectionPreTaskDto.reMarks}"></c:out></textarea>
+                                <textarea maxlength="300" id="preInspecRemarks" name="preInspecRemarks" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.reMarks}"></c:out></textarea>
                                 <br><span class="error-msg" name="iaisErrorMsg" id="error_reMarks"></span>
                               </iais:value>
                             </iais:row>
                             <iais:row>
                               <iais:field value="Processing Decision"/>
                               <iais:value width="7">
-                                <iais:select name="selectValue" options="processDecOption" firstOption="Please select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectionPreTaskChange(this.value)"></iais:select>
+                                <iais:select name="selectValue" options="processDecOption" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectionPreTaskChange(this.value)"></iais:select>
                               </iais:value>
                             </iais:row>
+                            <iais:row>
+                              <iais:field value="Licence Start Date"/>
+                              <iais:value width="7">
+                                <p>
+                                  <c:if test="${licenceDto.startDate != null}">
+                                    <label><fmt:formatDate value='${licenceDto.startDate}' pattern='dd/MM/yyyy' /></label>
+                                  </c:if>
+                                  <c:if test="${licenceDto.startDate == null}">
+                                    <label style="font-size: 16px">-</label>
+                                  </c:if>
+                                </p>
+                              </iais:value>
+                            </iais:row>
+                            <div class="row">
+                              <div class="col-md-4">
+                                <label style="font-size: 16px">Fast Tracking</label>
+                              </div>
+                              <div class="col-md-6">
+                                  <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
+                              </div>
+                            </div>
                             <iais:action style="text-align:center;">
                               <%--<c:if test="${!empty commonDto.sectionDtoList && !empty serListDto}">--%>
                               <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>

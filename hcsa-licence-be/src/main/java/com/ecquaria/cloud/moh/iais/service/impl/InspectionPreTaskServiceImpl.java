@@ -14,11 +14,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.*;
@@ -76,6 +78,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     @Autowired
     private ApplicationService applicationService;
+
+    @Autowired
+    private HcsaLicenceClient hcsaLicenceClient;
 
     @Override
     public ApplicationDto getAppStatusByTaskId(TaskDto taskDto) {
@@ -217,6 +222,15 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         }
         map.put(commonDto, chkDtoList);
         return map;
+    }
+
+    @Override
+    public LicenceDto getLicenceDtoByLicenceId(String originLicenceId) {
+        LicenceDto licenceDto = new LicenceDto();
+        if(!StringUtil.isEmpty(originLicenceId)){
+            licenceDto = hcsaLicenceClient.getLicenceDtoById(originLicenceId).getEntity();
+        }
+        return licenceDto;
     }
 
     private void updateInspectionStatus(String appPremCorrId, String status) {

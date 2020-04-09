@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDt
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -115,6 +116,7 @@ public class InspectionPreDelegator {
         }
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        LicenceDto licenceDto = inspectionPreTaskService.getLicenceDtoByLicenceId(applicationDto.getOriginLicenceId());
         String appStatus = applicationDto.getStatus();
         inspectionPreTaskDto.setAppStatus(appStatus);
         setInboxUrlToSession(bpc);
@@ -132,6 +134,7 @@ public class InspectionPreDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request,"commonDto",inspectionFillCheckListDto);
         ParamUtil.setSessionAttr(bpc.request,"serListDto", (Serializable) ifcDtos);
+        ParamUtil.setSessionAttr(bpc.request,"licenceDto", licenceDto);
 
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
