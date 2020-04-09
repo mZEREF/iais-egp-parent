@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
@@ -33,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
+import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
@@ -80,6 +82,9 @@ public class InspectionRectificationProDelegator {
     private ApplicationViewService applicationViewService;
 
     @Autowired
+    private InspectionPreTaskService inspectionPreTaskService;
+
+    @Autowired
     private InsRepService insRepService;
 
     private static final String SERLISTDTO="serListDto";
@@ -104,6 +109,7 @@ public class InspectionRectificationProDelegator {
      */
     public void inspectorProRectificationStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectorProRectificationStart start ...."));
+        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Inspection Rectification Process", "Inspector Processing Rectification");
     }
 
@@ -115,7 +121,6 @@ public class InspectionRectificationProDelegator {
      */
     public void inspectorProRectificationInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectorProRectificationInit start ...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", null);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", null);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", null);
@@ -128,6 +133,7 @@ public class InspectionRectificationProDelegator {
         ParamUtil.setSessionAttr(bpc.request,CHECKLISTFILEDTO,null);
         ParamUtil.setSessionAttr(bpc.request, "inspectionReportDto", null);
         ParamUtil.setSessionAttr(bpc.request, "fileRepoDto", null);
+        ParamUtil.setSessionAttr(bpc.request,"licenceDto", null);
     }
 
     /**
@@ -149,6 +155,8 @@ public class InspectionRectificationProDelegator {
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             inspectionPreTaskDto.setAppStatus(applicationDto.getStatus());
 
+            LicenceDto licenceDto = inspectionPreTaskService.getLicenceDtoByLicenceId(applicationDto.getOriginLicenceId());
+            ParamUtil.setSessionAttr(bpc.request,"licenceDto", licenceDto);
             List<InspecUserRecUploadDto> inspecUserRecUploadDtos = IaisCommonUtils.genNewArrayList();
             List<ChecklistItemDto> checklistItemDtos = inspectionRectificationProService.getQuesAndClause(taskDto.getRefNo());
             AppPremPreInspectionNcDto appPremPreInspectionNcDto = inspectionRectificationProService.getAppPremPreInspectionNcDtoByCorrId(taskDto.getRefNo());
@@ -168,8 +176,8 @@ public class InspectionRectificationProDelegator {
                         if (checklistItemDtos != null && !(checklistItemDtos.isEmpty())) {
                             iDto = setNcDataByItemId(iDto, itemId, checklistItemDtos);
                         }
-                        if (!StringUtil.isEmpty(appPremisesPreInspectionNcItemDto.getRemarks())) {
-                            iDto.setUploadRemarks(appPremisesPreInspectionNcItemDto.getRemarks());
+                        if (!StringUtil.isEmpty(appPremisesPreInspectionNcItemDto.getFeRemarks())) {
+                            iDto.setUploadRemarks(appPremisesPreInspectionNcItemDto.getFeRemarks());
                         } else {
                             iDto.setUploadRemarks(HcsaConsts.HCSA_PREMISES_HCI_NULL);
                         }
