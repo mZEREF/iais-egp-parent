@@ -512,7 +512,6 @@ public class OfficerOnlineEnquiriesDelegator {
             if(!StringUtil.isEmpty(uenNo)){
                 List<LicenseeDto> licenseeDtos= organizationClient.getLicenseeDtoByUen(uenNo).getEntity();
                 if(licenseeDtos!=null) {
-                    licenseeIds = IaisCommonUtils.genNewArrayList();
                     for (LicenseeDto licensee:licenseeDtos
                          ) {
                         licenseeIds.add(licensee.getId());
@@ -537,7 +536,6 @@ public class OfficerOnlineEnquiriesDelegator {
             QueryHelp.setMainSql(RFI_QUERY,"licenseeQuery",licenseeParam);
             if (!licenseeParam.getFilters().isEmpty()) {
                 SearchResult<LicenseeQueryDto> licenseeParamResult = onlineEnquiriesService.searchLicenseeIdsParam(licenseeParam);
-                licenseeIds=IaisCommonUtils.genNewArrayList();
                 for (LicenseeQueryDto r:licenseeParamResult.getRows()
                 ) {
                     licenseeIds.add(r.getId());
@@ -746,26 +744,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
         try{
             reqForInfoSearchListDto.setLastComplianceHistory("Full");
-            List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = insepctionNcCheckListService.getNcItemDtoByAppCorrId(rfiApplicationQueryDto.getAppCorrId());
-            if(appPremisesPreInspectionNcItemDtos.size()!=0){
-                for (AppPremisesPreInspectionNcItemDto nc:appPremisesPreInspectionNcItemDtos
-                ) {
-                    if(nc.getIsRecitfied()==0){
-                        reqForInfoSearchListDto.setLastComplianceHistory("Partial");
-                    }
-                }
-            }
-            AdCheckListShowDto adCheckListShowDto = fillupChklistService.getAdhoc(rfiApplicationQueryDto.getAppCorrId());
-            if(adCheckListShowDto!=null){
-                List<AdhocNcCheckItemDto> adItemList = adCheckListShowDto.getAdItemList();
-                if(adItemList!=null && !adItemList.isEmpty()){
-                    for(AdhocNcCheckItemDto temp:adItemList){
-                        if(!temp.getRectified()){
-                            reqForInfoSearchListDto.setLastComplianceHistory("Partial");
-                        }
-                    }
-                }
-            }
+            RequestForInformationDelegator.setSearchListComplianceHistory(rfiApplicationQueryDto, reqForInfoSearchListDto, insepctionNcCheckListService, fillupChklistService);
         }catch (Exception e){
             reqForInfoSearchListDto.setPastComplianceHistory("-");
         }

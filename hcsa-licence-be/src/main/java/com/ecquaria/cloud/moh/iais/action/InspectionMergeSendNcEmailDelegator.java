@@ -321,7 +321,7 @@ public class InspectionMergeSendNcEmailDelegator {
                         List<AdhocNcCheckItemDto> adItemList = adCheckListShowDto.getAdItemList();
                         if(adItemList!=null && !adItemList.isEmpty()){
                             for(AdhocNcCheckItemDto temp:adItemList){
-                                if(!temp.getRectified()){
+                                if(temp.getRectified()){
                                     isNoNc=false;
                                 }
                             }
