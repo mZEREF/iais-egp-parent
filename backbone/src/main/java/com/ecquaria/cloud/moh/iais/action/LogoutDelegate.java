@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -39,7 +40,8 @@ public class LogoutDelegate {
             List<AuditTrailDto> dtoList = IaisCommonUtils.genNewArrayList();
             dtoList.add(auditTrailDto);
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGOUT);
-            auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);
+            auditTrailDto.setOperationType(AppConsts.USER_DOMAIN_INTERNET.equalsIgnoreCase(userdomain) ?
+                    AuditTrailConsts.OPERATION_TYPE_INTERNET : AuditTrailConsts.OPERATION_TYPE_INTRANET);
             if(!StringUtil.isEmpty(userid) && !StringUtil.isEmpty(userdomain)){
                 userIden.setUserDomain(userdomain);
                 userIden.setId(userid);
