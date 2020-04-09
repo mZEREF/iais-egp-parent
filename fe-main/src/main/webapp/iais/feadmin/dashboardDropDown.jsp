@@ -3,7 +3,7 @@
     <ul class="dropdown-menu" aria-labelledby="profileBtn">
       <li class="dashboard-icon"><a href="#">Dashboard</a></li>
       <li class="management-account"><a href="#">Manage Account</a></li>
-      <li class="logout"><a href="#">Logout</a></li>
+      <li class="logout"><a href="${pageContext.request.contextPath}/eservice/INTERNET/InterLogout">Logout</a></li>
     </ul>
   </div>
 </div>

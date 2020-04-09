@@ -3,8 +3,8 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -26,7 +26,7 @@ public interface FeAdminClient {
     FeignResponseEntity<OrganizationDto> getOrganizationById(@RequestParam("id") String id);
 
     @RequestMapping(path = "/iais-internet-user/add-admin-account",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<FeAdminDto> addAdminAccount(@RequestBody FeAdminDto feAdminDto);
+    FeignResponseEntity<FeUserDto> addAdminAccount(@RequestBody FeUserDto feUserDto);
 
     @GetMapping(value = "/iais-internet-user/change-active-status",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> ChangeActiveStatus(@RequestParam("userId") String id,@RequestParam("targetStatus") String targetStatus);

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -128,8 +129,6 @@ public class InsReportDelegator {
         Map<String, String> errorMap;
         ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "save");
         if (validationResult.isHasErrors()) {
-            String report = "Y";
-            ParamUtil.setRequestAttr(bpc.request, "report",report);
             errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
@@ -147,7 +146,6 @@ public class InsReportDelegator {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         insRepService.routingTaskToAo1(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-
     }
 
     private AppPremisesRecommendationDto prepareRecommendation(BaseProcessClass bpc) {
@@ -198,7 +196,7 @@ public class InsReportDelegator {
         appPremisesRecommendationDto.setRemarks(remarks);
         appPremisesRecommendationDto.setRecomInDate(new Date());
         appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
-        appPremisesRecommendationDto.setRecomDecision(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+        appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.APPROVED);
         if (OTHERS.equals(periods) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setChronoUnit(chrono);
@@ -212,9 +210,9 @@ public class InsReportDelegator {
             appPremisesRecommendationDto.setChronoUnit(chronoRe);
             appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(numberRe));
             appPremisesRecommendationDto.setRecommendation(recommendation);
-        }else if("Rejected".equals(recommendation)) {
+        }else if(InspectionReportConstants.REJECTED.equals(recommendation)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-            appPremisesRecommendationDto.setRecomDecision(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+            appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.REJECTED);
         }
         AppPremisesRecommendationDto engageEnforcementAppPremisesRecommendationDto = new AppPremisesRecommendationDto();
         engageEnforcementAppPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE);
@@ -323,9 +321,9 @@ public class InsReportDelegator {
 
     private List<SelectOption> getRecommendationOption() {
         List<SelectOption> recommendationResult = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption("Approved", "Proceed with Licence Issuance");
-        SelectOption so2 = new SelectOption("ApprovedLTC", "Proceed with Licence Issuance (with LTCs)");
-        SelectOption so3 = new SelectOption("Rejected", "Reject Licence");
+        SelectOption so1 = new SelectOption(InspectionReportConstants.APPROVED, "Proceed with Licence Issuance");
+        SelectOption so2 = new SelectOption(InspectionReportConstants.APPROVEDLTC, "Proceed with Licence Issuance (with LTCs)");
+        SelectOption so3 = new SelectOption(InspectionReportConstants.REJECTED, "Reject Licence");
         recommendationResult.add(so1);
         recommendationResult.add(so2);
         recommendationResult.add(so3);
@@ -334,9 +332,9 @@ public class InsReportDelegator {
 
     private List<SelectOption> getriskLevel() {
         List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption("Low", "Low");
-        SelectOption so2 = new SelectOption("Moderate", "Moderate");
-        SelectOption so3 = new SelectOption("High", "High");
+        SelectOption so1 = new SelectOption(InspectionReportConstants.LOW, "Low");
+        SelectOption so2 = new SelectOption(InspectionReportConstants.MODERATE, "Moderate");
+        SelectOption so3 = new SelectOption(InspectionReportConstants.HIGH, "High");
         riskLevelResult.add(so1);
         riskLevelResult.add(so2);
         riskLevelResult.add(so3);

@@ -533,11 +533,12 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     public void getAppNcByTemp(InspectionCheckQuestionDto temp, AppPremPreInspectionNcDto ncDto,List<AppPremisesPreInspectionNcItemDto> ncItemDtoList){
         if("No".equals(temp.getChkanswer())){
-            AppPremisesPreInspectionNcItemDto ncItemDto = null;
-            ncItemDto = new AppPremisesPreInspectionNcItemDto();
+            AppPremisesPreInspectionNcItemDto ncItemDto = new AppPremisesPreInspectionNcItemDto();
             ncItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             ncItemDto.setItemId(temp.getItemId());
             ncItemDto.setPreNcId(ncDto.getId());
+            if( !StringUtil.isEmpty(temp.getRemark()) )
+                ncItemDto.setBeRemarks(temp.getRemark());
             ncItemDto.setFeRectifiedFlag(0);
             if (temp.isRectified()) {
                 ncItemDto.setIsRecitfied(1);

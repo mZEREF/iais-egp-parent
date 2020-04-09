@@ -321,7 +321,7 @@ public class InspectionMergeSendNcEmailDelegator {
                         List<AdhocNcCheckItemDto> adItemList = adCheckListShowDto.getAdItemList();
                         if(adItemList!=null && !adItemList.isEmpty()){
                             for(AdhocNcCheckItemDto temp:adItemList){
-                                if(!temp.getRectified()){
+                                if(temp.getRectified()){
                                     isNoNc=false;
                                 }
                             }
@@ -394,7 +394,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     ApplicationViewDto applicationViewDto1=applicationViewService.searchByCorrelationIdo(appPremCorrIdsIsNc.get(i));
                     applicationViewDto1.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_CREATE_MESG);
                     applicationViewService.updateApplicaiton(applicationViewDto1.getApplicationDto());
-                    AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
+                    AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto1.getAppPremisesCorrelationId()).getEntity();
                     appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_NC_RECTIFICATION_EMAIL);
                     appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     appInspectionStatusClient.update(appInspectionStatusDto1);

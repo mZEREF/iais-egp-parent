@@ -32,100 +32,123 @@
             <div class="intranet-content">
               <iais:body >
                 <iais:section title="" id = "">
-                  <iais:row>
-                    <iais:field value="Inspection Date"/>
-                    <iais:value width="7">
-                      <p><label><fmt:formatDate value='${inspectionReportDto.inspectionDate}' pattern='dd/MM/yyyy' /></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Inspection Start Time"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspectionReportDto.inspectionStartTime}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Inspection End Time"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspectionReportDto.inspectionEndTime}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Inspector Lead"/>
-                    <iais:value width="7">
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Inspection Date</label>
+                    </div>
+                    <div class="col-md-6">
+                      <label style="font-size: 16px"><fmt:formatDate value='${inspectionReportDto.inspectionDate}' pattern='dd/MM/yyyy' /></label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Inspection Start Time</label>
+                    </div>
+                    <div class="col-md-6">
+                      <label style="font-size: 16px"><c:out value="${inspectionReportDto.inspectionStartTime}"/></label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Inspection End Time</label>
+                    </div>
+                    <div class="col-md-6">
+                      <label style="font-size: 16px"><c:out value="${inspectionReportDto.inspectionEndTime}"/></label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Inspector Lead</label>
+                    </div>
+                    <div class="col-md-6">
                       <c:forEach var = "insepctionLead" items = "${inspectionReportDto.inspectorLeads}">
-                        <p><label><c:out value="${insepctionLead}"/></label></p>
+                        <label style="font-size: 16px"><c:out value="${insepctionLead}"/></label>
                       </c:forEach>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Inspection Officer (s)"/>
-                    <iais:value width="7">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Inspection Officer (s)</label>
+                    </div>
+                    <div class="col-md-6">
                       <c:forEach var = "insepctor" items = "${inspectionReportDto.inspectors}">
-                        <p><label><c:out value="${insepctor}"/></label></p>
+                        <label style="font-size: 16px"><c:out value="${insepctor}"/></label>
                       </c:forEach>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Other Inspection Officers"/>
-                    <iais:value width="7">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Other Inspection Officers</label>
+                    </div>
+                    <div class="col-md-6">
                       <c:forEach var = "otherInsepctor" items = "${inspectionReportDto.inspectOffices}">
-                        <p><label><c:out value="${otherInsepctor}"/></label></p>
+                        <label style="font-size: 16px"><c:out value="${otherInsepctor}"/></label>
                       </c:forEach>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="No. of Non-Compliance"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspectionReportDto.ncCount}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Remarks"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspectionReportDto.taskRemarks}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Best Practices"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspectionReportDto.bestPractice}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Letter written to Licensee"/>
-                    <iais:value width="7">
-                      <p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">No. of Non-Compliance</label>
+                    </div>
+                    <div class="col-md-6">
+                      <label style="font-size: 16px"><c:out value="${inspectionReportDto.ncCount}"/></label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Remarks</label>
+                    </div>
+                    <div class="col-md-6">
+                      <label style="font-size: 16px"><c:out value="${inspectionReportDto.taskRemarks}"/></label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Best Practices</label>
+                    </div>
+                    <div class="col-md-6">
+                      <label style="font-size: 16px"><c:out value="${inspectionReportDto.bestPractice}"/></label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Letter written to Licensee</label>
+                    </div>
+                    <div class="col-md-6">
                       <c:if test="${fileRepoDto != null}">
                         <div class="fileList ">
-                            <span class="filename server-site" id="140">
-                              <a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${fileRepoDto.id}"/>&fileRepoName=${fileRepoDto.fileName}" title="Download" class="downloadFile">${fileRepoDto.fileName}</a>
+                            <span class="filename server-site" id="140" style="font-size: 16px">
+                              <u><a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${fileRepoDto.id}"/>&fileRepoName=${fileRepoDto.fileName}" title="Download" class="downloadFile">${fileRepoDto.fileName}</a></u>
                             </span>
                         </div>
                       </c:if>
                       <c:if test="${fileRepoDto == null}">
-                        <label>-</label>
+                        <label style="font-size: 16px">-</label>
                       </c:if>
-                      </p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="TCU"/>
-                    <iais:value width="7">
-                      <p><input type="checkbox" name="inspectorCheck" disabled id="inspectorCheck" <c:if test="${'Yes' eq inspectionReportDto.markedForAudit}">checked="checked"</c:if>/></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="TCU Date"/>
-                    <iais:value width="7">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">TCU</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="checkbox" name="inspectorCheck" disabled id="inspectorCheck" <c:if test="${'Yes' eq inspectionReportDto.markedForAudit}">checked="checked"</c:if>/>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">TCU Date</label>
+                    </div>
+                    <div class="col-md-6">
                       <c:if test="${inspectionReportDto.tcuDate != null}">
-                        <p><label><fmt:formatDate value='${inspectionReportDto.tcuDate}' pattern='dd/MM/yyyy' /></label></p>
+                        <label style="font-size: 16px"><fmt:formatDate value='${inspectionReportDto.tcuDate}' pattern='dd/MM/yyyy' /></label>
                       </c:if>
                       <c:if test="${inspectionReportDto.tcuDate == null}">
-                        <p><label>-</label></p>
+                        <label style="font-size: 16px">-</label>
                       </c:if>
-                    </iais:value>
-                  </iais:row>
+                    </div>
+                  </div>
+                  <br>
                   <iais:action >
                     <a class="back" id="Back" onclick="javascript:doInspRecCheckListBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspRecCheckListView()">View Checklist</button>

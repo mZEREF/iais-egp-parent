@@ -5,11 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
@@ -318,5 +314,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
+    }
+
+    @Override
+    public ApplicationGroupDto createApplicationDataByWithOutRenewal(RenewDto renewDto) {
+        return applicationClient.createApplicationDataByWithOutRenewal(renewDto).getEntity();
     }
 }

@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.service.client.EgpUserClient;
@@ -103,6 +104,21 @@ public class IntranetUserServiceImpl implements IntranetUserService {
             return false;
         }
         return entity;
+    }
+
+    @Override
+    public OrgUserRoleDto assignRole(OrgUserRoleDto orgUserRoleDto) {
+        return intranetUserClient.assignRole(orgUserRoleDto).getEntity();
+    }
+
+    @Override
+    public void removeRole(String id) {
+        intranetUserClient.removeRole(id);
+    }
+
+    @Override
+    public List<OrgUserRoleDto> retrieveRolesByuserAccId(String userAccId) {
+        return intranetUserClient.retrieveRolesByuserAccId(userAccId).getEntity();
     }
 
     @Override

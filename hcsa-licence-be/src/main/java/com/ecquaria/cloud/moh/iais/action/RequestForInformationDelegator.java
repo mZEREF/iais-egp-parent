@@ -16,6 +16,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
@@ -36,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
@@ -117,6 +120,8 @@ public class RequestForInformationDelegator {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
+    @Autowired
+    FillupChklistService fillupChklistService;
     @Autowired
     EmailClient emailClient;
     private final String RFI_QUERY="ReqForInfoQuery";
@@ -406,13 +411,7 @@ public class RequestForInformationDelegator {
         reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
         try{
             reqForInfoSearchListDto.setPastComplianceHistory("Full");
-            List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = insepctionNcCheckListService.getNcItemDtoByAppCorrId(rfiApplicationQueryDto.getAppCorrId());
-            for (AppPremisesPreInspectionNcItemDto nc:appPremisesPreInspectionNcItemDtos
-            ) {
-                if(nc.getIsRecitfied()==0){
-                    reqForInfoSearchListDto.setPastComplianceHistory("Partial");
-                }
-            }
+            setSearchListComplianceHistory(rfiApplicationQueryDto, reqForInfoSearchListDto, insepctionNcCheckListService, fillupChklistService);
         }catch (Exception e){
             reqForInfoSearchListDto.setPastComplianceHistory("-");
         }
@@ -428,6 +427,29 @@ public class RequestForInformationDelegator {
             }
         }
 
+    }
+
+    static void setSearchListComplianceHistory(RfiApplicationQueryDto rfiApplicationQueryDto, ReqForInfoSearchListDto reqForInfoSearchListDto, InsepctionNcCheckListService insepctionNcCheckListService, FillupChklistService fillupChklistService) {
+        List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = insepctionNcCheckListService.getNcItemDtoByAppCorrId(rfiApplicationQueryDto.getAppCorrId());
+        if(appPremisesPreInspectionNcItemDtos.size()!=0){
+            for (AppPremisesPreInspectionNcItemDto nc:appPremisesPreInspectionNcItemDtos
+            ) {
+                if(nc.getIsRecitfied()==0){
+                    reqForInfoSearchListDto.setLastComplianceHistory("Partial");
+                }
+            }
+        }
+        AdCheckListShowDto adCheckListShowDto = fillupChklistService.getAdhoc(rfiApplicationQueryDto.getAppCorrId());
+        if(adCheckListShowDto!=null){
+            List<AdhocNcCheckItemDto> adItemList = adCheckListShowDto.getAdItemList();
+            if(adItemList!=null && !adItemList.isEmpty()){
+                for(AdhocNcCheckItemDto temp:adItemList){
+                    if(temp.getRectified()){
+                        reqForInfoSearchListDto.setLastComplianceHistory("Partial");
+                    }
+                }
+            }
+        }
     }
 
     public void doSearchLicence(BaseProcessClass bpc) throws ParseException {

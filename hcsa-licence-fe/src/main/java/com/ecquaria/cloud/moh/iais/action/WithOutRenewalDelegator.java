@@ -1,19 +1,23 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
@@ -22,6 +26,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.ecquaria.cloud.moh.iais.validation.PaymentValidate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -84,9 +89,12 @@ public class WithOutRenewalDelegator {
         List<List<AppSvcPrincipalOfficersDto>> principalOfficersDtosList = IaisCommonUtils.genNewArrayList();
         List<List<AppSvcPrincipalOfficersDto>> deputyPrincipalOfficersDtosList = IaisCommonUtils.genNewArrayList();
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+        List<String> serviceNames = IaisCommonUtils.genNewArrayList();
         for (AppSubmissionDto appSubmissionDto: appSubmissionDtoList) {
             if(!appSubmissionDto.getAppSvcRelatedInfoDtoList().isEmpty()) {
                 String serviceName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+                //add to service name list
+                serviceNames.add(serviceName);
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
                 String svcId = hcsaServiceDto.getId();
                 Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto,svcId);
@@ -153,6 +161,11 @@ public class WithOutRenewalDelegator {
         String parseToJson = JsonUtil.parseToJson(appSubmissionDtoList);
         log.info("without renewal submission json info " + parseToJson);
 
+        if(!IaisCommonUtils.isEmpty(serviceNames)) {
+            List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceByNames(serviceNames);
+            ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+        }
+
         renewDto.setAppSubmissionDtos(appSubmissionDtoList);
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
         ParamUtil.setSessionAttr(bpc.request,"serviceNameTitleList", (Serializable)serviceNameTitleList);
@@ -164,7 +177,10 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "ReloadPrincipalOfficersList", (Serializable)principalOfficersDtosList);
         ParamUtil.setSessionAttr(bpc.request, "deputyPrincipalOfficersDtosList", (Serializable)deputyPrincipalOfficersDtosList);
 
-
+        //init app submit
+        ParamUtil.setSessionAttr(bpc.request,"hasAppSubmit",null);
+        ParamUtil.setSessionAttr(bpc.request,"txnDt",null);
+        ParamUtil.setSessionAttr(bpc.request,"txnRefNo",null);
 
         log.info("**** the non auto renwal  end ******");
     }
@@ -177,7 +193,37 @@ public class WithOutRenewalDelegator {
      */
     public void prepare(BaseProcessClass bpc)throws Exception{
         log.info("**** the  auto renwal  prepare start  ******");
+//finish pay
+        RenewDto renewDto = (RenewDto)ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
+        List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
+        String groupId = "";
+        if(appSubmissionDtos.size() != 0){
+            groupId = appSubmissionDtos.get(0).getAppGrpId();
+        }
+        String result = ParamUtil.getString(bpc.request,"result");
+        if (!StringUtil.isEmpty(result)) {
+            log.info(StringUtil.changeForLog("payment result:" + result));
+            String pmtRefNo = ParamUtil.getString(bpc.request,"reqRefNo");
+            if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
+                String txnDt = ParamUtil.getString(bpc.request,"txnDt");
+                String txnRefNo = ParamUtil.getString(bpc.request,"txnRefNo");
 
+                ParamUtil.setSessionAttr(bpc.request,"txnDt",txnDt);
+                ParamUtil.setSessionAttr(bpc.request,"txnRefNo",txnRefNo);
+
+                //update status
+                ApplicationGroupDto appGrp = new ApplicationGroupDto();
+                appGrp.setId(groupId);
+                appGrp.setPmtRefNo(pmtRefNo);
+                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                serviceConfigService.updatePaymentStatus(appGrp);
+                //jump page to acknowledgement
+                ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE4);
+            }else{
+                //jump page to payment
+                ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE3);
+            }
+        }
         log.info("**** the  renwal  prepare  end ******");
     }
 
@@ -196,24 +242,48 @@ public class WithOutRenewalDelegator {
         if(renewDto == null){
             return;
         }
+        //
+        String hasSubmit = (String)ParamUtil.getSessionAttr(bpc.request,"hasAppSubmit");
+        if("Y".equals(hasSubmit)){
+            return;
+        }
+        //app submit
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto)ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
+        String licenseeId = interInboxUserDto.getLicenseeId();
         Double total = 0d;
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
             FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
+            appSubmissionDto.setLicenseeId(licenseeId);
             Double amount = feeDto.getTotal();
             if(!StringUtil.isEmpty(amount)){
                 total +=amount;
+                appSubmissionDto.setAmount(amount);
                 String amountStr = Formatter.formatterMoney(amount);
                 appSubmissionDto.setAmountStr(amountStr);
             }
         }
         String totalStr = Formatter.formatterMoney(total);
+        //do app submit
+        ApplicationGroupDto applicationGroupDto = appSubmissionService.createApplicationDataByWithOutRenewal(renewDto);
+        //set group no.
+        for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
+            appSubmissionDto.setAppGrpNo(applicationGroupDto.getGroupNo());
+            appSubmissionDto.setAppGrpId(applicationGroupDto.getId());
+        }
+        ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
+        ParamUtil.setRequestAttr(bpc.request,"applicationGroupDto",applicationGroupDto);
         ParamUtil.setRequestAttr(bpc.request,"totalStr",totalStr);
+        ParamUtil.setSessionAttr(bpc.request,"totalAmount",total);
+        //has app submit
+        ParamUtil.setSessionAttr(bpc.request,"hasAppSubmit","Y");
     }
 
     //prepareAcknowledgement
     public void prepareAcknowledgement(BaseProcessClass bpc)throws Exception{
 
+//        //go page4
+//        ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE4);
     }
 
     //doInstructions
@@ -230,12 +300,54 @@ public class WithOutRenewalDelegator {
 
     //doPayment
     public void doPayment(BaseProcessClass bpc)throws Exception{
+        PaymentValidate paymentValidate = new PaymentValidate();
+        Map<String, String> errorMap = paymentValidate.validate(bpc.request);
+        if(!errorMap.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE3);
+            return;
+        }
+        String backUrl = "hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal/1/preparatData";
+        //set back url
+        ParamUtil.setSessionAttr(bpc.request,"backUrl",backUrl);
+        String payMethod = ParamUtil.getString(bpc.request, "payMethod");
+        Double totalAmount = (Double)ParamUtil.getSessionAttr(bpc.request,"totalAmount");
+        RenewDto renewDto = (RenewDto)ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
+        List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
+        for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
+            appSubmissionDto.setPaymentMethod(payMethod);
+        }
+        //
+        ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
+        String groupNo = "";
+        if(appSubmissionDtos.size() != 0){
+            groupNo = appSubmissionDtos.get(0).getAppGrpNo();
+        }
+        if("Credit".equals(payMethod)){
+            StringBuffer url = new StringBuffer();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/payment-web/eservice/INTERNET/PaymentRequest")
+                    .append("?amount=").append(totalAmount)
+                    .append("&payMethod=").append(payMethod)
+                    .append("&reqNo=").append(groupNo)
+                    .append("&backUrl=").append(backUrl);
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+
+
+        }
 
     }
 
     //doAcknowledgement
     public void doAcknowledgement(BaseProcessClass bpc)throws Exception{
+        String payMethod = ParamUtil.getString(bpc.request,"payMethod");
+        if("Credit".equals(payMethod)){
 
+        }else{
+            ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE3);
+            return;
+        }
     }
 
     //controlSwitch

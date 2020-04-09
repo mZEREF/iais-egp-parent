@@ -47,9 +47,9 @@
                       <table class="table">
                         <thead>
                         <tr>
-                          <th>No.</th>
-                          <th>Regulation Clause Number</th>
-                          <th>Item</th>
+                          <th width="10%">No.</th>
+                          <th width="45%">Regulation Clause Number</th>
+                          <th width="45%">Item</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -73,9 +73,9 @@
                         <table class="table">
                           <thead>
                           <tr>
-                            <th>No.</th>
-                            <th>Regulation Clause Number</th>
-                            <th>Item</th>
+                            <th width="10%">No.</th>
+                            <th width="45%">Regulation Clause Number</th>
+                            <th width="45%">Item</th>
                           </tr>
                           </thead>
                           <tbody>

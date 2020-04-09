@@ -218,10 +218,21 @@
             </p>
         </div>
     </div>
-    <iais:action style="text-align:right;">
-        <button type="button" class="btn btn-secondary"
-                onclick="javascript:doCessation();">Cessation</button>
-    </iais:action>
+    <c:choose>
+        <c:when test="${isASO==1}">
+            <iais:action style="text-align:right;">
+                <button type="button" class="btn btn-secondary"
+                        onclick="javascript:doCessation();">Cessation</button>
+            </iais:action>
+        </c:when>
+        <c:otherwise>
+            <iais:action style="text-align:right;">
+                <button type="button" class="btn btn-secondary" disabled
+                        onclick="javascript:doCessation();">Cessation</button>
+            </iais:action>
+        </c:otherwise>
+    </c:choose>
+
 </form>
 <script type="text/javascript">
 

@@ -87,7 +87,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
 
         //update nc item
         AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = inspecUserRecUploadDto.getAppPremisesPreInspectionNcItemDto();
-        appPremisesPreInspectionNcItemDto.setRemarks(inspecUserRecUploadDto.getUploadRemarks());
+        appPremisesPreInspectionNcItemDto.setFeRemarks(inspecUserRecUploadDto.getUploadRemarks());
         appPremisesPreInspectionNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesPreInspectionNcItemDto = applicationClient.updateAppPreItemNc(appPremisesPreInspectionNcItemDto).getEntity();
 

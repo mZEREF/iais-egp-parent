@@ -68,7 +68,7 @@
                                 <h2>Payment Method</h2>
                                 <input class="form-check-input premTypeRadio"  type="radio" checked name="payMethod" value="Credit">
                                 <label class="form-check-label" ><span class="check-circle"></span>Credit/Debit Card</label>&nbsp&nbsp&nbsp&nbsp
-                                <span name="iaisErrorMsg" id="error_pay" class="error-msg"></span>
+                                <span name="iaisErrorMsg" id="error_payMethod" class="error-msg"></span>
                                 <br>
 
                                 &nbsp&nbsp&nbsp&nbsp<img src="<%=webroot1%>img/mastercard.png" width="40" height="25" alt="mastercard">&nbsp
@@ -81,7 +81,7 @@
                                         <p><a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a></p>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
-                                        <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#">Proceed</a></div>
+                                        <div id="proceed" class="text-right text-center-mobile"><a class="btn btn-primary">Proceed</a></div>
                                     </div>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@
         </div>
     </div>
 </form>
-
+<%@include file="/include/validation.jsp" %>
 
 <script>
     $('#previewAndSub').click(function () {
@@ -102,6 +102,11 @@
 
     $('#BACK').click(function () {
         $('[name="switch_value"]').val('licenceReview');
+        $('#menuListForm').submit();
+    });
+
+    $('#proceed').click(function () {
+        $('[name="switch_value"]').val('doPayment');
         $('#menuListForm').submit();
     });
 

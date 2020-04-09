@@ -68,6 +68,9 @@
                             <button type="button" class="btn btn-default btn-sm"
                                     onclick="doDelete('${user.id}')">Delete
                             </button>
+                            <button type="button" class="btn btn-default btn-sm"
+                                    onclick="doRole('${user.id}')">role
+                            </button>
                         </td>
                     </tr>
                 </c:forEach>

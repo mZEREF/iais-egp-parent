@@ -179,8 +179,8 @@
                                 <iais:field value="Date"/>
                                 <iais:value width="7">
                                   <iais:datePicker id = "specificDate" name = "specificDate" value="${apptInspectionDateDto.specificDate}"></iais:datePicker>
-                                  <iais:select name="hoursOption" options="hoursOption" firstOption="Please select" value="${apptInspectionDateDto.hours}"></iais:select>
-                                  <iais:select name="amPmOption" options="amPmOption" firstOption="Please select" value="${apptInspectionDateDto.amPm}"></iais:select>
+                                  <iais:select name="hoursOption" options="hoursOption" firstOption="Please Select" value="${apptInspectionDateDto.hours}"></iais:select>
+                                  <iais:select name="amPmOption" options="amPmOption" firstOption="Please Select" value="${apptInspectionDateDto.amPm}"></iais:select>
                                   <br><span class="error-msg" name="iaisErrorMsg" id="error_specificDate"></span>
                                   <br><span class="error-msg" name="iaisErrorMsg" id="error_hours"></span>
                                   <br><span class="error-msg" name="iaisErrorMsg" id="error_amPm"></span>
@@ -190,6 +190,8 @@
                             <iais:action >
                               <button class="btn btn-lg btn-login-submit" style="float:right" type="button" onclick="javascript:apptReShInspectionDateConfirm()">Confirm</button>
                             </iais:action>
+                            <br>
+                            <br>
                             <br>
                             <div class="alert alert-info" role="alert">
                               <strong>

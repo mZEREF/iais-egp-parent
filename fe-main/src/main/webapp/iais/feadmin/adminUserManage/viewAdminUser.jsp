@@ -50,9 +50,9 @@
                                 <th>Last Name</th>
                                 <th>Email</th>
                                 <th>Is Administrator</th>
-                                <th>Activate</th>
-                                <th>Action</th>
-                                <th>De-activate</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>

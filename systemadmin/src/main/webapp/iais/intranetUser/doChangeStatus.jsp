@@ -12,7 +12,7 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <br><br><br><br><br><br>
                     <h2>Change Status</h2>
-                    <iais:section title="" id="inspection_date">
+                    <iais:section title="" id="change_status">
                         <iais:row>
                             <iais:field value="UserId" required="true"/>
                             <iais:value width="7">

@@ -58,9 +58,11 @@
                                             <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
                                         </iais:value>
                                     </iais:row>
-                                    <iais:row >
-                                        <p style="color:#ff0000; display: none" id="periodDateError">
+                                    <iais:row style="color:#ff0000; display: none" id="periodDateError">
+                                        <iais:field value=""/>
+                                        <iais:value width="18">
                                             Licence Period Date From cannot be later than Licence Period Date To.                                            </p>
+                                        </iais:value>
                                     </iais:row>
                                     <iais:action style="text-align:left;">
                                         <a  onclick="javascript:doLicBack()">< Back</a>

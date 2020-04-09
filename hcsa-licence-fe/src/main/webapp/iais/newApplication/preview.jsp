@@ -37,7 +37,7 @@
                                                     <div class="panel panel-default svc-content">
 
                                                         <div class="panel-heading  <c:if test="${fn:contains(serviceConfig,hcsaServiceDto.id)}">incompleted</c:if> <c:if test="${fn:contains(serviceConfig,hcsaServiceDto.id)==false}">completed</c:if>  "  id="headingServiceInfo" role="tab">
-                                                            <h4 class="panel-title" onclick="setIframeUrl('<iais:mask name="svc${status.index}" value="${hcsaServiceDto.id}"/>','svc${status.index}',$(this))"><a  class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${hcsaServiceDto.svcName}</a></h4>
+                                                            <h4 class="panel-title" onclick="setIframeUrl('<iais:mask name="svc${status.index}" value="${hcsaServiceDto.id}"/>','svc${status.index}',$(this),'svcIframe${status.index}')"><a  class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${hcsaServiceDto.svcName}</a></h4>
                                                         </div>
 
                                                         <div class=" panel-collapse collapse" id="collapseServiceInfo${status.index}" role="tabpanel" aria-labelledby="headingServiceInfo${status.index}" >
@@ -48,8 +48,8 @@
                                                                         <input type="hidden" value="${hcsaServiceDto.svcCode}" name="svcCode" />
                                                                     </p>
                                                                 </c:if>
-                                                                <input type="hidden" value="0" name="svcCount"/>
-                                                                <iframe id="svcIframe"  class="svc-iframe" title="" src=""  width="100%" height="400px" style="height:400px;" ></iframe>
+                                                                <input type="hidden" value="0" name="svcCount" />
+                                                                <iframe id="svcIframe${status.index}"  class="svc-iframe" title="" src=""  width="100%" ></iframe>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -150,13 +150,6 @@
 
     });
 
-
-    $('.svc-pannel-collapse').click(function () {
-        var $svcContenEle = $(this).closest('div.svc-content');
-        $svcContenEle.find('.svc-iframe').attr('height','400px');
-    });
-
-
     function preview(){
         window.print();
     };
@@ -168,7 +161,7 @@
         submit('preview','saveDraft','cancelSaveDraft');
     }
 
-    function setIframeUrl(maskId,maskName,svcDOM) {
+    function setIframeUrl(maskId,maskName,svcDOM,iframeId) {
         var $svcContenEle = svcDOM.closest('div.svc-content');
         var svcCount = $svcContenEle.find('input[name="svcCount"]').val();
         if(0 != svcCount){
@@ -176,11 +169,9 @@
         }
         showWaiting();
         $svcContenEle.find('input[name="svcCount"]').val(1);
-        var url ='${pageContext.request.contextPath}<%=RedirectUtil.changeUrlToCsrfGuardUrlUrl("/eservice/INTERNET/MohServiceRelatedInformation/1/PrepareView",request)%>&'+maskName+'='+maskId+'&maskName='+maskName;
-        var $Iframe =  $svcContenEle.find('.svc-iframe');
-        $Iframe.prop('src',url);
-        $Iframe.css('height','400px');
-
+        var url ='${pageContext.request.contextPath}<%=RedirectUtil.changeUrlToCsrfGuardUrlUrl("/eservice/INTERNET/MohServiceRelatedInformation/1/PrepareView",request)%>&'+maskName+'='+maskId+'&maskName='+maskName+'&iframeId='+iframeId;
+        var iframe =  $svcContenEle.find('.svc-iframe');
+        iframe.prop('src',url);
     }
 
 

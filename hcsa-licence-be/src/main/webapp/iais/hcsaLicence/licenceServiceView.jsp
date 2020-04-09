@@ -77,16 +77,22 @@
 
 
                                     <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
-                                      <p><span
-                                              class="col-xs-6"><strong>Vehicle No:</strong></span> ${appGrpPremDto.conveyanceVehicleNo}
-                                        <wrms:value width="7">
+                                      <div class="row">
+                                        <div class="col-md-6">
+                                          <label>Vehicle No</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            ${appGrpPremDto.conveyanceVehicleNo}
+                                              <wrms:value width="7">
                                           <span class="newVal " attr="${appGrpPremDto.conveyanceVehicleNo}"
                                                 style="display: none"><label><c:out value=""/></label></span>
-                                          <span class="oldVal compareTdStyle"
-                                                attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"
-                                                style="display: none"><label><c:out
-                                                  value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/></label></span>
-                                        </wrms:value></p>
+                                                <span class="oldVal compareTdStyle"
+                                                      attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"
+                                                      style="display: none"><label><c:out
+                                                        value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/></label></span>
+                                              </wrms:value>
+                                        </div>
+                                      </div>
                                     </c:if>
 
                                     <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
@@ -299,14 +305,14 @@
                                       <label>Select Public Holiday</label>
                                     </div>
                                     <div class="col-md-6">
-                                        ${appPremPhOpenPeriod.phDate}
+                                        ${appPremPhOpenPeriod.dayName}
                                       <wrms:value width="7">
                                           <span class="newVal " attr="${appPremPhOpenPeriod.phDate}" style="display: none"><label><c:out
                                                   value=""/></label></span>
                                         <span class="oldVal compareTdStyle"
                                               attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].phDate}"
                                               style="display: none"><label><c:out
-                                                value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].phDate}"/></label></span>
+                                                value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].dayName}"/></label></span>
                                       </wrms:value>
                                     </div>
                                   </div>
@@ -389,9 +395,69 @@
                                                 </wrms:value></span>
                                         </span>
                                         <p>
-                                        <p><strong>AuthoriseD Person 1</strong></p>
-                                        <p><span class="col-xs-6">Name:</span>Mo Delan</p>
-                                        <p><span class="col-xs-6">ID:</span>XXXX-XXXX-XXXX</p>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>AuthoriseD Person 1</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>Name:</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                            Mo Delan
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>ID No.:</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                            S8299230H
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>Designation:</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                            CEO
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>Office Telephone:</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                            64593810
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>Mobile No.:</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                            92338899
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>Email Address:</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                            modelan@gmail.com
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>Email Address:</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                            modelan@gmail.com
+                                          </div>
+                                        </div>
                                         <p><strong>AuthoriseD Person 2</strong></p>
                                         <p><span class="col-xs-6">Name:</span> Linda Tan MedAlert</p>
                                         <p><span class="col-xs-6">ID:</span>XXXX-XXXX-XXXX</p>
@@ -427,9 +493,10 @@
                                     </c:if>
                                 </c:if>
                               </p>
-                              <iframe class="svc-iframe" title=""
+                              <%--<iframe class="svc-iframe" title=""
                                       src="${pageContext.request.contextPath}/eservice/INTRANET/MOHServiceView"
-                                      id="elemId-0" width="100%" height="100%"></iframe>
+                                      id="elemId-0" width="100%" height="100%"></iframe>--%>
+                              <%@include file="/iais/hcsaLicence/viewForm.jsp"%>
                               <!--scrolling="no" scrollbar="no" -->
                             </div>
                           </div>

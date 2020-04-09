@@ -478,12 +478,12 @@
             $("#selfPeriod").show();
         } else {
             $("#selfPeriod").hide();
-            $("#period").hide();
+            //$("#period").hide();
         }
     }
 
     function changeRecommendation(obj) {
-        if (obj == "Approved" || obj == "ApprovedLTC") {
+        if (obj == "IRE001" || obj == "IRE002") {
             $("#period").show();
         } else {
             $("#period").hide();
@@ -503,14 +503,14 @@
 
 
     $(document).ready(function () {
-        if ($("#recommendation").val() == "Approved") {
-            changeRecommendation("Approved");
+        if ($("#recommendation").val() == "IRE001") {
+            changeRecommendation("IRE001");
+        }
+        if ($("#recommendation").val() == "IRE002") {
+            changeRecommendation("IRE002");
         }
         if ($("#periods").val() == "Others") {
             changePeriod("Others");
-        }
-        if ($('#tcuNeeded').is(':checked')) {
-            $("#tcuDate").show();
         }
         if ($('#enforcement').is(':checked')) {
             $("#engageRemarks").show();

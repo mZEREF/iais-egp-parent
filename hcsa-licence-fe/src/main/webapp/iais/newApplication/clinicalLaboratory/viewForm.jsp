@@ -10,7 +10,7 @@
 <webui:setLayout name="iais-blank"/>
 <%--<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>--%>
 
-<div class="panel-main-content" style="margin: 2%">
+<div id="svcDiv" class="panel-main-content" style="margin: 2%">
   <c:forEach items="${currentPreviewSvcInfo.hcsaServiceStepSchemeDtos}" var="hcsaServiceStepSchemeDto">
     <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST001'}">
       <%@include file="../../common/previewSvcDisciplines.jsp"%>
@@ -37,7 +37,10 @@
 <script type="text/javascript">
     $(document).ready(function(){
         window.parent.dismissWaiting();
-
+        var height = $(document).height();
+        var iframe = $(parent.document.getElementById('${iframeId}'));
+        iframe.css('height',height+10);
+        iframe.prop('height',height+10);
     });
 
 </script>

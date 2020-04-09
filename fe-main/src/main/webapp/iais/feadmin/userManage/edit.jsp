@@ -38,35 +38,35 @@
                                     <iais:row>
                                         <iais:field value="Name:" width="11"/>
                                         <iais:value width="11">
-                                            <iais:input type="text" name="name" id="name" value="${user.name}"/>
+                                            <iais:input type="text" name="name" id="name" value="${user.displayName}"/>
                                             <div class="col-xs-12">
-                                                <span class="error-msg" name="errorMsg" id="error_name"></span>
+                                                <span class="error-msg" name="errorMsg" id="error_displayName"></span>
                                             </div>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Salutation:" width="11"/>
                                         <iais:value width="11">
-                                            <iais:select name="salutation" id="salutation" value=""
-                                                         codeCategory="CATE_ID_SALUTATION" firstOption="${salutationDesc}"/>
+                                            <iais:select name="salutation" id="salutation" value="${user.salutation}"
+                                                         codeCategory="CATE_ID_SALUTATION" />
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="ID Type:" width="11"/>
                                         <iais:value width="11">
                                             <iais:select name="idType" id="idType" options="mcStatusSelectList"
-                                                         firstOption="${idTypeSelect}"/>
+                                                         value="${user.idType}"/>
                                             <div class="col-xs-12">
-                                                <span class="error-msg" name="errorMsg" id="error_NRICFIN"></span>
+                                                <span class="error-msg" name="errorMsg" id="error_idType"></span>
                                             </div>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="ID No:" width="11"/>
                                         <iais:value width="11">
-                                            <iais:input type="text" name="idNo" id="idNo" value="${user.idNo}"/>
+                                            <iais:input type="text" name="idNo" id="idNo" value="${user.identityNo}"/>
                                             <div class="col-xs-12">
-                                                <span class="error-msg" name="errorMsg" id="error_idNo"></span>
+                                                <span class="error-msg" name="errorMsg" id="error_identityNo"></span>
                                             </div>
                                         </iais:value>
                                     </iais:row>
@@ -82,7 +82,7 @@
                                     <iais:row>
                                         <iais:field value="Mobile No:" width="11"/>
                                         <iais:value width="11">
-                                            <iais:input type="text" name="mobileNo" id="mobileNo" value="${user.mobileNo}"/>
+                                            <iais:input type="text" name="mobileNo" id="mobileNo" maxLength="8" value="${user.mobileNo}"/>
                                             <div class="col-xs-12">
                                                 <span class="error-msg" name="errorMsg" id="error_mobileNo"></span>
                                             </div>
@@ -91,7 +91,7 @@
                                     <iais:row>
                                         <iais:field value="Office/Telephone No:" width="11"/>
                                         <iais:value width="11">
-                                            <iais:input type="text" name="officeNo" id="officeNo" value="${user.officeNo}"/>
+                                            <iais:input type="text" name="officeNo" id="officeNo" maxLength="8" value="${user.officeTelNo}"/>
                                             <div class="col-xs-12">
                                                 <span class="error-msg" name="errorMsg" id="error_officeTelNo"></span>
                                             </div>
@@ -100,7 +100,7 @@
                                     <iais:row>
                                         <iais:field value="Email:" width="11"/>
                                         <iais:value width="11">
-                                            <iais:input type="text" name="email" id="email" value="${user.emailAddr}"/>
+                                            <iais:input type="text" name="email" id="email" value="${user.email}"/>
                                             <div class="col-xs-12">
                                                 <span class="error-msg" name="errorMsg" id="error_email"></span>
                                             </div>
@@ -125,13 +125,7 @@
             </div>
         </div>
     </div>
-    <input hidden name="firstsolutationvalue" value="${sulationSelect}">
-    <input hidden name="firstidType" value="${idTypeSelect}">
     <input hidden name="id" value="${user.id}">
-    <input hidden name="orgId" value="${user.orgId}">
-    <input hidden name="userId" value="${user.userId}">
-    <input hidden name="firstName" value="${user.firstName}">
-    <input hidden name="lastName" value="${user.lastName}">
     <input hidden name="action" id="action" value="">
 </form>
 <%@include file="/include/validation.jsp"%>

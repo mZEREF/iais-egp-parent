@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 
@@ -60,4 +61,13 @@ public interface InspectionPreTaskService {
       * @Descripation: get Self-CheckList By CorrId
       */
     Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> getSelfCheckListByCorrId(String refNo);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/4/9
+      * @Param: originLicenceId
+      * @return: LicenceDto
+      * @Descripation: getLicenceDtoByLicenceId
+      */
+    LicenceDto getLicenceDtoByLicenceId(String originLicenceId);
 }

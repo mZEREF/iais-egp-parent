@@ -84,9 +84,11 @@
                                                 <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['toDate']}"></iais:datePicker>
                                             </iais:value>
                                         </iais:row>
-                                        <iais:row>
-                                            <p style="color:#ff0000; display: none" id="submittedDateError">
+                                        <iais:row style="color:#ff0000; display: none" id="submittedDateError">
+                                            <iais:field value=""/>
+                                            <iais:value width="18">
                                                 Application Submitted Date From cannot be later than Application Submitted Date To.                                            </p>
+                                            </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Licence No."/>
@@ -140,10 +142,11 @@
                                                 <iais:datePicker id = "start_to_date" name = "start_to_date" value="${SearchParam.filters['start_to_date']}"></iais:datePicker>
                                             </iais:value>
                                         </iais:row>
-                                        <iais:row>
-                                            <p style="color:#ff0000; display: none" id="startDateError">
+                                        <iais:row style="color:#ff0000; display: none" id="startDateError">
+                                            <iais:field value=""/>
+                                            <iais:value width="18">
                                                 Licence Start From Date cannot be later than Licence Start Date To.                                            </p>
-                                            </p>
+                                            </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Licence Expiry Date From"/>
@@ -167,7 +170,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </c:if>
                     <c:if test="${choose[0]==1}">
                         <h4>

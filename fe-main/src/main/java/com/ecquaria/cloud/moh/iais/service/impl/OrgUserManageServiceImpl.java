@@ -5,7 +5,6 @@ import com.ecquaria.cloud.client.rbac.UserClient;
 import com.ecquaria.cloud.moh.iais.common.constant.JsonKeyConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
@@ -55,8 +54,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public FeAdminDto addAdminAccount(FeAdminDto feAdminDto){
-        return feAdminClient.addAdminAccount(feAdminDto).getEntity();
+    public FeUserDto addAdminAccount(FeUserDto feUserDto){
+        return feAdminClient.addAdminAccount(feUserDto).getEntity();
     }
 
     @Override
@@ -150,4 +149,49 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     public OrganizationDto findOrganizationByUen(String uen) {
         return feUserClient.findOrganizationByUen(uen).getEntity();
     }
+
+    @Override
+    public void saveEgpUser(FeUserDto feUserDto) {
+
+        ClientUser clientUser = userClient.findUser("internet", feUserDto.getUserId()).getEntity();
+        if (clientUser != null){
+            return;
+        }
+
+        clientUser = MiscUtil.transferEntityDto(feUserDto, ClientUser.class);
+        clientUser.setUserDomain(feUserDto.getUserDomain());
+        clientUser.setId(feUserDto.getUserId());
+        clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+        String email = feUserDto.getEmail();
+        String salutation = feUserDto.getSalutation();
+        clientUser.setSalutation(salutation);
+        clientUser.setEmail(email);
+        clientUser.setDisplayName(feUserDto.getFirstName()+feUserDto.getLastName());
+        clientUser.setPassword("password$2");
+        clientUser.setPasswordChallengeQuestion("A");
+        clientUser.setPasswordChallengeAnswer("A");
+
+        Date activeDate = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(activeDate);
+        calendar.add(Calendar.DAY_OF_MONTH, 12);
+        clientUser.setAccountActivateDatetime(activeDate);
+        clientUser.setAccountDeactivateDatetime(calendar.getTime());
+
+        userClient.createClientUser(clientUser);
+    }
+
+    @Override
+    public void updateEgpUser(FeUserDto feUserDto) {
+        ClientUser clientUser = userClient.findUser(feUserDto.getUserDomain(), feUserDto.getUserId()).getEntity();
+        clientUser.setSalutation(feUserDto.getSalutation());
+        clientUser.setEmail(feUserDto.getEmail());
+        clientUser.setDisplayName(feUserDto.getDisplayName());
+        clientUser.setIdentityNo(feUserDto.getIdentityNo());
+        clientUser.setMobileNo(feUserDto.getMobileNo());
+        clientUser.setContactNo(feUserDto.getOfficeTelNo());
+        userClient.updateClientUser(clientUser);
+    }
+
+
 }
