@@ -197,7 +197,7 @@
                                               <c:forEach var="file" items="${proRec.fileRepoDtos}" varStatus="status">
                                                 <div class="fileList ">
                                                   <span class="filename server-site" id="140">
-                                                    <a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${file.id}"/>&fileRepoName=${file.fileName}" title="Download" class="downloadFile">${file.fileName}</a>
+                                                    <u><a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${file.id}"/>&fileRepoName=${file.fileName}" title="Download" class="downloadFile">${file.fileName}</a></u>
                                                   </span>
                                                 </div>
                                               </c:forEach>
@@ -279,30 +279,52 @@
                             <iais:row>
                               <iais:field value="Current Status"/>
                               <iais:value width="7">
-                                <p><label><iais:code code="${inspectionPreTaskDto.appStatus}"/></label></p>
+                                <p><label style="font-size: 16px"><iais:code code="${inspectionPreTaskDto.appStatus}"/></label></p>
                               </iais:value>
                             </iais:row>
                             <iais:row>
                               <iais:field value="Internal Remarks"/>
                               <iais:value width="4000">
-                                <textarea id="internalRemarks" name="internalRemarks" cols="70" rows="7"><c:out value="${inspectionPreTaskDto.internalMarks}"></c:out></textarea>
+                                <textarea id="internalRemarks" name="internalRemarks" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.internalMarks}"></c:out></textarea>
                                 <br><span class="error-msg" name="iaisErrorMsg" id="error_internalMarks"></span>
                               </iais:value>
                             </iais:row>
                             <iais:row id="indicateCondRemarks">
                               <iais:field value="Please indicate Licensing Terms and Conditions" required="true"/>
                               <iais:value width="4000">
-                                <textarea id="condRemarks" name="condRemarks" cols="70" rows="7"><c:out value="${inspectionPreTaskDto.accCondMarks}"></c:out></textarea>
+                                <textarea id="condRemarks" name="condRemarks" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.accCondMarks}"></c:out></textarea>
                                 <br><span class="error-msg" name="iaisErrorMsg" id="error_accCondMarks"></span>
                               </iais:value>
                             </iais:row>
-                            <iais:row>
+                            <iais:row id="indicateCondRemarks">
                               <iais:field value="Processing Decision"/>
                               <iais:value width="7">
                                 <iais:select name="selectValue" options="processDecOption" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectorProRecChange(this.value)"></iais:select>
                               </iais:value>
                             </iais:row>
-                            <iais:action style="text-align:center;">
+                            <div class="row">
+                              <div class="col-md-4">
+                                <label style="font-size: 16px">Licence Start Date</label>
+                              </div>
+                              <div class="col-md-6">
+                                <c:if test="${licenceDto.startDate != null}">
+                                  <label style="font-size: 16px"><fmt:formatDate value='${licenceDto.startDate}' pattern='dd/MM/yyyy' /></label>
+                                </c:if>
+                                <c:if test="${licenceDto.startDate == null}">
+                                  <label style="font-size: 16px">-</label>
+                                </c:if>
+                              </div>
+                            </div>
+                            <p></p><br><br>
+                            <div class="row">
+                              <div class="col-md-4">
+                                <label style="font-size: 16px">Fast Tracking</label>
+                              </div>
+                              <div class="col-md-6">
+                                <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
+                              </div>
+                            </div>
+                            <iais:action>
                               <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectorProRecSubmit()">Submit</button>
                             </iais:action>
                             <br><br><br>
