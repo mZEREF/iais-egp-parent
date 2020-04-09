@@ -281,25 +281,26 @@
                                 <iais:select name="selectValue" options="processDecOption" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectionPreTaskChange(this.value)"></iais:select>
                               </iais:value>
                             </iais:row>
-                            <iais:row>
-                              <iais:field value="Licence Start Date"/>
-                              <iais:value width="7">
-                                <p>
-                                  <c:if test="${licenceDto.startDate != null}">
-                                    <label><fmt:formatDate value='${licenceDto.startDate}' pattern='dd/MM/yyyy' /></label>
-                                  </c:if>
-                                  <c:if test="${licenceDto.startDate == null}">
-                                    <label style="font-size: 16px">-</label>
-                                  </c:if>
-                                </p>
-                              </iais:value>
-                            </iais:row>
+                            <div class="row">
+                              <div class="col-md-4">
+                                <label style="font-size: 16px">Licence Start Date</label>
+                              </div>
+                              <div class="col-md-6">
+                                <c:if test="${licenceDto.startDate != null}">
+                                  <label style="font-size: 16px"><fmt:formatDate value='${licenceDto.startDate}' pattern='dd/MM/yyyy' /></label>
+                                </c:if>
+                                <c:if test="${licenceDto.startDate == null}">
+                                  <label style="font-size: 16px">-</label>
+                                </c:if>
+                              </div>
+                            </div>
+                            <p></p><br><br>
                             <div class="row">
                               <div class="col-md-4">
                                 <label style="font-size: 16px">Fast Tracking</label>
                               </div>
                               <div class="col-md-6">
-                                  <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
+                                <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
                               </div>
                             </div>
                             <iais:action style="text-align:center;">
