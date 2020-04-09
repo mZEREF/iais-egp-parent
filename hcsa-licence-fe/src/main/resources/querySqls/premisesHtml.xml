@@ -11,7 +11,7 @@
             <div><strong class="app-font-size-22 premHeader">Premises (6)</strong>
             <div class="row" style="float:right">
                 <div class="form-check removeBtn">
-                  <div class="fa fa-times-circle"></div>
+                  <div class="fa fa-times-circle text-danger"></div>
                 </div>
             </div>
           </div>
@@ -377,7 +377,7 @@
                     </div>
                     <div class=" col-xs-7 col-sm-4 col-md-3">
                         <div class="form-check removePhBtn">
-                          <div class="fa fa-times-circle"></div>
+                          <div class="fa fa-times-circle text-danger"></div>
                         </div>
                     </div>
                     <div class="clear"></div></div>

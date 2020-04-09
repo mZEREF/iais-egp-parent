@@ -21,7 +21,7 @@
                     <c:if test="${!status.first && requestInformationConfig==null && 'APTY004' !=AppSubmissionDto.appType && 'APTY005' !=AppSubmissionDto.appType}">
                         <div class="row" style="float:right">
                             <div class="form-check removeBtn">
-                                <div class="fa fa-times-circle"></div>
+                                <div class="fa fa-times-circle text-danger"></div>
                             </div>
                         </div>
                     </c:if>
@@ -267,7 +267,7 @@
                                         <c:if test="${!phStat.first}">
                                             <div class=" col-xs-7 col-sm-4 col-md-3">
                                                 <div class="form-check removePhBtn">
-                                                    <div class="fa fa-times-circle"></div>
+                                                    <div class="fa fa-times-circle text-danger"></div>
                                                 </div>
                                             </div>
                                         </c:if>
@@ -485,7 +485,7 @@
                                         <c:if test="${!phStat.first}">
                                             <div class=" col-xs-7 col-sm-4 col-md-3">
                                                 <div class="form-check removePhBtn">
-                                                    <div class="fa fa-times-circle"></div>
+                                                    <div class="fa fa-times-circle text-danger"></div>
                                                 </div>
                                             </div>
                                         </c:if>
