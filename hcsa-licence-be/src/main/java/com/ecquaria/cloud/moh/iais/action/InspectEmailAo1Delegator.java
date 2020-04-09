@@ -644,6 +644,7 @@ public class InspectEmailAo1Delegator {
                     //delete file
                     insepctionNcCheckListService.deleteInvalidFile(serListDto);
                     //save file
+                    if( size <= 10)
                     appIntranetDocDto.setFileRepoId(insepctionNcCheckListService.saveFiles(file));
                     serListDto.setAppPremisesSpecialDocDto(appIntranetDocDto);
                 }

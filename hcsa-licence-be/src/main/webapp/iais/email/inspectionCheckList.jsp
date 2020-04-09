@@ -36,9 +36,11 @@
                                                 <button type="button" class="btn btn-primary" onclick="javascript: doViewCheckList();">
                                                     View CheckList
                                                 </button>
+                                            <c:if test="${applicationViewDto.applicationDto.status != 'APST032'}">
                                             <button type="button" class="btn btn-primary" onclick="javascript: doNext();">
                                                 Save
                                             </button>
+                                          </c:if>
                                             <br/>
                                             <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
                                         </div>
