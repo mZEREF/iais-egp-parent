@@ -37,14 +37,14 @@
                                     <iais:row>
                                         <iais:field value="UEN:" width="11"/>
                                         <iais:value width="11">
-                                            <iais:input type="text" name="uenNo" id="uenNo" value="${uenNo}" needDisabled="true"></iais:input>
+                                            <iais:input type="text" name="uenNo" id="uenNo" value="${user.uenNo}" needDisabled="true"></iais:input>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="UIN:" width="11"/>
                                         <iais:value width="11">
                                             <iais:input type="text" name="idNo" id="idNo"
-                                                        value="${idNo}"></iais:input>
+                                                        value="${user.identityNo}"></iais:input>
                                             <div class="col-xs-12">
                                                 <span class="error-msg" name="errorMsg" id="error_NRICFIN"></span>
                                             </div>
@@ -54,8 +54,8 @@
                                         <iais:field value="Salutation:" width="11"/>
                                         <iais:value width="11">
                                             <iais:select name="salutation" id="salutation"
-                                                         value=""
-                                                         codeCategory="CATE_ID_SALUTATION" firstOption="Please Select"/>
+                                                         value="${user.salutation}"
+                                                         codeCategory="CATE_ID_SALUTATION" />
                                             <div class="col-xs-12">
                                                 <span class="error-msg" name="errorMsg" id="error_salutation"></span>
                                             </div>
@@ -65,7 +65,7 @@
                                         <iais:field value="First Name:" width="11"/>
                                         <iais:value width="11">
                                             <iais:input type="text" name="firstName" id="firstName"
-                                                        value="${firstName}"></iais:input>
+                                                        value="${user.firstName}"></iais:input>
                                             <div class="col-xs-12">
                                                 <span class="error-msg" name="errorMsg" id="error_fristName"></span>
                                             </div>
@@ -75,7 +75,7 @@
                                         <iais:field value="Last Name:" width="11"/>
                                         <iais:value width="11">
                                             <iais:input type="text" name="lastName" id="lastName"
-                                                        value="${lastName}"></iais:input>
+                                                        value="${user.lastName}"></iais:input>
                                             <div class="col-xs-12">
                                                 <span class="error-msg" name="errorMsg" id="error_lastName"></span>
                                             </div>
@@ -84,7 +84,7 @@
                                     <iais:row>
                                         <iais:field value="Email:" width="11"/>
                                         <iais:value width="11">
-                                            <iais:input type="text" name="email" id="email" value="${email}"></iais:input>
+                                            <iais:input type="text" name="email" id="email" value="${user.email}"></iais:input>
                                             <div class="col-xs-12">
                                                 <span class="error-msg" name="errorMsg" id="error_emailAddr"></span>
                                             </div>
@@ -93,11 +93,11 @@
                                     <iais:row>
                                         <iais:field value="Is Administrator:" width="11"/>
                                         <div class="col-md-3">
-                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="admin" name="role" checked></div>
+                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="admin" name="role" <c:if test="${user.isAdmin=='admin'}">checked</c:if>></div>
                                             <label class="col-md-2 control-label" >Yes</label>
                                         </div>
                                         <div class="col-md-3">
-                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="user" name="role"></div>
+                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="user" name="role" <c:if test="${user.isAdmin!='admin'}">checked</c:if>></div>
                                             <label class="col-md-2 control-label" >No</label>
                                         </div>
                                     </iais:row>

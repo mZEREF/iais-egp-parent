@@ -6,8 +6,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * AdminValidator
@@ -19,59 +20,29 @@ public class UserValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
-        FeUserDto dto = (FeUserDto) ParamUtil.getRequestAttr(request, "user");
-        if (dto != null) {
-            String idNo = dto.getIdNo();
-            String emailAddr = dto.getEmailAddr();
-            String designation = dto.getDesignation();
-            String idType = dto.getIdType();
-            String mobileNo = dto.getMobileNo();
-            String name = dto.getName();
-            String officeNo = dto.getOfficeNo();
-            String salutation = dto.getSalutation();
-            if(StringUtil.isEmpty(name)){
-                map.put("name","cannot be blank");
-            }
-            if(StringUtil.isEmpty(idNo)){
-                map.put("idNo","cannot be blank");
-            }
-            if(StringUtil.isEmpty(salutation)){
-                map.put("salutation","cannot be blank");
-            }
-            if(StringUtil.isEmpty(designation)){
-                map.put("designation","cannot be blank");
-            }
-            if (!StringUtil.isEmpty(idNo)) {
-                boolean b = SgNoValidator.validateFin(idNo);
-                boolean b1 = SgNoValidator.validateNric(idNo);
+        FeUserDto dto = (FeUserDto) ParamUtil.getSessionAttr(request, "user");
+            if (dto.getIdentityNo() != null && !StringUtil.isEmpty(dto.getIdentityNo())) {
+                boolean b = SgNoValidator.validateFin(dto.getIdentityNo());
+                boolean b1 = SgNoValidator.validateNric(dto.getIdentityNo());
                 if (!(b || b1)) {
-                    map.put("idNo", "Please key in a valid NRIC/FIN");
+                    map.put("identityNo", "Please key in a valid NRIC/FIN");
                 }
-            } else {
-                map.put("idNo", "cannot be blank");
             }
-            if(!StringUtil.isEmpty(mobileNo)){
-                if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
+            if (dto.getEmail() != null && !StringUtil.isEmpty(dto.getEmail())) {
+                if (!dto.getEmail().matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
+                    map.put("email", "Please key in a valid email address");
+                }
+            }
+            if(dto.getMobileNo() != null && !StringUtil.isEmpty(dto.getMobileNo())){
+                if (!dto.getMobileNo().matches("^[8|9][0-9]{7}$")) {
                     map.put("mobileNo", "Please key in a valid mobile number");
                 }
-            }else {
-                map.put("mobileNo", "cannot be blank");
             }
-            if(!StringUtil.isEmpty(emailAddr)) {
-                if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
-                    map.put("emailAddr", "Please key in a valid email address");
-                }
-            }else {
-                map.put("emailAddr", "cannot be blank");
-            }
-            if(!StringUtil.isEmpty(officeNo)) {
-                if (!officeNo.matches("^[6][0-9]{7}$")) {
+            if(dto.getOfficeTelNo() != null && !StringUtil.isEmpty(dto.getOfficeTelNo())) {
+                if (!dto.getOfficeTelNo().matches("^[6][0-9]{7}$")) {
                     map.put("officeTelNo", "Please key in a valid phone number");
                 }
-            }else {
-                map.put("officeTelNo", "cannot be blank");
             }
-        }
         return map;
     }
 }

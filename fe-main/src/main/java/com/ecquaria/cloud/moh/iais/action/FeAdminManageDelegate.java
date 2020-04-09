@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
@@ -26,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -99,7 +99,7 @@ public class FeAdminManageDelegate {
         if("cancel".equals(action)){
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);
         }else{
-            FeAdminDto accountDto = new FeAdminDto();
+            FeUserDto accountDto = new FeUserDto();
             String email = ParamUtil.getString(bpc.request,"email");
             String uenNo = ParamUtil.getString(bpc.request,"uenNo");
             String idNo = ParamUtil.getString(bpc.request,"idNo");
@@ -107,33 +107,33 @@ public class FeAdminManageDelegate {
             String firstName = ParamUtil.getString(bpc.request,"firstName");
             String lastName = ParamUtil.getString(bpc.request,"lastName");
             String role = ParamUtil.getString(bpc.request,"role");
-            accountDto.setEmailAddr(email);
+            accountDto.setEmail(email);
             accountDto.setFirstName(firstName);
             accountDto.setLastName(lastName);
-            accountDto.setIdNo(idNo);
+            accountDto.setIdentityNo(idNo);
             accountDto.setUenNo(uenNo);
             accountDto.setIdType("NRIC");
             accountDto.setUserId(idNo);
             accountDto.setSalutation(salutation);
             accountDto.setIsAdmin(role);
             accountDto.setOrgId(organizationId);
-            ParamUtil.setRequestAttr(bpc.request, "account", accountDto);
+            accountDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            accountDto.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
+            accountDto.setAvailable(true);
+            Date now = new Date();
+            accountDto.setAccountActivateDatetime(now);
+            ParamUtil.setSessionAttr(bpc.request, "user", accountDto);
             ValidationResult validationResult = WebValidationHelper.validateProperty(accountDto, "create");
             if (validationResult.isHasErrors()){
                 log.error("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, "email", email);
-                ParamUtil.setRequestAttr(bpc.request, "idNo", idNo);
-                ParamUtil.setRequestAttr(bpc.request, "salutation", salutation);
-                ParamUtil.setRequestAttr(bpc.request, "firstName", firstName);
-                ParamUtil.setRequestAttr(bpc.request, "lastName", lastName);
-                ParamUtil.setRequestAttr(bpc.request, "role", role);
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.FALSE);
             }else{
                 Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
                 successMap.put("save","suceess");
                 orgUserManageService.addAdminAccount(accountDto);
+                orgUserManageService.saveEgpUser(accountDto);
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);
             }
         }
@@ -143,8 +143,9 @@ public class FeAdminManageDelegate {
     public void create(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("*******************create"));
         OrganizationDto organizationDto = orgUserManageService.getOrganizationById(organizationId);
-        String uenNo = organizationDto.getUenNo();
-        ParamUtil.setSessionAttr(bpc.request,"uenNo", uenNo);
+        FeUserDto accountDto = new FeUserDto();
+        accountDto.setUenNo(organizationDto.getUenNo());
+        ParamUtil.setSessionAttr(bpc.request,"user", accountDto);
     }
 
     public void edit(BaseProcessClass bpc) {
@@ -172,7 +173,7 @@ public class FeAdminManageDelegate {
         }else{
             idTypeSelect = feUserDto.getIdType();
         }
-        ParamUtil.setRequestAttr(bpc.request,"user",feUserDto);
+        ParamUtil.setSessionAttr(bpc.request,"user",feUserDto);
         ParamUtil.setRequestAttr(bpc.request,"sulationSelect",sulationSelect);
         ParamUtil.setRequestAttr(bpc.request,"salutationDesc",sulationSelectDesc);
         ParamUtil.setRequestAttr(bpc.request,"idTypeSelect",idTypeSelect);
@@ -199,14 +200,9 @@ public class FeAdminManageDelegate {
             String mobileNo = ParamUtil.getString(bpc.request,"mobileNo");
             String officeNo = ParamUtil.getString(bpc.request,"officeNo");
             String email = ParamUtil.getString(bpc.request,"email");
-            String id = ParamUtil.getString(bpc.request,"id");
-            String orgId = ParamUtil.getString(bpc.request,"orgId");
-            String userId = ParamUtil.getString(bpc.request,"userId");
-            String firstName = ParamUtil.getString(bpc.request,"firstName");
-            String lastName = ParamUtil.getString(bpc.request,"lastName");
 
-            FeUserDto feUserDto = new FeUserDto();
-            feUserDto.setName(name);
+            FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, "user");
+            feUserDto.setDisplayName(name);
             if(StringUtil.isEmpty(salutation)){
                 feUserDto.setSalutation( ParamUtil.getString(bpc.request,"firstsolutationvalue"));
             }else{
@@ -217,35 +213,19 @@ public class FeAdminManageDelegate {
             }else{
                 feUserDto.setIdType(idType);
             }
-            feUserDto.setId(id);
-            feUserDto.setUserId(userId);
-            feUserDto.setOrgId(orgId);
-            feUserDto.setIdNo(idNo);
+            feUserDto.setIdentityNo(idNo);
             feUserDto.setDesignation(designation);
             feUserDto.setMobileNo(mobileNo);
-            feUserDto.setOfficeNo(officeNo);
-            feUserDto.setEmailAddr(email);
-            feUserDto.setLastName(lastName);
-            feUserDto.setFirstName(firstName);
+            feUserDto.setOfficeTelNo(officeNo);
+            feUserDto.setEmail(email);
 
-            ParamUtil.setRequestAttr(bpc.request, "user", feUserDto);
+            ParamUtil.setSessionAttr(bpc.request, "user", feUserDto);
             ValidationResult validationResult = WebValidationHelper.validateProperty(feUserDto, "edit");
 
             if (validationResult.isHasErrors()){
                 log.error("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, "email", email);
-                ParamUtil.setRequestAttr(bpc.request, "mobileNo", mobileNo);
-                ParamUtil.setRequestAttr(bpc.request, "officeNo", officeNo);
-                ParamUtil.setRequestAttr(bpc.request, "idNo", idNo);
-                ParamUtil.setRequestAttr(bpc.request, "idTypeSelect", feUserDto.getIdType());
-                String salutationDesc = MasterCodeUtil.getCodeDesc(feUserDto.getSalutation());
-                ParamUtil.setRequestAttr(bpc.request, "salutationDesc", salutationDesc);
-                ParamUtil.setRequestAttr(bpc.request, "sulationSelect", feUserDto.getSalutation());
-                ParamUtil.setRequestAttr(bpc.request, "name", name);
-                ParamUtil.setRequestAttr(bpc.request, "designation", designation);
-
                 List<SelectOption> mcStatusSelectList = IaisCommonUtils.genNewArrayList();
                 mcStatusSelectList.add(new SelectOption("NRIC", "NRIC"));
                 mcStatusSelectList.add(new SelectOption("FIN", "FIN"));
@@ -256,6 +236,7 @@ public class FeAdminManageDelegate {
                 Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
                 successMap.put("save","suceess");
                 orgUserManageService.editUserAccount(feUserDto);
+                orgUserManageService.updateEgpUser(feUserDto);
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);
             }
         }
