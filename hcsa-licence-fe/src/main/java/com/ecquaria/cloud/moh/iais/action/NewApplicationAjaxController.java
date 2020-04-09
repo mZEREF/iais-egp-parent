@@ -281,7 +281,7 @@ public class NewApplicationAjaxController {
         conveyanceendMin.put("class", premName+"conveyanceEndMM0");
         conveyanceendMin.put("id", premName+"conveyanceEndMM0");
         conveyanceendMin.put("name", premName+"conveyanceEndMM0");
-        conveyanceendMin.put("style", premName+"display: none;");
+        conveyanceendMin.put("style", "display: none;");
         String conveyanceendMM = NewApplicationHelper.generateDropDownHtml(conveyanceendMin, timeHourList,"--");
 
         //ph
