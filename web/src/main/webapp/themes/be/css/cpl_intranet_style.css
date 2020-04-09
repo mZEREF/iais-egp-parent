@@ -2016,6 +2016,25 @@ textarea.form-control:active, textarea.form-control.active, textarea.form-contro
   box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.12);
 }
 
+.form-horizontal .form-group textarea {
+  border: 1px solid #6c6c6c;
+  padding: 13px 15px;
+  display: inline-block;
+  border-radius: 16px;
+  margin-right: 10px;
+  margin-top: 0;
+  background: #efefef;
+  /* Old browsers */
+  background: -moz-linear-gradient(left, #efefef 0%, white 100%);
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, #efefef 0%, white 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, #efefef 0%, white 100%);
+}
+.form-horizontal .form-group textarea:hover {
+  border-color: #1989BF;
+}
+
 input[type=number] {
   -moz-appearance: textfield;
 }
