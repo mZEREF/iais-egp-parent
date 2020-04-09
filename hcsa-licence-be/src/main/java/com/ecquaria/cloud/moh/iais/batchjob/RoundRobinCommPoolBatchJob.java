@@ -1,13 +1,13 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.SystemParamCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
 import java.util.Calendar;
@@ -26,7 +26,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator("roundRobinCommPoolBatchJob")
 @Slf4j
 public class RoundRobinCommPoolBatchJob {
-
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     @Autowired
     private TaskService taskService;
@@ -58,10 +59,9 @@ public class RoundRobinCommPoolBatchJob {
         log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob end ..."));
     }
 
-    private static String getDate(){
-        String dayStr = SystemParamCacheHelper.getParamValueById(SystemParamCacheHelper.ROUND_ROBIN_COMM_POOL_TASK);
-        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob dayStr -- >:" +dayStr));
-        int day = Integer.parseInt(dayStr);
+    private String getDate(){
+        int day = systemParamConfig.getRoundRobinCpDays();
+        log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob day -- >:" +day));
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.DAY_OF_YEAR,-day);

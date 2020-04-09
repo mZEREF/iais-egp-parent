@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -87,13 +88,15 @@ public class LicenceApproveBatchjob {
 
     @Autowired
     private ApplicationGroupService applicationGroupService;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     private Map<String,Integer> hciCodeVersion = new HashMap();
     private Map<String,Integer> keyPersonnelVersion = IaisCommonUtils.genNewHashMap();
 
     public void doBatchJob(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is start ..."));
-        int day = 0;
+        int day = systemParamConfig.getLicGenDay();
        //get can Generate Licence
         List<ApplicationLicenceDto> applicationLicenceDtos =licenceService.getCanGenerateApplications(day);
         if(applicationLicenceDtos == null || applicationLicenceDtos.size() == 0 ){
