@@ -418,6 +418,7 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareView(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareView start ...."));
+        String iframeId = ParamUtil.getString(bpc.request,"iframeId");
         String maskName = ParamUtil.getString(bpc.request,"maskName");
         String svcId = ParamUtil.getMaskedString(bpc.request, maskName);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, svcId);
@@ -427,7 +428,7 @@ public class ClinicalLaboratoryDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO);
         Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto,svcId);
         ParamUtil.setSessionAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
-
+        ParamUtil.setSessionAttr(bpc.request,"iframeId",iframeId);
         log.debug(StringUtil.changeForLog("the do prepareView end ...."));
     }
     /**
