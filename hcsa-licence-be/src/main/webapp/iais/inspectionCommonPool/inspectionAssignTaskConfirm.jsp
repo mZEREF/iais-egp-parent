@@ -29,64 +29,85 @@
               </div>
               <iais:body >
                 <iais:section title="" id = "assign_Task">
-                  <iais:row>
-                    <iais:field value="Application Number"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspecTaskCreAndAssDto.applicationNo}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Application Type"/>
-                    <iais:value width="7">
-                      <p><label><iais:code code="${inspecTaskCreAndAssDto.applicationType}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Application Status"/>
-                    <iais:value width="7">
-                      <p><label><iais:code code="${inspecTaskCreAndAssDto.applicationStatus}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="HCI Code"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspecTaskCreAndAssDto.hciCode}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="HCI Name / Address"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspecTaskCreAndAssDto.hciName}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Service Name"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspecTaskCreAndAssDto.serviceName}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Submission Date"/>
-                    <iais:value width="7">
-                      <p><label><fmt:formatDate value='${inspecTaskCreAndAssDto.submitDt}' pattern='dd/MM/yyyy' /></label></p>
-                    </iais:value>
-                  </iais:row>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Application Number</label>
+                    </div>
+                    <div class="col-md-6">
+                      <label style="font-size: 16px">
+                        <c:out value="${inspecTaskCreAndAssDto.applicationNo}"/>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Application Type</label>
+                    </div>
+                    <div class="col-md-6">
+                      <label style="font-size: 16px"><iais:code code="${inspecTaskCreAndAssDto.applicationType}"/></label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Application Status</label>
+                    </div>
+                    <div class="col-md-6">
+                      <label style="font-size: 16px"><iais:code code="${inspecTaskCreAndAssDto.applicationStatus}"/></label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">HCI Code</label>
+                    </div>
+                    <div class="col-md-6">
+                      <label style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.hciCode}"/></label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">HCI Name / Address</label>
+                    </div>
+                    <div class="col-md-6">
+                      <label style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.hciName}"/></label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Service Name</label>
+                    </div>
+                    <div class="col-md-6">
+                      <label style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.serviceName}"/></label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Submission Date</label>
+                    </div>
+                    <div class="col-md-6">
+                      <label style="font-size: 16px"><fmt:formatDate value='${inspecTaskCreAndAssDto.submitDt}' pattern='dd/MM/yyyy' /></label>
+                    </div>
+                  </div>
                   <c:if test="${inspecTaskCreAndAssDto.inspectionLeads != null}">
-                    <iais:row>
-                      <iais:field value="${groupRoleFieldDto.groupLeadName}"/>
-                      <iais:value width="7">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <label style="font-size: 16px">Lead</label>
+                      </div>
+                      <div class="col-md-6">
                         <c:forEach var="lead" items="${inspecTaskCreAndAssDto.inspectionLeads}">
-                          <p><label><c:out value="${lead}"/></label></p>
+                          <label style="font-size: 16px"><c:out value="${lead}"/></label>
                         </c:forEach>
-                      </iais:value>
-                    </iais:row>
+                      </div>
+                    </div>
                   </c:if>
-                  <iais:row>
-                    <iais:field value="Inspection Type"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspecTaskCreAndAssDto.inspectionTypeName}"/></label></p>
-                    </iais:value>
-                  </iais:row>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Inspection Type</label>
+                    </div>
+                    <div class="col-md-6">
+                      <label style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.inspectionTypeName}"/></label>
+                    </div>
+                  </div>
+                  <br>
                   <iais:action >
                     <a class="back" id="Back" onclick="javascript:doInspectionAssignTaskConfirmBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionAssignTaskConfirmSubmit()">Submit</button>

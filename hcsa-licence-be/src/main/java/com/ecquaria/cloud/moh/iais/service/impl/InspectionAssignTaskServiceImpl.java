@@ -128,7 +128,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         } else {
             inspecTaskCreAndAssDto.setHciName(address);
         }
-        inspecTaskCreAndAssDto.setHciName(appGrpPremisesDto.getHciName() + " / " + address);
         inspecTaskCreAndAssDto.setHciCode(appGrpPremisesDto.getHciCode());
         inspecTaskCreAndAssDto.setServiceName(hcsaServiceDto.getSvcName());
         //todo:inspection type
