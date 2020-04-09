@@ -130,7 +130,7 @@ public class InspectEmailAo1Delegator {
             commonDto = commonList.get(0);
         }
         InspectionFDtosDto serListDto =  fillupChklistService.getInspectionFDtosDto(appPremCorrId,taskDto,cDtoList);
-        AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
+        AdCheckListShowDto adchklDto = insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         appViewDto.setCurrentStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appViewDto.getApplicationDto().getStatus()}).get(0).getText());
 
@@ -550,7 +550,7 @@ public class InspectEmailAo1Delegator {
         AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
         serListDto.setCheckListTab("chkList");
         fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
-        ParamUtil.setSessionAttr(request,AC_DTO,adchklDto);
+        ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
         ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
     }

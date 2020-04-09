@@ -465,7 +465,12 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                     temp.setAnswer(saveAnswer);
                     saveItemDtoList.add(temp);
                 }
-                applicationClient.saveAdhocItems(saveItemDtoList).getEntity();
+                saveItemDtoList = applicationClient.saveAdhocItems(saveItemDtoList).getEntity();
+                int index = 0;
+                for(AdhocNcCheckItemDto adhocNcCheckItemDto :  itemDtoList){
+                    adhocNcCheckItemDto.setId(saveItemDtoList.get(index).getId());
+                    index++;
+                }
             }
         }
     }

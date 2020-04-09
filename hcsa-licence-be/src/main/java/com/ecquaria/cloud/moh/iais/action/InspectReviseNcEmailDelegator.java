@@ -559,7 +559,7 @@ public class InspectReviseNcEmailDelegator {
         AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
         serListDto.setCheckListTab("chkList");
         fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
-        ParamUtil.setSessionAttr(request,AC_DTO,adchklDto);
+        ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
         ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
     }

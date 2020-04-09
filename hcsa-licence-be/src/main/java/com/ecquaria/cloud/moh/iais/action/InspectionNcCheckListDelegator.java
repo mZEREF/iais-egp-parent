@@ -125,8 +125,7 @@ public class InspectionNcCheckListDelegator {
                 commonDto = commonList.get(0);
             }
         InspectionFDtosDto serListDto =  fillupChklistService.getInspectionFDtosDto(appPremCorrId,taskDto,cDtoList);
-        AdCheckListShowDto adchklDto = null;
-        adchklDto = fillupChklistService.getAdhocDraftByappCorrId(appPremCorrId);
+        AdCheckListShowDto adchklDto = fillupChklistService.getAdhocDraftByappCorrId(appPremCorrId);
         if(adchklDto==null){
             adchklDto = fillupChklistService.getAdhoc(appPremCorrId);
         }
