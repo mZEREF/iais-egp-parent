@@ -147,6 +147,9 @@
 <script type="text/javascript">
     var init;
     $(document).ready(function() {
+        cl();
+        $("select[name='onSiteAddressType']").trigger('change');
+        $("select[name='conveyanceAddrType']").trigger('change');
         <!-- init start-->
         init = 0;
 
@@ -266,6 +269,8 @@
   function cancelSaveDraft() {
       submit('premises','saveDraft','cancelSaveDraft');
   }
+
+
 
 </script>
 

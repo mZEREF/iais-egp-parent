@@ -201,6 +201,7 @@
                 addPubHolDay();
                 removePH();
                 otherLic();
+                cl();
                 $('.date_picker').datepicker({
                     format:"dd/mm/yyyy"
                 });

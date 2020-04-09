@@ -283,16 +283,10 @@
                     <c:set value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}" var="oldAppSubmissionDto"></c:set>
                   </c:if>
 
-                  <c:if test="${appGrpPrem.hciName != '' && appGrpPrem.hciName!= null}">
-                    <c:set var="reloadMapValue" value="${appGrpPrem.hciName}"/>
-                  </c:if>
-                  <%-- <c:if test="${conveyanceVehicleNoOldAppSubmissionDtos != ''&& conveyanceVehicleNoOldAppSubmissionDtos !=null}">
-                   <c:set value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}" var="oldAppSubmissionDto" />
-                    </c:if>--%>
-                  <c:if test="${appGrpPrem.conveyanceVehicleNo != '' && appGrpPrem.conveyanceVehicleNo!= null}">
-                    <c:set var="reloadMapValue" value="${appGrpPrem.conveyanceVehicleNo}"/>
-                  </c:if>
+                    <c:set var="reloadMapValue" value="${appGrpPrem.premisesIndexNo}"/>
+
                   <tbody>
+                    ${reloadDisciplineAllocationMap}
                   <c:forEach var="disciplineAllocation" items="${reloadDisciplineAllocationMap[reloadMapValue]}" varStatus="stat">
                     <c:set value="${reloadOld[reloadMapValue]}" var="reloaded"></c:set>
                     ${stat.end}
@@ -304,7 +298,6 @@
                             <span class="newVal " attr="${appGrpPrem.address} "  style="display: none"><label><c:out value=""/></label></span>
                             <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/></label></span>
                           </wrms:value>
-
                         </td>
                       </c:if>
                       <td style="text-align: center">
@@ -316,7 +309,7 @@
 
                       </td>
                       <td style="text-align: center">
-                          ${disciplineAllocation.chkLstName}
+                          ${disciplineAllocation.cgoSelName}
 
                         <wrms:value width="7">
                           <span class="newVal " attr="${disciplineAllocation.cgoSelName}"  style="display: none"><label><c:out value="${disciplineAllocation.cgoSelName}"/></label></span>
@@ -438,7 +431,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone :
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone No.:
 
 
                       </p>

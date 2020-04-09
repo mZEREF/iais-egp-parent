@@ -96,7 +96,6 @@
                                     </c:if>
 
                                     <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
-
                                       <div class="row">
                                         <div class="col-md-6">
                                           <label>Name of HCI</label>
@@ -113,50 +112,8 @@
                                                   value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/></label></span>
                                         </wrms:value>
                                       </div>
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          <label>Are you co-locating with anothe licensee</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                          No
-                                        </div>
-                                      </div>
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          <label>Office Telephone No.</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            ${appGrpPremDto.offTelNo}
-                                        </div>
-                                        <wrms:value width="7">
-                                          <span class="newVal " attr="${appGrpPremDto.offTelNo}"
-                                                style="display: none"><label><c:out value=""/></label></span>
-                                          <span class="oldVal compareTdStyle"
-                                                attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}"
-                                                style="display: none"><label><c:out
-                                                  value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}"/></label></span>
-                                        </wrms:value>
-                                      </div>
+
                                     </c:if>
-
-
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        <label>Address Type</label>
-                                      </div>
-                                      <div class="col-md-6">
-                                        <c:if test="${appGrpPremDto.addrType=='ADDTY001'}"> Apt Blk</c:if>
-                                        <c:if test="${appGrpPremDto.addrType=='ADDTY002'}"> Without Apt Blk</c:if>
-                                        <wrms:value width="7">
-                                        <span class="newVal " attr="${appGrpPremDto.addrType}"
-                                              style="display: none"><label><c:out value=""/></label></span>
-                                          <span class="oldVal compareTdStyle"
-                                                attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType}"
-                                                style="display: none"><label><c:out
-                                                  value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType}"/></label></span>
-                                        </wrms:value>
-                                      </div>
-                                    </div>
 
                                     <div class="row">
                                       <div class="col-md-6">
@@ -177,6 +134,25 @@
 
                                     <div class="row">
                                       <div class="col-md-6">
+                                        <label>Address Type</label>
+                                      </div>
+                                      <div class="col-md-6">
+                                        <c:if test="${appGrpPremDto.addrType=='ADDTY001'}"> Apt Blk</c:if>
+                                        <c:if test="${appGrpPremDto.addrType=='ADDTY002'}"> Without Apt Blk</c:if>
+                                        <wrms:value width="7">
+                                        <span class="newVal " attr="${appGrpPremDto.addrType}"
+                                              style="display: none"><label><c:out value=""/></label></span>
+                                          <span class="oldVal compareTdStyle"
+                                                attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType}"
+                                                style="display: none"><label><c:out
+                                                  value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType}"/></label></span>
+                                        </wrms:value>
+                                      </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                      <div class="col-md-6">
                                         <label>Block / House No.</label>
                                       </div>
                                       <div class="col-md-6">
@@ -191,6 +167,24 @@
                                                 value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}"/></label></span>
                                       </wrms:value>
                                     </div>
+
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        <label>Floor No.</label>
+                                      </div>
+                                      <div class="col-md-6">
+                                          ${appGrpPremDto.floorNo}
+                                        <wrms:value width="7">
+                                        <span class="newVal " attr="${appGrpPremDto.floorNo}"
+                                              style="display: none"><label><c:out value=""/></label></span>
+                                          <span class="oldVal compareTdStyle"
+                                                attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}"
+                                                style="display: none"><label><c:out
+                                                  value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}"/></label></span>
+                                        </wrms:value>
+                                      </div>
+                                    </div>
+
 
                                     <div class="row">
                                       <div class="col-md-6">
@@ -209,23 +203,6 @@
                                       </wrms:value>
                                     </div>
 
-
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        <label>Floor No.</label>
-                                      </div>
-                                      <div class="col-md-6">
-                                        ${appGrpPremDto.floorNo}
-                                          <wrms:value width="7">
-                                        <span class="newVal " attr="${appGrpPremDto.floorNo}"
-                                              style="display: none"><label><c:out value=""/></label></span>
-                                            <span class="oldVal compareTdStyle"
-                                                  attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}"
-                                                  style="display: none"><label><c:out
-                                                    value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}"/></label></span>
-                                          </wrms:value>
-                                      </div>
-                                    </div>
 
                                     <div class="row">
                                       <div class="col-md-6">
@@ -261,22 +238,50 @@
                                       </div>
                                     </div>
 
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        <label>Operating Hours (Start)</label>
+                                    <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
+                                      <div class="row">
+                                        <div class="col-md-6">
+                                          <label>Are you co-locating with anothe licensee</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                          No
+                                        </div>
                                       </div>
-                                      <div class="col-md-6">
-                                          ${appGrpPremDto.onsiteStartHH} (HH): ${appGrpPremDto.onsiteStartMM} (MM)
-                                            <wrms:value width="7">
+                                      <div class="row">
+                                        <div class="col-md-6">
+                                          <label>Office Telephone No.</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            ${appGrpPremDto.offTelNo}
+                                        </div>
+                                        <wrms:value width="7">
+                                          <span class="newVal " attr="${appGrpPremDto.offTelNo}"
+                                                style="display: none"><label><c:out value=""/></label></span>
+                                          <span class="oldVal compareTdStyle"
+                                                attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}"
+                                                style="display: none"><label><c:out
+                                                  value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}"/></label></span>
+                                        </wrms:value>
+                                      </div>
+
+                                      <div class="row">
+                                        <div class="col-md-6">
+                                          <label>Operating Hours (Start)</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            ${appGrpPremDto.onsiteStartHH} (HH): ${appGrpPremDto.onsiteStartMM} (MM)
+                                          <wrms:value width="7">
                                         <span class="newVal " attr="${appGrpPremDto.wrkTimeFrom}" style="display: none"><label><c:out
                                                 value=""/></label></span>
-                                              <span class="oldVal compareTdStyle"
-                                                    attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"
-                                                    style="display: none"><label><c:out
-                                                      value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"/></label></span>
-                                            </wrms:value>
+                                            <span class="oldVal compareTdStyle"
+                                                  attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"
+                                                  style="display: none"><label><c:out
+                                                    value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"/></label></span>
+                                          </wrms:value>
+                                        </div>
                                       </div>
-                                    </div>
+                                    </c:if>
+
 
                                     <div class="row">
                                       <div class="col-md-6">
@@ -458,11 +463,61 @@
                                             modelan@gmail.com
                                           </div>
                                         </div>
-                                        <p><strong>AuthoriseD Person 2</strong></p>
-                                        <p><span class="col-xs-6">Name:</span> Linda Tan MedAlert</p>
-                                        <p><span class="col-xs-6">ID:</span>XXXX-XXXX-XXXX</p>
-                                        <p><strong>MedAlert Contact Person:</strong></p>
-                                        <p><span class="col-xs-6">Name:</span>Shun Qiu</p>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>AuthoriseD Person 2:</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>name:</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                            Linda Tan
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>ID No.:</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                            S4285224D
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>Designation:</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                            CFO
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>Office Telephone:</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                            64593815
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>Mobile No.:</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                            82331122
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>Email Address:</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                            lindatan@gmail.com
+                                          </div>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
