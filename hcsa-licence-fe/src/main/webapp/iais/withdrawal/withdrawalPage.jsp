@@ -102,7 +102,8 @@
 </div>
 <script type="text/javascript">
     function withdrawalReasons(obj) {
-        if (obj == "Others") {
+        console.log(obj);
+        if (obj == "WDR005") {
             $("#reason").show();
         } else {
             $("#reason").css("display", "none")
