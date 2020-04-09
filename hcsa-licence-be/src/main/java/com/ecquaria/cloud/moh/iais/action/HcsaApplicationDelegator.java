@@ -173,18 +173,22 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         //get routing stage dropdown send to page.
-        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
 
-        Map<String,String> routingStage=IaisCommonUtils.genNewHashMap();
+//        Map<String,String> routingStage=IaisCommonUtils.genNewHashMap();
+        List<SelectOption> routingStage = IaisCommonUtils.genNewArrayList();
         if(hcsaSvcRoutingStageDtoList!=null){
             if(hcsaSvcRoutingStageDtoList.size()>0){
                 for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList) {
-                    routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
+                    routingStage.add(new SelectOption(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName()));
+//                    routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
                 }
             }else{
                 //if  this is the last stage
-                routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
-                        "Approve");
+                routingStage.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
+                        "Approve"));
+//                routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
+//                        "Approve");
             }
         }
 
@@ -215,9 +219,12 @@ public class HcsaApplicationDelegator {
 //                routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
 //            }
         }else if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY,"Broadcast Reply For Internal");
+            routingStage.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY,"Broadcast Reply For Internal"));
+//            routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY,"Broadcast Reply For Internal");
         }
+        //set verified values
         applicationViewDto.setVerified(routingStage);
+        ParamUtil.setSessionAttr(bpc.request, "verifiedValues", (Serializable)routingStage);
 
         //recomeDation
         HcsaServiceDto hcsaServiceDto=applicationViewService.getHcsaServiceDtoById(applicationViewDto.getApplicationDto().getServiceId());
