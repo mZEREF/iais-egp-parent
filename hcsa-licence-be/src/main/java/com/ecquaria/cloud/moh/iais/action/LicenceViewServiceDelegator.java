@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
@@ -30,12 +31,14 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import java.io.Serializable;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -66,6 +69,8 @@ public class LicenceViewServiceDelegator {
     private OrganizationClient organizationClient;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
+    @Autowired
+    private AppointmentClient appointmentClient;
     /**
      * StartStep: doStart
      *
@@ -196,6 +201,7 @@ public class LicenceViewServiceDelegator {
             ParamUtil.setRequestAttr(bpc.request,HCSASERVICEDTO,hcsaServiceDto);
         }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        List<PublicHolidayDto> publicHolidayDtos = appointmentClient.getActiveHoliday().getEntity();
         for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
             Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
             Time wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
@@ -203,6 +209,12 @@ public class LicenceViewServiceDelegator {
             for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList){
                 Time startFrom = appPremPhOpenPeriodDto.getStartFrom();
                 Time endTo = appPremPhOpenPeriodDto.getEndTo();
+                Date phDate = appPremPhOpenPeriodDto.getPhDate();
+                for(PublicHolidayDto publicHolidayDto : publicHolidayDtos){
+                    if(publicHolidayDto.getFromDate().compareTo(phDate)==0){
+                        appPremPhOpenPeriodDto.setDayName(publicHolidayDto.getDescription());
+                    }
+                }
                 if(startFrom!=null&&endTo!=null){
                     String string = startFrom.toString();
                     String string1 = endTo.toString();
@@ -229,6 +241,12 @@ public class LicenceViewServiceDelegator {
                 for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList){
                     Time startFrom = appPremPhOpenPeriodDto.getStartFrom();
                     Time endTo = appPremPhOpenPeriodDto.getEndTo();
+                    Date phDate = appPremPhOpenPeriodDto.getPhDate();
+                    for(PublicHolidayDto publicHolidayDto : publicHolidayDtos){
+                        if(publicHolidayDto.getFromDate().compareTo(phDate)==0){
+                            appPremPhOpenPeriodDto.setDayName(publicHolidayDto.getDescription());
+                        }
+                    }
                     if(startFrom!=null&&endTo!=null){
                         String string = startFrom.toString();
                         String string1 = endTo.toString();
@@ -262,6 +280,7 @@ public class LicenceViewServiceDelegator {
         bpc.request.getSession().setAttribute("hcsaServiceStepSchemeDtoList",stringList);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData end ..."));
+        prepareViewServiceForm(bpc);
     }
 
     /**
@@ -399,7 +418,19 @@ public class LicenceViewServiceDelegator {
             for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
                 String svcDocId = appSvcDocDto.getSvcDocId();
                 HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
-                appSvcDocDto.setUpFileName(entity.getDocTitle());
+                if(entity!=null){
+                    appSvcDocDto.setUpFileName(entity.getDocTitle());
+                }
+            }
+        }
+        List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+        if(appSvcLaboratoryDisciplinesDtoList!=null){
+            for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList){
+                List<AppSvcChckListDto> appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                if(appSvcChckListDtoList!=null){
+                    List<AppSvcChckListDto> appSvcChckListDtos = hcsaConfigClient.getAppSvcChckListDto(appSvcChckListDtoList).getEntity();
+                    appSvcLaboratoryDisciplinesDto.setAppSvcChckListDtoList(appSvcChckListDtos);
+                }
             }
         }
         ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
