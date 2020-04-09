@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloudfeign.FeignException;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -81,4 +80,13 @@ public interface TaskService {
      *@Description :
      */
     Set<String> getInspectiors(String corrId , String status, String roleId);
+
+    /**
+     * @description: get the Task before the date
+     *
+     * @author: suocheng on 4/9/2020 1:09 PM
+     * @param: [date]
+     * @return: java.util.List<com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto>
+     */
+    List<TaskDto> getTaskDtoByDate(String date);
 }

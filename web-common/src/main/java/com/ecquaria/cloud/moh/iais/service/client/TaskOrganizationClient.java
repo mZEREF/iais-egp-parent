@@ -7,15 +7,14 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * TaskOrganizationClient
@@ -54,4 +53,7 @@ public interface TaskOrganizationClient {
 
     @GetMapping(value = "/iais-task/corrid-inspectors/{corrId}/{status}/{roleId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Set<String>> getInspectors(@PathVariable(name = "corrId") String corrId, @PathVariable(name = "status") String status, @PathVariable(name = "roleId") String roleId);
+
+    @RequestMapping(path = "/iais-task/Tasks/date",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>> getTaskDtoByDate(@RequestParam(name ="date") String date);
 }

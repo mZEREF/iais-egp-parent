@@ -24,6 +24,8 @@ public final class SystemParamCacheHelper {
 	private SystemParamCacheHelper(){throw new IllegalStateException("Util class");}
 
 	public static final String AUDIT_TRAIL_TIME_LIMIT = "E418B2D1-AD35-EA11-BE7D-000C29F371DC";
+	public static final String ROUND_ROBIN_COMM_POOL_TASK = "66F66EDA-477A-EA11-BE82-000C29F371DC";
+	public static final String LICENCE_GENERATE = "67F66EDA-477A-EA11-BE82-000C29F371DC";
 
 	public static HashMap<String, SystemParameterDto> getSystemParamMapping() {
 		return RedisCacheHelper.getInstance().get(CACHE_NAME_SYSTEM_PARAM);

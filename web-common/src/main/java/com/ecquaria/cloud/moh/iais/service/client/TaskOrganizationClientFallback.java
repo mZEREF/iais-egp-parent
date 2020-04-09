@@ -56,5 +56,10 @@ public class TaskOrganizationClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
-
+    public FeignResponseEntity<List<TaskDto>> getTaskDtoByDate(String date){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

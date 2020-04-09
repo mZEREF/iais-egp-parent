@@ -292,6 +292,11 @@ public class TaskServiceImpl implements TaskService {
         return entity;
     }
 
+    @Override
+    public List<TaskDto> getTaskDtoByDate(String date) {
+        return taskOrganizationClient.getTaskDtoByDate(date).getEntity();
+    }
+
     private boolean isExist(List<TaskDto> taskScoreDtos,String userId){
         boolean result = false;
         for (TaskDto taskScoreDto : taskScoreDtos){
