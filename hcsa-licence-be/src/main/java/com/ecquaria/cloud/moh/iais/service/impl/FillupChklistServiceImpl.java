@@ -994,11 +994,12 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Override
     public String getInspectionLeader(TaskDto taskDto) {
-        String workGrpId = taskDto.getWkGrpId();
-        List<String> leaders = null;
+        List<TaskDto> taskDtos  = organizationClient.getTaskByRefNoStatus(taskDto.getRefNo(),TaskConsts.TASK_STATUS_COMPLETED,TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
+        String workGrpId = "";
+        if( taskDtos  != null && taskDtos.size() >0)
+         workGrpId = taskDtos.get(0).getWkGrpId();
         String leaderStr = null;
-        leaders =  organizationClient.getInspectionLead(workGrpId).getEntity();
-
+        List<String> leaders =  organizationClient.getInspectionLead(workGrpId).getEntity();
         if(!IaisCommonUtils.isEmpty(leaders)){
             for(String temp:leaders){
                 OrgUserDto userDto = organizationClient.retrieveOrgUserAccountById(temp).getEntity();
