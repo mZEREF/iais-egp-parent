@@ -32,19 +32,6 @@ public class INTRANET___IntraLogin___1 extends BaseProcessClass {
 	// 		doLogin->OnStepProcess
 	}
 
-	public void preRole_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preRole", this); 
-	// 		preRole->OnStepProcess
-	}
-
-	public void doRole_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doRole", this); 
-	// 		doRole->OnStepProcess
-	}
-
-	public void validRole_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "validRole", this); 
-	// 		validRole->OnStepProcess
-	}
+	
 
 }

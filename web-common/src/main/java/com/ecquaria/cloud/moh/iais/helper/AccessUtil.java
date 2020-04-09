@@ -125,7 +125,7 @@ public class AccessUtil {
             loginContext.setOrgId(orgUser.getOrgId());
             if (userRoles != null && !userRoles.isEmpty()) {
                 loginContext.getRoleIds().addAll(userRoles);
-                //loginContext.setCurRoleId(userRoles.get(0));
+                loginContext.setCurRoleId(userRoles.get(0));
             }
             if (AppConsts.USER_DOMAIN_INTRANET.equals(orgUser.getUserDomain())) {
                 List<String> wrkGrps = client.getWorkGrpsByUserId(orgUser.getId()).getEntity();

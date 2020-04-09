@@ -51,7 +51,7 @@
                                         <tr>
                                             <td class="row_no"><c:out value="${status.index + 1}"/></td>
                                             <td><c:out value="${pool.licenceNo}"/></td>
-                                            <td><c:out value="${poll.email}"/></td>
+                                            <td><c:out value="${pool.email}"/></td>
                                             <td><c:out value="${pool.requestDate}" /></td>
                                             <td>
                                                 <iais:action style="text-align:right;">
