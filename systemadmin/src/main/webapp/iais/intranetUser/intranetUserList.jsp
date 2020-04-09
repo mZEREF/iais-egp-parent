@@ -81,6 +81,11 @@
         submitUser('doDelete');
     }
 
+    function doRole(Id){
+        $("[name='crud_action_value']").val(Id);
+        submitUser('doRole');
+    }
+
 
     function doExport() {
             submitUser('doExport');

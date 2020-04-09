@@ -5,11 +5,13 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.client.rbac.UserClient;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -189,7 +191,6 @@ public class MohIntranetUserDelegator {
     public void doDelete(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String id = ParamUtil.getString(request, IntranetUserConstant.CRUD_ACTION_VALUE);
-
         OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(id);
         String userDomain = orgUserDto.getUserDomain();
         String userId = orgUserDto.getUserId();
@@ -208,6 +209,50 @@ public class MohIntranetUserDelegator {
         }
     }
 
+    public void prepareAddRole(BaseProcessClass bpc){
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        if (request == null) {
+            return;
+        }
+        String userAccId = request.getParameter(IntranetUserConstant.CRUD_ACTION_VALUE);
+        List<String> assignRoleOption = getAssignRoleOption();
+        List<OrgUserRoleDto> orgUserRoleDtos = intranetUserService.retrieveRolesByuserAccId(userAccId);
+        List<String> roles = IaisCommonUtils.genNewArrayList();
+        if(orgUserRoleDtos!=null&&!userAccId.isEmpty()){
+            for(OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos){
+                String roleName = orgUserRoleDto.getRoleName();
+                roles.add(roleName);
+            }
+        }
+        assignRoleOption.removeAll(roles);
+        ParamUtil.setSessionAttr(bpc.request, "assignRoleOption", (Serializable) assignRoleOption);
+        ParamUtil.setSessionAttr(bpc.request, "alreadyAssignRoles", (Serializable) roles);
+
+        if (userAccId != null) {
+            OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(userAccId);
+            String userId = orgUserDto.getUserId();
+            ParamUtil.setSessionAttr(bpc.request,"userIdName", userId);
+            ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
+        }
+
+    }
+
+    public void addRole(BaseProcessClass bpc){
+        String actionType = ParamUtil.getString(bpc.request, "crud_action_type");
+        if ("back".equals(actionType)) {
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            return;
+        }
+        OrgUserDto orgUserDto = (OrgUserDto)ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
+        String[] assignRoles = ParamUtil.getMaskedStrings(bpc.request, "assignRole");
+        String[] removeRoles = ParamUtil.getMaskedStrings(bpc.request, "removeRole");
+        String userDomain = orgUserDto.getUserDomain();
+        String userId = orgUserDto.getUserId();
+        String userAccId = orgUserDto.getId();
+        //ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, userDomain);
+
+    }
+
     public void doImport(BaseProcessClass bpc) throws IOException, DocumentException {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CommonsMultipartFile sessionFile = (CommonsMultipartFile) request.getFile("xmlFile");
@@ -220,7 +265,6 @@ public class MohIntranetUserDelegator {
     public void inportBack(BaseProcessClass bpc) {
         return;
     }
-
 
     public void doExport(BaseProcessClass bpc) throws IOException {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
@@ -689,6 +733,35 @@ public class MohIntranetUserDelegator {
         result.add(so2);
         result.add(so3);
         return result;
+    }
+
+    private List<String> getAssignRoleOption(){
+        List<String> roleOptions = IaisCommonUtils.genNewArrayList();
+        String so1 = "INSPECTOR";
+        String so2 = "INSPECTOR_LEAD";
+        String so3 = "AO1";
+        String so4 = "AO1_LEAD";
+        String so5 =  "AO2";
+        String so6 = "AO2_LEAD";
+        String so7 = "AO3";
+        String so8 = "AO3_LEAD";
+        String so9 =  "ASO";
+        String so10 = "ASO_LEAD";
+        String so11 =  "PSO";
+        String so12 =  "PSO_LEAD";
+        roleOptions.add(so1);
+        roleOptions.add(so2);
+        roleOptions.add(so3);
+        roleOptions.add(so4);
+        roleOptions.add(so5);
+        roleOptions.add(so6);
+        roleOptions.add(so7);
+        roleOptions.add(so8);
+        roleOptions.add(so9);
+        roleOptions.add(so10);
+        roleOptions.add(so11);
+        roleOptions.add(so12);
+        return roleOptions;
     }
 
     private static File inputStreamToFile(InputStream ins, File file) {
