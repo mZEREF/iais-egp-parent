@@ -12,11 +12,11 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>Document</th>
-                    <th>File</th>
-                    <th>Size</th>
-                    <th>Submitted By</th>
-                    <th>Date Submitted</th>
+                    <th width="30%">Document</th>
+                    <th width="20%">File</th>
+                    <th width="10%">Size</th>
+                    <th width="20%">Submitted By</th>
+                    <th width="20%">Date Submitted</th>
                 </tr>
                 </thead>
 
@@ -32,23 +32,23 @@
                 <c:forEach items="${applicationViewDto.appSupDocDtoList}"
                            var="appSupDocDto">
                     <tr>
-                        <td>
+                        <td width="30%">
                             <p><c:out value="${appSupDocDto.file}"></c:out></p>
                         </td>
-                        <td>
+                        <td width="20%">
                             <p>
                                 <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${appSupDocDto.fileRepoId}"/>&fileRepoName=${appSupDocDto.document}" title="Download" class="downloadFile">
                                     <c:out value="${appSupDocDto.document}"></c:out>
                                 </a>
                             </p>
                         </td>
-                        <td>
+                        <td width="10%">
                             <p><c:out value="${appSupDocDto.size}"></c:out></p>
                         </td>
-                        <td>
+                        <td width="20%">
                             <p><c:out value="${appSupDocDto.submittedBy}"></c:out></p>
                         </td>
-                        <td>
+                        <td width="20%">
                             <p><c:out value="${appSupDocDto.dateSubmitted}"></c:out></p>
                         </td>
                     </tr>
@@ -66,12 +66,12 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>Document</th>
-                    <th>File</th>
-                    <th>Size</th>
-                    <th>Submitted By</th>
-                    <th>Date Submitted</th>
-                    <th>Action</th>
+                    <th  width="30%">Document</th>
+                    <th width="20%">File</th>
+                    <th  width="10%">Size</th>
+                    <th width="20%">Submitted By</th>
+                    <th width="15%">Date Submitted</th>
+                    <th width="5%">Action</th>
                 </tr>
                 </thead>
                 <tbody id="tbodyFileListId">
@@ -87,23 +87,23 @@
                     <c:otherwise>
                         <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
                             <tr>
-                                <td>
+                                <td  width="30%">
                                     <p><c:out value="${interalFile.docDesc}"></c:out></p>
                                 </td>
-                                <td>
+                                <td  width="20%">
                                     <p><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${interalFile.docName}" title="Download" class="downloadFile"><c:out
                                             value="${interalFile.docName}.${interalFile.docType}"></c:out></a></p>
                                 </td>
-                                <td>
+                                <td  width="10%">
                                     <p><c:out value="${interalFile.docSize}"></c:out></p>
                                 </td>
-                                <td>
+                                <td  width="20%">
                                     <p><c:out value="${interalFile.submitByName}"></c:out></p>
                                 </td>
-                                <td>
+                                <td  width="15%">
                                     <p>${interalFile.submitDtString}</p>
                                 </td>
-                                <td>
+                                <td width="5%">
                                     <button type="button" class="btn btn-danger btn-sm" onclick="javascript:deleteFile(this,'${interalFile.id}');"><i class="fa fa-times"></i></button>
                                 </td>
                             </tr>
