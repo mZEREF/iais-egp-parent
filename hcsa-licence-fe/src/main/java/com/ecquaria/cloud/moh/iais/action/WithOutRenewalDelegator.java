@@ -196,9 +196,9 @@ public class WithOutRenewalDelegator {
 //finish pay
         RenewDto renewDto = (RenewDto)ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
-        String groupNo = "";
+        String groupId = "";
         if(appSubmissionDtos.size() != 0){
-            groupNo = appSubmissionDtos.get(0).getAppGrpNo();
+            groupId = appSubmissionDtos.get(0).getAppGrpId();
         }
         String result = ParamUtil.getString(bpc.request,"result");
         if (!StringUtil.isEmpty(result)) {
@@ -213,7 +213,7 @@ public class WithOutRenewalDelegator {
 
                 //update status
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
-                appGrp.setId(groupNo);
+                appGrp.setId(groupId);
                 appGrp.setPmtRefNo(pmtRefNo);
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
@@ -269,6 +269,7 @@ public class WithOutRenewalDelegator {
         //set group no.
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
             appSubmissionDto.setAppGrpNo(applicationGroupDto.getGroupNo());
+            appSubmissionDto.setAppGrpId(applicationGroupDto.getId());
         }
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
         ParamUtil.setRequestAttr(bpc.request,"applicationGroupDto",applicationGroupDto);
