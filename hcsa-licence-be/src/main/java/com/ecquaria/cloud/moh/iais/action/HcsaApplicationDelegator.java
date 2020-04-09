@@ -763,9 +763,10 @@ public class HcsaApplicationDelegator {
             taskDto =  completedTask(taskDto);
             broadcastOrganizationDto.setComplateTask(taskDto);
             String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
+            String externalRemarks = ParamUtil.getString(bpc.request,"comments");
             String processDecision = ParamUtil.getString(bpc.request,"nextStage");
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
-                    applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),internalRemarks,processDecision,taskDto.getRoleId());
+                    applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),internalRemarks,externalRemarks,processDecision,taskDto.getRoleId());
             broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
             broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto)CopyUtil.copyMutableObject(applicationDto));
             //update application status
@@ -776,7 +777,7 @@ public class HcsaApplicationDelegator {
                     null,null,0,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW, RoleConsts.USER_ROLE_BROADCAST,IaisEGPHelper.getCurrentAuditTrailDto());
             broadcastOrganizationDto.setCreateTask(taskDtoNew);
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),
-                    taskDto.getTaskKey(),null, taskDto.getWkGrpId(),null,null,RoleConsts.USER_ROLE_AO3);
+                    taskDto.getTaskKey(),null, taskDto.getWkGrpId(),null,null,externalRemarks,RoleConsts.USER_ROLE_AO3);
             broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             //save the broadcast
             broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -875,8 +876,10 @@ public class HcsaApplicationDelegator {
         Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
+        String externalRemarks = ParamUtil.getString(bpc.request,"comments");
         map.put("APPLICANT_NAME",licenseeDto.getName());
         map.put("DETAILS","");
+        map.put("COMMENTS",StringUtil.viewHtml(externalRemarks));
         map.put("A_HREF",url);
         map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
@@ -1025,6 +1028,7 @@ public class HcsaApplicationDelegator {
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
+        String externalRemarks = ParamUtil.getString(bpc.request,"comments");
         String processDecision = ParamUtil.getString(bpc.request,"nextStage");
         log.info(StringUtil.changeForLog("The processDecision is -- >:"+processDecision));
         //judge the final status is Approve or Reject.
@@ -1043,7 +1047,7 @@ public class HcsaApplicationDelegator {
         taskDto =  completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
-                applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),internalRemarks,processDecision,taskDto.getRoleId());
+                applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),internalRemarks,externalRemarks,processDecision,taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
         //update application status
         broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
@@ -1104,7 +1108,7 @@ public class HcsaApplicationDelegator {
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,newCorrelationId);
                 broadcastOrganizationDto.setCreateTask(newTaskDto);
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),stageId,HcsaConsts.ROUTING_STAGE_PRE,
-                        taskDto.getWkGrpId(),null,null,roleId);
+                        taskDto.getWkGrpId(),null,null,externalRemarks,roleId);
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             }else{
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,newCorrelationId);
@@ -1113,7 +1117,7 @@ public class HcsaApplicationDelegator {
             //add history for next stage start
             if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)&&!ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)){
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),stageId,null,
-                        taskDto.getWkGrpId(),null,null,roleId);
+                        taskDto.getWkGrpId(),null,null,externalRemarks,roleId);
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             }
         }else{
@@ -1170,7 +1174,7 @@ public class HcsaApplicationDelegator {
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
         String processDecision = ParamUtil.getString(bpc.request,"nextStage");
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
-                applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),internalRemarks,processDecision,taskDto.getRoleId());
+                applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),internalRemarks,null,processDecision,taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
         //update application status
         broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
@@ -1189,7 +1193,7 @@ public class HcsaApplicationDelegator {
         broadcastOrganizationDto.setCreateTask(newTaskDto);
 
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),stageId,null,
-                taskDto.getWkGrpId(),null,null,roleId);
+                taskDto.getWkGrpId(),null,null,null,roleId);
         broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
 
         //save the broadcast
@@ -1225,13 +1229,14 @@ public class HcsaApplicationDelegator {
        return workingGroupDto;
     }
     private AppPremisesRoutingHistoryDto getAppPremisesRoutingHistory(String appNo, String appStatus,
-                                                                         String stageId,String subStageId,String wrkGrpId, String internalRemarks,String processDecision,
+                                                                         String stageId,String subStageId,String wrkGrpId, String internalRemarks,String externalRemarks,String processDecision,
                                                                       String roleId){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setSubStage(subStageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setExternalRemarks(externalRemarks);
         appPremisesRoutingHistoryDto.setProcessDecision(processDecision);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
         appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());

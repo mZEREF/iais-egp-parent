@@ -607,6 +607,22 @@
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
+
+                                                    <div id="comments" class="hidden">
+                                                        <%String commentsValue = request.getParameter("comments");%>
+                                                        <iais:row>
+                                                            <iais:field value="Comments" required="false"  width="12"/>
+                                                            <iais:value width="10">
+                                                                <div class="input-group">
+                                                                    <div class="ax_default text_area">
+                                                                        <textarea name="comments" cols="70"
+                                                                                  rows="7" maxlength="300"><%=commentsValue == null ? "" : commentsValue%></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </iais:value>
+                                                        </iais:row>
+                                                    </div>
+
                                                     <div id="licenceStartDate">
                                                         <iais:row>
                                                             <iais:field value="Licence Start Date" required="false"/>
@@ -822,12 +838,20 @@
         if (selectValue == "VERIFIED") {
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $('#comments').addClass('hidden');
         } else if (selectValue == "ROLLBACK") {
             $('#rollBackDropdown').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
+            $('#comments').addClass('hidden');
+        } else if (selectValue == "PROCRFI") {
+            $('#verifiedDropdown').addClass('hidden');
+            $('#rollBackDropdown').addClass('hidden');
+            $('#comments').removeClass('hidden');
+            // showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
         } else {
             $('#rollBackDropdown').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
+            $('#comments').addClass('hidden');
         }
     }
 
@@ -837,12 +861,18 @@
         if (selectValue == "VERIFIED") {
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $('#comments').addClass('hidden');
         } else if (selectValue == "ROLLBACK") {
             $('#rollBackDropdown').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
+            $('#comments').addClass('hidden');
         } else if (selectValue == "PROCRFI") {
+            $('#verifiedDropdown').addClass('hidden');
+            $('#rollBackDropdown').addClass('hidden');
+            $('#comments').removeClass('hidden');
             showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
         } else {
+            $('#comments').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
 
