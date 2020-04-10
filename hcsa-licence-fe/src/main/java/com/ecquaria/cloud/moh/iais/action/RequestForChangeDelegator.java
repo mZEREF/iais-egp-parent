@@ -415,6 +415,11 @@ public class RequestForChangeDelegator {
                     ParamUtil.setRequestAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, hcsaServiceDtos);
                     NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
                     appSubmissionService.setRiskToDto(appSubmissionDto);
+
+                    String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
+                    log.info(StringUtil.changeForLog("the draftNo -->:") + draftNo);
+                    appSubmissionDto.setDraftNo(draftNo);
+
                     AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
                     ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
                     StringBuffer url = new StringBuffer();
