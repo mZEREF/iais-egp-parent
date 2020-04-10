@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -19,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -43,9 +45,8 @@ public class MassEmailDelegator {
     private SearchParam searchParam;
     private static final String BASE_SERVICE = "SVTP001";
     private static final String SPECIFIED_SERVICE = "SVTP003";
-    private static final String EMAIL = "email";
-    private static final String SMS = "sms";
-    private static final String BOTH = "both";
+    private static final String EMAIL = "Email";
+    private static final String SMS = "SMS";
     @Autowired
     DistributionListService distributionListService;
 
@@ -53,21 +54,20 @@ public class MassEmailDelegator {
         searchParam = new SearchParam(DistributionListDto.class.getName());
         searchParam.setPageSize(10);
         searchParam.setPageNo(1);
-        searchParam.setSort("ID", SearchParam.ASCENDING);
+        searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
+        searchParam.addFilter("status", AppConsts.COMMON_STATUS_ACTIVE,true);
         AuditTrailHelper.auditFunction("distrribution", "distrribution");
-        ParamUtil.setRequestAttr(bpc.request, "firstOption", "Please select");
-        ParamUtil.setRequestAttr(bpc.request, "firstValue", " ");
     }
     /**
      * doPrepare
      * @param bpc
      */
     public void prepare(BaseProcessClass bpc){
-        searchParam.addFilter("status", AppConsts.COMMON_STATUS_ACTIVE,true);
-        searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
         CrudHelper.doPaging(searchParam,bpc.request);
         QueryHelp.setMainSql("systemAdmin", "queryMassDistributionList",searchParam);
         SearchResult<DistributionListDto> searchResult = distributionListService.distributionList(searchParam);
+        setServiceSelect(bpc);
+        setRoleSelection(bpc);
         ParamUtil.setRequestAttr(bpc.request,"distributionSearchResult",searchResult);
         ParamUtil.setRequestAttr(bpc.request,"distributionSearchParam",searchParam);
 
@@ -79,9 +79,9 @@ public class MassEmailDelegator {
      */
     public void create(BaseProcessClass bpc){
         setServiceSelect(bpc);
-        ParamUtil.setRequestAttr(bpc.request, "firstOption", "Please select");
-        ParamUtil.setRequestAttr(bpc.request, "firstValue", null);
-
+        ParamUtil.setSessionAttr(bpc.request,"distribution",null);
+        setModeSelection(bpc);
+        setRoleSelection(bpc);
     }
 
     /**
@@ -89,38 +89,37 @@ public class MassEmailDelegator {
      * @param bpc
      */
     public void save(BaseProcessClass bpc){
-        String[] mode =  ParamUtil.getStrings(bpc.request, "mode");
+        String mode = ParamUtil.getString(bpc.request, "mode");
         String id =  ParamUtil.getString(bpc.request, "distributionId");
         String name =  ParamUtil.getString(bpc.request, "name");
         String service =  ParamUtil.getString(bpc.request, "service");
         String role =  ParamUtil.getString(bpc.request, "role");
-        String dismode = "";
-        if(mode != null ) {
-            if (mode.length > 1) {
-                dismode = BOTH;
-            } else {
-                dismode = mode[0];
-            }
-        }
+        String email = ParamUtil.getString(bpc.request, "email");
+
         DistributionListWebDto distributionListDto = new DistributionListWebDto();
+        if(email != null){
+            List<String> emaillist = Arrays.asList(email.split("\\n"));
+            distributionListDto.setEmailAddress(emaillist);
+        }
+        if(id != null)
+        {
+            distributionListDto.setId(id);
+        }
         distributionListDto.setService(service);
         distributionListDto.setDisname(name);
-        distributionListDto.setMode(dismode);
+        distributionListDto.setMode(mode);
         distributionListDto.setRole(role);
+        ParamUtil.setSessionAttr(bpc.request,"distribution",distributionListDto);
         ValidationResult validationResult = WebValidationHelper.validateProperty(distributionListDto, "save");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
+            String emailAddress = StringUtils.join(distributionListDto.getEmailAddress(),"\n");
+            ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
             ParamUtil.setRequestAttr(bpc.request,"distribution",distributionListDto);
         }else{
-            if(id != null)
-            {
-                distributionListDto.setId(id);
-            }
             distributionListService.saveDistributionList(distributionListDto);
-            ParamUtil.setRequestAttr(bpc.request, "firstOption", "Please select");
-            ParamUtil.setRequestAttr(bpc.request, "firstValue", " ");
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
         }
 
@@ -144,32 +143,34 @@ public class MassEmailDelegator {
      * @param bpc
      */
     public void search(BaseProcessClass bpc){
-        String distributionSwitch = ParamUtil.getRequestString(bpc.request,"distributionSwitch");
-        String recipientsSwitch = ParamUtil.getRequestString(bpc.request,"recipientsSwitch");
-        String service = ParamUtil.getString(bpc.request,"service");
-        String serviceName = ParamUtil.getRequestString(bpc.request,"serviceName");
+        String distributionName = ParamUtil.getRequestString(bpc.request,"distributionName");
+        String role = ParamUtil.getString(bpc.request, "role");
+        String service = ParamUtil.getString(bpc.request, "service");
         searchParam.getParams().clear();
         searchParam.getFilters().clear();
         searchParam.setPageNo(1);
-        if(!StringUtil.isEmpty(distributionSwitch)){
-            searchParam.addFilter("description", "%" + distributionSwitch + "%",true);
+        searchParam.setPageSize(10);
+        searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
+        searchParam.addFilter("status", AppConsts.COMMON_STATUS_ACTIVE,true);
+        if(!StringUtil.isEmpty(distributionName)){
+            searchParam.addFilter("description", "%" + distributionName + "%",true);
+        }else{
+            distributionName = null;
         }
-        if(!StringUtil.isEmpty(recipientsSwitch)){
-            searchParam.addFilter("recipients",  "%" +recipientsSwitch + "%",true);
+        if(!StringUtil.isEmpty(role)){
+            searchParam.addFilter("recipients",  "%" +role + "%",true);
+        }else{
+            role = null;
         }
         if(!StringUtil.isEmpty(service)){
             searchParam.addFilter("service",  service,true);
         }else{
-            service = " ";
-        }
-        if(StringUtil.isEmpty(serviceName)){
-            serviceName = "Please select";
+            service = null;
         }
         setServiceSelect(bpc);
-        ParamUtil.setRequestAttr(bpc.request,"distributionSwitch",distributionSwitch);
-        ParamUtil.setRequestAttr(bpc.request,"recipientsSwitch",recipientsSwitch);
-        ParamUtil.setRequestAttr(bpc.request,"firstValue",service);
-        ParamUtil.setRequestAttr(bpc.request,"firstOption",serviceName);
+        ParamUtil.setRequestAttr(bpc.request,"distributionName",distributionName);
+        ParamUtil.setRequestAttr(bpc.request,"role",role);
+        ParamUtil.setRequestAttr(bpc.request,"service",service);
     }
 
     /**
@@ -180,6 +181,8 @@ public class MassEmailDelegator {
         String id =  ParamUtil.getString(bpc.request, "editDistribution");
         DistributionListWebDto distributionListDto = distributionListService.getDistributionListById(id);
         setServiceSelect(bpc);
+        setModeSelection(bpc);
+        setRoleSelection(bpc);
         ParamUtil.setRequestAttr(bpc.request,"distribution",distributionListDto);
         ParamUtil.setRequestAttr(bpc.request, "firstOption", distributionListDto.getService());
     }
@@ -200,8 +203,26 @@ public class MassEmailDelegator {
         baseService.addAll(specifiedService);
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
         for (HcsaServiceDto item : baseService) {
-            selectOptionArrayList.add(new SelectOption(item.getId(),item.getSvcName()));
+            selectOptionArrayList.add(new SelectOption(item.getSvcCode(),item.getSvcName()));
         }
-        ParamUtil.setSessionAttr(bpc.request, "service", (Serializable) selectOptionArrayList);
+        ParamUtil.setRequestAttr(bpc.request, "serviceSelection", (Serializable) selectOptionArrayList);
+    }
+
+    private void setModeSelection(BaseProcessClass bpc){
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+        selectOptions.add(new SelectOption(EMAIL,EMAIL));
+        selectOptions.add(new SelectOption(SMS,SMS));
+        ParamUtil.setRequestAttr(bpc.request, "modeSelection",  (Serializable) selectOptions);
+    }
+
+    private void setRoleSelection(BaseProcessClass bpc){
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+        selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,"CGO"));
+        selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_PO,"Principal Officer"));
+        selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO,"Deputy Principal Officer"));
+        selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE,"Licensee"));
+        selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_AP,"Authorised Person"));
+        selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT,"MedAlert"));
+        ParamUtil.setRequestAttr(bpc.request, "roleSelection",  (Serializable) selectOptions);
     }
 }

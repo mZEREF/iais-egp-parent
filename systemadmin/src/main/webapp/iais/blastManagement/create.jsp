@@ -25,7 +25,7 @@
                             <h2>New Blast Management List</h2>
                         </div>
                             <c:choose>
-                                <c:when test="${empty edit.getMode() || 'email'.equals(edit.getMode())}">
+                                <c:when test="${empty edit.getMode() || 'Email'.equals(edit.getMode())}">
                                     <ul class="progress-tracker" id="emailFlow" >
                                         <li class="tracker-item active">Fill in Message Details</li>
                                         <li class="tracker-item ">Write Message</li>
@@ -49,10 +49,18 @@
                                 </c:otherwise>
                             </c:choose>
                         <div class="form-group">
+                            <iais:field value="Message ID"/>
+                            <iais:value>
+                                <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <input id="msgId" type="text" name="msgId" value="${edit.messageId}" readonly>
+                                </div>
+                            </iais:value>
+                        </div>
+                        <div class="form-group">
                             <iais:field value="Message Name" required="true"/>
                             <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="name" type="text" name="name" value="${edit.getMsgName()}">
+                                <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <input id="msgName" type="text" name="msgName" maxlength="500" value="${edit.getMsgName()}">
                                     <span id="error_msgName" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -61,30 +69,33 @@
                         <div class="form-group">
                             <iais:field value="Mode of Delivery" required="true"/>
                             <iais:value>
-                                <iais:value width="10">
-                                    <iais:select name="mode" options="mode" onchange="changeFlow(this.value)" value=""></iais:select>
-                                </iais:value>
+                                <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <iais:select name="mode" options="mode" firstOption="Please Select" onchange="changeFlow(this.value)" value="${edit.mode}"></iais:select>
+                            </div>
                             </iais:value>
                         </div>
 
                         <div class="form-group">
                             <iais:field value="Send date and time" required="true"/>
                             <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:datePicker id="date" name="date"  value="${schedule}" ></iais:datePicker>
-                                    <input type="text" value="${edit.getHH()}" maxlength="2" style="width: 60px" name="HH"/>&nbsp;(HH)
-                                    :
-                                    <input type="text" value="${edit.getMM()}" maxlength="2" style="width: 60px"  name="MM"/>&nbsp;(MM)
+                                <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <iais:datePicker id="date" name="date"   value="${schedule}" ></iais:datePicker>
                                 </div>
-                                <span id="error_date" name="iaisErrorMsg" class="error-msg"></span>
+                                <div style="width: 10%;float: left">
+                                    <iais:select name="HH" options="HHselect" value="${edit.HH}"></iais:select>
+                                </div>
+                                <div style="width: 5%;float: left;line-height: 50px;height: 80px;">&nbsp;(HH):</div>
+                                <div style="width: 10%;float: left">
+                                    <iais:select name="MM" options="MMselect"  value="${edit.MM}"></iais:select>
+                                </div>
+                                <div style="width: 5%;float: left;line-height: 50px;height: 80px;">&nbsp;(MM)</div>
                             </iais:value>
                         </div>
                         <div class="form-group">
                             <iais:field value="Status" required="true"/>
-                                <iais:value width="10">
-                                    <iais:select name="status" options="status" value=""></iais:select>
-                                </iais:value>
-                            <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
+                            <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <iais:select name="status" options="status" firstOption="Please Select" value="${edit.status}"></iais:select>
+                            </div>
                         </div>
                     </div>
                     <div class="application-tab-footer">

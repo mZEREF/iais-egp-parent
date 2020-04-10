@@ -105,6 +105,7 @@ public class BlastManagementDelegator {
      */
     public void create(BaseProcessClass bpc){
         blastManagementDto = new BlastManagementDto();
+        blastManagementDto.setMessageId(blastManagementListService.getMessageId());
     }
 
     /**
@@ -130,16 +131,18 @@ public class BlastManagementDelegator {
         String schedule = Formatter.formatDate(blastManagementDto.getSchedule());
         ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
         ParamUtil.setRequestAttr(bpc.request,"schedule",schedule);
-        setStatusSelection(bpc,blastManagementDto.getStatus());
-        setModeSelection(bpc,blastManagementDto.getMode());
+        setStatusSelection(bpc);
+        setModeSelection(bpc);
+        setTimeSelection(bpc);
     }
 
     public void editBeforeFill(BaseProcessClass bpc){
         String schedule = Formatter.formatDate(blastManagementDto.getSchedule());
         ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
         ParamUtil.setRequestAttr(bpc.request,"schedule",schedule);
-        setStatusSelection(bpc,blastManagementDto.getStatus());
-        setModeSelection(bpc,blastManagementDto.getMode());
+        setStatusSelection(bpc);
+        setModeSelection(bpc);
+        setTimeSelection(bpc);
     }
 
     /**
@@ -216,9 +219,10 @@ public class BlastManagementDelegator {
      * @param bpc
      */
     public void fillMessage(BaseProcessClass bpc){
-        String name = ParamUtil.getString(bpc.request, "name");
+        String name = ParamUtil.getString(bpc.request, "msgName");
         String mode = ParamUtil.getString(bpc.request, "mode");
         String date = ParamUtil.getString(bpc.request, "date");
+        String msgId = ParamUtil.getString(bpc.request, "msgId");
         String HH = ParamUtil.getString(bpc.request, "HH");
         String MM = ParamUtil.getString(bpc.request, "MM");
         ParamUtil.setRequestAttr(bpc.request,"hour",HH);
@@ -230,17 +234,19 @@ public class BlastManagementDelegator {
         blastManagementDto.setHH(HH);
         blastManagementDto.setMM(MM);
         SimpleDateFormat newformat =  new SimpleDateFormat("dd/MM/yyyy");
-        Date schedule = new Date();
+
         if(!StringUtil.isEmpty(date)){
             try {
+                Date schedule = new Date();
                 schedule = newformat.parse(date);
                 long time = schedule.getTime();
                 schedule.setTime(time);
+                blastManagementDto.setSchedule(schedule);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
-        blastManagementDto.setSchedule(schedule);
+
         ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
         ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page1");
         if(validationResult != null && validationResult.isHasErrors()) {
@@ -254,14 +260,15 @@ public class BlastManagementDelegator {
         }else{
             if(!StringUtil.isEmpty(date)){
                 try {
+                    Date schedule = new Date();
                     schedule = newformat.parse(date);
                     long time = schedule.getTime() + Long.parseLong(HH) * 60 * 60 * 1000 + Long.parseLong(MM) * 60 * 1000;
                     schedule.setTime(time);
+                    blastManagementDto.setSchedule(schedule);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
-            blastManagementDto.setSchedule(schedule);
             if(mode.equals(SMS)){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, SMS);
             }else{
@@ -462,40 +469,31 @@ public class BlastManagementDelegator {
 
     }
 
-    private void setModeSelection(BaseProcessClass bpc,String selected){
+    private void setModeSelection(BaseProcessClass bpc){
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
-        if(selected != null){
-            if(selected.equals(EMAIL)){
-                selectOptions.add(new SelectOption(EMAIL,EMAIL));
-                selectOptions.add(new SelectOption(SMS,SMS));
-            }else{
-                selectOptions.add(new SelectOption(SMS,SMS));
-                selectOptions.add(new SelectOption(EMAIL,EMAIL));
-            }
-        }else{
-            selectOptions.add(new SelectOption("","Please Select"));
-            selectOptions.add(new SelectOption(EMAIL,EMAIL));
-            selectOptions.add(new SelectOption(SMS,SMS));
-        }
+        selectOptions.add(new SelectOption(EMAIL,EMAIL));
+        selectOptions.add(new SelectOption(SMS,SMS));
         ParamUtil.setSessionAttr(bpc.request, "mode",  (Serializable) selectOptions);
     }
 
-    private void setStatusSelection(BaseProcessClass bpc,String selected){
+    private void setStatusSelection(BaseProcessClass bpc){
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
-        if(selected != null){
-            if(selected.equals(AppConsts.COMMON_STATUS_ACTIVE)){
-                selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_ACTIVE,"active"));
-                selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_IACTIVE,"inactive"));
-            }else{
-                selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_IACTIVE,"inactive"));
-                selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_ACTIVE,"active"));
-            }
-        }else{
-            selectOptionArrayList.add(new SelectOption("","Please Select"));
-            selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_ACTIVE,"active"));
-            selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_IACTIVE,"inactive"));
-        }
+        selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_ACTIVE,"Active"));
+        selectOptionArrayList.add(new SelectOption(AppConsts.COMMON_STATUS_IACTIVE,"Inactive"));
         ParamUtil.setRequestAttr(bpc.request, "status",  selectOptionArrayList);
+    }
+
+    private void setTimeSelection(BaseProcessClass bpc){
+        List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i< 24;i++){
+            timeHourList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
+        }
+        List<SelectOption> timeMinList = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i< 60;i++){
+            timeMinList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
+        }
+        ParamUtil.setRequestAttr(bpc.request, "HHselect",  timeHourList);
+        ParamUtil.setRequestAttr(bpc.request, "MMselect",  timeMinList);
     }
 
 }

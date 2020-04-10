@@ -75,4 +75,12 @@ public class SystemClientFallback implements SystemClient{
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<String> messageID() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 }

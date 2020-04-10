@@ -25,24 +25,25 @@
                         <h2>Distribution List</h2>
                     </div>
                     <div class="row">
-                        <div class="form-horizontal">
+                        <div class="form-horizontal" id="searchCondition">
                             <div class="form-group">
                                 <label class="col-xs-12 col-md-4 control-label" >Distribution Name</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input type="text" name="distributionSwitch" id="distributionSwitch" value="${distributionSwitch}"/>
+                                    <input type="text" name="distributionName" id="distributionName" maxlength="500" value="${distributionName}"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-xs-12 col-md-4 control-label" >Recipients Role</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input type="text" name="recipientsSwitch" id="recipientsSwitch" maxlength="500" value="${recipientsSwitch}"/>
+                                    <iais:select name="role" options="roleSelection" id="role"
+                                                 firstOption="Please Select" value="${role}"></iais:select>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-xs-12 col-md-4 control-label" >Select Service</label>
+                                <label class="col-xs-12 col-md-4 control-label" >Service</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:select name="service" options="service" id="service"  onchange="getServiceName()"
-                                                 firstOption="${firstOption}" value="${firstValue}"></iais:select>
+                                    <iais:select name="service" options="serviceSelection" id="service"
+                                                 firstOption="Please Select" value="${service}"></iais:select>
                                 </div>
                             </div>
                         </div>
@@ -50,8 +51,8 @@
                             <div class="row">
                                 <div class="col-xs-11 col-md-11">
                                     <div class="text-right">
-                                        <a class="btn btn-secondary" onclick="javascript:clearSearch()">Clear</a>
-                                        <a class="btn btn-primary" onclick="javascript:search()">Search</a>
+                                        <a class="btn btn-secondary" onclick="clearSearch()">Clear</a>
+                                        <a class="btn btn-primary" onclick="searchResult()">Search</a>
                                     </div>
                                 </div>
                             </div>
@@ -77,7 +78,7 @@
                                 <c:choose>
                                     <c:when test="${empty distributionSearchResult.rows}">
                                         <tr>
-                                            <td  colspan="6" >
+                                            <td  colspan="9" >
                                                 <iais:message key="No Result!" escape="true"></iais:message>
                                                 <!--No Record!!-->
                                             </td>
@@ -135,7 +136,6 @@
             </div>
         </div>
         <input hidden id="editDistribution" name="editDistribution" value="">
-        <input hidden name="serviceName" value="">
     </form>
 </div>
 <%@ include file="/include/validation.jsp" %>
@@ -161,15 +161,14 @@ function edit(id) {
 function jumpToPagechangePage() {
     SOP.Crud.cfxSubmit("mainForm","search");
 }
-function search() {
+function searchResult() {
     SOP.Crud.cfxSubmit("mainForm","search");
 }
 function clearSearch(){
-    $('input[name="distributionSwitch"]').val("");
-    $('input[name="recipientsSwitch"]').val("");
+    $('input[name="distributionName"]').val("");
+    $("#role option:first").prop("selected", 'selected');
     $("#service option:first").prop("selected", 'selected');
+    $("#searchCondition .current").text("Please Select");
 }
-function getServiceName(){
-    $("#serviceName").val($("select[name='service']").val());
-}
+
 </script>

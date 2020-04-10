@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.client.BlastManagementListClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,8 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
     private EmailHistoryClient emailHistoryClient ;
     @Autowired
     private EmailSmsClient emailSmsClient;
+    @Autowired
+    private SystemClient systemClient;
     @Override
     public SearchResult<BlastManagementListDto> blastList(SearchParam searchParam) {
         return blastManagementListClient.getBlastManagementList(searchParam).getEntity();
@@ -85,5 +88,8 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
         }
     }
 
-
+    @Override
+    public String getMessageId(){
+        return systemClient.messageID().getEntity();
+    }
 }

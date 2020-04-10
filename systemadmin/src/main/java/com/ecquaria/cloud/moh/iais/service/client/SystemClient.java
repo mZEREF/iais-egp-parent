@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
@@ -49,6 +51,7 @@ public interface SystemClient {
     @PostMapping(path = "/api-postcodes", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveAllPostCode(@RequestBody List<PostCodeDto> postCodeDtos);
 
-
+    @RequestMapping(path = "/message-id",method = RequestMethod.GET)
+    FeignResponseEntity<String> messageID();
 
 }

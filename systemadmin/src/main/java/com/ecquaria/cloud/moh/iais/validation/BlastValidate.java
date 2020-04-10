@@ -28,15 +28,20 @@ public class BlastValidate implements CustomizeValidator {
                 }
             }
         }
+        if(blastManagementDto.getSchedule() == null){
+            errMap.put("date","The field is mandatory.");
+        }
         String HH = blastManagementDto.getHH();
         String MM = blastManagementDto.getMM();
-        if(!(HH != null && StringUtils.isNumeric(HH) &&  Integer.valueOf(HH) < 24)){
-            errMap = IaisCommonUtils.genNewHashMap();
-            errMap.put("date","Field format is wrong");
+        if(HH == null){
+            errMap.put("HH","The field is mandatory.");
+        }else if(!(StringUtils.isNumeric(HH) &&  Integer.valueOf(HH) < 24)){
+            errMap.put("HH","Field format is wrong");
         }
-        if(!(MM != null && StringUtils.isNumeric(MM) &&  Integer.valueOf(MM) < 60)){
-            errMap = IaisCommonUtils.genNewHashMap();
-            errMap.put("date","Field format is wrong");
+        if(MM == null){
+            errMap.put("HH","The field is mandatory.");
+        }else if(!(StringUtils.isNumeric(MM) &&  Integer.valueOf(MM) < 60)){
+            errMap.put("HH","Field format is wrong");
         }
         return errMap;
     }

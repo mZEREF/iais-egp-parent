@@ -25,5 +25,6 @@ public interface BlastManagementListService {
     BlastManagementDto getBlastById(String id);
     List<BlastManagementDto> getBlastBySendTime(String date);
     void setActual(String id);
+    String getMessageId();
     void sendEmail(EmailDto emailDto, Map<String, byte[]> attachments);
 }

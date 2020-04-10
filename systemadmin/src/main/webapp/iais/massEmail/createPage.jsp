@@ -21,7 +21,7 @@
                         </div>
 
                         <div class="form-group">
-                            <iais:field value="Name" required="true"/>
+                            <iais:field value="Distribution Name" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="name" type="text" name="name" maxlength="500" value="${distribution.getDisname()}">
@@ -34,7 +34,7 @@
                             <iais:field value="Recipients Roles" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:select name="role" id="role" options="" value=""></iais:select>
+                                    <iais:select name="role" options="roleSelection" value="${distribution.getRole()}"></iais:select>
                                     <span id="error_role" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -54,8 +54,8 @@
                             <iais:field value="Service" required="true"/>
                             <iais:value>
                                 <iais:value width="10">
-                                            <iais:select name="service" options="service"
-                                                        onchange="setRole(this.value)" firstOption="${firstOption}" value=""></iais:select>
+                                            <iais:select name="service" options="serviceSelection"
+                                                         value="${distribution.getService()}"></iais:select>
                                 </iais:value>
                             </iais:value>
                             <span id="error_service" name="iaisErrorMsg" class="error-msg"></span>
@@ -64,27 +64,9 @@
                         <div class="form-group">
                             <iais:field value="Mode of Delivery" required="true"/>
                             <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <div class="form-check">
-                                        <input class="form-check-input" name="mode"
-                                        <c:if test="${distribution.getMode() != null && distribution.getMode() == 'email'}">
-                                               checked="checked"
-                                               </c:if>
-                                               type="checkbox" value="email">
-                                        <label class="form-check-label"><span
-                                                class="check-square"></span>Email</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox"
-                                        <c:if test="${distribution.getMode() != null && distribution.getMode() == 'sms'}">
-                                               checked="checked"
-                                        </c:if>
-                                               name="mode" value="sms">
-                                        <label class="form-check-label"><span
-                                                class="check-square"></span>SMS</label>
-                                    </div>
-                                    <span id="error_mode" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
+                                <iais:value width="10">
+                                    <iais:select name="mode" options="modeSelection"  value="${distribution.getMode()}"></iais:select>
+                                </iais:value>
                             </iais:value>
                         </div>
 
@@ -111,16 +93,4 @@
         SOP.Crud.cfxSubmit("mainForm");
     });
 
-    function setRole(value) {
-        $.post(
-            '/system-admin-web/emailAjax/recipientsRoles.do',
-            {serviceId: value},
-            function (data, status) {
-                var role = data.roles;
-                $("#role").remove();
-                $.each(role, function(i, item){
-                    $("#select_id").append("<li data-value=\""+item.psnType+"\" class=\"option\">"+item.psnType+"</li>");
-                });
-            })
-    }
 </script>

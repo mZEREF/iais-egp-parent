@@ -32,7 +32,7 @@
                             <iais:field value="Subject" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="subject" type="text" name="subject" value="${edit.getSubject()}">
+                                    <input id="subject" type="text" name="subject" maxlength="255" value="${edit.getSubject()}">
                                     <span id="error_subject" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -41,7 +41,7 @@
                         <div class="form-group">
                             <iais:field value="Content" required="true"/>
                             <div class="form-group">
-                            <textarea name="messageContent" class="textarea" id="htmlEditor" title="content">${edit.getMsgContent()}</textarea>
+                                <textarea maxlength="4000" style="height: 600px" name="messageContent" class="textarea" id="htmlEditroArea" title="content">${edit.getMsgContent()}</textarea>
                                 <label class="col-xs-4 col-md-4 control-label"></label>
                                 <span id="error_msgContent" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
@@ -89,17 +89,6 @@
         $("#action").val("back");
         $("#mainForm").submit();
 
-    });
-    $(function () {
-        tinymce.init({
-            mode : "textareas",
-            branding: false,
-            selector: "#htmlEditor",  // change this value according to your HTML
-            toolbar: 'code undo redo restoredraft | cut copy paste pastetext | forecolor backcolor bold italic underline strikethrough link anchor | alignleft aligncenter alignright alignjustify outdent indent | \
-    styleselect formatselect fontselect fontsizeselect | bullist numlist | blockquote subscript superscript removeformat | \
-    table image media charmap emoticons hr pagebreak insertdatetime print preview | fullscreen | bdmap indent2em lineheight formatpainter axupimgs',
-            height: 650,
-        });
     });
 
     $('#selectedFile').change(function () {
