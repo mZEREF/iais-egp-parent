@@ -116,7 +116,8 @@
               <span  name="fileName" style="font-size: 25px;color: #2199E8;text-align: center">${filename}</span>
               <input type="text" value="Y" style="display: none" name="isDelete" id="isDelete">
               <input type="text" value="${filename}" style="display: none" id="isFile">
-              <a class="btn  btn-secondary" style="margin-left: 20px;display: none" name="delete" id="delete" >delete</a>
+
+              <a class="btn btn-danger btn-sm" style="margin-left: 20px;display: none" name="delete" id="delete" >delete</a>
             </div>
           </div>
         </div>

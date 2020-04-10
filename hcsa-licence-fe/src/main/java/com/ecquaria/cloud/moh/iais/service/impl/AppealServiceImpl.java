@@ -29,10 +29,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepositoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
@@ -48,6 +53,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -61,12 +67,22 @@ import sop.servlet.webflow.HttpHandler;
 @Slf4j
 public class AppealServiceImpl implements AppealService {
 
-    private static final  String LICENCE ="licence";
+    private static final String LICENCE ="licence";
     private static final String APPLICATION ="application";
     private static final String Y="Y";
     private static final String N ="N";
     private static final String APPEALING_FOR ="appealingFor";
     private static final String TYPE ="type";
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
@@ -81,6 +97,8 @@ public class AppealServiceImpl implements AppealService {
     private ServiceConfigService serviceConfigService;
     @Autowired
     private FileRepositoryClient fileRepositoryClient;
+    @Autowired
+    private FeEicGatewayClient feEicGatewayClient;
     @Override
     public List<String> reasonAppeal(String applicationNoOrLicenceNo) {
         ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion(applicationNoOrLicenceNo).getEntity();
@@ -584,14 +602,20 @@ public class AppealServiceImpl implements AppealService {
 
         }
         appealDto.setAppGrpPremisesDtos(premisesDtos);
-       /* applicationClient.submitAppeal(appealDto);
+        applicationClient.submitAppeal(appealDto);
         ApplicationGroupDto applicationGroupDto1 = appealDto.getApplicationGroupDto();
         String groupId = applicationGroupDto1.getId();
         request.setAttribute("groupId",groupId);
         saveData(request);
-        request.setAttribute("newApplicationNo",s);*/
+        request.setAttribute("newApplicationNo",s);
         //todo send email
-
+        try {
+            sendEmail(request);
+        } catch (IOException e) {
+           log.error(e.getMessage(),e);
+        } catch (TemplateException e) {
+         log.error(e.getMessage(),e);
+        }
         return s;
     }
 
@@ -681,13 +705,19 @@ public class AppealServiceImpl implements AppealService {
             appealDto.setAppSvcCgoDto(appSvcCgoDtos);
 
         }
-
         AppealPageDto appealPageDto = applicationClient.submitAppeal(appealDto).getEntity();
         ApplicationGroupDto applicationGroupDto1 = appealPageDto.getApplicationGroupDto();
         String groupId = applicationGroupDto1.getId();
         request.setAttribute("groupId",groupId);
         saveData(request);
-
+        request.setAttribute("newApplicationNo",s);
+        try {
+            sendEmail(request);
+        } catch (IOException e) {
+          log.error(e.getMessage(),e);
+        } catch (TemplateException e) {
+            log.error(e.getMessage(),e);
+        }
         //todo send email
         return s;
     }
@@ -730,6 +760,7 @@ public class AppealServiceImpl implements AppealService {
     }
 
     private AppealPageDto getAppealPageDto(HttpServletRequest req){
+        LoginContext loginContext =( LoginContext )req.getSession().getAttribute("loginContext");
         AppealPageDto appealDto=new AppealPageDto();
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         AppPremisesSpecialDocDto sessionAppPremisesSpecialDoc =(AppPremisesSpecialDocDto) req.getSession().getAttribute("appPremisesSpecialDocDto");
@@ -753,7 +784,12 @@ public class AppealServiceImpl implements AppealService {
                 appPremisesSpecialDocDto.setDocName(filename);
                 appPremisesSpecialDocDto.setMd5Code(s);
                 appPremisesSpecialDocDto.setFileRepoId(fileToRepo);
-                appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
+                if(loginContext!=null){
+                    appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
+                }else {
+                    appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
+                }
+
                 appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
                 appealDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
 
@@ -773,7 +809,12 @@ public class AppealServiceImpl implements AppealService {
                     appPremisesSpecialDocDto.setDocName(filename);
                     appPremisesSpecialDocDto.setMd5Code(s);
                     appPremisesSpecialDocDto.setFileRepoId(fileToRepo);
-                    appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
+                    if(loginContext!=null){
+                        appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
+                    }else {
+                        appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
+                    }
+
                     appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
                     appealDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
 
@@ -786,7 +827,11 @@ public class AppealServiceImpl implements AppealService {
             appPremisesSpecialDocDto.setDocName(sessionAppPremisesSpecialDoc.getDocName());
             appPremisesSpecialDocDto.setMd5Code(sessionAppPremisesSpecialDoc.getMd5Code());
             appPremisesSpecialDocDto.setFileRepoId(sessionAppPremisesSpecialDoc.getFileRepoId());
-            appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
+            if(loginContext!=null){
+                appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
+            }else {
+                appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
+            }
             appPremisesSpecialDocDto.setDocSize(sessionAppPremisesSpecialDoc.getDocSize());
             appealDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
         }
@@ -807,17 +852,34 @@ public class AppealServiceImpl implements AppealService {
 
 
     private void sendEmail(HttpServletRequest request) throws IOException, TemplateException {
+        LoginContext loginContext =( LoginContext )request.getSession().getAttribute("loginContext");
         String newApplicationNo =(String) request.getAttribute("newApplicationNo");
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         map.put("applicationNo",newApplicationNo);
-        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("").getEntity();
+        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("55314F99-F97A-EA11-BE82-000C29F371DC").getEntity();
         String messageContent = entity.getMessageContent();
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
         EmailDto emailDto=new EmailDto();
         emailDto.setContent(templateMessageByContent);
         emailDto.setSubject("MOH IAIS –Submission of Appeal - Application Number");
         emailDto.setSender("MOH");
-        emailDto.setClientQueryCode("sss");
+        emailDto.setClientQueryCode("Appeal");
+        if(loginContext!=null){
+            List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(loginContext.getLicenseeId());
+            if(licenseeEmailAddrs!=null){
+                emailDto.setReceipts(licenseeEmailAddrs);
+                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                try {
+                    feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
+                            signature2.date(), signature2.authorization());
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+
+
+            }
+        }
         //need address form login
     }
 

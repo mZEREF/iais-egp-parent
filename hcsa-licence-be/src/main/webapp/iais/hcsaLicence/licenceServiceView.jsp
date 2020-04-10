@@ -64,7 +64,7 @@
                                   <div class="preview-info">
                                     <div class="row">
                                       <div class="col-md-6">
-                                        <label>Premises ${status.index+1}:</label>
+                                        <label>Premises ${status.index+1} </label>
                                       </div>
                                       <div class="col-md-6">
                                         <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">On-site</c:if>
@@ -84,7 +84,7 @@
                                     <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
                                       <div class="row">
                                         <div class="col-md-6">
-                                          <label>Vehicle No</label>
+                                         Vehicle No
                                         </div>
                                         <div class="col-md-6">
                                             ${appGrpPremDto.conveyanceVehicleNo}
@@ -103,7 +103,7 @@
                                     <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
                                       <div class="row">
                                         <div class="col-md-6">
-                                          <label>Fire Safety Certificate Issued Date</label>
+                                         Fire Safety Certificate Issued Date
                                         </div>
                                         <div class="col-md-6">
                                             ${appGrpPremDto.certIssuedDt}
@@ -119,7 +119,7 @@
                                       </div>
                                       <div class="row">
                                         <div class="col-md-6">
-                                          <label>Fire Safety Shelter Bureau Ref. No.</label>
+                                         Fire Safety Shelter Bureau Ref. No.
                                         </div>
                                         <div class="col-md-6">
                                             ${appGrpPremDto.scdfRefNo}
@@ -135,7 +135,7 @@
                                       </div>
                                       <div class="row">
                                         <div class="col-md-6">
-                                          <label>Name of HCI</label>
+                                         Name of HCI
                                         </div>
                                         <div class="col-md-6">
                                             ${appGrpPremDto.hciName}
@@ -154,7 +154,7 @@
 
                                     <div class="row">
                                       <div class="col-md-6">
-                                        <label>Postal Code</label>
+                                      Postal Code
                                       </div>
                                       <div class="col-md-6">
                                           ${appGrpPremDto.postalCode}
@@ -171,7 +171,7 @@
 
                                     <div class="row">
                                       <div class="col-md-6">
-                                        <label>Address Type</label>
+                                       Address Type
                                       </div>
                                       <div class="col-md-6">
                                         <c:if test="${appGrpPremDto.addrType=='ADDTY001'}"> Apt Blk</c:if>
@@ -190,7 +190,7 @@
 
                                     <div class="row">
                                       <div class="col-md-6">
-                                        <label>Block / House No.</label>
+                                        Block / House No.
                                       </div>
                                       <div class="col-md-6">
                                           ${appGrpPremDto.blkNo}
@@ -207,7 +207,7 @@
 
                                     <div class="row">
                                       <div class="col-md-6">
-                                        <label>Floor No.</label>
+                                        Floor No.
                                       </div>
                                       <div class="col-md-6">
                                           ${appGrpPremDto.floorNo}
@@ -225,7 +225,7 @@
 
                                     <div class="row">
                                       <div class="col-md-6">
-                                        <label>Unit No.</label>
+                                        Unit No.
                                       </div>
                                       <div class="col-md-6">
                                           ${appGrpPremDto.unitNo}
@@ -243,7 +243,7 @@
 
                                     <div class="row">
                                       <div class="col-md-6">
-                                        <label>Street Name</label>
+                                       Street Name
                                       </div>
                                       <div class="col-md-6">
                                           ${appGrpPremDto.streetName}
@@ -260,7 +260,7 @@
                                     </div>
                                     <div class="row">
                                       <div class="col-md-6">
-                                        <label>Building Name</label>
+                                       Building Name
                                       </div>
                                       <div class="col-md-6">
                                           ${appGrpPremDto.buildingName}
@@ -278,7 +278,7 @@
                                     <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
                                       <div class="row">
                                         <div class="col-md-6">
-                                          <label>Are you co-locating with anothe licensee</label>
+                                          Are you co-locating with another licensee
                                         </div>
                                         <div class="col-md-6">
                                           No
@@ -286,7 +286,7 @@
                                       </div>
                                       <div class="row">
                                         <div class="col-md-6">
-                                          <label>Office Telephone No.</label>
+                                         Office Telephone No.
                                         </div>
                                         <div class="col-md-6">
                                             ${appGrpPremDto.offTelNo}
@@ -303,10 +303,10 @@
 
                                       <div class="row">
                                         <div class="col-md-6">
-                                          <label>Operating Hours (Start)</label>
+                                         Operating Hours (Start)
                                         </div>
                                         <div class="col-md-6">
-                                            ${appGrpPremDto.onsiteStartHH} (HH): ${appGrpPremDto.onsiteStartMM} (MM)
+                                            ${appGrpPremDto.onsiteStartHH}: ${appGrpPremDto.onsiteStartMM}
                                           <wrms:value width="7">
                                         <span class="newVal " attr="${appGrpPremDto.wrkTimeFrom}" style="display: none"><label><c:out
                                                 value=""/></label></span>
@@ -322,10 +322,10 @@
 
                                     <div class="row">
                                       <div class="col-md-6">
-                                        <label>Operating Hours (End)</label>
+                                       Operating Hours (End)
                                       </div>
                                       <div class="col-md-6">
-                                          ${appGrpPremDto.onsiteEndHH} (HH): ${appGrpPremDto.onsiteEndMM} (MM)
+                                          ${appGrpPremDto.onsiteEndHH}: ${appGrpPremDto.onsiteEndMM}
                                             <wrms:value width="7">
                                               <span class="newVal " attr="${appGrpPremDto.wrkTimeTo}"
                                               style="display: none"><label><c:out value=""/></label></span>
@@ -344,7 +344,7 @@
 
                                   <div class="row">
                                     <div class="col-md-6">
-                                      <label>Select Public Holiday</label>
+                                      Select Public Holiday
                                     </div>
                                     <div class="col-md-6">
                                         ${appPremPhOpenPeriod.dayName}
@@ -361,10 +361,10 @@
 
                                   <div class="row">
                                     <div class="col-md-6">
-                                      <label>Public Holidays Operating Hours (Start)</label>
+                                     Public Holidays Operating Hours (Start)
                                     </div>
                                     <div class="col-md-6">
-                                        ${appPremPhOpenPeriod.convStartFromHH} (HH):  ${appPremPhOpenPeriod.convStartFromMM} (MM)
+                                        ${appPremPhOpenPeriod.convStartFromHH}:  ${appPremPhOpenPeriod.convStartFromMM}
                                           <wrms:value width="7">
                                           <span class="newVal " attr="${appPremPhOpenPeriod.convStartFromHH}" style="display: none"><label><c:out
                                                   value=""/></label></span>
@@ -378,10 +378,10 @@
 
                                   <div class="row">
                                     <div class="col-md-6">
-                                      <label>Public Holidays Operating Hours (End)</label>
+                                      Public Holidays Operating Hours (End)
                                     </div>
                                     <div class="col-md-6">
-                                        ${appPremPhOpenPeriod.convEndToHH} (HH):  ${appPremPhOpenPeriod.convEndToMM} (MM)
+                                        ${appPremPhOpenPeriod.convEndToHH}:  ${appPremPhOpenPeriod.convEndToMM}
 
                                           <wrms:value width="7">
                                           <span class="newVal " attr="${appPremPhOpenPeriod.endTo}"
