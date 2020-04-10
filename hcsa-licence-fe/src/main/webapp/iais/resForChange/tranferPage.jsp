@@ -41,7 +41,7 @@
                                      <iais:field value="UEN of Licence to transfer licence to"></iais:field>
                                      <iais:value width="10">
                                        <p>
-                                        <input type="text" name="UEN" value="${UEN}">
+                                        <input type="text" name="UEN" value="${UEN}" maxlength="10">
                                        <span  class="error-msg" name="iaisErrorMsg" id="error_uenError"></span>
                                        </p>
                                      </iais:value>

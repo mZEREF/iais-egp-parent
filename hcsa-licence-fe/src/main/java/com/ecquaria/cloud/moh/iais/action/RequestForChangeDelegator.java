@@ -326,7 +326,7 @@ public class RequestForChangeDelegator {
         if(selectCheakboxs == null || selectCheakboxs.length == 0){
             error.put("premisesError","UC_CHKLMD001_ERR001");
         }
-        if(StringUtil.isEmpty(uen)){
+        if(StringUtil.isEmpty(uen) || uen.length() > 10){
             error.put("uenError","UC_CHKLMD001_ERR001");
         }
         return error;
