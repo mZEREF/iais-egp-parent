@@ -262,14 +262,12 @@ public class InspectionRectificationProDelegator {
             ncItemIdList = null;
         }
         inspectionPreTaskDto.setCheckRecRfiNcItems(ncItemIdList);
-
+        inspectionPreTaskDto.setInternalMarks(internalRemarks);
         if(InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION.equals(processDec)){
             inspectionPreTaskDto.setSelectValue(processDec);
-            inspectionPreTaskDto.setInternalMarks(internalRemarks);
             inspectionPreTaskDto.setAccCondMarks(condRemarks);
         } else if(InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION.equals(processDec)){
             inspectionPreTaskDto.setSelectValue(processDec);
-            inspectionPreTaskDto.setInternalMarks(internalRemarks);
         } else if(InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(processDec)) {
             inspectionPreTaskDto.setSelectValue(processDec);
         } else {
@@ -335,7 +333,7 @@ public class InspectionRectificationProDelegator {
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
-        inspectionRectificationProService.routingTaskToReport(taskDto, inspectionPreTaskDto, applicationViewDto, loginContext);
+        //inspectionRectificationProService.routingTaskToReport(taskDto, inspectionPreTaskDto, applicationViewDto, loginContext);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
