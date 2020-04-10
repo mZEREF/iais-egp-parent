@@ -1,12 +1,15 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.EmailToResultService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -50,7 +53,7 @@ public class EmailToResultServiceImpl implements EmailToResultService {
 
 
     @Override
-    public void sendRenewResultEmail() throws IOException, TemplateException {
+    public void sendRenewResultEmail() throws Exception {
         // get appGrpId which pay success
         List<ApplicationGroupDto> appGrpDtos = applicationClient.getAppGrpsPaySuc().getEntity();
         if(appGrpDtos!=null&&!appGrpDtos.isEmpty()){
@@ -83,7 +86,7 @@ public class EmailToResultServiceImpl implements EmailToResultService {
     }
 
     @Override
-    public void sendEfcResultEmail() throws IOException, TemplateException {
+    public void sendEfcResultEmail() throws Exception {
         // get appGrpId which pay success
         List<ApplicationGroupDto> appGrpDtos = applicationClient.getAppGrpsPaySuc().getEntity();
         if(appGrpDtos!=null&&!appGrpDtos.isEmpty()){
@@ -97,7 +100,6 @@ public class EmailToResultServiceImpl implements EmailToResultService {
                             String appNo = applicationDto.getApplicationNo();
                             prepareAndSendSuccessEmail(appNo);
                         }
-
                     }
                 }
             }
@@ -116,7 +118,7 @@ public class EmailToResultServiceImpl implements EmailToResultService {
     }
 
     @Override
-    public void sendCessationFurtherDateEmail() throws IOException, TemplateException {
+    public void sendCessationFurtherDateEmail() throws Exception {
         String status = "Approved";
         Date date = new Date();
         List<LicenceDto> licenceDtos = hcsaLicenceClient.listLicencesByStatus(status).getEntity();
@@ -133,7 +135,7 @@ public class EmailToResultServiceImpl implements EmailToResultService {
     }
 
     @Override
-    public void sendCessationPresentDateEmail() throws IOException, TemplateException {
+    public void sendCessationPresentDateEmail() throws Exception {
         String status = "Approved";
         Date date = new Date();
         String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
@@ -147,7 +149,7 @@ public class EmailToResultServiceImpl implements EmailToResultService {
     }
 
     @Override
-    public void sendCessationEffectiveDateEmail() throws IOException, TemplateException {
+    public void sendCessationEffectiveDateEmail() throws Exception {
         String status = "Approved";
         Date date = new Date();
         String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
@@ -161,7 +163,7 @@ public class EmailToResultServiceImpl implements EmailToResultService {
     }
 
     @Override
-    public void sendCessationLicenceEndDateEmail() throws IOException, TemplateException {
+    public void sendCessationLicenceEndDateEmail() throws Exception {
         String status = "Licence01";
         Date date = new Date();
         String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
@@ -176,7 +178,7 @@ public class EmailToResultServiceImpl implements EmailToResultService {
     }
 
 
-    private void prepareAndSendSuccessEmail(String appNo) throws IOException, TemplateException {
+    private void prepareAndSendSuccessEmail(String appNo) throws Exception {
         //check email
         JobRemindMsgTrackingDto findResult = systemBeLicClient.getJobRemindMsgTrackingDto(appNo, SUCCESSMSGKEY).getEntity();
         if(findResult!=null){
@@ -190,15 +192,22 @@ public class EmailToResultServiceImpl implements EmailToResultService {
         List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
         list.add(jobRemindMsgTrackingDto);
         systemBeLicClient.createJobRemindMsgTrackingDtos(list);
-        Map<String,Object> map = new HashMap<>(34);
+        Map<String,Object> map = IaisCommonUtils.genNewHashMap();
         map.put("applicationNo",appNo);
-        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate(SUCCESSMSGTEMPLATEID).getEntity();
-        String messageContent = entity.getMessageContent();
-        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
-        String s = templateMessageByContent;
+//        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate(SUCCESSMSGTEMPLATEID).getEntity();
+//        String messageContent = entity.getMessageContent();
+//        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+//        EmailDto emailDto = new EmailDto();
+//        emailDto.setContent(templateMessageByContent);
+//        emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + applicationNo);
+//        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+//        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+//        emailDto.setClientQueryCode();
+//        //send
+//        emailClient.sendNotification(emailDto).getEntity();
     }
 
-    private void prepareAndSenEmail(String appNo) throws IOException, TemplateException {
+    private void prepareAndSenEmail(String appNo) throws Exception {
         //check email
         JobRemindMsgTrackingDto findResult = systemBeLicClient.getJobRemindMsgTrackingDto(appNo, FAILEDMSGKEY).getEntity();
         if(findResult!=null){
@@ -220,7 +229,7 @@ public class EmailToResultServiceImpl implements EmailToResultService {
         String s = templateMessageByContent;
     }
 
-    private void prepareCessation(String date,String msgId,String serviceName) throws IOException, TemplateException {
+    private void prepareCessation(String date,String msgId,String serviceName) throws Exception {
         Map<String,Object> map = new HashMap<>(34);
         map.put("date",date);
         map.put("licenceA",serviceName);

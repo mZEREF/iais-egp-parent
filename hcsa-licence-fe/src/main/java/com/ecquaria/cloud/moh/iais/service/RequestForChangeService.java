@@ -5,7 +5,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
+import freemarker.template.TemplateException;
 
+import java.io.IOException;
 import java.util.List;
 
 /****
@@ -48,4 +50,7 @@ public interface RequestForChangeService {
 
 
     SearchResult<PersonnelListQueryDto> psnDoQuery(SearchParam searchParam);
+
+
+    void sendEmail(String type,String appNo,String serviceName,String licenceNo,Double amount,String licenceeName,String giroNo,String licenseeId) throws Exception;
 }

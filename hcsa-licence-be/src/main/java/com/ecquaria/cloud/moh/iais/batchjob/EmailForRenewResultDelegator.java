@@ -23,7 +23,7 @@ public class EmailForRenewResultDelegator {
         log.info("aaaaaaaaaaaaaaaaaaa");
     }
 
-    public void action(BaseProcessClass bpc) throws IOException, TemplateException {
+    public void action(BaseProcessClass bpc) throws Exception {
         emailToResultService.sendRenewResultEmail();
     }
 }

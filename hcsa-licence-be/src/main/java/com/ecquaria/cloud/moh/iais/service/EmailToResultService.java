@@ -9,15 +9,18 @@ import java.io.IOException;
  * @date 2020/1/16 19:39
  */
 public interface EmailToResultService {
-    void sendRenewResultEmail() throws IOException, TemplateException;
+    void sendRenewResultEmail() throws Exception;
 
-    void sendEfcResultEmail() throws IOException, TemplateException;
+    void sendEfcResultEmail() throws Exception;
 
-    void sendCessationFurtherDateEmail() throws IOException, TemplateException;
+    void sendCessationFurtherDateEmail() throws Exception;
 
-    void sendCessationPresentDateEmail() throws IOException, TemplateException;
+    void sendCessationPresentDateEmail() throws Exception;
 
-    void sendCessationEffectiveDateEmail() throws IOException, TemplateException;
+    void sendCessationEffectiveDateEmail() throws Exception;
 
-    void sendCessationLicenceEndDateEmail() throws IOException, TemplateException;
+    void sendCessationLicenceEndDateEmail() throws Exception;
+
+
+
 }
