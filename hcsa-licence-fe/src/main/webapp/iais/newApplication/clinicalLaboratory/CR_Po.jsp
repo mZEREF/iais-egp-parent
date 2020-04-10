@@ -277,17 +277,16 @@
           <div class="panel-body">
             <%--<p class="text-right"><a href="application-premises.html"><i class="fa fa-pencil-square-o"></i>Edit</a></p>--%>
 
-            <c:if test="${DeputyPrincipalOfficersMandatory>0}">
-              <c:forEach begin="0" end="${DeputyPrincipalOfficersMandatory-1}" step="1" varStatus="status">
-                <c:if test="${ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0}" >
-                  <c:set var="deputy" value="${ReloadDeputyPrincipalOfficers[status.index]}"/>
-                </c:if>
+
                 <div class="panel-main-content">
-                  <c:if test="${status.first}">
-                    <h2>Deputy Principal Officer</h2>
-                  </c:if>
+                  <h2>Deputy Principal Officer</h2>
                   <div class="dpo-content">
                   </div>
+                  <c:if test="${DeputyPrincipalOfficersMandatory>0}">
+                  <c:forEach begin="0" end="${DeputyPrincipalOfficersMandatory-1}" step="1" varStatus="status">
+                  <c:if test="${ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0}" >
+                    <c:set var="deputy" value="${ReloadDeputyPrincipalOfficers[status.index]}"/>
+                  </c:if>
                   <div class="dpo-content">
                     <div class="row">
                       <div class="control control-caption-horizontal">
@@ -409,9 +408,10 @@
                       </div>
                     </div>
                   </div>
+                  </c:forEach>
+                  </c:if>
                 </div>
-              </c:forEach>
-            </c:if>
+
             <div class="row <c:if test="${'APTY005' ==AppSubmissionDto.appType  &&'1' == canEditDpo}">disabled</c:if>">
               <div class="col-sm-5">
                 <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Deputy Principal Officer</span>
@@ -642,17 +642,16 @@
   }
   var removePo = function () {
     $('.removePoBtn').click(function () {
-      var $premContentEle= $(this).closest('div.po-content');
+      var $premContentEle= $(this).closest('div .po-content');
       $premContentEle.remove();
-
+      $('.poErrorMsg').html("");
     });
-
   }
   var removeDpo = function () {
     $('.removeDpoBtn').click(function () {
-      var $premContentEle= $(this).closest('div.dpo-content');
+      var $premContentEle= $(this).closest('div .dpo-content');
       $premContentEle.remove();
-
+      $('.dpoErrorMsg').html("");
     });
 
   }

@@ -480,7 +480,7 @@
       $('#isEditHiddenVal').val('1');
       $('#edit-content').addClass('hidden');
     });
-  }
+  };
 
   var changePsnItem = function () {
     $('.assign-psn-item').each(function (k,v) {
@@ -492,7 +492,7 @@
     $('.removeBtn').click(function () {
       var $premContentEle= $(this).closest('table.assignContent');
       $premContentEle.remove();
-
+      $('.errorMsg').html("");
     });
 
   }
