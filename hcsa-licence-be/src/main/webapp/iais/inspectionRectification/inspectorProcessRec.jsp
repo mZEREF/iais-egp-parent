@@ -307,10 +307,10 @@
                                 <label style="font-size: 16px">Licence Start Date</label>
                               </div>
                               <div class="col-md-6">
-                                <c:if test="${licenceDto.startDate != null}">
+                                <c:if test="${applicationViewDto.recomLiceStartDate != null}">
                                   <label style="font-size: 16px"><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></label>
                                 </c:if>
-                                <c:if test="${licenceDto.startDate == null}">
+                                <c:if test="${applicationViewDto.recomLiceStartDate == null}">
                                   <label style="font-size: 16px">-</label>
                                 </c:if>
                               </div>
