@@ -144,8 +144,11 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     private String secSecretKey;
 
     @Override
-    public ApptInspectionDateDto getInspectionDate(String taskId, ApptInspectionDateDto apptInspectionDateDto) {
+    public ApptInspectionDateDto getInspectionDate(String taskId, ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto) {
         TaskDto taskDto = taskService.getTaskById(taskId);
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String appType = applicationDto.getApplicationType();
+
         //get all application info from same premises
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = getAppPremisesCorrelationsByPremises(taskDto.getRefNo());
         List<String> premCorrIds = getCorrIdsByCorrIdFromPremises(appPremisesCorrelationDtos);
@@ -157,42 +160,44 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         apptInspectionDateDto.setApplicationInfoShow(applicationInfoMap);
         //The All Tasks is go to inspection or (some of them jump over Inspection and some of them go to inspection)
         String actionButtonFlag = getActionButtonFlag(apptInspectionDateDto);
-        if(AppConsts.SUCCESS.equals(actionButtonFlag)) {
-            //get Applicant set start date and end date from appGroup
-            AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(taskDto.getRefNo()).getEntity();
-            appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
-            Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
-            List<String> serviceIds = IaisCommonUtils.genNewArrayList();
-            for (Map.Entry<String, String> map : corrIdServiceIdMap.entrySet()) {
-                if(!StringUtil.isEmpty(map.getValue())){
-                    serviceIds.add(map.getValue());
+        if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)){
+            if(AppConsts.SUCCESS.equals(actionButtonFlag)) {
+                //get Applicant set start date and end date from appGroup
+                AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(taskDto.getRefNo()).getEntity();
+                appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+                Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
+                List<String> serviceIds = IaisCommonUtils.genNewArrayList();
+                for (Map.Entry<String, String> map : corrIdServiceIdMap.entrySet()) {
+                    if(!StringUtil.isEmpty(map.getValue())){
+                        serviceIds.add(map.getValue());
+                    }
                 }
-            }
-            //get Start date and End date when group no date
-            if (appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null) {
-                appointmentDto.setServiceIds(serviceIds);
-                appointmentDto = hcsaConfigClient.getApptStartEndDateByService(appointmentDto).getEntity();
-            }
-            //get inspection date
-            List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
-            for (TaskDto tDto : taskDtoList) {
-                AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
-                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(tDto.getUserId()).getEntity();
-                appointmentUserDto.setLoginUserId(orgUserDto.getDisplayName());
-                appointmentUserDto.setWorkGrpName(tDto.getWkGrpId());
-                //get service id by task refno
-                String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
-                //get manHours by service and stage
-                int manHours = hcsaConfigClient.getManHour(serviceId, HcsaConsts.ROUTING_STAGE_INS).getEntity();
-                appointmentUserDto.setWorkHours(manHours);
-                appointmentUserDtos.add(appointmentUserDto);
-            }
-            appointmentDto.setUsers(appointmentUserDtos);
-            Map<String, Collection<String>> headers = appointmentClient.getUserCalendarByUserId(appointmentDto).getHeaders();
-            //Has it been blown up
-            if(headers == null) {
-                Map<String, List<ApptUserCalendarDto>> inspectionDateMap = appointmentClient.getUserCalendarByUserId(appointmentDto).getEntity();
-                apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
+                //get Start date and End date when group no date
+                if (appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null) {
+                    appointmentDto.setServiceIds(serviceIds);
+                    appointmentDto = hcsaConfigClient.getApptStartEndDateByService(appointmentDto).getEntity();
+                }
+                //get inspection date
+                List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
+                for (TaskDto tDto : taskDtoList) {
+                    AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
+                    OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(tDto.getUserId()).getEntity();
+                    appointmentUserDto.setLoginUserId(orgUserDto.getDisplayName());
+                    appointmentUserDto.setWorkGrpName(tDto.getWkGrpId());
+                    //get service id by task refno
+                    String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
+                    //get manHours by service and stage
+                    int manHours = hcsaConfigClient.getManHour(serviceId, HcsaConsts.ROUTING_STAGE_INS).getEntity();
+                    appointmentUserDto.setWorkHours(manHours);
+                    appointmentUserDtos.add(appointmentUserDto);
+                }
+                appointmentDto.setUsers(appointmentUserDtos);
+                Map<String, Collection<String>> headers = appointmentClient.getUserCalendarByUserId(appointmentDto).getHeaders();
+                //Has it been blown up
+                if(headers == null) {
+                    Map<String, List<ApptUserCalendarDto>> inspectionDateMap = appointmentClient.getUserCalendarByUserId(appointmentDto).getEntity();
+                    apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
+                }
             }
         }
         apptInspectionDateDto.setTaskDto(taskDto);

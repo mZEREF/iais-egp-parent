@@ -297,7 +297,7 @@
                               </iais:value>
                             </iais:row>
                             <iais:row id="indicateCondRemarks">
-                              <iais:field value="Processing Decision"/>
+                              <iais:field value="Processing Decision" required="true"/>
                               <iais:value width="7">
                                 <iais:select name="selectValue" options="processDecOption" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectorProRecChange(this.value)"></iais:select>
                               </iais:value>

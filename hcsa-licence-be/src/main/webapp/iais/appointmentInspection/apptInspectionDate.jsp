@@ -191,7 +191,28 @@
                                 </tbody>
                               </table>
                             </div>
-                            <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag}">
+                            <div class="row">
+                              <div class="col-md-2">
+                                <label style="font-size: 16px">Licence Start Date</label>
+                              </div>
+                              <div class="col-md-6">
+                                <c:if test="${applicationViewDto.recomLiceStartDate != null}">
+                                  <label style="font-size: 16px"><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></label>
+                                </c:if>
+                                <c:if test="${applicationViewDto.recomLiceStartDate == null}">
+                                  <label style="font-size: 16px">-</label>
+                                </c:if>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-2">
+                                <label style="font-size: 16px">Fast Tracking</label>
+                              </div>
+                              <div class="col-md-6">
+                                <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
+                              </div>
+                            </div>
+                            <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag && 'APTY007' ne applicationViewDto.applicationDto.applicationType}">
                               <iais:row>
                                 <iais:field value="Available Appointment Dates"/>
                               </iais:row>
@@ -206,38 +227,20 @@
                                   </c:if>
                                 </iais:value>
                               </iais:row>
-                              <div class="row">
-                                <div class="col-md-2">
-                                  <label style="font-size: 16px">Licence Start Date</label>
-                                </div>
-                                <div class="col-md-6">
-                                  <c:if test="${applicationViewDto.recomLiceStartDate != null}">
-                                    <label style="font-size: 16px"><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></label>
-                                  </c:if>
-                                  <c:if test="${applicationViewDto.recomLiceStartDate == null}">
-                                    <label style="font-size: 16px">-</label>
-                                  </c:if>
-                                </div>
-                              </div>
-                              <div class="row">
-                                <div class="col-md-2">
-                                  <label style="font-size: 16px">Fast Tracking</label>
-                                </div>
-                                <div class="col-md-6">
-                                  <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
-                                </div>
-                              </div>
                               <iais:action>
                                 <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
                                 <span style="float:right">&nbsp;</span>
-                                <c:if test="${'APTY007' ne applicationViewDto.applicationDto.applicationType}">
                                   <c:if test="${empty apptInspectionDateDto.inspectionDate}">
                                     <button class="btn btn-primary disabled" disabled style="float:right" type="button" onclick="javascript:apptInspectionDateConfirm()">Allow System to Propose Dates</button>
                                   </c:if>
                                   <c:if test="${!empty apptInspectionDateDto.inspectionDate}">
                                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateConfirm()">Allow System to Propose Dates</button>
                                   </c:if>
-                                </c:if>
+                              </iais:action>
+                            </c:if>
+                            <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag && 'APTY007' eq applicationViewDto.applicationDto.applicationType}">
+                              <iais:action>
+                                <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
                               </iais:action>
                             </c:if>
                             <br><br><br>
