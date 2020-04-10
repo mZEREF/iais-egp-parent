@@ -157,7 +157,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         //taskService.createTasks(createTaskDtoList);
         log.info("========================>>>>> create task !!!!");
         try {
-            eventBusHelper.submitAsyncRequest(createTaskDtoList,submitId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,null,null);
+            eventBusHelper.submitAsyncRequest(createTaskDtoList,submitId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,taskDto.getRefNo(),null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -170,6 +170,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     }
     private void createAudit(AuditTaskDataFillterDto temp,String submitId) {
         AuditCombinationDto auditCombinationDto = new AuditCombinationDto();
+        auditCombinationDto.setEventRefNo(temp.getId());
         LicPremisesAuditDto licPremisesAuditDto = new LicPremisesAuditDto();
         licPremisesAuditDto.setAuditRiskType(temp.getRiskType());
         licPremisesAuditDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -201,7 +202,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         auditCombinationDto.setLicPremInspGrpCorrelationDto(dtocorre);
         log.info("========================>>>>> create audit !!!!");
         try {
-            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,null,null);
+            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,temp.getId(),null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -323,6 +324,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             entity.setPreInspection(true);
             entity.setRequirement(true);
             entity.setStatus(ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK);
+            entity.setEventRefNo(grpNo);
             setRiskToDto(entity);
         }
         log.info("========================>>>>> creat application!!!!");
