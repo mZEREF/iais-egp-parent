@@ -39,9 +39,9 @@
                                                 <tbody>
                                                 <tr height="1">
                                                     <td class="col-xs-2">
-                                                        <p>
-                                                            Subject:
-                                                        </p>
+                                                        <strong>
+                                                            Subject
+                                                        </strong>
                                                     </td>
                                                     <td>
                                                         <div class="col-sm-9">
@@ -54,9 +54,9 @@
                                                 </tr>
                                                 <tr height="1">
                                                     <td class="col-xs-2">
-                                                        <p>
-                                                            Content:
-                                                        </p>
+                                                        <strong>
+                                                            Content
+                                                        </strong>
                                                     </td>
                                                     <td>
                                                         <div class="col-sm-9">

@@ -75,9 +75,9 @@
                                                     <tbody>
                                                     <tr height="1">
                                                         <td class="col-xs-2">
-                                                            <p>
-                                                                Subject:
-                                                            </p>
+                                                            <strong>
+                                                                Subject
+                                                            </strong>
                                                         </td>
                                                         <td>
                                                             <div class="col-sm-9">
@@ -90,9 +90,9 @@
                                                     </tr>
                                                     <tr height="1">
                                                         <td class="col-xs-2">
-                                                            <p>
-                                                                Content:
-                                                            </p>
+                                                            <strong>
+                                                                Content
+                                                            </strong>
                                                         </td>
                                                         <td>
                                                             <div class="col-sm-9">
@@ -104,9 +104,9 @@
                                                     </tr>
                                                     <tr height="1">
                                                         <td class="col-xs-2">
-                                                            <p>
-                                                                Processing Decision:<strong style="color:#ff0000;">*</strong>
-                                                            </p>
+                                                            <strong>
+                                                                Processing Decision<strong style="color:#ff0000;">*</strong>
+                                                            </strong>
                                                         </td>
                                                         <td>
                                                             <div class="col-sm-9">
@@ -135,7 +135,7 @@
                                                     <tr height="1" style="display: none" id="selectReviseNc">
                                                         <td class="col-xs-2">
                                                             <p>
-                                                                Need Revise:<strong style="color:#ff0000;"> *</strong>
+                                                                Need Revise<strong style="color:#ff0000;"> *</strong>
                                                             </p>
                                                         </td>
                                                         <td>

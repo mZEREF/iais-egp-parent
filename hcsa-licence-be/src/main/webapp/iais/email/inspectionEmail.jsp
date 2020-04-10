@@ -85,9 +85,9 @@
                                                     </div>
                                                     <tr height="1">
                                                         <td class="col-xs-2">
-                                                            <p>
-                                                                Current Status:
-                                                            </p>
+                                                            <strong>
+                                                                Current Status
+                                                            </strong>
                                                         </td>
                                                         <td>
                                                             <div class="col-sm-9">
@@ -97,9 +97,9 @@
                                                     </tr>
                                                     <tr height="1">
                                                         <td class="col-xs-2">
-                                                            <p>
-                                                                Internal Remarks:
-                                                            </p>
+                                                            <strong>
+                                                                Internal Remarks
+                                                            </strong>
                                                         </td>
                                                         <td>
                                                             <div class="col-sm-9">
@@ -112,10 +112,10 @@
                                                     </tr>
                                                     <tr height="1">
                                                         <td class="col-xs-2">
-                                                            <p>
-                                                                Processing Decision:<strong style="color:#ff0000;">
+                                                            <strong>
+                                                                Processing Decision<strong style="color:#ff0000;">
                                                                 *</strong>
-                                                            </p>
+                                                            </strong>
                                                         </td>
                                                         <td>
                                                             <div class="col-sm-9">
@@ -137,6 +137,30 @@
                                                                 <p style="color:#ff0000;">
                                                                     This field is mandatory
                                                                 </p>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr height="1">
+                                                        <td class="col-xs-2">
+                                                            <strong>
+                                                                Licence Start Date
+                                                            </strong>
+                                                        </td>
+                                                        <td>
+                                                            <div class="col-sm-9">
+                                                                <p>${applicationViewDto.recomLiceStartDate}</p>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr height="1">
+                                                        <td class="col-xs-2">
+                                                            <strong>
+                                                                Fast Tracking
+                                                            </strong>
+                                                        </td>
+                                                        <td>
+                                                            <div class="col-sm-9">
+                                                                <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
                                                             </div>
                                                         </td>
                                                     </tr>

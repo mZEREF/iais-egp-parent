@@ -39,15 +39,16 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * InspectionMergeSendNcEmailDelegator
@@ -117,6 +118,12 @@ public class InspectionMergeSendNcEmailDelegator {
         applicationViewDto.setCurrentStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());
 
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=inspEmailService.getAppPremisesCorrelationsByPremises(correlationId);
+        if(applicationViewDto.getApplicationDto().isFastTracking()){
+            appPremisesCorrelationDtos.clear();
+            AppPremisesCorrelationDto appCorrDto =new AppPremisesCorrelationDto();
+            appCorrDto.setId(correlationId);
+            appPremisesCorrelationDtos.add(appCorrDto);
+        }
         StringBuilder mesContext=new StringBuilder();
         String oneEmail="";
         for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
