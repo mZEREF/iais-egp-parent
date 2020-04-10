@@ -2,23 +2,28 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
+import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
+import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 
 /**
  * BackendLoginDelegator
@@ -31,6 +36,8 @@ import java.util.Map;
 public class BackendLoginDelegator {
     @Autowired
     OrganizationMainClient organizationMainClient;
+    @Autowired
+    SubmissionClient submissionClient;
 
     public void Start(BaseProcessClass bpc){
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -84,9 +91,17 @@ public class BackendLoginDelegator {
         SessionManager.getInstance(bpc.request).initSopLoginInfo(bpc.request);
         AccessUtil.initLoginUserInfo(bpc.request);
 
-
-
-
+        List<AuditTrailDto> trailDtoList = IaisCommonUtils.genNewArrayList(1);
+        AuditTrailDto auditTrailDto = new AuditTrailDto();
+        auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);
+        auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN);
+        IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
+        trailDtoList.add(auditTrailDto);
+        try {
+            AuditLogUtil.callWithEventDriven(trailDtoList, submissionClient);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
 

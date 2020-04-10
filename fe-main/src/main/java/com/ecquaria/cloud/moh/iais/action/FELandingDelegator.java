@@ -4,7 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +30,6 @@ public class FELandingDelegator {
 	 * @throws
 	 */
 	public void startStep(BaseProcessClass bpc){
-		AuditTrailHelper.auditFunction("FE Landing", "Login");
 	}
 
 	/**
