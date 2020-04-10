@@ -247,6 +247,45 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         return actionButtonFlag;
     }
 
+    @Override
+    public void saveAuditInspectionDate(ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto) {
+        TaskDto taskDto = apptInspectionDateDto.getTaskDto();
+        List<TaskDto> taskDtos = apptInspectionDateDto.getTaskDtos();
+        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
+        String appPremCorrId = taskDto.getRefNo();
+        Date saveDate = apptInspectionDateDto.getSpecificDate();
+        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
+        AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
+        appPremisesInspecApptDto.setAppCorrId(appPremCorrId);
+        appPremisesInspecApptDto.setApptRefNo(null);
+        appPremisesInspecApptDto.setSpecificInspDate(apptInspectionDateDto.getSpecificDate());
+        appPremisesInspecApptDto.setId(null);
+        appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
+        createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+        //save Inspection date
+        createOrUpdateRecommendation(appPremisesRecommendationDto, appPremCorrId, saveDate);
+        //update Inspection status
+        updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
+        //Application data
+        ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
+
+        if(taskDto != null) {
+            inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, apptInspectionDateDto.getProcessDec(), taskDto.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, taskDto.getWkGrpId());
+            inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, null, null, taskDto.getWkGrpId());
+        }
+        updateTaskDtoList(taskDtoList);
+        for (TaskDto taskDto2 : taskDtoList) {
+            int score = taskDto2.getScore();
+            TaskDto tDto = createTaskDto(taskDto2, taskDto2.getUserId(), score);
+            taskDtos.add(tDto);
+        }
+        taskService.createTasks(taskDtos);
+    }
+
     private String getActionButtonFlagByTasks(List<TaskDto> taskDtos) {
         if(!IaisCommonUtils.isEmpty(taskDtos)){
             int apSo = 0;
@@ -292,7 +331,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                     List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremCorrId).getEntity();
                     if (!IaisCommonUtils.isEmpty(taskDtos)) {
                         for (TaskDto taskDto : taskDtos) {
-                            taskDtoList.add(taskDto);
+                            if(taskDto != null) {
+                                taskDtoList.add(taskDto);
+                            }
                         }
                     }
                 }
@@ -368,7 +409,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         for(int i = 0; i < 12; i++){
             SelectOption so;
             if(10 > i){
-                so = new SelectOption(i + "", "0" + i + "");
+                so = new SelectOption(i + "", "0" + i);
             } else {
                 so = new SelectOption(i + "", i + "");
             }

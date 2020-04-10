@@ -115,4 +115,13 @@ public interface ApptInspectionDateService {
       *                can do get Inspection Date
       */
     String getActionButtonFlag(ApptInspectionDateDto apptInspectionDateDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/4/10
+      * @Param: apptInspectionDateDto, applicationViewDto
+      * @return: void
+      * @Descripation: saveAuditInspectionDate
+      */
+    void saveAuditInspectionDate(ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto);
 }
