@@ -442,10 +442,10 @@ public class HcsaApplicationDelegator {
             String nextStage=null;
 
             //62875
+            String stage = ParamUtil.getString(bpc.request,"nextStage");
             ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
             if(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) &&
                     ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
-                String stage = ParamUtil.getString(bpc.request,"nextStage");
                 if(!StringUtil.isEmpty(stage)){
                     nextStage = stage;
                 }
@@ -455,6 +455,11 @@ public class HcsaApplicationDelegator {
                 nextStage = "PROCRB";
             }else if(!StringUtil.isEmpty(verified)){
                 nextStage = verified;
+            }
+
+            //request for information
+            if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(stage)){
+                nextStage = stage;
             }
 
             String reply=ParamUtil.getString(bpc.request,"nextStageReplys");
