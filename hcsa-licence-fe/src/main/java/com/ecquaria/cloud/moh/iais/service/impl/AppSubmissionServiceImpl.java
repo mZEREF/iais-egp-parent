@@ -320,4 +320,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public ApplicationGroupDto createApplicationDataByWithOutRenewal(RenewDto renewDto) {
         return applicationClient.createApplicationDataByWithOutRenewal(renewDto).getEntity();
     }
+
+    @Override
+    public void updateApplicationsStatus(String appGroupId, String stuts) {
+        List<ApplicationDto> applicationDtos = listApplicationByGroupId(appGroupId);
+        for(ApplicationDto application : applicationDtos){
+            application.setStatus(stuts);
+            applicationClient.updateApplication(application);
+        }
+    }
 }

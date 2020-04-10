@@ -217,6 +217,8 @@ public class WithOutRenewalDelegator {
                 appGrp.setPmtRefNo(pmtRefNo);
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
+                //update application status
+                appSubmissionService.updateApplicationsStatus(groupId,ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                 //jump page to acknowledgement
                 ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE4);
             }else{
@@ -247,11 +249,11 @@ public class WithOutRenewalDelegator {
         if("Y".equals(hasSubmit)){
             return;
         }
+        List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         //app submit
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto)ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
         String licenseeId = interInboxUserDto.getLicenseeId();
         Double total = 0d;
-        List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
             FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
             appSubmissionDto.setLicenseeId(licenseeId);
@@ -273,7 +275,7 @@ public class WithOutRenewalDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
         ParamUtil.setRequestAttr(bpc.request,"applicationGroupDto",applicationGroupDto);
-        ParamUtil.setRequestAttr(bpc.request,"totalStr",totalStr);
+        ParamUtil.setSessionAttr(bpc.request,"totalStr",totalStr);
         ParamUtil.setSessionAttr(bpc.request,"totalAmount",total);
         //has app submit
         ParamUtil.setSessionAttr(bpc.request,"hasAppSubmit","Y");
@@ -478,7 +480,6 @@ public class WithOutRenewalDelegator {
     //=============================================================================
     //private method
     //=============================================================================
-
 
 
 

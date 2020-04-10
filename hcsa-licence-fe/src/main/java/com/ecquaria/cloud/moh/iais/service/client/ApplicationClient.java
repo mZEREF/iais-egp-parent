@@ -47,7 +47,7 @@ public interface ApplicationClient  {
             consumes = MediaType.APPLICATION_JSON_VALUE,method =RequestMethod.PUT)
     FeignResponseEntity<Void> updateStatus(@RequestBody Map<String,List<String>> map);
 
-    @PutMapping(path = "/iais-application", produces = MediaType.APPLICATION_JSON_VALUE,
+    @PutMapping(path = "/iais-application/lastApplication", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> updateApplication(@RequestBody ApplicationDto applicationDto);
 

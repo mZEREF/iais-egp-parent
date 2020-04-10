@@ -44,8 +44,8 @@
                                                 <td>${appSubmissionDtos.licenceNo}</td>
                                                 <td>${appSubmissionDtos.serviceName}</td>
                                                 <td><c:forEach items="${appSubmissionDtos.appGrpPremisesDtoList}" var="appGrpPremisesDtoList"><span>${appGrpPremisesDtoList.renewPremises}</span><br/></c:forEach></td>
-                                                <td>${appSubmissionDtos.licStartDate}</td>
-                                                <td>${appSubmissionDtos.licExpiryDate}</td>
+                                                <td><fmt:formatDate value='${appSubmissionDtos.licStartDate}' pattern='dd/MM/yyyy'/></td>
+                                                <td><fmt:formatDate value='${appSubmissionDtos.licExpiryDate}' pattern='dd/MM/yyyy'/></td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>

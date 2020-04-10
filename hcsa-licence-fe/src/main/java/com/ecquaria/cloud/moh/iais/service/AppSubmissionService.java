@@ -39,4 +39,5 @@ public interface AppSubmissionService {
     public void feSendEmail(EmailDto emailDto);
 
     public ApplicationGroupDto createApplicationDataByWithOutRenewal(RenewDto renewDto);
+    public void updateApplicationsStatus(String appGroupId,String stuts);
 }
