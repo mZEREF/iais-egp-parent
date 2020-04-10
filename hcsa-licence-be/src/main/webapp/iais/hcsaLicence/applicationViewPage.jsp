@@ -632,7 +632,7 @@
                                                                                      value="${date}"></iais:datePicker>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <p>${recomInDateOnlyShow}</p>
+                                                                        <p>${(recomInDateOnlyShow == "" || recomInDateOnlyShow == null) ? "-" : recomInDateOnlyShow}</p>
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                             </iais:value>
@@ -658,7 +658,7 @@
                                                                         <span id="error_recommendation" name="iaisErrorMsg" class="error-msg"></span>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <p>${recommendationOnlyShow}</p>
+                                                                        <p>${(recommendationOnlyShow == "" || recommendationOnlyShow == null) ? "-" : recommendationOnlyShow}</p>
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                             </iais:value>
