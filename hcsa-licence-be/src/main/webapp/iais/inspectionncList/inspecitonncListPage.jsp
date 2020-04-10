@@ -11,7 +11,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
-<form method="post" id="mainForm"  enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
+<form method="post" id="mainForm"  enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>  class="form-horizontal" >
     <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -84,6 +84,55 @@
                                 <div class="tab-pane" id="Processing" role="tabpanel">
                                     <div class="alert alert-info" role="alert">
                                         <strong>
+                                            <h4>Processing Status Update</h4>
+                                        </strong>
+                                    </div>
+                                    <iais:section title="" id = "process_Rectification">
+                                        <br>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label style="font-size: 16px">Current Status</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><label style="font-size: 16px"><iais:code code="${applicationViewDto.applicationDto.status}"/></label></p>
+                                        </div>
+                                    </div>
+                                        <br>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label style="font-size: 16px">Licence Start Date</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
+                                                <label style="font-size: 16px"><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></label>
+                                            </c:if>
+                                            <c:if test="${empty applicationViewDto.recomLiceStartDate}">
+                                                <label style="font-size: 16px">-</label>
+                                            </c:if>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label style="font-size: 16px">Fast Tracking</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div align="right">
+                                                <button type="button" class="btn btn-primary" onclick="javascript: doSubmit();">
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                    <div class="alert alert-info" role="alert">
+                                        <strong>
                                             <h4>Processing History</h4>
                                         </strong>
                                     </div>
@@ -132,16 +181,8 @@
                                             </div>
                                         </div>
                                     </div>
+                                    </iais:section>
 
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div align="right">
-                                                <button type="button" class="btn btn-primary" onclick="javascript: doSubmit();">
-                                                    Submit
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>

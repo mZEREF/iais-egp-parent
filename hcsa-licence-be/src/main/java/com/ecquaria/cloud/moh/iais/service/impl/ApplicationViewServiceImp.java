@@ -1,12 +1,10 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
@@ -39,6 +37,8 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     ApplicationViewService applicationViewService;
     @Autowired
     private FillUpCheckListGetAppClient uploadFileClient;
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Override
     public ApplicationViewDto searchByCorrelationIdo(String correlationId) {
         //return applicationClient.getAppViewByNo(appNo).getEntity();
@@ -184,6 +184,11 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
             intranetDocDto.setSubmitDtString(Formatter.formatDateTime(intranetDocDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss"));
         }
         applicationViewDto.setAppIntranetDocDtoList(intranetDocDtos);
+
+        //get AppPremisesRecommendationDto
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appCorId,InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+        if( appPremisesRecommendationDto != null)
+            applicationViewDto.setRecomLiceStartDate(appPremisesRecommendationDto.getRecomInDate());
         return applicationViewDto;
     }
 
