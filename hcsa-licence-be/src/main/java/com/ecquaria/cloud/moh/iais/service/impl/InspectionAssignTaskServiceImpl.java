@@ -84,13 +84,13 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         String curRole = loginContext.getCurRoleId();
         Set<String> workGrpIds = loginContext.getWrkGrpIds();
-        if(workGrpIds == null || workGrpIds.size() <= 0){
+        if (workGrpIds == null || workGrpIds.size() <= 0) {
             return null;
         }
         List<String> workGrpIdList = new ArrayList<>(workGrpIds);
-        for(String workGrpId:workGrpIdList){
-            for(TaskDto tDto:taskService.getCommPoolByGroupWordId(workGrpId)){
-                if(tDto.getRoleId().equals(curRole)) {
+        for (String workGrpId : workGrpIdList) {
+            for (TaskDto tDto : taskService.getCommPoolByGroupWordId(workGrpId)) {
+                if (tDto.getRoleId().equals(curRole)) {
                     taskDtoList.add(tDto);
                 }
             }
@@ -103,11 +103,11 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                                                             InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
         List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
         String workGroupId = "";
-        for(TaskDto tDto:commPools){
-            if(appCorrelationId.equals(tDto.getRefNo())){
-                orgUserDtos =  organizationClient.getUsersByWorkGroupName(tDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        for (TaskDto tDto : commPools) {
+            if (appCorrelationId.equals(tDto.getRefNo())) {
+                orgUserDtos = organizationClient.getUsersByWorkGroupName(tDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
             }
-            if(inspecTaskCreAndAssDto.getTaskId().equals(tDto.getId())){
+            if (inspecTaskCreAndAssDto.getTaskId().equals(tDto.getId())) {
                 workGroupId = tDto.getWkGrpId();
             }
         }
@@ -123,7 +123,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         inspecTaskCreAndAssDto.setAppCorrelationId(appCorrelationId);
         inspecTaskCreAndAssDto.setApplicationType(applicationDto.getApplicationType());
         inspecTaskCreAndAssDto.setApplicationStatus(applicationDto.getStatus());
-        if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
+        if (!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
             inspecTaskCreAndAssDto.setHciName(appGrpPremisesDto.getHciName() + " / " + address);
         } else {
             inspecTaskCreAndAssDto.setHciName(address);
@@ -142,14 +142,14 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public void setInspectorLeadName(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, String workGroupId) {
-        if(StringUtil.isEmpty(workGroupId)){
+        if (StringUtil.isEmpty(workGroupId)) {
             return;
         }
         List<String> leadNames = IaisCommonUtils.genNewArrayList();
         List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
-        for(String id : leadIds){
-            for(OrgUserDto oDto : orgUserDtos){
-                if(id.equals(oDto.getId())){
+        for (String id : leadIds) {
+            for (OrgUserDto oDto : orgUserDtos) {
+                if (id.equals(oDto.getId())) {
                     leadNames.add(oDto.getDisplayName());
                 }
             }
@@ -157,8 +157,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         inspecTaskCreAndAssDto.setInspectionLeads(leadNames);
     }
 
+
     private void setInspectorByOrgUserDto(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, LoginContext loginContext) {
-        if(orgUserDtos == null || orgUserDtos.size() <= 0){
+        if (orgUserDtos == null || orgUserDtos.size() <= 0) {
             inspecTaskCreAndAssDto.setInspector(null);
             return;
         }
@@ -169,16 +170,16 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         String curRole = loginContext.getCurRoleId();
         //get member role
         String leadRole;
-        if(curRole.contains(RoleConsts.USER_LEAD)){
+        if (curRole.contains(RoleConsts.USER_LEAD)) {
             leadRole = curRole;
         } else {
             leadRole = curRole + RoleConsts.USER_LEAD;
         }
-        if(roleList.contains(leadRole)){
+        if (roleList.contains(leadRole)) {
             addInspector(inspectorList, orgUserDtos, loginContext, roleList);
         } else {
-            for(OrgUserDto oDto:orgUserDtos){
-                if(oDto.getId().equals(loginContext.getUserId())){
+            for (OrgUserDto oDto : orgUserDtos) {
+                if (oDto.getId().equals(loginContext.getUserId())) {
                     SelectOption so = new SelectOption(oDto.getId(), oDto.getDisplayName());
                     inspectorList.add(so);
                 }
@@ -192,20 +193,20 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         String curRole = loginContext.getCurRoleId();
         //get member role
         String memberRole;
-        if(curRole.contains(RoleConsts.USER_LEAD)){
+        if (curRole.contains(RoleConsts.USER_LEAD)) {
             memberRole = curRole.replaceFirst(RoleConsts.USER_LEAD, "");
         } else {
             memberRole = curRole;
         }
-        if(roleList.contains(memberRole)){
+        if (roleList.contains(memberRole)) {
             flag = AppConsts.TRUE;
         }
-        for(OrgUserDto oDto:orgUserDtos){
-            if(!(oDto.getId().equals(loginContext.getUserId()))){
+        for (OrgUserDto oDto : orgUserDtos) {
+            if (!(oDto.getId().equals(loginContext.getUserId()))) {
                 SelectOption so = new SelectOption(oDto.getId(), oDto.getDisplayName());
                 inspectorList.add(so);
             } else {
-                if(AppConsts.TRUE.equals(flag)){
+                if (AppConsts.TRUE.equals(flag)) {
                     SelectOption so = new SelectOption(oDto.getId(), oDto.getDisplayName());
                     inspectorList.add(so);
                 }
@@ -214,20 +215,20 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    @SearchTrack(catalog = "inspectionQuery",key = "assignCommonTask")
+    @SearchTrack(catalog = "inspectionQuery", key = "assignCommonTask")
     public SearchResult<InspectionCommonPoolQueryDto> getSearchResultByParam(SearchParam searchParam) {
         return inspectionTaskClient.searchInspectionPool(searchParam).getEntity();
     }
 
     @Override
     public List<String> getAppCorrIdListByPool(List<TaskDto> commPools) {
-        if(IaisCommonUtils.isEmpty(commPools)){
+        if (IaisCommonUtils.isEmpty(commPools)) {
             List<String> appCorrIdList = IaisCommonUtils.genNewArrayList();
             appCorrIdList.add(AppConsts.NO);
             return appCorrIdList;
         }
         Set<String> appCorrIdSet = IaisCommonUtils.genNewHashSet();
-        for(TaskDto tDto:commPools){
+        for (TaskDto tDto : commPools) {
             appCorrIdSet.add(tDto.getRefNo());
         }
         List<String> appCorrIdList = new ArrayList<>(appCorrIdSet);
@@ -250,9 +251,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
             List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
             applicationDtos.add(applicationDto);
-            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,HcsaConsts.ROUTING_STAGE_INS);
+            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
             hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-            for(TaskDto td:commPools) {
+            for (TaskDto td : commPools) {
                 if (td.getId().equals(inspecTaskCreAndAssDto.getTaskId())) {
                     td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
                     td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -264,9 +265,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(td.getRefNo(), td.getTaskKey()).getEntity();
                     createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), internalRemarks,
                             InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), td.getWkGrpId());
-                    if(inspectorCheckList != null && inspectorCheckList.size() > 0){
-                        for(int i = 0; i < inspectorCheckList.size(); i++){
-                            if(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())){
+                    if (inspectorCheckList != null && inspectorCheckList.size() > 0) {
+                        for (int i = 0; i < inspectorCheckList.size(); i++) {
+                            if (ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())) {
                                 //todo:set authentic Application status
                                 ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
                                 applicationService.updateFEApplicaiton(applicationDto1);
@@ -279,7 +280,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     }
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error(StringUtil.changeForLog("Error when Submit Assign Task Project: "), e);
             throw e;
         }
@@ -291,9 +292,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         return applicationViewService.updateApplicaiton(applicationDto);
     }
 
-    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
+    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId) {
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList();
-        for(ApplicationDto applicationDto : applicationDtos){
+        for (ApplicationDto applicationDto : applicationDtos) {
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);
             hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
@@ -305,10 +306,10 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public SearchResult<InspectionCommonPoolQueryDto> getAddressByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult) {
-        for(InspectionCommonPoolQueryDto icpqDto: searchResult.getRows()){
-            if(1 == icpqDto.getAppCount()){
+        for (InspectionCommonPoolQueryDto icpqDto : searchResult.getRows()) {
+            if (1 == icpqDto.getAppCount()) {
                 icpqDto.setSubmissionType(AppConsts.PAYMENT_STATUS_SINGLE);
-            } else if(1 < icpqDto.getAppCount()) {
+            } else if (1 < icpqDto.getAppCount()) {
                 icpqDto.setSubmissionType(AppConsts.PAYMENT_STATUS_MULTIPLE);
             } else {
                 icpqDto.setSubmissionType("-");
@@ -349,8 +350,8 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     private TaskDto getTaskDtoByPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
         TaskDto taskDto = new TaskDto();
-        for(TaskDto tDto:commPools){
-            if(tDto.getId().equals(inspecTaskCreAndAssDto.getTaskId())){
+        for (TaskDto tDto : commPools) {
+            if (tDto.getId().equals(inspecTaskCreAndAssDto.getTaskId())) {
                 taskDto = tDto;
             }
         }
@@ -364,21 +365,21 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
      * @return: HcsaServiceDto
      * @Descripation: get HcsaServiceDto By Service Id
      */
-    public HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId){
+    public HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId) {
         return hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
     }
 
     @Override
-    public AppGrpPremisesDto getAppGrpPremisesDtoByAppGroId(String appCorrId){
+    public AppGrpPremisesDto getAppGrpPremisesDtoByAppGroId(String appCorrId) {
         AppGrpPremisesDto appGrpPremisesDto = inspectionTaskClient.getAppGrpPremisesDtoByAppGroId(appCorrId).getEntity();
-        if(StringUtil.isEmpty(appGrpPremisesDto.getHciName())){
+        if (StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
             appGrpPremisesDto.setHciName("");
         }
-        if(StringUtil.isEmpty(appGrpPremisesDto.getHciCode())){
+        if (StringUtil.isEmpty(appGrpPremisesDto.getHciCode())) {
             appGrpPremisesDto.setHciCode(HcsaConsts.HCSA_PREMISES_HCI_NULL);
         }
         setAddressByGroupPremises(appGrpPremisesDto);
-        if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+        if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
             appGrpPremisesDto.setConveyanceBlockNo(appGrpPremisesDto.getBlkNo());
             appGrpPremisesDto.setConveyanceStreetName(appGrpPremisesDto.getStreetName());
             appGrpPremisesDto.setConveyanceBuildingName(appGrpPremisesDto.getBuildingName());
@@ -390,44 +391,44 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     private void setAddressByGroupPremises(AppGrpPremisesDto appGrpPremisesDto) {
-        if(StringUtil.isEmpty(appGrpPremisesDto.getBlkNo())){
+        if (StringUtil.isEmpty(appGrpPremisesDto.getBlkNo())) {
             appGrpPremisesDto.setBlkNo("");
         }
-        if(StringUtil.isEmpty(appGrpPremisesDto.getStreetName())){
+        if (StringUtil.isEmpty(appGrpPremisesDto.getStreetName())) {
             appGrpPremisesDto.setStreetName("");
         }
-        if(StringUtil.isEmpty(appGrpPremisesDto.getBuildingName())){
+        if (StringUtil.isEmpty(appGrpPremisesDto.getBuildingName())) {
             appGrpPremisesDto.setBuildingName("");
         }
-        if(StringUtil.isEmpty(appGrpPremisesDto.getFloorNo())){
+        if (StringUtil.isEmpty(appGrpPremisesDto.getFloorNo())) {
             appGrpPremisesDto.setFloorNo("");
         }
-        if(StringUtil.isEmpty(appGrpPremisesDto.getUnitNo())){
+        if (StringUtil.isEmpty(appGrpPremisesDto.getUnitNo())) {
             appGrpPremisesDto.setUnitNo("");
         }
-        if(StringUtil.isEmpty(appGrpPremisesDto.getPostalCode())){
+        if (StringUtil.isEmpty(appGrpPremisesDto.getPostalCode())) {
             appGrpPremisesDto.setPostalCode("");
         }
     }
 
     @Override
-    public String getAddress(AppGrpPremisesDto appGrpPremisesDto){
+    public String getAddress(AppGrpPremisesDto appGrpPremisesDto) {
         String result = "";
-        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
-            if(!StringUtil.isEmpty(appGrpPremisesDto.getBlkNo())){
+        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+            if (!StringUtil.isEmpty(appGrpPremisesDto.getBlkNo())) {
                 result = result + appGrpPremisesDto.getBlkNo();
             }
-            if(!StringUtil.isEmpty(appGrpPremisesDto.getStreetName())){
+            if (!StringUtil.isEmpty(appGrpPremisesDto.getStreetName())) {
                 result = result + " " + appGrpPremisesDto.getStreetName();
             }
-            if(!StringUtil.isEmpty(appGrpPremisesDto.getBuildingName())){
+            if (!StringUtil.isEmpty(appGrpPremisesDto.getBuildingName())) {
                 result = result + " " + appGrpPremisesDto.getBuildingName();
             }
-            if(!StringUtil.isEmpty(appGrpPremisesDto.getFloorNo())){
+            if (!StringUtil.isEmpty(appGrpPremisesDto.getFloorNo())) {
                 String floorNo = appGrpPremisesDto.getFloorNo();
-                if(floorNo.length() < 3){
+                if (floorNo.length() < 3) {
                     Pattern pattern = compile("[0-9]*");
-                    boolean noFlag =  pattern.matcher(floorNo).matches();
+                    boolean noFlag = pattern.matcher(floorNo).matches();
                     if (noFlag) {
                         int floorNum = Integer.valueOf(floorNo);
                         if (10 > floorNum) {
@@ -443,13 +444,13 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     result = result + " " + " # " + floorNo;
                 }
             }
-            if(!StringUtil.isEmpty(appGrpPremisesDto.getUnitNo())){
-                result = result + (StringUtil.isEmpty(appGrpPremisesDto.getFloorNo())?"":"-") + appGrpPremisesDto.getUnitNo();
+            if (!StringUtil.isEmpty(appGrpPremisesDto.getUnitNo())) {
+                result = result + (StringUtil.isEmpty(appGrpPremisesDto.getFloorNo()) ? "" : "-") + appGrpPremisesDto.getUnitNo();
             }
-            if(!StringUtil.isEmpty(appGrpPremisesDto.getPostalCode())){
-                result = result + ", "+ appGrpPremisesDto.getPostalCode();
+            if (!StringUtil.isEmpty(appGrpPremisesDto.getPostalCode())) {
+                result = result + ", " + appGrpPremisesDto.getPostalCode();
             }
-        }else{
+        } else {
             result = getOtherAddress(appGrpPremisesDto, result);
         }
 
@@ -457,7 +458,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    @SearchTrack(catalog = "inspectionQuery",key = "assignCommonTask")
+    @SearchTrack(catalog = "inspectionQuery", key = "assignCommonTask")
     public SearchResult<ComPoolAjaxQueryDto> getAjaxResultByParam(SearchParam searchParam) {
         return inspectionTaskClient.commonPoolResult(searchParam).getEntity();
     }
@@ -470,21 +471,21 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         String leadRole;
         String groupLeadName = "";
         String groupMemBerName = "";
-        if(curRole.contains(RoleConsts.USER_LEAD)){
+        if (curRole.contains(RoleConsts.USER_LEAD)) {
             leadRole = curRole;
             otherRole = curRole.replaceFirst(RoleConsts.USER_LEAD, "");
         } else {
             leadRole = curRole + RoleConsts.USER_LEAD;
             otherRole = curRole;
         }
-        if(!StringUtil.isEmpty(leadRole)) {
+        if (!StringUtil.isEmpty(leadRole)) {
             if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(curRole)) {
                 groupLeadName = MasterCodeUtil.getCodeDesc(RoleConsts.USER_MASTER_INSPECTION_LEAD);
             } else {
                 groupLeadName = MasterCodeUtil.getCodeDesc(leadRole);
             }
         }
-        if(!StringUtil.isEmpty(otherRole)) {
+        if (!StringUtil.isEmpty(otherRole)) {
             groupMemBerName = MasterCodeUtil.getCodeDesc(otherRole);
         }
         groupRoleFieldDto.setGroupLeadName(groupLeadName);
@@ -493,20 +494,20 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     private String getOtherAddress(AppGrpPremisesDto appGrpPremisesDto, String result) {
-        if(!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceBlockNo())){
+        if (!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceBlockNo())) {
             result = result + appGrpPremisesDto.getConveyanceBlockNo();
         }
-        if(!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceStreetName())){
+        if (!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceStreetName())) {
             result = result + " " + appGrpPremisesDto.getConveyanceStreetName();
         }
-        if(!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceBuildingName())){
+        if (!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceBuildingName())) {
             result = result + " " + appGrpPremisesDto.getConveyanceBuildingName();
         }
-        if(!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceFloorNo())){
+        if (!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceFloorNo())) {
             String floorNo = appGrpPremisesDto.getConveyanceFloorNo();
-            if(floorNo.length() < 3){
+            if (floorNo.length() < 3) {
                 Pattern pattern = compile("[0-9]*");
-                boolean noFlag =  pattern.matcher(floorNo).matches();
+                boolean noFlag = pattern.matcher(floorNo).matches();
                 if (noFlag) {
                     int floorNum = Integer.valueOf(floorNo);
                     if (10 > floorNum) {
@@ -522,11 +523,11 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 result = result + " " + " # " + floorNo;
             }
         }
-        if(!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceUnitNo())){
-            result = result + (StringUtil.isEmpty(appGrpPremisesDto.getConveyanceFloorNo())?"":"-") + appGrpPremisesDto.getConveyanceUnitNo();
+        if (!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceUnitNo())) {
+            result = result + (StringUtil.isEmpty(appGrpPremisesDto.getConveyanceFloorNo()) ? "" : "-") + appGrpPremisesDto.getConveyanceUnitNo();
         }
-        if(!StringUtil.isEmpty(appGrpPremisesDto.getConveyancePostalCode())){
-            result = result + ", "+ appGrpPremisesDto.getConveyancePostalCode();
+        if (!StringUtil.isEmpty(appGrpPremisesDto.getConveyancePostalCode())) {
+            result = result + ", " + appGrpPremisesDto.getConveyancePostalCode();
         }
         return result;
     }
@@ -538,7 +539,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
      * @return: ApplicationGroupDto
      * @Descripation: get ApplicationGroup By Application Group Id
      */
-    public ApplicationGroupDto getApplicationGroupDtoByAppGroId(String appGroupId){
+    public ApplicationGroupDto getApplicationGroupDtoByAppGroId(String appGroupId) {
         return inspectionTaskClient.getApplicationGroupDtoByAppGroId(appGroupId).getEntity();
     }
 }

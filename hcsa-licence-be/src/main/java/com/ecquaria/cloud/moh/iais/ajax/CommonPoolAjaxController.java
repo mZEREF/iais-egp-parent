@@ -180,6 +180,85 @@ public class CommonPoolAjaxController {
         return jsonMap;
     }
 
+    @RequestMapping(value = "reassign.do", method = RequestMethod.POST)
+    public @ResponseBody Map<String, Object> reassignTask(HttpServletRequest request) {
+        Map<String, Object> jsonMap = IaisCommonUtils.genNewHashMap();
+        //get session data
+        String appGroupId = MaskUtil.unMaskValue("appGroupId", request.getParameter("groupId"));
+        GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto) ParamUtil.getSessionAttr(request, "groupRoleFieldDto");
+        List<String> workGroupIds = (List<String>) ParamUtil.getSessionAttr(request, "workGroupIds");
+        Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(request, "assignMap");
+        String userId = (String) ParamUtil.getSessionAttr(request, "memberId");
+        if(!IaisCommonUtils.isEmpty(workGroupIds) && !StringUtil.isEmpty(appGroupId)) {
+            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getPremCorrDtoByAppGroupId(appGroupId).getEntity();
+            //filter list
+            List<String> appCorrId_list = getRefNoList(appPremisesCorrelationDtos);
+            List<String> status = IaisCommonUtils.genNewArrayList();
+            status.add(TaskConsts.TASK_STATUS_PENDING);
+            status.add(TaskConsts.TASK_STATUS_READ);
+            //create searchParam
+            SearchParam searchParam = new SearchParam(SuperPoolTaskQueryDto.class.getName());
+            searchParam.setPageSize(10);
+            searchParam.setPageNo(1);
+            searchParam.setSort("REF_NO", SearchParam.ASCENDING);
+            //set filters
+            StringBuilder sb = new StringBuilder("(");
+            if (!IaisCommonUtils.isEmpty(appCorrId_list)) {
+                for (int i = 0; i < appCorrId_list.size(); i++) {
+                    sb.append(":appCorrId" + i).append(",");
+                }
+                String inSq1 = sb.substring(0, sb.length() - 1) + ")";
+                searchParam.addParam("appCorrId_list", inSq1);
+                for (int i = 0; i < appCorrId_list.size(); i++) {
+                    searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
+                }
+            }
+
+            StringBuilder sb2 = new StringBuilder("(");
+            for (int i = 0; i < status.size(); i++) {
+                sb2.append(":tStatus" + i).append(",");
+            }
+            String inSq2 = sb2.substring(0, sb2.length() - 1) + ")";
+            searchParam.addParam("taskStatus", inSq2);
+            for (int i = 0; i < status.size(); i++) {
+                searchParam.addFilter("tStatus" + i, status.get(i));
+            }
+
+            StringBuilder sb3 = new StringBuilder("(");
+            for (int i = 0; i < workGroupIds.size(); i++) {
+                sb3.append(":workId" + i).append(",");
+            }
+            String inSq3 = sb3.substring(0, sb3.length() - 1) + ")";
+            searchParam.addParam("workGroupId", inSq3);
+            for (int i = 0; i < workGroupIds.size(); i++) {
+                searchParam.addFilter("workId" + i, workGroupIds.get(i));
+            }
+            if(!StringUtil.isEmpty(userId)){
+                searchParam.addFilter("userId", userId,true);
+            }
+            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            userId = loginContext.getUserId();
+            searchParam.addFilter("userId", userId,true);
+            //do search
+            QueryHelp.setMainSql("inspectionQuery", "supervisorPoolDropdown", searchParam);
+            SearchResult<SuperPoolTaskQueryDto> searchResult = inspectionService.getSupPoolSecondByParam(searchParam);
+            searchResult = inspectionService.getSecondSearchOtherData(searchResult);
+            jsonMap.put("ajaxResult", searchResult);
+            jsonMap.put("result", "Success");
+            assignMap = setTaskIdAndDataMap(assignMap, searchResult);
+        } else {
+            jsonMap.put("result", "Fail");
+        }
+        ParamUtil.setSessionAttr(request, "assignMap", (Serializable) assignMap);
+        jsonMap.put("memberName", groupRoleFieldDto.getGroupMemBerName());
+        //get other data
+        return jsonMap;
+    }
+
+
+
+
+
     private Map<String, SuperPoolTaskQueryDto> setTaskIdAndDataMap(Map<String, SuperPoolTaskQueryDto> assignMap, SearchResult<SuperPoolTaskQueryDto> searchResult) {
         if(assignMap == null) {
             assignMap = IaisCommonUtils.genNewHashMap();

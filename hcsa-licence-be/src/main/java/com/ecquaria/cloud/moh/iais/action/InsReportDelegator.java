@@ -93,6 +93,14 @@ public class InsReportDelegator {
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION.equals(appStatus)){
             initRecommendation(correlationId,applicationViewDto,bpc);
         }
+        AppPremisesRecommendationDto accRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPECTYPE).getEntity();
+        if(accRecommendationDto!=null){
+            String recomDecision = accRecommendationDto.getRecomDecision();
+            if(InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION.equals(recomDecision)){
+                accRecommendationDto.setRecommendation(InspectionReportConstants.APPROVEDLTC);
+                ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, accRecommendationDto);
+            }
+        }
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
         List<SelectOption> chronoOption = getChronoOption();
         List<SelectOption> recommendationOption = getRecommendationOption();
@@ -204,9 +212,10 @@ public class InsReportDelegator {
             String[] splitNumber = periods.split("\\D");
             String[] splitUnit = periods.split("\\d");
             String chronoRe = splitUnit[1];
+            String trim = chronoRe.trim();
             String numberRe = splitNumber[0];
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-            appPremisesRecommendationDto.setChronoUnit(chronoRe);
+            appPremisesRecommendationDto.setChronoUnit(trim);
             appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(numberRe));
             appPremisesRecommendationDto.setRecommendation(recommendation);
         }else if(InspectionReportConstants.REJECTED.equals(recommendation)) {
@@ -242,7 +251,6 @@ public class InsReportDelegator {
         AppPremisesRecommendationDto followRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
 
         AppPremisesRecommendationDto initRecommendationDto = new AppPremisesRecommendationDto();
-
         if (appPremisesRecommendationDto != null) {
             String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();

@@ -193,4 +193,12 @@ public interface InspectionService {
       * @Descripation: 
       */
     InspectionTaskPoolListDto getDataForAssignTask(Map<String, SuperPoolTaskQueryDto> assignMap, InspectionTaskPoolListDto inspectionTaskPoolListDto, String taskId);
+/**
+ *@Author :weilu on 2020/4/10 13:27
+ *@param :
+ *@return :
+ *@Description :
+ */
+
+    List<String> getWrkIdsByLogin(LoginContext loginContext);
 }

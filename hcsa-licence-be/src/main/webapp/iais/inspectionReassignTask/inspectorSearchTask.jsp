@@ -185,7 +185,7 @@
     if (superFlag) {
       superPool.push(divid);
       $.post(
-              '/hcsa-licence-web/common-pool/supervisor.do',
+              '/hcsa-licence-web/common-pool/reassign.do',
               {groupId: appGroupId},
               function (data) {
                 var result = data.result;

@@ -247,9 +247,13 @@ public class InsRepServiceImpl implements InsRepService {
         if(NcRecommendationDto==null){
             inspectionReportDto.setMarkedForAudit("No");
         }else if(NcRecommendationDto!=null) {
-            inspectionReportDto.setMarkedForAudit("Yes");
             Date recomInDate = NcRecommendationDto.getRecomInDate();
-            inspectionReportDto.setTcuDate(recomInDate);
+            if(recomInDate==null){
+                inspectionReportDto.setMarkedForAudit("No");
+            }else {
+                inspectionReportDto.setMarkedForAudit("Yes");
+                inspectionReportDto.setTcuDate(recomInDate);
+            }
             String ncBestPractice = NcRecommendationDto.getBestPractice();
             String ncRemarks = NcRecommendationDto.getRemarks();
             if(!StringUtil.isEmpty(ncBestPractice)){
@@ -259,17 +263,6 @@ public class InsRepServiceImpl implements InsRepService {
                 remarks = ncRemarks ;
             }
         }
-        //checkList
-//        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
-//        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
-//        InspectionFillCheckListDto commonDto = null;
-//        if(commonList!=null && !commonList.isEmpty()){
-//            commonDto = commonList.get(0);
-//        }
-//        InspectionFDtosDto subType = new InspectionFDtosDto();
-//        subType.setFdtoList(cDtoList);
-//        inspectionReportDto.setCommonCheckList(commonDto);
-//        inspectionReportDto.setSubTypeCheckList(subType);
         inspectionReportDto.setRectifiedWithinKPI("Yes");
         //Date time
         Date inspectionDate = null;
@@ -448,7 +441,7 @@ public class InsRepServiceImpl implements InsRepService {
                 String dateType = riskResultDto.getDateType();
                 String codeDesc = MasterCodeUtil.getCodeDesc(dateType);
                 String count = String.valueOf(riskResultDto.getTimeCount());
-                String recommTime = count + codeDesc;
+                String recommTime = count + " " + codeDesc;
                 SelectOption so = new SelectOption(recommTime, recommTime);
                 riskResult.add(so);
             }

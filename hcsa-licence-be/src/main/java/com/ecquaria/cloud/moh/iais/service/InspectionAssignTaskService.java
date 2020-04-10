@@ -155,4 +155,5 @@ public interface InspectionAssignTaskService {
      * @Descripation:
      */
     void setInspectorLeadName(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, String workGroupId);
+
 }
