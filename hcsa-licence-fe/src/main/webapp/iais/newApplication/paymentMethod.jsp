@@ -2,11 +2,11 @@
 <h2>Payment Method</h2>
 
 <div class="col-xs-12">
-    <div class="col-xs-2">
+    <div class="col-xs-3">
         <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="Credit">
         <label class="form-check-label" ><span class="check-circle"></span>Credit/Debit Card</label>
     </div>
-    <div class="col-xs-1">
+    <div class="col-xs-2">
         <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="Credit">
         <label class="form-check-label" ><span class="check-circle"></span>NETS</label>
     </div>
@@ -17,12 +17,12 @@
 
 </div>
 <div class="col-xs-12">
-    <div class="col-xs-2">
+    <div class="col-xs-3">
         <img src="<%=webroot1%>img/mastercard.png" width="40" height="25" alt="mastercard">
         &nbsp;
         <img src="<%=webroot1%>img/paymentVISA.png" width="66" height="25" alt="VISA">
     </div>
-    <div class="col-xs-1">
+    <div class="col-xs-2">
         <img src="<%=webroot1%>img/paymentNets.png" width="66" height="25" alt="NETS">
         <!--<img src="/hcsa-licence-web/iais/newApplication/paymentNets.png" width="66" height="25" alt="NETS"> -->
     </div>
