@@ -64,10 +64,6 @@ public class InspecReassignTaskDelegator {
      */
     public void inspectionSupSearchStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchStart start ...."));
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if (loginContext == null) {
-            AccessUtil.initLoginUserInfo(bpc.request);
-        }
         AuditTrailHelper.auditFunction("Reassign Task", "Reassign Task");
     }
 

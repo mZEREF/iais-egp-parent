@@ -51,7 +51,6 @@ public class ApplicantConfirmInspDateDelegator {
      */
     public void userConfirmInspDateStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmInspDateStart start ...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Appointment Confirm System Date", "Appointment Confirm System Date");
     }
 

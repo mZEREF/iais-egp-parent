@@ -65,7 +65,6 @@ public class CessationApplicationDelegator {
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>CessationApplicationDelegator");
-        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Cessation Application", "Cessation Application");
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, null);
     }

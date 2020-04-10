@@ -35,7 +35,6 @@ public class ApptConfirmSpecificDateDelegator {
      */
     public void userConfirmSpecificDateStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmSpecificDateStart start ...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Appointment Confirm Specific Date", "Appointment Confirm Specific Date");
     }
 

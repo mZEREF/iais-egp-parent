@@ -120,7 +120,6 @@ public class OfficerOnlineEnquiriesDelegator {
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(request,"isASO",0);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         for (String role:loginContext.getRoleIds()

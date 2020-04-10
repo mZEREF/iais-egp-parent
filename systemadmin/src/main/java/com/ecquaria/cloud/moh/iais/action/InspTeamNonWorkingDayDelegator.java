@@ -73,7 +73,6 @@ public class InspTeamNonWorkingDayDelegator {
 
 		AuditTrailHelper.auditFunction("Appointment",
 				"Non working day");
-		AccessUtil.initLoginUserInfo(bpc.request);
 		ParamUtil.setSessionAttr(request, NON_WKR_DAY_LIST_ATTR, null);
 		ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, null);
 	}

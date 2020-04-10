@@ -27,7 +27,6 @@ public class defineUnavailbilityDelegate {
     @Autowired
     UserRoleService userRoleService;
     public void doStart(BaseProcessClass bpc){
-        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("defineUnavailbilityDelegate", "defineUnavailbilityDelegate");
     }
 

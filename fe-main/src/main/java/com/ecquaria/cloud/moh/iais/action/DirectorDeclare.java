@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.impl.OrgUserManageServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +37,6 @@ public class DirectorDeclare {
      * @throws
      */
     public void doStart(BaseProcessClass bpc){
-        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Director Declare", "DirectorDeclare");
         log.debug("****doStart Process ****");
     }

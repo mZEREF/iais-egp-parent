@@ -65,7 +65,6 @@ public class InspSupAddAvailabilityDelegator {
      */
     public void inspSupAddAvailabilityStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityStart start ...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Inspection Sup Add Availability", "Inspection Sup Add Availability");
     }
 

@@ -60,7 +60,6 @@ public class BlackedOutDateDelegator {
      */
     public void startStep(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Appointment",
                 "Blacked out date ");
 

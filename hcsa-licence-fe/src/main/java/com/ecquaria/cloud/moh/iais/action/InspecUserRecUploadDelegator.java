@@ -52,7 +52,6 @@ public class InspecUserRecUploadDelegator {
      */
     public void inspecUserRectifiUploadStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadStart start ...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("User Rectification Upload", "Upload Doc Rectification");
     }
 

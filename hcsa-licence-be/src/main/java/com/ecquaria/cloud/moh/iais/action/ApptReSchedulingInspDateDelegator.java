@@ -59,7 +59,6 @@ public class ApptReSchedulingInspDateDelegator {
      */
     public void apptReSchInspDateStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptReSchInspDateStart start ...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Re-Scheduling Appointment Inspection Date", "Re-Scheduling Appointment Inspection Date");
     }
 

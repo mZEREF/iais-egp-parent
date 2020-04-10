@@ -75,7 +75,6 @@ public class InspectionPreDelegator {
      */
     public void inspectionPreInspectorStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorStart start ...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Inspector Pre Task", "Pre Inspection Task");
     }
 

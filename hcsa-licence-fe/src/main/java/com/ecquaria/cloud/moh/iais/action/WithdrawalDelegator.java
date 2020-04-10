@@ -48,7 +48,6 @@ public class WithdrawalDelegator {
 
     public void start(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("****The Start Step****"));
-        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Withdrawal Application", "Withdrawal Application");
     }
 

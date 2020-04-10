@@ -118,7 +118,6 @@ public class InspectEmailAo1Delegator {
 
         Log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
-        AccessUtil.initLoginUserInfo(bpc.request);
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getRequestString(request,"taskId");
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);

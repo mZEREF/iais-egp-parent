@@ -78,7 +78,6 @@ public class AuditTrailDelegator {
 
         ParamUtil.setSessionAttr(request, "isFullMode", null);
         ParamUtil.setSessionAttr(request, AuditTrailConstants.PARAM_SEARCH, null);
-        //AccessUtil.initLoginUserInfo(request);
     }
 
     /**

@@ -94,7 +94,6 @@ public class KpiAndReminderDelegator {
             }
         }
 
-        AccessUtil.initLoginUserInfo(bpc.request);
         bpc.request.getSession().setAttribute("hcsaSvcRoutingStageDtos",entity);
         Date date=new Date();
         String format = new SimpleDateFormat("dd/MM/yyyy ", Locale.ENGLISH).format(date);

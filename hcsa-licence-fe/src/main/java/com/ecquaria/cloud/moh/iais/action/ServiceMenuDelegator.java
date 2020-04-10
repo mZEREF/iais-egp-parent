@@ -54,7 +54,6 @@ public class ServiceMenuDelegator {
     private ApplicationClient applicationClient;
     public void doStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the  doStart start 1...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR,null);
         ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, null);
 

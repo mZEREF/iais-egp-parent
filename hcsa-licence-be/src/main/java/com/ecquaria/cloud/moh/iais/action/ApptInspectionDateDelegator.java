@@ -58,7 +58,6 @@ public class ApptInspectionDateDelegator {
      */
     public void apptInspectionDateStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptInspectionDateStart start ...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("Appointment Inspection Date", "Appointment Inspection Date");
     }
 

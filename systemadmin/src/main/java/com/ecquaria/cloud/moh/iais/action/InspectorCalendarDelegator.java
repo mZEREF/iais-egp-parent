@@ -60,7 +60,6 @@ public class InspectorCalendarDelegator {
 	 * @throws IllegalAccessException
 	 */
 	public void startStep(BaseProcessClass bpc){
-		AccessUtil.initLoginUserInfo(bpc.request);
 		HttpServletRequest request = bpc.request;
 		log.debug(StringUtil.changeForLog("the inspector calendar start ...."));
 		log.info("Step 1 ==============>" + bpc.request.getSession().getId());

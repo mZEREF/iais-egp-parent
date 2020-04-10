@@ -29,7 +29,6 @@ public class ConfigServiceDelegator {
 
     public void start(BaseProcessClass bpc){
         log.info("*********startt***********");
-        AccessUtil.initLoginUserInfo(bpc.request);
         AuditTrailHelper.auditFunction("ConfigServiceDelegator", "Assign Report");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
