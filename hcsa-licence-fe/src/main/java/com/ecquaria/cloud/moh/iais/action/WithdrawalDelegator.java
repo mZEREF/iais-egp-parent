@@ -54,6 +54,7 @@ public class WithdrawalDelegator {
     public void prepareDate(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("****The prepareDate Step****"));
         List<SelectOption> withdrawalReason = IaisCommonUtils.genNewArrayList();
+        withdrawalReason.add(new SelectOption("", "Please select a withdrawal reason"));
         withdrawalReason.add(new SelectOption("WDR001", "Duplicate Application"));
         withdrawalReason.add(new SelectOption("WDR002", "Wrong Application"));
         withdrawalReason.add(new SelectOption("WDR003", "Failure to obtain pre requisite licence from other agency(ies)"));

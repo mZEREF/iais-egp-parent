@@ -23,6 +23,13 @@
                                 <span>This is to acknowledge that you have submitted a withdrawal request for ${appNo}</span>
                             </div>
                         </div>
+                        <div class="row" style="margin-top: 1.5%">
+                            <div class="col-md-12">
+                                <div class="col-md-2">
+                                    <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em class="fa fa-angle-left"></em> Back</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

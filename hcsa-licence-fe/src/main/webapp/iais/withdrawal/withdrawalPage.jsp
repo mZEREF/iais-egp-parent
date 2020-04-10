@@ -13,7 +13,6 @@
         <input type="hidden" name="app_action_type" value="">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
-                <div class="center-content">
                     <div class="internet-content">
                         <div class="row">
                             <div class="center-content">
@@ -35,10 +34,10 @@
                         <div class="row">
                             <div class="center-content">
                                 <div class="col-md-7">
+                                    <%String wReason = request.getParameter("withdrawalReason");%>
                                     <iais:select name="withdrawalReason" id="withdrawalReason"
                                                  options="withdrawalReasonList"
-                                                 firstOption="Please select a withdrawal reason"
-                                                 onchange="withdrawalReasons(this.value);"></iais:select>
+                                                 onchange="withdrawalReasons(this.value);" value="<%=wReason%>"></iais:select>
                                     <span id="error_withdrawnReason" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </div>
@@ -52,8 +51,9 @@
                             <div class="row">
                                 <div class="center-content">
                                     <div class="col-md-6">
+                                        <%String withdrawnRemarks = request.getParameter("withdrawnRemarks");%>
                         <textarea name="withdrawnRemarks" cols="58" rows="15" id="htmlEditroArea"
-                                  title="content"></textarea>
+                                  title="content" content="<%=withdrawnRemarks%>"></textarea>
                                         <span id="error_withdrawnRemarks" name="iaisErrorMsg"
                                               class="error-msg"></span>
                                     </div>
@@ -71,11 +71,12 @@
                                     <div class="file-upload-gp">
                                         <input id="withdrawFile" type="file" name="selectedFile" style="display: none;"><a
                                             class="btn btn-file-upload btn-secondary">Upload</a>
-                                        <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
+                                    <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
-                                <div class="col-md-9" style="margin-top: 13px;color: #1F92FF ">
+                                <div id="delFile" class="col-md-9" style="margin-top: 13px;color: #1F92FF;" hidden="hidden">
                                     <b id="fileName"></b>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"><i class="fa fa-times"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -94,13 +95,19 @@
                             </div>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
     </form>
     <%@include file="/include/validation.jsp" %>
 </div>
 <script type="text/javascript">
+
+    // $(function () {
+    //     if (obj == "WDR005") {
+    //         $("#reason").show();
+    //     }
+    // });
+
     function withdrawalReasons(obj) {
         console.log(obj);
         if (obj == "WDR005") {
@@ -116,10 +123,19 @@
     }
 
     $("#withdrawFile").change(function () {
+        $("#delFile").removeAttr("hidden");
         var fileName = $("#withdrawFile").val();
         var pos = fileName.lastIndexOf("\\");
         $("#fileName").html(fileName.substring(pos + 1));
-    })
+    });
+    
+    function deleteWdFile() {
+        // document.getElementById("withdrawFile").files[0] = null;
+        wdfile = $("#withdrawFile");
+        wdfile.after(wdfile.clone().val(""));
+        wdfile.remove();
+        $("#delFile").attr("hidden","hidden");
+    }
 
     function doSubmit() {
         showWaiting();
