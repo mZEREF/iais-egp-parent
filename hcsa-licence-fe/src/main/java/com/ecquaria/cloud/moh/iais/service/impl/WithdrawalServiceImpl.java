@@ -28,11 +28,11 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     @Override
     public void saveWithdrawn(WithdrawnDto withdrawnDto) {
-        ApplicationDto applicationDto = new ApplicationDto();
-        applicationDto.setApplicationNo(systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity()+"-01");
-        withdrawnDto.setApplicationDto(applicationDto);
         ApplicationGroupDto applicationGroupDto = withdrawnDto.getApplicationGroupDto();
         getNewApplicationGroup(applicationGroupDto);
+        ApplicationDto applicationDto = new ApplicationDto();
+        applicationDto.setApplicationNo(applicationGroupDto.getGroupNo()+"-01");
+        withdrawnDto.setApplicationDto(applicationDto);
         cessationClient.saveWithdrawn(withdrawnDto);
     }
 
