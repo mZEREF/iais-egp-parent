@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.client.rbac.UserClient;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -211,27 +212,33 @@ public class MohIntranetUserDelegator {
 
     public void prepareAddRole(BaseProcessClass bpc){
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        if (request == null) {
-            return;
+        String userAccId = ParamUtil.getRequestString(bpc.request,"userAccId");
+        if(request !=null){
+            userAccId = request.getParameter(IntranetUserConstant.CRUD_ACTION_VALUE);
         }
-        String userAccId = request.getParameter(IntranetUserConstant.CRUD_ACTION_VALUE);
         List<String> assignRoleOption = getAssignRoleOption();
         List<OrgUserRoleDto> orgUserRoleDtos = intranetUserService.retrieveRolesByuserAccId(userAccId);
-        List<String> roles = IaisCommonUtils.genNewArrayList();
+        List<String> roleNames = IaisCommonUtils.genNewArrayList();
+        List<String> assignRoleIds = IaisCommonUtils.genNewArrayList();
+        roleNames.clear();
+        assignRoleIds.clear();
         if(orgUserRoleDtos!=null&&!userAccId.isEmpty()){
             for(OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos){
                 String roleName = orgUserRoleDto.getRoleName();
-                roles.add(roleName);
+                String assignRoleId = orgUserRoleDto.getId();
+                roleNames.add(roleName);
+                assignRoleIds.add(assignRoleId);
             }
         }
-        assignRoleOption.removeAll(roles);
-        ParamUtil.setSessionAttr(bpc.request, "assignRoleOption", (Serializable) assignRoleOption);
-        ParamUtil.setSessionAttr(bpc.request, "alreadyAssignRoles", (Serializable) roles);
+        assignRoleOption.removeAll(roleNames);
+        ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", assignRoleOption);
+        ParamUtil.setRequestAttr(bpc.request, "alreadyAssignRoles", roleNames);
+        ParamUtil.setRequestAttr(bpc.request, "alreadyAssignRoleIds", assignRoleIds);
 
         if (userAccId != null) {
             OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(userAccId);
             String userId = orgUserDto.getUserId();
-            ParamUtil.setSessionAttr(bpc.request,"userIdName", userId);
+            ParamUtil.setRequestAttr(bpc.request,"userIdName", userId);
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
         }
 
@@ -244,11 +251,35 @@ public class MohIntranetUserDelegator {
             return;
         }
         OrgUserDto orgUserDto = (OrgUserDto)ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
+        ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR,orgUserDto);
         String[] assignRoles = ParamUtil.getMaskedStrings(bpc.request, "assignRole");
         String[] removeRoles = ParamUtil.getMaskedStrings(bpc.request, "removeRole");
         String userDomain = orgUserDto.getUserDomain();
         String userId = orgUserDto.getUserId();
         String userAccId = orgUserDto.getId();
+        if(assignRoles!=null){
+            List<OrgUserRoleDto> orgUserRoleDtos = IaisCommonUtils.genNewArrayList();
+            orgUserRoleDtos.clear();
+            for(String assignRole : assignRoles){
+                OrgUserRoleDto orgUserRoleDto = new OrgUserRoleDto();
+                orgUserRoleDto.setUserAccId(userAccId);
+                orgUserRoleDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                orgUserRoleDto.setRoleName(assignRole);
+                orgUserRoleDtos.add(orgUserRoleDto);
+            }
+            intranetUserService.assignRole(orgUserRoleDtos);
+        }
+        if(removeRoles!=null){
+            List<String> removeRoleIds = IaisCommonUtils.genNewArrayList();
+            removeRoleIds.clear();
+            for(String removeRole : removeRoles){
+                removeRoleIds.add(removeRole);
+            }
+            intranetUserService.removeRole(removeRoleIds);
+        }
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+        ParamUtil.setRequestAttr(bpc.request, "userAccId",userAccId);
+        return;
         //ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, userDomain);
 
     }

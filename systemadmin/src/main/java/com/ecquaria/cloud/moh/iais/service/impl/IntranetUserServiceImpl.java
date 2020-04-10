@@ -107,13 +107,13 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
-    public OrgUserRoleDto assignRole(OrgUserRoleDto orgUserRoleDto) {
-        return intranetUserClient.assignRole(orgUserRoleDto).getEntity();
+    public List<OrgUserRoleDto> assignRole(List<OrgUserRoleDto> orgUserRoleDtos) {
+        return intranetUserClient.assignRole(orgUserRoleDtos).getEntity();
     }
 
     @Override
-    public void removeRole(String id) {
-        intranetUserClient.removeRole(id);
+    public void removeRole(List<String> ids) {
+        intranetUserClient.removeRole(ids);
     }
 
     @Override

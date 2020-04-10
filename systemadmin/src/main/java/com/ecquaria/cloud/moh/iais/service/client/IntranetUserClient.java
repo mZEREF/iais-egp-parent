@@ -60,10 +60,10 @@ public interface IntranetUserClient {
     FeignResponseEntity<OrgUserDto> getOrgUserAccountByUserId(@PathVariable("user_id") String userId);
 
     @PostMapping(value = "/iais-orguser-be/intranet-user-assign-role", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<OrgUserRoleDto> assignRole(@RequestBody OrgUserRoleDto orgUserRoleDto);
+    FeignResponseEntity<List<OrgUserRoleDto>> assignRole(@RequestBody List<OrgUserRoleDto> orgUserRoleDtos);
 
-    @DeleteMapping(value = "/iais-orguser-be/removeRole/{id}")
-    FeignResponseEntity<String> removeRole(@PathVariable("id")String id);
+    @DeleteMapping(value = "/iais-orguser-be/removeRole")
+    FeignResponseEntity<String> removeRole(@RequestParam("id")List<String> ids);
 
     @GetMapping(value = "/iais-orguser-be/intranet-user-role-list/{userAccId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<OrgUserRoleDto>> retrieveRolesByuserAccId(@RequestParam("userAccId") String userAccId);

@@ -37,8 +37,8 @@
             <iais:row>
                 <iais:field value="Remove Role"/>
                 <iais:value width="4">
-                    <c:forEach items="${alreadyAssignRoles}" var="role">
-                        <input type="checkbox" name="removeRole" value="${role}"><c:out value="${role}"/><br>
+                    <c:forEach items="${alreadyAssignRoles}" var="role" varStatus="status">
+                        <input type="checkbox" name="removeRole" value="${alreadyAssignRoleIds[status.index]}"><c:out value="${role}"/><br>
                     </c:forEach>
                 </iais:value>
             </iais:row>

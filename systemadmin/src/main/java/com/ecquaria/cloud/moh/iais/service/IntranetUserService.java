@@ -31,8 +31,8 @@ public interface IntranetUserService {
     Boolean deleteEgpUser(String userDomian,String userId);
     ClientUser getUserByIdentifier(String userId,String userDomain);
     Boolean validatepassword(String password, UserIdentifier userIdentifier);
-    OrgUserRoleDto assignRole(OrgUserRoleDto orgUserRoleDto);
-    void removeRole(String id);
+    List<OrgUserRoleDto> assignRole(List<OrgUserRoleDto> orgUserRoleDtos);
+    void removeRole(List<String> ids);
     List<OrgUserRoleDto> retrieveRolesByuserAccId (String userAccId);
 
     SearchResult<WorkingGroupQueryDto> getWorkingGroupBySearchParam(@RequestBody SearchParam searchParam);

@@ -112,7 +112,7 @@ public class IntranetUserClientFallback implements IntranetUserClient{
     }
 
     @Override
-    public FeignResponseEntity<OrgUserRoleDto> assignRole(OrgUserRoleDto orgUserRoleDto) {
+    public FeignResponseEntity<List<OrgUserRoleDto>> assignRole(List<OrgUserRoleDto> orgUserRoleDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -120,7 +120,7 @@ public class IntranetUserClientFallback implements IntranetUserClient{
     }
 
     @Override
-    public FeignResponseEntity<String> removeRole(String id) {
+    public FeignResponseEntity<String> removeRole(List<String> ids) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
