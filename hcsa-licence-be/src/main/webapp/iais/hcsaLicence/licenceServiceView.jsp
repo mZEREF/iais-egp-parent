@@ -103,6 +103,38 @@
                                     <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
                                       <div class="row">
                                         <div class="col-md-6">
+                                          <label>Fire Safety Certificate Issued Date</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            ${appGrpPremDto.certIssuedDt}
+                                        </div>
+                                        <wrms:value width="7">
+                                          <span class="newVal " attr="${appGrpPremDto.certIssuedDt}"
+                                                style="display: none"><label><c:out value=""/></label></span>
+                                          <span class="oldVal compareTdStyle"
+                                                attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt}"
+                                                style="display: none"><label><c:out
+                                                  value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt}"/></label></span>
+                                        </wrms:value>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-md-6">
+                                          <label>Fire Safety Shelter Bureau Ref. No.</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            ${appGrpPremDto.scdfRefNo}
+                                        </div>
+                                        <wrms:value width="7">
+                                          <span class="newVal " attr="${appGrpPremDto.scdfRefNo}"
+                                                style="display: none"><label><c:out value=""/></label></span>
+                                          <span class="oldVal compareTdStyle"
+                                                attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo}"
+                                                style="display: none"><label><c:out
+                                                  value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo}"/></label></span>
+                                        </wrms:value>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-md-6">
                                           <label>Name of HCI</label>
                                         </div>
                                         <div class="col-md-6">
