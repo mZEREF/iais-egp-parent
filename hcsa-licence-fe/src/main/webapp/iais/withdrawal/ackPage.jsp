@@ -9,6 +9,7 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
+<%@include file="./dashboard.jsp" %>
 <div class="main-content">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <div class="row">
@@ -16,19 +17,13 @@
                 <div class="center-content">
                     <div class="internet-content">
                         <div class="bg-title">
-                            <div class="center-content">
+                            <div class="row">
                                 <h2>Acknowledgement</h2>
-                            </div>
-                            <div class="center-content">
                                 <span>This is to acknowledge that you have submitted a withdrawal request for ${appNo}</span>
                             </div>
                         </div>
-                        <div class="row" style="margin-top: 1.5%">
-                            <div class="col-md-12">
-                                <div class="col-md-2">
-                                    <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em class="fa fa-angle-left"></em> Back</a>
-                                </div>
-                            </div>
+                        <div class="row" style="padding-top: 10px">
+                            <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em class="fa fa-angle-left"></em> Back</a>
                         </div>
                     </div>
                 </div>
