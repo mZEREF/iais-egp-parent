@@ -300,7 +300,9 @@ public class HcsaApplicationDelegator {
             //62875
             //role is ao3 && status is 'Pending AO3 Approval'  have no verified
             if(!(RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus()))){
-                nextStageList.add(new SelectOption("VERIFIED", "Verified"));
+                if (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType())) {
+                    nextStageList.add(new SelectOption("VERIFIED", "Verified"));
+                }
             }
         }
         if((ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(applicationViewDto.getApplicationDto().getStatus())
@@ -316,9 +318,19 @@ public class HcsaApplicationDelegator {
         log.info(StringUtil.changeForLog("The rfiCount is -->:"+rfiCount));
         if(!(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()))){
             if(rfiCount==0){
-                nextStageList.add(new SelectOption("PROCRFI", "Request For Information"));
+                if (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
+                    nextStageList.add(new SelectOption("PROCRFI", "Request For Information"));
+                }
             }
         }
+
+        if (RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())
+                && ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
+                && ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REJECT, "Reject"));
+        }
+
         //62875
         if(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));

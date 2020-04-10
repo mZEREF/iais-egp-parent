@@ -573,7 +573,6 @@
                                                             </iais:row>
                                                         </div>
                                                     </c:if>
-
                                                     <div id="rollBackDropdown" class="hidden">
                                                         <iais:row>
                                                             <iais:field value="Route Back To" required="true"/>
@@ -666,7 +665,7 @@
                                                         </iais:row>
                                                     </div>
 
-                                                    <%--<div>--%>
+                                                    <div class="fastTrack">
                                                         <iais:row>
                                                             <iais:field value="Fast Tracking?" required="false"/>
                                                             <iais:value width="10">
@@ -692,7 +691,7 @@
                                                                 </p>
                                                             </iais:value>
                                                         </iais:row>
-                                                    <%--</div>--%>
+                                                    </div>
 
                                                     <div id="rfiSelect">
                                                         <iais:row>
@@ -778,11 +777,11 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-            $("input[name='fastTracking']").each(function(){
-                if('${applicationViewDto.applicationDto.fastTracking}' == 'true'){
-                    $(this).prop("checked",true);
-                }
-            });
+        $("input[name='fastTracking']").each(function(){
+            if('${applicationViewDto.applicationDto.fastTracking}' == 'true'){
+                $(this).prop("checked",true);
+            }
+        });
         if ('${taskDto.taskKey}' == '12848A70-820B-EA11-BE7D-000C29F371DC' || '${taskDto.taskKey}' == '13848A70-820B-EA11-BE7D-000C29F371DC') {
             $('#ApplicationViewInspection').css('display', 'none');
             // $('#recommendationDropdown').removeClass('hidden');
@@ -804,6 +803,13 @@
         checkVerifiedField();
         //check DMS
         DMSCheck();
+
+        if('APTY006' == '${applicationViewDto.applicationDto.applicationType}' && 'APST007' == '${applicationViewDto.applicationDto.status}'){
+            $('#recommendationDropdown').addClass('hidden');
+            $('#replytr').removeClass('hidden');
+            $('#licenceStartDate').addClass('hidden');
+            $('.fastTrack').addClass('hidden');
+        }
     });
 
     <%--function DMSCheck(){--%>
