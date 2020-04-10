@@ -110,9 +110,17 @@
                                 View Application
                               </button>
                             </a>
-                            <button type="button" class="btn btn-primary" onclick="javascript:doInspectionPreTaskSelfBack()">
-                              Self-Assessment Checklists
-                            </button>
+                            <c:if test="${not empty commonDto.sectionDtoList}">
+                              <button type="button" class="btn btn-primary" onclick="javascript:doInspectionPreTaskSelfBack()">
+                                Self-Assessment Checklists
+                              </button>
+                            </c:if>
+                            <c:if test="${empty commonDto.sectionDtoList}">
+                              <button type="button" class="btn btn-primary" disabled>
+                                Self-Assessment Checklists
+                              </button>
+                            </c:if>
+
                           </div>
                           <div>&nbsp</div>
                           <div class="panel panel-default">
@@ -304,12 +312,7 @@
                               </div>
                             </div>
                             <iais:action style="text-align:center;">
-                              <%--<c:if test="${!empty commonDto.sectionDtoList && !empty serListDto}">--%>
                               <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
-                              <%--</c:if>--%>
-                              <%--<c:if test="${empty commonDto.sectionDtoList && empty serListDto}">
-                                <button class="btn btn-primary disabled" style="float:right" type="button" disabled>Submit</button>
-                              </c:if>--%>
                             </iais:action>
                             <br><br><br>
                             <div class="alert alert-info" role="alert">
@@ -403,16 +406,19 @@
     }
 
     function doInspectionPreTaskEdit() {
+        showWaiting();
         $("#actionValue").val('edit');
         inspectionPreTaskSubmit('edit');
     }
 
     function doInspectionPreTaskSelfBack() {
+        showWaiting();
         $("#actionValue").val('self');
         inspectionPreTaskSubmit('self');
     }
 
     function doInspectionPreTaskBack() {
+        showWaiting();
         $("#actionValue").val('back');
     }
 
@@ -421,6 +427,7 @@
     }
 
     function doInspectionPreTaskSubmit() {
+        showWaiting();
         var actionValue = $("#processDec").val();
         if("REDECI002" == actionValue){
             $("#actionValue").val('approve');

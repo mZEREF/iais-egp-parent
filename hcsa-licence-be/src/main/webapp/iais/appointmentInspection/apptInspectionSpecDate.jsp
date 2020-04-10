@@ -85,11 +85,13 @@
     }
 
     function apptInspectionSpecDateConfirm() {
+        showWaiting();
         $("#actionValue").val('success');
         apptInspectionSpecDateSubmit("success");
     }
 
     function apptInspectionSpecDateBack() {
+        showWaiting();
         $("#actionValue").val('back');
         apptInspectionSpecDateSubmit("back");
     }

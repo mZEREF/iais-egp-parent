@@ -139,6 +139,7 @@
 <script type="text/javascript">
 
     function doInspectorSearchTaskAssign(taskId) {
+        showWaiting();
         $("#taskId").val(taskId);
         inspectorSearchTaskSubmit('assign');
     }
@@ -161,10 +162,12 @@
     }
 
     function doInspectorSearchTaskSearch() {
+        showWaiting();
         inspectorSearchTaskSubmit('search');
     }
 
     function jumpToPagechangePage(){
+        showWaiting();
         inspectorSearchTaskSubmit('page');
     }
 

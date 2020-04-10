@@ -94,6 +94,7 @@
     }
 
     function doInspAvailabilityConSubmit() {
+        showWaiting();
         $("[name='nonActionValue']").val('back');
         inspAvailabilityConSubmit('back');
     }

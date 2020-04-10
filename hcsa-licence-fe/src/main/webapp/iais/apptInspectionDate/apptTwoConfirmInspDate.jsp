@@ -84,11 +84,13 @@
     }
 
     function apptTwoConfirmInspDateCon() {
+        showWaiting();
         $("#actionValue").val('success');
         apptTwoConfirmInspDateSubmit('success');
     }
 
     function apptTwoConfirmInspDateBack() {
+        showWaiting();
         $("#actionValue").val('back');
         apptTwoConfirmInspDateSubmit('back');
     }

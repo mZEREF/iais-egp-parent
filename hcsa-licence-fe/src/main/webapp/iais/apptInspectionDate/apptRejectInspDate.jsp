@@ -83,11 +83,13 @@
     }
 
     function apptRejectInspDateCon() {
+        showWaiting();
         $("#actionValue").val('ack');
         apptRejectInspDateSubmit('ack');
     }
 
     function apptRejectInspDateBack() {
+        showWaiting();
         $("#actionValue").val('back');
         apptRejectInspDateSubmit('back');
     }

@@ -126,12 +126,13 @@
 </div>
 <script type="text/javascript">
     function doInspectionAssignTaskBack() {
+        showWaiting();
         $("[name='actionValue']").val('back');
         inspectionAssignTaskSubmit('back');
     }
 
     function doInspectionAssignTaskNext() {
-        doValidation();
+        showWaiting();
         $("[name='actionValue']").val('confirm');
         inspectionAssignTaskSubmit('confirm');
     }

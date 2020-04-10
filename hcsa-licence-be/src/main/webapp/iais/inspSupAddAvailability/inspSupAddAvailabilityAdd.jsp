@@ -96,11 +96,13 @@
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
     function doInspAvailabilityAddBack() {
+        showWaiting();
         $("[name='nonActionValue']").val('back');
         inspAvailabilityAddSubmit('back');
     }
 
     function doInspAvailabilityAddNext() {
+        showWaiting();
         $("[name='nonActionValue']").val('confirm');
         inspAvailabilityAddSubmit('confirm');
     }

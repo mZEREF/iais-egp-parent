@@ -288,6 +288,7 @@
     }
 
     function apptReShInspectionDateConfirm() {
+        showWaiting();
         $("#actionValue").val('success');
         apptReShInspectionDateSubmit("success");
     }

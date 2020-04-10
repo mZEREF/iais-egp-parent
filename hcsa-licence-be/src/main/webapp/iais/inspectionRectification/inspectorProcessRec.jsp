@@ -487,11 +487,13 @@
     }
 
     function doInspectorProRecView() {
+        showWaiting();
         $("#actionValue").val('view');
         inspectorProRecSubmit('view');
     }
 
     function doInspectorProRecSubmit() {
+        showWaiting();
         var processDec = $("#processDec").val();
         if("REDECI006" == processDec){
             $("#actionValue").val('accept');

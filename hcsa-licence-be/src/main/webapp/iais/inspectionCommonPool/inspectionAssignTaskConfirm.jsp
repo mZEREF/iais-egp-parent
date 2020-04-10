@@ -123,10 +123,12 @@
 </div>
 <script type="text/javascript">
     function doInspectionAssignTaskConfirmBack() {
+        showWaiting();
         inspectionAssignTaskConfirmSubmit('assign');
     }
 
     function doInspectionAssignTaskConfirmSubmit() {
+        showWaiting();
         inspectionAssignTaskConfirmSubmit('success');
     }
     function inspectionAssignTaskConfirmSubmit(action){

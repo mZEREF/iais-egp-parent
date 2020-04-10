@@ -133,6 +133,7 @@
 <script type="text/javascript">
 
     function doInspectionCommonPoolAssign(appCorrelationId) {
+        showWaiting();
         $("#appCorrelationId").val(appCorrelationId);
         inspectionCommonPoolSubmit('assign');
     }
@@ -153,9 +154,11 @@
         mainPoolForm.submit();
     }
     function doInspectionCommonPoolSearch() {
+        showWaiting();
         inspectionCommonPoolSubmit('search');
     }
     function jumpToPagechangePage(){
+        showWaiting();
         inspectionCommonPoolSubmit('page');
     }
 

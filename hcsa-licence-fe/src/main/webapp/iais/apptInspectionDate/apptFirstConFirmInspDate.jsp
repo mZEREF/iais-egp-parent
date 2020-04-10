@@ -82,16 +82,19 @@
     }
 
     function apptFirstConFirmInspDateRej() {
+        showWaiting();
         $("#actionValue").val('reject');
         apptFirstConFirmInspDateSubmit('reject');
     }
 
     function apptFirstConFirmInspDateRec() {
+        showWaiting();
         $("#actionValue").val('reconfirm');
         apptFirstConFirmInspDateSubmit('reconfirm');
     }
 
     function apptFirstConFirmInspDateCon() {
+        showWaiting();
         $("#actionValue").val('confirm');
         apptFirstConFirmInspDateSubmit('confirm');
     }

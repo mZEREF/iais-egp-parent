@@ -108,10 +108,12 @@
 </div>
 <script type="text/javascript">
     function doInspectionSupAssignTaskConfirmBack() {
+        showWaiting();
         inspectionSupAssignTaskConfirmSubmit('assign');
     }
 
     function doInspectionSupAssignTaskConfirmSubmit() {
+        showWaiting();
         inspectionSupAssignTaskConfirmSubmit('success');
     }
     function inspectionSupAssignTaskConfirmSubmit(action){

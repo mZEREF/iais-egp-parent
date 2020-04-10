@@ -305,12 +305,14 @@
     }
 
     function apptInspectionDateConfirm() {
+        showWaiting();
         $("#actionValue").val('success');
         $("#processDec").val('REDECI017');
         apptInspectionDateSubmit("success");
     }
 
     function apptInspectionDateSpecific() {
+        showWaiting();
         $("#actionValue").val('confirm');
         $("#processDec").val('REDECI018');
         apptInspectionDateSubmit("confirm");

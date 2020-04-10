@@ -117,12 +117,14 @@
     }
 
     function doUserRecUploadRectify(ncItemId) {
+        showWaiting();
         $("#ncItemId").val(ncItemId);
         $("#actionValue").val('confirm');
         userRecUploadSubmit('confirm');
     }
 
     function doUserRecUploadSubmit() {
+        showWaiting();
         $("#actionValue").val('submit');
         userRecUploadSubmit('submit');
     }

@@ -121,26 +121,31 @@
     }
 
     function doUserRecUploadConfirmCancel() {
+        showWaiting();
         $("#actionValue").val('cancel');
         userRecUploadConfirmSubmit('review');
     }
 
     function doUserRecUploadConfirmSave() {
+        showWaiting();
         $("#actionValue").val('success');
         userRecUploadConfirmSubmit('success');
     }
 
     function doUserRecUploadConfirmDel(fileId) {
+        showWaiting();
         $("#actionValue").val('delete');
         $("#fileId").val(fileId);
         userRecUploadConfirmSubmit('delete');
     }
 
     function doUserRecUploadConfirmUpload() {
+        showWaiting();
         $("#recFileUpload").trigger('click');
     }
 
     function doUserRecUploadConfirmFile(value) {
+        showWaiting();
         $("#actionValue").val('add');
         userRecUploadConfirmSubmit('add');
     }

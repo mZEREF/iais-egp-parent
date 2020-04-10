@@ -47,6 +47,7 @@
 </form>
 <script type="text/javascript">
     $("#print-ack").click(function () {
+        showWaiting();
         window.print();
     })
 </script>

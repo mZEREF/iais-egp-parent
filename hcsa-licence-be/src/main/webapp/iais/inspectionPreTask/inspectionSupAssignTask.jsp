@@ -139,11 +139,13 @@
 <script>
     function doInspectionSupAssignTaskBack() {
         clearErrorMsg();
+        showWaiting();
         $("[name='actionValue']").val('back');
         inspectionSupAssignTaskSubmit('back');
     }
 
     function doInspectionSupAssignTaskNext() {
+        showWaiting();
         clearErrorMsg();
         doValidation();
         if (getErrorMsg()) {

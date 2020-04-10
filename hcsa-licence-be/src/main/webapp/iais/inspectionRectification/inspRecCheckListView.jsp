@@ -240,6 +240,7 @@
 </div>
 <script>
     function doInspRecCheckListViewBack() {
+        showWaiting();
         $("#actionValue").val('view');
         inspRecCheckListViewSubmit('view');
     }

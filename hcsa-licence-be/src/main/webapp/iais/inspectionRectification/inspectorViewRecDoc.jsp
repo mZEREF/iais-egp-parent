@@ -164,11 +164,13 @@
 </div>
 <script>
     function doInspRecCheckListBack() {
+        showWaiting();
         $("#actionValue").val('back');
         inspRecCheckListSubmit('back');
     }
 
     function doInspRecCheckListView() {
+        showWaiting();
         $("#actionValue").val('list');
         inspRecCheckListSubmit('list');
     }

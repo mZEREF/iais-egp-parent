@@ -105,6 +105,7 @@
 </div>
 <script>
     function doInspectionPreSelfBack() {
+        showWaiting();
         $("[name='actionValue']").val('back');
         inspectionPreSelfSubmit('back');
     }
