@@ -7,6 +7,11 @@
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-blank"/>
+<style>
+  *{
+    font-size: 16px;
+  }
+</style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
   <input style="display: none" value="${NOT_VIEW}" id="view">
@@ -386,30 +391,259 @@
                                   </div>
                                   <div class="pop-up">
                                     <div class="pop-up-body">
-                                      <div class="field col-sm-8 control-label formtext"><p><strong>Licensee
-                                        (Company)</strong></p>
-                                        <p><span class="col-xs-6">Name:</span>${newLicenceDto.name}</p>
-                                        <span>
-                                                <wrms:value width="7">
+                                      <div class="field col-sm-8 control-label formtext">
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>Licensee Information</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-8">
+                                          Who is the Licensee?
+                                          </div>
+                                          <div class="col-md-6">
+                                            Local Company
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                          UEN Number
+                                          </div>
+                                          <div class="col-md-6">
+                                            ${newLicenceDto.uenNo}
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                          Name of Licensee
+                                          </div>
+                                          <div class="col-md-6">
+                                            ${newLicenceDto.name}
+                                              <wrms:value width="7">
                                                   <span class="newVal compareTdStyle" attr="${newLicenceDto.name}"
                                                         style="display: none"><label><c:out
                                                           value="${newLicenceDto.name}"/></label></span>
-                                                  <span class="oldVal compareTdStyle" attr="${oldLicenceDto.name}"
-                                                        style="display: none"><label><c:out
-                                                          value="${oldLicenceDto.name}"/></label></span>
-                                                </wrms:value></span>
-                                        </span>
-                                        <p>
+                                                <span class="oldVal compareTdStyle" attr="${oldLicenceDto.name}"
+                                                      style="display: none"><label><c:out
+                                                        value="${oldLicenceDto.name}"/></label></span>
+                                              </wrms:value>
+                                          </div>
+                                        </div>
+
                                         <div class="row">
                                           <div class="col-md-6">
-                                            <label>AuthoriseD Person 1</label>
+                                           Postal Code
+                                          </div>
+                                          <div class="col-md-6">
+                                            ${newLicenceDto.postalCode}
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Address Type
+                                          </div>
+                                          <div class="col-md-6">
+                                            ${newLicenceDto.addrType}
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Blk No.
+                                          </div>
+                                          <div class="col-md-6">
+                                            ${newLicenceDto.unitNo}
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Floor No.
+                                          </div>
+                                          <div class="col-md-6">
+                                            ${newLicenceDto.floorNo}
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Unit No.
+                                          </div>
+                                          <div class="col-md-6">
+                                            ${newLicenceDto.unitNo}
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Street Name
+                                          </div>
+                                          <div class="col-md-6">
+                                            ${newLicenceDto.streetName}
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Building Name
+                                          </div>
+                                          <div class="col-md-6">
+                                            ${newLicenceDto.buildingName}
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Office Telephone No.
+                                          </div>
+                                          <div class="col-md-6">
+                                            ${newLicenceDto.officeTelNo}
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Office Email Address
+                                          </div>
+                                          <div class="col-md-6">
+                                            ${newLicenceDto.emilAddr}
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>Board Member 1</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                          </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Salutation
+                                          </div>
+                                          <div class="col-md-6">
+                                            Mr
+                                          </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            name
+                                          </div>
+                                          <div class="col-md-6">
+                                            Mo Delan
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            ID No.
+                                          </div>
+                                          <div class="col-md-6">
+                                            S8299230H
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Designation
+                                          </div>
+                                          <div class="col-md-6">
+                                            CEO
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Designation Cessation Date
+                                          </div>
+                                          <div class="col-md-6">
+                                            -
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Designation Cessation Reason
+                                          </div>
+                                          <div class="col-md-6">
+                                            -
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>Board Member 1</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Salutation
+                                          </div>
+                                          <div class="col-md-6">
+                                            Mrs
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            name
+                                          </div>
+                                          <div class="col-md-6">
+                                            Linda Tan
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Designation
+                                          </div>
+                                          <div class="col-md-6">
+                                            CFO
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Designation Cessation Date
+                                          </div>
+                                          <div class="col-md-6">
+                                            -
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Designation Cessation Reason
+                                          </div>
+                                          <div class="col-md-6">
+                                            -
+                                          </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <label>Authorised Person 1</label>
                                           </div>
                                           <div class="col-md-6">
                                           </div>
                                         </div>
                                         <div class="row">
                                           <div class="col-md-6">
-                                            <label>Name:</label>
+                                            Name
                                           </div>
                                           <div class="col-md-6">
                                             Mo Delan
@@ -417,7 +651,7 @@
                                         </div>
                                         <div class="row">
                                           <div class="col-md-6">
-                                            <label>ID No.:</label>
+                                            ID No.
                                           </div>
                                           <div class="col-md-6">
                                             S8299230H
@@ -425,7 +659,7 @@
                                         </div>
                                         <div class="row">
                                           <div class="col-md-6">
-                                            <label>Designation:</label>
+                                          Designation
                                           </div>
                                           <div class="col-md-6">
                                             CEO
@@ -433,7 +667,7 @@
                                         </div>
                                         <div class="row">
                                           <div class="col-md-6">
-                                            <label>Office Telephone:</label>
+                                           Office Telephone
                                           </div>
                                           <div class="col-md-6">
                                             64593810
@@ -441,7 +675,7 @@
                                         </div>
                                         <div class="row">
                                           <div class="col-md-6">
-                                            <label>Mobile No.:</label>
+                                           Mobile No.
                                           </div>
                                           <div class="col-md-6">
                                             92338899
@@ -449,7 +683,7 @@
                                         </div>
                                         <div class="row">
                                           <div class="col-md-6">
-                                            <label>Email Address:</label>
+                                            Email Address
                                           </div>
                                           <div class="col-md-6">
                                             modelan@gmail.com
@@ -457,7 +691,7 @@
                                         </div>
                                         <div class="row">
                                           <div class="col-md-6">
-                                            <label>Email Address:</label>
+                                           Email Address
                                           </div>
                                           <div class="col-md-6">
                                             modelan@gmail.com
@@ -465,14 +699,14 @@
                                         </div>
                                         <div class="row">
                                           <div class="col-md-6">
-                                            <label>AuthoriseD Person 2:</label>
+                                            <label>Authorised Person 2</label>
                                           </div>
                                           <div class="col-md-6">
                                           </div>
                                         </div>
                                         <div class="row">
                                           <div class="col-md-6">
-                                            <label>name:</label>
+                                            name
                                           </div>
                                           <div class="col-md-6">
                                             Linda Tan
@@ -480,7 +714,7 @@
                                         </div>
                                         <div class="row">
                                           <div class="col-md-6">
-                                            <label>ID No.:</label>
+                                          ID No.
                                           </div>
                                           <div class="col-md-6">
                                             S4285224D
@@ -488,7 +722,7 @@
                                         </div>
                                         <div class="row">
                                           <div class="col-md-6">
-                                            <label>Designation:</label>
+                                            Designation
                                           </div>
                                           <div class="col-md-6">
                                             CFO
@@ -496,7 +730,7 @@
                                         </div>
                                         <div class="row">
                                           <div class="col-md-6">
-                                            <label>Office Telephone:</label>
+                                            Office Telephone
                                           </div>
                                           <div class="col-md-6">
                                             64593815
@@ -504,7 +738,7 @@
                                         </div>
                                         <div class="row">
                                           <div class="col-md-6">
-                                            <label>Mobile No.:</label>
+                                            Mobile No.
                                           </div>
                                           <div class="col-md-6">
                                             82331122
@@ -512,12 +746,15 @@
                                         </div>
                                         <div class="row">
                                           <div class="col-md-6">
-                                            <label>Email Address:</label>
+                                            Email Address
                                           </div>
                                           <div class="col-md-6">
                                             lindatan@gmail.com
                                           </div>
                                         </div>
+
+
+
                                       </div>
                                     </div>
                                   </div>

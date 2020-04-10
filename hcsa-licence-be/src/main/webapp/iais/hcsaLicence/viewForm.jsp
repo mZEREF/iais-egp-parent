@@ -282,11 +282,9 @@
                   <c:if test="${hciNameOldAppSubmissionDtos!='' && hciNameOldAppSubmissionDtos!=null}" >
                     <c:set value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}" var="oldAppSubmissionDto"></c:set>
                   </c:if>
-
                     <c:set var="reloadMapValue" value="${appGrpPrem.premisesIndexNo}"/>
 
                   <tbody>
-                    ${reloadDisciplineAllocationMap}
                   <c:forEach var="disciplineAllocation" items="${reloadDisciplineAllocationMap[reloadMapValue]}" varStatus="stat">
                     <c:set value="${reloadOld[reloadMapValue]}" var="reloaded"></c:set>
                     ${stat.end}

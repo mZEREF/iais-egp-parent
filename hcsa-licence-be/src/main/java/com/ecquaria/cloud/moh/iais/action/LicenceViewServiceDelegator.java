@@ -377,9 +377,9 @@ public class LicenceViewServiceDelegator {
                         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList =appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
                         if(appSvcLaboratoryDisciplinesDtoList != null && appSvcLaboratoryDisciplinesDtoList.size()>0){
                             for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
-                                if(hciName.equals(appSvcLaboratoryDisciplinesDto.getPremiseVal())){
-                                    appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
-                                }
+
+                                appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+
                             }
                         }
                         if(appSvcChckListDtoList != null && appSvcChckListDtoList.size()>0){
