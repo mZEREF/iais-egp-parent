@@ -122,7 +122,7 @@
                 </div>
               <div class="clear"></div></div>
               <div class="form-group">
-                <label class="col-xs-12 col-md-4 control-label">Office Telephone No <span class="mandatory">*</span></label>
+                <label class="col-xs-12 col-md-4 control-label">Office Telephone No. <span class="mandatory">*</span></label>
                 <div class=" col-xs-7 col-sm-4 col-md-5">
                   <input type="text" name="onSiteOffTelNo" maxlength="8" autocomplete="off">
                   <span class="error-msg" name="iaisErrorMsg" id="error_offTelNo(00)"></span>
