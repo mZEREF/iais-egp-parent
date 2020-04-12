@@ -189,7 +189,7 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Office Telephone No " mandatory="true" width="12"/>
+                        <iais:field value="Office Telephone No. " mandatory="true" width="12"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
                             <iais:input type="text" name="onSiteOffTelNo" maxLength="8" value="${appGrpPremisesDto.offTelNo}" id="onsitOffice" cssClass="onsitOffice" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_offTelNo${status.index}"></span>
