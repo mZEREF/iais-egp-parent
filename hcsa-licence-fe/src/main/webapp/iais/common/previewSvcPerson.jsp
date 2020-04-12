@@ -11,7 +11,7 @@
                 <c:when test="${currentPreviewSvcInfo.serviceCode=='BLB'}">
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.designation}</p>
@@ -19,7 +19,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
@@ -27,7 +27,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Registration No.:</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Registration No.</p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.profRegNo}</p>
@@ -35,7 +35,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
@@ -45,7 +45,7 @@
                 <c:when test="${currentPreviewSvcInfo.serviceCode=='TCB'}">
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
@@ -53,7 +53,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.quaification}</p>
@@ -61,7 +61,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
@@ -72,7 +72,7 @@
                 <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT001'}">
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Radiology Professional</p>
@@ -80,7 +80,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
@@ -88,7 +88,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.designation}</p>
@@ -96,7 +96,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.quaification}</p>
@@ -104,7 +104,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
@@ -114,7 +114,7 @@
                 <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT002'}">
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Medical Physicist</p>
@@ -122,7 +122,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
@@ -130,7 +130,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.quaification}</p>
@@ -138,7 +138,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
@@ -148,7 +148,7 @@
                 <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT003'}">
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Radiation Safety Officer</p>
@@ -156,7 +156,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
@@ -166,7 +166,7 @@
                 <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT004'}">
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select Service Personnel </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Registered Nurse</p>
@@ -174,7 +174,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
@@ -182,7 +182,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-8">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Registration No :</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Registration No </p>
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.profRegNo}</p>
