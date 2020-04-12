@@ -50,7 +50,13 @@ import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -78,7 +84,6 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1594,7 +1599,7 @@ public class NewApplicationDelegator {
         String [] conStartMM = ParamUtil.getStrings(request, "conveyanceStartMM");
         String [] conEndHHS = ParamUtil.getStrings(request, "conveyanceEndHH");
         String [] conEndMMS = ParamUtil.getStrings(request, "conveyanceEndMM");
-
+        List<SelectOption> publicHolidayDtos = (List<SelectOption>) ParamUtil.getSessionAttr(request,"publicHolidaySelect");
         //every prem's ph length
         String [] phLength = ParamUtil.getStrings(request,"phLength");
         String [] premValue = ParamUtil.getStrings(request, "premValue");
@@ -1662,12 +1667,13 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setScdfRefNo(scdfRefNo[i]);
                 appGrpPremisesDto.setAddrType(siteAddressType[i]);
                 appGrpPremisesDto.setOffTelNo(offTelNo[i]);
-                appGrpPremisesDto.setCertIssuedDtStr(fireSafetyCertIssuedDateStr[i]);
                 Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr[i], Formatter.DATE);
                 appGrpPremisesDto.setCertIssuedDt(fireSafetyCertIssuedDateDate);
-                if(AppConsts.YES.equals(isOtherLic)){
+                String certIssuedDtStr = Formatter.formatDate(fireSafetyCertIssuedDateDate);
+                appGrpPremisesDto.setCertIssuedDtStr(certIssuedDtStr);
+                if(AppConsts.YES.equals(isOtherLic[i])){
                     appGrpPremisesDto.setLocateWithOthers(true);
-                }else if(AppConsts.NO.equals(isOtherLic)){
+                }else if(AppConsts.NO.equals(isOtherLic[i])){
                     appGrpPremisesDto.setLocateWithOthers(false);
                 }
                 for(int j =0; j<length; j++){
@@ -1690,6 +1696,8 @@ public class NewApplicationDelegator {
                     appPremPhOpenPeriod.setOnsiteStartFromMM(onsitePbHolDayStartMM);
                     appPremPhOpenPeriod.setOnsiteEndToHH(onsitePbHolDayEndHH);
                     appPremPhOpenPeriod.setOnsiteEndToMM(onsitePbHolDayEndMM);
+                    String phName = getPhName(publicHolidayDtos,onsitePubHoliday);
+                    appPremPhOpenPeriod.setDayName(phName);
                     if(!StringUtil.isEmpty(onsitePubHoliday)||!StringUtil.isEmpty(onsitePbHolDayStartHH) || !StringUtil.isEmpty(onsitePbHolDayStartMM)
                             ||!StringUtil.isEmpty(onsitePbHolDayEndHH) ||!StringUtil.isEmpty(onsitePbHolDayEndMM)){
                         appPremPhOpenPeriods.add(appPremPhOpenPeriod);
@@ -1732,7 +1740,8 @@ public class NewApplicationDelegator {
                     appPremPhOpenPeriod.setConvStartFromMM(convPbHolDayStartMM);
                     appPremPhOpenPeriod.setConvEndToHH(convPbHolDayEndHH);
                     appPremPhOpenPeriod.setConvEndToMM(convPbHolDayEndMM);
-
+                    String phName = getPhName(publicHolidayDtos,convPubHoliday);
+                    appPremPhOpenPeriod.setDayName(phName);
                     if(!StringUtil.isEmpty(convPubHoliday)||!StringUtil.isEmpty(convPbHolDayStartHH) || !StringUtil.isEmpty(convPbHolDayStartMM)
                             ||!StringUtil.isEmpty(convPbHolDayEndHH) ||!StringUtil.isEmpty(convPbHolDayEndMM)){
                         appPremPhOpenPeriods.add(appPremPhOpenPeriod);
@@ -3277,7 +3286,21 @@ public class NewApplicationDelegator {
 
         ParamUtil.setRequestAttr(request, "premiseHours", timeHourList);
         ParamUtil.setRequestAttr(request, "premiseMinute", timeMinList);
-        ParamUtil.setRequestAttr(request, "publicHolidaySelect", publicHolidayList);
+        ParamUtil.setSessionAttr(request, "publicHolidaySelect", (Serializable) publicHolidayList);
+    }
+
+    private static String getPhName(List<SelectOption> phDtos, String dateStr){
+        String result = "";
+        if(IaisCommonUtils.isEmpty(phDtos) || StringUtil.isEmpty(dateStr)){
+            return result;
+        }
+        for(SelectOption publicHolidayDto : phDtos){
+            if(dateStr.equals(publicHolidayDto.getValue())){
+                result = publicHolidayDto.getText();
+                break;
+            }
+        }
+        return result;
     }
 
 }
