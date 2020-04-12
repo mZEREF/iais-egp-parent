@@ -412,15 +412,16 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
         appPreRecommentdationDto.setAppPremCorreId(appPremId);
 
-        appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_TCU);
         Date tcuDate = null;
         try {
             tcuDate = Formatter.parseDate(serListDto.getTuc());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (tcuDate != null) {
+        if ( !StringUtil.isEmpty(serListDto.getTuc()) && tcuDate != null ) {
             appPreRecommentdationDto.setRecomInDate(tcuDate);
+        }else {
+            appPreRecommentdationDto.setRecomInDate(null);
         }
         appPreRecommentdationDto.setId(null);
         appPreRecommentdationDto.setAppPremCorreId(appPremId);

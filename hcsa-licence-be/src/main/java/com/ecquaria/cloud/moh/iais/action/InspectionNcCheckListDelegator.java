@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
@@ -292,7 +291,7 @@ public class InspectionNcCheckListDelegator {
                      //delete file
                     insepctionNcCheckListService.deleteInvalidFile(serListDto);
                     //save file
-                    if( size <= 10)
+                    if( size <= 10240)
                     appIntranetDocDto.setFileRepoId(insepctionNcCheckListService.saveFiles(file));
                     serListDto.setAppPremisesSpecialDocDto(appIntranetDocDto);
                 }

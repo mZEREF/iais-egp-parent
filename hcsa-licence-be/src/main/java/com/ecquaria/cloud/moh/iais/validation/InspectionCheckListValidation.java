@@ -39,7 +39,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         otherinfoVad(serListDto,errMap);
         // validate file
         if(serListDto.getAppPremisesSpecialDocDto() != null){
-            if(9999 < serListDto.getAppPremisesSpecialDocDto().getDocSize())
+            if(10240 < serListDto.getAppPremisesSpecialDocDto().getDocSize())
                 errMap.put("litterFile",UC_CHKLMD001_ERR007);
 
         }
@@ -270,6 +270,9 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         }catch (Exception e){
             errMap.put("tcuDate","UC_CHKLMD001_ERR003");
             Log.debug(e.toString());
+        }
+        if(icDto.isTcuFlag() && StringUtil.isEmpty(icDto.getTuc())){
+            errMap.put("tcuDate","UC_CHKLMD001_ERR001");
         }
         String tcuRemark = icDto.getTcuRemark();
         if(tcuRemark!=null&&tcuRemark.length()>300){

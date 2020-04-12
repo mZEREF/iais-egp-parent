@@ -945,6 +945,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             serListDto.setBestPractice(dto.getBestPractice());
             serListDto.setTcuRemark(dto.getRemarks());
         }
+        if(! StringUtil.isEmpty(serListDto.getTuc())){
+            serListDto.setTcuFlag(true);
+        }
     }
 
     @Override
