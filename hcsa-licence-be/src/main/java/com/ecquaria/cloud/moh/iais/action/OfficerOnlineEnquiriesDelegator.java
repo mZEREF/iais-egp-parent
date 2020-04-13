@@ -334,6 +334,15 @@ public class OfficerOnlineEnquiriesDelegator {
                 rfi.setIsCessation(0);
             }
         }
+        String uenNo = ParamUtil.getString(request, "uen_no");
+        if(!StringUtil.isEmpty(uenNo)){
+            if(ParamUtil.getString(request,"applicationChk")!=null||ParamUtil.getString(request,"licenceChk")!=null) {
+                List<LicenseeDto> licenseeDtos= organizationClient.getLicenseeDtoByUen(uenNo).getEntity();
+                if(licenseeDtos==null) {
+                    reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
+                }
+            }
+        }
         searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
         ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
     }
@@ -704,6 +713,12 @@ public class OfficerOnlineEnquiriesDelegator {
         }
         if(!StringUtil.isEmpty(uenNo)){
             licParam.getFilters().put("uen_no",uenNo);
+            if(ParamUtil.getString(request,"applicationChk")!=null||ParamUtil.getString(request,"licenceChk")!=null) {
+                List<LicenseeDto> licenseeDtos= organizationClient.getLicenseeDtoByUen(uenNo).getEntity();
+                if(licenseeDtos==null) {
+                    licParam.setPageSize(0);
+                }
+            }
         }
         ParamUtil.setRequestAttr(request,"SearchParam", licParam);
     }
@@ -761,8 +776,13 @@ public class OfficerOnlineEnquiriesDelegator {
     public void doSearchLicenceAfter(BaseProcessClass bpc) {
         log.info("=======>>>>>doSearchLicenceAfter>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        ParamUtil.setSessionAttr(request,"id",id);
+        try{
+            String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+            ParamUtil.setSessionAttr(request,"id",id);
+        }catch (Exception e){
+            log.info(e.getMessage());
+        }
+
         String [] appIds=ParamUtil.getStrings(request,"appIds");
         List<String> applIds=IaisCommonUtils.genNewArrayList();
 
@@ -813,21 +833,6 @@ public class OfficerOnlineEnquiriesDelegator {
     }
 
 
-//    @GetMapping(value = "/valid-licenceId")
-//    public @ResponseBody
-//    List<String> reloadRevEmail(HttpServletRequest request)  {
-//        String [] appIds=ParamUtil.getStrings(request,"appIds");
-//        List<String> applIds=IaisCommonUtils.genNewArrayList();
-//        try{
-//            Collections.addAll(applIds, appIds);
-//        }catch (Exception e){
-//            log.info(e.getMessage());
-//        }
-//        List<String> licIds=onlineEnquiriesService.getLicIdsByappIds(applIds);
-//        List<String> licenceIds=cessationClient.getlicIdToCessation(licIds).getEntity();
-//        licIds.removeIf(licId -> !licenceIds.contains(licId));
-//        return licIds;
-//    }
 
 
 }
