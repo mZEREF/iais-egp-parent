@@ -149,7 +149,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INP);
         taskDto.setSlaAlertInDays(2);
         taskDto.setSlaRemainInDays(3);
-        taskDto.setSlaAlertInDays(5);
+        taskDto.setSlaInDays(5);
         taskDto.setScore(4);
         taskDto.setRefNo(temp.getId());
         taskDto.setPriority(0);
@@ -159,7 +159,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         //taskService.createTasks(createTaskDtoList);
         log.info("========================>>>>> create task !!!!");
         try {
-            eventBusHelper.submitAsyncRequest(createTaskDtoList,submitId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,auditCombinationDto.getEventRefNo(),null);
+            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,auditCombinationDto.getEventRefNo(),null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -173,6 +173,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private void createAudit(AuditTaskDataFillterDto temp,String submitId,AuditCombinationDto auditCombinationDto) {
         auditCombinationDto.setEventRefNo(temp.getId());
         LicPremisesAuditDto licPremisesAuditDto = new LicPremisesAuditDto();
+        licPremisesAuditDto.setId(generateIdClient.getSeqId().getEntity());
         licPremisesAuditDto.setAuditRiskType(temp.getRiskType());
         licPremisesAuditDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         licPremisesAuditDto.setRemarks(null);
@@ -259,7 +260,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INP);
         taskDto.setSlaAlertInDays(2);
         taskDto.setSlaRemainInDays(3);
-        taskDto.setSlaAlertInDays(5);
+        taskDto.setSlaInDays(5);
         taskDto.setScore(4);
         taskDto.setRefNo(temp.getId());
         taskDto.setPriority(0);
@@ -330,7 +331,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         auditCombinationDto.setAppSubmissionDtoList(appSubmissionDtoList);
         log.info("========================>>>>> creat application!!!!");
         try {
-            eventBusHelper.submitAsyncRequest(appSubmissionDtoList,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,auditCombinationDto.getEventRefNo(),null);
+            eventBusHelper.submitAsyncRequest(auditCombinationDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,auditCombinationDto.getEventRefNo(),null);
         } catch (Exception e) {
             e.printStackTrace();
         }
