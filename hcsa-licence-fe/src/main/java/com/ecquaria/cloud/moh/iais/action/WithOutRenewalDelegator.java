@@ -230,7 +230,7 @@ public class WithOutRenewalDelegator {
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
                 //update application status
-
+                appSubmissionService.updateApplicationsStatus(groupId,ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                 //jump page to acknowledgement
                 ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE4);
             }else{
