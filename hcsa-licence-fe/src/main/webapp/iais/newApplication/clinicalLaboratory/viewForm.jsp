@@ -36,11 +36,11 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        window.parent.dismissWaiting();
         var height = $(document).height();
         var iframe = $(parent.document.getElementById('${iframeId}'));
         iframe.css('height',height+10);
         iframe.prop('height',height+10);
+        window.parent.dismissWaiting();
     });
 
 </script>

@@ -157,15 +157,12 @@
                           </div>
                           <div class="col-xs-8 col-sm-4 col-md-7">
                             <div class="specialtyContent">
-                              (6)
-                              <span class="error-msg" name="iaisErrorMsg" id="error_speciality1"></span>
-
-
-
-                                  <input name="specialtyOther" type="text" class="form-control control-input control-set-font control-font-normal hidden" value="" size="30">
-
-
-
+                                <div class="specialtyDiv">
+                                    (6)
+                                </div>
+                                <div class="specialtyOtherDiv">
+                                    <input name="specialtyOther" type="text" class="form-control control-input control-set-font control-font-normal hidden" value="" size="30">
+                                </div>
                             </div>
                           </div>
                         </div>

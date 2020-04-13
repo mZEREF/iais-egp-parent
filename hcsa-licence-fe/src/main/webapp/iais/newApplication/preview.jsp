@@ -22,7 +22,7 @@
                                 <div class="preview-gp">
                                     <div class="row">
                                         <div class="col-xs-12 col-md-10">
-                                            <p>Please note that you will not be able to pay for this application if you have not provided the mandatory information and documents.</p>
+                                            <p></p>
                                         </div>
                                         <div class="col-xs-12 col-md-2 text-right">
                                             <p class="print"><a href="" onclick="preview()"> <em class="fa fa-print"></em>Print</a></p>
@@ -63,11 +63,7 @@
                                             </c:if>
                                             <div class="form-check">
                                                 <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" aria-invalid="false">
-                                                <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span>Herby I certify that the information I provided is all correct and accurate</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" id="declarationCheckbox" type="checkbox" name="declarationCheckbox" aria-invalid="false">
-                                                <label class="form-check-label" for="declarationCheckbox"><span class="check-square"></span>&lt;Sample Declaration&gt;</label>
+                                                <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span>I hereby certify that the information I provided is all correct and accurate</label>
                                             </div>
                                         </div>
                                     </div>

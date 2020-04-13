@@ -104,7 +104,7 @@
                             </div>
 
                             <div class="col-sm-4">
-                              <input name="name" maxlength="66" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.name}" >
+                              <input autocomplete="off" name="name" maxlength="66" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.name}" >
                               <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
                             </div>
                           </div>
@@ -125,7 +125,7 @@
                               </div>
                             </div>
                             <div class="col-sm-4">
-                              <input id="idType-idNo" name="idNo" type="text" maxlength="9"  class="idNoVal form-control control-input control-set-font control-font-normal" value="${principalOfficer.idNo}" >
+                              <input autocomplete="off" id="idType-idNo" name="idNo" type="text" maxlength="9"  class="idNoVal form-control control-input control-set-font control-font-normal" value="${principalOfficer.idNo}" >
                               <span class="error-msg" id="error_poNRICFIN${status.index}" name="iaisErrorMsg"></span>
                               <span class="error-msg" id="error_NRICFIN" name="iaisErrorMsg"></span>
                             </div>
@@ -158,7 +158,7 @@
                               <span class="mandatory">*</span>
                             </div>
                             <div class="col-sm-4 col-md-8">
-                              <input name="mobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.mobileNo}" >
+                              <input autocomplete="off" name="mobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.mobileNo}" >
                               <span class="error-msg"  name="iaisErrorMsg" id="error_mobileNo${status.index}"></span>
                             </div>
                           </div>
@@ -172,7 +172,7 @@
                               <span class="mandatory">*</span>
                             </div>
                             <div class="col-sm-4 col-md-8">
-                              <input name="officeTelNo" type="text"  id="officeTelNo" maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.officeTelNo}" >
+                              <input autocomplete="off" name="officeTelNo" type="text"  id="officeTelNo" maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.officeTelNo}" >
                               <span class="error-msg" name="iaisErrorMsg" id="error_officeTelNo${status.index}" ></span>
                             </div>
                           </div>
@@ -186,7 +186,7 @@
                               <span class="mandatory">*</span>
                             </div>
                             <div class="col-sm-4 col-md-8">
-                              <input name="emailAddress" maxlength="66" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.emailAddr}" >
+                              <input autocomplete="off" name="emailAddress" maxlength="66" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.emailAddr}" >
                               <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr${status.index}" ></span>
                             </div>
                           </div>
@@ -322,7 +322,7 @@
                               <span name="iaisErrorMsg" class="error-msg" id="error_deputySalutation${status.index}"></span>
                             </div>
                             <div class="col-sm-4">
-                              <input name="deputyName" maxlength="66" type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
+                              <input autocomplete="off" name="deputyName" maxlength="66" type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
                               <span class="error-msg" name="iaisErrorMsg" id="error_deputyName${status.index}"></span>
                             </div>
                           </div>
@@ -344,7 +344,7 @@
                               </div>
                             </div>
                             <div class="col-sm-4">
-                              <input  name="deputyIdNo" maxlength="9" type="text"  class=" form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
+                              <input autocomplete="off"  name="deputyIdNo" maxlength="9" type="text"  class=" form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
                               <span class="error-msg"  name="iaisErrorMsg" id="error_deputyIdNo${status.index}"></span>
                             </div>
                           </div>
@@ -372,7 +372,7 @@
                               <span class="mandatory">*</span>
                             </div>
                             <div class="col-sm-4 col-md-8">
-                              <input name="deputyMobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${deputy.mobileNo}" size="30">
+                              <input autocomplete="off" name="deputyMobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${deputy.mobileNo}" size="30">
                               <span class="error-msg"  name="iaisErrorMsg"  id="error_deputyMobileNo${status.index}"></span>
                             </div>
                           </div>
@@ -386,7 +386,7 @@
                               <span class="mandatory">*</span>
                             </div>
                             <div class="col-sm-4 col-md-8">
-                              <input name="deputyOfficeTelNo" type="text"  id="deputyOfficeTelNo" maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${deputy.officeTelNo}" >
+                              <input autocomplete="off" name="deputyOfficeTelNo" type="text"  id="deputyOfficeTelNo" maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${deputy.officeTelNo}" >
                               <span name="iaisErrorMsg" id="error_deputyofficeTelNo${status.index}" class="error-msg"></span>
                             </div>
                           </div>
@@ -400,7 +400,7 @@
                               <span class="mandatory">*</span>
                             </div>
                             <div class="col-sm-4 col-md-8">
-                              <input name="deputyEmailAddr" maxlength="66" type="text" class="form-control control-input control-set-font control-font-normal" value="${deputy.emailAddr}" size="30">
+                              <input autocomplete="off" name="deputyEmailAddr" maxlength="66" type="text" class="form-control control-input control-set-font control-font-normal" value="${deputy.emailAddr}" size="30">
                               <span class="error-msg" name="iaisErrorMsg"  id="error_deputyEmailAddr${status.index}" ></span>
                             </div>
                           </div>
@@ -431,228 +431,355 @@
 </div>
 
 <script>
-  var init;
-  $(document).ready(function () {
-    <!-- init start-->
-    init = 0;
-    poSelect();
+    var init;
+    $(document).ready(function () {
+        <!-- init start-->
+        init = 0;
+        poSelect();
 
-    dpoSelect();
+        dpoSelect();
 
-    retrieveData();
+        retrieveData();
 
-    addPo();
+        addPo();
 
-    addDpo();
+        addDpo();
 
-    removePo();
+        removePo();
 
-    removeDpo();
+        removeDpo();
 
-    doEdit();
+        doEdit();
 
-    doEditDpo();
+        doEditDpo();
 
-    $('select.poSelect').trigger('change');
-    $('select.deputySelect').trigger('change');
-    $('select.deputyPoSelect').trigger('change');
+        $('select.poSelect').trigger('change');
+        $('select.deputySelect').trigger('change');
+        $('select.deputyPoSelect').trigger('change');
 
-    //disabled
-    if(${AppSubmissionDto.needEditController && (AppSubmissionDto.appEditSelectDto.serviceEdit || AppSubmissionDto.appEditSelectDto.poEdit) && !isClickEdit}){
-      $('.po-content input[type="text"]').prop('disabled',true);
-      $('.po-content div.nice-select').addClass('disabled');
-      $('#addPoBtn').addClass('hidden');
-      $('#addPoBtn').unbind('click');
-    }
-    if(${AppSubmissionDto.needEditController && (AppSubmissionDto.appEditSelectDto.serviceEdit || AppSubmissionDto.appEditSelectDto.dpoEdit) && !isClickEditDpo}){
-      $('.deputySelect').addClass('disabled');
-      $('.deputy-content input[type="text"]').prop('disabled',true);
-      $('.deputy-content div.nice-select').addClass('disabled');
-      $('#addDpoBtn').unbind('click');
-    }
+        //disabled
+        if(${AppSubmissionDto.needEditController && (AppSubmissionDto.appEditSelectDto.serviceEdit || AppSubmissionDto.appEditSelectDto.poEdit) && !isClickEdit}){
+            $('.po-content input[type="text"]').prop('disabled',true);
+            $('.po-content div.nice-select').addClass('disabled');
+            $('#addPoBtn').addClass('hidden');
+            $('#addPoBtn').unbind('click');
+        }
+        if(${AppSubmissionDto.needEditController && (AppSubmissionDto.appEditSelectDto.serviceEdit || AppSubmissionDto.appEditSelectDto.dpoEdit) && !isClickEditDpo}){
+            $('.deputySelect').addClass('disabled');
+            $('.deputy-content input[type="text"]').prop('disabled',true);
+            $('.deputy-content div.nice-select').addClass('disabled');
+            $('#addDpoBtn').unbind('click');
+        }
 
-    <!-- init end-->
-    init = 1;
-  });
-
-  var poSelect = function(){
-    $('.poSelect').change(function () {
-      var $poContentEle = $(this).closest('div.po-content');
-      var selectVal = $(this).val();
-      var data= {};
-      if("newOfficer" == selectVal){
-        $poContentEle.find('div.principalOfficers').removeClass('hidden');
-        //fillPoData($poContentEle,data);
-      }else if('-1' == selectVal){
-        $poContentEle.find('div.principalOfficers').addClass('hidden');
-        //fillPoData($poContentEle,data);
-      }
+        <!-- init end-->
+        init = 1;
     });
-  };
 
-  var dpoSelect = function(){
-    $('.deputyPoSelect').change(function () {
-      $poContentEle = $(this).closest('div.dpo-content');
-      var selectVal = $(this).val();
-      if("newOfficer" == selectVal){
-        $poContentEle.find('div.deputyPrincipalOfficers').removeClass('hidden');
-      }else if('-1' == selectVal){
-        $poContentEle.find('div.deputyPrincipalOfficers').addClass('hidden');
-      }
-    });
-  };
+    var poLoadByAjax =  function ($poContentEle,selectVal) {
+        var data = {};
+        fillPoData($poContentEle,data);
+        var arr = selectVal.split(',');
+        var idType = arr[0];
+        var idNo = arr[1];
+        var jsonData = {
+            'idType':idType,
+            'idNo':idNo
+        };
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/psn-select-info',
+            'dataType':'json',
+            'data':jsonData,
+            'type':'GET',
+            'success':function (data) {
+                if(data == null){
+                    return;
+                }
+                fillPoData($poContentEle,data);
 
+            },
+            'error':function () {
 
-  $('.deputySelect').change(function () {
-    var deputyFlag = $(this).val();
-    $poContentEle = $(this).closest('div.panel-group');
-    if("1" == deputyFlag){
-      $poContentEle.find('div.deputy-content ').removeClass('hidden');
-    }else{
-      $poContentEle.find('div.deputy-content ').addClass('hidden');
+            }
+        });
     }
 
-  });
+    var dpoLoadByAjax =  function ($poContentEle,selectVal) {
+        var data = {};
+        fillDpoData($poContentEle,data);
+        var arr = selectVal.split(',');
+        var idType = arr[0];
+        var idNo = arr[1];
+        var jsonData = {
+            'idType':idType,
+            'idNo':idNo
+        };
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/psn-select-info',
+            'dataType':'json',
+            'data':jsonData,
+            'type':'GET',
+            'success':function (data) {
+                if(data == null){
+                    return;
+                }
+                fillDpoData($poContentEle,data);
 
-  var addPo = function(){
-    $('#addPoBtn').click(function () {
-      var hasNumber = $('div.po-content').size() - 1;
-      console.log("hasNumber" + hasNumber);
-      $.ajax({
-        url:'${pageContext.request.contextPath}/principal-officer-html',
-        dataType:'json',
-        type:'POST',
-        data:{
-          'HasNumber':hasNumber
-        },
-        success:function (data) {
-          if ('success' == data.res) {
-            console.log(data.res);
-            $('.po-content:last').after(data.sucInfo);
-            poSelect();
-            removePo();
-            retrieveData();
-            removePo();
-          }else{
-            $('.poErrorMsg').html(data.errInfo);
-          }
-        },
-        error:function (data) {
-          console.log("err");
+            },
+            'error':function () {
+
+            }
+        });
+    }
+
+
+    var poSelect = function(){
+        $('.poSelect').change(function () {
+            var $poContentEle = $(this).closest('div.po-content');
+            var selectVal = $(this).val();
+            var data= {};
+            if("newOfficer" == selectVal){
+                $poContentEle.find('div.principalOfficers').removeClass('hidden');
+                if(0 != init) {
+                    fillPoData($poContentEle, data);
+                }
+            }else if('-1' == selectVal){
+                $poContentEle.find('div.principalOfficers').addClass('hidden');
+                if(0 != init) {
+                    fillPoData($poContentEle, data);
+                }
+            }else{
+                $poContentEle.find('div.principalOfficers').removeClass('hidden');
+                if(init == 0){
+                    return;
+                }
+                poLoadByAjax($poContentEle,selectVal);
+            }
+        });
+    };
+
+    var dpoSelect = function(){
+        $('.deputyPoSelect').change(function () {
+            var $dpoContentEle = $(this).closest('div.dpo-content');
+            var selectVal = $(this).val();
+            var data= {};
+            if("newOfficer" == selectVal){
+                $dpoContentEle.find('div.deputyPrincipalOfficers').removeClass('hidden');
+                if(0 != init) {
+                    fillDpoData($dpoContentEle, data);
+                }
+            }else if('-1' == selectVal){
+                $dpoContentEle.find('div.deputyPrincipalOfficers').addClass('hidden');
+                if(0 != init) {
+                    fillDpoData($dpoContentEle, data);
+                }
+            }else{
+                $dpoContentEle.find('div.deputyPrincipalOfficers').removeClass('hidden');
+                if(init == 0){
+                    return;
+                }
+                dpoLoadByAjax($dpoContentEle,selectVal);
+            }
+        });
+    };
+
+
+    $('.deputySelect').change(function () {
+        var deputyFlag = $(this).val();
+        var $poContentEle = $(this).closest('div.panel-group');
+        if("1" == deputyFlag){
+            $poContentEle.find('div.deputy-content ').removeClass('hidden');
+        }else{
+            $poContentEle.find('div.deputy-content ').addClass('hidden');
         }
-      });
 
     });
-  }
+
+    var addPo = function(){
+        $('#addPoBtn').click(function () {
+            var hasNumber = $('div.po-content').size() - 1;
+            console.log("hasNumber" + hasNumber);
+            $.ajax({
+                url:'${pageContext.request.contextPath}/principal-officer-html',
+                dataType:'json',
+                type:'POST',
+                data:{
+                    'HasNumber':hasNumber
+                },
+                success:function (data) {
+                    if ('success' == data.res) {
+                        console.log(data.res);
+                        $('.po-content:last').after(data.sucInfo);
+                        poSelect();
+                        removePo();
+                        retrieveData();
+                        removePo();
+                    }else{
+                        $('.poErrorMsg').html(data.errInfo);
+                    }
+                },
+                error:function (data) {
+                    console.log("err");
+                }
+            });
+
+        });
+    }
 
 
-  var addDpo = function(){
-    $('#addDpoBtn').click(function () {
-      var hasNumber = $('.dpo-content').size() - 1;
-      console.log("hasNumber" + hasNumber);
-      $.ajax({
-        url:'${pageContext.request.contextPath}/deputy-principal-officer-html',
-        dataType:'json',
-        type:'POST',
-        data:{
-          'HasNumber':hasNumber
-        },
-        'success':function (data) {
-          if ('success' == data.res) {
-            console.log("suc");
-            $('.dpo-content:last').after(data.sucInfo);
-            $('.deputyPoSelect').unbind();
-            dpoSelect();
-            removeDpo();
-          }else{
-            $('.dpoErrorMsg').html(data.errInfo);
-          }
-        },
-        error:function (data) {
-          console.log("err");
+    var addDpo = function(){
+        $('#addDpoBtn').click(function () {
+            var hasNumber = $('.dpo-content').size() - 1;
+            console.log("hasNumber" + hasNumber);
+            $.ajax({
+                url:'${pageContext.request.contextPath}/deputy-principal-officer-html',
+                dataType:'json',
+                type:'POST',
+                data:{
+                    'HasNumber':hasNumber
+                },
+                'success':function (data) {
+                    if ('success' == data.res) {
+                        console.log("suc");
+                        $('.dpo-content:last').after(data.sucInfo);
+                        $('.deputyPoSelect').unbind();
+                        dpoSelect();
+                        removeDpo();
+                    }else{
+                        $('.dpoErrorMsg').html(data.errInfo);
+                    }
+                },
+                error:function (data) {
+                    console.log("err");
+                }
+            });
+        });
+    }
+
+    var retrieveData = function () {
+        $('.idNoVal').blur(function () {
+            var $poContentEle = $(this).closest('div.po-content');
+            var data = {
+                'idNo':$(this).val()
+            };
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/psn-info',
+                'dataType':'json',
+                'data':data,
+                'type':'GET',
+                'success':function (data) {
+                    console.log("suc");
+                    if(data != null) {
+                        data.officeTelNo =  $poContentEle.find('input[name="officeTelNo"]').val();
+                        fillPoData($poContentEle,data);
+                    }
+                },
+                'error':function (data) {
+                    console.log("err");
+                }
+            });
+        });
+    }
+
+    var doEdit = function () {
+        $('#edit').click(function () {
+            $('.po-content input[type="text"]').prop('disabled',false);
+            $('.po-content div.nice-select').removeClass('disabled');
+            $('#isEditHiddenVal').val('1');
+            $('#addPoBtn').removeClass('hidden');
+            addPo();
+            $('#edit').addClass('hidden');
+        });
+    }
+
+
+    var doEditDpo = function () {
+        $('#edit-dpo').click(function () {
+            $('.deputySelect').removeClass('disabled');
+            $('.deputy-content input[type="text"]').prop('disabled',false);
+            $('.deputy-content div.nice-select').removeClass('disabled');
+            $('#isEditDpoHiddenVal').val('1');
+            addDpo();
+            $('#edit-dpo').addClass('hidden');
+        });
+    }
+    var fillPoData = function ($poContentEle,data) {
+        $poContentEle.find('input[name="idNo"]').val(data.idNo);
+        $poContentEle.find('input[name="name"]').val(data.name);
+        $poContentEle.find('input[name="mobileNo"]').val(data.mobileNo);
+        $poContentEle.find('input[name="officeTelNo"]').val(data.officeTelNo);
+        $poContentEle.find('input[name="emailAddress"]').val(data.emailAddr);
+        <!--salutation-->
+        var salutation = data.salutation;
+        if(salutation == null || salutation =='undefined' || salutation == ''){
+            salutation = '';
         }
-      });
-    });
-  }
-
-  var retrieveData = function () {
-    $('.idNoVal').blur(function () {
-      var $poContentEle = $(this).closest('div.po-content');
-      var data = {
-        'idNo':$(this).val()
-      };
-      $.ajax({
-        'url':'${pageContext.request.contextPath}/psn-info',
-        'dataType':'json',
-        'data':data,
-        'type':'GET',
-        'success':function (data) {
-          console.log("suc");
-          if(data != null) {
-            fillPoData($poContentEle,data);
-          }
-        },
-        'error':function (data) {
-          console.log("err");
+        $poContentEle.find('select[name="salutation"]').val(salutation);
+        var salutationVal = $poContentEle.find('option[value="' + salutation + '"]').html();
+        $poContentEle.find('select[name="salutation"]').next().find('.current').html(salutationVal);
+        <!-- idType-->
+        var idType = data.idType;
+        if(idType == null || idType =='undefined' || idType == ''){
+            idType = '';
         }
-      });
-    });
-  }
+        $poContentEle.find('select[name="idType"]').val(idType);
+        var idTypeVal = $poContentEle.find('option[value="' + idType + '"]').html();
+        $poContentEle.find('select[name="idType"]').next().find('.current').html(idTypeVal);
+        <!--Designation  -->
+        var designation = data.designation;
+        if(designation == null || designation =='undefined' || designation == ''){
+            designation = '';
+        }
+        $poContentEle.find('select[name="designation"]').val(designation);
+        var designationVal = $poContentEle.find('option[value="' + designation + '"]').html();
+        $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
+    }
 
-  var doEdit = function () {
-    $('#edit').click(function () {
-      $('.po-content input[type="text"]').prop('disabled',false);
-      $('.po-content div.nice-select').removeClass('disabled');
-      $('#isEditHiddenVal').val('1');
-      $('#addPoBtn').removeClass('hidden');
-      addPo();
-      $('#edit').addClass('hidden');
-    });
-  }
+    var fillDpoData = function ($poContentEle,data) {
+        $poContentEle.find('input[name="deputyIdNo"]').val(data.idNo);
+        $poContentEle.find('input[name="deputyName"]').val(data.name);
+        $poContentEle.find('input[name="deputyMobileNo"]').val(data.mobileNo);
+        $poContentEle.find('input[name="deputyOfficeTelNo"]').val(data.officeTelNo);
+        $poContentEle.find('input[name="deputyEmailAddr"]').val(data.emailAddr);
+        <!--salutation-->
+        var salutation = data.salutation;
+        if(salutation == null || salutation =='undefined' || salutation == ''){
+            salutation = '';
+        }
+        $poContentEle.find('select[name="deputySalutation"]').val(salutation);
+        var salutationVal = $poContentEle.find('option[value="' + salutation + '"]').html();
+        $poContentEle.find('select[name="deputySalutation"]').next().find('.current').html(salutationVal);
+        <!-- idType-->
+        var idType = data.idType;
+        if(idType == null || idType =='undefined' || idType == ''){
+            idType = '';
+        }
+        $poContentEle.find('select[name="deputyIdType"]').val(idType);
+        var idTypeVal = $poContentEle.find('option[value="' + idType + '"]').html();
+        $poContentEle.find('select[name="deputyIdType"]').next().find('.current').html(idTypeVal);
+        <!--Designation  -->
+        var designation = data.designation;
+        if(designation == null || designation =='undefined' || designation == ''){
+            designation = '';
+        }
+        $poContentEle.find('select[name="deputyDesignation"]').val(designation);
+        var designationVal = $poContentEle.find('option[value="' + designation + '"]').html();
+        $poContentEle.find('select[name="deputyDesignation"]').next().find('.current').html(designationVal);
+    }
 
+    var removePo = function () {
+        $('.removePoBtn').click(function () {
+            var $premContentEle= $(this).closest('div.po-content');
+            $premContentEle.remove();
 
-  var doEditDpo = function () {
-    $('#edit-dpo').click(function () {
-      $('.deputySelect').removeClass('disabled');
-      $('.deputy-content input[type="text"]').prop('disabled',false);
-      $('.deputy-content div.nice-select').removeClass('disabled');
-      $('#isEditDpoHiddenVal').val('1');
-      addDpo();
-      $('#edit-dpo').addClass('hidden');
-    });
-  }
-  var fillPoData = function ($poContentEle,data) {
-    $poContentEle.find('input[name="idNo"]').val(data.idNo);
-    $poContentEle.find('input[name="name"]').val(data.name);
-    $poContentEle.find('input[name="mobileNo"]').val(data.mobileNo);
-    //$poContentEle.find('input[name="officeTelNo"]').val(data.officeTelNo);
-    $poContentEle.find('input[name="emailAddress"]').val(data.emailAddr);
-    <!--salutation-->
-    $poContentEle.find('select[name="salutation"]').val(data.salutation);
-    var salutationVal = $poContentEle.find('option[value="' + data.salutation + '"]').html();
-    $poContentEle.find('select[name="salutation"]').next().find('.current').html(salutationVal);
-    <!-- idType-->
-    $poContentEle.find('select[name="idType"]').val(data.idType);
-    var idTypeVal = $poContentEle.find('option[value="' + data.idType + '"]').html();
-    $poContentEle.find('select[name="idType"]').next().find('.current').html(idTypeVal);
-    <!--Designation  -->
-    $poContentEle.find('select[name="designation"]').val(data.designation);
-    var designationVal = $poContentEle.find('option[value="' + data.designation + '"]').html();
-    $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
-  }
-  var removePo = function () {
-    $('.removePoBtn').click(function () {
-      var $premContentEle= $(this).closest('div .po-content');
-      $premContentEle.remove();
-      $('.poErrorMsg').html("");
-    });
-  }
-  var removeDpo = function () {
-    $('.removeDpoBtn').click(function () {
-      var $premContentEle= $(this).closest('div .dpo-content');
-      $premContentEle.remove();
-      $('.dpoErrorMsg').html("");
-    });
+        });
 
-  }
+    }
+    var removeDpo = function () {
+        $('.removeDpoBtn').click(function () {
+            var $premContentEle= $(this).closest('div.dpo-content');
+            $premContentEle.remove();
+
+        });
+
+    }
 </script>

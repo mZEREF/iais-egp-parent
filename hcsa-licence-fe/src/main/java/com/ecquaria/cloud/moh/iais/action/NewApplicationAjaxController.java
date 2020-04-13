@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
@@ -141,7 +142,7 @@ public class NewApplicationAjaxController {
         premisesOnSiteAttr.put("id", "onSiteSel");
         premisesOnSiteAttr.put("name", "onSiteSelect");
         premisesOnSiteAttr.put("style", "display: none;");
-        String premOnSiteSelectStr = NewApplicationHelper.generateDropDownHtml(premisesOnSiteAttr, premisesOnSite, null);
+        String premOnSiteSelectStr = NewApplicationHelper.generateDropDownHtml(premisesOnSiteAttr, premisesOnSite, null, null);
 
         //premiseSelect -- conveyance
         List<SelectOption> premisesConv= (List) ParamUtil.getSessionAttr(request, "conveyancePremSel");
@@ -150,7 +151,7 @@ public class NewApplicationAjaxController {
         premisesConvAttr.put("id", "conveyanceSel");
         premisesConvAttr.put("name", "conveyanceSelect");
         premisesConvAttr.put("style", "display: none;");
-        String premConvSelectStr = NewApplicationHelper.generateDropDownHtml(premisesConvAttr, premisesConv, null);
+        String premConvSelectStr = NewApplicationHelper.generateDropDownHtml(premisesConvAttr, premisesConv, null, null);
 
 
 
@@ -161,7 +162,7 @@ public class NewApplicationAjaxController {
         addrTypesAttr.put("id", "onSiteAddressType");
         addrTypesAttr.put("name", "onSiteAddressType");
         addrTypesAttr.put("style", "display: none;");
-        String addrTypeSelectStr = NewApplicationHelper.generateDropDownHtml(addrTypesAttr, addrTypes,NewApplicationDelegator.FIRESTOPTION);
+        String addrTypeSelectStr = NewApplicationHelper.generateDropDownHtml(addrTypesAttr, addrTypes,NewApplicationDelegator.FIRESTOPTION, null);
 
         //Address Type conveyance
         Map<String,String> conAddrTypesAttr = IaisCommonUtils.genNewHashMap();
@@ -169,7 +170,7 @@ public class NewApplicationAjaxController {
         conAddrTypesAttr.put("id", "conveyanceAddressType");
         conAddrTypesAttr.put("name", "conveyanceAddrType");
         conAddrTypesAttr.put("style", "display: none;");
-        String conAddrTypeSelectStr = NewApplicationHelper.generateDropDownHtml(conAddrTypesAttr, addrTypes, NewApplicationDelegator.FIRESTOPTION);
+        String conAddrTypeSelectStr = NewApplicationHelper.generateDropDownHtml(conAddrTypesAttr, addrTypes, NewApplicationDelegator.FIRESTOPTION, null);
 
 
         //onsite operation time
@@ -178,28 +179,28 @@ public class NewApplicationAjaxController {
         premiseHour.put("id", "onSiteStartHH");
         premiseHour.put("name", "onSiteStartHH");
         premiseHour.put("style", "display: none;");
-        String onsitestarHH = NewApplicationHelper.generateDropDownHtml(premiseHour, timeHourList,"--");
+        String onsitestarHH = NewApplicationHelper.generateDropDownHtml(premiseHour, timeHourList,"--", null);
 
         Map<String,String> premiseMinute = IaisCommonUtils.genNewHashMap();
         premiseMinute.put("class", "onSiteStartMM");
         premiseMinute.put("id", "onSiteStartMM");
         premiseMinute.put("name", "onSiteStartMM");
         premiseMinute.put("style", "display: none;");
-        String onsitestarMM = NewApplicationHelper.generateDropDownHtml(premiseMinute, timeMinList,"--");
+        String onsitestarMM = NewApplicationHelper.generateDropDownHtml(premiseMinute, timeMinList,"--", null);
 
         Map<String,String> siteEndHH = IaisCommonUtils.genNewHashMap();
         siteEndHH.put("class", "onSiteEndHH");
         siteEndHH.put("id", "onSiteEndHH");
         siteEndHH.put("name", "onSiteEndHH");
         siteEndHH.put("style", "display: none;");
-        String onsiteEndHH = NewApplicationHelper.generateDropDownHtml(siteEndHH, timeHourList,"--");
+        String onsiteEndHH = NewApplicationHelper.generateDropDownHtml(siteEndHH, timeHourList,"--", null);
 
         Map<String,String> siteEndMM = IaisCommonUtils.genNewHashMap();
         siteEndMM.put("class", "onSiteEndMM");
         siteEndMM.put("id", "onSiteEndMM");
         siteEndMM.put("name", "onSiteEndMM");
         siteEndMM.put("style", "display: none;");
-        String onsiteEndMM = NewApplicationHelper.generateDropDownHtml(siteEndMM, timeHourList,"--");
+        String onsiteEndMM = NewApplicationHelper.generateDropDownHtml(siteEndMM, timeHourList,"--", null);
 
         //onsite ph
         String premName = currentLength;
@@ -224,35 +225,35 @@ public class NewApplicationAjaxController {
         publicHoliday.put("id", premName+"onSitePubHoliday0");
         publicHoliday.put("name", premName+"onSitePubHoliday0");
         publicHoliday.put("style", "display: none;");
-        String publicHolidayDD = NewApplicationHelper.generateDropDownHtml(publicHoliday, publicHolidayList,"Please Select");
+        String publicHolidayDD = NewApplicationHelper.generateDropDownHtml(publicHoliday, publicHolidayList,"Please Select", null);
 
         Map<String,String> pbholidaystartHH = IaisCommonUtils.genNewHashMap();
         pbholidaystartHH.put("class", "onSitePbHolDayStartHH");
         pbholidaystartHH.put("id", premName+"onSitePbHolDayStartHH0");
         pbholidaystartHH.put("name", premName+"onSitePbHolDayStartHH0");
         pbholidaystartHH.put("style", "display: none;");
-        String holidaystartHH = NewApplicationHelper.generateDropDownHtml(pbholidaystartHH, timeHourList,"--");
+        String holidaystartHH = NewApplicationHelper.generateDropDownHtml(pbholidaystartHH, timeHourList,"--", null);
 
         Map<String,String> pbholidaystartMM = IaisCommonUtils.genNewHashMap();
         pbholidaystartMM.put("class", "onSitePbHolDayStartMM");
         pbholidaystartMM.put("id", premName+"onSitePbHolDayStartMM0");
         pbholidaystartMM.put("name", premName+"onSitePbHolDayStartMM0");
         pbholidaystartMM.put("style", "display: none;");
-        String holidaystartMM = NewApplicationHelper.generateDropDownHtml(pbholidaystartMM, timeMinList,"--");
+        String holidaystartMM = NewApplicationHelper.generateDropDownHtml(pbholidaystartMM, timeMinList,"--", null);
 
         Map<String,String> pbholidayendHH = IaisCommonUtils.genNewHashMap();
         pbholidayendHH.put("class", "onSitePbHolDayEndHH");
         pbholidayendHH.put("id", premName+"onSitePbHolDayEndHH0");
         pbholidayendHH.put("name", premName+"onSitePbHolDayEndHH0");
         pbholidayendHH.put("style", "display: none;");
-        String holidayendHH = NewApplicationHelper.generateDropDownHtml(pbholidayendHH, timeHourList,"--");
+        String holidayendHH = NewApplicationHelper.generateDropDownHtml(pbholidayendHH, timeHourList,"--", null);
 
         Map<String,String> pbholidayendMM = IaisCommonUtils.genNewHashMap();
         pbholidayendMM.put("class", "onSitePbHolDayEndMM");
         pbholidayendMM.put("id", premName+"onSitePbHolDayEndMM0");
         pbholidayendMM.put("name", premName+"onSitePbHolDayEndMM0");
         pbholidayendMM.put("style", "display: none;");
-        String holidayendMM = NewApplicationHelper.generateDropDownHtml(pbholidayendMM, timeHourList,"--");
+        String holidayendMM = NewApplicationHelper.generateDropDownHtml(pbholidayendMM, timeHourList,"--", null);
 
 
         //convyance operation time
@@ -261,28 +262,28 @@ public class NewApplicationAjaxController {
         conveyancestartHour.put("id", premName+"conveyanceStartHH0");
         conveyancestartHour.put("name", premName+"conveyanceStartHH0");
         conveyancestartHour.put("style", "display: none;");
-        String conveyancestartHH = NewApplicationHelper.generateDropDownHtml(conveyancestartHour, timeHourList,"--");
+        String conveyancestartHH = NewApplicationHelper.generateDropDownHtml(conveyancestartHour, timeHourList,"--", null);
 
         Map<String,String> conveyancestartMin = IaisCommonUtils.genNewHashMap();
         conveyancestartMin.put("class", "conveyanceStartMM");
         conveyancestartMin.put("id", premName+"conveyanceStartMM0");
         conveyancestartMin.put("name", premName+"conveyanceStartMM0");
         conveyancestartMin.put("style", "display: none;");
-        String conveyancestartMM = NewApplicationHelper.generateDropDownHtml(conveyancestartMin, timeMinList,"--");
+        String conveyancestartMM = NewApplicationHelper.generateDropDownHtml(conveyancestartMin, timeMinList,"--", null);
 
         Map<String,String> conveyanceendHour = IaisCommonUtils.genNewHashMap();
         conveyanceendHour.put("class", "conveyanceEndHH");
         conveyanceendHour.put("id", premName+"conveyanceEndHH0");
         conveyanceendHour.put("name", premName+"conveyanceEndHH0");
         conveyanceendHour.put("style", "display: none;");
-        String conveyanceendHH = NewApplicationHelper.generateDropDownHtml(conveyanceendHour, timeHourList,"--");
+        String conveyanceendHH = NewApplicationHelper.generateDropDownHtml(conveyanceendHour, timeHourList,"--", null);
 
         Map<String,String> conveyanceendMin = IaisCommonUtils.genNewHashMap();
         conveyanceendMin.put("class", "conveyanceEndMM");
         conveyanceendMin.put("id", premName+"conveyanceEndMM0");
         conveyanceendMin.put("name", premName+"conveyanceEndMM0");
         conveyanceendMin.put("style", "display: none;");
-        String conveyanceendMM = NewApplicationHelper.generateDropDownHtml(conveyanceendMin, timeHourList,"--");
+        String conveyanceendMM = NewApplicationHelper.generateDropDownHtml(conveyanceendMin, timeHourList,"--", null);
 
         //convyance ph
         Map<String,String> convpublicHoliday = IaisCommonUtils.genNewHashMap();
@@ -290,21 +291,21 @@ public class NewApplicationAjaxController {
         convpublicHoliday.put("id", premName+"conveyancePubHoliday0");
         convpublicHoliday.put("name", premName+"conveyancePubHoliday0");
         convpublicHoliday.put("style", "display: none;");
-        String convpublicHolidayDD = NewApplicationHelper.generateDropDownHtml(convpublicHoliday, publicHolidayList,"Please Select");
+        String convpublicHolidayDD = NewApplicationHelper.generateDropDownHtml(convpublicHoliday, publicHolidayList,"Please Select", null);
 
         Map<String,String> convpbholidaystartHH = IaisCommonUtils.genNewHashMap();
         convpbholidaystartHH.put("class", "conveyancePbHolDayStartHH");
         convpbholidaystartHH.put("id", premName+"conveyancePbHolDayStartHH0");
         convpbholidaystartHH.put("name", premName+"conveyancePbHolDayStartHH0");
         convpbholidaystartHH.put("style", "display: none;");
-        String convholidaystartHH = NewApplicationHelper.generateDropDownHtml(convpbholidaystartHH, timeHourList,"--");
+        String convholidaystartHH = NewApplicationHelper.generateDropDownHtml(convpbholidaystartHH, timeHourList,"--", null);
 
         Map<String,String> convpbholidaystartMM = IaisCommonUtils.genNewHashMap();
         convpbholidaystartMM.put("class", "conveyancePbHolDayStartMM");
         convpbholidaystartMM.put("id", premName+"conveyancePbHolDayStartMM0");
         convpbholidaystartMM.put("name", premName+"conveyancePbHolDayStartMM0");
         convpbholidaystartMM.put("style", "display: none;");
-        String convholidaystartMM = NewApplicationHelper.generateDropDownHtml(convpbholidaystartMM, timeMinList,"--");
+        String convholidaystartMM = NewApplicationHelper.generateDropDownHtml(convpbholidaystartMM, timeMinList,"--", null);
 
         Map<String,String> convpbholidayendHH = IaisCommonUtils.genNewHashMap();
 
@@ -313,14 +314,14 @@ public class NewApplicationAjaxController {
         convpbholidayendHH.put("id", premName+"conveyancePbHolDayEndHH0");
         convpbholidayendHH.put("name", premName+"conveyancePbHolDayEndHH0");
         convpbholidayendHH.put("style", "display: none;");
-        String convholidayendHH = NewApplicationHelper.generateDropDownHtml(convpbholidayendHH, timeHourList,"--");
+        String convholidayendHH = NewApplicationHelper.generateDropDownHtml(convpbholidayendHH, timeHourList,"--", null);
 
         Map<String,String> convpbholidayendMM = IaisCommonUtils.genNewHashMap();
         convpbholidayendMM.put("class", "conveyancePbHolDayEndMM");
         convpbholidayendMM.put("id", premName+"conveyancePbHolDayEndMM0");
         convpbholidayendMM.put("name", premName+"conveyancePbHolDayEndMM0");
         convpbholidayendMM.put("style", "display: none;");
-        String convholidayendMM = NewApplicationHelper.generateDropDownHtml(convpbholidayendMM, timeHourList,"--");
+        String convholidayendMM = NewApplicationHelper.generateDropDownHtml(convpbholidayendMM, timeHourList,"--", null);
 
         sql = sql.replace("(0)", currentLength);
         sql = sql.replace("(1)", premTypeBuffer.toString());
@@ -422,12 +423,12 @@ public class NewApplicationAjaxController {
         if(canAddNumber>0){
             String sql = SqlMap.INSTANCE.getSql("governanceOfficer", "generateGovernanceOfficerHtml").getSqlStr();
             //assign cgo select
-            List<SelectOption> cgoSelectList= (List) ParamUtil.getSessionAttr(request, "CgoSelectList");
+            List<SelectOption> cgoSelectList = NewApplicationHelper.genAssignPersonSel(request,true);
             Map<String,String> cgoSelectAttr = IaisCommonUtils.genNewHashMap();
             cgoSelectAttr.put("class", "assignSel");
             cgoSelectAttr.put("name", "assignSelect");
             cgoSelectAttr.put("style", "display: none;");
-            String cgoSelectStr = NewApplicationHelper.generateDropDownHtml(cgoSelectAttr, cgoSelectList, null);
+            String cgoSelectStr = NewApplicationHelper.generateDropDownHtml(cgoSelectAttr, cgoSelectList, null, null);
 
             //salutation
             List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
@@ -435,7 +436,7 @@ public class NewApplicationAjaxController {
             salutationAttr.put("class", "salutationSel");
             salutationAttr.put("name", "salutation");
             salutationAttr.put("style", "display: none;");
-            String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
+            String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
 
             //ID Type
             List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
@@ -443,7 +444,7 @@ public class NewApplicationAjaxController {
             idTypeAttr.put("class", "idTypeSel");
             idTypeAttr.put("name", "idType");
             idTypeAttr.put("style", "display: none;");
-            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
+            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null, null);
 
             //Designation
             List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
@@ -451,7 +452,7 @@ public class NewApplicationAjaxController {
             designationAttr.put("class", "designationSel");
             designationAttr.put("name", "designation");
             designationAttr.put("style", "display: none;");
-            String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
+            String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION, null);
 
             //Professional Regn Type
             List<SelectOption> proRegnTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE);
@@ -460,7 +461,7 @@ public class NewApplicationAjaxController {
             proRegnTypeAttr.put("class", "professionTypeSel");
             proRegnTypeAttr.put("name", "professionType");
             proRegnTypeAttr.put("style", "display: none;");
-            String proRegnTypeSelectStr = NewApplicationHelper.generateDropDownHtml(proRegnTypeAttr, proRegnTypeList, NewApplicationDelegator.FIRESTOPTION);
+            String proRegnTypeSelectStr = NewApplicationHelper.generateDropDownHtml(proRegnTypeAttr, proRegnTypeList, NewApplicationDelegator.FIRESTOPTION, null);
 
             //Specialty
             List<SelectOption> specialtyList = (List<SelectOption>) ParamUtil.getSessionAttr(request, "SpecialtySelectList");
@@ -469,7 +470,7 @@ public class NewApplicationAjaxController {
             specialtyAttr.put("name", "specialty");
             specialtyAttr.put("class", "specialty");
             specialtyAttr.put("style", "display: none;");
-            String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialtyList, null);
+            String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialtyList, null, null);
 
             sql = sql.replace("(1)", cgoSelectStr);
             sql = sql.replace("(2)", salutationSelectStr);
@@ -527,35 +528,35 @@ public class NewApplicationAjaxController {
         phSelectAttr.put("id", premVal+"PubHoliday"+phLength);
         phSelectAttr.put("name", premVal+"PubHoliday"+phLength);
         phSelectAttr.put("style", "display: none;");
-        String phSelectHtml = NewApplicationHelper.generateDropDownHtml(phSelectAttr, publicHolidayList,"Please Select");
+        String phSelectHtml = NewApplicationHelper.generateDropDownHtml(phSelectAttr, publicHolidayList,"Please Select", null);
 
         Map<String,String> phStartHourAttr = IaisCommonUtils.genNewHashMap();
         phStartHourAttr.put("class", type+"PbHolDayStartHH");
         phStartHourAttr.put("id", premVal+"PbHolDayStartHH"+phLength);
         phStartHourAttr.put("name", premVal+"PbHolDayStartHH"+phLength);
         phStartHourAttr.put("style", "display: none;");
-        String phStartHourHtml = NewApplicationHelper.generateDropDownHtml(phStartHourAttr, timeHourList,"--");
+        String phStartHourHtml = NewApplicationHelper.generateDropDownHtml(phStartHourAttr, timeHourList,"--", null);
 
         Map<String,String> phStartMinAttr = IaisCommonUtils.genNewHashMap();
         phStartMinAttr.put("class",  type+"PbHolDayStartMM");
         phStartMinAttr.put("id",  premVal+"PbHolDayStartMM"+phLength);
         phStartMinAttr.put("name", premVal+"PbHolDayStartMM"+phLength);
         phStartMinAttr.put("style", "display: none;");
-        String phStartMinHtml = NewApplicationHelper.generateDropDownHtml(phStartMinAttr, timeMinList,"--");
+        String phStartMinHtml = NewApplicationHelper.generateDropDownHtml(phStartMinAttr, timeMinList,"--", null);
 
         Map<String,String> phEndHourAttr = IaisCommonUtils.genNewHashMap();
         phEndHourAttr.put("class", type+"PbHolDayEndHH");
         phEndHourAttr.put("id", premVal+"PbHolDayEndHH"+phLength);
         phEndHourAttr.put("name", premVal+"PbHolDayEndHH"+phLength);
         phEndHourAttr.put("style", "display: none;");
-        String phEndHourHtml = NewApplicationHelper.generateDropDownHtml(phEndHourAttr, timeHourList,"--");
+        String phEndHourHtml = NewApplicationHelper.generateDropDownHtml(phEndHourAttr, timeHourList,"--", null);
 
         Map<String,String> phEndMinAttr = IaisCommonUtils.genNewHashMap();
         phEndMinAttr.put("class",  type+"PbHolDayEndMM");
         phEndMinAttr.put("id",  premVal+"PbHolDayEndMM"+phLength);
         phEndMinAttr.put("name", premVal+"PbHolDayEndMM"+phLength);
         phEndMinAttr.put("style", "display: none;");
-        String phEndMinHtml = NewApplicationHelper.generateDropDownHtml(phEndMinAttr, timeMinList,"--");
+        String phEndMinHtml = NewApplicationHelper.generateDropDownHtml(phEndMinAttr, timeMinList,"--", null);
 
 
         sql = sql.replace("(phSelect)", phSelectHtml);
@@ -625,13 +626,13 @@ public class NewApplicationAjaxController {
             personnelAttr.put("name", "personnelSel");
             personnelAttr.put("class", "personnelSel");
             personnelAttr.put("style", "display: none;");
-            String personnelSelectStr = NewApplicationHelper.generateDropDownHtml(personnelAttr, personnel, NewApplicationDelegator.FIRESTOPTION);
+            String personnelSelectStr = NewApplicationHelper.generateDropDownHtml(personnelAttr, personnel, NewApplicationDelegator.FIRESTOPTION, null);
 
             List<SelectOption> designation = (List) ParamUtil.getSessionAttr(request, "NuclearMedicineImagingDesignation");
             Map<String,String> designationAttr = IaisCommonUtils.genNewHashMap();
             designationAttr.put("name", "designation");
             designationAttr.put("style", "display: none;");
-            String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designation, NewApplicationDelegator.FIRESTOPTION);
+            String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designation, NewApplicationDelegator.FIRESTOPTION, null);
 
             sql = sql.replace("(1)", personnelSelectStr);
             sql = sql.replace("(2)", designationSelectStr);
@@ -659,7 +660,7 @@ public class NewApplicationAjaxController {
         for (Map.Entry<String, List<HcsaSvcPersonnelDto>> stringListEntry : svcConfigInfo.entrySet()){
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = stringListEntry.getValue();
             for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto:hcsaSvcPersonnelDtoList
-                 ) {
+                    ) {
                 if ("PO".equalsIgnoreCase(hcsaSvcPersonnelDto.getPsnType())){
                     poMmaximumCount = hcsaSvcPersonnelDto.getMaximumCount();
                     break;
@@ -670,12 +671,12 @@ public class NewApplicationAjaxController {
         String errMsg = "You are allowed to add up till only "+hasNumber+" PO";
         if (poMmaximumCount - hasNumber > 0){
             //assign select
-            List<SelectOption> assignPrincipalOfficerSel = ClinicalLaboratoryDelegator.getAssignPrincipalOfficerSel(svcId, false);
+            List<SelectOption> assignPrincipalOfficerSel = NewApplicationHelper.genAssignPersonSel(request, false);
             Map<String,String> assignPrincipalOfficerAttr = IaisCommonUtils.genNewHashMap();
             assignPrincipalOfficerAttr.put("name", "poSelect");
             assignPrincipalOfficerAttr.put("class", "poSelect");
             assignPrincipalOfficerAttr.put("style", "display: none;");
-            String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, NewApplicationDelegator.FIRESTOPTION);
+            String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, NewApplicationDelegator.FIRESTOPTION, null);
 
             //salutation
             List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
@@ -683,7 +684,7 @@ public class NewApplicationAjaxController {
             salutationAttr.put("class", "salutation");
             salutationAttr.put("name", "salutation");
             salutationAttr.put("style", "display: none;");
-            String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
+            String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
 
             //ID Type
             List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
@@ -691,7 +692,7 @@ public class NewApplicationAjaxController {
             idTypeAttr.put("class", "idType");
             idTypeAttr.put("name", "idType");
             idTypeAttr.put("style", "display: none;");
-            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
+            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null, null);
 
             //Designation
             List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
@@ -699,7 +700,7 @@ public class NewApplicationAjaxController {
             designationAttr.put("class", "designation");
             designationAttr.put("name", "designation");
             designationAttr.put("style", "display: none;");
-            String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
+            String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION, null);
 
             sql = sql.replace("(1)", principalOfficerSelStr);
             sql = sql.replace("(2)", salutationSelectStr);
@@ -738,26 +739,26 @@ public class NewApplicationAjaxController {
         if (dpoMmaximumCount - hasNumber > 0){
             String svcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
             //assign select
-            List<SelectOption> assignPrincipalOfficerSel = ClinicalLaboratoryDelegator.getAssignPrincipalOfficerSel(svcId, false);
+            List<SelectOption> assignPrincipalOfficerSel = NewApplicationHelper.genAssignPersonSel(request, false);
             Map<String,String> assignPrincipalOfficerAttr = IaisCommonUtils.genNewHashMap();
             assignPrincipalOfficerAttr.put("name", "deputyPoSelect");
             assignPrincipalOfficerAttr.put("class", "deputyPoSelect");
             assignPrincipalOfficerAttr.put("style", "display: none;");
-            String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, NewApplicationDelegator.FIRESTOPTION);
+            String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, NewApplicationDelegator.FIRESTOPTION, null);
             //salutation
             List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
             Map<String,String> salutationAttr = IaisCommonUtils.genNewHashMap();
             salutationAttr.put("class", "deputySalutation");
             salutationAttr.put("name", "deputySalutation");
             salutationAttr.put("style", "display: none;");
-            String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
+            String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
             //ID Type
             List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
             Map<String,String>  idTypeAttr = IaisCommonUtils.genNewHashMap();
             idTypeAttr.put("class", "deputyIdType");
             idTypeAttr.put("name", "deputyIdType");
             idTypeAttr.put("style", "display: none;");
-            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
+            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null, null);
 
             //Designation
             List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
@@ -765,7 +766,7 @@ public class NewApplicationAjaxController {
             designationAttr.put("class", "deputyDesignation");
             designationAttr.put("name", "deputyDesignation");
             designationAttr.put("style", "display: none;");
-            String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
+            String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION, null);
 
             sql = sql.replace("(1)", salutationSelectStr);
             sql = sql.replace("(2)", idTypeSelectStr);
@@ -804,18 +805,43 @@ public class NewApplicationAjaxController {
      * @param request
      * @return
      */
-    @GetMapping(value = "/psn-new")
-    public @ResponseBody AppSvcCgoDto getNewPsnInfo(HttpServletRequest request){
+    @GetMapping(value = "/psn-select-info")
+    public @ResponseBody AppSvcPrincipalOfficersDto getPsnSelectInfo(HttpServletRequest request){
         log.debug(StringUtil.changeForLog("the getNewPsnInfo start ...."));
+        String idType = ParamUtil.getString(request,"idType");
         String idNo = ParamUtil.getString(request,"idNo");
-        if(StringUtil.isEmpty(idNo)){
+        String psnType = ParamUtil.getString(request,"psnType");
+        if(StringUtil.isEmpty(idNo) || StringUtil.isEmpty(idType)){
             return null;
         }
-        AppSubmissionDto appSubmissionDto = ClinicalLaboratoryDelegator.getAppSubmissionDto(request);
-        AppSvcCgoDto appSvcCgoDto = NewApplicationHelper.getPsnFromSubDto(appSubmissionDto,idNo);
-
+        String psnKey = idType+","+idNo;
+        Map<String,AppSvcPrincipalOfficersDto> psnMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
+        AppSvcPrincipalOfficersDto psn = psnMap.get(psnKey);
+        if(psn == null){
+            log.info(StringUtil.changeForLog("can not get data from PersonSelectMap ..."));
+            return new AppSvcPrincipalOfficersDto();
+        }
+        String currentSvcCode = (String) ParamUtil.getSessionAttr(request,NewApplicationDelegator.CURRENTSVCCODE);
+        if(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)){
+            List<SelectOption> specialityOpts = NewApplicationHelper.genSpecialtySelectList(currentSvcCode,false);
+            List<SelectOption> selectOptionList = psn.getSpcOptList();
+            if(!IaisCommonUtils.isEmpty(selectOptionList)){
+                for(SelectOption sp:selectOptionList){
+                    if(!specialityOpts.contains(sp)){
+                        specialityOpts.add(sp);
+                    }
+                }
+            }
+            psn.setSpcOptList(specialityOpts);
+            Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
+            specialtyAttr.put("name", "specialty");
+            specialtyAttr.put("class", "specialty");
+            specialtyAttr.put("style", "display: none;");
+            String specialityHtml = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, psn.getSpeciality());
+            psn.setSpecialityHtml(specialityHtml);
+        }
         log.debug(StringUtil.changeForLog("the getNewPsnInfo end ...."));
-        return appSvcCgoDto;
+        return psn;
     }
 
 
@@ -846,28 +872,28 @@ public class NewApplicationAjaxController {
             assignPrincipalOfficerAttr.put("name", "assignSel");
             assignPrincipalOfficerAttr.put("class", "assignSel");
             assignPrincipalOfficerAttr.put("style", "display: none;");
-            String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, null);
+            String principalOfficerSelStr = NewApplicationHelper.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, null, null);
             //salutation
             List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
             Map<String,String> salutationAttr = IaisCommonUtils.genNewHashMap();
             salutationAttr.put("class", "salutation");
             salutationAttr.put("name", "salutation");
             salutationAttr.put("style", "display: none;");
-            String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
+            String salutationSelectStr = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
             //ID Type
             List<SelectOption> idTypeList = NewApplicationHelper.getIdTypeSelOp();
             Map<String,String>  idTypeAttr = IaisCommonUtils.genNewHashMap();
             idTypeAttr.put("class", "idType");
             idTypeAttr.put("name", "idType");
             idTypeAttr.put("style", "display: none;");
-            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null);
+            String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, null, null);
             //pre mode
             List<SelectOption> medAlertSelectList = ClinicalLaboratoryDelegator.getMedAlertSelectList();
             Map<String,String>   medAlertAttr = IaisCommonUtils.genNewHashMap();
             medAlertAttr.put("class", "preferredMode");
             medAlertAttr.put("name", "preferredMode");
             medAlertAttr.put("style", "display: none;");
-            String medAlertSelectStr = NewApplicationHelper.generateDropDownHtml(medAlertAttr, medAlertSelectList, null);
+            String medAlertSelectStr = NewApplicationHelper.generateDropDownHtml(medAlertAttr, medAlertSelectList, null, null);
 
             sql = sql.replace("(0)",String.valueOf(hasNumber));
             sql = sql.replace("(1)", principalOfficerSelStr);

@@ -170,8 +170,10 @@
 
 
 <script>
+    var init;
     $(function () {
-
+        //init start
+        init = 0;
         addMAP();
 
         assignSel();
@@ -181,24 +183,8 @@
 
         $('select.assignSel').trigger('change');
 
-        //reload preferred Mode
-        /*$('.preferredModes').each(function () {
-            var preferredMode = $(this).val();
-            if(preferredMode != null && preferredMode !='undefined' && preferredMode != ''){
-                var $currentPreModeEle = $(this).closest('div.preferredModeDiv');
-                var arr = preferredMode.split(';');
-                $.each(arr,function (k,v) {
-                    var arrVal = v;
-                    $currentPreModeEle.find('input.preferredMode').each(function () {
-                        if(arrVal == $(this).val()){
-                            $(this).prop('checked',true);
-                        }
-                    });
-                });
-            }
-        });*/
-
-
+        //init end
+        init =1;
     })
 
 
@@ -217,12 +203,25 @@
             var $medAlertContentEle = $(this).closest('div.medAlertContent');
             if('-1' == assignSelVal){
                 $medAlertContentEle.find('div.medAlertPerson').addClass('hidden');
+                if(1 == init){
+                    var emptyData = {};
+                    fillPsnForm($medAlertContentEle,emptyData);
+                }
             }else if('newOfficer' == assignSelVal){
                 $medAlertContentEle.find('div.medAlertPerson').removeClass('hidden');
+                if(1 == init){
+                    var emptyData = {};
+                    fillPsnForm($medAlertContentEle,emptyData);
+                }
             }else{
-
+                $medAlertContentEle.find('div.medAlertPerson').removeClass('hidden');
+                if(1 == init){
+                    var arr = $(this).val().split(',');
+                    var idType = arr[0];
+                    var idNo = arr[1];
+                    loadSelectPsn($medAlertContentEle, idType, idNo, 'MAP');
+                }
             }
-
         });
     }
 

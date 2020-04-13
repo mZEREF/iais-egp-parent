@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -25,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import sop.util.CopyUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
@@ -207,7 +209,7 @@ public class NewApplicationHelper {
 
     public static  List<SelectOption> getIdTypeSelOp(){
         List<SelectOption> idTypeSelectList = IaisCommonUtils.genNewArrayList();
-        SelectOption idType0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
+        SelectOption idType0 = new SelectOption("", NewApplicationDelegator.FIRESTOPTION);
         idTypeSelectList.add(idType0);
         SelectOption idType1 = new SelectOption("NRIC", "NRIC");
         idTypeSelectList.add(idType1);
@@ -462,7 +464,7 @@ public class NewApplicationHelper {
         return oneErrorMap;
     }
 
-    public static String generateDropDownHtml(Map<String, String> premisesOnSiteAttr, List<SelectOption> selectOptionList, String firestOption){
+    public static String generateDropDownHtml(Map<String, String> premisesOnSiteAttr, List<SelectOption> selectOptionList, String firestOption, String checkedVal){
         StringBuffer sBuffer = new StringBuffer();
         sBuffer.append("<select ");
         for(Map.Entry<String, String> entry : premisesOnSiteAttr.entrySet()){
@@ -473,7 +475,15 @@ public class NewApplicationHelper {
             sBuffer.append("<option value=\"\">"+ firestOption +"</option>");
         }
         for(SelectOption sp:selectOptionList){
-            sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+            if(!StringUtil.isEmpty(checkedVal)){
+                if(checkedVal.equals(sp.getValue())){
+                    sBuffer.append("<option selected=\"selected\" value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+                }else{
+                    sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+                }
+            }else{
+                sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+            }
         }
         sBuffer.append("</select>");
         String classNameValue = premisesOnSiteAttr.get("class");
@@ -482,15 +492,28 @@ public class NewApplicationHelper {
             className =  classNameValue;
         }
         sBuffer.append("<div class=\"nice-select "+className+"\" tabindex=\"0\">");
-        if(!StringUtil.isEmpty(firestOption)){
-            sBuffer.append("<span class=\"current\">"+firestOption+"</span>");
+        if(!StringUtil.isEmpty(checkedVal)){
+            sBuffer.append("<span selected=\"selected\" class=\"current\">"+ checkedVal +"</span>");
         }else{
-            sBuffer.append("<span class=\"current\">"+selectOptionList.get(0).getText()+"</span>");
+            if(!StringUtil.isEmpty(firestOption)){
+                sBuffer.append("<span class=\"current\">"+firestOption+"</span>");
+            }else{
+                sBuffer.append("<span class=\"current\">"+selectOptionList.get(0).getText()+"</span>");
+            }
         }
         sBuffer.append("<ul class=\"list mCustomScrollbar _mCS_2 mCS_no_scrollbar\">")
                 .append("<div id=\"mCSB_2\" class=\"mCustomScrollBox mCS-light mCSB_vertical mCSB_inside\" tabindex=\"0\" style=\"max-height: none;\">")
                 .append("<div id=\"mCSB_2_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">");
-        if(!StringUtil.isEmpty(firestOption)){
+
+        if(!StringUtil.isEmpty(checkedVal)){
+            for(SelectOption kv:selectOptionList){
+                if(checkedVal.equals(kv.getValue())){
+                    sBuffer.append("<li selected=\"selected\" data-value=\""+kv.getValue()+"\" class=\"option selected focus\">"+kv.getText()+"</li>");
+                }else{
+                    sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+                }
+            }
+        }else if(!StringUtil.isEmpty(firestOption)){
             sBuffer.append("<li data-value=\"\" class=\"option selected\">"+firestOption+"</li>");
             for(SelectOption kv:selectOptionList){
                 sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
@@ -538,17 +561,17 @@ public class NewApplicationHelper {
     }
     //just for one svc
     public static void setLaboratoryDisciplinesInfo(AppSubmissionDto appSubmissionDto,List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos){
-       Map<String, HcsaSvcSubtypeOrSubsumedDto> map = IaisCommonUtils.genNewHashMap();
-       turn(hcsaSvcSubtypeOrSubsumedDtos, map);
-       if(appSubmissionDto == null){
-           return;
-       }
-       List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-       if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
-           for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-               setSvcScopeInfo(appSvcRelatedInfoDto,map);
-           }
-       }
+        Map<String, HcsaSvcSubtypeOrSubsumedDto> map = IaisCommonUtils.genNewHashMap();
+        turn(hcsaSvcSubtypeOrSubsumedDtos, map);
+        if(appSubmissionDto == null){
+            return;
+        }
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                setSvcScopeInfo(appSvcRelatedInfoDto,map);
+            }
+        }
     }
     //
     public static void setLaboratoryDisciplinesInfo(AppSvcRelatedInfoDto appSvcRelatedInfoDto,List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos){
@@ -568,12 +591,12 @@ public class NewApplicationHelper {
         }
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = null;
         if(!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
-           for(AppSvcRelatedInfoDto item:appSubmissionDto.getAppSvcRelatedInfoDtoList()){
-               if(svcId.equals(item.getServiceId())){
-                   appSvcRelatedInfoDto = item;
-                   break;
-               }
-           }
+            for(AppSvcRelatedInfoDto item:appSubmissionDto.getAppSvcRelatedInfoDtoList()){
+                if(svcId.equals(item.getServiceId())){
+                    appSvcRelatedInfoDto = item;
+                    break;
+                }
+            }
         }
         List<AppSvcDisciplineAllocationDto> allocationDto = null;
         if(appSvcRelatedInfoDto != null){
@@ -663,7 +686,6 @@ public class NewApplicationHelper {
             }
 
         }
-
         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = appGrpPremisesDto.getAppPremPhOpenPeriodList();
         if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriods)){
             for(AppPremPhOpenPeriodDto appPremPhOpenPeriod:appPremPhOpenPeriods){
@@ -694,14 +716,11 @@ public class NewApplicationHelper {
                 }
             }
         }
-
-
         return appGrpPremisesDto;
     }
 
 
     public static void setDisciplineAllocationDtoInfo(AppSvcRelatedInfoDto appSvcRelatedInfoDto){
-
         if(appSvcRelatedInfoDto == null){
             return;
         }
@@ -715,7 +734,6 @@ public class NewApplicationHelper {
                 if(StringUtil.isEmpty(idNo) || StringUtil.isEmpty(svcScopeConfigId)){
                     continue;
                 }
-
                 //set svc cgoNo
                 for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtos){
                     String cgoIdNo = appSvcCgoDto.getIdNo();
@@ -744,32 +762,42 @@ public class NewApplicationHelper {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                //cgo
                 List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
                 if(!IaisCommonUtils.isEmpty(appSvcCgoDtos)){
                     for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtos){
-                        AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
-                        psnDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
-                        psnDto.setDesignation(appSvcCgoDto.getDesignation());
-                        psnDto.setName(appSvcCgoDto.getName());
-                        psnDto.setIdType(appSvcCgoDto.getIdType());
-                        psnDto.setIdNo(appSvcCgoDto.getIdNo());
-                        psnDto.setOfficeTelNo(appSvcCgoDto.getOfficeTelNo());
-                        psnDto.setMobileNo(appSvcCgoDto.getMobileNo());
-                        psnDto.setOfficeTelNo(appSvcCgoDto.getOfficeTelNo());
-                        psnDto.setEmailAddr(appSvcCgoDto.getEmailAddr());
-                        psnDto.setPreferredMode(appSvcCgoDto.getPreferredMode());
-                        psnDto.setProfessionType(appSvcCgoDto.getProfessionType());
-                        psnDto.setProfessionRegoNo(appSvcCgoDto.getProfessionRegoNo());
-                        psnDto.setSpeciality(appSvcCgoDto.getSpeciality());
-                        psnDto.setSpecialityOther(appSvcCgoDto.getSpecialityOther());
-                        psnDto.setQualification(appSvcCgoDto.getQualification());
+                        AppSvcPrincipalOfficersDto psnDto = psnMap.get(appSvcCgoDto.getIdNo());
+                        if(psnDto != null){
+                            continue;
+                        }
+                        psnDto = transferCgoToPsnDto(appSvcCgoDto);
                         psnMap.put(appSvcCgoDto.getIdNo(),psnDto);
                     }
                 }
+                //po and dpo
                 List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
                 if(!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)){
                     for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto:appSvcPrincipalOfficersDtos){
-                        //psnMap.put(appSvcPrincipalOfficersDto.getIdNo(),appSvcPrincipalOfficersDto);
+                        AppSvcPrincipalOfficersDto psnDto = psnMap.get(appSvcPrincipalOfficersDto.getIdNo());
+                        if(psnDto != null){
+                            psnDto.setOfficeTelNo(appSvcPrincipalOfficersDto.getOfficeTelNo());
+                        }else{
+                            psnDto = appSvcPrincipalOfficersDto;
+                        }
+                        psnMap.put(appSvcPrincipalOfficersDto.getIdNo(),psnDto);
+                    }
+                }
+                //medAlert
+                List<AppSvcPrincipalOfficersDto> appSvcMedAlertPsnDtos = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+                if(!IaisCommonUtils.isEmpty(appSvcMedAlertPsnDtos)){
+                    for(AppSvcPrincipalOfficersDto appSvcMedAlertPsnDto:appSvcMedAlertPsnDtos) {
+                        AppSvcPrincipalOfficersDto psnDto = psnMap.get(appSvcMedAlertPsnDto.getIdNo());
+                        if(psnDto != null){
+                            psnDto.setPreferredMode(appSvcMedAlertPsnDto.getPreferredMode());
+                        }else{
+                            psnDto = appSvcMedAlertPsnDto;
+                        }
+                        psnMap.put(appSvcMedAlertPsnDto.getIdNo(),psnDto);
                     }
                 }
             }
@@ -794,7 +822,6 @@ public class NewApplicationHelper {
                 }
             }
         }
-
         return null;
     }
 
@@ -889,6 +916,154 @@ public class NewApplicationHelper {
         return errMap;
     }
 
+    public static List<AppSvcPrincipalOfficersDto> transferCgoToPsnDtoList(List<AppSvcCgoDto> appSvcCgoDtos){
+        List<AppSvcPrincipalOfficersDto> psnDtos = IaisCommonUtils.genNewArrayList();
+        if(IaisCommonUtils.isEmpty(appSvcCgoDtos)){
+            return psnDtos;
+        }
+        for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtos){
+            AppSvcPrincipalOfficersDto psnDto = transferCgoToPsnDto(appSvcCgoDto);
+            psnDtos.add(psnDto);
+        }
+        return psnDtos;
+    }
+
+    public static void setPsnIntoSelMap(HttpServletRequest request, List<AppSvcPrincipalOfficersDto> psnDtos){
+        if(IaisCommonUtils.isEmpty(psnDtos)){
+            return;
+        }
+        Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
+        String svcCode = (String) ParamUtil.getSessionAttr(request,NewApplicationDelegator.CURRENTSVCCODE);
+        for(AppSvcPrincipalOfficersDto psnDto:psnDtos){
+            String personMapKey = psnDto.getIdType()+","+psnDto.getIdNo();
+            AppSvcPrincipalOfficersDto person = personMap.get(personMapKey);
+            Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
+            specialtyAttr.put("name", "specialty");
+            specialtyAttr.put("class", "specialty");
+            specialtyAttr.put("style", "display: none;");
+            if(person == null){
+                psnDto.setNeedSpcOptList(true);
+                List<SelectOption> specialityOpts = genSpecialtySelectList(svcCode,true);
+                psnDto.setSpcOptList(specialityOpts);
+                String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, psnDto.getSpeciality());
+                psnDto.setSpecialityHtml(specialtySelectStr);
+                personMap.put(personMapKey,psnDto);
+            }else{
+                //set different page column
+                person.setSalutation(psnDto.getSalutation());
+                person.setName(psnDto.getName());
+                person.setIdType(psnDto.getIdType());
+                person.setIdNo(psnDto.getIdNo());
+                person.setMobileNo(psnDto.getMobileNo());
+                person.setEmailAddr(psnDto.getEmailAddr());
+                if(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnDto.getPsnType())){
+                    person.setDesignation(psnDto.getDesignation());
+                    person.setProfessionType(psnDto.getProfessionType());
+                    person.setProfessionRegoNo(psnDto.getProfessionRegoNo());
+                    person.setSpeciality(psnDto.getSpeciality());
+                    person.setSpecialityOther(psnDto.getSpecialityOther());
+                    person.setQualification(psnDto.getQualification());
+                    //
+                    person.setNeedSpcOptList(true);
+                    List<SelectOption> spcOpts = person.getSpcOptList();
+                    List<SelectOption> specialityOpts = genSpecialtySelectList(svcCode,false);
+                    if(!IaisCommonUtils.isEmpty(spcOpts)){
+                        for(SelectOption sp:spcOpts){
+                            if(!specialityOpts.contains(sp)){
+                                specialityOpts.add(sp);
+                            }
+                        }
+                        person.setSpcOptList(specialityOpts);
+                    }else{
+                        SelectOption sp = new SelectOption("other", "Others");
+                        specialityOpts.add(sp);
+                        person.setSpcOptList(specialityOpts);
+                    }
+                    String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, person.getSpeciality());
+                    person.setSpecialityHtml(specialtySelectStr);
+                }
+                if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType()) || ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())){
+                    person.setOfficeTelNo(psnDto.getOfficeTelNo());
+                }
+                if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())){
+                    person.setPreferredMode(psnDto.getPreferredMode());
+                }
+                personMap.put(personMapKey,person);
+            }
+        }
+        ParamUtil.setSessionAttr(request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
+    }
+
+
+
+    public static List<SelectOption> genSpecialtySelectList(String svcCode, boolean needOtherOpt){
+        List<SelectOption> specialtySelectList = null;
+        if(!StringUtil.isEmpty(svcCode)){
+            if(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode) ||
+                    AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode) ||
+                    AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)){
+                specialtySelectList = IaisCommonUtils.genNewArrayList();
+                SelectOption ssl1 = new SelectOption("-1", "Please Select");
+                SelectOption ssl2 = new SelectOption("Pathology", "Pathology");
+                SelectOption ssl3 = new SelectOption("Haematology", "Haematology");
+                specialtySelectList.add(ssl1);
+                specialtySelectList.add(ssl2);
+                specialtySelectList.add(ssl3);
+                if(needOtherOpt){
+                    SelectOption ssl4 = new SelectOption("other", "Others");
+                    specialtySelectList.add(ssl4);
+                }
+            }else if(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(svcCode) ||
+                    AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode) ||
+                    AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)){
+                specialtySelectList = IaisCommonUtils.genNewArrayList();
+                SelectOption ssl1 = new SelectOption("-1", "Please Select");
+                SelectOption ssl2 = new SelectOption("Diagnostic Radiology", "Diagnostic Radiology");
+                SelectOption ssl3 = new SelectOption("Nuclear Medicine", "Nuclear Medicine");
+                specialtySelectList.add(ssl1);
+                specialtySelectList.add(ssl2);
+                specialtySelectList.add(ssl3);
+                if(needOtherOpt){
+                    SelectOption ssl4 = new SelectOption("other", "Others");
+                    specialtySelectList.add(ssl4);
+                }
+            }
+        }
+        return specialtySelectList;
+    }
+
+    public static AppSubmissionDto syncPsnData(HttpServletRequest request, AppSubmissionDto appSubmissionDto, List<AppSvcPrincipalOfficersDto> psnDtos){
+        if(appSubmissionDto == null || IaisCommonUtils.isEmpty(psnDtos)){
+           return appSubmissionDto;
+        }
+        Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                syncCgoDto(appSvcRelatedInfoDto.getAppSvcCgoDtoList(), personMap);
+                syncPsnDto(appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), personMap);
+                syncPsnDto(appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), personMap);
+            }
+        }
+        return appSubmissionDto;
+    }
+
+
+    public static List<SelectOption> genAssignPersonSel(HttpServletRequest request, boolean needFirstOpt){
+        List<SelectOption> psnSelectList = IaisCommonUtils.genNewArrayList();
+        if(needFirstOpt){
+            SelectOption sp0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
+            psnSelectList.add(sp0);
+        }
+        SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
+        psnSelectList.add(sp1);
+        Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
+        personMap.forEach((k,v)->{
+            SelectOption sp = new SelectOption(k,v.getName()+v.getIdNo());
+            psnSelectList.add(sp);
+        });
+        return psnSelectList;
+    }
 
     //=============================================================================
     //private method
@@ -912,6 +1087,7 @@ public class NewApplicationHelper {
         }
         return pageCanEdit;
     }
+
     private NewApplicationHelper() {
         throw new IllegalStateException("Utility class");
     }
@@ -944,4 +1120,81 @@ public class NewApplicationHelper {
             }
         }
     }
+
+    private static AppSvcPrincipalOfficersDto transferCgoToPsnDto(AppSvcCgoDto appSvcCgoDto){
+        AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
+        if(appSvcCgoDto == null){
+            return psnDto;
+        }
+        psnDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
+        psnDto.setSalutation(appSvcCgoDto.getSalutation());
+        psnDto.setName(appSvcCgoDto.getName());
+        psnDto.setIdType(appSvcCgoDto.getIdType());
+        psnDto.setIdNo(appSvcCgoDto.getIdNo());
+        psnDto.setDesignation(appSvcCgoDto.getDesignation());
+        psnDto.setOfficeTelNo(appSvcCgoDto.getOfficeTelNo());
+        psnDto.setMobileNo(appSvcCgoDto.getMobileNo());
+        psnDto.setOfficeTelNo(appSvcCgoDto.getOfficeTelNo());
+        psnDto.setEmailAddr(appSvcCgoDto.getEmailAddr());
+        psnDto.setPreferredMode(appSvcCgoDto.getPreferredMode());
+        psnDto.setProfessionType(appSvcCgoDto.getProfessionType());
+        psnDto.setProfessionRegoNo(appSvcCgoDto.getProfessionRegoNo());
+        psnDto.setSpeciality(appSvcCgoDto.getSpeciality());
+        psnDto.setSpecialityOther(appSvcCgoDto.getSpecialityOther());
+        psnDto.setQualification(appSvcCgoDto.getQualification());
+        return psnDto;
+    }
+
+    private static void syncCgoDto(List<AppSvcCgoDto> appSvcCgoDtos, Map<String,AppSvcPrincipalOfficersDto> personMap){
+        if(IaisCommonUtils.isEmpty(appSvcCgoDtos)){
+            return;
+        }
+        for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtos){
+            String personKey = appSvcCgoDto.getIdType()+ "," + appSvcCgoDto.getIdNo();
+            AppSvcPrincipalOfficersDto selPerson = personMap.get(personKey);
+            if(selPerson != null){
+                appSvcCgoDto.setDesignation(selPerson.getDesignation());
+                appSvcCgoDto.setName(selPerson.getName());
+                appSvcCgoDto.setIdType(selPerson.getIdType());
+                appSvcCgoDto.setIdNo(selPerson.getIdNo());
+                appSvcCgoDto.setDesignation(selPerson.getDesignation());
+                appSvcCgoDto.setProfessionType(selPerson.getProfessionType());
+                appSvcCgoDto.setProfessionRegoNo(selPerson.getProfessionRegoNo());
+                appSvcCgoDto.setSpeciality(selPerson.getSpeciality());
+                appSvcCgoDto.setSpecialityOther(selPerson.getSpecialityOther());
+                appSvcCgoDto.setQualification(selPerson.getQualification());
+                appSvcCgoDto.setMobileNo(selPerson.getMobileNo());
+                appSvcCgoDto.setEmailAddr(selPerson.getEmailAddr());
+                //
+                appSvcCgoDto.setNeedSpcOptList(true);
+                appSvcCgoDto.setSpcOptList(selPerson.getSpcOptList());
+                appSvcCgoDto.setSpecialityHtml(selPerson.getSpecialityHtml());
+            }
+        }
+    }
+
+    private static void syncPsnDto(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos, Map<String,AppSvcPrincipalOfficersDto> personMap){
+        if(IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)){
+            return;
+        }
+        for(AppSvcPrincipalOfficersDto person:appSvcPrincipalOfficersDtos){
+            String personKey = person.getIdType()+ "," + person.getIdNo();
+            AppSvcPrincipalOfficersDto selPerson = personMap.get(personKey);
+            if(selPerson != null){
+                person.setDesignation(selPerson.getDesignation());
+                person.setName(selPerson.getName());
+                person.setIdType(selPerson.getIdType());
+                person.setIdNo(selPerson.getIdNo());
+                person.setMobileNo(selPerson.getMobileNo());
+                person.setEmailAddr(selPerson.getEmailAddr());
+                if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(person.getPsnType()) || ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(person.getPsnType()) ){
+                    person.setOfficeTelNo(selPerson.getOfficeTelNo());
+                }
+                if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(person.getPsnType())){
+                    person.setPreferredMode(selPerson.getPreferredMode());
+                }
+            }
+        }
+    }
+
 }

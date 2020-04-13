@@ -118,6 +118,146 @@
         $('.assign-psn-item').each(function (k,v) {
             $(this).html(k+1);
         });
+    }
+
+    <!--cgo,medAlert -->
+    var fillPsnForm = function ($CurrentPsnEle,data,psnTYpe) {
+        <!--salutation-->
+        var salutation  = data.salutation;
+        if( salutation == null || salutation =='undefined' || salutation == ''){
+            salutation = '';
+        }
+        $CurrentPsnEle.find('select[name="salutation"]').val(salutation);
+        var salutationVal = $CurrentPsnEle.find('option[value="' + salutation + '"]').html();
+        $CurrentPsnEle.find('select[name="salutation"]').next().find('.current').html(salutationVal);
+        <!--name-->
+        $CurrentPsnEle.find('input[name="name"]').val(data.name);
+
+        <!-- idType-->
+        var idType  = data.idType;
+        if(idType == null || idType =='undefined' || idType == ''){
+            idType = '';
+        }
+        $CurrentPsnEle.find('select[name="idType"]').val(idType);
+        var idTypeVal = $CurrentPsnEle.find('option[value="' + idType + '"]').html();
+        $CurrentPsnEle.find('select[name="idType"]').next().find('.current').html(idTypeVal);
+        <!-- idNo-->
+        $CurrentPsnEle.find('input[name="idNo"]').val(data.idNo);
+
+        $CurrentPsnEle.find('input[name="mobileNo"]').val(data.mobileNo);
+        $CurrentPsnEle.find('input[name="emailAddress"]').val(data.emailAddr);
+
+
+        <!--     ====================    -->
+        <!--       diff page column      -->
+        <!--     ====================    -->
+
+        <!-- officeTelNo-->
+        var officeTelNo = data.officeTelNo;
+        if(officeTelNo != null && officeTelNo != ''){
+            $CurrentPsnEle.find('input[name="officeTelNo"]').val(officeTelNo);
+        }else{
+            $CurrentPsnEle.find('input[name="officeTelNo"]').val('');
+        }
+        <!--Designation  -->
+        var designation = data.designation;
+        if(designation == null || designation == ''){
+            designation = '';
+        }
+        $CurrentPsnEle.find('select[name="designation"]').val(designation);
+        var designationVal = $CurrentPsnEle.find('option[value="' + designation + '"]').html();
+        $CurrentPsnEle.find('select[name="designation"]').next().find('.current').html(designationVal);
+
+
+        <!-- professionType-->
+        var professionType = data.professionType;
+        if(professionType == null || professionType =='undefined' || professionType == ''){
+            professionType = '';
+        }
+        $CurrentPsnEle.find('select[name="professionType"]').val(professionType);
+        var professionTypeVal = $CurrentPsnEle.find('option[value="' + professionType + '"]').html();
+        $CurrentPsnEle.find('select[name="professionType"]').next().find('.current').html(professionTypeVal);
+        <!-- professionRegoNo-->
+        var professionRegoNo = data.professionRegoNo;
+        if(professionRegoNo != null && professionRegoNo != ''){
+            $CurrentPsnEle.find('input[name="professionRegoNo"]').val(professionRegoNo);
+        }else{
+            $CurrentPsnEle.find('input[name="professionRegoNo"]').val('');
+        }
+        <!-- speciality-->
+        var speciality = data.speciality;
+        if('CGO' == psnTYpe){
+            $CurrentPsnEle.find('div.specialtyDiv').html(data.specialityHtml);
+        }else{
+            if(speciality == null || speciality =='undefined' || speciality == ''){
+                speciality = '-1';
+            }
+            var specialityVal = $CurrentPsnEle.find('option[value="' + speciality + '"]').html();
+            if(specialityVal =='undefined'){
+                speciality = '';
+                specialityVal = $CurrentPsnEle.find('option[value="' + speciality + '"]').html();
+            }
+            $CurrentPsnEle.find('select[name="specialty"]').val(speciality);
+            $CurrentPsnEle.find('select[name="specialty"]').next().find('.current').html(specialityVal);
+        }
+        if('other' == speciality){
+            $CurrentPsnEle.find('input[name="specialtyOther"]').removeClass('hidden');
+            var specialityOther = data.specialityOther;
+            if(specialityOther != null && specialityOther != ''){
+                $CurrentPsnEle.find('input[name="specialtyOther"]').val(specialityOther);
+            }else{
+                $CurrentPsnEle.find('input[name="specialtyOther"]').val('');
+            }
+        }else{
+            $CurrentPsnEle.find('input[name="specialtyOther"]').addClass('hidden');
+        }
+        <!--Subspeciality or relevant qualification -->
+        var qualification = data.qualification;
+        if(qualification != null && qualification != ''){
+            $CurrentPsnEle.find('input[name="qualification"]').val(data.qualification);
+        }else{
+            $CurrentPsnEle.find('input[name="qualification"]').val('');
+        }
+        <!--preferredMode -->
+        var preferredMode = data.preferredMode;
+        if(preferredMode != null && preferredMode !='undefined' && preferredMode != ''){
+            if('3' == preferredMode){
+                $CurrentPsnEle.find('input.preferredMode').prop('checked',true);
+            }else{
+                $CurrentPsnEle.find('input.preferredMode').each(function () {
+                    if(preferredMode == $(this).val()){
+                        $(this).prop('checked',true);
+                    }
+                });
+            }
+        }else{
+            $CurrentPsnEle.find('input.preferredMode').prop('checked',false);
+        }
 
     }
+    <!--cgo,medAlert -->
+    var loadSelectPsn = function ($CurrentPsnEle, idType, idNo, psnType) {
+        var spcEle = $CurrentPsnEle.find('.specialty');
+        var jsonData = {
+            'idType':idType,
+            'idNo':idNo,
+            'psnType':psnType
+        };
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/psn-select-info',
+            'dataType':'json',
+            'data':jsonData,
+            'type':'GET',
+            'success':function (data) {
+                if(data == null){
+                    return;
+                }
+                fillPsnForm($CurrentPsnEle,data,psnType);
+            },
+            'error':function () {
+            }
+        });
+    }
+
+
 </script>
