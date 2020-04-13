@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -199,6 +200,28 @@
                                                                               hidden> The field is mandatory.</span>
                                                                     </iais:value>
                                                                 </iais:row>
+                                                                <iais:row>
+                                                                    <iais:field value="Licence Start Date" required="false"/>
+                                                                    <iais:value width="10">
+                                                                        <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
+                                                                            <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
+                                                                        </c:if>
+                                                                        <c:if test="${empty applicationViewDto.recomLiceStartDate}">
+                                                                            <p>-</p>
+                                                                        </c:if>
+                                                                    </iais:value>
+                                                                </iais:row>
+                                                                <div class="fastTrack">
+                                                                    <iais:row>
+                                                                        <iais:field value="Fast Tracking?" required="false"/>
+                                                                        <iais:value width="10">
+                                                                            <p>
+                                                                                <input   id="fastTracking" name="fastTracking" disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
+                                                                                <label class="form-check-label" for="fastTracking" ><span class="check-square"></span></label>
+                                                                            </p>
+                                                                        </iais:value>
+                                                                    </iais:row>
+                                                                </div>
                                                             </iais:section>
 
                                                             <iais:action style="text-align:right;">

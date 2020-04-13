@@ -30,7 +30,7 @@
               <iais:body >
                 <iais:section title="" id = "assign_Task">
                   <iais:row>
-                    <iais:field value="Assign To"/>
+                    <iais:field value="Assign To:"/>
                     <iais:value width="10">
                       <c:forEach items="${inspectionTaskPoolListDto.inspectorCheck}" var="name">
                         <p><label><c:out value="${name.text}"/></label></p>
@@ -38,7 +38,7 @@
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <iais:field value="Internal Remarks"/>
+                    <iais:field value="Remarks:"/>
                     <iais:value width="6">
                       <textarea disabled style="resize:none" name="reassignRemarks" cols="65" rows="6" title="content" MAXLENGTH="2000"><c:out value="${inspectionTaskPoolListDto.reassignRemarks}"/></textarea>
                     </iais:value>

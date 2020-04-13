@@ -31,24 +31,10 @@
                             <iais:body >
                                 <iais:section title="" id = "assign_Task">
                                     <iais:row>
-                                        <iais:field value="Assign To" required="true"/>
-                                        <iais:value width="10">
+                                        <iais:field value="Assign To:" required="true"/>
+                                        <iais:value width="5">
                                             <c:if test="${'true' == inspectionTaskPoolListDto.inspectorFlag}">
-                                                <c:if test="${inspectionTaskPoolListDto.inspectorCheck == null}">
-                                                    <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}" var="name">
-                                                        <p><input type="checkbox" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"/>
-                                                            <label><c:out value="${name.text}"/></label></p>
-                                                    </c:forEach>
-                                                </c:if>
-                                                <c:if test="${inspectionTaskPoolListDto.inspectorCheck != null}">
-                                                    <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}" var="name">
-                                                        <p><input type="checkbox" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"
-                                                                <c:forEach items="${inspectionTaskPoolListDto.inspectorCheck}" var="checkName">
-                                                                    <c:if test="${name.value eq checkName.value}">checked="checked"</c:if>
-                                                                </c:forEach>
-                                                        /><label><c:out value="${name.text}"/></label></p>
-                                                    </c:forEach>
-                                                </c:if>
+                                                <iais:select name="inspectorCheck" firstOption="Please Select" options="inspectorOption" value="${inspectionTaskPoolListDto.inspector}"></iais:select>
                                                 <br><span class="error-msg" name="iaisErrorMsg" id="error_inspectorCheck"></span>
                                             </c:if>
                                             <c:if test="${'false' == inspectionTaskPoolListDto.inspectorFlag}">
@@ -57,7 +43,7 @@
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Internal Remarks"/>
+                                        <iais:field value="Remarks:"/>
                                         <iais:value width="6">
                                             <textarea style="resize:none" name="reassignRemarks" cols="65" rows="6" title="content" MAXLENGTH="2000"><c:out value="${inspectionTaskPoolListDto.reassignRemarks}"/></textarea>
                                         </iais:value>

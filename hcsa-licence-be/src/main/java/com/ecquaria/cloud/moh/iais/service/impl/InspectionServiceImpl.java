@@ -381,6 +381,11 @@ public class InspectionServiceImpl implements InspectionService {
         }
         groupRoleFieldDto.setUserIdMap(userIdMap);
         groupRoleFieldDto.setMemberOption(inspectorOption);
+        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
+        Integer isLeadForGroup = userGroupCorrelationDtos.get(0).getIsLeadForGroup();
+        if(1!=isLeadForGroup){
+            groupRoleFieldDto.setMemberOption(null);
+        }
         return groupRoleFieldDto;
     }
 

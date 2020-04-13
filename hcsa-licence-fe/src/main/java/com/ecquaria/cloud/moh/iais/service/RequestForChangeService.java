@@ -52,5 +52,5 @@ public interface RequestForChangeService {
     SearchResult<PersonnelListQueryDto> psnDoQuery(SearchParam searchParam);
 
 
-    void sendEmail(String type,String appNo,String serviceName,String licenceNo,Double amount,String licenceeName,String giroNo,String licenseeId,String subject) throws Exception;
+    void sendEmail(String appGrpId,String type,String appNo,String serviceName,String licenceNo,Double amount,String licenceeName,String giroNo,String licenseeId,String subject) throws Exception;
 }

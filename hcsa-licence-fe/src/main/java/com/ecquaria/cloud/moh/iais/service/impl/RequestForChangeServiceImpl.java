@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
@@ -25,6 +26,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -54,7 +56,15 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Autowired
     private MsgTemplateClient msgTemplateClient;
     @Autowired
-    private FeEmailClient feEmailClient;
+    private FeEicGatewayClient feEicGatewayClient;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     @Override
     public List<PremisesListQueryDto> getPremisesList(String licenseeId) {
@@ -150,8 +160,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public void sendEmail(String type, String appNo, String serviceName, String licenceNo, Double amount, String licenceeName, String giroNo, String licenseeId, String subject) throws Exception {
+    public void sendEmail(String appGrpId,String type, String appNo, String serviceName, String licenceNo, Double amount, String licenceeName, String giroNo, String licenseeId, String subject) throws Exception {
         //send email  rfc submit and pay giro
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         switch (subject) {
             case "RfcAndGiro":
                 MsgTemplateDto RfcAndGiroMsgTemplateDto = msgTemplateClient.getMsgTemplate("D1CC7398-8C50-4178-BE83-1659CD7DBAA8").getEntity();
@@ -166,9 +178,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     emailDto.setSubject("MOH IAIS – Successful Submission of Request for Change " + appNo);
                     emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-                    //emailDto.setClientQueryCode();
+                    emailDto.setClientQueryCode(appGrpId);
                     //send
-                    feEmailClient.sendNotification(emailDto).getEntity();
+                    feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
+                            signature2.date(), signature2.authorization());
                 }
                 break;
             case "RfcAndOnPay":
@@ -183,11 +196,63 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     emailDto.setSubject("MOH IAIS – Successful Submission of Request for Change " + appNo);
                     emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-                    //emailDto.setClientQueryCode();
+                    emailDto.setClientQueryCode(appGrpId);
                     //send
-                    feEmailClient.sendNotification(emailDto).getEntity();
+                    feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
+                            signature2.date(), signature2.authorization());
                 }
                 break;
+            case "rfcApproval":
+                MsgTemplateDto rfcApprovalMsgTemplateDto = msgTemplateClient.getMsgTemplate("25C8B704-1FE1-42DF-B27C-7993B1208BAC").getEntity();
+                if (rfcApprovalMsgTemplateDto != null) {
+                    Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
+                    tempMap.put("appNo", appNo);
+                    String mesContext = MsgUtil.getTemplateMessageByContent(rfcApprovalMsgTemplateDto.getMessageContent(), tempMap);
+                    EmailDto emailDto = new EmailDto();
+                    emailDto.setContent(mesContext);
+                    emailDto.setSubject("MOH IAIS – Request for Change "+appNo+" – Approved ");
+                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                    emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                    emailDto.setClientQueryCode(appGrpId);
+                    //send
+                    feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
+                            signature2.date(), signature2.authorization());
+                    break;
+                }
+            case "rfcReject":
+                MsgTemplateDto rfcRejectMsgTemplateDto = msgTemplateClient.getMsgTemplate("B6C8231E-940D-485A-BFFB-9E65CADB5CA9").getEntity();
+                if (rfcRejectMsgTemplateDto != null) {
+                    Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
+                    tempMap.put("appNo", appNo);
+                    String mesContext = MsgUtil.getTemplateMessageByContent(rfcRejectMsgTemplateDto.getMessageContent(), tempMap);
+                    EmailDto emailDto = new EmailDto();
+                    emailDto.setContent(mesContext);
+                    emailDto.setSubject("MOH IAIS – Request for Change "+appNo+" – Rejected  ");
+                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                    emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                    emailDto.setClientQueryCode(appGrpId);
+                    //send
+                    feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
+                            signature2.date(), signature2.authorization());
+                    break;
+                }
+            case "rfcToLicensee":
+                MsgTemplateDto rfcToLicenseeMsgTemplateDto = msgTemplateClient.getMsgTemplate("8D3AC0E0-6684-490C-8DE8-D0452129C67D").getEntity();
+                if (rfcToLicenseeMsgTemplateDto != null) {
+                    Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
+                    tempMap.put("appNo", appNo);
+                    String mesContext = MsgUtil.getTemplateMessageByContent(rfcToLicenseeMsgTemplateDto.getMessageContent(), tempMap);
+                    EmailDto emailDto = new EmailDto();
+                    emailDto.setContent(mesContext);
+                    emailDto.setSubject("MOH IAIS – Request for Change "+appNo+" – Rejected  ");
+                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                    emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                    emailDto.setClientQueryCode(appGrpId);
+                    //send
+                    feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
+                            signature2.date(), signature2.authorization());
+                    break;
+                }
             default:
                 throw new IllegalStateException("Unexpected value: " + subject);
         }

@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -22,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,6 +57,8 @@ public class CommonPoolAjaxController {
 
     @Autowired
     private InspectionService inspectionService;
+    @Autowired
+    private OrganizationClient organizationClient;
 
     @RequestMapping(value = "common.do", method = RequestMethod.POST)
     public @ResponseBody Map<String, Object> appGroup(HttpServletRequest request) {
@@ -237,8 +241,12 @@ public class CommonPoolAjaxController {
                 searchParam.addFilter("userId", userId,true);
             }
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            userId = loginContext.getUserId();
-            searchParam.addFilter("userId", userId,true);
+            List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
+            Integer isLeadForGroup = userGroupCorrelationDtos.get(0).getIsLeadForGroup();
+            if(1!=isLeadForGroup){
+                userId = loginContext.getUserId();
+                searchParam.addFilter("userId", userId,true);
+            }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "supervisorPoolDropdown", searchParam);
             SearchResult<SuperPoolTaskQueryDto> searchResult = inspectionService.getSupPoolSecondByParam(searchParam);
