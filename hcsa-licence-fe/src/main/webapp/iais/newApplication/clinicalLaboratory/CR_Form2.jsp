@@ -405,7 +405,8 @@
                 if(1 == init){
                     var emptyData = {};
                     $CurrentPsnEle.find('div.specialtyDiv').html('${SpecialtyHtml}');
-                    fillPsnForm($CurrentPsnEle,emptyData);
+                    fillPsnForm($CurrentPsnEle,emptyData, 'CGO');
+                    showSpecialty();
                 }
             } else if('-1' == $(this).val()) {
                 $parentEle.find('> .profile-info-gp').removeClass('hidden');
@@ -413,7 +414,8 @@
                 if(1 == init){
                     var emptyData = {};
                     $CurrentPsnEle.find('div.specialtyDiv').html('${SpecialtyHtml}');
-                    fillPsnForm($CurrentPsnEle,emptyData);
+                    fillPsnForm($CurrentPsnEle,emptyData, 'CGO');
+                    showSpecialty();
                 }
             } else{
                 $parentEle.find('> .new-officer-form').removeClass('hidden');
@@ -437,7 +439,7 @@
     }
 
     var showSpecialty = function () {
-        $('.specialty').change(function () {
+        $('select.specialty').change(function () {
             var $specialtyEle = $(this).closest('.specialtyContent');
             var val = $(this).val();
             if('other' == val){
