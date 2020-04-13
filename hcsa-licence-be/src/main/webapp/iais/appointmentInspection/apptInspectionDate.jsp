@@ -214,20 +214,20 @@
                               </div>
                             </div>
                             <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag && 'APTY007' ne applicationViewDto.applicationDto.applicationType}">
-                              <iais:row>
-                                <iais:field value="Available Appointment Dates"/>
-                              </iais:row>
-                              <iais:row>
-                                <iais:value width="7">
-                                  <c:if test="${apptInspectionDateDto.inspectionDate != null}">
+                              <c:if test="${apptInspectionDateDto.inspectionDate != null}">
+                                <iais:row>
+                                  <iais:field value="Available Appointment Dates"/>
+                                </iais:row>
+                                <iais:row>
+                                  <iais:value width="7">
                                     <ul>
                                       <c:forEach items="${apptInspectionDateDto.inspectionDate}" var="inspectionDate">
-                                        <li><label><c:out value="${inspectionDate}"/></label></li>
+                                        <li><label style="font-size: 16px"><c:out value="${inspectionDate}"/></label></li>
                                       </c:forEach>
                                     </ul>
-                                  </c:if>
-                                </iais:value>
-                              </iais:row>
+                                  </iais:value>
+                                </iais:row>
+                                </c:if>
                               <iais:action>
                                 <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
                                 <span style="float:right">&nbsp;</span>

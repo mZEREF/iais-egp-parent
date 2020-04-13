@@ -110,6 +110,7 @@ public class OnlineApptAjaxController {
                         Map<String, List<ApptUserCalendarDto>> inspectionDateMap = appointmentClient.getUserCalendarByUserId(appointmentDto).getEntity();
                         apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
                         map.put("buttonFlag", AppConsts.TRUE);
+                        apptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
                     }
                     ParamUtil.setSessionAttr(request, "apptInspectionDateDto", apptInspectionDateDto);
                 }
@@ -128,6 +129,8 @@ public class OnlineApptAjaxController {
             }
             apptInspectionDateDto.setInspectionDate(inspectionDates);
             apptInspectionDateDto.setInspectionDateMap(inspectionDateMap);
+        } else {
+            apptInspectionDateDto.setSysInspDateFlag(AppConsts.FALSE);
         }
         return apptInspectionDateDto;
     }
