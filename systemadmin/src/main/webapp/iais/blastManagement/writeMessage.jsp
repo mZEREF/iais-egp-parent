@@ -40,8 +40,8 @@
 
                         <div class="form-group">
                             <iais:field value="Content" required="true"/>
-                            <div class="form-group">
-                                <textarea maxlength="4000" style="height: 600px" name="messageContent" class="textarea" id="htmlEditroArea" title="content">${edit.getMsgContent()}</textarea>
+                            <div class="col-xs-7 col-sm-7 col-md-7">
+                                <textarea maxlength="4000" rows="30" name="messageContent" class="textarea" id="htmlEditroAreaWriteMessage" title="content">${edit.getMsgContent()}</textarea>
                                 <label class="col-xs-4 col-md-4 control-label"></label>
                                 <span id="error_msgContent" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
@@ -96,4 +96,44 @@
         var fileName = Utils.getFileName(file);
         $(".fileNameDisplay").text(fileName);
     });
+
+    $(window).on("load", function(){
+        $("#htmlEditroAreaWriteMessage").hide();
+        setTimeout("intiTinymce()", 1000);
+    });
+
+    function intiTinymce() {
+        console.log('init1')
+        $("#htmlEditroAreaWriteMessage").show();
+        tinymce.init({
+            selector: "#htmlEditroAreaWriteMessage",  // change this value according to your HTML
+            menubar: 'file edit view insert format tools',
+            plugins: ['print preview fullpage',
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount',
+                'noneditable'
+            ],
+            toolbar: 'undo redo | formatselect | ' +
+                ' bold italic backcolor | alignleft aligncenter ' +
+                ' alignright alignjustify | bullist numlist outdent indent |' +
+                ' removeformat | help',
+            setup: function(ed) {
+                ed.on('keydown', function(ed) {
+                    var tinymax, tinylen;
+                    tinymax = 4000;
+                    var key = ed.keyCode;
+                    tinylen =  tinyMCE.activeEditor.getContent().length;
+                console.log(tinylen);
+                    if (tinylen>tinymax && key != 8 && key != 46){
+                        ed.stopPropagation();
+                        ed.preventDefault();
+                    }
+                });
+                },
+            // init_instance_callback : function(editor) {
+            //     editor.setContent($("#msgContent").val());
+            // }
+        });
+    }
 </script>
