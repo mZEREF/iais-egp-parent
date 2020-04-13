@@ -23,7 +23,7 @@ public class EmailForRfcResultDelegator {
         log.info("bbbbbbbbbbbbbbb");
     }
 
-    public void action(BaseProcessClass bpc) throws IOException, TemplateException {
+    public void action(BaseProcessClass bpc) throws Exception {
         emailToResultService.sendEfcResultEmail();
     }
 }
