@@ -93,7 +93,7 @@
                         </tbody>
                       </table>
                     </div>
-                    <c:if test="${'submit' eq submitButtonFlag}">
+                    <c:if test="${'submit' eq submitButtonFlag && not empty inspecUserRecUploadDtos}">
                       <iais:action >
                         <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doUserRecUploadSubmit()">Submit</button>
                       </iais:action>
