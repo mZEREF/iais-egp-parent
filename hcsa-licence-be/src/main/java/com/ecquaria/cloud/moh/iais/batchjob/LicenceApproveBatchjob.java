@@ -324,6 +324,7 @@ public class LicenceApproveBatchjob {
                     continue;
                 }
                 //to check this applicaiton is approve
+                //todo:get recommedation logic
                 AppPremisesRecommendationDto appPremisesRecommendationDto = applicationListDtos.get(0).getAppPremisesRecommendationDto();
                 //get service code
                 log.debug(StringUtil.changeForLog("The key is -->:" + key));
@@ -387,24 +388,6 @@ public class LicenceApproveBatchjob {
                         }
                         premisesGroupDtos.addAll(premisesGroupDtos1);
                     }
-
-                    //create the lic_app_correlation
-                    LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
-                    licAppCorrelationDto.setApplicationId(applicationListDto.getApplicationDto().getId());
-                    licAppCorrelationDtos.add(licAppCorrelationDto);
-                    superLicDto.setLicAppCorrelationDtos(licAppCorrelationDtos);
-                    //create LicFeeGroupItemDto
-                    List<LicFeeGroupItemDto> licFeeGroupItemDtos = IaisCommonUtils.genNewArrayList();
-                    LicFeeGroupItemDto licFeeGroupItemDto = new LicFeeGroupItemDto();
-                    licFeeGroupItemDtos.add(licFeeGroupItemDto);
-                    superLicDto.setLicFeeGroupItemDtos(licFeeGroupItemDtos);
-                    //create the document and lic_document from the primary doc.
-                    List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = applicationListDto.getAppGrpPrimaryDocDtos();
-                    List<AppSvcDocDto> appSvcDocDtos = applicationListDto.getAppSvcDocDtos();
-                    List<LicDocumentRelationDto> licDocumentRelationDto1s = getLicDocumentRelationDto(appGrpPrimaryDocDtos,
-                            appSvcDocDtos,appPremisesCorrelationDtos,premisesGroupDtos);
-                    licDocumentRelationDtos.addAll(licDocumentRelationDto1s);
-
                     //create key_personnel key_personnel_ext lic_key_personnel
                     List<AppGrpPersonnelDto> appGrpPersonnelDtos = applicationListDto.getAppGrpPersonnelDtos();
                     List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos = applicationListDto.getAppGrpPersonnelExtDtos();
@@ -417,16 +400,39 @@ public class LicenceApproveBatchjob {
                         }
                         personnelsDtos.addAll(personnelsDto1s);
                     }
+                    //create the lic_app_correlation
+                    LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
+                    licAppCorrelationDto.setApplicationId(applicationListDto.getApplicationDto().getId());
+                    licAppCorrelationDtos.add(licAppCorrelationDto);
+
+                    //create the document and lic_document from the primary doc.
+                    List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = applicationListDto.getAppGrpPrimaryDocDtos();
+                    List<AppSvcDocDto> appSvcDocDtos = applicationListDto.getAppSvcDocDtos();
+                    List<LicDocumentRelationDto> licDocumentRelationDto1s = getLicDocumentRelationDto(appGrpPrimaryDocDtos,
+                            appSvcDocDtos,appPremisesCorrelationDtos,premisesGroupDtos);
+                    licDocumentRelationDtos.addAll(licDocumentRelationDto1s);
 
                     //create the lic_fee_group_item
                     //do not need create in the Dto
                     //todo:lic_base_specified_correlation
                     //
                 }
+                //create LicFeeGroupItemDto
+                List<LicFeeGroupItemDto> licFeeGroupItemDtos = IaisCommonUtils.genNewArrayList();
+                LicFeeGroupItemDto licFeeGroupItemDto = new LicFeeGroupItemDto();
+                licFeeGroupItemDtos.add(licFeeGroupItemDto);
+                superLicDto.setLicFeeGroupItemDtos(licFeeGroupItemDtos);
+
+                //create LicSvcSpecificPersonnelDto
+                List<AppSvcPersonnelDto> appSvcPersonnelDtos = applicationListDtos.get(0).getAppSvcPersonnelDtos();
+                List<LicSvcSpecificPersonnelDto> licSvcSpecificPersonnelDtos = getLicSvcSpecificPersonnelDtos(appSvcPersonnelDtos);
+                superLicDto.setLicSvcSpecificPersonnelDtos(licSvcSpecificPersonnelDtos);
+
                 superLicDto.setPremisesGroupDtos(premisesGroupDtos);
                 superLicDto.setLicAppCorrelationDtos(licAppCorrelationDtos);
                 superLicDto.setLicDocumentRelationDto(licDocumentRelationDtos);
                 superLicDto.setPersonnelsDtos(personnelsDtos);
+                superLicDto.setLicAppCorrelationDtos(licAppCorrelationDtos);
                 superLicDtos.add(superLicDto);
             }
 
@@ -1040,7 +1046,7 @@ public class LicenceApproveBatchjob {
         LicenceDto licenceDto = new LicenceDto();
         licenceDto.setSvcName(svcName);
 
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())&&originLicenceDto!=null){
+        if(applicationDto!=null && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())&&originLicenceDto!=null){
             licenceDto.setStartDate(originLicenceDto.getStartDate());
             licenceDto.setExpiryDate(originLicenceDto.getExpiryDate());
             //licenceDto.setEndDate(originLicenceDto.getEndDate());

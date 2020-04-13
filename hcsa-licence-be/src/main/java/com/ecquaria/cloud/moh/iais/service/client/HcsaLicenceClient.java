@@ -46,8 +46,10 @@ import java.util.Map;
 public interface HcsaLicenceClient {
     @RequestMapping(path = "/hcsa-licence/hci-code-licence-number/{hciCode}",method = RequestMethod.GET)
     FeignResponseEntity<Integer> licenceNumber(@PathVariable("hciCode") String hciCode);
+
     @RequestMapping(path = "/hcsa-licence/service-group-licence-number/{serivceCode}",method = RequestMethod.GET)
     FeignResponseEntity<String > groupLicenceNumber(@PathVariable("serivceCode") String groupLicence);
+
     @RequestMapping(path = "/hcsa-licence-transport/licences",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceGroupDto>> createLicence(@RequestBody List<LicenceGroupDto> licenceGroupDtoList);
 
