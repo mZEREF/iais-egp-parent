@@ -92,10 +92,10 @@
                         <div class="row">
                             <div class="col-xs-11 col-md-11">
                                 <div class="text-right">
-                                    <a class="btn btn-secondary"
-                                       onclick="javascript:doInspectorSearchTaskClear()">Clear</a>
-                                    <a class="btn btn-primary"
-                                       onclick="javascript:doInspectorSearchTaskSearch()">Search</a>
+                                    <button class="btn btn-secondary" type="button"
+                                       onclick="javascript:doInspectorSearchTaskClear()">Clear</button>
+                                    <button class="btn btn-primary" type="button"
+                                       onclick="javascript:doInspectorSearchTaskSearch()">Search</button>
                                 </div>
                             </div>
                         </div>
