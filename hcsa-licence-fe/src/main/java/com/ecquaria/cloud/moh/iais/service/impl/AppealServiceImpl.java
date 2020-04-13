@@ -861,8 +861,8 @@ public class AppealServiceImpl implements AppealService {
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
         EmailDto emailDto=new EmailDto();
         emailDto.setContent(templateMessageByContent);
-        emailDto.setSubject("MOH IAIS –Submission of Appeal - Application Number");
-        emailDto.setSender("MOH");
+        emailDto.setSubject(" MOH IAIS –Submission of Appeal - "+newApplicationNo);
+        emailDto.setSender("Ministry of Health");
         emailDto.setClientQueryCode("Appeal");
         if(loginContext!=null){
             List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(loginContext.getLicenseeId());

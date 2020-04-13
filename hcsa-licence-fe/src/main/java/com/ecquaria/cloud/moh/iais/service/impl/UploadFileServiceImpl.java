@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
@@ -324,8 +325,6 @@ public class UploadFileServiceImpl implements UploadFileService {
         for(ApplicationGroupDto every :applicationGroup){
 
             Set<String> appliGrpPremisesIds=IaisCommonUtils.genNewHashSet();
-            Set<String> appGrpPersonIds=IaisCommonUtils.genNewHashSet();
-            Set<String> appGrpPersonExtIds=IaisCommonUtils.genNewHashSet();
             Set<String> appSvcKeyPersonIds=IaisCommonUtils.genNewHashSet();
             Set<String> appSvcPremisesScopeIds=IaisCommonUtils.genNewHashSet();
 
@@ -381,23 +380,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                     }
                 }
             }
-            for (AppGrpPersonnelDto appGrpPersonnelDto:appGrpPersonnel){
-                String appGrpId = appGrpPersonnelDto.getAppGrpId();
-                if(groupId.equals(appGrpId)){
-                    appGrpPersonnelDtos.add(appGrpPersonnelDto);
-                    String appGrpPersonnelDtoId = appGrpPersonnelDto.getId();
-                    appGrpPersonIds.add(appGrpPersonnelDtoId);
-                    for(AppGrpPersonnelExtDto appGrpPersonnelExtDto: appGrpPersonnelExt){
-                        String appGrpPsnId = appGrpPersonnelExtDto.getAppGrpPsnId();
-                        if(appGrpPersonnelDtoId.equals(appGrpPsnId)){
-                            appGrpPersonnelExtDtos.add(appGrpPersonnelExtDto);
-                            appGrpPersonExtIds.add(appGrpPersonnelExtDto.getId());
-                        }
 
-                    }
-                }
-
-            }
             for(ApplicationDto applicationDto:application){
                 String applicationDtoId = applicationDto.getId();
                 String appGrpId = applicationDto.getAppGrpId();
@@ -454,12 +437,28 @@ public class UploadFileServiceImpl implements UploadFileService {
 
                     for(AppSvcKeyPersonnelDto appSvcKeyPersonnelDto:appSvcKeyPersonnel){
                         String applicationId = appSvcKeyPersonnelDto.getApplicationId();
-                        String appGrpPsnId = appSvcKeyPersonnelDto.getAppGrpPsnId();
-                        if(applicationDtoId.equals(applicationId) &&appGrpPersonIds.contains(appGrpPsnId)){
+
+                        if(applicationDtoId.equals(applicationId) ){
                             appSvcKeyPersonnelDtos.add(appSvcKeyPersonnelDto);
                             appSvcKeyPersonIds.add(appSvcKeyPersonnelDto.getId());
                         }
 
+                    }
+                    for(AppSvcKeyPersonnelDto appSvcKeyPersonnelDto: appSvcKeyPersonnelDtos){
+                        String appGrpPsnExtId = appSvcKeyPersonnelDto.getAppGrpPsnExtId();
+                        String appGrpPsnId = appSvcKeyPersonnelDto.getAppGrpPsnId();
+                        for (AppGrpPersonnelDto appGrpPersonnelDto:appGrpPersonnel){
+                            if(appGrpPsnId.equals(appGrpPersonnelDto.getId())){
+                                appGrpPersonnelDtos.add(appGrpPersonnelDto);
+                            }
+                        }
+                        if(!StringUtil.isEmpty(appGrpPsnExtId)){
+                            for(AppGrpPersonnelExtDto appGrpPersonnelExtDto: appGrpPersonnelExt){
+                                if (appGrpPsnExtId.equals(appGrpPersonnelExtDto.getId())){
+                                    appGrpPersonnelExtDtos.add(appGrpPersonnelExtDto);
+                                }
+                            }
+                        }
                     }
                     for(AppSvcPremisesScopeAllocationDto appSvcPremisesScopeAllocationDto:appSvcPremisesScopeAllocation){
                         String applicationId = appSvcPremisesScopeAllocationDto.getApplicationId();

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveDto;
@@ -15,18 +16,31 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * AppealApproveBatchjob
@@ -39,6 +53,12 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class AppealApproveBatchjob {
     @Autowired
     private AppealService appealService;
+    @Autowired
+    private MsgTemplateClient msgTemplateClient;
+    @Autowired
+    private ApplicationClient applicationClient;
+    @Autowired
+    private EmailClient emailClient;
     public void doBatchJob(BaseProcessClass bpc) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob is start ..."));
         List<AppealApproveGroupDto> appealApproveGroupDtos = appealService.getAppealApproveDtos();
@@ -272,4 +292,30 @@ public class AppealApproveBatchjob {
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealOther is end ..."));
     }
+
+    public void  sendEmail(HttpServletRequest request) throws IOException, TemplateException {
+        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("3BA1C87A-5F7D-EA11-BE82-000C29F371DC").getEntity();
+        ApplicationDto applicationDto=(ApplicationDto)request.getAttribute("application");
+        if(entity!=null){
+            String messageContent = entity.getMessageContent();
+            Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+            map.put("applicationNumber",applicationDto.getApplicationNo());
+            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+            EmailDto emailDto=new EmailDto();
+            emailDto.setClientQueryCode("Appeal rejected");
+            emailDto.setSender("Ministry of Health");
+            emailDto.setSubject("MOH IAIS – Appeal,"+applicationDto.getApplicationNo()+" , is Rejected");
+            emailDto.setContent(templateMessageByContent);
+            String grpId = applicationDto.getAppGrpId();
+            ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(grpId).getEntity();
+            if(applicationGroupDto!=null){
+                String licenseeId = applicationGroupDto.getLicenseeId();
+                List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
+                emailDto.setReceipts(licenseeEmailAddrs);
+                emailClient.sendNotification(emailDto);
+            }
+        }
+    }
+
+
 }

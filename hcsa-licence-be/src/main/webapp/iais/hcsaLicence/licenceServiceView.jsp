@@ -278,7 +278,7 @@
                                     <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
                                       <div class="row">
                                         <div class="col-md-6">
-                                          Are you co-locating with another licensee
+                                          Are you co-locating with another licensee ?
                                         </div>
                                         <div class="col-md-6">
                                           No
