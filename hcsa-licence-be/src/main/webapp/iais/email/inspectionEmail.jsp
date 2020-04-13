@@ -1,6 +1,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -148,7 +149,12 @@
                                                         </td>
                                                         <td>
                                                             <div class="col-sm-9">
-                                                                <p>${applicationViewDto.recomLiceStartDate}</p>
+                                                                <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
+                                                                    <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
+                                                                </c:if>
+                                                                <c:if test="${empty applicationViewDto.recomLiceStartDate}">
+                                                                    <p>-</p>
+                                                                </c:if>
                                                             </div>
                                                         </td>
                                                     </tr>

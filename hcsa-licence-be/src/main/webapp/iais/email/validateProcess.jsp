@@ -1,5 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
@@ -166,7 +166,12 @@
                                                     </td>
                                                     <td>
                                                         <div class="col-sm-9">
-                                                            <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
+                                                            <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
+                                                                <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
+                                                            </c:if>
+                                                            <c:if test="${empty applicationViewDto.recomLiceStartDate}">
+                                                                <p>-</p>
+                                                            </c:if>
                                                         </div>
                                                     </td>
                                                 </tr>

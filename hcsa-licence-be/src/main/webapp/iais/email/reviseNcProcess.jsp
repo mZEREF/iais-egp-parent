@@ -2,6 +2,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/initTinyMce.js"></script>
@@ -154,7 +155,12 @@
                                                     </td>
                                                     <td>
                                                         <div class="col-sm-9">
-                                                            <p>${applicationViewDto.recomLiceStartDate}</p>
+                                                            <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
+                                                                <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
+                                                            </c:if>
+                                                            <c:if test="${empty applicationViewDto.recomLiceStartDate}">
+                                                                <p>-</p>
+                                                            </c:if>
                                                         </div>
                                                     </td>
                                                 </tr>
