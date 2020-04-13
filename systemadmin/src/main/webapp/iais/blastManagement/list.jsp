@@ -120,7 +120,7 @@
                                                 <p><iais:code code="${item.status}"></iais:code></p>
                                             </td>
                                             <td>
-                                                <p><a onclick="edit('${item.id}')">edit</a></p>
+                                                <p><a onclick="edit('${item.id}')">Edit</a></p>
                                             </td>
                                         </tr>
                                     </c:forEach>
