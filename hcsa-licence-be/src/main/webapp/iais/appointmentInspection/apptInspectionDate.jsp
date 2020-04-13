@@ -198,16 +198,16 @@
                               </div>
                               <div class="col-md-6">
                                 <c:if test="${applicationViewDto.recomLiceStartDate != null}">
-                                  <label style="font-size: 16px"><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></label>
+                                  <span style="font-size: 16px"><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></span>
                                 </c:if>
                                 <c:if test="${applicationViewDto.recomLiceStartDate == null}">
-                                  <label style="font-size: 16px">-</label>
+                                  <span style="font-size: 16px">-</span>
                                 </c:if>
                               </div>
                             </div>
                             <div class="row">
                               <div class="col-md-2">
-                                <label style="font-size: 16px">Fast Tracking</label>
+                                <label style="font-size: 16px">Fast Tracking?</label>
                               </div>
                               <div class="col-md-6">
                                 <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
