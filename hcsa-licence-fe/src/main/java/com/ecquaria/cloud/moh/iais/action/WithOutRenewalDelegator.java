@@ -295,9 +295,11 @@ public class WithOutRenewalDelegator {
 
     //prepareAcknowledgement
     public void prepareAcknowledgement(BaseProcessClass bpc)throws Exception{
-
-//        //go page4
-//        ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE4);
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto)ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
+        String licenseeId = interInboxUserDto.getLicenseeId();
+        List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
+        String emailAddress = emailAddressesToString(licenseeEmailAddrs);
+        ParamUtil.setRequestAttr(bpc.request,"emailAddress",emailAddress);
     }
 
     //doInstructions
@@ -493,7 +495,25 @@ public class WithOutRenewalDelegator {
     //private method
     //=============================================================================
 
+    private String emailAddressesToString(List<String> emailAddresses){
+        String emailAddress = "";
+        if(emailAddresses.isEmpty()){
+            return emailAddress;
+        }
 
+        if(emailAddresses.size() == 1){
+            emailAddress += emailAddresses.get(0);
+        }else{
+            for(int i = 0;i < emailAddresses.size(); i++){
+                if(i == emailAddresses.size() -1){
+                    emailAddress += emailAddresses.get(i);
+                }else{
+                    emailAddress += emailAddresses.get(i) + ",";
+                }
+            }
+        }
+        return emailAddress;
+    }
 
     private void sendEmailGIRO(HttpServletRequest request) throws IOException, TemplateException {
         MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById("");
