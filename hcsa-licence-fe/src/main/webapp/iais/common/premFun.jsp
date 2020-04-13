@@ -259,13 +259,17 @@
             var premVal = $premContentEle.find('input[name="premValue"]').val();
             console.log("Name"+name);
             console.log("premVal"+premVal);
+            var type = '';
             if('ONSITE' == name){
                 name = premVal+'onSite';
+                type = 'onSite';
             }else if('CONVEYANCE' == name){
                 name = premVal+"conveyance";
+                type = 'conveyance';
             }
             var currentLength = $contentDivEle.find('div.pubHolidayContent').length;
             var jsonData={
+                'type':type,
                 'premVal': name,
                 'phLength': currentLength
             };
