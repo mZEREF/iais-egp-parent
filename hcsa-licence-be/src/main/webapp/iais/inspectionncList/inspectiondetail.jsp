@@ -110,7 +110,7 @@
     </div>
 
     <div class="form-group" id="tcuLabel" >
-        <label class="col-xs-12 col-md-4 control-label">TCU Date</label>
+        <label class="col-xs-12 col-md-4 control-label">TCU Date <span style="color: red"> *</span></label>
         <div class="col-xs-8 col-sm-6 col-md-5">
             <iais:datePicker id = "tuc" name = "tuc" value="${serListDto.tuc}"></iais:datePicker>
             <span class="error-msg" id="error_tcuDate" name="iaisErrorMsg"></span>
