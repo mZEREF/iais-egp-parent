@@ -66,6 +66,9 @@ public class INTERNET___MohInternetInbox___1 extends BaseProcessClass {
 	public void msgToView_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "msgToView", this);
 	}
+	public void doArchive_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "msgDoArchive", this);
+	}
 
 	/**
 	 * 

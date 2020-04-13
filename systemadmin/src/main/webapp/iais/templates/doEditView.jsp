@@ -123,5 +123,4 @@
             ' removeformat | help',
         });
     });
-
 </script>

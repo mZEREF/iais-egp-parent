@@ -367,19 +367,29 @@ public class InterInboxDelegator {
      *
      */
     public void licDoRenew(BaseProcessClass bpc) throws IOException {
+        boolean result = true;
         String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
         if(licIds != null){
             List<String> licIdValue = IaisCommonUtils.genNewArrayList();
             for(String item:licIds){
                 licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
             }
-            StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal");
-            ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-
+            for (String licId:licIdValue
+                 ) {
+                 if(!inboxService.checkRenewalStatus(licId)){
+                    result = false;
+                }
+            }
+            if (result){
+                StringBuilder url = new StringBuilder();
+                url.append("https://").append(bpc.request.getServerName())
+                        .append("/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal");
+                ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
+                String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl);
+            }else {
+                log.debug(StringUtil.changeForLog("FUNNY MAD PEE"));
+            }
         }
     }
 

@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
@@ -139,5 +141,18 @@ public class InboxServiceImpl implements InboxService {
             appInboxClient.updateDraftStatus(draftNo,ACTIVE).getEntity();
         }
         return result;
+    }
+
+    @Override
+    public boolean checkRenewalStatus(String licenceId) {
+        boolean flag = true;
+        List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
+        for(ApplicationDto app : apps){
+            if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType())
+                    && ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(app.getStatus())){
+                flag = false;
+            }
+        }
+        return flag;
     }
 }

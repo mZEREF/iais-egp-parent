@@ -59,4 +59,7 @@ public interface AppInboxClient {
 
     @GetMapping(path = "/iais-application/application/correlations/{appid}")
     FeignResponseEntity<List<AppPremisesCorrelationDto>> listAppPremisesCorrelation(@PathVariable(name = "appid") String appId);
+
+    @GetMapping(path = "/iais-application/application-licenceId", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity< List<ApplicationDto>> getAppByLicIdAndExcludeNew(@RequestParam(name = "licenceId")String licenceId);
 }

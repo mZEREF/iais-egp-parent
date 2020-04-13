@@ -27,4 +27,5 @@ public interface InboxService {
     void updateDraftStatus(String draftNo, String status);
     boolean updateMsgStatus(String[] msgId);
     Boolean recallApplication(RecallApplicationDto recallApplicationDto);
+    public boolean checkRenewalStatus(String licenceId);
 }

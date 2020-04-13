@@ -100,9 +100,17 @@
 
     function doArchive() {
         // pageAction();
-        // alert($("[name='msgIdList']").val())
+        alert($("#msgCheck").is(':checked'))
+        if ($("#msgCheck").is(':checked')){
+            console.log("Can");
+            submit('msgDoArchive');
+        }else{
 
-        submit('msgDoArchive');
+            window.setTimeout(function(){
+                $('[data-dismiss="alert"]').alert('close');
+            },2000);
+            console.log("Can't");
+        }
     }
 
     function toMsgPage() {

@@ -118,7 +118,7 @@
                     <div class="col-md-12">
                         <C:if test="${msgPage == 'msgView'}">
                             <div class="col-md-6 pull-right">
-                                <button type="button" class="btn btn-primary pull-right" onclick="toArchiveView()">View
+                                <button type="button" class="btn btn-primary pull-right" onclick="toArchiveView()">Access
                                     Archive
                                 </button>
                                 <button type="button" class="btn btn-primary pull-right" onclick="doArchive()" style="margin-right: 10px;">Archive
