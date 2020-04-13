@@ -477,6 +477,13 @@
                     $('.cgo-header').css('font-size',"18px");
                     <!--change psn item -->
                     changePsnItem();
+                    <!--set Scrollbar -->
+                    $("div.assignSel->ul").mCustomScrollbar({
+                            advanced:{
+                                updateOnContentResize: true
+                            }
+                        }
+                    );
                 }else{
                     $('.errorMsg').html(data.errInfo);
                 }

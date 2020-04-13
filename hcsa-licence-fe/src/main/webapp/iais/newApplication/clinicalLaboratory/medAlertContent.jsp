@@ -248,6 +248,14 @@
                         mapDel();
 
                         changePsnItem();
+
+                        <!--set Scrollbar -->
+                        $("div.assignSel->ul").mCustomScrollbar({
+                                advanced:{
+                                    updateOnContentResize: true
+                                }
+                            }
+                        );
                     }else{
                         $('.mapErrorMsg').html(data.errInfo);
                     }

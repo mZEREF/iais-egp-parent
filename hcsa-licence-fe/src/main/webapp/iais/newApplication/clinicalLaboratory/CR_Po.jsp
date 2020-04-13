@@ -613,6 +613,13 @@
                         removePo();
                         retrieveData();
                         removePo();
+                        <!--set Scrollbar -->
+                        $("div.poSelect->ul").mCustomScrollbar({
+                                advanced:{
+                                    updateOnContentResize: true
+                                }
+                            }
+                        );
                     }else{
                         $('.poErrorMsg').html(data.errInfo);
                     }
@@ -644,6 +651,13 @@
                         $('.deputyPoSelect').unbind();
                         dpoSelect();
                         removeDpo();
+                        <!--set Scrollbar -->
+                        $("div.deputyPoSelect->ul").mCustomScrollbar({
+                                advanced:{
+                                    updateOnContentResize: true
+                                }
+                            }
+                        );
                     }else{
                         $('.dpoErrorMsg').html(data.errInfo);
                     }
