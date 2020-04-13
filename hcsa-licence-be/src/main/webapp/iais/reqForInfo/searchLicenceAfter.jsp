@@ -94,18 +94,18 @@
                         <table class="table">
                             <thead>
                             <tr align="center">
-                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="HCI_NAME" value="HCI Name "></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="ADDRESS" value=" Address"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="LICENSEE_NAME" value="Licensee Name"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="SERVICE_NAME" value="Service Name"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="Licence_Period" value="Licence Period"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="Licence_Status" value="Licence Status"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="past_compliance_history" value="Past Compliance History"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="current_risk_tagging" value="Current Risk Tagging"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false" field="" value="S/N"/>
+                                <iais:sortableHeader needSort="false"  field="LICENCE_NO" value="Licence No."/>
+                                <iais:sortableHeader needSort="false"  field="HCI_CODE" value="HCI Code"/>
+                                <iais:sortableHeader needSort="false"  field="HCI_NAME" value="HCI Name "/>
+                                <iais:sortableHeader needSort="false"  field="ADDRESS" value=" Address"/>
+                                <iais:sortableHeader needSort="false"  field="LICENSEE_NAME" value="Licensee Name"/>
+                                <iais:sortableHeader needSort="false"  field="SERVICE_NAME" value="Service Name"/>
+                                <iais:sortableHeader needSort="false"  field="Licence_Period" value="Licence Period"/>
+                                <iais:sortableHeader needSort="false"  field="Licence_Status" value="Licence Status"/>
+                                <iais:sortableHeader needSort="false"  field="past_compliance_history" value="Past Compliance History"/>
+                                <iais:sortableHeader needSort="false"  field="current_risk_tagging" value="Current Risk Tagging"/>
+                                <iais:sortableHeader needSort="false" field="" value="Action"/>
                             </tr>
                             </thead>
                             <tbody>

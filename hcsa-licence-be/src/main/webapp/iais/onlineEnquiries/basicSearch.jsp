@@ -147,20 +147,20 @@
                                         <span class="check-square"></span>
                                     </label>
                                 </th>
-                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="HCI_NAME" value="HCI Name "></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="HCI_ADDRESS" value="HCI Address"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="LICENSEE_NAME" value="Licensee Name"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="SERVICE_NAME" value="Service Name"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="Licence_Period" value="Licence Period"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="Licence_Status" value="Licence Status"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="2nd_last_compliance_history" value="2nd Last Compliance History"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="last_compliance_history" value="Last Compliance History"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="current_risk_tagging" value="Current Risk Tagging"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false" field="" value="S/N"/>
+                                <iais:sortableHeader needSort="false"  field="APPLICATION_NO" value="Application No."/>
+                                <iais:sortableHeader needSort="false"  field="APP_TYPE" value="Application Type"/>
+                                <iais:sortableHeader needSort="false"  field="LICENCE_NO" value="Licence No."/>
+                                <iais:sortableHeader needSort="false"  field="HCI_CODE" value="HCI Code"/>
+                                <iais:sortableHeader needSort="false"  field="HCI_NAME" value="HCI Name "/>
+                                <iais:sortableHeader needSort="false"  field="HCI_ADDRESS" value="HCI Address"/>
+                                <iais:sortableHeader needSort="false"  field="LICENSEE_NAME" value="Licensee Name"/>
+                                <iais:sortableHeader needSort="false"  field="SERVICE_NAME" value="Service Name"/>
+                                <iais:sortableHeader needSort="false"  field="Licence_Period" value="Licence Period"/>
+                                <iais:sortableHeader needSort="false"  field="Licence_Status" value="Licence Status"/>
+                                <iais:sortableHeader needSort="false"  field="2nd_last_compliance_history" value="2nd Last Compliance History"/>
+                                <iais:sortableHeader needSort="false"  field="last_compliance_history" value="Last Compliance History"/>
+                                <iais:sortableHeader needSort="false"  field="current_risk_tagging" value="Current Risk Tagging"/>
                             </tr>
                             </thead>
                             <tbody>
@@ -168,7 +168,7 @@
                                 <c:when test="${empty SearchResult.rows}">
                                     <tr>
                                         <td colspan="15">
-                                            <iais:message key="ACK018" escape="true"></iais:message>
+                                            <iais:message key="ACK018" escape="true"/>
                                         </td>
                                     </tr>
                                 </c:when>
@@ -195,7 +195,7 @@
                                             <td><c:out value="${pool.hciName}"/></td>
                                             <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
                                             <td><c:out value="${pool.licenseeName}"/></td>
-                                            <td><iais:service value="${pool.serviceName}"></iais:service></td>
+                                            <td><iais:service value="${pool.serviceName}"/></td>
                                             <td><fmt:formatDate value="${pool.startDate}" pattern="dd/MM/yyyy" />-<fmt:formatDate value="${pool.expiryDate}" pattern="dd/MM/yyyy" /></td>
                                             <td><c:out value="${pool.licenceStatus}"/></td>
                                             <td><c:out value="${pool.twoLastComplianceHistory}"/></td>

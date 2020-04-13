@@ -438,33 +438,33 @@
                                         <span class="check-square"></span>
                                     </label>
                                 </th>
-                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false" field="" value="S/N"/>
                                 <iais:sortableHeader needSort="false" field="APPLICATION_NO"
-                                                     value="Application No."></iais:sortableHeader>
+                                                     value="Application No."/>
                                 <iais:sortableHeader needSort="false" field="APP_TYPE"
-                                                     value="Application Type"></iais:sortableHeader>
+                                                     value="Application Type"/>
                                 <iais:sortableHeader needSort="false" field="LICENCE_NO"
-                                                     value="Licence No."></iais:sortableHeader>
+                                                     value="Licence No."/>
                                 <iais:sortableHeader needSort="false" field="HCI_CODE"
-                                                     value="HCI Code"></iais:sortableHeader>
+                                                     value="HCI Code"/>
                                 <iais:sortableHeader needSort="false" field="HCI_NAME"
-                                                     value="HCI Name "></iais:sortableHeader>
+                                                     value="HCI Name "/>
                                 <iais:sortableHeader needSort="false" field="HCI_ADDRESS"
-                                                     value="HCI Address"></iais:sortableHeader>
+                                                     value="HCI Address"/>
                                 <iais:sortableHeader needSort="false" field="LICENSEE_NAME"
-                                                     value="Licensee Name"></iais:sortableHeader>
+                                                     value="Licensee Name"/>
                                 <iais:sortableHeader needSort="false" field="SERVICE_NAME"
-                                                     value="Service Name"></iais:sortableHeader>
+                                                     value="Service Name"/>
                                 <iais:sortableHeader needSort="false" field="Licence_Period"
-                                                     value="Licence Period"></iais:sortableHeader>
+                                                     value="Licence Period"/>
                                 <iais:sortableHeader needSort="false" field="Licence_Status"
-                                                     value="Licence Status"></iais:sortableHeader>
+                                                     value="Licence Status"/>
                                 <iais:sortableHeader needSort="false" field="2nd_last_compliance_history"
-                                                     value="2nd Last Compliance History"></iais:sortableHeader>
+                                                     value="2nd Last Compliance History"/>
                                 <iais:sortableHeader needSort="false" field="last_compliance_history"
-                                                     value="Last Compliance History"></iais:sortableHeader>
+                                                     value="Last Compliance History"/>
                                 <iais:sortableHeader needSort="false" field="current_risk_tagging"
-                                                     value="Current Risk Tagging"></iais:sortableHeader>
+                                                     value="Current Risk Tagging"/>
                             </tr>
                             </thead>
                             <tbody>
