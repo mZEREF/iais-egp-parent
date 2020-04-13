@@ -169,18 +169,18 @@ public class ClinicalLaboratoryDelegator {
         Map<String,String> reloadChkLstMap = IaisCommonUtils.genNewHashMap();
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         if(appSvcRelatedInfoDto != null){
-           List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
-           if(appSvcLaboratoryDisciplinesDtoList != null && !appSvcLaboratoryDisciplinesDtoList.isEmpty()){
-               for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
-                   String hciName = appSvcLaboratoryDisciplinesDto.getPremiseVal();
-                   List<AppSvcChckListDto> appSvcChckListDtos =  appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
-                   if(appSvcChckListDtos != null && !appSvcChckListDtos.isEmpty()){
-                       for(AppSvcChckListDto appSvcChckListDto:appSvcChckListDtos){
-                           reloadChkLstMap.put(currentSvcId+hciName+appSvcChckListDto.getChkLstConfId(), "checked");
-                       }
-                   }
-               }
-           }
+            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+            if(appSvcLaboratoryDisciplinesDtoList != null && !appSvcLaboratoryDisciplinesDtoList.isEmpty()){
+                for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
+                    String hciName = appSvcLaboratoryDisciplinesDto.getPremiseVal();
+                    List<AppSvcChckListDto> appSvcChckListDtos =  appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                    if(appSvcChckListDtos != null && !appSvcChckListDtos.isEmpty()){
+                        for(AppSvcChckListDto appSvcChckListDto:appSvcChckListDtos){
+                            reloadChkLstMap.put(currentSvcId+hciName+appSvcChckListDto.getChkLstConfId(), "checked");
+                        }
+                    }
+                }
+            }
         }
         ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadChkLstMap);
         log.debug(StringUtil.changeForLog("the do prepareLaboratoryDisciplines end ...."));
@@ -215,26 +215,28 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         ParamUtil.setRequestAttr(bpc.request, "CgoMandatoryCount", mandatoryCount);
-        List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
-        SelectOption sp0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
-        cgoSelectList.add(sp0);
-        SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
-        cgoSelectList.add(sp1);
-        ParamUtil.setSessionAttr(bpc.request, "CgoSelectList", (Serializable) cgoSelectList);
+        List<SelectOption> cgoSelectList = NewApplicationHelper.genAssignPersonSel(bpc.request,true);
+        ParamUtil.setRequestAttr(bpc.request, "CgoSelectList", cgoSelectList);
 
         List<SelectOption> idTypeSelectList = NewApplicationHelper.getIdTypeSelOp();
         ParamUtil.setRequestAttr(bpc.request, DROPWOWN_IDTYPESELECT, idTypeSelectList);
 
         List<HcsaServiceDto> hcsaServiceDtoList= (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         String currentSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
-        List<SelectOption> specialtySelectList = genSpecialtySelectList(currentSvcCode);
+        List<SelectOption> specialtySelectList = NewApplicationHelper.genSpecialtySelectList(currentSvcCode, true);
         ParamUtil.setSessionAttr(bpc.request, "SpecialtySelectList", (Serializable) specialtySelectList);
-
+        Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
+        specialtyAttr.put("name", "specialty");
+        specialtyAttr.put("class", "specialty");
+        specialtyAttr.put("style", "display: none;");
+        String specialtyHtml = NewApplicationHelper.generateDropDownHtml(specialtyAttr,specialtySelectList,null,null);
+        ParamUtil.setRequestAttr(bpc.request,"SpecialtyHtml",specialtyHtml);
         //reload
         if(appSvcRelatedInfoDto != null){
             List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
             ParamUtil.setRequestAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST, appSvcCgoDtoList);
         }
+
         log.debug(StringUtil.changeForLog("the do prepareGovernanceOfficers end ...."));
     }
 
@@ -341,20 +343,11 @@ public class ClinicalLaboratoryDelegator {
         List<SelectOption> IdTypeSelect = NewApplicationHelper.getIdTypeSelOp();
         ParamUtil.setRequestAttr(bpc.request, "IdTypeSelect", IdTypeSelect);
 
-        List<SelectOption> assignSelectList = getAssignPrincipalOfficerSel(currentSvcId, true);
-        /*Map<String,AppSvcCgoDto> psnMap = NewApplicationHelper.getPsnMapFromSubDto(appSubmissionDto);
-        psnMap.forEach((k,v)->{
-            //todo:confirm
-            SelectOption sp = new SelectOption(k,v.getName()+" "+v.getIdNo());
-            assignSelectList.add(sp);
-        });*/
+        List<SelectOption> assignSelectList = NewApplicationHelper.genAssignPersonSel(bpc.request, true);
         ParamUtil.setRequestAttr(bpc.request, "PrincipalOfficersAssignSelect", assignSelectList);
 
-        List<SelectOption> deputyAssignSelectList = getAssignPrincipalOfficerSel(currentSvcId, true);
+        List<SelectOption> deputyAssignSelectList = NewApplicationHelper.genAssignPersonSel(bpc.request, true);
         ParamUtil.setRequestAttr(bpc.request, "DeputyPrincipalOfficersAssignSelect", deputyAssignSelectList);
-
-        /*List<SelectOption> MedAlertSelectList = getMedAlertSelectList(true);
-        ParamUtil.setRequestAttr(bpc.request, "MedAlertSelect", MedAlertSelectList);*/
 
         List<SelectOption> deputyFlagSelect = IaisCommonUtils.genNewArrayList();
         SelectOption deputyFlagOp1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
@@ -575,7 +568,7 @@ public class ClinicalLaboratoryDelegator {
             ServiceStepDto serviceStepDto = new ServiceStepDto();
             serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
             List<HcsaSvcPersonnelDto>  currentSvcAllPsnConfig= serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
-           map = NewApplicationDelegator.doCheckBox(bpc, sB, svcAllPsnConfig,currentSvcAllPsnConfig, dto.get(i));
+            map = NewApplicationDelegator.doCheckBox(bpc, sB, svcAllPsnConfig,currentSvcAllPsnConfig, dto.get(i));
         }
 
         if(!StringUtil.isEmpty(sB.toString())){
@@ -637,8 +630,16 @@ public class ClinicalLaboratoryDelegator {
 
                 HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
-                if(errList.isEmpty()&&allChecked.isEmpty()){
-                    coMap.put("information","information");
+                if(errList.isEmpty()){
+                    //set person into dropdown
+                    List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
+                    NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcCgoDtos);
+                    //sync data
+                    NewApplicationHelper.syncPsnData(bpc.request, appSubmissionDto, appSvcCgoDtos);
+                    if(allChecked.isEmpty()){
+                        coMap.put("information","information");
+                    }
+
                 }else {
                     coMap.put("information","");
                 }
@@ -649,7 +650,6 @@ public class ClinicalLaboratoryDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errList));
                 return;
             }
-
         }
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers end ...."));
     }
@@ -811,8 +811,14 @@ public class ClinicalLaboratoryDelegator {
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
                 HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
-                if(map.isEmpty()&&allChecked.isEmpty()){
-                    coMap.put("information","information");
+                if(map.isEmpty()){
+                    //set person into dropdown
+                    NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcPrincipalOfficersDtoList);
+                    //sync data
+                    NewApplicationHelper.syncPsnData(bpc.request, appSubmissionDto, appSvcPrincipalOfficersDtoList);
+                    if(allChecked.isEmpty()){
+                        coMap.put("information","information");
+                    }
                 }else {
                     coMap.put("information","");
                 }
@@ -825,10 +831,10 @@ public class ClinicalLaboratoryDelegator {
                 return;
             }
         }
-        
+
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers end ...."));
     }
-    
+
     /**
      * StartStep: doDocuments
      *
@@ -1164,7 +1170,7 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request,"mandatoryCount",mandatoryCount);
         List<SelectOption> idTypeSelectList = NewApplicationHelper.getIdTypeSelOp();
         ParamUtil.setRequestAttr(bpc.request, DROPWOWN_IDTYPESELECT, idTypeSelectList);
-        List<SelectOption> assignSelectList = getAssignMedAlertSel(true);
+        List<SelectOption> assignSelectList = NewApplicationHelper.genAssignPersonSel(bpc.request, true);
         ParamUtil.setRequestAttr(bpc.request,"MedAlertAssignSelect",assignSelectList);
         ParamUtil.setRequestAttr(bpc.request,"AppSvcMedAlertPsn",medAlertPsnDtos);
         log.debug(StringUtil.changeForLog("the do prePareMedAlertPerson end ...."));
@@ -1193,6 +1199,11 @@ public class ClinicalLaboratoryDelegator {
                 ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.MEDALERT_PERSON);
                 return;
+            }else{
+                //set person into dropdown
+                NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcMedAlertPersonList);
+                //sync data
+                NewApplicationHelper.syncPsnData(bpc.request, appSubmissionDto, appSvcMedAlertPersonList);
             }
         }
         log.debug(StringUtil.changeForLog("the do doMedAlertPerson end ...."));
@@ -1652,38 +1663,6 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
     }
 
-    private  List<SelectOption> genSpecialtySelectList(String svcCode){
-        List<SelectOption> specialtySelectList = null;
-        if(!StringUtil.isEmpty(svcCode)){
-            if(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode) ||
-                    AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode) ||
-                    AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)){
-                specialtySelectList = IaisCommonUtils.genNewArrayList();
-                SelectOption ssl1 = new SelectOption("-1", "Please Select");
-                SelectOption ssl2 = new SelectOption("Pathology", "Pathology");
-                SelectOption ssl3 = new SelectOption("Haematology", "Haematology");
-                SelectOption ssl4 = new SelectOption("other", "Others");
-                specialtySelectList.add(ssl1);
-                specialtySelectList.add(ssl2);
-                specialtySelectList.add(ssl3);
-                specialtySelectList.add(ssl4);
-            }else if(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(svcCode) ||
-                    AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode) ||
-                    AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)){
-                specialtySelectList = IaisCommonUtils.genNewArrayList();
-                SelectOption ssl1 = new SelectOption("-1", "Please Select");
-                SelectOption ssl2 = new SelectOption("Diagnostic Radiology", "Diagnostic Radiology");
-                SelectOption ssl3 = new SelectOption("Nuclear Medicine", "Nuclear Medicine");
-                SelectOption ssl4 = new SelectOption("other", "Others");
-                specialtySelectList.add(ssl1);
-                specialtySelectList.add(ssl2);
-                specialtySelectList.add(ssl3);
-                specialtySelectList.add(ssl4);
-            }
-        }
-        return specialtySelectList;
-    }
-
 
     private List<AppSvcPersonnelDto> genAppSvcPersonnelDtoList(HttpServletRequest request, List<String> personnelTypeList, String svcCode){
         List<AppSvcPersonnelDto> appSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
@@ -1807,7 +1786,7 @@ public class ClinicalLaboratoryDelegator {
         return designation;
     }
 
-    public static List<SelectOption> getAssignPrincipalOfficerSel(String svcId, boolean needFirstOpt){
+    public static List<SelectOption> getAssignPrincipalOfficerSel(HttpServletRequest request, boolean needFirstOpt){
         List<SelectOption> assignSelectList = IaisCommonUtils.genNewArrayList();
         if(needFirstOpt){
             SelectOption assignOp1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
@@ -1815,8 +1794,12 @@ public class ClinicalLaboratoryDelegator {
         }
         SelectOption assignOp2 = new SelectOption("newOfficer", "I'd like to add a new personnel");
         assignSelectList.add(assignOp2);
-        //todo his
-
+        //get current cgo,po,dpo,medAlert
+        Map<String,AppSvcPrincipalOfficersDto> psnMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
+        psnMap.forEach((k,v)->{
+            SelectOption sp = new SelectOption(k,v.getName()+v.getIdNo());
+            assignSelectList.add(sp);
+        });
 
         return  assignSelectList;
     }
@@ -1848,7 +1831,7 @@ public class ClinicalLaboratoryDelegator {
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
         if(appEditSelectDto!=null){
             if(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI.equals(appEditSelectDto.getEditType())&&!appEditSelectDto.isServiceEdit()){
-               canEdit = false;
+                canEdit = false;
             }
         }
         return  canEdit;
