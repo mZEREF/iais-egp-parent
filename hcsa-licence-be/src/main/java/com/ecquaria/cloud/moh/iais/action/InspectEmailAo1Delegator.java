@@ -11,9 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
@@ -46,14 +44,10 @@ import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import com.ecquaria.sz.commons.util.FileUtil;
-import com.ecquaria.sz.commons.util.MsgUtil;
 import com.esotericsoftware.minlog.Log;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
@@ -434,56 +428,6 @@ public class InspectEmailAo1Delegator {
         return showDto;
     }
 
-    @GetMapping(value = "/reload-nc-email")
-    public @ResponseBody
-    String reloadNcEmail(HttpServletRequest request) throws IOException, TemplateException {
-        String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, TASK_DTO);
-        String correlationId = taskDto.getRefNo();
-        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
-        String appNo=applicationViewDto.getApplicationDto().getApplicationNo();
-        String licenseeId=applicationViewDto.getApplicationGroupDto().getLicenseeId();
-        String licenseeName=inspEmailService.getLicenseeDtoById(licenseeId).getName();
-        InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
-        inspectionEmailTemplateDto.setAppPremCorrId(correlationId);
-        inspectionEmailTemplateDto.setApplicantName(licenseeName);
-        inspectionEmailTemplateDto.setApplicationNumber(appNo);
-        inspectionEmailTemplateDto.setHciCode(applicationViewDto.getHciCode());
-        inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
-        HcsaServiceDto hcsaServiceDto=inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId());
-        inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
-        List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(correlationId);
-        AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(correlationId,InspectionConstants.RECOM_TYPE_TCU);
-        inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
-
-        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        InspecEmailDelegator.makeEmail(inspectionEmailTemplateDto, map);
-        if(!ncAnswerDtos.isEmpty()){
-            StringBuilder stringBuilder=new StringBuilder();
-            int i=0;
-            for (NcAnswerDto ncAnswerDto:ncAnswerDtos
-            ) {
-                stringBuilder.append("<tr><td>"+ ++i);
-                stringBuilder.append(TD+StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
-                stringBuilder.append(TD+StringUtil.viewHtml(ncAnswerDto.getClause()));
-                stringBuilder.append(TD+StringUtil.viewHtml(ncAnswerDto.getRemark()));
-                stringBuilder.append("</td></tr>");
-            }
-            map.put("NC_DETAILS",stringBuilder.toString());
-        }
-        if(inspectionEmailTemplateDto.getBestPractices()!=null){
-            map.put("BEST_PRACTICE",inspectionEmailTemplateDto.getBestPractices());
-        }
-        map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
-        String mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);
-        inspectionEmailTemplateDto.setMessageContent(mesContext);
-        String draftEmailId= (String) ParamUtil.getSessionAttr(request,DRA_EMA_ID);
-        inspectionEmailTemplateDto.setId(draftEmailId);
-        inspEmailService.updateEmailDraft(inspectionEmailTemplateDto);
-        inspectionEmailTemplateDto.setMessageContent(StringUtil.removeNonUtf8(inspectionEmailTemplateDto.getMessageContent()));
-        ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
-        return mesContext;
-    }
 
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus,String decision,
                                                                          TaskDto taskDto,String subStage,String userId ,String remarks) {

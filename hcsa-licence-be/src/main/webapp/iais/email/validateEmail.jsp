@@ -76,9 +76,6 @@
                                                             onclick="javascript:doPreview();">Preview
                                                     </button>
                                                     &nbsp;
-                                                    <button type="button" class="btn btn-secondary"
-                                                            onclick="javascript:doReload();">Reload
-                                                    </button>
                                                 </iais:action>
                                             </p>
                                         </div>
@@ -100,19 +97,6 @@
 <%@include file="/iais/inspectionncList/uploadFile.jsp" %>
 
 <script type="text/javascript">
-    function doReload() {
-        var r = confirm("Are you sure you want to regenerate the Inspection NC/BP Outcome email?");
-        if (r == true) {
-            $.ajax({
-                'url': '${pageContext.request.contextPath}/reload-nc-email',
-                'type': 'GET',
-                'success': function (data) {
-                    showWaiting();
-                    SOP.Crud.cfxSubmit("mainForm", "emailView");
-                }
-            });
-        }
-    }
 
     function doPreview() {
         showWaiting();

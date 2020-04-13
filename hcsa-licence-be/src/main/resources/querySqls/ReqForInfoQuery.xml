@@ -73,10 +73,10 @@
             WHERE 1=1
             AND lic.STATUS != 'LICEST002'
             <#if licence_status??> AND lic.STATUS = :licence_status</#if>
-            <#if start_date??> AND lic.start_date >= :start_date</#if>
-            <#if start_to_date??> AND lic.start_date <= :start_to_date</#if>
-            <#if expiry_date??> AND lic.expiry_date <= :expiry_date</#if>
-            <#if expiry_start_date??> AND lic.expiry_date >= :expiry_start_date</#if>
+            <#if start_date??> AND lic.start_date >= convert(date,:start_date)</#if>
+            <#if start_to_date??> AND lic.start_date <= convert(date,:start_to_date)</#if>
+            <#if expiry_date??> AND lic.expiry_date <= convert(date,:expiry_date)</#if>
+            <#if expiry_start_date??> AND lic.expiry_date >= convert(date,:expiry_start_date)</#if>
             <#if licence_no??> AND charindex(:licence_no, lic.licence_no )>0</#if>
             <#if app_id??> AND licApp.APPLICATION_ID = :app_id</#if>
             <#if org_ids??> AND lic.ORGANIZATION_ID in( :org_ids)</#if>

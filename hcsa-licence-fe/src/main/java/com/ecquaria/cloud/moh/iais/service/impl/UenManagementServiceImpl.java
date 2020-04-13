@@ -8,7 +8,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.UenManagementService;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.UenManagementClient;
@@ -16,6 +18,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -37,6 +40,18 @@ public class UenManagementServiceImpl implements UenManagementService {
     SystemAdminClient systemAdminClient;
     @Autowired
     FeEmailClient emailClient;
+
+    @Autowired
+    private FeEicGatewayClient feEicGatewayClient;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+
     private UenDto getUenDetails(String uenNo) {
         //等ACRA api
         return null;
@@ -68,7 +83,10 @@ public class UenManagementServiceImpl implements UenManagementService {
             licenseeIds.add(mohUenDto.getId());
             List<String> emailAddress = EmailHelper.getEmailAddressListByLicenseeId(licenseeIds);
             emailDto.setReceipts(emailAddress);
-            String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
         }catch (Exception e){
             log.info(e.getMessage());
         }
