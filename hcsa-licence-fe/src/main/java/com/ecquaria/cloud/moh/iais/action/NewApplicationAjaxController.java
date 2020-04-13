@@ -492,6 +492,7 @@ public class NewApplicationAjaxController {
     @GetMapping(value = "/public-holiday-html")
     public @ResponseBody String genPublicHolidayHtml(HttpServletRequest request){
         log.debug(StringUtil.changeForLog("the genPublicHolidayHtml start ...."));
+        String type = ParamUtil.getString(request,"type");
         String premVal = ParamUtil.getString(request,"premVal");
         String phLength = ParamUtil.getString(request,"phLength");
         List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
@@ -522,35 +523,35 @@ public class NewApplicationAjaxController {
 
         Map<String,String> phSelectAttr = IaisCommonUtils.genNewHashMap();
 
-        phSelectAttr.put("class",premVal+"PubHoliday"+phLength);
+        phSelectAttr.put("class",type+"PubHoliday");
         phSelectAttr.put("id", premVal+"PubHoliday"+phLength);
         phSelectAttr.put("name", premVal+"PubHoliday"+phLength);
         phSelectAttr.put("style", "display: none;");
         String phSelectHtml = NewApplicationHelper.generateDropDownHtml(phSelectAttr, publicHolidayList,"Please Select");
 
         Map<String,String> phStartHourAttr = IaisCommonUtils.genNewHashMap();
-        phStartHourAttr.put("class", premVal+"PbHolDayStartHH"+phLength);
+        phStartHourAttr.put("class", type+"PbHolDayStartHH");
         phStartHourAttr.put("id", premVal+"PbHolDayStartHH"+phLength);
         phStartHourAttr.put("name", premVal+"PbHolDayStartHH"+phLength);
         phStartHourAttr.put("style", "display: none;");
         String phStartHourHtml = NewApplicationHelper.generateDropDownHtml(phStartHourAttr, timeHourList,"--");
 
         Map<String,String> phStartMinAttr = IaisCommonUtils.genNewHashMap();
-        phStartMinAttr.put("class",  premVal+"PbHolDayStartMM"+phLength);
+        phStartMinAttr.put("class",  type+"PbHolDayStartMM");
         phStartMinAttr.put("id",  premVal+"PbHolDayStartMM"+phLength);
         phStartMinAttr.put("name", premVal+"PbHolDayStartMM"+phLength);
         phStartMinAttr.put("style", "display: none;");
         String phStartMinHtml = NewApplicationHelper.generateDropDownHtml(phStartMinAttr, timeMinList,"--");
 
         Map<String,String> phEndHourAttr = IaisCommonUtils.genNewHashMap();
-        phEndHourAttr.put("class", premVal+"PbHolDayEndHH"+phLength);
+        phEndHourAttr.put("class", type+"PbHolDayEndHH");
         phEndHourAttr.put("id", premVal+"PbHolDayEndHH"+phLength);
         phEndHourAttr.put("name", premVal+"PbHolDayEndHH"+phLength);
         phEndHourAttr.put("style", "display: none;");
         String phEndHourHtml = NewApplicationHelper.generateDropDownHtml(phEndHourAttr, timeHourList,"--");
 
         Map<String,String> phEndMinAttr = IaisCommonUtils.genNewHashMap();
-        phEndMinAttr.put("class",  premVal+"PbHolDayEndMM"+phLength);
+        phEndMinAttr.put("class",  type+"PbHolDayEndMM");
         phEndMinAttr.put("id",  premVal+"PbHolDayEndMM"+phLength);
         phEndMinAttr.put("name", premVal+"PbHolDayEndMM"+phLength);
         phEndMinAttr.put("style", "display: none;");
