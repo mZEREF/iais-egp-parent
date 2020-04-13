@@ -84,17 +84,19 @@ public class ApptInspectionDateDelegator {
     public void apptInspectionDatePre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptInspectionDatePre start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
+        ApplicationViewDto applicationViewDto;
         if(apptInspectionDateDto == null){
             String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
-            ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(apptInspectionDateDto.getTaskDto().getRefNo());
+            applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(apptInspectionDateDto.getTaskDto().getRefNo());
             apptInspectionDateDto = new ApptInspectionDateDto();
             apptInspectionDateDto  = apptInspectionDateService.getInspectionDate(taskId, apptInspectionDateDto, applicationViewDto);
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         } else {
+            applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
             Map<ApplicationDto, List<String>> applicationInfoMap = apptInspectionDateService.getApplicationInfoToShow(apptInspectionDateDto.getRefNo(), apptInspectionDateDto.getTaskDtos());
             apptInspectionDateDto.setApplicationInfoShow(applicationInfoMap);
         }
-        String actionButtonFlag = apptInspectionDateService.getActionButtonFlag(apptInspectionDateDto);
+        String actionButtonFlag = apptInspectionDateService.getActionButtonFlag(apptInspectionDateDto, applicationViewDto.getApplicationDto());
         apptInspectionDateDto.setActionButtonFlag(actionButtonFlag);
 
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);

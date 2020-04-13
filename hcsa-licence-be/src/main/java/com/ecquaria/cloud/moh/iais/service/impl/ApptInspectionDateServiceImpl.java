@@ -148,18 +148,31 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         TaskDto taskDto = taskService.getTaskById(taskId);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appType = applicationDto.getApplicationType();
-
-        //get all application info from same premises
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = getAppPremisesCorrelationsByPremises(taskDto.getRefNo());
-        List<String> premCorrIds = getCorrIdsByCorrIdFromPremises(appPremisesCorrelationDtos);
-        apptInspectionDateDto.setRefNo(premCorrIds);
-        //get Other Tasks From The Same Premises
-        List<TaskDto> taskDtoList = getAllTaskFromSamePremises(premCorrIds);
+        boolean fastFlag = applicationDto.isFastTracking();
+        String actionButtonFlag;
+        List<String> premCorrIds;
+        List<TaskDto> taskDtoList;
+        if(!fastFlag) {
+            //get all application info from same premises
+            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = getAppPremisesCorrelationsByPremises(taskDto.getRefNo());
+            premCorrIds = getCorrIdsByCorrIdFromPremises(appPremisesCorrelationDtos);
+            apptInspectionDateDto.setRefNo(premCorrIds);
+            //get Other Tasks From The Same Premises
+            taskDtoList = getAllTaskFromSamePremises(premCorrIds);
+            //The All Tasks is go to inspection or (some of them jump over Inspection and some of them go to inspection)
+            actionButtonFlag = getActionButtonFlag(apptInspectionDateDto, applicationDto);
+        } else {
+            actionButtonFlag = AppConsts.SUCCESS;
+            premCorrIds = IaisCommonUtils.genNewArrayList();
+            premCorrIds.add(taskDto.getRefNo());
+            apptInspectionDateDto.setRefNo(premCorrIds);
+            taskDtoList = IaisCommonUtils.genNewArrayList();
+            taskDtoList.add(taskDto);
+        }
         //get application info show
         Map<ApplicationDto, List<String>> applicationInfoMap = getApplicationInfoToShow(premCorrIds, taskDtoList);
         apptInspectionDateDto.setApplicationInfoShow(applicationInfoMap);
-        //The All Tasks is go to inspection or (some of them jump over Inspection and some of them go to inspection)
-        String actionButtonFlag = getActionButtonFlag(apptInspectionDateDto);
+        apptInspectionDateDto.setActionButtonFlag(actionButtonFlag);
         if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)){
             if(AppConsts.SUCCESS.equals(actionButtonFlag)) {
                 //get Applicant set start date and end date from appGroup
@@ -229,7 +242,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                         workerName.add(userDto.getDisplayName());
                     }
                 } else {
-                    workerName.add("-");
+                    workerName.add(HcsaConsts.HCSA_PREMISES_HCI_NULL);
                 }
                 applicationInfoMap.put(applicationDto, workerName);
             }
@@ -238,7 +251,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     }
 
     @Override
-    public String getActionButtonFlag(ApptInspectionDateDto apptInspectionDateDto) {
+    public String getActionButtonFlag(ApptInspectionDateDto apptInspectionDateDto, ApplicationDto applicationDto) {
         String actionButtonFlag = AppConsts.SUCCESS;
         if(!IaisCommonUtils.isEmpty(apptInspectionDateDto.getRefNo())){
             for(String appPremCorrId : apptInspectionDateDto.getRefNo()){

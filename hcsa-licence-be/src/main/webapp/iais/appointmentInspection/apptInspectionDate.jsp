@@ -53,7 +53,7 @@
                           <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments"
                                                        role="tab" data-toggle="tab">Documents</a></div>
                           <div class="swiper-slide"><a id="apptInspectionDate" href="#tabProcessing" aria-controls="tabProcessing"
-                                                       role="tab" data-toggle="tab">Processing</a></div>
+                                                       role="tab" data-toggle="tab" onclick="javascript:apptInspectionDateGetDate()">Processing</a></div>
                         </div>
                         <div class="swiper-button-prev"></div>
                         <div class="swiper-button-next"></div>

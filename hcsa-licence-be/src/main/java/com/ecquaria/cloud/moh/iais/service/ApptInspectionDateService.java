@@ -114,7 +114,7 @@ public interface ApptInspectionDateService {
       * @Descripation: All task(From The Same Premises) is go to inspection(some of them jump over Inspection),
       *                can do get Inspection Date
       */
-    String getActionButtonFlag(ApptInspectionDateDto apptInspectionDateDto);
+    String getActionButtonFlag(ApptInspectionDateDto apptInspectionDateDto, ApplicationDto applicationDto);
 
     /**
       * @author: shicheng
