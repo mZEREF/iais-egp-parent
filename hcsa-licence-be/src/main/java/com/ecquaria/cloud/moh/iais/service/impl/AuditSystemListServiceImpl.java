@@ -118,7 +118,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private void assignTask(AuditTaskDataFillterDto temp) {
         String submitId = generateIdClient.getSeqId().getEntity();
         //create auditType data  and create grop info
-        createAudit(temp,submitId);
+        AuditCombinationDto auditCombinationDto = new AuditCombinationDto();
+        createAudit(temp,submitId,auditCombinationDto);
         //create grop info
         // createInspectionGroupInfo(temp,submitId);
 
@@ -126,14 +127,14 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         List<String> licIds = new ArrayList<>(1);
         if( !StringUtil.isEmpty(temp.getLicId())){
             licIds.add(temp.getLicId());
-            createAuditTaskApp(licIds,submitId);
+            createAuditTaskApp(licIds,submitId,auditCombinationDto);
         }
 
         //create task
-        createTask(temp,submitId);
+        createTask(temp,submitId,auditCombinationDto);
     }
 
-    public void createTask(AuditTaskDataFillterDto temp,String submitId){
+    public void createTask(AuditTaskDataFillterDto temp,String submitId,AuditCombinationDto auditCombinationDto){
         TaskDto taskDto = new TaskDto();
         taskDto.setId(generateIdClient.getSeqId().getEntity());
         taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
@@ -154,10 +155,11 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         taskDto.setPriority(0);
         List<TaskDto> createTaskDtoList = IaisCommonUtils.genNewArrayList();
         createTaskDtoList.add(taskDto);
+        auditCombinationDto.setTaskDtos(createTaskDtoList);
         //taskService.createTasks(createTaskDtoList);
         log.info("========================>>>>> create task !!!!");
         try {
-            eventBusHelper.submitAsyncRequest(createTaskDtoList,submitId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,taskDto.getRefNo(),null);
+            eventBusHelper.submitAsyncRequest(createTaskDtoList,submitId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,auditCombinationDto.getEventRefNo(),null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -168,8 +170,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         licPremisesAuditDto.setRemarks( temp.getCancelReason());
         hcsaLicenceClient.createLicPremAudit(licPremisesAuditDto);
     }
-    private void createAudit(AuditTaskDataFillterDto temp,String submitId) {
-        AuditCombinationDto auditCombinationDto = new AuditCombinationDto();
+    private void createAudit(AuditTaskDataFillterDto temp,String submitId,AuditCombinationDto auditCombinationDto) {
         auditCombinationDto.setEventRefNo(temp.getId());
         LicPremisesAuditDto licPremisesAuditDto = new LicPremisesAuditDto();
         licPremisesAuditDto.setAuditRiskType(temp.getRiskType());
@@ -202,7 +203,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         auditCombinationDto.setLicPremInspGrpCorrelationDto(dtocorre);
         log.info("========================>>>>> create audit !!!!");
         try {
-            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,temp.getId(),null);
+            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,auditCombinationDto.getEventRefNo(),null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -303,8 +304,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         return selectOptions;
     }
 
-    @Override
-    public String createAuditTaskApp(List<String> licIds, String submissionId) {
+    public String createAuditTaskApp(List<String> licIds, String submissionId,AuditCombinationDto auditCombinationDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
@@ -327,9 +327,10 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             entity.setEventRefNo(grpNo);
             setRiskToDto(entity);
         }
+        auditCombinationDto.setAppSubmissionDtoList(appSubmissionDtoList);
         log.info("========================>>>>> creat application!!!!");
         try {
-            eventBusHelper.submitAsyncRequest(appSubmissionDtoList,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,grpNo,null);
+            eventBusHelper.submitAsyncRequest(appSubmissionDtoList,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,auditCombinationDto.getEventRefNo(),null);
         } catch (Exception e) {
             e.printStackTrace();
         }

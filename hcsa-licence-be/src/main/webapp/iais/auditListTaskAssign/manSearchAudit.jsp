@@ -22,7 +22,7 @@
         <div class="bg-title"><h2>Search HCI and Services</h2></div>
         <iais:section title="" id="potentialAuditableHCIs">
             <iais:row>
-                <iais:field value="Service Name:"/>
+                <iais:field value="Service Name"/>
                 <iais:value width="8">
                     <iais:select name="svcName" options="activeHCIServiceNames" firstOption="Please Select"
                                  value=""/>
@@ -31,7 +31,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field value="Postal Code/Region:"/>
+                <iais:field value="Postal Code/Region"/>
                 <iais:value width="8">
                     <input type="number" name="postcode" id="postcode"  oninput="if(value.length>6)value=value.slice(0,6)" value="${auditSystemPotentialDtoForSearch.postalCode}" />
                     <span id="error_postcode" name="iaisErrorMsg" class="error-msg"></span>
@@ -39,7 +39,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field value="Last Inspection done before(Start):"/>
+                <iais:field value="Last Inspection done before(Start)"/>
                 <iais:value width="8">
                     <iais:datePicker id="inspectionStartDate" name="inspectionStartDate" value="${auditSystemPotentialDtoForSearch.lastInspectionStart}"/>
                     <span id="error_inspectionStartDate" name="iaisErrorMsg" class="error-msg"></span>
@@ -47,7 +47,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field value="Last Inspection done before(End):"/>
+                <iais:field value="Last Inspection done before(End)"/>
                 <iais:value width="8">
                     <iais:datePicker id="inspectionEndDate" name="inspectionEndDate" value="${auditSystemPotentialDtoForSearch.lastInspectionEnd}"/>
                     <span id="error_inspectionEndDate" name="iaisErrorMsg" class="error-msg"></span>
@@ -55,7 +55,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field value="Results of last compliance:"/>
+                <iais:field value="Results of last compliance"/>
                 <iais:value width="8">
                     <iais:select name="complianceLastResult" options="complianceLastResultOptions" firstOption="Please Select"
                                  value="${auditSystemPotentialDtoForSearch.resultLastCompliance}"/>
@@ -65,7 +65,7 @@
 
 
             <iais:row>
-                <iais:field value="HSCA Service Code:"/>
+                <iais:field value="HSCA Service Code"/>
                 <iais:value width="8">
                     <iais:select name="hclSCode" options="activeHCIServiceCodes" firstOption="Please Select" value=""/>
                     <span id="error_hclSCode" name="iaisErrorMsg" class="error-msg"></span>
@@ -73,7 +73,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field value="HCI Code:"/>
+                <iais:field value="HCI Code"/>
                 <iais:value width="8">
                     <iais:select name="hclCode" options="hclCodeOp" firstOption="Please Select" value="${auditSystemPotentialDtoForSearch.hclCode}"/>
                     <span id="error_hclCode" name="iaisErrorMsg" class="error-msg"></span>
@@ -81,7 +81,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field value="Premises Type:"/>
+                <iais:field value="Premises Type"/>
                 <iais:value width="8">
                     <iais:select name="premType" options="premTypeOp" firstOption="Please Select" value="${auditSystemPotentialDtoForSearch.premisesType}"/>
                     <span id="error_premType" name="iaisErrorMsg" class="error-msg"></span>
@@ -89,7 +89,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field value="Type of Risk:"/>
+                <iais:field value="Type of Risk"/>
                 <iais:value width="8">
                     <iais:select name="riskType" options="riskTypeOp" firstOption="Please Select" value="${auditSystemPotentialDtoForSearch.typeOfRisk}"/>
                     <span id="error_riskType" name="iaisErrorMsg" class="error-msg"></span>

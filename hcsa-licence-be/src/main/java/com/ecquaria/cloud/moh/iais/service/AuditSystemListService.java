@@ -26,5 +26,4 @@ public interface AuditSystemListService {
     List<SelectOption> getActiveHCIServicesByNameOrCode(List<HcsaServiceDto> hcsaServiceDtos, String type);
     List<SelectOption> getActiveHCICode();
 
-    String createAuditTaskApp(List<String> licIds,String submissionId);
 }
