@@ -44,7 +44,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}">
+                                    <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}"  varStatus="status">
                                         <c:forEach var="svc" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}">
                                             <tr>
                                                 <td>
@@ -54,7 +54,7 @@
                                                     <p>Renewal</p>
                                                 </td>
                                                 <td>
-                                                    <p><c:out value="${AppSubmissionDto.appGrpNo}"></c:out></p>
+                                                    <p><c:out value="${AppSubmissionDto.appGrpNo}-${(status.index+1) > 9 ? '' : '0'}${status.index + 1}"></c:out></p>
                                                 </td>
                                                 <td>
                                                     <p><c:out value="${AppSubmissionDto.amountStr}"></c:out></p>
