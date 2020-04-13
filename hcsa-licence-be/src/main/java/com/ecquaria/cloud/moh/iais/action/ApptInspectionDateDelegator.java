@@ -2,12 +2,12 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -46,9 +47,13 @@ public class ApptInspectionDateDelegator {
     private ApplicationViewService applicationViewService;
 
     @Autowired
-    private ApptInspectionDateDelegator(ApplicationViewService applicationViewService, ApptInspectionDateService apptInspectionDateService){
+    private TaskService taskService;
+
+    @Autowired
+    private ApptInspectionDateDelegator(ApplicationViewService applicationViewService, ApptInspectionDateService apptInspectionDateService, TaskService taskService){
         this.apptInspectionDateService = apptInspectionDateService;
         this.applicationViewService = applicationViewService;
+        this.taskService = taskService;
     }
     /**
      * StartStep: apptInspectionDateStart
@@ -87,9 +92,10 @@ public class ApptInspectionDateDelegator {
         ApplicationViewDto applicationViewDto;
         if(apptInspectionDateDto == null){
             String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
-            applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(apptInspectionDateDto.getTaskDto().getRefNo());
+            TaskDto taskDto = taskService.getTaskById(taskId);
+            applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
             apptInspectionDateDto = new ApptInspectionDateDto();
-            apptInspectionDateDto  = apptInspectionDateService.getInspectionDate(taskId, apptInspectionDateDto, applicationViewDto);
+            apptInspectionDateDto  = apptInspectionDateService.getInspectionDate(taskDto, apptInspectionDateDto, applicationViewDto);
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         } else {
             applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
@@ -247,7 +253,7 @@ public class ApptInspectionDateDelegator {
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         String appType = applicationViewDto.getApplicationDto().getApplicationType();
-        if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)){
+        /*if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)){
             apptInspectionDateService.saveAuditInspectionDate(apptInspectionDateDto, applicationViewDto);
         } else {
             if(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE.equals(apptInspectionDateDto.getProcessDec())){
@@ -255,7 +261,7 @@ public class ApptInspectionDateDelegator {
             } else if(InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE.equals(apptInspectionDateDto.getProcessDec())) {
                 apptInspectionDateService.saveSystemInspectionDate(apptInspectionDateDto, applicationViewDto);
             }
-        }
+        }*/
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
     }

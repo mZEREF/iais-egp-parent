@@ -26,6 +26,7 @@
     <input type="hidden" name="apptInspectionDateType" value="">
     <input type="hidden" id="actionValue" name="actionValue" value="">
     <input type="hidden" id="processDec" name="processDec" value="">
+    <input type="hidden" id="sysInspDateFlag" name="sysInspDateFlag" value="${apptInspectionDateDto.sysInspDateFlag}">
     <input type="hidden" id="apptBackShow" name="apptBackShow" value="${apptBackShow}">
     <div class="main-content">
       <div class="row">
@@ -230,12 +231,8 @@
                               <iais:action>
                                 <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
                                 <span style="float:right">&nbsp;</span>
-                                  <c:if test="${empty apptInspectionDateDto.inspectionDate}">
-                                    <button class="btn btn-primary disabled" disabled style="float:right" type="button" onclick="javascript:apptInspectionDateConfirm()">Allow System to Propose Dates</button>
-                                  </c:if>
-                                  <c:if test="${!empty apptInspectionDateDto.inspectionDate}">
-                                    <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateConfirm()">Allow System to Propose Dates</button>
-                                  </c:if>
+                                <button id="disApptSysInspDate" class="btn btn-primary disabled" disabled style="float:right" type="button">Allow System to Propose Dates</button>
+                                <button id="apptSysInspDate" class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateConfirm()">Allow System to Propose Dates</button>
                               </iais:action>
                             </c:if>
                             <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag && 'APTY007' eq applicationViewDto.applicationDto.applicationType}">
@@ -311,6 +308,16 @@
 <%@ include file="../inspectionncList/uploadFile.jsp" %>
 <script type="text/javascript">
     $(document).ready(function() {
+        var sysInspDateFlag = $("#sysInspDateFlag").val();
+        if('true' == sysInspDateFlag){
+            $("#disApptSysInspDate").hide();
+            $("#apptSysInspDate").show();
+        } else {
+            $("#disApptSysInspDate").show();
+            $("#apptSysInspDate").hide();
+        }
+        $("#disApptSysInspDate").show();
+        $("#apptSysInspDate").hide();
         var apptBackShow = $("#apptBackShow").val();
         if('back' == apptBackShow){
             apptInspectionDateJump();
@@ -338,12 +345,31 @@
         apptInspectionDateSubmit("success");
     }
 
+    function apptInspectionDateGetDate() {
+        showWaiting();
+        $.post(
+            '/hcsa-licence-web/online-appt/insp.date',
+            function (data) {
+                var sysInspDateFlag = data.buttonFlag;
+                if('true' == sysInspDateFlag){
+                    $("#disApptSysInspDate").hide();
+                    $("#apptSysInspDate").show();
+                } else {
+                    $("#disApptSysInspDate").show();
+                    $("#apptSysInspDate").hide();
+                }
+            }
+        )
+    }
+
     function apptInspectionDateSpecific() {
         showWaiting();
         $("#actionValue").val('confirm');
         $("#processDec").val('REDECI018');
         apptInspectionDateSubmit("confirm");
     }
+
+
 </script>
 
 

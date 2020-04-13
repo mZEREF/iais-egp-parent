@@ -11,8 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
@@ -46,11 +44,9 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -64,7 +60,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -90,12 +85,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
-
-    @Autowired
-    private AppointmentClient appointmentClient;
-
-    @Autowired
-    private HcsaConfigClient hcsaConfigClient;
 
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
@@ -144,10 +133,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     private String secSecretKey;
 
     @Override
-    public ApptInspectionDateDto getInspectionDate(String taskId, ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto) {
-        TaskDto taskDto = taskService.getTaskById(taskId);
+    public ApptInspectionDateDto getInspectionDate(TaskDto taskDto, ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto) {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        String appType = applicationDto.getApplicationType();
         boolean fastFlag = applicationDto.isFastTracking();
         String actionButtonFlag;
         List<String> premCorrIds;
@@ -171,48 +158,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         }
         //get application info show
         Map<ApplicationDto, List<String>> applicationInfoMap = getApplicationInfoToShow(premCorrIds, taskDtoList);
+
         apptInspectionDateDto.setApplicationInfoShow(applicationInfoMap);
         apptInspectionDateDto.setActionButtonFlag(actionButtonFlag);
-        if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)){
-            if(AppConsts.SUCCESS.equals(actionButtonFlag)) {
-                //get Applicant set start date and end date from appGroup
-                AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(taskDto.getRefNo()).getEntity();
-                appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
-                Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
-                List<String> serviceIds = IaisCommonUtils.genNewArrayList();
-                for (Map.Entry<String, String> map : corrIdServiceIdMap.entrySet()) {
-                    if(!StringUtil.isEmpty(map.getValue())){
-                        serviceIds.add(map.getValue());
-                    }
-                }
-                //get Start date and End date when group no date
-                if (appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null) {
-                    appointmentDto.setServiceIds(serviceIds);
-                    appointmentDto = hcsaConfigClient.getApptStartEndDateByService(appointmentDto).getEntity();
-                }
-                //get inspection date
-                List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
-                for (TaskDto tDto : taskDtoList) {
-                    AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
-                    OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(tDto.getUserId()).getEntity();
-                    appointmentUserDto.setLoginUserId(orgUserDto.getDisplayName());
-                    appointmentUserDto.setWorkGrpName(tDto.getWkGrpId());
-                    //get service id by task refno
-                    String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
-                    //get manHours by service and stage
-                    int manHours = hcsaConfigClient.getManHour(serviceId, HcsaConsts.ROUTING_STAGE_INS).getEntity();
-                    appointmentUserDto.setWorkHours(manHours);
-                    appointmentUserDtos.add(appointmentUserDto);
-                }
-                appointmentDto.setUsers(appointmentUserDtos);
-                Map<String, Collection<String>> headers = appointmentClient.getUserCalendarByUserId(appointmentDto).getHeaders();
-                //Has it been blown up
-                if(headers == null) {
-                    Map<String, List<ApptUserCalendarDto>> inspectionDateMap = appointmentClient.getUserCalendarByUserId(appointmentDto).getEntity();
-                    apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
-                }
-            }
-        }
         apptInspectionDateDto.setTaskDto(taskDto);
         apptInspectionDateDto.setTaskDtos(taskDtoList);
 
@@ -252,13 +200,16 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     @Override
     public String getActionButtonFlag(ApptInspectionDateDto apptInspectionDateDto, ApplicationDto applicationDto) {
+        boolean fastFlag = applicationDto.isFastTracking();
         String actionButtonFlag = AppConsts.SUCCESS;
-        if(!IaisCommonUtils.isEmpty(apptInspectionDateDto.getRefNo())){
-            for(String appPremCorrId : apptInspectionDateDto.getRefNo()){
-                List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremCorrId).getEntity();
-                actionButtonFlag = getActionButtonFlagByTasks(taskDtos);
-                if(AppConsts.FAIL.equals(actionButtonFlag)){
-                    return actionButtonFlag;
+        if(!fastFlag) {
+            if (!IaisCommonUtils.isEmpty(apptInspectionDateDto.getRefNo())) {
+                for (String appPremCorrId : apptInspectionDateDto.getRefNo()) {
+                    List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremCorrId).getEntity();
+                    actionButtonFlag = getActionButtonFlagByTasks(taskDtos);
+                    if (AppConsts.FAIL.equals(actionButtonFlag)) {
+                        return actionButtonFlag;
+                    }
                 }
             }
         }
@@ -335,11 +286,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         return AppConsts.FAIL;
     }
 
-    private Map<String, String> getServiceIdsByCorrIdsFromPremises(List<String> premCorrIds) {
-        Map<String, String> serviceIds = applicationClient.getServiceIdsByCorrIdsFromPremises(premCorrIds).getEntity();
-        return serviceIds;
-    }
-
     private List<TaskDto> getAllTaskFromSamePremises(List<String> premCorrIds) {
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(premCorrIds)){
@@ -387,19 +333,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         return appPremisesCorrClient.getAppPremisesCorrelationsByPremises(appPremCorrId).getEntity();
     }
 
-    private ApptInspectionDateDto getShowTimeStringList(Map<String, List<ApptUserCalendarDto>> inspectionDateMap, ApptInspectionDateDto apptInspectionDateDto) {
-        List<String> inspectionDates = IaisCommonUtils.genNewArrayList();
-        if(inspectionDateMap != null){
-            List<ApptUserCalendarDto> apptUserCalendarDtoListAll = IaisCommonUtils.genNewArrayList();
-            for(Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()){
-                inspDateMap.getValue();
-            }
-            apptInspectionDateDto.setInspectionDate(inspectionDates);
-            apptInspectionDateDto.setApptUserCalendarDtoListAll(apptUserCalendarDtoListAll);
-        }
-        return apptInspectionDateDto;
-    }
-
     private String getApptDateToShow(Date date) {
         String specificDate = Formatter.formatDateTime(date, "d MMM");
         Calendar cal = Calendar.getInstance();
@@ -439,8 +372,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Override
     public List<SelectOption> getAmPmOption() {
         List<SelectOption> amPmOption = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption(Formatter.DAY_AM, "am");
-        SelectOption so2 = new SelectOption(Formatter.DAY_PM, "pm");
+        SelectOption so1 = new SelectOption(Formatter.DAY_AM, Formatter.DAY_AM);
+        SelectOption so2 = new SelectOption(Formatter.DAY_PM, Formatter.DAY_PM);
         amPmOption.add(so1);
         amPmOption.add(so2);
         return amPmOption;

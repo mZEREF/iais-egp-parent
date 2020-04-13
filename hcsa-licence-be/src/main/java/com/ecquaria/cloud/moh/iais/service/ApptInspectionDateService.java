@@ -19,11 +19,11 @@ public interface ApptInspectionDateService {
     /**
       * @author: shicheng
       * @Date 2020/2/11
-      * @Param: taskId, apptInspectionDateDto, applicationViewDto
+      * @Param: taskDto, apptInspectionDateDto, applicationViewDto
       * @return: ApptInspectionDateDto
       * @Descripation: get Inspection Date
       */
-    ApptInspectionDateDto getInspectionDate(String taskId, ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto);
+    ApptInspectionDateDto getInspectionDate(TaskDto taskDto, ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto);
 
     /**
       * @author: shicheng
