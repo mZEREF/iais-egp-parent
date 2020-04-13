@@ -217,8 +217,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     //send
                     feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
                             signature2.date(), signature2.authorization());
-                    break;
                 }
+                break;
             case "rfcReject":
                 MsgTemplateDto rfcRejectMsgTemplateDto = msgTemplateClient.getMsgTemplate("B6C8231E-940D-485A-BFFB-9E65CADB5CA9").getEntity();
                 if (rfcRejectMsgTemplateDto != null) {
@@ -234,8 +234,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     //send
                     feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
                             signature2.date(), signature2.authorization());
-                    break;
                 }
+                break;
             case "rfcToLicensee":
                 MsgTemplateDto rfcToLicenseeMsgTemplateDto = msgTemplateClient.getMsgTemplate("8D3AC0E0-6684-490C-8DE8-D0452129C67D").getEntity();
                 if (rfcToLicenseeMsgTemplateDto != null) {
@@ -251,10 +251,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     //send
                     feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
                             signature2.date(), signature2.authorization());
-                    break;
                 }
+                break;
             default:
-                throw new IllegalStateException("Unexpected value: " + subject);
         }
     }
 
