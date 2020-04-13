@@ -329,4 +329,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             applicationClient.updateApplication(application);
         }
     }
+
+    @Override
+    public boolean checkRenewalStatus(String licenceId) {
+        boolean flag = true;
+        List<ApplicationDto> apps = applicationClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
+        for(ApplicationDto app : apps){
+            if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType())
+                    && ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(app.getStatus())){
+                flag = false;
+            }
+        }
+        return flag;
+    }
 }

@@ -40,4 +40,6 @@ public interface AppSubmissionService {
 
     public ApplicationGroupDto createApplicationDataByWithOutRenewal(RenewDto renewDto);
     public void updateApplicationsStatus(String appGroupId,String stuts);
+
+    public boolean checkRenewalStatus(String licenceId);
 }
