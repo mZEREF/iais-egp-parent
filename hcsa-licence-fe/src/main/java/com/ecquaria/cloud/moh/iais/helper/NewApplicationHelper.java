@@ -508,7 +508,7 @@ public class NewApplicationHelper {
         if(!StringUtil.isEmpty(checkedVal)){
             for(SelectOption kv:selectOptionList){
                 if(checkedVal.equals(kv.getValue())){
-                    sBuffer.append("<li selected=\"selected\" data-value=\""+kv.getValue()+"\" class=\"option selected focus\">"+kv.getText()+"</li>");
+                    sBuffer.append("<li selected=\"selected\" data-value=\""+kv.getValue()+"\" class=\"option selected\">"+kv.getText()+"</li>");
                 }else{
                     sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
                 }
