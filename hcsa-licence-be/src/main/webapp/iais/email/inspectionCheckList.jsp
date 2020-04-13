@@ -36,7 +36,7 @@
                                                 <button type="button" class="btn btn-primary" onclick="javascript: doViewCheckList();">
                                                     View CheckList
                                                 </button>
-                                            <c:if test="${applicationViewDto.applicationDto.status != 'APST032'}">
+                                            <c:if test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
                                             <button type="button" class="btn btn-primary" onclick="javascript: doNext();">
                                                 Save
                                             </button>

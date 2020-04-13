@@ -1,6 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
@@ -83,107 +82,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="Processing" role="tabpanel">
-                                    <div class="alert alert-info" role="alert">
-                                        <strong>
-                                            <h4>Processing Status Update</h4>
-                                        </strong>
-                                    </div>
-                                    <iais:section title="" id = "process_Rectification">
-                                        <br>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <label style="font-size: 16px">Current Status</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p><label style="font-size: 16px"><iais:code code="${applicationViewDto.applicationDto.status}"/></label></p>
-                                        </div>
-                                    </div>
-                                        <br>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <label style="font-size: 16px">Licence Start Date</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
-                                                <label style="font-size: 16px"><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></label>
-                                            </c:if>
-                                            <c:if test="${empty applicationViewDto.recomLiceStartDate}">
-                                                <label style="font-size: 16px">-</label>
-                                            </c:if>
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <label style="font-size: 16px">Fast Tracking</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div align="right">
-                                                <button type="button" class="btn btn-primary" onclick="javascript: doSubmit();">
-                                                    Submit
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <br><br>
-                                    <div class="alert alert-info" role="alert">
-                                        <strong>
-                                            <h4>Processing History</h4>
-                                        </strong>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div class="table-gp">
-                                                <table class="table">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Username</th>
-                                                        <th>Working Group</th>
-                                                        <th>Status Update</th>
-                                                        <th>Remarks</th>
-                                                        <th>Last Updated</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <c:forEach
-                                                            items="${applicationViewDto.appPremisesRoutingHistoryDtoList}"
-                                                            var="appPremisesRoutingHistoryDto">
-                                                        <tr>
-                                                            <td>
-                                                                <p><c:out
-                                                                        value="${appPremisesRoutingHistoryDto.actionby}"></c:out></p>
-                                                            </td>
-                                                            <td>
-                                                                <p><c:out
-                                                                        value="${appPremisesRoutingHistoryDto.workingGroup}"></c:out></p>
-                                                            </td>
-                                                            <td>
-                                                                <p><c:out
-                                                                        value="${appPremisesRoutingHistoryDto.processDecision}"></c:out></p>
-                                                            </td>
-                                                            <td>
-                                                                <p><c:out
-                                                                        value="${appPremisesRoutingHistoryDto.internalRemarks}"></c:out></p>
-                                                            </td>
-                                                            <td>
-                                                                <p><c:out
-                                                                        value="${appPremisesRoutingHistoryDto.updatedDt}"></c:out></p>
-                                                            </td>
-                                                        </tr>
-                                                    </c:forEach>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    </iais:section>
-
+                                    <%@include file="/iais/inspectionncList/inspecProcessing.jsp"%>
                                 </div>
                             </div>
                         </div>
