@@ -126,7 +126,7 @@
                                 <td >
                                   <c:choose>
                                     <c:when test="${levelTwoList.id=='27D8EB5B-1123-EA11-BE78-000C29D29DB0'}">
-                                      <textarea name="pleaseIndicate" maxlength="200" cols="45"  disabled>${pleaseIndicate}</textarea>
+                                      <textarea name="pleaseIndicate${status.index}" maxlength="200" cols="45" disabled>${appGrpPremisesDto.otherScopeName}</textarea>
                                       <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError"></span>
                                     </c:when>
                                   </c:choose>

@@ -87,7 +87,6 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST, null);
         ParamUtil.setSessionAttr(bpc.request, ERRORMAP_GOVERNANCEOFFICERS, null);
         ParamUtil.setSessionAttr(bpc.request, RELOADSVCDOC,  null);
-        ParamUtil.setSessionAttr(bpc.request, "pleaseIndicate",  null);
         //ParamUtil.setSessionAttr(bpc.request, SERVICEPERSONNELCONFIG, null);
 
         log.debug(StringUtil.changeForLog("the do doStart end ...."));
@@ -468,6 +467,7 @@ public class ClinicalLaboratoryDelegator {
             Map<String, String> reloadChkLstMap = IaisCommonUtils.genNewHashMap();
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = IaisCommonUtils.genNewArrayList();
+            int i=0;
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
                 String premiseName = appGrpPremisesDto.getPremisesIndexNo();
                /* if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
@@ -487,8 +487,8 @@ public class ClinicalLaboratoryDelegator {
                         appSvcChckListDto = new AppSvcChckListDto();
                         appSvcChckListDto.setChkLstConfId(checkInfo.getId());
                         if("27D8EB5B-1123-EA11-BE78-000C29D29DB0".equals(checkInfo.getId())){
-                            String subName = ParamUtil.getString(bpc.request, "pleaseIndicate");
-                            ParamUtil.setSessionAttr(bpc.request,"pleaseIndicate",subName);
+                            String subName = ParamUtil.getString(bpc.request, "pleaseIndicate"+i);
+                            appGrpPremisesDto.setOtherScopeName(subName);
                             appSvcChckListDto.setOtherScopeName(subName);
                         }
                         appSvcChckListDto.setChkLstType(checkInfo.getType());
@@ -538,7 +538,7 @@ public class ClinicalLaboratoryDelegator {
                     bpc.request.getSession().setAttribute("coMap",coMap);
 
                 }
-
+                i++;
             }
             ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadChkLstMap);
 
