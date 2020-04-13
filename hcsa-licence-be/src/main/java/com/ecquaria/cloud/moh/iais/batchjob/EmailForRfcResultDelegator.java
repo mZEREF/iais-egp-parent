@@ -26,4 +26,5 @@ public class EmailForRfcResultDelegator {
     public void action(BaseProcessClass bpc) throws Exception {
         emailToResultService.sendEfcResultEmail();
     }
+
 }

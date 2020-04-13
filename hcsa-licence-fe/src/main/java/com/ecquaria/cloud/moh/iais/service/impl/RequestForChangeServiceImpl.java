@@ -55,7 +55,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     private MsgTemplateClient msgTemplateClient;
     @Autowired
     private FeEmailClient feEmailClient;
-    
+
     @Override
     public List<PremisesListQueryDto> getPremisesList(String licenseeId) {
         return licenceClient.getPremises(licenseeId).getEntity();
@@ -77,12 +77,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
 
-
     @Override
-    public  List<ApplicationDto> getAppByLicIdAndExcludeNew(String licenceId) {
+    public List<ApplicationDto> getAppByLicIdAndExcludeNew(String licenceId) {
         return applicationClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
     }
-    
+
 
     @Override
     public String getApplicationGroupNumber(String appType) {
@@ -151,24 +150,45 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public void sendEmail(String type, String appNo, String serviceName, String licenceNo, Double amount, String licenceeName,String giroNo,String licenseeId) throws Exception {
+    public void sendEmail(String type, String appNo, String serviceName, String licenceNo, Double amount, String licenceeName, String giroNo, String licenseeId, String subject) throws Exception {
         //send email  rfc submit and pay giro
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate("D1CC7398-8C50-4178-BE83-1659CD7DBAA8").getEntity();
-        if(msgTemplateDto != null){
-            Map<String,Object> tempMap = IaisCommonUtils.genNewHashMap();
-            tempMap.put("serviceName", StringUtil.viewHtml(serviceName));
-            tempMap.put("amount",amount);
-            tempMap.put("giroNo",giroNo);
+        switch (subject) {
+            case "RfcAndGiro":
+                MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate("D1CC7398-8C50-4178-BE83-1659CD7DBAA8").getEntity();
+                if (msgTemplateDto != null) {
+                    Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
+                    tempMap.put("serviceName", StringUtil.viewHtml(serviceName));
+                    tempMap.put("amount", amount);
+                    tempMap.put("giroNo", giroNo);
 
-            String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
-            EmailDto emailDto = new EmailDto();
-            emailDto.setContent(mesContext);
-            emailDto.setSubject("MOH IAIS – Successful Submission of Request for Change"+appNo);
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-            //emailDto.setClientQueryCode();
-            //send
-            feEmailClient.sendNotification(emailDto).getEntity();
+                    String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+                    EmailDto emailDto = new EmailDto();
+                    emailDto.setContent(mesContext);
+                    emailDto.setSubject("MOH IAIS – Successful Submission of Request for Change " + appNo);
+                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                    emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                    //emailDto.setClientQueryCode();
+                    //send
+                    feEmailClient.sendNotification(emailDto).getEntity();
+                }
+                break;
+            case "RfcAndOnPay":
+                MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate("D9DDBC23-122B-47BA-B579-3B5022816BB6").getEntity();
+                if (msgTemplateDto != null) {
+                    Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
+                    tempMap.put("serviceName", StringUtil.viewHtml(serviceName));
+                    tempMap.put("amount", amount);
+                    String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+                    EmailDto emailDto = new EmailDto();
+                    emailDto.setContent(mesContext);
+                    emailDto.setSubject("MOH IAIS – Successful Submission of Request for Change " + appNo);
+                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                    emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                    //emailDto.setClientQueryCode();
+                    //send
+                    feEmailClient.sendNotification(emailDto).getEntity();
+                }
+                break;
         }
+
     }
-}
