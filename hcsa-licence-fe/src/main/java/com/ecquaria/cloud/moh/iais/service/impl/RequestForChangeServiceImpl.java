@@ -154,14 +154,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         //send email  rfc submit and pay giro
         switch (subject) {
             case "RfcAndGiro":
-                MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate("D1CC7398-8C50-4178-BE83-1659CD7DBAA8").getEntity();
-                if (msgTemplateDto != null) {
+                MsgTemplateDto RfcAndGiroMsgTemplateDto = msgTemplateClient.getMsgTemplate("D1CC7398-8C50-4178-BE83-1659CD7DBAA8").getEntity();
+                if (RfcAndGiroMsgTemplateDto != null) {
                     Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
                     tempMap.put("serviceName", StringUtil.viewHtml(serviceName));
                     tempMap.put("amount", amount);
                     tempMap.put("giroNo", giroNo);
-
-                    String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+                    String mesContext = MsgUtil.getTemplateMessageByContent(RfcAndGiroMsgTemplateDto.getMessageContent(), tempMap);
                     EmailDto emailDto = new EmailDto();
                     emailDto.setContent(mesContext);
                     emailDto.setSubject("MOH IAIS – Successful Submission of Request for Change " + appNo);
@@ -173,12 +172,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
                 break;
             case "RfcAndOnPay":
-                MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate("D9DDBC23-122B-47BA-B579-3B5022816BB6").getEntity();
-                if (msgTemplateDto != null) {
+                MsgTemplateDto RfcAndOnPayMsgTemplateDto = msgTemplateClient.getMsgTemplate("D9DDBC23-122B-47BA-B579-3B5022816BB6").getEntity();
+                if (RfcAndOnPayMsgTemplateDto != null) {
                     Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
                     tempMap.put("serviceName", StringUtil.viewHtml(serviceName));
                     tempMap.put("amount", amount);
-                    String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+                    String mesContext = MsgUtil.getTemplateMessageByContent(RfcAndOnPayMsgTemplateDto.getMessageContent(), tempMap);
                     EmailDto emailDto = new EmailDto();
                     emailDto.setContent(mesContext);
                     emailDto.setSubject("MOH IAIS – Successful Submission of Request for Change " + appNo);
@@ -189,6 +188,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     feEmailClient.sendNotification(emailDto).getEntity();
                 }
                 break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + subject);
         }
+    }
 
     }
