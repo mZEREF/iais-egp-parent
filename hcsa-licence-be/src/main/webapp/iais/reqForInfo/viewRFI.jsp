@@ -1,4 +1,5 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -44,7 +45,7 @@
                                         <iais:row>
                                             <iais:field value=""/>
                                             <iais:value width="18">
-                                                <button class="btn btn-secondary" type="button"  onclick="javascript:doExtends('${licPreReqForInfoDto.reqInfoId}')">Extends</button>
+                                                <button class="btn btn-secondary" type="button"  onclick="javascript:doExtends('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,licPreReqForInfoDto.reqInfoId)}')">Extends</button>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -107,7 +108,7 @@
                                             <a  onclick="javascript:doBack()">< Back</a>
                                         </iais:action>
                                         <iais:action style="text-align:right;">
-                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doCancel('${licPreReqForInfoDto.reqInfoId}')">Cancel</button>
+                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doCancel('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,licPreReqForInfoDto.reqInfoId)}')">Cancel</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>

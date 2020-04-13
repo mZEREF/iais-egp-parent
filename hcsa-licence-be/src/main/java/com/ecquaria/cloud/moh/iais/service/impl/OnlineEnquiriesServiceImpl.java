@@ -580,7 +580,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     @Override
     public void preInspReport(HttpServletRequest request) {
         log.info("=======>>>>>preInspReport>>>>>>>>>>>>>>>>requestForInformation");
-        String appPremCorrId = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        String appPremCorrId = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
 
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremCorrId);
         EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto);

@@ -1,4 +1,5 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -55,7 +56,7 @@
                                             <td><c:out value="${pool.requestUser}" /></td>
                                             <td>
                                                 <iais:action style="text-align:right;">
-                                                    <a onclick="javascript:doView('${pool.reqInfoId}');" >View</a>
+                                                    <a onclick="javascript:doView('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.reqInfoId)}');" >View</a>
                                                 </iais:action>
                                             </td>
                                         </tr>

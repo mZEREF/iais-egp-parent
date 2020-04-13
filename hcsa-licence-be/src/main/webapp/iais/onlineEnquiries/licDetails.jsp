@@ -1,4 +1,5 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%
@@ -309,7 +310,7 @@
                                                         <tr>
                                                             <td class="row_no"><c:out value="${status.index + 1}"/></td>
                                                             <td>
-                                                                <a onclick="doReportSearch('${compliance.appPremCorrId}')">Inspection Report</a>
+                                                                <a onclick="doReportSearch('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,compliance.appPremCorrId)}')">Inspection Report</a>
                                                             </td>
                                                             <td>
                                                                 <p>${compliance.riskTag}</p>

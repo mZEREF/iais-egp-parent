@@ -63,7 +63,7 @@ public class ResponseForInformationDelegator {
     public void preDetail(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do preDetail start ...."));
         HttpServletRequest request=bpc.request;
-        String id =  ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        String id =  ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(id);
         licPremisesReqForInfoDto.setOfficerRemarks(licPremisesReqForInfoDto.getOfficerRemarks().split("\\|")[0]);
         ParamUtil.setRequestAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);

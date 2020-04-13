@@ -53,6 +53,15 @@ import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -63,14 +72,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * RequestForInformationDelegator
@@ -548,14 +549,14 @@ public class RequestForInformationDelegator {
     public void doSearchLicenceAfter(BaseProcessClass bpc) {
         log.info("=======>>>>>doSearchLicenceAfter>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String id = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
         ParamUtil.setSessionAttr(request,"id",id);
         // 		doSearchLicenceAfter->OnStepProcess
     }
     public void preRfi(BaseProcessClass bpc) {
         log.info("=======>>>>>preRfi>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String id = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
         ParamUtil.setSessionAttr(request,"id",id);
         // 		doSearchLicenceAfter->OnStepProcess
     }
@@ -563,7 +564,7 @@ public class RequestForInformationDelegator {
     public void doSearchApplicationAfter(BaseProcessClass bpc) {
         log.info("=======>>>>>doSearchApplicationAfter>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String id = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
         ParamUtil.setSessionAttr(request,"id",id);
 // 		doSearchApplicationAfter->OnStepProcess
     }
@@ -643,8 +644,12 @@ public class RequestForInformationDelegator {
 
     public void doReqForInfo(BaseProcessClass bpc) {
         log.info("=======>>>>>doReqForInfo>>>>>>>>>>>>>>>>requestForInformation");
-        String reqInfoId = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        ParamUtil.setSessionAttr(bpc.request, "reqInfoId", reqInfoId);
+        try {
+            String reqInfoId = ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+            ParamUtil.setSessionAttr(bpc.request, "reqInfoId", reqInfoId);
+        }catch (Exception e){
+            log.info(e.getMessage());
+        }
         // 		doReqForInfo->OnStepProcess
     }
 
@@ -751,7 +756,7 @@ public class RequestForInformationDelegator {
 
     public void doCancel(BaseProcessClass bpc) {
         log.info("=======>>>>>doCancel>>>>>>>>>>>>>>>>requestForInformation");
-        String reqInfoId = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        String reqInfoId = ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         requestForInformationService.deleteLicPremisesReqForInfo(reqInfoId);
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
         licPremisesReqForInfoDto.setReqInfoId(reqInfoId);
@@ -764,7 +769,7 @@ public class RequestForInformationDelegator {
     }
     public void doAccept(BaseProcessClass bpc) {
         log.info("=======>>>>>doAccept>>>>>>>>>>>>>>>>requestForInformation");
-        String reqInfoId = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        String reqInfoId = ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
         requestForInformationService.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
         licPremisesReqForInfoDto.setReqInfoId(reqInfoId);
@@ -787,7 +792,7 @@ public class RequestForInformationDelegator {
     public void doUpdate(BaseProcessClass bpc) throws ParseException {
         log.info("=======>>>>>preCancel>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String reqInfoId = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        String reqInfoId = ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         String date=ParamUtil.getString(request, "Due_date");
         Date dueDate;
         Calendar calendar = Calendar.getInstance();

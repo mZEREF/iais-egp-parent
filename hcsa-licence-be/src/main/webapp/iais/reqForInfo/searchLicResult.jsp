@@ -1,6 +1,5 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -96,7 +95,7 @@
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
                                             <td class="row_no"><c:out value="${status.index + 1 + (SearchParam.pageNo - 1) * SearchParam.pageSize}"/></td>
-                                            <td><a onclick="javascript:doLicInfo('${pool.licenceId}')">${pool.licenceNo}</a></td>
+                                            <td><a onclick="javascript:doLicInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.licenceId)}')">${pool.licenceNo}</a></td>
                                             <td><c:out value="${pool.hciCode}"/></td>
                                             <td><c:out value="${pool.hciName}"/></td>
                                             <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
@@ -110,7 +109,7 @@
                                             <td>
                                                 <c:if test="${pool.licenceStatus=='Active'}">
                                                     <iais:action style="text-align:center;">
-                                                        <a onclick="javascript:doReqForInfo('${pool.licPremId}');" >ReqForInfo</a>
+                                                        <a onclick="javascript:doReqForInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.licPremId)}');" >ReqForInfo</a>
                                                     </iais:action>
                                                 </c:if>
                                             </td>
