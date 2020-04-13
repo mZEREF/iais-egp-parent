@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.job;
+package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -11,9 +11,9 @@ import sop.webflow.rt.api.BaseProcessClass;
  * @date time:2/25/2020 1:52 PM
  * @description:
  */
-@Delegator("selfDeclNotificationDelegator")
+@Delegator("selfDeclNotificationBatchJob")
 @Slf4j
-public class SelfDeclNotificationDelegator {
+public class SelfDeclNotificationBatchJob {
 
 	@Autowired
 	private ApplicationService applicationService;

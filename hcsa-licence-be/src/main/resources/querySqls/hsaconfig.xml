@@ -31,10 +31,10 @@
     <sql key="regulationQuery"  remarks="query regulation">
         <![CDATA[
                 SELECT ID, CLAUSE_NO, CLAUSE, STATUS, CREATED_DT, CREATED_BY, UPDATED_DT, UPDATED_BY
-                FROM chkl_config_hcsa_svc_regulation
+                FROM chkl_config_hcsa_svc_regulation where status = 'CMSTAT001'
                 <#if id??> and id = :id</#if>
-                <#if clauseNo??> and id = :clauseNo</#if>
-                <#if clause??> and id = :clause</#if>
+                <#if clauseNo??> and charindex(:clauseNo, CLAUSE_NO) > 0  </#if>
+                <#if clause??> and charindex(:clause, CLAUSE) > 0</#if>
         ]]>
 
     </sql>

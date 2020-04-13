@@ -15,7 +15,7 @@ import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohSelfDeclNotification___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="selfDeclNotificationDelegator";
+	private static final String DELEGATOR ="selfDeclNotificationBatchJob";
 	
 	public void entry_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "entry", this);

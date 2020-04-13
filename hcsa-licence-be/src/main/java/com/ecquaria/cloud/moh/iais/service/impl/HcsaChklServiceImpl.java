@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQuer
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
@@ -136,25 +135,6 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     @Override
     public Boolean isExistsRecord(ChecklistConfigDto configDto){
         return chklClient.isExistsRecord(configDto).getEntity();
-    }
-
-    @Override
-    public List<ErrorMsgContent> submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationExcelList) {
-        IaisApiResult<List<ErrorMsgContent>> iaisApiResult = chklClient.submitHcsaChklSvcRegulation(regulationExcelList).getEntity();
-        try {
-            //sync to fe
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-
-            List<HcsaChklSvcRegulationDto> allRegulation = chklClient.getAllRegulation().getEntity();
-            beEicGatewayClient.syncRegulationToFe(allRegulation, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
-
-        }catch (Exception e){
-            log.error("encounter failure when sync regulation to fe " + e.getMessage());
-        }
-
-        return iaisApiResult.getEntity();
     }
 
     @Override

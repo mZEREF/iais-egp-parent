@@ -26,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -33,8 +34,6 @@ import java.util.List;
 @FeignClient(name = "hcsa-config", configuration = {FeignConfiguration.class},
         fallback = HcsaChklFallback.class)
 public interface HcsaChklClient {
-
-
     @PostMapping(path = "/iais-hcsa-checklist/config/status", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> inActiveConfig(@RequestBody String confId);
 
@@ -59,8 +58,17 @@ public interface HcsaChklClient {
     @GetMapping(path = "/iais-hcsa-checklist/regulation/regulation-clauses-distinct")
     FeignResponseEntity<List<String>> listRegulationClauseNo();
 
+    @PostMapping(value = "/iais-regulation/regulation", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<IaisApiResult<HcsaChklSvcRegulationDto>> createRegulation(@RequestBody HcsaChklSvcRegulationDto regulationDto);
+
+    @PutMapping(value = "/iais-regulation/regulation", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<IaisApiResult<HcsaChklSvcRegulationDto>> updateRegulation(@RequestBody HcsaChklSvcRegulationDto regulationDto);
+
     @GetMapping(path = "/iais-hcsa-checklist/regulations")
     FeignResponseEntity<List<HcsaChklSvcRegulationDto>> getAllRegulation();
+
+    @PutMapping(value = "/iais-regulation/regulation/{id}")
+    FeignResponseEntity<Boolean> deleteRegulation(@PathVariable("id") String regulationId);
 
     @PostMapping(path = "/iais-hcsa-checklist/item/items-clone", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos);

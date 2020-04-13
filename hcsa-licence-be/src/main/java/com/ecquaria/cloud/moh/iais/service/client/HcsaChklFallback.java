@@ -92,7 +92,31 @@ public class HcsaChklFallback implements HcsaChklClient{
     }
 
     @Override
+    public FeignResponseEntity<IaisApiResult<HcsaChklSvcRegulationDto>> createRegulation(HcsaChklSvcRegulationDto regulationDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<IaisApiResult<HcsaChklSvcRegulationDto>> updateRegulation(HcsaChklSvcRegulationDto regulationDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<HcsaChklSvcRegulationDto>> getAllRegulation() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Boolean> deleteRegulation(String regulationId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

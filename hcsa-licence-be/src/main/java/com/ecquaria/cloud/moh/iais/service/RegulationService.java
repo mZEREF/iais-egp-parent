@@ -5,6 +5,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.RegulationQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
+
+import java.util.List;
 
 /**
  * @author: yichen
@@ -17,7 +20,9 @@ public interface RegulationService {
 
     IaisApiResult<HcsaChklSvcRegulationDto> createRegulation(HcsaChklSvcRegulationDto regulationDto);
 
-    void deleteRegulation(String id);
+    Boolean deleteRegulation(String id);
 
-    HcsaChklSvcRegulationDto updateRegulation(HcsaChklSvcRegulationDto regulationDto);
+    IaisApiResult<HcsaChklSvcRegulationDto> updateRegulation(HcsaChklSvcRegulationDto regulationDto);
+
+    List<ErrorMsgContent> submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationDtoList);
 }

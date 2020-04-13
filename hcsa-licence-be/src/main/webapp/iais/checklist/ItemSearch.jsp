@@ -133,7 +133,7 @@
                             <td>${item.checklistItem}</td>
                             <td><iais:code code="${item.riskLevel}"></iais:code></td>
                             <td><iais:code code="${item.status}"></iais:code></td>
-                            <c:if test="${empty sessionScope.currentValidateId}">
+                            <c:if test="${empty currentValidateId}">
                               <td>
                                 <c:if test="${item.status == 'CMSTAT001'}">
                                 <button type="button" class="btn btn-default btn-sm"

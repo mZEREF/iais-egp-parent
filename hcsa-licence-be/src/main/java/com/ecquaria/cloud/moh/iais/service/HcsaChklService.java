@@ -104,7 +104,7 @@ public interface HcsaChklService {
 
     Boolean isExistsRecord(ChecklistConfigDto dto);
 
-    List<ErrorMsgContent> submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationDtoList);
+
 
     List<ErrorMsgContent> submitUploadItems(List<ChecklistItemDto> uploadItems);
 }

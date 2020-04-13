@@ -25,7 +25,7 @@
         <br><br>
         <div class="bg-title">
             <c:choose>
-                <c:when test="${isUpdate = 'Y'}">
+                <c:when test="${isUpdate eq 'Y'}">
                     <h2>Regulation Update</h2>
                 </c:when>
                 <c:otherwise>
@@ -40,8 +40,8 @@
             <div class="form-group">
                 <iais:field value="Regulation Clause Number" required="true"/>
                 <div class="col-xs-5 col-md-3" >
-                    <input type="text" name="regulationClauseNo" maxlength="100" value="" />
-                    <span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>
+                    <input type="text" name="regulationClauseNo" maxlength="100" value="${regulationAttr.clauseNo}" />
+                    <span id="error_clauseNo" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
 
@@ -49,25 +49,24 @@
             <div class="form-group">
                 <iais:field value="Regulations" required="true" />
                 <div class="col-xs-5 col-md-3" >
-                    <textarea cols="70" rows="7" maxlength="2000" name="regulationClause" id="regulationClause"></textarea>
-
-                    <span id="error_regulationClause" name="iaisErrorMsg" class="error-msg"></span>
+                    <textarea cols="70" rows="7" name="regulationClause" id="regulationClause" maxlength="2000"><c:out value="${regulationAttr.clause}"> </c:out></textarea>
+                    <span id="error_clause" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
 
         </div>
         <div class="row">
             <div class="col-xs-12 col-sm-6">
-                <a class="back" href="#" id="crud_cancel_link" value="doCancel"><i class="fa fa-angle-left"></i>Back</a>
+                <a class="back" href="#" id="crud_cancel_link" value="doBack"><i class="fa fa-angle-left"></i>Back</a>
             </div>
             <div class="col-xs-3 col-sm-3 col-md-offset-3">
                 <div class="button-group">
                     <c:choose>
-                        <c:when test="${isUpdate = 'Y'}">
-                             <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doEdit', 'update')">Update</a></div>
+                        <c:when test="${isUpdate eq 'Y'}">
+                             <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doCreateOrUpdate', 'update')">Update</a></div>
                         </c:when>
                         <c:otherwise>
-                            <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doEdit', 'create')">Create</a></div>
+                            <a class="btn btn-primary" href="#" onclick="Utils.submit('mainForm', 'doCreateOrUpdate', 'create')">Create</a></div>
                         </c:otherwise>
                     </c:choose>
 

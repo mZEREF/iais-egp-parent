@@ -19,8 +19,10 @@
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
+        <input hidden="hidden" id="regulationId" name="regulationId" value="">
         <div class="bg-title"><h2>Regulation Management</h2></div>
 
+        <span id="error_customValidation" name="iaisErrorMsg" class="error-msg"></span>
 
         <iais:section title="">
 
@@ -89,8 +91,8 @@
                                                 <td>${item.clause}</td>
                                                 <td><iais:code code="${item.status}"></iais:code></td>
                                                 <td>
-                                                    <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="" >Edit</button>
-                                                    <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="" >Delete</button>
+                                                    <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="Utils.markSubmit('mainForm','preUpdate', 'regulationId', '<iais:mask name="regulationId" value="${item.id}"/>')" >Edit</button>
+                                                    <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="Utils.markSubmit('mainForm','doDelete', 'regulationId', '<iais:mask name="regulationId" value="${item.id}"/>')" >Delete</button>
                                                 </td>
 
                                             </tr>
@@ -109,7 +111,7 @@
                                             <br><br><br>
                                             <div class="text-right text-center-mobile">
                                                 <a class="btn btn-primary next" href="javascript:void(0);"
-                                                   onclick="Utils.submit('mainForm', 'preUploadData', 'regulation')">Upload Regulation</a>
+                                                   onclick="Utils.submit('mainForm', 'preUpload')">Upload Regulation</a>
 
                                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                                    onclick="Utils.submit('mainForm', 'preCreate')">Create</a>

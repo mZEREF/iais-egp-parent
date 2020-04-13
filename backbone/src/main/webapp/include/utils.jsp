@@ -17,6 +17,11 @@
             SOP.Crud.cfxSubmit(form, action, value);
         },
 
+        markSubmit: function (form, action, paramNameId, paramValue) {
+            $('#' + paramNameId).val(paramValue);
+            SOP.Crud.cfxSubmit(form, action, paramValue);
+        },
+
         clearClickStatus: function () {
             $(".form-horizontal input").val("");
             $(".form-horizontal input[type='checkbox']").removeAttr('checked');

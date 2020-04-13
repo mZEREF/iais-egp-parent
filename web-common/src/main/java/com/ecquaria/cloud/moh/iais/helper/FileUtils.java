@@ -106,4 +106,25 @@ public final class FileUtils {
             throw new IaisRuntimeException("the file encounter an error with convert to byte[].");
         }
     }
+
+    public static boolean outFileSize(long fileSize){
+        double size = (double) (fileSize / 0x400) / 0x400;
+        if (Math.ceil(size) > 0x10) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    public static boolean isExcel(String originalFileName){
+        if (originalFileName.endsWith("." + ExcelReader.EXCEL_TYPE_XSSF)){
+            return true;
+        }
+
+        return false;
+    }
+
+
+
 }

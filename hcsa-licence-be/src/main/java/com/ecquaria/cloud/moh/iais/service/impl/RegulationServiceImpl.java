@@ -6,10 +6,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.RegulationQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.service.RegulationService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author: yichen
@@ -30,16 +33,22 @@ public class RegulationServiceImpl implements RegulationService {
 
     @Override
     public IaisApiResult<HcsaChklSvcRegulationDto> createRegulation(HcsaChklSvcRegulationDto regulationDto) {
-        return null;
+        return hcsaChklClient.createRegulation(regulationDto).getEntity();
     }
 
     @Override
-    public void deleteRegulation(String id) {
-
+    public Boolean deleteRegulation(String id) {
+        return hcsaChklClient.deleteRegulation(id).getEntity();
     }
 
     @Override
-    public HcsaChklSvcRegulationDto updateRegulation(HcsaChklSvcRegulationDto regulationDto) {
-        return null;
+    public IaisApiResult<HcsaChklSvcRegulationDto> updateRegulation(HcsaChklSvcRegulationDto regulationDto) {
+        return hcsaChklClient.updateRegulation(regulationDto).getEntity();
+    }
+
+    @Override
+    public List<ErrorMsgContent> submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationDtoList) {
+        IaisApiResult<List<ErrorMsgContent>> apiResult = hcsaChklClient.submitHcsaChklSvcRegulation(regulationDtoList).getEntity();
+        return apiResult.getEntity();
     }
 }

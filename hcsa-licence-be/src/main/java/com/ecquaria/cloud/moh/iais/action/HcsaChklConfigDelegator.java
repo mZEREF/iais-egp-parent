@@ -87,6 +87,7 @@ public class HcsaChklConfigDelegator {
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_SEARCH, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_RESULT, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, null);
+        ParamUtil.setSessionAttr(request, "routeToItemProcess", null);
         ParamUtil.setSessionAttr(request, "addedItemIdList", null);
         ParamUtil.setSessionAttr(request, "actionBtn", null);
 
@@ -739,9 +740,11 @@ public class HcsaChklConfigDelegator {
      */
     public void routeToItemProcess(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
 
         // go checklist checklist item page
         String currentValidateId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.PARAM_PAGE_INDEX);
+        ParamUtil.setSessionAttr(request, "routeToItemProcess", currentAction);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_PAGE_INDEX, currentValidateId);
     }
 
