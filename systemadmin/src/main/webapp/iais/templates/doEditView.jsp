@@ -73,7 +73,10 @@
                             </textarea>
                         </div>
                         <div class="form-group">
-                            <div class="col-xs-12 col-sm-12 text-right">
+                            <div class="col-xs-2 col-sm-2" style="padding-top: 30px;">
+                                <a href="/system-admin-web/eservice/INTRANET/MohAlertNotificationTemplate"><em class="fa fa-angle-left"></em> Back</a>
+                            </div>
+                            <div class="col-xs-10 col-sm-10 text-right">
                                 <button type="button" class="btn btn-primary " onclick="doEdit('${MsgTemplateDto.id}')">
                                     SUBMIT
                                 </button>
