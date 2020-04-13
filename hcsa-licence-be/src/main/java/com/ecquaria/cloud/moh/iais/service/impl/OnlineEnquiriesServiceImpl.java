@@ -608,16 +608,13 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
             oldAppSvcRelatedInfoDto = doAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList, oldAppSubmissionDto,request);
         }
-        /*************************/
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
         appSvcRelatedInfoDto.setOldAppSvcRelatedInfoDto(oldAppSvcRelatedInfoDto);
         List<AppSvcDisciplineAllocationDto> allocationDto = null;
         List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = null;
-        if(appSvcRelatedInfoDto != null){
-            String serviceId = appSvcRelatedInfoDto.getServiceId();
-            hcsaSvcSubtypeOrSubsumedDtos = applicationViewService.getHcsaSvcSubtypeOrSubsumedByServiceId(serviceId);
-            allocationDto = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
-        }
+        String serviceId = appSvcRelatedInfoDto.getServiceId();
+        hcsaSvcSubtypeOrSubsumedDtos = applicationViewService.getHcsaSvcSubtypeOrSubsumedByServiceId(serviceId);
+        allocationDto = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocationList = IaisCommonUtils.genNewArrayList();
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){

@@ -707,7 +707,8 @@ public class RequestForInformationDelegator {
         if(licPremisesReqForInfoDto1.isNeedDocument()){
             stringBuilder.append("<p>   2. ").append("Documentations  ").append(rfiTitle).append("</p>");
         }
-        map.put("DETAILS",StringUtil.viewHtml("<p>"+"</p>"));
+        map.put("DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
+        map.put("COMMENTS",StringUtil.viewHtml(""));
         String url = "https://" + systemParamConfig.getInterServerName() +
                 "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
                 "?licenseeId=" + licenseeId;

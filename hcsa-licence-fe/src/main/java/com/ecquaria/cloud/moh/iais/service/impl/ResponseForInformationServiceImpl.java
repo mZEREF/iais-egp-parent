@@ -96,8 +96,8 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         if(!groupPath.exists()){
             groupPath.mkdirs();
         }
-        try (FileOutputStream fileInputStream = new FileOutputStream(backups+File.separator+file.getName());
-             FileOutputStream fileOutputStream  =new FileOutputStream(file);) {
+        try {FileOutputStream fileInputStream = new FileOutputStream(backups+File.separator+file.getName());
+             FileOutputStream fileOutputStream  =new FileOutputStream(file);
             if(!file.exists()){
                 file.createNewFile();
             }
@@ -124,7 +124,8 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
             byte[] entity = fileRepositoryClient.getFileFormDataBase(licPremisesReqForInfoDto.getFileRepoId()).getEntity();
             File file = MiscUtil.generateFile(download + File.separator + "files",
                     licPremisesReqForInfoDto.getFileRepoId() + "@" + licPremisesReqForInfoDto.getDocName());
-            try (FileOutputStream outputStream=new FileOutputStream(file)) {
+            try {
+                FileOutputStream outputStream=new FileOutputStream(file);
                 outputStream.write(entity);
             } catch (Exception e) {
                 log.error(e.getMessage(),e);
@@ -151,10 +152,10 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         if(!c.exists()){
             c.mkdirs();
         }
-        try (OutputStream is=new FileOutputStream(backups+File.separator+ l+".zip");
-             CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
-             ZipOutputStream zos=new ZipOutputStream(cos)) {
-
+        try {
+            OutputStream is=new FileOutputStream(backups+File.separator+ l+".zip");
+            CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
+            ZipOutputStream zos=new ZipOutputStream(cos);
             log.info("------------zip file name is"+backups+File.separator+ l+".zip"+"--------------------");
             File file = new File(download+File.separator);
 
@@ -177,8 +178,8 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                 zipFile(zos,f);
             }
         } else {
-            try (
-                    BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
+            try  {
+                BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))));
                 int count ;
                 byte [] b =new byte[1024];
@@ -208,8 +209,9 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                 return false;
             });
             for(File file:files){
-                try (FileInputStream is=new FileInputStream(file);
-                     ByteArrayOutputStream by=new ByteArrayOutputStream();){
+                try {
+                    FileInputStream is=new FileInputStream(file);
+                    ByteArrayOutputStream by=new ByteArrayOutputStream();
                     int count=0;
                     byte [] size=new byte[1024];
                     count=is.read(size);
