@@ -942,11 +942,13 @@ public class NewApplicationHelper {
             specialtyAttr.put("class", "specialty");
             specialtyAttr.put("style", "display: none;");
             if(person == null){
-                psnDto.setNeedSpcOptList(true);
-                List<SelectOption> specialityOpts = genSpecialtySelectList(svcCode,true);
-                psnDto.setSpcOptList(specialityOpts);
-                String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, psnDto.getSpeciality());
-                psnDto.setSpecialityHtml(specialtySelectStr);
+                if(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnDto.getPsnType())){
+                    psnDto.setNeedSpcOptList(true);
+                    List<SelectOption> specialityOpts = genSpecialtySelectList(svcCode,true);
+                    psnDto.setSpcOptList(specialityOpts);
+                    String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, psnDto.getSpeciality());
+                    psnDto.setSpecialityHtml(specialtySelectStr);
+                }
                 personMap.put(personMapKey,psnDto);
             }else{
                 //set different page column
