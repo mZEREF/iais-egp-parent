@@ -20,7 +20,7 @@
                             <h2>Create Master Code</h2>
                         </div>
                         <div class="form-group">
-                            <iais:field value="Master Code Key." required="true"/>
+                            <iais:field value="Master Code Key" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeKey = request.getParameter("codeKey")==null?"":request.getParameter("codeKey");%>
@@ -30,7 +30,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <iais:field value="Code Value." required="true"/>
+                            <iais:field value="Code Value" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeValue = request.getParameter("codeValue")==null?"":request.getParameter("codeValue");%>
@@ -40,7 +40,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <iais:field value="Code Category." required="true"/>
+                            <iais:field value="Code Category" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="codeCategory" type="text" name="codeCategory" value="${codeCategory}" readonly="readonly">
@@ -48,7 +48,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <iais:field value="Code Description." required="true"/>
+                            <iais:field value="Code Description" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeDescription = request.getParameter("codeDescription")==null?"":request.getParameter("codeDescription");%>
@@ -58,7 +58,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="filterValue">Filter Value.</label>
+                            <label class="col-xs-12 col-md-4 control-label" for="filterValue">Filter Value</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String filterValue = request.getParameter("filterValue")==null?"":request.getParameter("filterValue");%>
@@ -67,7 +67,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <iais:field value="Sequence." required="true"/>
+                            <iais:field value="Sequence" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeSequence = request.getParameter("codeSequence")==null?"":request.getParameter("codeSequence");%>
@@ -77,7 +77,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="codeRemarks">Remark.</label>
+                            <label class="col-xs-12 col-md-4 control-label" for="codeRemarks">Remarks</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeRemarks = request.getParameter("codeRemarks")==null?"":request.getParameter("codeRemarks");%>
@@ -86,7 +86,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <iais:field value="Version." required="true"/>
+                            <iais:field value="Version" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeVersion = request.getParameter("codeVersion")==null?"":request.getParameter("codeVersion");%>
@@ -96,7 +96,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <iais:field value="Status." required="true"/>
+                            <iais:field value="Status" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeStatus = request.getParameter("codeStatus")==null?"":request.getParameter("codeStatus");%>
@@ -106,7 +106,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <iais:field value="Effective Start Date." required="true"/>
+                            <iais:field value="Effective Start Date" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String esd = request.getParameter("esd")==null?"":request.getParameter("esd");%>
@@ -116,7 +116,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <iais:field value="Effective End Date." required="true"/>
+                            <iais:field value="Effective End Date" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String eed = request.getParameter("eed")==null?"":request.getParameter("eed");%>
