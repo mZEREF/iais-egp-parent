@@ -279,7 +279,7 @@
                             <iais:row>
                               <iais:field value="Current Status"/>
                               <iais:value width="7">
-                                <p><label style="font-size: 16px"><iais:code code="${inspectionPreTaskDto.appStatus}"/></label></p>
+                                <p><span style="font-size: 16px"><iais:code code="${inspectionPreTaskDto.appStatus}"/></span></p>
                               </iais:value>
                             </iais:row>
                             <iais:row>
@@ -308,10 +308,10 @@
                               </div>
                               <div class="col-md-6">
                                 <c:if test="${applicationViewDto.recomLiceStartDate != null}">
-                                  <label style="font-size: 16px"><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></label>
+                                  <span style="font-size: 16px"><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></span>
                                 </c:if>
                                 <c:if test="${applicationViewDto.recomLiceStartDate == null}">
-                                  <label style="font-size: 16px">-</label>
+                                  <span style="font-size: 16px">-</span>
                                 </c:if>
                               </div>
                             </div>
