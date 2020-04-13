@@ -318,7 +318,7 @@
                             <p></p><br><br>
                             <div class="row">
                               <div class="col-md-4">
-                                <label style="font-size: 16px">Fast Tracking</label>
+                                <label style="font-size: 16px">Fast Tracking?</label>
                               </div>
                               <div class="col-md-6">
                                 <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>

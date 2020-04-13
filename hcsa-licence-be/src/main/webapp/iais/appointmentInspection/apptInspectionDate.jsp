@@ -45,7 +45,7 @@
                                                                                               data-toggle="tab">Documents</a></li>
                         <li id="apptInspTabProcessing" class="incomplete" role="presentation"><a href="#tabProcessing"
                                                                                                  aria-controls="tabProcessing" role="tab"
-                                                                                                 data-toggle="tab">Processing</a></li>
+                                                                                                 data-toggle="tab" onclick="javascript:apptInspectionDateGetDate()">Processing</a></li>
                       </ul>
                       <div class="tab-nav-mobile visible-xs visible-sm">
                         <div class="swiper-wrapper" role="tablist">
@@ -54,7 +54,7 @@
                           <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments"
                                                        role="tab" data-toggle="tab">Documents</a></div>
                           <div class="swiper-slide"><a id="apptInspectionDate" href="#tabProcessing" aria-controls="tabProcessing"
-                                                       role="tab" data-toggle="tab" onclick="javascript:apptInspectionDateGetDate()">Processing</a></div>
+                                                       role="tab" data-toggle="tab">Processing</a></div>
                         </div>
                         <div class="swiper-button-prev"></div>
                         <div class="swiper-button-next"></div>
@@ -214,7 +214,7 @@
                               </div>
                             </div>
                             <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag && 'APTY007' ne applicationViewDto.applicationDto.applicationType}">
-                              <c:if test="${apptInspectionDateDto.inspectionDate != null}">
+                              <div id="apptThreeInspDate">
                                 <iais:row>
                                   <iais:field value="Available Appointment Dates"/>
                                 </iais:row>
@@ -234,7 +234,7 @@
                                 <button id="disApptSysInspDate" class="btn btn-primary disabled" disabled style="float:right" type="button">Allow System to Propose Dates</button>
                                 <button id="apptSysInspDate" class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateConfirm()">Allow System to Propose Dates</button>
                               </iais:action>
-                            </c:if>
+                            </div>
                             <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag && 'APTY007' eq applicationViewDto.applicationDto.applicationType}">
                               <iais:action>
                                 <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
@@ -312,12 +312,12 @@
         if('true' == sysInspDateFlag){
             $("#disApptSysInspDate").hide();
             $("#apptSysInspDate").show();
+            $("#apptThreeInspDate").show();
         } else {
             $("#disApptSysInspDate").show();
             $("#apptSysInspDate").hide();
+            $("#apptThreeInspDate").hide();
         }
-        $("#disApptSysInspDate").show();
-        $("#apptSysInspDate").hide();
         var apptBackShow = $("#apptBackShow").val();
         if('back' == apptBackShow){
             apptInspectionDateJump();
@@ -350,13 +350,16 @@
         $.post(
             '/hcsa-licence-web/online-appt/insp.date',
             function (data) {
+                dismissWaiting();
                 var sysInspDateFlag = data.buttonFlag;
                 if('true' == sysInspDateFlag){
                     $("#disApptSysInspDate").hide();
                     $("#apptSysInspDate").show();
+                    $("#apptThreeInspDate").show();
                 } else {
                     $("#disApptSysInspDate").show();
                     $("#apptSysInspDate").hide();
+                    $("#apptThreeInspDate").hide();
                 }
             }
         )
@@ -368,8 +371,6 @@
         $("#processDec").val('REDECI018');
         apptInspectionDateSubmit("confirm");
     }
-
-
 </script>
 
 
