@@ -166,7 +166,9 @@
             if('ONSITE'==checkedType){
                 $premCountEle.find('.onSiteSelect').removeClass('hidden');
                 $premCountEle.find('.conveyanceSelect').addClass('hidden');
+                $premCountEle.find('.offSiteSelect').addClass('hidden');
                 $premCountEle.find('.new-premise-form-conv').addClass('hidden');
+                $premCountEle.find('.new-premise-form-off-site').addClass('hidden');
                 var premSelValue =  $premCountEle.find('.onSiteSelect .premSelect').val();
                 if(premSelValue == "newPremise"){
                     $premCountEle.find('.new-premise-form-on-site').removeClass('hidden');
@@ -184,7 +186,9 @@
             }else if('CONVEYANCE' == checkedType){
                 $premCountEle.find('.conveyanceSelect').removeClass('hidden');
                 $premCountEle.find('.onSiteSelect').addClass('hidden');
+                $premCountEle.find('.offSiteSelect').addClass('hidden');
                 $premCountEle.find('.new-premise-form-on-site').addClass('hidden');
+                $premCountEle.find('.new-premise-form-off-site').addClass('hidden');
                 var premSelValue =  $premCountEle.find('.conveyanceSelect .premSelect').val();
                 if(premSelValue =="newPremise"){
                     $premCountEle.find('.new-premise-form-conv').removeClass('hidden');
@@ -199,6 +203,27 @@
                     $premCountEle.find('a.retrieveAddr').addClass('hidden');
                     $premCountEle.find('button.addPubHolDay').addClass('hidden');
                 }
+            }else if('OFFSIET' == checkedType){
+                $premCountEle.find('.conveyanceSelect').addClass('hidden');
+                $premCountEle.find('.onSiteSelect').addClass('hidden');
+                $premCountEle.find('.offSiteSelect').removeClass('hidden');
+                $premCountEle.find('.new-premise-form-on-site').addClass('hidden');
+                $premCountEle.find('.new-premise-form-conv').addClass('hidden');
+                var premSelValue =  $premCountEle.find('.offSiteSelect .premSelect').val();
+                if(premSelValue =="newPremise"){
+                    $premCountEle.find('.new-premise-form-off-site').removeClass('hidden');
+                }else if(premSelValue == "-1"){
+
+                }else{
+                    $premCountEle.find('.new-premise-form-off-site').removeClass('hidden');
+                    <!--disable this form -->
+                    var $premFormConveyance = $premCountEle.find('div.new-premise-form-off-site');
+                    readonlyPartPage($premFormConveyance);
+                    <!--hidden btn -->
+                    $premCountEle.find('a.retrieveAddr').addClass('hidden');
+                    $premCountEle.find('button.addPubHolDay').addClass('hidden');
+                }
+
             }
         });
 
@@ -251,14 +276,19 @@
     })
     var oval = $("#onSiteSel").val();
     var cval = $("#conveyanceSel").val();
+    var offval =  $('#offSiteSel').val();
     console.log("oval"+cval);
 
-    if (oval != -1 || cval != -1) {
+    if (oval != -1 || cval != -1 || offval != -1) {
         $("#addPremBody").removeAttr("hidden");
     }
     $("#conveyanceSel").change(function(){
         $("#addPremBody").removeAttr("hidden");
     })
+
+    $('#offSiteSel').change(function () {
+        $("#addPremBody").removeAttr("hidden");
+    });
 
 
     function saveDraft() {

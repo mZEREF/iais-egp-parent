@@ -7,20 +7,37 @@
             if('ONSITE'==checkedType){
                 $premSelect.find('.onSiteSelect').removeClass('hidden');
                 $premSelect.find('.conveyanceSelect').addClass('hidden');
+                $premSelect.find('.offSiteSelect').addClass('hidden');
+                $premSelect.find('.new-premise-form-on-site').addClass('hidden');
                 $premSelect.find('.new-premise-form-conv').addClass('hidden');
+                $premSelect.find('.new-premise-form-off-site').addClass('hidden');
+                $premSelctDivEle.find('.premTypeValue').val(checkedType);
+                <!--change hidden length value -->
+                var length =  $premSelect.find('.new-premise-form-on-site div.pubHolidayContent').length;
+                $premSelect.find('.phLength').val(length);
+            }else if('CONVEYANCE' == checkedType){
+                $premSelect.find('.conveyanceSelect').removeClass('hidden');
+                $premSelect.find('.onSiteSelect').addClass('hidden');
+                $premSelect.find('.offSiteSelect').addClass('hidden');
+                $premSelect.find('.new-premise-form-on-site').addClass('hidden');
+                $premSelect.find('.new-premise-form-conv').addClass('hidden');
+                $premSelect.find('.new-premise-form-off-site').addClass('hidden');
+                $premSelctDivEle.find('.premTypeValue').val(checkedType);
+                <!--change hidden length value -->
+                var length =  $premSelect.find('.new-premise-form-conv div.pubHolidayContent').length;
+                $premSelect.find('.phLength').val(length);
+            }else if('OFFSIET' == checkedType){
+                $premSelect.find('.onSiteSelect').addClass('hidden');
+                $premSelect.find('.conveyanceSelect').addClass('hidden');
+                $premSelect.find('.offSiteSelect').removeClass('hidden');
+                $premSelect.find('.new-premise-form-on-site').addClass('hidden');
+                $premSelect.find('.new-premise-form-conv').addClass('hidden');
+                $premSelect.find('.new-premise-form-off-site').addClass('hidden');
                 $premSelctDivEle.find('.premTypeValue').val(checkedType);
                 <!--change hidden length value -->
                 var length =  $premSelect.find('.new-premise-form-on-site div.pubHolidayContent').length;
                 $premSelect.find('.phLength').val(length);
 
-            }else if('CONVEYANCE' == checkedType){
-                $premSelect.find('.conveyanceSelect').removeClass('hidden');
-                $premSelect.find('.onSiteSelect').addClass('hidden');
-                $premSelect.find('.new-premise-form-on-site').addClass('hidden');
-                $premSelctDivEle.find('.premTypeValue').val(checkedType);
-                <!--change hidden length value -->
-                var length =  $premSelect.find('.new-premise-form-conv div.pubHolidayContent').length;
-                $premSelect.find('.phLength').val(length);
             }
 
         });
@@ -43,6 +60,8 @@
                 premDivName = 'new-premise-form-on-site';
             }else if ("conveyanceSel" == thisId) {
                 premDivName = 'new-premise-form-on-site';
+            }else if ('offSiteSel' == thisId){
+                premDivName = 'new-premise-form-off-site';
             }
             // initPhForm(premDivName,$premContent);
 
@@ -52,15 +71,24 @@
                 if("onSiteSel" == thisId){
                     $premContent.find('.new-premise-form-on-site').removeClass('hidden');
                     $premContent.find('.new-premise-form-conv').addClass('hidden');
+                    $premContent.find('.new-premise-form-off-site').addClass('hidden');
                     var data = {};
                     fillForm('onSite',data,$premContent);
                     setAddress('onSite',data,$premContent);
                 }else if ("conveyanceSel" == thisId) {
                     $premContent.find('.new-premise-form-conv').removeClass('hidden');
                     $premContent.find('.new-premise-form-on-site').addClass('hidden');
+                    $premContent.find('.new-premise-form-off-site').addClass('hidden');
                     var data = {};
                     fillForm('conveyance',data,$premContent);
                     setAddress('conveyance',data,$premContent);
+                }else if('offSiteSel' == thisId){
+                    $premContent.find('.new-premise-form-conv').addClass('hidden');
+                    $premContent.find('.new-premise-form-on-site').addClass('hidden');
+                    $premContent.find('.new-premise-form-off-site').removeClass('hidden');
+                    var data = {};
+                    fillForm('offSite',data,$premContent);
+                    setAddress('offSite',data,$premContent);
                 }
             }else if("-1" == premSelectVal){
                 $premContent.find('.new-premise-form-conv').addClass('hidden');
@@ -68,8 +96,10 @@
                 var data = {};
                 fillForm('onSite',data,$premContent);
                 fillForm('conveyance',data,$premContent);
+                fillForm('offSite',data,$premContent);
                 setAddress('onSite',data,$premContent);
                 setAddress('conveyance',data,$premContent);
+                setAddress('offSite',data,$premContent);
             }else{
                 <!--choose already exist premises -->
                 var premisesType = '';
@@ -77,10 +107,17 @@
                     premisesType = 'onSite';
                     $premContent.find('.new-premise-form-on-site').removeClass('hidden');
                     $premContent.find('.new-premise-form-conv').addClass('hidden');
+                    $premContent.find('.new-premise-form-off-site').addClass('hidden');
                 }else if ("conveyanceSel" == thisId) {
                     premisesType = 'conveyance';
-                    $premContent.find('.new-premise-form-conv').removeClass('hidden');
                     $premContent.find('.new-premise-form-on-site').addClass('hidden');
+                    $premContent.find('.new-premise-form-conv').removeClass('hidden');
+                    $premContent.find('.new-premise-form-off-site').addClass('hidden');
+                }else if ("offSiteSel" == thisId){
+                    premisesType = 'offSite';
+                    $premContent.find('.new-premise-form-on-site').addClass('hidden');
+                    $premContent.find('.new-premise-form-conv').addClass('hidden');
+                    $premContent.find('.new-premise-form-off-site').removeClass('hidden');
                 }
 
                 if(init == 0){
@@ -155,6 +192,8 @@
                         $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
                         return;
                     }
+                    var premType = '';
+
                     if("conveyance" == thisId){
                         $premContent.find('.conveyanceBlockNo').val(data.blkHseNo);
                         $premContent.find('.conveyanceStreetName').val(data.streetName);
@@ -163,13 +202,13 @@
                         $premContent.find('.siteBlockNo').val(data.blkHseNo);
                         $premContent.find('.siteStreetName').val(data.streetName);
                         $premContent.find('.siteBuildingName').val(data.buildingName);
-                        if(null == data.addressType || ''== data.addressType){
+                        /*if(null == data.addressType || ''== data.addressType){
                         }else{
-                        }
-                        $premContent.find('.siteBlockNo').prop('readonly',true);
-                        $premContent.find('.siteStreetName').prop('readonly',true);
-                        $premContent.find('.siteBuildingName').prop('readonly',true);
+                        }*/
                     }
+                    $premContent.find('.siteBlockNo').prop('readonly',true);
+                    $premContent.find('.siteStreetName').prop('readonly',true);
+                    $premContent.find('.siteBuildingName').prop('readonly',true);
                 },
                 'error':function () {
                     $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
@@ -266,6 +305,9 @@
             }else if('CONVEYANCE' == name){
                 name = premVal+"conveyance";
                 type = 'conveyance';
+            }else if('OFFSIET' == name){
+                name = premVal+"offSite";
+                type = 'offSite';
             }
             var currentLength = $contentDivEle.find('div.pubHolidayContent').length;
             var jsonData={
@@ -364,6 +406,14 @@
             $AddrEle.find('select[name="conveyanceAddressType"]').val(addrVal);
             var addressVal = $AddrEle.find('option[value="' + addrVal + '"]').html();
             $AddrEle.find('select[name="conveyanceAddrType"]').next().find('.current').html(addressVal);
+        }else if('offSite' == premisesType){
+            var addrVal = data.conveyanceAddressType;
+            if(addrVal == undefined){
+                addrVal = '';
+            }
+            $AddrEle.find('select[name="offSiteAddressType"]').val(addrVal);
+            var addressVal = $AddrEle.find('option[value="' + addrVal + '"]').html();
+            $AddrEle.find('select[name="offSiteAddrType"]').next().find('.current').html(addressVal);
         }
     }
 
@@ -397,7 +447,7 @@
             $premSelect.find('select[name="'+premisesType+'EndMM"]').val(data.onsiteEndMM);
             var endMM = $premSelect.find('option[value="' + data.onsiteEndMM + '"]').html();
             $premSelect.find('select[name="'+premisesType+'EndMM"]').next().find('.current').html(endMM);
-        }else if('conveyance' == premisesType){
+        }else if('conveyance' == premisesType || 'offSite' == premisesType){
             $premSelect.find('input[name="'+premisesType+'VehicleNo"]').val(data.conveyanceVehicleNo);
             $premSelect.find('input[name="'+premisesType+'BlockNo"]').val(data.conveyanceBlockNo);
             $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.conveyancePostalCode);

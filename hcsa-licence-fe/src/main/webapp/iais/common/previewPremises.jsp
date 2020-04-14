@@ -25,6 +25,7 @@
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span>
                                     <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">On-site</c:if>
                                     <c:if test="${appGrpPremDto.premisesType=='CONVEYANCE'}">Conveyance</c:if>
+                                    <c:if test="${appGrpPremDto.premisesType=='OFFSIET'}">Off-site</c:if>
                                     </span>
                                 </p>
                             </div>
@@ -258,17 +259,7 @@
                             </c:forEach>
                         </c:if>
 
-
-
                         <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Vehicle No.</span></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.conveyanceVehicleNo}</span></p>
-                                </div>
-                            </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>Postal Code</span></p>
@@ -384,6 +375,14 @@
                             <c:forEach items="${appGrpPremDto.appPremPhOpenPeriodList}" var="appPremPhOpenPeriod" varStatus="statu">
                                 <div class="row">
                                     <div class="col-md-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Select Public Holiday</span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>${appPremPhOpenPeriod.dayName}</span></p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holidays Operating Hours (Start)</span></p>
                                     </div>
                                     <div class="col-md-6">
@@ -429,6 +428,175 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     0${appPremPhOpenPeriod.convEndToMM}
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </span></p>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:if>
+
+                        <c:if test="${'OFFSIET'==appGrpPremDto.premisesType}">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Address Type</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>
+                                    <c:if test="${appGrpPremDto.offSiteAddressType=='ADDTY001'}"> Apt Blk</c:if>
+                                    <c:if test="${appGrpPremDto.offSiteAddressType=='ADDTY002'}"> Without Apt Blk</c:if>
+                                    </span></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Block / House No.</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.offSiteBlockNo}</span></p>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Floor No.</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.offSiteFloorNo}</span></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Unit No.</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.offSiteUnitNo}</span></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Street Name</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.offSiteStreetName}</span></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Building Name</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.offSiteBuildingName}</span></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Operating Hours (Start)</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>
+                                        <c:choose>
+                                            <c:when test="${appGrpPremDto.offSiteStartHH.length()>1}">
+                                                ${appGrpPremDto.offSiteStartHH}
+                                            </c:when>
+                                            <c:otherwise>
+                                                0${appGrpPremDto.offSiteStartHH}
+                                            </c:otherwise>
+                                        </c:choose>
+                                        :
+                                        <c:choose>
+                                            <c:when test="${appGrpPremDto.offSiteStartMM.length()>1}">
+                                                ${appGrpPremDto.offSiteStartMM}
+                                            </c:when>
+                                            <c:otherwise>
+                                                0${appGrpPremDto.offSiteStartMM}
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </span></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Operating Hours (End)</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>
+                                        <c:choose>
+                                            <c:when test="${appGrpPremDto.offSiteEndHH.length()>1}">
+                                                ${appGrpPremDto.offSiteEndHH}
+                                            </c:when>
+                                            <c:otherwise>
+                                                0${appGrpPremDto.offSiteEndHH}
+                                            </c:otherwise>
+                                        </c:choose>
+                                        :
+                                        <c:choose>
+                                            <c:when test="${appGrpPremDto.offSiteEndMM.length()>1}">
+                                                ${appGrpPremDto.offSiteEndMM}
+                                            </c:when>
+                                            <c:otherwise>
+                                                0${appGrpPremDto.offSiteEndMM}
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </span></p>
+                                </div>
+                            </div>
+                            <c:forEach items="${appGrpPremDto.appPremPhOpenPeriodList}" var="appPremPhOpenPeriod" varStatus="statu">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Select Public Holiday</span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>${appPremPhOpenPeriod.dayName}</span></p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holidays Operating Hours (Start)</span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>
+                                            <c:choose>
+                                                <c:when test="${appPremPhOpenPeriod.offSiteStartFromHH.length()>1}">
+                                                    ${appPremPhOpenPeriod.offSiteStartFromHH}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    0${appPremPhOpenPeriod.offSiteStartFromHH}
+                                                </c:otherwise>
+                                            </c:choose>
+                                            :
+                                            <c:choose>
+                                                <c:when test="${appPremPhOpenPeriod.offSiteStartFromMM.length()>1}">
+                                                    ${appPremPhOpenPeriod.offSiteStartFromMM}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    0${appPremPhOpenPeriod.offSiteStartFromMM}
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </span></p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Holidays Operating Hours (End)</span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span>
+                                            <c:choose>
+                                                <c:when test="${appPremPhOpenPeriod.offSiteEndToHH.length()>1}">
+                                                    ${appPremPhOpenPeriod.offSiteEndToHH}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    0${appPremPhOpenPeriod.offSiteEndToHH}
+                                                </c:otherwise>
+                                            </c:choose>
+                                            :
+                                            <c:choose>
+                                                <c:when test="${appPremPhOpenPeriod.offSiteEndToMM.length()>1}">
+                                                    ${appPremPhOpenPeriod.offSiteEndToMM}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    0${appPremPhOpenPeriod.offSiteEndToMM}
                                                 </c:otherwise>
                                             </c:choose>
                                         </span></p>

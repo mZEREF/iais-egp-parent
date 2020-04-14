@@ -116,20 +116,26 @@ public class NewApplicationAjaxController {
 
         for(String type:premType){
             String className = "";
-            String width = "col-md-3";
+            String width = "";
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)){
                 className = "onSite";
+                width = "width: 20%;";
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)){
                 className = "conveyance";
-                width = "col-md-4";
+                width = "width: 27%;";
+            }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(type)){
+                className = "offSite";
+                width = "width: 19%;";
             }
-            premTypeBuffer.append("<div class=\"col-xs-5 "+width+"\">")
+            premTypeBuffer.append("<div class=\"col-xs-5 \" style=\""+width+"\">")
                     .append("<div class=\"form-check\">")
                     .append("<input class=\"form-check-input premTypeRadio "+className+"\"  type=\"radio\" name=\"premType"+currentLength+"\" value = "+type+" aria-invalid=\"false\">");
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)){
                 premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>On-site<br/><span>(at a fixed address)</span></label>");
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)){
                 premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>Conveyance<br/><span>(in a mobile clinic / ambulance)</span></label>");
+            }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(type)){
+                premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>Off-site<br/><span>(as tele-medicine)</span></label>");
             }
             premTypeBuffer.append("</div>")
                     .append("</div>");
@@ -143,7 +149,6 @@ public class NewApplicationAjaxController {
         premisesOnSiteAttr.put("name", "onSiteSelect");
         premisesOnSiteAttr.put("style", "display: none;");
         String premOnSiteSelectStr = NewApplicationHelper.generateDropDownHtml(premisesOnSiteAttr, premisesOnSite, null, null);
-
         //premiseSelect -- conveyance
         List<SelectOption> premisesConv= (List) ParamUtil.getSessionAttr(request, "conveyancePremSel");
         Map<String,String> premisesConvAttr = IaisCommonUtils.genNewHashMap();
@@ -152,8 +157,14 @@ public class NewApplicationAjaxController {
         premisesConvAttr.put("name", "conveyanceSelect");
         premisesConvAttr.put("style", "display: none;");
         String premConvSelectStr = NewApplicationHelper.generateDropDownHtml(premisesConvAttr, premisesConv, null, null);
-
-
+        //premisesSelect -- offSite
+        List<SelectOption> premisesOffSite= (List) ParamUtil.getSessionAttr(request, "offSitePremSel");
+        Map<String,String> premisesOffSiteAttr = IaisCommonUtils.genNewHashMap();
+        premisesOffSiteAttr.put("class", "premSelect");
+        premisesOffSiteAttr.put("id", "offSiteSel");
+        premisesOffSiteAttr.put("name", "offSiteSelect");
+        premisesOffSiteAttr.put("style", "display: none;");
+        String premOffSiteSelectStr = NewApplicationHelper.generateDropDownHtml(premisesOffSiteAttr, premisesOffSite, null, null);
 
         List<SelectOption> addrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
         //Address Type on-site
@@ -163,7 +174,6 @@ public class NewApplicationAjaxController {
         addrTypesAttr.put("name", "onSiteAddressType");
         addrTypesAttr.put("style", "display: none;");
         String addrTypeSelectStr = NewApplicationHelper.generateDropDownHtml(addrTypesAttr, addrTypes,NewApplicationDelegator.FIRESTOPTION, null);
-
         //Address Type conveyance
         Map<String,String> conAddrTypesAttr = IaisCommonUtils.genNewHashMap();
         conAddrTypesAttr.put("class", "conveyanceAddressType");
@@ -171,7 +181,13 @@ public class NewApplicationAjaxController {
         conAddrTypesAttr.put("name", "conveyanceAddrType");
         conAddrTypesAttr.put("style", "display: none;");
         String conAddrTypeSelectStr = NewApplicationHelper.generateDropDownHtml(conAddrTypesAttr, addrTypes, NewApplicationDelegator.FIRESTOPTION, null);
-
+        //Address Type offSite
+        Map<String,String> offSiteAddrTypesAttr = IaisCommonUtils.genNewHashMap();
+        offSiteAddrTypesAttr.put("class", "offSiteAddressType");
+        offSiteAddrTypesAttr.put("id", "offSiteAddressType");
+        offSiteAddrTypesAttr.put("name", "offSiteAddrType");
+        offSiteAddrTypesAttr.put("style", "display: none;");
+        String offSiteAddrTypeSelectStr = NewApplicationHelper.generateDropDownHtml(offSiteAddrTypesAttr, addrTypes, NewApplicationDelegator.FIRESTOPTION, null);
 
         //onsite operation time
         Map<String,String> premiseHour = IaisCommonUtils.genNewHashMap();
@@ -308,8 +324,6 @@ public class NewApplicationAjaxController {
         String convholidaystartMM = NewApplicationHelper.generateDropDownHtml(convpbholidaystartMM, timeMinList,"--", null);
 
         Map<String,String> convpbholidayendHH = IaisCommonUtils.genNewHashMap();
-
-
         convpbholidayendHH.put("class", "conveyancePbHolDayEndHH");
         convpbholidayendHH.put("id", premName+"conveyancePbHolDayEndHH0");
         convpbholidayendHH.put("name", premName+"conveyancePbHolDayEndHH0");
@@ -323,38 +337,110 @@ public class NewApplicationAjaxController {
         convpbholidayendMM.put("style", "display: none;");
         String convholidayendMM = NewApplicationHelper.generateDropDownHtml(convpbholidayendMM, timeHourList,"--", null);
 
+
+        //offSite operation time
+        Map<String,String> offSiteStartHour = IaisCommonUtils.genNewHashMap();
+        offSiteStartHour.put("class", "offSiteStartHH");
+        offSiteStartHour.put("id", "offSiteStartHH");
+        offSiteStartHour.put("name", "offSiteStartHH");
+        offSiteStartHour.put("style", "display: none;");
+        String offSiteStartHH = NewApplicationHelper.generateDropDownHtml(offSiteStartHour, timeHourList,"--", null);
+
+        Map<String,String> offSiteStartMin = IaisCommonUtils.genNewHashMap();
+        offSiteStartMin.put("class", "offSiteStartMM");
+        offSiteStartMin.put("id", "offSiteStartMM");
+        offSiteStartMin.put("name", "offSiteStartMM");
+        offSiteStartMin.put("style", "display: none;");
+        String offSiteStartMM = NewApplicationHelper.generateDropDownHtml(offSiteStartMin, timeMinList,"--", null);
+
+        Map<String,String> offSiteEndHour = IaisCommonUtils.genNewHashMap();
+        offSiteEndHour.put("class", "offSiteEndHH");
+        offSiteEndHour.put("id", "offSiteEndHH");
+        offSiteEndHour.put("name", "offSiteEndHH");
+        offSiteEndHour.put("style", "display: none;");
+        String offSiteEndHH = NewApplicationHelper.generateDropDownHtml(offSiteEndHour, timeHourList,"--", null);
+
+        Map<String,String> offSiteEndMin = IaisCommonUtils.genNewHashMap();
+        offSiteEndMin.put("class", "offSiteEndMM");
+        offSiteEndMin.put("id", "offSiteEndMM");
+        offSiteEndMin.put("name", "offSiteEndMM");
+        offSiteEndMin.put("style", "display: none;");
+        String offSiteEndMM = NewApplicationHelper.generateDropDownHtml(offSiteEndMin, timeHourList,"--", null);
+
+        //offSite ph
+        Map<String,String> offSitePublicHoliday = IaisCommonUtils.genNewHashMap();
+        offSitePublicHoliday.put("class", "offSitePubHoliday");
+        offSitePublicHoliday.put("id", premName+"offSitePubHoliday0");
+        offSitePublicHoliday.put("name", premName+"offSitePubHoliday0");
+        offSitePublicHoliday.put("style", "display: none;");
+        String offSitePublicHolidayDD = NewApplicationHelper.generateDropDownHtml(offSitePublicHoliday, publicHolidayList,"Please Select", null);
+
+        Map<String,String> offSitePhStartHH = IaisCommonUtils.genNewHashMap();
+        offSitePhStartHH.put("class", "offSitePbHolDayStartHH");
+        offSitePhStartHH.put("id", premName+"offSitePbHolDayStartHH0");
+        offSitePhStartHH.put("name", premName+"offSitePbHolDayStartHH0");
+        offSitePhStartHH.put("style", "display: none;");
+        String offSitePhStartHHStr = NewApplicationHelper.generateDropDownHtml(offSitePhStartHH, timeHourList,"--", null);
+
+        Map<String,String> offSitePhStartMM = IaisCommonUtils.genNewHashMap();
+        offSitePhStartMM.put("class", "offSitePbHolDayStartMM");
+        offSitePhStartMM.put("id", premName+"offSitePbHolDayStartMM0");
+        offSitePhStartMM.put("name", premName+"offSitePbHolDayStartMM0");
+        offSitePhStartMM.put("style", "display: none;");
+        String offSitePhStartMMStr = NewApplicationHelper.generateDropDownHtml(offSitePhStartMM, timeMinList,"--", null);
+
+        Map<String,String> offSitePhEndHH = IaisCommonUtils.genNewHashMap();
+        offSitePhEndHH.put("class", "offSitePbHolDayEndHH");
+        offSitePhEndHH.put("id", premName+"offSitePbHolDayEndHH0");
+        offSitePhEndHH.put("name", premName+"offSitePbHolDayEndHH0");
+        offSitePhEndHH.put("style", "display: none;");
+        String offSitePhEndHHStr = NewApplicationHelper.generateDropDownHtml(offSitePhEndHH, timeHourList,"--", null);
+
+        Map<String,String> offSitePhEndMM = IaisCommonUtils.genNewHashMap();
+        offSitePhEndMM.put("class", "offSitePbHolDayEndMM");
+        offSitePhEndMM.put("id", premName+"offSitePbHolDayEndMM0");
+        offSitePhEndMM.put("name", premName+"offSitePbHolDayEndMM0");
+        offSitePhEndMM.put("style", "display: none;");
+        String offSitePhEndMMStr = NewApplicationHelper.generateDropDownHtml(offSitePhEndMM, timeHourList,"--", null);
+
         sql = sql.replace("(0)", currentLength);
         sql = sql.replace("(1)", premTypeBuffer.toString());
         sql = sql.replace("(2)", premOnSiteSelectStr);
         sql = sql.replace("(3)", premConvSelectStr);
+        sql = sql.replace("(PREMOFFSITESELECT)", premOffSiteSelectStr);
         sql = sql.replace("(4)", addrTypeSelectStr);
         sql = sql.replace("(5)", conAddrTypeSelectStr);
+        sql = sql.replace("(OFFSITEADDRTYPESELECT)", offSiteAddrTypeSelectStr);
         sql = sql.replace("(ONSITESTARHH)", onsitestarHH);
         sql = sql.replace("(ONSITESTARMM)", onsitestarMM);
         sql = sql.replace("(ONSITEENDHH)", onsiteEndHH);
         sql = sql.replace("(ONSITEENDMM)", onsiteEndMM);
-
-        sql = sql.replace("(PUBLICHOLIDAYDD)", publicHolidayDD);
-
-        sql = sql.replace("(PBHOLDAYSTARTHH)", holidaystartHH);
-        sql = sql.replace("(PBHOLDAYSTARTMM)", holidaystartMM);
-        sql = sql.replace("(PBHOLDAYENDHH)", holidayendHH);
-        sql = sql.replace("(PBHOLDAYENDMM)", holidayendMM);
-
-        /**
-         *
-         */
         sql = sql.replace("(CONVEYANCESTARTHH)", conveyancestartHH);
         sql = sql.replace("(CONVEYANCESTARTMM)", conveyancestartMM);
         sql = sql.replace("(CONVEYANCEENDHH)", conveyanceendHH);
         sql = sql.replace("(CONVEYANCEENDMM)", conveyanceendMM);
+        sql = sql.replace("(OFFSITESTARTHH)", offSiteStartHH);
+        sql = sql.replace("(OFFSITESTARTMM)", offSiteStartMM);
+        sql = sql.replace("(OFFSITEENDHH)", offSiteEndHH);
+        sql = sql.replace("(OFFSITEENDMM)", offSiteEndMM);
 
+        //ph
+        sql = sql.replace("(PUBLICHOLIDAYDD)", publicHolidayDD);
+        sql = sql.replace("(PBHOLDAYSTARTHH)", holidaystartHH);
+        sql = sql.replace("(PBHOLDAYSTARTMM)", holidaystartMM);
+        sql = sql.replace("(PBHOLDAYENDHH)", holidayendHH);
+        sql = sql.replace("(PBHOLDAYENDMM)", holidayendMM);
         sql = sql.replace("(CONVPUBLICHOLIDAYDD)", convpublicHolidayDD);
-
         sql = sql.replace("(CONVEYANCEPBHOLDAYSTARTHH)", convholidaystartHH);
         sql = sql.replace("(CONVEYANCEPBHOLDAYSTARTMM)", convholidaystartMM);
         sql = sql.replace("(CONVEYANCEPBHOLDAYENDHH)", convholidayendHH);
         sql = sql.replace("(CONVEYANCEPBHOLDAYENDMM)", convholidayendMM);
+        sql = sql.replace("(OFFSITEPUBLICHOLIDAYDD)", offSitePublicHolidayDD);
+        sql = sql.replace("(OFFSITEPBHOLDAYSTARTHH)", offSitePhStartHHStr);
+        sql = sql.replace("(OFFSITEPBHOLDAYSTARTMM)", offSitePhStartMMStr);
+        sql = sql.replace("(OFFSITEPBHOLDAYENDHH)", offSitePhEndHHStr);
+        sql = sql.replace("(OFFSITEPBHOLDAYENDMM)", offSitePhEndMMStr);
+
         //premises header val
         Integer premHeaderVal = Integer.parseInt(currentLength)+1;
         sql = sql.replace("(6)",String.valueOf(premHeaderVal));

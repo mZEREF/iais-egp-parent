@@ -34,7 +34,7 @@
                 <span class="error-msg"></span>
               </div>
             <div class="clear"></div></div>
-            <div class="form-group conveyanceSelect hidden">
+          <div class="form-group conveyanceSelect hidden">
               <label class="col-xs-12 col-md-4 control-label">Add or select a premises from the list : <span class="mandatory">*</span></label>
               <div class=" col-xs-11 col-sm-7 col-md-5">
                 (3)
@@ -42,11 +42,15 @@
               </div>
             <div class="clear"></div></div>
           </div>
-          <div class="prem-summary hidden">
-            <h3 class="without-header-line">Premises Summary</h3>
-            <p class="premise-address-gp"> <span class="premise-type"><strong>On-site: </strong></span><span class="premise-address"></span></p>
-            <p class="vehicle-txt hidden"><strong>Vehicle No:</strong> <span class="vehicle-info"></span></p>
+          <div class="form-group offSiteSelect hidden">
+              <label class="col-xs-12 col-md-4 control-label">Add or select a premises from the list : <span class="mandatory">*</span></label>
+              <div class=" col-xs-11 col-sm-7 col-md-5">
+                (PREMOFFSITESELECT)
+                <span class="error-msg"></span>
+              </div>
+            <div class="clear"></div></div>
           </div>
+
           <div class="new-premise-form-on-site hidden">
             <div class="form-horizontal">
               <div class="form-group">
@@ -281,7 +285,7 @@
               <div class="form-group">
                 <label class="col-xs-12 col-md-4 control-label">Building Name </label>
                 <div class=" col-xs-11 col-sm-7 col-md-5 ">
-                   <input type="text" id="conveyanceBuildingName" name="conveyanceBuildingName" class="conveyanceBuildingName" maxlength="32" autocomplete="off">
+                   <input type="text" id="conveyanceBuildingName" name="conveyanceBuildingName" class="conveyanceBuildingName" maxlength="66" autocomplete="off">
                 </div>
               <div class="clear"></div></div>
               <div class="form-group">
@@ -363,6 +367,154 @@
               </div>
             </div>
           </div>
+
+          <div class="new-premise-form-off-site hidden">
+                <div class="form-horizontal">
+                    <div class="form-group postalCodeDiv">
+                        <label class="col-xs-12 col-md-4 control-label">Postal Code <span
+                                class="mandatory">*</span></label>
+                        <div class="col-sm-4 col-md-5 col-xs-5">
+                            <input type="text" id="offSitePostalCode" name="offSitePostalCode"
+                                   class="sitePostalCode" maxlength="6" autocomplete="off">
+                        </div>
+                        <div class="col-xs-7 col-sm-6 col-md-3">
+                            <p><a class="retrieveAddr" id="offSite">Retrieve your address</a></p>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <span class="postalCodeMsg error-msg"></span>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Address Type <span
+                                class="mandatory">*</span></label>
+                        <div class=" col-xs-7 col-sm-4 col-md-5">
+                            (OFFSITEADDRTYPESELECT)
+                            <span class="error-msg"></span>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Block / House No.</label>
+                        <div class="col-sm-4 col-md-5 col-xs-5">
+                            <input type="text" id="offSiteBlockNo" name="offSiteBlockNo" class="offSiteBlockNo"
+                                   maxlength="10" autocomplete="off">
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Floor No.</label>
+                        <div class=" col-xs-7 col-sm-4 col-md-5 ">
+                            <input type="text" id="offSiteFloorNo" name="offSiteFloorNo" maxlength="3"
+                                   autocomplete="off">
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Unit No.</label>
+                        <div class=" col-xs-7 col-sm-4 col-md-5 ">
+                            <input type="text" id="offSiteUnitNo" name="offSiteUnitNo" maxlength="5"
+                                   autocomplete="off">
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-10 col-md-4 control-label">Street Name <span
+                                class="mandatory">*</span></label>
+                        <div class="col-sm-7 col-md-5 col-xs-10">
+                            <input type="text" id="offSiteStreetName" name="offSiteStreetName"
+                                   class="offSiteStreetName" maxlength="32" autocomplete="off">
+                            <span class="error-msg" name="iaisErrorMsg" id="error_streetName(00)"></span>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Building Name </label>
+                        <div class=" col-xs-11 col-sm-7 col-md-5 ">
+                            <input type="text" id="offSiteBuildingName" name="offSiteBuildingName"
+                                   class="offSiteBuildingName" maxlength="66" autocomplete="off">
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">
+                            Operating Hours (Start) <span class="mandatory">*</span>
+                        </label>
+                        <div class="col-xs-9 col-sm-5 col-md-6">
+                            <div class="col-md-3" style="padding-left: unset">
+                                (OFFSITESTARTHH)
+                            </div>
+                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                            <div class="col-md-3" style="padding-left: unset">
+                                (OFFSITESTARTMM)
+                            </div>
+                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">
+                            Operating Hours (End) <span class="mandatory">*</span>
+                        </label>
+                        <div class="col-xs-9 col-sm-5 col-md-6">
+                            <div class="col-md-3" style="padding-left: unset">
+                                (OFFSITEENDHH)
+                            </div>
+                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                            <div class="col-md-3" style="padding-left: unset">
+                                (OFFSITEENDMM)
+                            </div>
+                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                        </div>
+                    </div>
+                    <div class="phFormMarkPoint">
+                    </div>
+                    <div class="pubHolidayContent">
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label">Select Public Holiday</label>
+                            <div class=" col-xs-7 col-sm-4 col-md-5">
+                                (OFFSITEPUBLICHOLIDAYDD)
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_"></span>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label">
+                                Public Holidays Operating Hours (Start)
+                            </label>
+                            <div class="col-xs-9 col-sm-5 col-md-6">
+                                <div class="col-md-3" style="padding-left: unset">
+                                    (OFFSITEPBHOLDAYSTARTHH)
+                                </div>
+                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                <div class="col-md-3" style="padding-left: unset">
+                                    (OFFSITEPBHOLDAYSTARTMM)
+                                </div>
+                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                <span class="error-msg" name="iaisErrorMsg" id="error_"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label">
+                                Public Holidays Operating Hours (End)
+                            </label>
+                            <div class="col-xs-9 col-sm-5 col-md-6">
+                                <div class="col-md-3" style="padding-left: unset">
+                                    (OFFSITEPBHOLDAYENDHH)
+                                </div>
+                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                <div class="col-md-3" style="padding-left: unset">
+                                    (OFFSITEPBHOLDAYENDMM)
+                                </div>
+                                <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-9 col-sm-5 col-md-4">
+                            <button class="addPubHolDay btn btn-primary" type="button">Add Public Holiday</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
         </div>]]>
     </sql>

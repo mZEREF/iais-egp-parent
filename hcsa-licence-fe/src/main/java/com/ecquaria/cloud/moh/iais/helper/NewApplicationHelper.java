@@ -673,6 +673,9 @@ public class NewApplicationHelper {
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
                 appGrpPremisesDto.setConStartHH(String.valueOf(localTimeFrom.getHour()));
                 appGrpPremisesDto.setConStartMM(String.valueOf(localTimeFrom.getHour()));
+            }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premType)){
+                appGrpPremisesDto.setOffSiteStartHH(String.valueOf(localTimeFrom.getHour()));
+                appGrpPremisesDto.setOffSiteStartMM(String.valueOf(localTimeFrom.getHour()));
             }
         }
         if(!StringUtil.isEmpty(wrkTimeTo)){
@@ -683,6 +686,9 @@ public class NewApplicationHelper {
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
                 appGrpPremisesDto.setConEndHH(String.valueOf(localTimeTo.getHour()));
                 appGrpPremisesDto.setConEndMM(String.valueOf(localTimeTo.getMinute()));
+            }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premType)){
+                appGrpPremisesDto.setOffSiteEndHH(String.valueOf(localTimeTo.getHour()));
+                appGrpPremisesDto.setOffSiteEndMM(String.valueOf(localTimeTo.getMinute()));
             }
 
         }
@@ -702,6 +708,9 @@ public class NewApplicationHelper {
                     }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
                         appPremPhOpenPeriod.setConvStartFromHH(String.valueOf(localTimeStart.getHour()));
                         appPremPhOpenPeriod.setConvStartFromMM(String.valueOf(localTimeStart.getMinute()));
+                    }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premType)){
+                        appPremPhOpenPeriod.setOffSiteStartFromHH(String.valueOf(localTimeStart.getHour()));
+                        appPremPhOpenPeriod.setOffSiteStartFromMM(String.valueOf(localTimeStart.getMinute()));
                     }
                 }
                 if(!StringUtil.isEmpty(end)){
@@ -712,6 +721,9 @@ public class NewApplicationHelper {
                     }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
                         appPremPhOpenPeriod.setConvEndToHH(String.valueOf(localTimeEnd.getHour()));
                         appPremPhOpenPeriod.setConvEndToMM(String.valueOf(localTimeEnd.getMinute()));
+                    }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premType)){
+                        appPremPhOpenPeriod.setOffSiteEndToHH(String.valueOf(localTimeEnd.getHour()));
+                        appPremPhOpenPeriod.setOffSiteEndToMM(String.valueOf(localTimeEnd.getMinute()));
                     }
                 }
             }

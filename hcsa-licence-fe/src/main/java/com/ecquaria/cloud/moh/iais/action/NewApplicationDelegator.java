@@ -245,35 +245,31 @@ public class NewApplicationDelegator {
         if (hcsaServiceDtoList != null) {
             hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
         }
-        List premisesSelect = new ArrayList<SelectOption>();
-        List conveyancePremSel = new ArrayList<SelectOption>();
+        List premisesSelect = getPremisesSel();
+        List conveyancePremSel = getPremisesSel();
+        List offSitePremSel = getPremisesSel();
         String licenseeId = appSubmissionDto.getLicenseeId();
         log.info(StringUtil.changeForLog("The preparePremises licenseeId is -->:"+licenseeId));
         Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = null;
         if(!StringUtil.isEmpty(licenseeId)){
             licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
         }
-        SelectOption sp0 = new SelectOption("-1", FIRESTOPTION);
-        premisesSelect.add(sp0);
-        SelectOption sp1 = new SelectOption("newPremise", "Add a new premises");
-        premisesSelect.add(sp1);
-        SelectOption cps1 = new SelectOption("-1", FIRESTOPTION);
-        SelectOption cps2 = new SelectOption("newPremise", "Add a new premises");
-        conveyancePremSel.add(cps1);
-        conveyancePremSel.add(cps2);
         if (licAppGrpPremisesDtoMap != null && !licAppGrpPremisesDtoMap.isEmpty()) {
             for (AppGrpPremisesDto item : licAppGrpPremisesDtoMap.values()) {
-                SelectOption sp2 = new SelectOption(item.getPremisesSelect(), item.getAddress());
+                SelectOption sp= new SelectOption(item.getPremisesSelect(), item.getAddress());
                 if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())) {
-                    premisesSelect.add(sp2);
+                    premisesSelect.add(sp);
                 }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())){
-                    conveyancePremSel.add(sp2);
+                    conveyancePremSel.add(sp);
+                }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(item.getPremisesType())){
+                    offSitePremSel.add(sp);
                 }
             }
         }
         ParamUtil.setSessionAttr(bpc.request, LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
         ParamUtil.setSessionAttr(bpc.request, "premisesSelect", (Serializable) premisesSelect);
         ParamUtil.setSessionAttr(bpc.request, "conveyancePremSel", (Serializable) conveyancePremSel);
+        ParamUtil.setSessionAttr(bpc.request, "offSitePremSel", (Serializable) offSitePremSel);
 
         //addressType
         List<SelectOption> addrTypeOpt = new ArrayList<>();
@@ -1608,6 +1604,20 @@ public class NewApplicationDelegator {
         String [] conStartMM = ParamUtil.getStrings(request, "conveyanceStartMM");
         String [] conEndHHS = ParamUtil.getStrings(request, "conveyanceEndHH");
         String [] conEndMMS = ParamUtil.getStrings(request, "conveyanceEndMM");
+        //offSite
+        String [] offSitePremisesSelect = ParamUtil.getStrings(request, "offSiteSelect");
+        String [] offSitePostalCode = ParamUtil.getStrings(request,  "offSitePostalCode");
+        String [] offSiteBlkNo = ParamUtil.getStrings(request, "offSiteBlockNo");
+        String [] offSiteStreetName = ParamUtil.getStrings(request, "offSiteStreetName");
+        String [] offSiteFloorNo = ParamUtil.getStrings(request, "offSiteFloorNo");
+        String [] offSiteUnitNo = ParamUtil.getStrings(request, "offSiteUnitNo");
+        String [] offSiteBuildingName = ParamUtil.getStrings(request, "offSiteBuildingName");
+        String [] offSiteSiteAddressType = ParamUtil.getStrings(request, "offSiteAddrType");
+        String [] offSiteStartHH = ParamUtil.getStrings(request, "offSiteStartHH");
+        String [] offSiteStartMM = ParamUtil.getStrings(request, "offSiteStartMM");
+        String [] offSiteEndHHS = ParamUtil.getStrings(request, "offSiteEndHH");
+        String [] offSiteEndMMS = ParamUtil.getStrings(request, "offSiteEndMM");
+
         List<SelectOption> publicHolidayDtos = (List<SelectOption>) ParamUtil.getSessionAttr(request,"publicHolidaySelect");
         //every prem's ph length
         String [] phLength = ParamUtil.getStrings(request,"phLength");
@@ -1727,8 +1737,6 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setConveyanceUnitNo(conUnitNo[i]);
                 appGrpPremisesDto.setConveyanceBuildingName(conBuildingName[i]);
                 appGrpPremisesDto.setConveyanceAddressType(conSiteAddressType[i]);
-                /*appGrpPremisesDto.setConveyanceSalutation(conSalutation[i]);
-                appGrpPremisesDto.setConveyanceVehicleOwnerName(conVehicleOwnerName[i]);*/
                 for(int j =0; j<length; j++){
                     AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
                     String convPubHolidayName = premValue[i]+"conveyancePubHoliday"+j;
@@ -1753,6 +1761,46 @@ public class NewApplicationDelegator {
                     appPremPhOpenPeriod.setDayName(phName);
                     if(!StringUtil.isEmpty(convPubHoliday)||!StringUtil.isEmpty(convPbHolDayStartHH) || !StringUtil.isEmpty(convPbHolDayStartMM)
                             ||!StringUtil.isEmpty(convPbHolDayEndHH) ||!StringUtil.isEmpty(convPbHolDayEndMM)){
+                        appPremPhOpenPeriods.add(appPremPhOpenPeriod);
+                    }
+                }
+            }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType[i])){
+                appGrpPremisesDto.setPremisesSelect(offSitePremisesSelect[i]);
+                appGrpPremisesDto.setOffSitePostalCode(offSitePostalCode[i]);
+                appGrpPremisesDto.setOffSiteBlockNo(offSiteBlkNo[i]);
+                appGrpPremisesDto.setOffSiteStreetName(offSiteStreetName[i]);
+                appGrpPremisesDto.setOffSiteFloorNo(offSiteFloorNo[i]);
+                appGrpPremisesDto.setOffSiteUnitNo(offSiteUnitNo[i]);
+                appGrpPremisesDto.setOffSiteBuildingName(offSiteBuildingName[i]);
+                appGrpPremisesDto.setOffSiteAddressType(offSiteSiteAddressType[i]);
+                appGrpPremisesDto.setOffSiteStartHH(offSiteStartHH[i]);
+                appGrpPremisesDto.setOffSiteStartMM(offSiteStartMM[i]);
+                appGrpPremisesDto.setOffSiteEndHH(offSiteEndHHS[i]);
+                appGrpPremisesDto.setOffSiteEndMM(offSiteEndMMS[i]);
+                for(int j =0; j<length; j++){
+                    AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
+                    String offSitePubHolidayName = premValue[i]+"offSitePubHoliday"+j;
+                    String offSitePbHolDayStartHHName = premValue[i]+"offSitePbHolDayStartHH"+j;
+                    String offSitePbHolDayStartMMName = premValue[i]+"offSitePbHolDayStartMM"+j;
+                    String offSitePbHolDayEndHHName = premValue[i]+"offSitePbHolDayEndHH"+j;
+                    String offSitePbHolDayEndMMName = premValue[i]+"offSitePbHolDayEndMM"+j;
+
+                    String offSitePubHoliday = ParamUtil.getDate(request, offSitePubHolidayName);
+                    String offSitePbHolDayStartHH = ParamUtil.getString(request, offSitePbHolDayStartHHName);
+                    String offSitePbHolDayStartMM = ParamUtil.getString(request, offSitePbHolDayStartMMName);
+                    String offSitePbHolDayEndHH = ParamUtil.getString(request, offSitePbHolDayEndHHName);
+                    String offSitePbHolDayEndMM = ParamUtil.getString(request, offSitePbHolDayEndMMName);
+                    appPremPhOpenPeriod.setPhDateStr(offSitePubHoliday);
+                    Date phDate = DateUtil.parseDate(offSitePubHoliday, Formatter.DATE);
+                    appPremPhOpenPeriod.setPhDate(phDate);
+                    appPremPhOpenPeriod.setOffSiteStartFromHH(offSitePbHolDayStartHH);
+                    appPremPhOpenPeriod.setOffSiteStartFromMM(offSitePbHolDayStartMM);
+                    appPremPhOpenPeriod.setOffSiteEndToHH(offSitePbHolDayEndHH);
+                    appPremPhOpenPeriod.setOffSiteEndToMM(offSitePbHolDayEndMM);
+                    String phName = getPhName(publicHolidayDtos,offSitePubHoliday);
+                    appPremPhOpenPeriod.setDayName(phName);
+                    if(!StringUtil.isEmpty(offSitePubHoliday)||!StringUtil.isEmpty(offSitePbHolDayStartHH) || !StringUtil.isEmpty(offSitePbHolDayStartMM)
+                            ||!StringUtil.isEmpty(offSitePbHolDayEndHH) ||!StringUtil.isEmpty(offSitePbHolDayEndMM)){
                         appPremPhOpenPeriods.add(appPremPhOpenPeriod);
                     }
                 }
@@ -3341,6 +3389,15 @@ public class NewApplicationDelegator {
             }
         }
         return result;
+    }
+
+    private static List<SelectOption> getPremisesSel(){
+        List<SelectOption> selectOptionList = IaisCommonUtils.genNewArrayList();
+        SelectOption cps1 = new SelectOption("-1", FIRESTOPTION);
+        SelectOption cps2 = new SelectOption("newPremise", "Add a new premises");
+        selectOptionList.add(cps1);
+        selectOptionList.add(cps2);
+        return selectOptionList;
     }
 
 }

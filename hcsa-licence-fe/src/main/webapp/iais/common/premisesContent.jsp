@@ -3,6 +3,7 @@
     <div class="row premContent <c:if test="${!status.first}">underLine</c:if>  " id="mainPrem">
         <c:set var="onSite" value="ONSITE" ></c:set>
         <c:set var="conv" value="CONVEYANCE" ></c:set>
+        <c:set var="offSite" value="OFFSIET" ></c:set>
         <!--for ph -->
         <input class="premValue" type="hidden" name="premValue" value="${status.index}"/>
         <input class="premisesIndexNo" type="hidden" name="premisesIndexNo" value="${appGrpPremisesDto.premisesIndexNo}"/>
@@ -40,8 +41,14 @@
                             <c:when test="${'CONVEYANCE' == premisesType}">
                                 <c:set var="className" value="conveyance" />
                             </c:when>
+                            <c:when test="${'OFFSIET' == premisesType }">
+                                <c:set var="className" value="offSite" />
+                            </c:when>
                         </c:choose>
-                        <div class="col-xs-5 <c:if test="${'onSite'==className}">col-md-3</c:if> <c:if test="${'conveyance'==className}">col-md-4</c:if> ">
+                        <div class="col-xs-5"
+                             <c:if test="${'onSite'==className}">style="width: 20%;"</c:if>
+                             <c:if test="${'conveyance'==className}">style="width: 27%;"</c:if>
+                             <c:if test="${'offSite'==className}">style="width: 19%;"</c:if> >
                             <div class="form-check">
                                 <c:if test="${appGrpPremisesDto.premisesType!=premisesType}">
                                     <input class="form-check-input premTypeRadio ${className}"  type="radio" name="premType${status.index}" value = "${premisesType}" aria-invalid="false">
@@ -49,7 +56,9 @@
                                 <c:if test="${appGrpPremisesDto.premisesType==premisesType}">
                                     <input class="form-check-input premTypeRadio ${className}"  type="radio" name="premType${status.index}" checked="checked" value = "${premisesType}"  aria-invalid="false">
                                 </c:if>
-
+                                <c:if test="${appGrpPremisesDto.premisesType==premisesType}">
+                                    <input class="form-check-input premTypeRadio ${className}"  type="radio" name="premType${status.index}" checked="checked" value = "${premisesType}"  aria-invalid="false">
+                                </c:if>
                                 <label class="form-check-label" ><span class="check-circle"></span>
                                     <c:if test="${premisesType == onSite}">
                                         <c:out value="On-site" /><br/>
@@ -58,6 +67,10 @@
                                     <c:if test="${premisesType == conv}">
                                         <c:out value="Conveyance" /><br/>
                                         <span>(in a mobile clinic / ambulance)</span>
+                                    </c:if>
+                                    <c:if test="${premisesType == offSite}">
+                                        <c:out value="Off-site" /><br/>
+                                        <span>(as tele-medicine)</span>
                                     </c:if>
                                 </label>
                             </div>
@@ -96,6 +109,20 @@
                             </c:when>
                             <c:otherwise>
                                 <iais:select cssClass="premSelect" id="conveyanceSel" name="conveyanceSelect"  options="conveyancePremSel" value=""></iais:select>
+                            </c:otherwise>
+                        </c:choose>
+                    </iais:value>
+                </iais:row>
+
+                <iais:row cssClass="offSiteSelect hidden">
+                    <iais:field value="Add or select a premises from the list : " width="12" mandatory="true"/>
+                    <iais:value id="offSiteSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
+                        <c:choose>
+                            <c:when test="${appGrpPremisesDto.premisesType == offSite}">
+                                <iais:select cssClass="premSelect" id="offSiteSel" name="offSiteSelect"  options="offSitePremSel" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
+                            </c:when>
+                            <c:otherwise>
+                                <iais:select cssClass="premSelect" id="offSiteSel" name="offSiteSelect"  options="offSitePremSel" value=""></iais:select>
                             </c:otherwise>
                         </c:choose>
                     </iais:value>
@@ -588,6 +615,220 @@
                     </div>
                 </div>
             </div>
+
+            <div class="new-premise-form-off-site hidden">
+                <div class="form-horizontal">
+                    <iais:row cssClass="postalCodeDiv">
+                        <iais:field value="Postal Code " mandatory="true" width="12"/>
+                        <iais:value width="11" cssClass="col-md-5">
+                            <iais:input maxLength="6" cssClass="offSitePostalCode" type="text" name="offSitePostalCode"  value="${appGrpPremisesDto.offSitePostalCode}"></iais:input>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_offSitePostalCode${status.index}"></span>
+                        </iais:value>
+                        <div class="col-xs-7 col-sm-6 col-md-3">
+                            <p><a class="retrieveAddr" id="">Retrieve your address</a></p>
+                        </div>
+
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Address Type " mandatory="true" width="12"/>
+                        <iais:value id="offSiteAddrType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-5 addressType">
+                            <iais:select name="offSiteAddrType" cssClass="offSiteAddressType" id="offSiteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Please Select" value="${appGrpPremisesDto.offSiteAddressType}"></iais:select>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteAddressType${status.index}"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Block / House No." width="12"/>
+                        <iais:value width="11" cssClass="col-md-5">
+                            <iais:input maxLength="10" cssClass="offSiteBlockNo" type="text" name="offSiteBlockNo" id="offSiteBlockNo" value="${appGrpPremisesDto.offSiteBlockNo}"></iais:input>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteBlockNos${status.index}"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Floor No." width="12"/>
+                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                            <iais:input maxLength="3" type="text" name="offSiteFloorNo" id="offSiteFloorNo" value="${appGrpPremisesDto.offSiteFloorNo}"></iais:input>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteFloorNo${status.index}"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Unit No." width="12"/>
+                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                            <iais:input maxLength="5" type="text" name="offSiteUnitNo"  value="${appGrpPremisesDto.offSiteUnitNo}"></iais:input>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteUnitNo${status.index}"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Street Name " mandatory="true" width="10"/>
+                        <iais:value width="10" cssClass="col-md-5">
+                            <iais:input maxLength="32" cssClass="offSiteStreetName" type="text" name="offSiteStreetName"  value="${appGrpPremisesDto.offSiteStreetName}"></iais:input>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteStreetName${status.index}"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Building Name " width="12"/>
+                        <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
+                            <iais:input maxLength="66" cssClass="offSiteBuildingName" type="text" name="offSiteBuildingName" id="offSiteBuildingName" value="${appGrpPremisesDto.offSiteBuildingName}"></iais:input>
+                            <span  class="error-msg"></span>
+                        </iais:value>
+                    </iais:row>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">
+                            Operating Hours (Start) <span class="mandatory">*</span>
+                        </label>
+                        <div class="col-xs-9 col-sm-5 col-md-6">
+                            <div class="col-md-3" style="padding-left: unset">
+                                <iais:select name="offSiteStartHH" options="premiseHours" value="${appGrpPremisesDto.offSiteStartHH}" firstOption="--"></iais:select>
+                            </div>
+                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                            <div class="col-md-3" style="padding-left: unset">
+                                <iais:select name="offSiteStartMM" options="premiseMinute" value="${appGrpPremisesDto.offSiteStartMM}" firstOption="--"></iais:select>
+                            </div>
+                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                        </div>
+                        <div  class="col-xs-12 col-md-4 "></div>
+                        <div class="col-xs-9 col-sm-5 col-md-6">
+                            <span class="error-msg" name="isaiErrorMsg" id="error_offSiteStartMM${status.index}"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">
+                            Operating Hours (End) <span class="mandatory">*</span>
+                        </label>
+                        <div class="col-xs-9 col-sm-5 col-md-6">
+                            <div class="col-md-3" style="padding-left: unset">
+                                <iais:select name="offSiteEndHH" options="premiseHours" value="${appGrpPremisesDto.offSiteEndHH}" firstOption="--"></iais:select>
+                            </div>
+                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                            <div class="col-md-3" style="padding-left: unset">
+                                <iais:select name="offSiteEndMM" options="premiseMinute" value="${appGrpPremisesDto.offSiteEndMM}" firstOption="--"></iais:select>
+                            </div>
+                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+
+                        </div>
+                        <div  class="col-xs-12 col-md-4 "></div>
+                        <div class="col-xs-9 col-sm-5 col-md-6">
+                            <span class="error-msg" name="iaisErrorMsg" id="error_offSiteEndMM${status.index}"></span>
+                        </div>
+                    </div>
+                    <div class="phFormMarkPoint">
+                    </div>
+                    <c:choose>
+                        <c:when test="${appGrpPremisesDto.appPremPhOpenPeriodList.size()>0 && 'OFFSIET'== appGrpPremisesDto.premisesType}">
+                            <c:forEach var="ph" items="${appGrpPremisesDto.appPremPhOpenPeriodList}" varStatus="phStat" >
+                                <div class="pubHolidayContent">
+                                    <iais:row>
+                                        <iais:field value="Select Public Holiday" width="12"/>
+                                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
+                                            <iais:select name="${premValue}offSitePubHoliday${phStat.index}" options="publicHolidaySelect" value="${ph.phDateStr}" cssClass="offSitePubHoliday" firstOption="Please Select"></iais:select>
+                                            <span  class="error-msg"  name="iaisErrorMsg" id="error_offSitephDate${premValue}${phStat.index}"></span>
+                                        </iais:value>
+                                        <c:if test="${!phStat.first}">
+                                            <div class=" col-xs-7 col-sm-4 col-md-3">
+                                                <div class="form-check removePhBtn">
+                                                    <div class="fa fa-times-circle text-danger"></div>
+                                                </div>
+                                            </div>
+                                        </c:if>
+                                    </iais:row>
+                                    <div class="form-group">
+                                        <label class="col-xs-12 col-md-4 control-label">
+                                            Public Holidays Operating Hours (Start)
+                                        </label>
+                                        <div class="col-xs-9 col-sm-5 col-md-6">
+                                            <div class="col-md-3" style="padding-left: unset">
+                                                <iais:select cssClass="offSitePbHolDayStartHH" name="${premValue}offSitePbHolDayStartHH${phStat.index}" options="premiseHours" value="${ph.offSiteStartFromHH}" firstOption="--"></iais:select>
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                            <div class="col-md-3" style="padding-left: unset">
+                                                <iais:select cssClass="offSitePbHolDayStartMM" name="${premValue}offSitePbHolDayStartMM${phStat.index}" options="premiseMinute" value="${ph.offSiteStartFromMM}" firstOption="--"></iais:select>
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                        </div>
+                                        <div  class="col-xs-12 col-md-4 "></div>
+                                        <div class="col-xs-9 col-sm-5 col-md-6">
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_offSiteStartToHH${premValue}${phStat.index}"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-12 col-md-4 control-label">
+                                            Public Holidays Operating Hours (End)
+                                        </label>
+                                        <div class="col-xs-9 col-sm-5 col-md-6">
+                                            <div class="col-md-3" style="padding-left: unset">
+                                                <iais:select cssClass="offSitePbHolDayEndHH" name="${premValue}offSitePbHolDayEndHH${phStat.index}" options="premiseHours" value="${ph.offSiteEndToHH}" firstOption="--"></iais:select>
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                            <div class="col-md-3" style="padding-left: unset">
+                                                <iais:select cssClass="offSitePbHolDayEndMM" name="${premValue}offSitePbHolDayEndMM${phStat.index}" options="premiseMinute" value="${ph.offSiteEndToMM}" firstOption="--"></iais:select>
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                        </div>
+                                        <div  class="col-xs-12 col-md-4 "></div>
+                                        <div class="col-xs-9 col-sm-5 col-md-6">
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_offSiteEndToHH${premValue}${phStat.index}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="pubHolidayContent">
+                                <iais:row>
+                                    <iais:field value="Select Public Holiday" width="12"/>
+                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
+                                        <iais:select cssClass="offSitePubHoliday" name="${premValue}offSitePubHoliday0" options="publicHolidaySelect" value="${ph.phDateStr}" firstOption="Please Select"></iais:select>
+                                        <span  class="error-msg"  name="iaisErrorMsg" id="error_offSitephDate${premValue}${phStat.index}"></span>
+                                    </iais:value>
+                                </iais:row>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label">
+                                        Public Holidays Operating Hours (Start)
+                                    </label>
+                                    <div class="col-xs-9 col-sm-5 col-md-6">
+                                        <div class="col-md-3" style="padding-left: unset">
+                                            <iais:select cssClass="offSitePbHolDayStartHH" name="${premValue}offSitePbHolDayStartHH0" options="premiseHours" value="" firstOption="--"></iais:select>
+                                        </div>
+                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                        <div class="col-md-3" style="padding-left: unset">
+                                            <iais:select cssClass="offSitePbHolDayStartMM" name="${premValue}offSitePbHolDayStartMM0" options="premiseMinute" value="" firstOption="--"></iais:select>
+                                        </div>
+                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                    </div>
+                                    <div  class="col-xs-12 col-md-4 "></div>
+                                    <div class="col-xs-9 col-sm-5 col-md-6">
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_offSiteStartToHH${premValue}${phStat.index}"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label">
+                                        Public Holidays Operating Hours (End)
+                                    </label>
+                                    <div class="col-xs-9 col-sm-5 col-md-6">
+                                        <div class="col-md-3" style="padding-left: unset">
+                                            <iais:select cssClass="offSitePbHolDayEndHH" name="${premValue}offSitePbHolDayEndHH0" options="premiseHours" value="" firstOption="--"></iais:select>
+                                        </div>
+                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
+                                        <div class="col-md-3" style="padding-left: unset">
+                                            <iais:select cssClass="offSitePbHolDayEndMM" name="${premValue}offSitePbHolDayEndMM0" options="premiseMinute" value="" firstOption="--"></iais:select>
+                                        </div>
+                                        <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
+                                    </div>
+                                    <div  class="col-xs-12 col-md-4 "></div>
+                                    <div class="col-xs-9 col-sm-5 col-md-6">
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_offSiteEndToHH${premValue}${phStat.index}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
+                    <div class="form-group">
+                        <div class="col-xs-9 col-sm-5 col-md-4">
+                            <button class="addPubHolDay btn btn-primary" type="button">Add Public Holiday</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </c:forEach>
