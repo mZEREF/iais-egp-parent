@@ -117,7 +117,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Email</td>
-                                                        <td>-</td>
+                                                        <td>${licenseeDto.emilAddr}</td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -140,14 +140,36 @@
                                                         <td class="col-xs-6" align="right">Licensee Name (Company)</td>
                                                         <td class="col-xs-6"> ${licenseeDto.name}</td>
                                                     </tr>
-                                                    <c:forEach var="person" items="${authorisedPersonList}">
+                                                    <c:forEach var="personPo" items="${appSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList}">
                                                         <tr>
                                                             <td align="right">Authorised Person Name</td>
-                                                            <td> ${person.name}</td>
+                                                            <td> ${personPo.name}</td>
                                                         </tr>
                                                         <tr>
                                                             <td align="right">Authorised Person ID</td>
-                                                            <td> ${person.idNo} (${person.idType})</td>
+                                                            <td> ${personPo.idNo} (${personPo.idType})</td>
+                                                        </tr>
+
+                                                    </c:forEach>
+                                                    <c:forEach var="personCgo" items="${appSvcRelatedInfoDto.appSvcCgoDtoList}">
+                                                        <tr>
+                                                            <td align="right">Authorised Person Name</td>
+                                                            <td> ${personCgo.name}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Authorised Person ID</td>
+                                                            <td> ${personCgo.idNo} (${personCgo.idType})</td>
+                                                        </tr>
+
+                                                    </c:forEach>
+                                                    <c:forEach var="personMap" items="${appSvcRelatedInfoDto.appSvcMedAlertPersonList}">
+                                                        <tr>
+                                                            <td align="right">MedAlert Contact Person</td>
+                                                            <td> ${personMap.name}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">MedAlert Contact Person ID</td>
+                                                            <td> ${personMap.idNo} (${personMap.idType})</td>
                                                         </tr>
 
                                                     </c:forEach>
@@ -206,10 +228,10 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <c:forEach var="disciplineAllocation" items="${reloadDisciplineAllocationMap}" varStatus="stat">
+                                                <c:forEach var="disciplineAllocation" items="${appSvcRelatedInfoDto.appSvcDisciplineAllocationDtoList}" varStatus="stat">
                                                     <tr>
                                                         <td style="text-align: center" >
-                                                            <p>${applicationViewDto.hciAddress}</p>
+                                                            <p>${disciplineAllocation.premiseVal}</p>
                                                         </td>
 
                                                         <td style="text-align: center">
