@@ -1,9 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -110,7 +110,7 @@ public class LicenceServiceImpl implements LicenceService {
         Integer licenceSeq =  hcsaLicenceClient.licenceNumber(hciCode).getEntity();
         log.info(StringUtil.changeForLog("The getLicenceNo licenceSeq -->:"+licenceSeq));
         int yearLength = 0;
-        if(appPremisesRecommendationDto != null && AppConsts.LICENCE_PERIOD_YEAR.equals(appPremisesRecommendationDto.getChronoUnit())){
+        if(appPremisesRecommendationDto != null && RiskConsts.YEAR.equals(appPremisesRecommendationDto.getChronoUnit())){
             yearLength = appPremisesRecommendationDto.getRecomInNumber();
         }
         log.info(StringUtil.changeForLog("The getLicenceNo yearLength -->:"+yearLength));
@@ -129,7 +129,7 @@ public class LicenceServiceImpl implements LicenceService {
         String no = hcsaLicenceClient.groupLicenceNumber(hscaCode).getEntity();
         log.info(StringUtil.changeForLog("The getGroupLicenceNo no -->:"+no));
         int yearLength = 0;
-        if(appPremisesRecommendationDto != null && AppConsts.LICENCE_PERIOD_YEAR.equals(appPremisesRecommendationDto.getChronoUnit())){
+        if(appPremisesRecommendationDto != null && RiskConsts.YEAR.equals(appPremisesRecommendationDto.getChronoUnit())){
             yearLength = appPremisesRecommendationDto.getRecomInNumber();
         }
         log.info(StringUtil.changeForLog("The getGroupLicenceNo yearLength -->:"+yearLength));

@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.util;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -23,15 +23,15 @@ public class LicenceUtil {
         Calendar calendar = Calendar.getInstance();
         if(appPremisesRecommendationDto != null){
             switch (appPremisesRecommendationDto.getChronoUnit()){
-                case AppConsts.LICENCE_PERIOD_YEAR :
+                case RiskConsts.YEAR :
                     calendar.setTime(startDate);
                     calendar.add(Calendar.YEAR,appPremisesRecommendationDto.getRecomInNumber());
                     break;
-                case AppConsts.LICENCE_PERIOD_MONTH :
+                case RiskConsts.MONTH :
                     calendar.setTime(startDate);
                     calendar.add(Calendar.MONTH,appPremisesRecommendationDto.getRecomInNumber());
                     break;
-                case AppConsts.LICENCE_PERIOD_WEEK :
+                case RiskConsts.WEEK  :
                     calendar.setTime(startDate);
                     calendar.add(Calendar.WEEK_OF_YEAR,appPremisesRecommendationDto.getRecomInNumber());
                     break;

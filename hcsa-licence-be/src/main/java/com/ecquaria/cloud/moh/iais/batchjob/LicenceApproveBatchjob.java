@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -309,10 +310,10 @@ public class LicenceApproveBatchjob {
                             if(appPremisesRecommendationDto.getRecomInNumber() < result.getRecomInNumber()){
                                 result.setRecomInNumber(appPremisesRecommendationDto.getRecomInNumber());
                             }
-                        }else if(AppConsts.LICENCE_PERIOD_YEAR.equals(result.getChronoUnit())){
+                        }else if(RiskConsts.YEAR.equals(result.getChronoUnit())){
                             result.setRecomInNumber(appPremisesRecommendationDto.getRecomInNumber());
                             result.setChronoUnit(appPremisesRecommendationDto.getChronoUnit());
-                        }else if(AppConsts.LICENCE_PERIOD_MONTH.equals(result.getChronoUnit()) && AppConsts.LICENCE_PERIOD_WEEK.equals(result.getChronoUnit())){
+                        }else if(RiskConsts.MONTH.equals(result.getChronoUnit()) && RiskConsts.WEEK.equals(result.getChronoUnit())){
                             result.setRecomInNumber(appPremisesRecommendationDto.getRecomInNumber());
                             result.setChronoUnit(appPremisesRecommendationDto.getChronoUnit());
                         }
