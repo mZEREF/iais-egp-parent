@@ -149,7 +149,7 @@
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-7">
-                                      <iais:input maxLength="20" type="text" name="qualification"  value="${appSvcPersonnelDto.quaification}"></iais:input>
+                                      <iais:input maxLength="100" type="text" name="qualification"  value="${appSvcPersonnelDto.quaification}"></iais:input>
                                       <span class="error-msg" name="iaisErrorMsg" id="error_qualification${status.index}"></span>
                                     </div>
                                   </div>
