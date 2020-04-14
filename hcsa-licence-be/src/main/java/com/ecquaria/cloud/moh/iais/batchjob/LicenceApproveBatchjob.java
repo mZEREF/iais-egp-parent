@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeGroup
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcSpecificPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesGroupDto;
@@ -57,6 +58,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -1151,9 +1153,24 @@ public class LicenceApproveBatchjob {
 
         return licenceDto;
     }
+    @Autowired
+    private InspEmailService inspEmailService;
     private String getOrganizationIdBylicenseeId(String licenseeId){
+        log.info(StringUtil.changeForLog("The  getOrganizationIdBylicenseeId start ..."));
         //todo:get the organizationid , if do not exist need create the Organizaton.
-       return "29ABCF6D-770B-EA11-BE7D-000C29F371DC";
+        String organizationId = "29ABCF6D-770B-EA11-BE7D-000C29F371DC";
+        if(!StringUtil.isEmpty(licenseeId)){
+            LicenseeDto licenseeDto = inspEmailService.getLicenseeDtoById(licenseeId);
+            if(licenseeDto != null){
+                organizationId = licenseeDto.getOrganizationId();
+            }else{
+                log.error(StringUtil.changeForLog("This licenseeId can not get he licensee -->:"+licenseeId));
+            }
+        }else{
+            log.error(StringUtil.changeForLog("The  licenseeId is null ..."));
+        }
+        log.info(StringUtil.changeForLog("The  getOrganizationIdBylicenseeId end ..."));
+       return organizationId;
     }
 
 
