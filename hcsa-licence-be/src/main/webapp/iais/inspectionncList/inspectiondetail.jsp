@@ -105,7 +105,9 @@
     <div class="form-group">
         <label class="col-xs-12 col-md-4 control-label">TCU</label>
         <div class="col-xs-8 col-sm-6 col-md-5">
-           <p><input type="checkbox" id="tcuType"  value="tcuType"  <c:if test="${serListDto.tcuFlag}">checked</c:if>  name="tcuType" onclick="javascript: showTcuLabel(this);"></p>
+           <p><input type="checkbox" id="tcuType"  value="tcuType"  <c:if test="${serListDto.tcuFlag}">checked</c:if>  name="tcuType" onclick="javascript: showTcuLabel(this);">
+               <label class="form-check-label" for="tcuType" ><span class="check-square"></span></label>
+           </p>
         </div>
     </div>
 
