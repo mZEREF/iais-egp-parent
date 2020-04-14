@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -532,9 +533,6 @@ public class OfficerOnlineEnquiriesDelegator {
             if(!StringUtil.isEmpty(licenseeName)){
                 filters.put("licenseeName", licenseeName);
             }
-            if(!StringUtil.isEmpty(licenseeRegnNo)){
-                filters.put("licenseeRegnNo",licenseeRegnNo);
-            }
             licenseeParameter.setFilters(filters);
             SearchParam licenseeParam = SearchResultHelper.getSearchParam(request, licenseeParameter,true);
             QueryHelp.setMainSql(RFI_QUERY,"licenseeQuery",licenseeParam);
@@ -544,7 +542,12 @@ public class OfficerOnlineEnquiriesDelegator {
                 ) {
                     licenseeIds.add(r.getId());
                 }
-
+                if(licenseeIds.size()==0){
+                    licenseeIds.add(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID);
+                }
+            }
+            if(!StringUtil.isEmpty(licenseeRegnNo)){
+                filters.put("licenseeRegnNo",licenseeRegnNo);
             }
         }
         if(ParamUtil.getString(request,"servicePersonnelChk")!=null){
