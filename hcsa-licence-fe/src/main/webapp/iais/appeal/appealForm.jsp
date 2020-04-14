@@ -117,7 +117,7 @@
               <input type="text" value="Y" style="display: none" name="isDelete" id="isDelete">
               <input type="text" value="${filename}" style="display: none" id="isFile">
 
-              <a class="btn btn-danger btn-sm" style="margin-left: 20px;display: none" name="delete" id="delete" >delete</a>
+              <a class="btn btn-danger btn-sm" style="margin-left: 20px;display: none" name="delete" id="delete" >X</a>
             </div>
           </div>
         </div>

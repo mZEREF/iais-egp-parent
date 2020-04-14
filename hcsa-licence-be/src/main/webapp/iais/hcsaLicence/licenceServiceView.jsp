@@ -301,24 +301,24 @@
                                         </wrms:value>
                                       </div>
 
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                         Operating Hours (Start)
-                                        </div>
-                                        <div class="col-md-6">
-                                            ${appGrpPremDto.onsiteStartHH}: ${appGrpPremDto.onsiteStartMM}
-                                          <wrms:value width="7">
-                                        <span class="newVal " attr="${appGrpPremDto.wrkTimeFrom}" style="display: none"><label><c:out
-                                                value=""/></label></span>
-                                            <span class="oldVal compareTdStyle"
-                                                  attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"
-                                                  style="display: none"><label><c:out
-                                                    value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"/></label></span>
-                                          </wrms:value>
-                                        </div>
-                                      </div>
                                     </c:if>
 
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        Operating Hours (Start)
+                                      </div>
+                                      <div class="col-md-6">
+                                          ${appGrpPremDto.onsiteStartHH}: ${appGrpPremDto.onsiteStartMM}
+                                        <wrms:value width="7">
+                                        <span class="newVal " attr="${appGrpPremDto.wrkTimeFrom}" style="display: none"><label><c:out
+                                                value=""/></label></span>
+                                          <span class="oldVal compareTdStyle"
+                                                attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"
+                                                style="display: none"><label><c:out
+                                                  value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"/></label></span>
+                                        </wrms:value>
+                                      </div>
+                                    </div>
 
                                     <div class="row">
                                       <div class="col-md-6">

@@ -1326,8 +1326,8 @@ public class ClinicalLaboratoryDelegator {
     private static void doValidatetionServicePerson(Map <String,String> errorMap,List<AppSvcPersonnelDto> appSvcPersonnelDtos,String svcCode){
         for(int i=0;i<appSvcPersonnelDtos.size();i++){
             if(AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)){
-                String quaification = appSvcPersonnelDtos.get(i).getQuaification();
-                if(StringUtil.isEmpty(quaification)){
+                String designation = appSvcPersonnelDtos.get(i).getDesignation();
+                if(StringUtil.isEmpty(designation)){
                     errorMap.put("designation"+i,"UC_CHKLMD001_ERR001");
                 }
                 String name = appSvcPersonnelDtos.get(i).getName();

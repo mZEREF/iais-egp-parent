@@ -105,7 +105,7 @@ public class NewApplicationHelper {
                 errMap.put("assignSelect"+i, "UC_CHKLMD001_ERR001");
             }else {
                 String idTyp = appSvcCgoList.get(i).getIdType();
-                if("-1".equals(idTyp)){
+                if("-1".equals(idTyp)||StringUtil.isEmpty(idTyp)){
                     errMap.put("idTyp"+i, "UC_CHKLMD001_ERR001");
                 }
                 String salutation = appSvcCgoList.get(i).getSalutation();
@@ -115,6 +115,10 @@ public class NewApplicationHelper {
                 String speciality = appSvcCgoList.get(i).getSpeciality();
                 if("-1".equals(speciality)){
                     errMap.put("speciality"+i,"UC_CHKLMD001_ERR001");
+                }else {
+                    if("other".equals(speciality)){
+                        errMap.put("other"+i,"UC_CHKLMD001_ERR001");
+                    }
                 }
                 String professionType = appSvcCgoList.get(i).getProfessionType();
                 if(StringUtil.isEmpty(professionType)){
@@ -127,6 +131,10 @@ public class NewApplicationHelper {
                 String professionRegoNo = appSvcCgoList.get(i).getProfessionRegoNo();
                 if(StringUtil.isEmpty(professionRegoNo)){
                     errMap.put("professionRegoNo"+i,"UC_CHKLMD001_ERR001");
+                    String qualification = appSvcCgoList.get(i).getQualification();
+                    if(StringUtil.isEmpty(qualification)){
+                        errMap.put("qualification"+i,"UC_CHKLMD001_ERR001");
+                    }
                 }
                 String idNo = appSvcCgoList.get(i).getIdNo();
                 //to do
@@ -154,15 +162,7 @@ public class NewApplicationHelper {
                 }
                 //to do
 
-                String Specialty = appSvcCgoList.get(i).getSpeciality();
-                if (StringUtil.isEmpty(Specialty)) {
-                    errMap.put("speciality"+i, "UC_CHKLMD001_ERR001");
-                }
 
-                String specialty = appSvcCgoList.get(i).getSpeciality();
-                if(StringUtil.isEmpty(specialty)){
-                    errMap.put("specialty"+i, "UC_CHKLMD001_ERR001");
-                }
                 String name = appSvcCgoList.get(i).getName();
                 if(StringUtil.isEmpty(name)){
                     errMap.put("name"+i,"UC_CHKLMD001_ERR001");

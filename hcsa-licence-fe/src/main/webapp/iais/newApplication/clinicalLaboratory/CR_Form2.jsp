@@ -261,6 +261,7 @@
                                           <c:choose>
                                             <c:when test="${currentCgo.speciality eq 'other'}">
                                               <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal" value="${currentCgo.specialityOther}" maxlength="100">
+                                              <span name="iaisErrorMsg" class="error-msg" id="error_other${status.index}"></span>
                                             </c:when>
                                             <c:otherwise>
                                               <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal hidden" value="" maxlength="100">

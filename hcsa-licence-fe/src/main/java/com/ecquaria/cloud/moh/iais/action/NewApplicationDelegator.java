@@ -198,6 +198,7 @@ public class NewApplicationDelegator {
         //renewLicence(bpc);
         requestForInformationLoading(bpc);
         //for loading the draft by appId
+
         loadingDraft(bpc);
         //for loading Service Config
         boolean flag = loadingServiceConfig(bpc);
@@ -851,8 +852,15 @@ public class NewApplicationDelegator {
         }
         if(!StringUtil.isEmpty(crud_action_additional)){
             if("cancelSaveDraft".equals(crud_action_additional)){
-                jumpYeMian(bpc.request,bpc.response);
-                bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
+                String oldDraftNo=(String)bpc.request.getSession().getAttribute(SELECT_DRAFT_NO);
+                bpc.request.setAttribute("DraftNumber",oldDraftNo);
+              /*  jumpYeMian(bpc.request,bpc.response);*/
+
+                try {
+                    doStart(bpc);
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
                 return;
             }else {
                 log.info("crud_action_additional draftNo-----"+crud_action_additional);
@@ -2412,6 +2420,10 @@ public class NewApplicationDelegator {
     private void loadingDraft(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do loadingDraft start ...."));
         String draftNo = (String) ParamUtil.getString(bpc.request, "DraftNumber");
+        Object draftNumber = bpc.request.getAttribute("DraftNumber");
+        if(draftNumber!=null){
+            draftNo=(String)draftNumber;
+        }
         //draftNo = "DN191118000001";
         if(!StringUtil.isEmpty(draftNo)){
             log.info(StringUtil.changeForLog("draftNo is not empty"));
@@ -2697,6 +2709,7 @@ public class NewApplicationDelegator {
                 String premisesSelect = appGrpPremisesDtoList.get(i).getPremisesSelect();
                 String appType = appSubmissionDto.getAppType();
                 boolean needValidate = false;
+
                 if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
                     String oldPremSel = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0).getPremisesSelect();
                     if(!StringUtil.isEmpty(oldPremSel) && oldPremSel.equals(premisesSelect)){
@@ -2706,6 +2719,7 @@ public class NewApplicationDelegator {
                 if (StringUtil.isEmpty(premisesSelect) || "-1".equals(premisesSelect)) {
                     errorMap.put("premisesSelect"+i, "UC_CHKLMD001_ERR001");
                 } else if ("newPremise".equals(premisesSelect) || needValidate) {
+                    StringBuilder stringBuilder=new StringBuilder();
                     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
                         String onsiteStartHH = appGrpPremisesDtoList.get(i).getOnsiteStartHH();
                         String onsiteStartMM = appGrpPremisesDtoList.get(i).getOnsiteStartMM();
@@ -2890,7 +2904,6 @@ public class NewApplicationDelegator {
 
                         String addrType = appGrpPremisesDtoList.get(i).getAddrType();
 
-                        StringBuilder stringBuilder =new StringBuilder();
                         if(StringUtil.isEmpty(addrType)){
                             errorMap.put("addrType"+i, "UC_CHKLMD001_ERR001");
                         }else {
@@ -2939,7 +2952,7 @@ public class NewApplicationDelegator {
                         String conStartMM = appGrpPremisesDtoList.get(i).getConStartMM();
                         int conStartDate=0;
                         int conEndDate=0;
-                        StringBuilder stringBuilder=new StringBuilder();
+
                         if(StringUtil.isEmpty(conStartHH)||StringUtil.isEmpty(conStartMM)){
                             errorMap.put("conStartMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
