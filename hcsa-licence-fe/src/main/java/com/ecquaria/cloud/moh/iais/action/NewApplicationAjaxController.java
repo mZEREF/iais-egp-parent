@@ -216,7 +216,7 @@ public class NewApplicationAjaxController {
         siteEndMM.put("id", "onSiteEndMM");
         siteEndMM.put("name", "onSiteEndMM");
         siteEndMM.put("style", "display: none;");
-        String onsiteEndMM = NewApplicationHelper.generateDropDownHtml(siteEndMM, timeHourList,"--", null);
+        String onsiteEndMM = NewApplicationHelper.generateDropDownHtml(siteEndMM, timeMinList,"--", null);
 
         //onsite ph
         String premName = currentLength;
@@ -269,7 +269,7 @@ public class NewApplicationAjaxController {
         pbholidayendMM.put("id", premName+"onSitePbHolDayEndMM0");
         pbholidayendMM.put("name", premName+"onSitePbHolDayEndMM0");
         pbholidayendMM.put("style", "display: none;");
-        String holidayendMM = NewApplicationHelper.generateDropDownHtml(pbholidayendMM, timeHourList,"--", null);
+        String holidayendMM = NewApplicationHelper.generateDropDownHtml(pbholidayendMM, timeMinList,"--", null);
 
 
         //convyance operation time
@@ -299,7 +299,7 @@ public class NewApplicationAjaxController {
         conveyanceendMin.put("id", premName+"conveyanceEndMM0");
         conveyanceendMin.put("name", premName+"conveyanceEndMM0");
         conveyanceendMin.put("style", "display: none;");
-        String conveyanceendMM = NewApplicationHelper.generateDropDownHtml(conveyanceendMin, timeHourList,"--", null);
+        String conveyanceendMM = NewApplicationHelper.generateDropDownHtml(conveyanceendMin, timeMinList,"--", null);
 
         //convyance ph
         Map<String,String> convpublicHoliday = IaisCommonUtils.genNewHashMap();
@@ -335,7 +335,7 @@ public class NewApplicationAjaxController {
         convpbholidayendMM.put("id", premName+"conveyancePbHolDayEndMM0");
         convpbholidayendMM.put("name", premName+"conveyancePbHolDayEndMM0");
         convpbholidayendMM.put("style", "display: none;");
-        String convholidayendMM = NewApplicationHelper.generateDropDownHtml(convpbholidayendMM, timeHourList,"--", null);
+        String convholidayendMM = NewApplicationHelper.generateDropDownHtml(convpbholidayendMM, timeMinList,"--", null);
 
 
         //offSite operation time
@@ -365,7 +365,7 @@ public class NewApplicationAjaxController {
         offSiteEndMin.put("id", "offSiteEndMM");
         offSiteEndMin.put("name", "offSiteEndMM");
         offSiteEndMin.put("style", "display: none;");
-        String offSiteEndMM = NewApplicationHelper.generateDropDownHtml(offSiteEndMin, timeHourList,"--", null);
+        String offSiteEndMM = NewApplicationHelper.generateDropDownHtml(offSiteEndMin, timeMinList,"--", null);
 
         //offSite ph
         Map<String,String> offSitePublicHoliday = IaisCommonUtils.genNewHashMap();
@@ -401,7 +401,7 @@ public class NewApplicationAjaxController {
         offSitePhEndMM.put("id", premName+"offSitePbHolDayEndMM0");
         offSitePhEndMM.put("name", premName+"offSitePbHolDayEndMM0");
         offSitePhEndMM.put("style", "display: none;");
-        String offSitePhEndMMStr = NewApplicationHelper.generateDropDownHtml(offSitePhEndMM, timeHourList,"--", null);
+        String offSitePhEndMMStr = NewApplicationHelper.generateDropDownHtml(offSitePhEndMM, timeMinList,"--", null);
 
         sql = sql.replace("(0)", currentLength);
         sql = sql.replace("(1)", premTypeBuffer.toString());
