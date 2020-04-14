@@ -430,7 +430,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     Pattern pattern = compile("[0-9]*");
                     boolean noFlag = pattern.matcher(floorNo).matches();
                     if (noFlag) {
-                        int floorNum = Integer.valueOf(floorNo);
+                        int floorNum = Integer.parseInt(floorNo);
                         if (10 > floorNum) {
                             floorNo = "0" + floorNum;
                             result = result + " " + " # " + floorNo;
@@ -509,7 +509,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 Pattern pattern = compile("[0-9]*");
                 boolean noFlag = pattern.matcher(floorNo).matches();
                 if (noFlag) {
-                    int floorNum = Integer.valueOf(floorNo);
+                    int floorNum = Integer.parseInt(floorNo);
                     if (10 > floorNum) {
                         floorNo = "0" + floorNum;
                         result = result + " " + " # " + floorNo;

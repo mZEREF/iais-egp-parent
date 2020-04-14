@@ -20,6 +20,11 @@
 <%
   String webroot=IaisEGPConstant.BE_CSS_ROOT;
 %>
+<style type="text/css">
+  ul li:before {
+    background-color: #333333;
+  }
+</style>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="mainInspDateForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
@@ -215,19 +220,13 @@
                             </div>
                             <c:if test="${'SUCCESS' eq apptInspectionDateDto.actionButtonFlag && 'APTY007' ne applicationViewDto.applicationDto.applicationType}">
                               <div id="apptThreeInspDate">
-                                <iais:row>
-                                  <iais:field value="Available Appointment Dates"/>
-                                </iais:row>
-                                <iais:row>
-                                  <iais:value width="7">
-                                    <ul>
-                                      <c:forEach items="${apptInspectionDateDto.inspectionDate}" var="inspectionDate">
-                                        <li><label style="font-size: 16px"><c:out value="${inspectionDate}"/></label></li>
-                                      </c:forEach>
-                                    </ul>
-                                  </iais:value>
-                                </iais:row>
-                                </c:if>
+                                <div class="row" id = "apptDateTitle">
+                                  <div class="col-md-4">
+                                    <label style="font-size: 16px">Available Appointment Dates</label>
+                                  </div>
+                                </div>
+                              </div>
+                              </c:if>
                               <iais:action>
                                 <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
                                 <span style="float:right">&nbsp;</span>
@@ -347,22 +346,42 @@
 
     function apptInspectionDateGetDate() {
         showWaiting();
-        $.post(
-            '/hcsa-licence-web/online-appt/insp.date',
-            function (data) {
-                dismissWaiting();
-                var sysInspDateFlag = data.buttonFlag;
-                if('true' == sysInspDateFlag){
-                    $("#disApptSysInspDate").hide();
-                    $("#apptSysInspDate").show();
-                    $("#apptThreeInspDate").show();
-                } else {
-                    $("#disApptSysInspDate").show();
-                    $("#apptSysInspDate").hide();
-                    $("#apptThreeInspDate").hide();
+        var sysInspDateFlag = $("#sysInspDateFlag").val();
+        if('true' == sysInspDateFlag){
+            $("#disApptSysInspDate").hide();
+            $("#apptSysInspDate").show();
+            $("#apptThreeInspDate").show();
+            dismissWaiting();
+        } else {
+            $.post(
+                '/hcsa-licence-web/online-appt/insp.date',
+                function (data) {
+                    dismissWaiting();
+                    var ajaxFlag = data.buttonFlag;
+                    var inspDateList = data.inspDateList;
+                    if('true' == ajaxFlag){
+                        $("#disApptSysInspDate").hide();
+                        $("#apptSysInspDate").show();
+                        $("#apptThreeInspDate").show();
+                        var html = '<div class="row">' +
+                            '<div class="col-md-6">' +
+                            '<ul>';
+                        for(var i = 0; i < inspDateList.length; i++){
+                            html += '<li><span style="font-size: 16px">' + inspDateList[i] + '</span></li>';
+                        }
+                        html += '</ul>' +
+                            '</div>' +
+                            '</div>';
+                        $("#apptDateTitle").after(html);
+                        $("#sysInspDateFlag").val('true');
+                    } else {
+                        $("#disApptSysInspDate").show();
+                        $("#apptSysInspDate").hide();
+                        $("#apptThreeInspDate").hide();
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 
     function apptInspectionDateSpecific() {

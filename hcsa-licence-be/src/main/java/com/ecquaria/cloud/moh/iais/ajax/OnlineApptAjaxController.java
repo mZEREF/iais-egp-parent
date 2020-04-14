@@ -110,6 +110,7 @@ public class OnlineApptAjaxController {
                         Map<String, List<ApptUserCalendarDto>> inspectionDateMap = appointmentClient.getUserCalendarByUserId(appointmentDto).getEntity();
                         apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
                         map.put("buttonFlag", AppConsts.TRUE);
+                        map.put("inspDateList", apptInspectionDateDto.getInspectionDate());
                         apptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
                     }
                     ParamUtil.setSessionAttr(request, "apptInspectionDateDto", apptInspectionDateDto);
@@ -136,15 +137,23 @@ public class OnlineApptAjaxController {
     }
 
     private String apptDateToStringShow(Date date) {
-        String specificDate = Formatter.formatDateTime(date, "d MMM");
+        String specificDate = Formatter.formatDateTime(date, "dd MMM");
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int curHour24 = cal.get(Calendar.HOUR_OF_DAY);
         if(curHour24 > 12){
             int hours = curHour24 - 12;
-            specificDate = specificDate + " " + hours + ":00" + "PM";
+            String hoursShow = "";
+            if(hours < 10){
+                hoursShow = "0";
+            }
+            specificDate = specificDate + " " + hoursShow + hours + ":00" + " PM";
         } else {
-            specificDate = specificDate + " " + curHour24 + ":00" + "AM";
+            String hoursShow = "";
+            if(curHour24 < 10){
+                hoursShow = "0";
+            }
+            specificDate = specificDate + " " + hoursShow + curHour24 + ":00" + " AM";
         }
         return specificDate;
     }
