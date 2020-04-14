@@ -1,6 +1,4 @@
 <div class="row">
-
-
     <div class="filter-box form-horizontal">
         <div class="form-group">
             <iais:value>

@@ -74,7 +74,7 @@ public class TemplatesDelegator {
             ParamUtil.setRequestAttr(request,MsgTemplateConstants.MSG_SEARCH_RESULT, searchResult);
         }
         List<SelectOption> messageTypeSelectList = IaisCommonUtils.genNewArrayList();
-        messageTypeSelectList.add(new SelectOption("", "Select"));
+        messageTypeSelectList.add(new SelectOption("", "Please Select"));
         messageTypeSelectList.add(new SelectOption("MTTP001", "Alert"));
         messageTypeSelectList.add(new SelectOption("MTTP002", "Banner Alert"));
         messageTypeSelectList.add(new SelectOption("MTTP003", "Letter"));
@@ -82,7 +82,7 @@ public class TemplatesDelegator {
         ParamUtil.setRequestAttr(bpc.request, "msgType", messageTypeSelectList);
 
         List<SelectOption> deliveryModeSelectList = IaisCommonUtils.genNewArrayList();
-        deliveryModeSelectList.add(new SelectOption("", "Select"));
+        deliveryModeSelectList.add(new SelectOption("", "Please Select"));
         deliveryModeSelectList.add(new SelectOption("DEMD001", "Mail"));
         deliveryModeSelectList.add(new SelectOption("DEMD002", "SMS"));
         deliveryModeSelectList.add(new SelectOption("DEMD003", "System Inbox"));
