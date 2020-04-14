@@ -14,6 +14,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.RegulationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -66,6 +68,18 @@ public interface HcsaChklClient {
 
     @GetMapping(path = "/iais-hcsa-checklist/regulations")
     FeignResponseEntity<List<HcsaChklSvcRegulationDto>> getAllRegulation();
+
+    @GetMapping(path = "/iais-hcsa-checklist/items")
+    FeignResponseEntity<List<ChecklistItemDto>> getAllChecklistItem();
+
+    @GetMapping(path = "/iais-hcsa-checklist/configs")
+    FeignResponseEntity<List<ChecklistConfigDto>> getAllChecklistConfig();
+
+    @GetMapping(path = "/iais-hcsa-checklist/configs")
+    FeignResponseEntity<List<ChecklistSectionDto>> getAllSection();
+
+    @GetMapping(path = "/iais-hcsa-checklist/configs")
+    FeignResponseEntity<List<ChecklistSectionItemDto>> getAllSectionItem();
 
     @PutMapping(value = "/iais-regulation/regulation/{id}")
     FeignResponseEntity<Boolean> deleteRegulation(@PathVariable("id") String regulationId);
