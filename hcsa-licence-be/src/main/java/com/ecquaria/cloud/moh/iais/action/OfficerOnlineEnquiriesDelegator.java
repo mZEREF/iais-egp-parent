@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -835,12 +834,9 @@ public class OfficerOnlineEnquiriesDelegator {
 
 
     private Map<String, String> validate(HttpServletRequest request) {
-        OrgUserDto orgUserDto= (OrgUserDto) ParamUtil.getSessionAttr(request,"orgUserDto");
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
 
-        if(orgUserDto==null){
-            errMap.put("","");
-        }
+
         return errMap;
     }
 

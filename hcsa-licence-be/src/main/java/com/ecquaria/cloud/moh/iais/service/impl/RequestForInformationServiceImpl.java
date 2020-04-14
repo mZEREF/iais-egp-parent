@@ -113,6 +113,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_RECALLED,
             ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,
             ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,
+            ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE,
             ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
             ApplicationConsts.APPLICATION_STATUS_PENDING_DMS_APPROVAL,
             ApplicationConsts.APPLICATION_STATUS_PENDING_AO1_SUPPORT,
@@ -134,7 +135,9 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW,
             ApplicationConsts.APPLICATION_STATUS_APPROVED,
             ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
-            ApplicationConsts.APPLICATION_STATUS_REJECTED
+            ApplicationConsts.APPLICATION_STATUS_REJECTED,
+            ApplicationConsts.APPLICATION_STATUS_WITHDRAWN,
+            ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO
     };
     private final String[] licStatus=new String[]{
             ApplicationConsts.LICENCE_STATUS_ACTIVE,
