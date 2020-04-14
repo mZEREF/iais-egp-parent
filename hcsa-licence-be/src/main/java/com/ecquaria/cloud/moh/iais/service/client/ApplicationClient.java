@@ -24,9 +24,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
+import java.util.Map;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,9 +36,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * ApplicationClient
@@ -215,6 +213,6 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-application-be/corrId-appId/{appId}")
     FeignResponseEntity<String> getCorrIdByAppId(@PathVariable(name = "appId") String appId);
 
-    @GetMapping(value = "/grpNo-apps/{grpNo}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-application-be/grpNo-apps/{grpNo}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getAppsByGrpNo(@PathVariable(name = "grpNo") String grpNo);
 }
