@@ -24,6 +24,7 @@
       <input type="hidden" name="switch_action_type" value="">
       <input type="hidden" name="crud_action_value" value="">
       <input type="hidden" name="crud_action_additional" value="">
+      <c:set var="loginContext" value="${iais_Login_User_Info_Attr}"/>
       <br>
           <div class="navigation-gp">
               <div class="col-xs-10 col-xs-offset-1 col-lg-offset-9 col-lg-3">
