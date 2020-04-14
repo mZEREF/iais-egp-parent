@@ -46,6 +46,15 @@
     }
 </style>
 <script type="text/javascript">
+    $(function () {
+        if ('${archiveResult}') {
+            $('#isArchivedModal').modal('show');
+            window.setTimeout(function(){
+                $('#isArchivedModal').modal('hide');
+            },3000);
+        }
+    });
+
     function pageAction() {
         if ('${msgPage}' == "msgView") {
             $("[name='msg_page_action']").val("msg_view");
@@ -100,15 +109,18 @@
 
     function doArchive() {
         // pageAction();
-        if ($('#msgCheck').is(':checked')){
-            console.log("Can");
+        if ($('.msgCheck').is(':checked')){
             submit('msgDoArchive');
+            console.log("Do Archive")
         }else{
-            $('#archiveModal').modal('show');
+            $('#doArchiveModal').modal('hide');
+            window.setTimeout(function(){
+                $('#archiveModal').modal('show');
+            },1000);
             window.setTimeout(function(){
                 $('#archiveModal').modal('hide');
             },5000);
-            console.log("Can't");
+            console.log("Do not Select")
         }
     }
 

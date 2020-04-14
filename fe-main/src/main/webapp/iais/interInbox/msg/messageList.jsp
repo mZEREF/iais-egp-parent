@@ -76,22 +76,11 @@
                                 <C:if test="${msgPage == 'msgView'}">
                                     <td>
                                         <div class="form-check">
-                                            <c:choose>
-                                                <c:when test="${inboxQuery.status == 'MSGRS001' || inboxQuery.status == 'MSGRS002'}">
-                                                    <input class="form-check-input msgCheck" id="msgCheck" type="checkbox"
-                                                           name="msgIdList" aria-invalid="true" disabled="disabled">
-                                                    <label class="form-check-label" for="msgCheck"><span
-                                                            class="check-square"></span>
-                                                    </label>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <input class="form-check-input msgCheck" id="msgCheck" type="checkbox"
-                                                           name="msgIdList" aria-invalid="false" value="${inboxQuery.id}">
-                                                    <label class="form-check-label" for="msgCheck"><span
-                                                            class="check-square"></span>
-                                                    </label>
-                                                </c:otherwise>
-                                            </c:choose>
+                                            <input class="form-check-input msgCheck" id="msgCheck" type="checkbox" name="msgIdList" aria-invalid="false" value="${inboxQuery.id}"
+                                                <c:if test="${inboxQuery.status == 'MSGRS001' || inboxQuery.status == 'MSGRS002'}">disabled = "disabled"</c:if>>
+                                            <label class="form-check-label" for="msgCheck"><span
+                                                    class="check-square"></span>
+                                            </label>
                                         </div>
                                     </td>
                                 </C:if>
@@ -143,6 +132,45 @@
                     </div>
                 </div>
                 <!--Modal End-->
+                <!-- Modal -->
+                <div class="modal fade" id="isArchivedModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">The message(s) is/are archived</span></div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Modal End-->
+                <div class="modal fade" id="doArchiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Are you sure you want to archive ?</span></div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary btn-md" onclick="doArchive()">Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Modal End-->
                 <div class="row" style="margin-top: 1.5%">
                     <div class="col-md-12">
                         <C:if test="${msgPage == 'msgView'}">
@@ -150,8 +178,7 @@
                                 <button type="button" class="btn btn-primary pull-right" onclick="toArchiveView()">Access
                                     Archive
                                 </button>
-                                <button type="button" class="btn btn-primary pull-right" onclick="doArchive()" style="margin-right: 10px;">Archive
-                                </button>
+                                <div class="text-right text-center-mobile"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#doArchiveModal" style="margin-right: 10px;">Archive</button></div>
                             </div>
                         </C:if>
                         <c:if test="${msgPage == 'msgContentView'}">
