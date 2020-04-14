@@ -102,6 +102,12 @@ public class EventbusCallBackDelegate {
                                 "com.ecquaria.cloud.moh.iais.service.impl.InsRepServiceImpl",
                                 "sendPostInsTaskFeData");
                     }
+                    else if(  EventBusConsts.OPERATION_CREATE_AUDIT_TASK.equals(operation)){
+                        log.info("send create audit inspection task  *****");
+                        invokeMethod(submissionId,eventRefNum,
+                                "com.ecquaria.cloud.moh.iais.service.impl.AuditSystemListServiceImpl",
+                                "createTaskCallBack");
+                    }
 
                 }else if (EventBusConsts.SERVICE_NAME_ROUNTINGTASK.equals(serviceName)) {
 

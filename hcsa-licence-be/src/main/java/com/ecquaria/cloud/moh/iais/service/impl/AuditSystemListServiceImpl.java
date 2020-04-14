@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -17,15 +18,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.ecquaria.cloudfeign.FeignException;
+import com.ecquaria.kafka.model.Submission;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,8 +48,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     @Autowired
     private OrganizationClient organizationClient;
     @Autowired
-    private TaskService taskService;
-    @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
@@ -53,6 +55,10 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private GenerateIdClient generateIdClient;
     @Autowired
     private EventBusHelper eventBusHelper;
+    @Autowired
+    private EventClient eventClient;
+    @Autowired
+    private ApplicationClient applicationClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -119,6 +125,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         String submitId = generateIdClient.getSeqId().getEntity();
         //create auditType data  and create grop info
         AuditCombinationDto auditCombinationDto = new AuditCombinationDto();
+        auditCombinationDto.setAuditTaskDataFillterDto(temp);
         createAudit(temp,submitId,auditCombinationDto);
         //create grop info
         // createInspectionGroupInfo(temp,submitId);
@@ -131,10 +138,30 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
 
         //create task
-        createTask(temp,submitId,auditCombinationDto);
+        //createTask(temp,submitId,auditCombinationDto);
     }
 
-    public void createTask(AuditTaskDataFillterDto temp,String submitId,AuditCombinationDto auditCombinationDto){
+    public void createTaskCallBack(String submissionId,String eventRefNum)throws FeignException {
+        log.info("call back createTaskCallBack ===================>>>>>");
+        List<Submission> submissionList = eventClient.getSubmission(submissionId).getEntity();
+        AuditCombinationDto auditCombinationDto = null;
+        if(submissionList!= null && submissionList.size() > 0){
+            log.info(submissionList .size() +"submissionList .size()");
+            for(Submission submission : submissionList){
+                if(EventBusConsts.SERVICE_NAME_APPSUBMIT.equals(submission.getSubmissionIdentity().getService())){
+                    auditCombinationDto = JsonUtil.parseToObject(submission.getData(), AuditCombinationDto.class);
+                    break;
+                }
+            }
+            if(auditCombinationDto != null){
+                createTask(auditCombinationDto.getAuditTaskDataFillterDto(), submissionId, auditCombinationDto,eventRefNum);
+            }
+
+        }else {
+            log.info("========createTaskCallBack  submissionList is null.");
+        }
+    }
+    public void createTask(AuditTaskDataFillterDto temp,String submitId,AuditCombinationDto auditCombinationDto,String eventRefNum){
         TaskDto taskDto = new TaskDto();
         taskDto.setId(generateIdClient.getSeqId().getEntity());
         taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
@@ -151,7 +178,14 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         taskDto.setSlaRemainInDays(3);
         taskDto.setSlaInDays(5);
         taskDto.setScore(4);
-        taskDto.setRefNo(temp.getId());
+        List<ApplicationDto> postApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
+        if(postApps != null && postApps.size() >0 ){
+            String corrId = applicationClient.getCorrIdByAppId(postApps.get(0).getId()).getEntity();
+            taskDto.setRefNo(corrId);
+        }else {
+            log.info("=============== group id is null.==========");
+            return;
+        }
         taskDto.setPriority(0);
         List<TaskDto> createTaskDtoList = IaisCommonUtils.genNewArrayList();
         createTaskDtoList.add(taskDto);
@@ -171,7 +205,10 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         hcsaLicenceClient.createLicPremAudit(licPremisesAuditDto);
     }
     private void createAudit(AuditTaskDataFillterDto temp,String submitId,AuditCombinationDto auditCombinationDto) {
-        auditCombinationDto.setEventRefNo(temp.getId());
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+        auditCombinationDto.setEventRefNo(grpNo);
         LicPremisesAuditDto licPremisesAuditDto = new LicPremisesAuditDto();
         licPremisesAuditDto.setId(generateIdClient.getSeqId().getEntity());
         licPremisesAuditDto.setAuditRiskType(temp.getRiskType());
@@ -306,10 +343,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     }
 
     public String createAuditTaskApp(List<String> licIds, String submissionId,AuditCombinationDto auditCombinationDto) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
-        String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+        String grpNo = auditCombinationDto.getEventRefNo();
         for(AppSubmissionDto entity : appSubmissionDtoList){
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.getAppSvcRelatedInfoDtoList();
             String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
