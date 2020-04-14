@@ -154,7 +154,12 @@
                                                     </td>
                                                     <td>
                                                         <div class="col-sm-9">
-                                                            <p>${applicationViewDto.recomLiceStartDate}</p>
+                                                            <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
+                                                                <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
+                                                            </c:if>
+                                                            <c:if test="${empty applicationViewDto.recomLiceStartDate}">
+                                                                <p>-</p>
+                                                            </c:if>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -166,12 +171,7 @@
                                                     </td>
                                                     <td>
                                                         <div class="col-sm-9">
-                                                            <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
-                                                                <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
-                                                            </c:if>
-                                                            <c:if test="${empty applicationViewDto.recomLiceStartDate}">
-                                                                <p>-</p>
-                                                            </c:if>
+                                                            <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
                                                         </div>
                                                     </td>
                                                 </tr>
