@@ -253,7 +253,7 @@
                                                             <td align="right">Designation</td>
                                                             <td>${personnel.keyPersonnelDto.designation}</td>
                                                         </tr>
-                                                        <c:if test="${personnel.keyPersonnelDto.name==ApplicationConsts.PERSONNEL_PSN_TYPE_CLINICAL_GOVERNANCE_OFFICER}">
+                                                        <c:if test="${personnel.licKeyPersonnelDto.psnType==ApplicationConsts.PERSONNEL_PSN_TYPE_CLINICAL_GOVERNANCE_OFFICER}">
                                                             <tr>
                                                                 <td align="right">Professional Type</td>
                                                                 <td>${personnel.keyPersonnelExtDto.professionType}</td>
@@ -279,7 +279,7 @@
                                                             <td align="right">Email Address</td>
                                                             <td>${personnel.keyPersonnelDto.emailAddr}</td>
                                                         </tr>
-                                                        <c:if test="${personnel.keyPersonnelDto.name==ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT}">
+                                                        <c:if test="${personnel.licKeyPersonnelDto.psnType==ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT}">
                                                             <tr>
                                                                 <td align="right">Preferred Mode of Receiving MedAlert</td>
                                                                 <td>${personnel.keyPersonnelExtDto.preferredMode}</td>
