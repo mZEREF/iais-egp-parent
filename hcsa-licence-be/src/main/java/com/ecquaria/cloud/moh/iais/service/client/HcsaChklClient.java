@@ -75,10 +75,10 @@ public interface HcsaChklClient {
     @GetMapping(path = "/iais-hcsa-checklist/configs")
     FeignResponseEntity<List<ChecklistConfigDto>> getAllChecklistConfig();
 
-    @GetMapping(path = "/iais-hcsa-checklist/configs")
+    @GetMapping(path = "/iais-hcsa-checklist/sections")
     FeignResponseEntity<List<ChecklistSectionDto>> getAllSection();
 
-    @GetMapping(path = "/iais-hcsa-checklist/configs")
+    @GetMapping(path = "/iais-hcsa-checklist/section-items")
     FeignResponseEntity<List<ChecklistSectionItemDto>> getAllSectionItem();
 
     @PutMapping(value = "/iais-regulation/regulation/{id}")

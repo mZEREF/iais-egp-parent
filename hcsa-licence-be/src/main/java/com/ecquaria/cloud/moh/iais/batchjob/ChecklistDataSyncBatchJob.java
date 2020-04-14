@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 /**
  * @Author: yichen
- * @Description:
+ * @Description: This is synchronization job that use  for checklist data(regulation, item, config, section, section item),  Synchronize data to datasource of Fe
  * @Date:2020/4/13
  **/
 
