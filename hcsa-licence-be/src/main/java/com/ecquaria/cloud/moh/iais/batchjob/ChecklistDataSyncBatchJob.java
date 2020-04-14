@@ -188,15 +188,15 @@ public class ChecklistDataSyncBatchJob {
         List<BeSyncCompareDataResponse> compareDataResponses = beEicGatewayClient.compareFeData(itemCompare, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
 
-        return getSyncRequisiteData(compareDataResponses);
+        return filterSyncData(compareDataResponses);
     }
 
     /**
-     * if breakOperation = false , It means that this is a piece of data that needs to be synchronized
+     * if breakOperation is false , It means that this is a piece of data that needs to be synchronized
      * @param compareResult
      * @return
      */
-    private List<String> getSyncRequisiteData(List<BeSyncCompareDataResponse> compareResult){
+    private List<String> filterSyncData(List<BeSyncCompareDataResponse> compareResult){
         return compareResult.stream().filter(i -> !i.isBreakOperation())
                 .map(BeSyncCompareDataResponse::getGuid)
                 .collect(Collectors.toList());
