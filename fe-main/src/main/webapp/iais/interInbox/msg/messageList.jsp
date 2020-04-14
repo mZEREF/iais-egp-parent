@@ -46,11 +46,11 @@
                         <C:if test="${msgPage == 'msgView'}">
                             <iais:sortableHeader needSort="false" field="" value=" "></iais:sortableHeader>
                         </C:if>
-                        <iais:sortableHeader needSort="false" field="subject" value="Subject"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="false" field="message_type"
+                        <iais:sortableHeader needSort="true" field="subject" value="Subject"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="message_type"
                                              value="Message Type"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="false" field="ref_no" value="Ref. No."></iais:sortableHeader>
-                        <iais:sortableHeader needSort="false" field="service_id" value="Service"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="ref_no" value="Ref. No."></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="service_id" value="Service"></iais:sortableHeader>
                         <iais:sortableHeader needSort="true" field="CREATED_DT" value="Date"></iais:sortableHeader>
                     </tr>
                     </thead>
@@ -76,12 +76,22 @@
                                 <C:if test="${msgPage == 'msgView'}">
                                     <td>
                                         <div class="form-check">
-                                            <input class="form-check-input msgCheck" id="msgCheck" type="checkbox"
-                                                   name="msgIdList" aria-invalid="false" value="${inboxQuery.id}">
-                                            <label class="form-check-label" for="msgCheck"><span
-                                                    class="check-square"></span>
-                                            </label>
-
+                                            <c:choose>
+                                                <c:when test="${inboxQuery.status == 'MSGRS001' || inboxQuery.status == 'MSGRS002'}">
+                                                    <input class="form-check-input msgCheck" id="msgCheck" type="checkbox"
+                                                           name="msgIdList" aria-invalid="true" disabled="disabled">
+                                                    <label class="form-check-label" for="msgCheck"><span
+                                                            class="check-square"></span>
+                                                    </label>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <input class="form-check-input msgCheck" id="msgCheck" type="checkbox"
+                                                           name="msgIdList" aria-invalid="false" value="${inboxQuery.id}">
+                                                    <label class="form-check-label" for="msgCheck"><span
+                                                            class="check-square"></span>
+                                                    </label>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </div>
                                     </td>
                                 </C:if>
@@ -114,6 +124,25 @@
                     </c:choose>
                     </tbody>
                 </table>
+                <!-- Modal -->
+                <div class="modal fade" id="archiveModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Please select at least one record</span></div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Modal End-->
                 <div class="row" style="margin-top: 1.5%">
                     <div class="col-md-12">
                         <C:if test="${msgPage == 'msgView'}">

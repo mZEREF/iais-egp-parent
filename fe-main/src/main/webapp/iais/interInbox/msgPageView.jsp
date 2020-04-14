@@ -100,15 +100,14 @@
 
     function doArchive() {
         // pageAction();
-        alert($("#msgCheck").is(':checked'))
-        if ($("#msgCheck").is(':checked')){
+        if ($('#msgCheck').is(':checked')){
             console.log("Can");
             submit('msgDoArchive');
         }else{
-
+            $('#archiveModal').modal('show');
             window.setTimeout(function(){
-                $('[data-dismiss="alert"]').alert('close');
-            },2000);
+                $('#archiveModal').modal('hide');
+            },5000);
             console.log("Can't");
         }
     }
