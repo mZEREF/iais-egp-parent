@@ -173,9 +173,22 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 per.getKeyPersonnelDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getSalutation()}).get(0).getText());
                 per.getKeyPersonnelDto().setDesignation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getDesignation()}).get(0).getText());
                 per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelExtDto().getProfessionType()}).get(0).getText());
-                if(per.getKeyPersonnelDto().getName().equals(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP)){
-                    per.getKeyPersonnelDto().setName(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT);
+                switch (per.getKeyPersonnelDto().getName()){
+                    case ApplicationConsts.PERSONNEL_PSN_TYPE_MAP:
+                        per.getKeyPersonnelDto().setName(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT);
+                        break;
+                    case ApplicationConsts.PERSONNEL_PSN_TYPE_DPO:
+                        per.getKeyPersonnelDto().setName(ApplicationConsts.PERSONNEL_PSN_TYPE_DEPUTY_PRINCIPAL_OFFICER);
+                        break;
+                    case ApplicationConsts.PERSONNEL_PSN_TYPE_PO:
+                        per.getKeyPersonnelDto().setName(ApplicationConsts.PERSONNEL_PSN_TYPE_PRINCIPAL_OFFICER);
+                        break;
+                    case ApplicationConsts.PERSONNEL_PSN_TYPE_CGO:
+                        per.getKeyPersonnelDto().setName(ApplicationConsts.PERSONNEL_PSN_TYPE_CLINICAL_GOVERNANCE_OFFICER);
+                        break;
+                    default:
                 }
+
             }catch (NullPointerException e){
                 log.info(e.getMessage());
             }

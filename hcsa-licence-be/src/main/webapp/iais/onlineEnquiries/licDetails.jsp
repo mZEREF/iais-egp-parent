@@ -253,7 +253,7 @@
                                                             <td align="right">Designation</td>
                                                             <td>${personnel.keyPersonnelDto.designation}</td>
                                                         </tr>
-                                                        <c:if test="${personnel.keyPersonnelDto.name==ApplicationConsts.PERSONNEL_PSN_TYPE_CGO}">
+                                                        <c:if test="${personnel.keyPersonnelDto.name==ApplicationConsts.PERSONNEL_PSN_TYPE_CLINICAL_GOVERNANCE_OFFICER}">
                                                             <tr>
                                                                 <td align="right">Professional Type</td>
                                                                 <td>${personnel.keyPersonnelExtDto.professionType}</td>
