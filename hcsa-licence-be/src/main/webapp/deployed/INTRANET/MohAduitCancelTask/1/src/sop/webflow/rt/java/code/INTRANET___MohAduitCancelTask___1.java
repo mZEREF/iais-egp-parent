@@ -11,25 +11,30 @@
  */
 package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
+import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___MohAduitCancelTask___1 extends BaseProcessClass {
-
+	private static final String DELEGATOR ="auditCancelTaskDelegator";
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void initData_OnStepProcess_0() throws Exception {
 	// 		InitData->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "init", this);
 	}
 
 	public void pre_OnStepProcess_0() throws Exception {
 	// 		Pre->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "pre", this);
 	}
 
 
 
 	public void verification_OnStepProcess_0() throws Exception {
 	// 		Verification->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "vad", this);
 	}
 
 	public void step6_OnStepProcess_0() throws Exception {
@@ -38,6 +43,7 @@ public class INTRANET___MohAduitCancelTask___1 extends BaseProcessClass {
 
 	public void cancelTask_OnStepProcess_0() throws Exception {
 	// 		CancelTask->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "cancelTask", this);
 	}
 
 

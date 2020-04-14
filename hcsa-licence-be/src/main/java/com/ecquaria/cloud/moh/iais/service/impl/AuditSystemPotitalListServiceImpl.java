@@ -67,15 +67,31 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             List<AuditTaskDataDto> auditTaskDataDtos = searchResult.getRows();
             List<AuditTaskDataFillterDto> auditTaskDataFillterDtos = new ArrayList<>(auditTaskDataDtos.size());
             for(AuditTaskDataDto auditTaskDataDto : auditTaskDataDtos){
-                auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto));
+                auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto,false));
             }
             return auditTaskDataFillterDtos;
         }
         return  null;
     }
 
-    public  AuditTaskDataFillterDto getAuditTaskDataFillterDto(AuditTaskDataDto auditTaskDataDto){
+    @Override
+    public List<AuditTaskDataFillterDto> getSystemPotentailAdultCancelList() {
+        SearchParam searchParam = getAduitCancelSearchParamFrom();
+        SearchResult<AuditTaskDataDto> searchResult = getAuditSysParam(searchParam);
+        if(searchResult != null && searchResult.getRows() != null){
+            List<AuditTaskDataDto> auditTaskDataDtos = searchResult.getRows();
+            List<AuditTaskDataFillterDto> auditTaskDataFillterDtos = new ArrayList<>(auditTaskDataDtos.size());
+            for(AuditTaskDataDto auditTaskDataDto : auditTaskDataDtos){
+                auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto,true));
+            }
+            return auditTaskDataFillterDtos;
+        }
+        return  null;
+    }
+
+    public  AuditTaskDataFillterDto getAuditTaskDataFillterDto(AuditTaskDataDto auditTaskDataDto,Boolean isCancelTask){
         AuditTaskDataFillterDto auditTaskDataFillterDto = MiscUtil.transferEntityDto(auditTaskDataDto,AuditTaskDataFillterDto.class);
+        if(!isCancelTask)
         auditTaskDataFillterDto.setIsTcuNeeded(1);
         auditTaskDataFillterDto.setAuditType(auditTaskDataDto.getAuditType());
         auditTaskDataFillterDto.setInspectorId(auditTaskDataDto.getInspectorId());
@@ -454,6 +470,11 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         return hcsaLicenceClient.searchSysAduit(searchParam).getEntity();
     }
 
+    public SearchParam getAduitCancelSearchParamFrom() {
+        SearchParam searchParam = new SearchParam(AuditTaskDataDto.class.getName());
+        QueryHelp.setMainSql("inspectionQuery", "aduitCancelTaskList", searchParam);
+        return searchParam;
+    }
     public SearchParam getSearchParamFrom(AuditSystemPotentialDto dto, String insql) {
         SearchParam searchParam = new SearchParam(AuditTaskDataDto.class.getName());
         if(dto.getIsTcuNeeded() != null){

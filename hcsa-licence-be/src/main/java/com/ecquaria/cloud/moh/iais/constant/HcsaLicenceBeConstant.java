@@ -19,4 +19,6 @@ public class HcsaLicenceBeConstant {
     public static final String RISK_TYPE_OVERALL= "overall";
     public static final String AUDIT_INSPECTION_CONFIRM_SUCCESS_MESSAGE = "Your confirm audit request is routed to AO1 for approval.";
     public static final String AUDIT_INSPECTION_CANCEL_TASKS_SUCCESS_MESSAGE = "Your cancellation request is routed to AO1 for approval.";
+    public static final String AUDIT_INSPECTION_CANCEL_TASKS_SUCCESS_MESSAGE_CONFIRM = "Audit task(s) status have updated to Cancelled.";
+    public static final String AUDIT_INSPECTION_CANCEL_TASKS_SUCCESS_MESSAGE_REJECT = "Audit task(s) have rejected to inspector(s).";
 }
