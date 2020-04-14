@@ -56,6 +56,10 @@
                                                         <td align="right">UEN</td>
                                                         <td>${organizationLicDto.uenNo}</td>
                                                     </tr>
+                                                    <tr>
+                                                        <td align="right">Are you registered with ACRA/ROS</td>
+                                                        <td>wait UEN API</td>
+                                                    </tr>
 
                                                     </tbody>
                                                 </table>

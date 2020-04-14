@@ -86,7 +86,7 @@
             <#if hciPostalCode??> AND charindex(:hciPostalCode, Prem.POSTAL_CODE )>0</#if>
             <#if svc_names??> AND lic.SVC_NAME in( :svc_names)</#if>
             <#if licenseeIds??> AND lic.LICENSEE_ID in( :licenseeIds)</#if>
-            <#if licenseeRegnNo??> AND charindex( :licenseeRegnNo,lic.POSTAL_CODE )>0</#if>
+            <#if licenseeRegnNo??> AND charindex( :licenseeRegnNo,keyPsnExt.PROF_REG_NO )>0</#if>
 
             <#if licenseeId??>AND :licenseeId = :licenseeId</#if>
             <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
@@ -114,10 +114,10 @@
                 lic.postal_code
             FROM LICENSEE AS lic
             LEFT JOIN ORGANIZATION org ON org.ID = lic.ORGANIZATION_ID
-
+            LEFT JOIN licensee_individual licInd ON licInd.ID = lic.ID
             WHERE 1=1
             <#if uenNo??> AND charindex( :uenNo,org.UEN_NO )>0</#if>
-            <#if licenseeId??> AND lic.id = :licenseeId</#if>
+            <#if licenseeId??> AND charindex( :licenseeId,licInd.ID_NO )>0</#if>
             <#if licenseeName??> AND charindex(:licenseeName,lic.NAME )>0</#if>
 
             <#if licenseeRegnNo??> AND :licenseeRegnNo = :licenseeRegnNo</#if>
