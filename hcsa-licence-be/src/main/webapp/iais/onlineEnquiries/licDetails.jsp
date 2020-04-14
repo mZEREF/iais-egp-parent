@@ -267,7 +267,7 @@
                                                                 <td>${personnel.keyPersonnelExtDto.speciality}</td>
                                                             </tr>
                                                             <tr>
-                                                                <td align="right">SubSpeciality or relevant qualification</td>
+                                                                <td align="right">Subspecialty or relevant qualification</td>
                                                                 <td>${personnel.keyPersonnelExtDto.subSpeciality}</td>
                                                             </tr>
                                                         </c:if>
