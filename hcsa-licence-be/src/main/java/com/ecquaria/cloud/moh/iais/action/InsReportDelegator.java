@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -209,14 +210,12 @@ public class InsReportDelegator {
             appPremisesRecommendationDto.setChronoUnit(chrono);
             appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
         } else if (!StringUtil.isEmpty(periods) && !OTHERS.equals(periods)) {
-            String[] splitNumber = periods.split("\\D");
-            String[] splitUnit = periods.split("\\d");
-            String chronoRe = splitUnit[1];
-            String trim = chronoRe.trim();
-            String numberRe = splitNumber[0];
+            String[] splitPeriods = periods.split("\\s+");
+            String count = splitPeriods[0];
+            String dateType = splitPeriods[1];
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-            appPremisesRecommendationDto.setChronoUnit(trim);
-            appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(numberRe));
+            appPremisesRecommendationDto.setChronoUnit(dateType);
+            appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(count));
             appPremisesRecommendationDto.setRecommendation(recommendation);
         }else if(InspectionReportConstants.REJECTED.equals(recommendation)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
@@ -317,12 +316,10 @@ public class InsReportDelegator {
 
     private List<SelectOption> getChronoOption() {
         List<SelectOption> ChronoResult = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption("Year", "Year");
-        SelectOption so2 = new SelectOption("Month", "Month");
-        SelectOption so3 = new SelectOption("Week", "Week");
+        SelectOption so1 = new SelectOption(RiskConsts.YEAR, "Year");
+        SelectOption so2 = new SelectOption(RiskConsts.MONTH, "Month");
         ChronoResult.add(so1);
         ChronoResult.add(so2);
-        ChronoResult.add(so3);
         return ChronoResult;
     }
 

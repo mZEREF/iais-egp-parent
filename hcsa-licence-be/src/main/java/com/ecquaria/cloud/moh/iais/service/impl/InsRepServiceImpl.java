@@ -442,7 +442,7 @@ public class InsRepServiceImpl implements InsRepService {
                 String codeDesc = MasterCodeUtil.getCodeDesc(dateType);
                 String count = String.valueOf(riskResultDto.getTimeCount());
                 String recommTime = count + " " + codeDesc;
-                SelectOption so = new SelectOption(recommTime, recommTime);
+                SelectOption so = new SelectOption(count+" "+dateType, recommTime);
                 riskResult.add(so);
             }
         }
