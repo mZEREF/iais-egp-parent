@@ -260,11 +260,15 @@ public class RequestForChangeDelegator {
      * @Decription prepareTranfer
      */
     public void prepareTranfer(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do prepareTranfer start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
         String serviceName = (String)ParamUtil.getSessionAttr(bpc.request,"SvcName");
-        appSubmissionDto.setServiceName(serviceName);
+        if(!StringUtil.isEmpty(serviceName)){
+            appSubmissionDto.setServiceName(serviceName);
+        }
         ParamUtil.setRequestAttr(bpc.request, "prepareTranfer", appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
+        log.debug(StringUtil.changeForLog("the do prepareTranfer end ...."));
     }
 
 
@@ -356,9 +360,9 @@ public class RequestForChangeDelegator {
     }
     /**
      * @param bpc
-     * @Decription compareChangePercentage
+     * @Decription doTransfer
      */
-    public void compareChangePercentage(BaseProcessClass bpc) throws CloneNotSupportedException,IOException {
+    public void doTransfer(BaseProcessClass bpc)throws CloneNotSupportedException,IOException{
         log.info(StringUtil.changeForLog("The compareChangePercentage start ..."));
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         String uen = ParamUtil.getString(bpc.request, "UEN");
@@ -437,6 +441,36 @@ public class RequestForChangeDelegator {
             ParamUtil.setRequestAttr(bpc.request,"selectCheakboxs",ArrayUtils.toString(selectCheakboxs));
         }
         log.info(StringUtil.changeForLog("The compareChangePercentage end ..."));
+    }
+    /**
+     * @param bpc
+     * @Decription compareChangePercentage
+     */
+    public void doValidate(BaseProcessClass bpc) throws CloneNotSupportedException,IOException {
+        log.info(StringUtil.changeForLog("The doValidate start ..."));
+        String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
+        String uen = ParamUtil.getString(bpc.request, "UEN");
+        String[] selectCheakboxs = ParamUtil.getStrings(bpc.request, "premisesInput");
+        log.info(StringUtil.changeForLog("The doValidate licenceId is -->:"+licenceId));
+        log.info(StringUtil.changeForLog("The doValidate uen is -->:"+uen));
+        Map<String,String> error = doValidateEmpty(uen,selectCheakboxs);
+        if(error.isEmpty()){
+            LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
+            LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
+            doValidateLojic(uen,error,licenceDto,licenseeDto);
+        }
+
+        ParamUtil.setRequestAttr(bpc.request,"errorMsg" , WebValidationHelper.generateJsonStr(error));
+        ParamUtil.setRequestAttr(bpc.request,"UEN",uen);
+        log.info(StringUtil.changeForLog("The selectCheakboxs.toString() is -->:"+ArrayUtils.toString(selectCheakboxs)));
+        ParamUtil.setRequestAttr(bpc.request,"selectCheakboxs",ArrayUtils.toString(selectCheakboxs));
+        if(!error.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request,"isValidate","N");
+        }else{
+            prepareTranfer(bpc);
+            ParamUtil.setRequestAttr(bpc.request,"isValidate","Y");
+        }
+        log.info(StringUtil.changeForLog("The doValidate end ..."));
     }
 
 

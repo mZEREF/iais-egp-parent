@@ -34,7 +34,7 @@ public class INTERNET___MohRequestForChange___1 extends BaseProcessClass {
 	}
 
 	public void step2_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "compareChangePercentage", this);
+		EngineHelper.delegate(DELEGATOR, "doValidate", this);
 	}
 
 	public void doChooseInfo_OnStepProcess_0 () throws Exception { 
@@ -59,6 +59,11 @@ public class INTERNET___MohRequestForChange___1 extends BaseProcessClass {
 	public void prepareDraft_OnStepProcess_0() throws Exception {
 	// 		prepareDraft->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareDraft", this);
+	}
+
+	public void doTransfer_OnStepProcess_0() throws Exception {
+	// 		doTransfer->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doTransfer", this);
 	}
 
 }
