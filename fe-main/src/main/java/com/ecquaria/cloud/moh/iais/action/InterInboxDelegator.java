@@ -684,12 +684,13 @@ public class InterInboxDelegator {
         List<SelectOption> LicenceStatusList = IaisCommonUtils.genNewArrayList();
         LicenceStatusList.add(new SelectOption("All", "All"));
         LicenceStatusList.add(new SelectOption("LICEST001", "Active"));
-        LicenceStatusList.add(new SelectOption("LICEST002", "Ceased"));
         LicenceStatusList.add(new SelectOption("LICEST003", "Expired"));
-        LicenceStatusList.add(new SelectOption("LICEST004", "Lapsed "));
-        LicenceStatusList.add(new SelectOption("LICEST005", "Approved  "));
-        LicenceStatusList.add(new SelectOption("LICEST006", "Suspended "));
-        LicenceStatusList.add(new SelectOption("LICEST007", "Revoked "));
+        LicenceStatusList.add(new SelectOption("LICEST005", "Ceased"));
+        LicenceStatusList.add(new SelectOption("LICEST006", "Lapsed"));
+        LicenceStatusList.add(new SelectOption("LICEST007", "Approved"));
+        LicenceStatusList.add(new SelectOption("LICEST008", "SuspendedLapsed"));
+        LicenceStatusList.add(new SelectOption("LICEST004", "Request For Change"));
+        LicenceStatusList.add(new SelectOption("LICEST009", "Revoked"));
         ParamUtil.setRequestAttr(request, "licStatus", LicenceStatusList);
 
         List<SelectOption> LicenceTypeList = IaisCommonUtils.genNewArrayList();
