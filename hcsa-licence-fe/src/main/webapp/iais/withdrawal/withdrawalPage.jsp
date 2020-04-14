@@ -16,7 +16,7 @@
                     <div class="internet-content">
                         <div class="row">
                             <div class="center-content">
-                                <iais:field value="You are withdrawing for." required="false"/>
+                                <iais:field value="You are withdrawing for" required="false"/>
                             </div>
                         </div>
                         <div class="row">
@@ -28,7 +28,7 @@
                         </div>
                         <div class="row">
                             <div class="center-content">
-                                <iais:field value="Reason for Withdrawal." required="true"/>
+                                <iais:field value="Reason for Withdrawal" required="true"/>
                             </div>
                         </div>
                         <div class="row">
@@ -45,7 +45,7 @@
                         <div id="reason" hidden>
                             <div class="row">
                                 <div class="center-content">
-                                    <label class="col-md-4">Any supporting remarks.</label>
+                                    <label class="col-md-4">Any supporting remarks</label>
                                 </div>
                             </div>
                             <div class="row">
@@ -62,7 +62,7 @@
                         </div>
                         <div class="row">
                             <div class="center-content">
-                                <iais:field value="File Upload for Withdrawal  Reasons." required="false"/>
+                                <iais:field value="File Upload for Withdrawal  Reasons" required="false"/>
                             </div>
                         </div>
                         <div class="row">
