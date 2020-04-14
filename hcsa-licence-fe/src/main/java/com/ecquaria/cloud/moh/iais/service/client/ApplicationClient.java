@@ -15,6 +15,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -70,6 +71,9 @@ public interface ApplicationClient  {
 
     @PostMapping(path = "/iais-submission", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveSubmision(@RequestBody AppSubmissionDto appSubmissionDto);
+
+    @PostMapping(value = "/iais-submission/cessation-apps-save",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppSubmissionDto> saveApps(@RequestBody AppSubmissionDto appSubmissionDto);
 
     @PostMapping(path = "/iais-submission/requestInformation", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveReqeustInformationSubmision(@RequestBody AppSubmissionRequestInformationDto appSubmissionRequestInformationDto);

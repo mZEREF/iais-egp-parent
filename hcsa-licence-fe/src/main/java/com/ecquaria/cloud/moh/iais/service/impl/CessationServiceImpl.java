@@ -1,27 +1,27 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +53,8 @@ public class CessationServiceImpl implements CessationService {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
+    @Autowired
+    private AppConfigClient appConfigClient;
 
     @Override
     public List<String> getActiveLicence(List<String> licIds) {
@@ -166,19 +168,30 @@ public class CessationServiceImpl implements CessationService {
         for(AppCessationDto appCessationDto : appCessationDtos){
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
             String licId = appCessationDto.getWhichTodo();
-            Date effectiveDate = appCessationDto.getEffectiveDate();
-            LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
+            Double amount = 0.0;
+            AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
             String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT).getEntity();
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
-            String serviceId = hcsaServiceDto.getId();
-            ApplicationGroupDto applicationGroupDto = getApplicationGroupDto(grpNo,ApplicationConsts.APPLICATION_TYPE_CESSATION);
-            List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
-            appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
-            List<ApplicationDto> applicationDtos = getApplicationDtos(grpNo, serviceId, licId,effectiveDate);
-            appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
-            appCessMiscDto.setApplicationDto(applicationDtos);
-            appCessMiscDto.setLicId(licId);
-            setMiscData(appCessationDto, appCessMiscDto);
+            AppSubmissionDto appSubmissionDto = licenceClient.getAppSubmissionDto(licId).getEntity();
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+            String svcId = hcsaServiceDto.getId();
+            String svcCode = hcsaServiceDto.getSvcCode();
+            appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
+            appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+            appSubmissionDto.setAppGrpNo(grpNo);
+            appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
+            appSubmissionDto.setAmount(amount);
+            appSubmissionDto.setAuditTrailDto(internet);
+            appSubmissionDto.setPreInspection(true);
+            appSubmissionDto.setRequirement(true);
+            appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+            setRiskToDto(appSubmissionDto);
+            AppSubmissionDto entity = applicationClient.saveSubmision(appSubmissionDto).getEntity();
+            AppSubmissionDto appSubmissionDtoSave = applicationClient.saveApps(entity).getEntity();
+            List<ApplicationDto> applicationDtos = appSubmissionDtoSave.getApplicationDtos();
+            String appId = applicationDtos.get(0).getId();
+            setMiscData(appCessationDto, appCessMiscDto, appId);
             appCessMiscDtos.add(appCessMiscDto);
         }
         cessationClient.saveCessation(appCessMiscDtos).getEntity();
@@ -274,7 +287,7 @@ public class CessationServiceImpl implements CessationService {
         return applicationDtos;
     }
 
-    private AppCessMiscDto setMiscData(AppCessationDto appCessationDto, AppCessMiscDto appCessMiscDto) {
+    private AppCessMiscDto setMiscData(AppCessationDto appCessationDto, AppCessMiscDto appCessMiscDto,String appId) {
         Date effectiveDate = appCessationDto.getEffectiveDate();
         String reason = appCessationDto.getReason();
         String otherReason = appCessationDto.getOtherReason();
@@ -292,6 +305,7 @@ public class CessationServiceImpl implements CessationService {
         appCessMiscDto.setPatNeedTrans(patNeedTrans);
         appCessMiscDto.setPatNoReason(patNoRemarks);
         appCessMiscDto.setPatTransType(patientSelect);
+        appCessMiscDto.setAppPremCorreId(appId);
         if (!StringUtil.isEmpty(patHciName)) {
             appCessMiscDto.setPatTransTo(patHciName);
         }
@@ -303,5 +317,38 @@ public class CessationServiceImpl implements CessationService {
         }
         return appCessMiscDto;
     }
+    private void setRiskToDto(AppSubmissionDto appSubmissionDto) {
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        List<RiskAcceptiionDto> riskAcceptiionDtoList = new ArrayList();
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+            RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
+            riskAcceptiionDto.setScvCode(appSvcRelatedInfoDto.getServiceCode());
+            riskAcceptiionDto.setApptype(appSubmissionDto.getAppType());
+            riskAcceptiionDtoList.add(riskAcceptiionDto);
+        }
 
+        List<RiskResultDto> riskResultDtoList = appConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
+
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+            String serviceCode = appSvcRelatedInfoDto.getServiceCode();
+            RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList, serviceCode);
+            if (riskResultDto != null) {
+                appSvcRelatedInfoDto.setScore(riskResultDto.getScore());
+                appSvcRelatedInfoDto.setDoRiskDate(riskResultDto.getDoRiskDate());
+            }
+        }
+    }
+
+    private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList, String serviceCode) {
+        RiskResultDto result = null;
+        if (riskResultDtoList == null || StringUtil.isEmpty(serviceCode)) {
+            return result;
+        }
+        for (RiskResultDto riskResultDto : riskResultDtoList) {
+            if (serviceCode.equals(riskResultDto.getSvcCode())) {
+                result = riskResultDto;
+            }
+        }
+        return result;
+    }
 }

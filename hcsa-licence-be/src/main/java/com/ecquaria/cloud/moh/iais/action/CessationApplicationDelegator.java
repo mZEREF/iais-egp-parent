@@ -337,7 +337,6 @@ public class CessationApplicationDelegator {
                 appCessLicDtos.remove(i);
                 i = i - 1 ;
             }
-
         }
         return appCessLicDtos;
     }

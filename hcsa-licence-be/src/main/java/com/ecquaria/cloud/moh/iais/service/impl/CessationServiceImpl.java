@@ -262,7 +262,7 @@ public class CessationServiceImpl implements CessationService {
         return appGrpPremisesDtos;
     }
 
-    private AppCessMiscDto setMiscData(AppCessationDto appCessationDto, AppCessMiscDto appCessMiscDto, String appLid) {
+    private AppCessMiscDto setMiscData(AppCessationDto appCessationDto, AppCessMiscDto appCessMiscDto, String appId) {
         Date effectiveDate = appCessationDto.getEffectiveDate();
         String reason = appCessationDto.getReason();
         String otherReason = appCessationDto.getOtherReason();
@@ -280,7 +280,7 @@ public class CessationServiceImpl implements CessationService {
         appCessMiscDto.setPatNeedTrans(patNeedTrans);
         appCessMiscDto.setPatNoReason(patNoRemarks);
         appCessMiscDto.setPatTransType(patientSelect);
-        appCessMiscDto.setAppPremCorreId(appLid);
+        appCessMiscDto.setAppPremCorreId(appId);
         if (!StringUtil.isEmpty(patHciName)) {
             appCessMiscDto.setPatTransTo(patHciName);
         }
