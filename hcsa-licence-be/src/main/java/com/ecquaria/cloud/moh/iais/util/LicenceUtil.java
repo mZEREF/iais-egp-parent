@@ -42,7 +42,12 @@ public class LicenceUtil {
         }
         return  calendar.getTime();
     }
-
+    public static Date getExpiryDate(Date startDate, int yearLength){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        calendar.add(Calendar.YEAR,yearLength);
+        return  calendar.getTime();
+    }
     public static List<SelectOption> getResultsLastCompliance(){
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         selectOptions.add(new SelectOption(HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_FULL_CODE,HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_FULL_NAME));
