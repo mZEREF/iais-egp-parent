@@ -285,25 +285,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     }
 
     private void cancelTask(AuditTaskDataFillterDto temp) {
-        TaskDto taskDto = new TaskDto();
-        taskDto.setUserId(temp.getInspectorId());
-        taskDto.setProcessUrl("todo");//todo
-        taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
-        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
-        taskDto.setSlaDateCompleted(null);
-        taskDto.setRoleId(RoleConsts.USER_ROLE_AO1);
-        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        taskDto.setWkGrpId(temp.getWorkGroupId());
-        taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INP);
-        taskDto.setSlaAlertInDays(2);
-        taskDto.setSlaRemainInDays(3);
-        taskDto.setSlaInDays(5);
-        taskDto.setScore(4);
-        taskDto.setRefNo(temp.getId());
-        taskDto.setPriority(0);
-        List<TaskDto> createTaskDtoList = IaisCommonUtils.genNewArrayList();
-        createTaskDtoList.add(taskDto);
-       // taskService.createTasks(createTaskDtoList);
         //update audit status
         updateLicPremisesAuditDto(temp,AppConsts.AUDIT_TASK_CANCEL_PENDING_STATUS);
     }
