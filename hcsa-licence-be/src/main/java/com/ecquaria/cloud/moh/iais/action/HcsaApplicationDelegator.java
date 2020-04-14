@@ -202,7 +202,7 @@ public class HcsaApplicationDelegator {
             OrgUserDto user=applicationViewService.getUserById(userId);
             String actionBy=user.getDisplayName();
 
-            rollBackMap.put(actionBy+"("+e.getRoleId()+")",e.getStageId()+","+wrkGrpId+","+userId);
+            rollBackMap.put(actionBy+"("+e.getRoleId()+")",e.getStageId()+","+wrkGrpId+","+userId+","+e.getRoleId());
           }
         }
         applicationViewDto.setRollBack(rollBackMap);
@@ -245,6 +245,10 @@ public class HcsaApplicationDelegator {
             }
         }
         applicationViewDto.setRecomeDation(riskResult);
+
+        //set recommendation other dropdown
+        ParamUtil.setSessionAttr(bpc.request, "recommendationOtherDropdown", (Serializable)getRecommendationOtherDropdown());
+
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         if(applicationDto != null){
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()) ){
@@ -391,21 +395,11 @@ public class HcsaApplicationDelegator {
             String appPremCorreId=taskDto.getRefNo();
             //save recommendation
             String recommendationStr = ParamUtil.getString(bpc.request,"recommendation");
-//            if(StringUtil.isEmpty(recommendationStr)){
-//                //recommendationShow
-//                recommendationStr = ParamUtil.getString(bpc.request,"recommendationShow");
-//            }
             String dateStr = ParamUtil.getDate(bpc.request, "tuc");
             String dateTimeShow = ParamUtil.getString(bpc.request,"dateTimeShow");
             if(StringUtil.isEmpty(recommendationStr)){
 
             }else if(("reject").equals(recommendationStr)){
-//                ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
-//                AppPremisesRecommendationDto oldAppPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
-//                if(oldAppPremisesRecommendationDto != null){
-//                    oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-//                    insRepService.updateRecommendation(oldAppPremisesRecommendationDto);
-//                }
                 AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
                 appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
                 appPremisesRecommendationDto.setRecomInNumber(0);
@@ -422,11 +416,20 @@ public class HcsaApplicationDelegator {
                 insRepService.updateRecommendation(appPremisesRecommendationDto);
             }else{
                 AppPremisesRecommendationDto appPremisesRecommendationDto=new AppPremisesRecommendationDto();
-                String[] strs=recommendationStr.split("\\s+");
                 appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
-                appPremisesRecommendationDto.setRecomInNumber( Integer.valueOf(strs[0]));
-                appPremisesRecommendationDto.setChronoUnit(strs[1]);
+                if("other".equals(recommendationStr)){
+                    String number = ParamUtil.getString(bpc.request,"number");
+                    if(!StringUtil.isEmpty(number)){
+                        appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number));
+                        String chrono = ParamUtil.getString(bpc.request,"chrono");
+                        appPremisesRecommendationDto.setChronoUnit(chrono);
+                    }
+                }else{
+                    String[] strs=recommendationStr.split("\\s+");
+                    appPremisesRecommendationDto.setRecomInNumber( Integer.valueOf(strs[0]));
+                    appPremisesRecommendationDto.setChronoUnit(strs[1]);
+                }
                 //save date
                 if(!StringUtil.isEmpty(dateStr)){
                     Date date = Formatter.parseDate(dateStr);
@@ -685,12 +688,18 @@ public class HcsaApplicationDelegator {
         String satageId=result[0];
         String wrkGpId=result[1];
         String userId=result[2];
+        String roleId=result[3];
+
         if(HcsaConsts.ROUTING_STAGE_ASO.equals(satageId)){
             rollBack(bpc,HcsaConsts.ROUTING_STAGE_ASO,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_ASO,wrkGpId,userId);
         }else if(HcsaConsts.ROUTING_STAGE_PSO.equals(satageId)){
             rollBack(bpc,HcsaConsts.ROUTING_STAGE_PSO,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_PSO,wrkGpId,userId);
         }else if(HcsaConsts.ROUTING_STAGE_INS.equals(satageId)){
-            rollBack(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_INSPECTIOR,wrkGpId,userId);
+            if(RoleConsts.USER_ROLE_AO1.equals(roleId)){
+                rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO1,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_AO1,wrkGpId,userId);
+            }else{
+                rollBack(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_INSPECTIOR,wrkGpId,userId);
+            }
         }else if(HcsaConsts.ROUTING_STAGE_AO1.equals(satageId)){
             rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO1,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_AO1,wrkGpId,userId);
         }else if(HcsaConsts.ROUTING_STAGE_AO2.equals(satageId)){
@@ -1034,6 +1043,13 @@ public class HcsaApplicationDelegator {
     //***************************************
     //private methods
     //*************************************
+
+    private List<SelectOption> getRecommendationOtherDropdown(){
+        List<SelectOption> recommendationOtherSelectOption = IaisCommonUtils.genNewArrayList();
+        recommendationOtherSelectOption.add(new SelectOption("Year", "Year"));
+        recommendationOtherSelectOption.add(new SelectOption("Month", "Month"));
+        return recommendationOtherSelectOption;
+    }
 
     private void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ) throws FeignException, CloneNotSupportedException {
         log.info(StringUtil.changeForLog("The routingTask start ..."));

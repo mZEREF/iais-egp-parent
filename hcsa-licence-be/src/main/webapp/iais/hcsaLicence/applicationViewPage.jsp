@@ -653,6 +653,7 @@
                                                                                 <option value="${recommendation}" <c:if test="${recommendationStr == recommendation}">selected</c:if>><c:out
                                                                                         value="${recommendation}"></c:out></option>
                                                                             </c:forEach>
+                                                                            <option value="other" <c:if test="${recommendationStr == 'other'}">selected</c:if>>Other</option>
                                                                             <option value="reject" <c:if test="${recommendationStr == 'reject'}">selected</c:if>>Reject</option>
                                                                         </select>
                                                                         <span id="error_recommendation" name="iaisErrorMsg" class="error-msg"></span>
@@ -661,6 +662,19 @@
                                                                         <p>${(recommendationOnlyShow == "" || recommendationOnlyShow == null) ? "-" : recommendationOnlyShow}</p>
                                                                     </c:otherwise>
                                                                 </c:choose>
+                                                            </iais:value>
+                                                        </iais:row>
+                                                    </div>
+                                                    <div id="recommendationOtherDropdown">
+                                                        <iais:row>
+                                                            <iais:field value="Other Period" required="true"/>
+                                                            <iais:value width="10">
+                                                                <%String otherNumber = request.getParameter("number");%>
+                                                                <%String otherChrono = request.getParameter("chrono");%>
+                                                                <input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" id=recomInNumber type="text" name="number" maxlength="2" value="<%=otherNumber != null ? otherNumber : ""%>">
+                                                                <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
+                                                                <iais:select id="chronoUnit" name="chrono" options="recommendationOtherDropdown" value="<%=otherChrono%>"/>
+                                                                <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
@@ -803,6 +817,7 @@
         checkVerifiedField();
         //check DMS
         DMSCheck();
+        checkRecommendationOtherDropdown();
 
         if('APTY006' == '${applicationViewDto.applicationDto.applicationType}' && 'APST007' == '${applicationViewDto.applicationDto.status}'){
             $('#recommendationDropdown').addClass('hidden');
@@ -860,6 +875,26 @@
             $('#comments').addClass('hidden');
         }
     }
+
+    //recommendation
+    $("[name='recommendation']").change(function selectChange() {
+        var recommendation = $("[name='recommendation']").val();
+        if('other' == recommendation){
+            $('#recommendationOtherDropdown').removeClass('hidden');
+        }else{
+            $('#recommendationOtherDropdown').addClass('hidden');
+        }
+    });
+
+    function checkRecommendationOtherDropdown(){
+        var recommendation = $("[name='recommendation']").val();
+        if('other' == recommendation){
+            $('#recommendationOtherDropdown').removeClass('hidden');
+        }else{
+            $('#recommendationOtherDropdown').addClass('hidden');
+        }
+    }
+
 
 
     $("[name='nextStage']").change(function selectChange() {

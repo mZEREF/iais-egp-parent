@@ -7,8 +7,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import java.util.Map;
+import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 public class HcsaApplicationViewValidate implements CustomizeValidator {
@@ -44,6 +46,10 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             //recommendationShow
             recommendationStr = ParamUtil.getString(request,"recommendationShow");
         }
+
+        //verified recommendation other dropdown
+        //0063971
+        checkRecommendationOtherDropdown(errMap,recommendationStr,request);
 
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
         String status = applicationViewDto.getApplicationDto().getStatus();
@@ -114,4 +120,30 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         }
         return errMap;
     }
+
+    /**
+     * private method
+     */
+    private void checkRecommendationOtherDropdown(Map<String, String> errMap,String recommendationStr,HttpServletRequest request){
+        if("other".equals(recommendationStr)){
+            String number = ParamUtil.getString(request,"number");
+            if(StringUtil.isEmpty(number)){
+                errMap.put("recomInNumber","The field is mandatory.");
+            }else{
+                if(!CommonValidator.isPositiveInteger(number)){
+                    errMap.put("recomInNumber","The field is illegal.");
+                }
+            }
+            String chrono = ParamUtil.getString(request,"chrono");
+            if(StringUtil.isEmpty(chrono)){
+                errMap.put("chronoUnit","The field is mandatory.");
+            }
+        }
+    }
+    //check number
+    public boolean isNumeric(String string){
+        Pattern pattern = Pattern.compile("[0-9]*");
+        return pattern.matcher(string).matches();
+    }
+
 }
