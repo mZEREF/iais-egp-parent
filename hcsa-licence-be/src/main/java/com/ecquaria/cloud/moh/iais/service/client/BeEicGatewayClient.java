@@ -6,7 +6,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataRequest;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataResponse;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SyncDataBody;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFeSupportDto;
@@ -16,7 +18,14 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -118,13 +127,19 @@ public interface BeEicGatewayClient {
                                                                  @RequestHeader("authorization-Secondary") String authorizationSec);
 
 
-    @PostMapping(value = "v1/hcsal/riskscore-configs_test", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<HcsaRiskFeSupportDto> syncRegulationToFe(@RequestBody  List<HcsaChklSvcRegulationDto> regulationList,
-                                                               @RequestHeader("date") String date,
-                                                               @RequestHeader("authorization") String authorization,
-                                                               @RequestHeader("date-Secondary") String dateSec,
-                                                               @RequestHeader("authorization-Secondary") String authorizationSec);
+    @PostMapping(value = "/v1/hcsa-chklst-sync-comp", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<BeSyncCompareDataResponse>> compareFeData(@RequestBody BeSyncCompareDataRequest beSyncCompareDataRequest,
+                                                                       @RequestHeader("date") String date,
+                                                                       @RequestHeader("authorization") String authorization,
+                                                                       @RequestHeader("date-Secondary") String dateSec,
+                                                                       @RequestHeader("authorization-Secondary") String authorizationSec);
 
+    @PostMapping(value = "/v1/hcsa-chklst-sync-save", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> saveSyncData(@RequestBody SyncDataBody syncDataBody,
+                                                                       @RequestHeader("date") String date,
+                                                                       @RequestHeader("authorization") String authorization,
+                                                                       @RequestHeader("date-Secondary") String dateSec,
+                                                                       @RequestHeader("authorization-Secondary") String authorizationSec);
 
     @GetMapping(value = "/v1/new-app-no", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getAppNo(@RequestParam(value = "type") String applicationType,
