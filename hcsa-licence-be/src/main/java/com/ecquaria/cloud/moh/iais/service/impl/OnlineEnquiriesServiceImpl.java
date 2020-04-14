@@ -173,7 +173,9 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 per.getKeyPersonnelDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getSalutation()}).get(0).getText());
                 per.getKeyPersonnelDto().setDesignation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getDesignation()}).get(0).getText());
                 per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelExtDto().getProfessionType()}).get(0).getText());
-
+                if(per.getKeyPersonnelDto().getName().equals(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP)){
+                    per.getKeyPersonnelDto().setName(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT);
+                }
             }catch (NullPointerException e){
                 log.info(e.getMessage());
             }

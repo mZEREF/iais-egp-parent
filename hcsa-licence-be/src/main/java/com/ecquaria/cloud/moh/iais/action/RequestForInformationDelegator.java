@@ -737,7 +737,6 @@ public class RequestForInformationDelegator {
         interMessageDto.setMsgContent(mesContext);
         interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
         interMessageDto.setUserId(licenseeId);
-        //interMessageDto.setUserId("B4C95F9B-5D30-EA11-BE78-000C29D29DB0");
         interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         inboxMsgService.saveInterMessage(interMessageDto);
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));

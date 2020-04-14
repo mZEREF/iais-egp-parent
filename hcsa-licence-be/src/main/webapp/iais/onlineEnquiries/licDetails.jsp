@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
@@ -252,21 +253,24 @@
                                                             <td align="right">Designation</td>
                                                             <td>${personnel.keyPersonnelDto.designation}</td>
                                                         </tr>
-                                                        <tr>
-                                                            <td align="right">Professional Type</td>
-                                                            <td>${personnel.keyPersonnelExtDto.professionType}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td align="right">Professional Regn No</td>
-                                                            <td>${personnel.keyPersonnelExtDto.profRegNo}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td align="right">Specialty</td>
-                                                            <td>${personnel.keyPersonnelExtDto.speciality}</td>
-                                                        </tr><tr>
-                                                            <td align="right">SubSpeciality or relevant qualification</td>
-                                                            <td>${personnel.keyPersonnelExtDto.subSpeciality}</td>
-                                                        </tr>
+                                                        <c:if test="${personnel.keyPersonnelDto.name==ApplicationConsts.PERSONNEL_PSN_TYPE_CGO}">
+                                                            <tr>
+                                                                <td align="right">Professional Type</td>
+                                                                <td>${personnel.keyPersonnelExtDto.professionType}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td align="right">Professional Regn No</td>
+                                                                <td>${personnel.keyPersonnelExtDto.profRegNo}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td align="right">Specialty</td>
+                                                                <td>${personnel.keyPersonnelExtDto.speciality}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td align="right">SubSpeciality or relevant qualification</td>
+                                                                <td>${personnel.keyPersonnelExtDto.subSpeciality}</td>
+                                                            </tr>
+                                                        </c:if>
                                                         <tr>
                                                             <td align="right">Mobile No</td>
                                                             <td>${personnel.keyPersonnelDto.mobileNo}</td>
@@ -275,6 +279,12 @@
                                                             <td align="right">Email Address</td>
                                                             <td>${personnel.keyPersonnelDto.emailAddr}</td>
                                                         </tr>
+                                                        <c:if test="${personnel.keyPersonnelDto.name==ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT}">
+                                                            <tr>
+                                                                <td align="right">Preferred Mode of Receiving MedAlert</td>
+                                                                <td>${personnel.keyPersonnelExtDto.preferredMode}</td>
+                                                            </tr>
+                                                        </c:if>
                                                         </tbody>
                                                     </table>
                                                 </div>
