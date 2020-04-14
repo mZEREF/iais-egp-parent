@@ -1,7 +1,9 @@
 package com.ecquaria.cloud.moh.iais.util;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
@@ -17,10 +19,27 @@ import java.util.List;
  */
 
 public class LicenceUtil {
-    public static Date getExpiryDate(Date startDate, int yearLength){
+    public static Date getExpiryDate(Date startDate, AppPremisesRecommendationDto appPremisesRecommendationDto){
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startDate);
-        calendar.add(Calendar.YEAR,yearLength);
+        if(appPremisesRecommendationDto != null){
+            switch (appPremisesRecommendationDto.getChronoUnit()){
+                case AppConsts.LICENCE_PERIOD_YEAR :
+                    calendar.setTime(startDate);
+                    calendar.add(Calendar.YEAR,appPremisesRecommendationDto.getRecomInNumber());
+                    break;
+                case AppConsts.LICENCE_PERIOD_MONTH :
+                    calendar.setTime(startDate);
+                    calendar.add(Calendar.MONTH,appPremisesRecommendationDto.getRecomInNumber());
+                    break;
+                case AppConsts.LICENCE_PERIOD_WEEK :
+                    calendar.setTime(startDate);
+                    calendar.add(Calendar.WEEK_OF_YEAR,appPremisesRecommendationDto.getRecomInNumber());
+                    break;
+            }
+        }else{
+            calendar.setTime(startDate);
+            calendar.add(Calendar.YEAR,1);
+        }
         return  calendar.getTime();
     }
 

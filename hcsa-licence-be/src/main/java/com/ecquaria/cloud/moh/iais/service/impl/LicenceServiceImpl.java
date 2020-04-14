@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -104,23 +105,36 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     @Override
-    public String getLicenceNo(String hciCode, String serviceCode, int yearLength) {
-
+    public String getLicenceNo(String hciCode, String serviceCode, AppPremisesRecommendationDto appPremisesRecommendationDto) {
+        log.info(StringUtil.changeForLog("The getLicenceNo start ..."));
         Integer licenceSeq =  hcsaLicenceClient.licenceNumber(hciCode).getEntity();
+        log.info(StringUtil.changeForLog("The getLicenceNo licenceSeq -->:"+licenceSeq));
+        int yearLength = 0;
+        if(appPremisesRecommendationDto != null && AppConsts.LICENCE_PERIOD_YEAR.equals(appPremisesRecommendationDto.getChronoUnit())){
+            yearLength = appPremisesRecommendationDto.getRecomInNumber();
+        }
+        log.info(StringUtil.changeForLog("The getLicenceNo yearLength -->:"+yearLength));
         Map<String,Object> param = new HashMap();
         param.put("hciCode",hciCode);
         param.put("serviceCode",serviceCode);
         param.put("yearLength",yearLength);
         param.put("licenceSeq",licenceSeq);
-
+        log.info(StringUtil.changeForLog("The getLicenceNo end ..."));
         return    systemClient.licence(hciCode,serviceCode,yearLength,licenceSeq).getEntity();
     }
 
     @Override
-    public String getGroupLicenceNo(String hscaCode, int yearLength) {
-        String entity = hcsaLicenceClient.groupLicenceNumber(hscaCode).getEntity();
-
-        return   systemClient.groupLicence(hscaCode,yearLength+"",entity).getEntity();
+    public String getGroupLicenceNo(String hscaCode, AppPremisesRecommendationDto appPremisesRecommendationDto) {
+        log.info(StringUtil.changeForLog("The getGroupLicenceNo start ..."));
+        String no = hcsaLicenceClient.groupLicenceNumber(hscaCode).getEntity();
+        log.info(StringUtil.changeForLog("The getGroupLicenceNo no -->:"+no));
+        int yearLength = 0;
+        if(appPremisesRecommendationDto != null && AppConsts.LICENCE_PERIOD_YEAR.equals(appPremisesRecommendationDto.getChronoUnit())){
+            yearLength = appPremisesRecommendationDto.getRecomInNumber();
+        }
+        log.info(StringUtil.changeForLog("The getGroupLicenceNo yearLength -->:"+yearLength));
+        log.info(StringUtil.changeForLog("The getGroupLicenceNo end ..."));
+        return   systemClient.groupLicence(hscaCode,yearLength +"",no).getEntity();
     }
 
     @Override

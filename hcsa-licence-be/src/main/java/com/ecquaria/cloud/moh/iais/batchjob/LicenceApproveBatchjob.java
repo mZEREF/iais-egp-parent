@@ -288,6 +288,46 @@ public class LicenceApproveBatchjob {
         return result;
     }
 
+    private  AppPremisesRecommendationDto getAppPremisesRecommendationDto(List<ApplicationListDto> applicationListDtos){
+        log.info(StringUtil.changeForLog("The getAppPremisesRecommendationDto start ..."));
+        AppPremisesRecommendationDto result = null;
+        if(!IaisCommonUtils.isEmpty(applicationListDtos)){
+            for(ApplicationListDto applicationListDto : applicationListDtos){
+                AppPremisesRecommendationDto appPremisesRecommendationDto =  applicationListDto.getAppPremisesRecommendationDto();
+                if(result ==  null){
+                    result = appPremisesRecommendationDto;
+                }else{
+                    //Licence start date
+                    if(appPremisesRecommendationDto.getRecomInDate() != null){
+                        if(result.getRecomInDate() == null || appPremisesRecommendationDto.getRecomInDate().before(result.getRecomInDate())){
+                            result.setRecomInDate(appPremisesRecommendationDto.getRecomInDate());
+                        }
+                    }
+                    //RecomInNumber
+                    if(!StringUtil.isEmpty(appPremisesRecommendationDto.getChronoUnit()) && appPremisesRecommendationDto.getRecomInNumber() != null){
+                        if(appPremisesRecommendationDto.getChronoUnit().equals(result.getChronoUnit())){
+                            if(appPremisesRecommendationDto.getRecomInNumber() < result.getRecomInNumber()){
+                                result.setRecomInNumber(appPremisesRecommendationDto.getRecomInNumber());
+                            }
+                        }else if(AppConsts.LICENCE_PERIOD_YEAR.equals(result.getChronoUnit())){
+                            result.setRecomInNumber(appPremisesRecommendationDto.getRecomInNumber());
+                            result.setChronoUnit(appPremisesRecommendationDto.getChronoUnit());
+                        }else if(AppConsts.LICENCE_PERIOD_MONTH.equals(result.getChronoUnit()) && AppConsts.LICENCE_PERIOD_WEEK.equals(result.getChronoUnit())){
+                            result.setRecomInNumber(appPremisesRecommendationDto.getRecomInNumber());
+                            result.setChronoUnit(appPremisesRecommendationDto.getChronoUnit());
+                        }
+                    }
+                }
+            }
+        }
+        if(result != null){
+          log.info(StringUtil.changeForLog("The Licence Start Date -->:"+result.getRecomInDate()));
+          log.info(StringUtil.changeForLog("The RecomInNumber -->:"+result.getRecomInNumber()));
+          log.info(StringUtil.changeForLog("The ChronoUnit -->:"+result.getChronoUnit()));
+        }
+        log.info(StringUtil.changeForLog("The getAppPremisesRecommendationDto end ..."));
+        return result;
+    }
     private GenerateResult generateGroupLicence(ApplicationLicenceDto applicationLicenceDto,List<HcsaServiceDto> hcsaServiceDtos){
         log.debug(StringUtil.changeForLog("The generateGroupLicence is start ..."));
         GenerateResult result = new GenerateResult();
@@ -324,8 +364,8 @@ public class LicenceApproveBatchjob {
                     continue;
                 }
                 //to check this applicaiton is approve
-                //todo:get recommedation logic
-                AppPremisesRecommendationDto appPremisesRecommendationDto = applicationListDtos.get(0).getAppPremisesRecommendationDto();
+                //get recommedation logic
+                AppPremisesRecommendationDto appPremisesRecommendationDto = getAppPremisesRecommendationDto(applicationListDtos);
                 //get service code
                 log.debug(StringUtil.changeForLog("The key is -->:" + key));
                 String serviceId = applicationListDtos.get(0).getApplicationDto().getServiceId();
@@ -337,22 +377,19 @@ public class LicenceApproveBatchjob {
                 }
                 //create licence
                 String licenceNo = null;
-                //get the yearLenth.
-                int yearLength = getYearLength(appPremisesRecommendationDto);
-                //create licence
                 if(applicationListDtos.get(0).getApplicationDto().isNeedNewLicNo()) {
-                    licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(), yearLength);
+                    licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(), appPremisesRecommendationDto);
                 }
                 log.debug(StringUtil.changeForLog("The licenceNo is -->;"+licenceNo));
                 if(StringUtil.isEmpty(licenceNo)&& applicationListDtos.get(0).getApplicationDto().isNeedNewLicNo()){
-                    errorMessage = "The licenceNo is null .-->:" + hcsaServiceDto.getSvcCode() + ":" + applicationListDtos.size() + ":" + yearLength;
+                    errorMessage = "The licenceNo is null .-->:" + hcsaServiceDto.getSvcCode() + ":" + applicationListDtos.size() ;
                     break;
                 }
                 List<ApplicationDto> applicationDtos =  getApplicationDtos(applicationListDtos);
                 String originLicenceId = applicationDtos.get(0).getOriginLicenceId();
-                LicenceDto originLicenceDto = deleteOriginLicenceDto(organizationId);
+                LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
                 superLicDto.setOriginLicenceDto(originLicenceDto);
-                LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,yearLength,appPremisesRecommendationDto,
+                LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,appPremisesRecommendationDto,
                         originLicenceDto,null,applicationDtos);
                 superLicDto.setLicenceDto(licenceDto);
                 //if PostInspNeeded send email
@@ -559,7 +596,7 @@ public class LicenceApproveBatchjob {
                         appSvcPremisesScopeAllocationDtos, hcsaServiceDto,organizationId,isPostInspNeeded);
                 String licenceNo = null;
                 //get the yearLenth.
-                int yearLength = getYearLength(appPremisesRecommendationDto);
+//                int yearLength = getYearLength(appPremisesRecommendationDto);
                 if(!IaisCommonUtils.isEmpty(premisesGroupDtos)){
                     PremisesGroupDto premisesGroupDto =premisesGroupDtos.get(0);
                     if(premisesGroupDto.isHasError()){
@@ -570,18 +607,18 @@ public class LicenceApproveBatchjob {
 
                     //create licence
                     if(applicationDto.isNeedNewLicNo()){
-                        licenceNo = licenceService.getLicenceNo(premisesGroupDto.getPremisesDto().getHciCode(),hcsaServiceDto.getSvcCode(),yearLength);
+                        licenceNo = licenceService.getLicenceNo(premisesGroupDto.getPremisesDto().getHciCode(),hcsaServiceDto.getSvcCode(),appPremisesRecommendationDto);
                     }
                     log.debug(StringUtil.changeForLog("The licenceNo is -->;"+licenceNo));
                     if(StringUtil.isEmpty(licenceNo) && applicationDto.isNeedNewLicNo()){
-                        errorMessage = "The licenceNo is null .-->:" + premisesGroupDto.getPremisesDto().getHciCode() + ":" + hcsaServiceDto.getSvcCode() + ":" + yearLength;
+                        errorMessage = "The licenceNo is null .-->:" + premisesGroupDto.getPremisesDto().getHciCode() + ":" + hcsaServiceDto.getSvcCode();
                         break;
                     }
                 }
                 String originLicenceId = applicationDto.getOriginLicenceId();
                 LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
                 superLicDto.setOriginLicenceDto(originLicenceDto);
-                LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,yearLength,appPremisesRecommendationDto,
+                LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,appPremisesRecommendationDto,
                         originLicenceDto,applicationDto,null);
                 superLicDto.setLicenceDto(licenceDto);
                 //if PostInspNeeded send email
@@ -645,22 +682,24 @@ public class LicenceApproveBatchjob {
     }
 
 
-    private  int getYearLength(AppPremisesRecommendationDto appPremisesRecommendationDto){
-        log.debug(StringUtil.changeForLog("The getYearLength is start ..."));
-        int yearLength = 1;
-        if(appPremisesRecommendationDto!=null){
-            String chrono = appPremisesRecommendationDto.getChronoUnit();
-            if(AppConsts.LICENCE_PERIOD_YEAR.equals(chrono)){
-                yearLength = appPremisesRecommendationDto.getRecomInNumber();
-            }else{
-                log.debug(StringUtil.changeForLog("The getYearLength chrono is not Year ..."));
-            }
-        }else{
-            log.error(StringUtil.changeForLog("The getYearLength appPremisesRecommendationDto is null ..."));
-        }
-        log.debug(StringUtil.changeForLog("The getYearLength is end ..."));
-        return yearLength;
-    }
+//    private  int getYearLength(AppPremisesRecommendationDto appPremisesRecommendationDto){
+//        log.debug(StringUtil.changeForLog("The getYearLength is start ..."));
+//        int yearLength = 1;
+//        if(appPremisesRecommendationDto!=null){
+//            String chrono = appPremisesRecommendationDto.getChronoUnit();
+//            if(AppConsts.LICENCE_PERIOD_YEAR.equals(chrono)){
+//                yearLength = appPremisesRecommendationDto.getRecomInNumber();
+//            }else if(AppConsts.LICENCE_PERIOD_MONTH.equals(chrono)){
+//                yearLength = appPremisesRecommendationDto.getRecomInNumber()/12;
+//            }else{
+//                log.debug(StringUtil.changeForLog("The getYearLength chrono is not Year ..."));
+//            }
+//        }else{
+//            log.error(StringUtil.changeForLog("The getYearLength appPremisesRecommendationDto is null ..."));
+//        }
+//        log.debug(StringUtil.changeForLog("The getYearLength is end ..."));
+//        return yearLength;
+//    }
     private boolean isApplicaitonReject(AppPremisesRecommendationDto appPremisesRecommendationDto){
         boolean result = false;
         if(appPremisesRecommendationDto!=null){
@@ -1039,7 +1078,7 @@ public class LicenceApproveBatchjob {
     }
 
     private LicenceDto getLicenceDto(String licenceNo,String svcName,ApplicationGroupDto applicationGroupDto,
-                                     int yearLength,AppPremisesRecommendationDto appPremisesRecommendationDto,
+                                     AppPremisesRecommendationDto appPremisesRecommendationDto,
                                      LicenceDto originLicenceDto,
                                      ApplicationDto applicationDto,
                                      List<ApplicationDto> applicationDtos){
@@ -1079,7 +1118,7 @@ public class LicenceApproveBatchjob {
                     startDate = new Date();
                 }
                 licenceDto.setStartDate(startDate);
-                licenceDto.setExpiryDate(LicenceUtil.getExpiryDate(licenceDto.getStartDate(),yearLength));
+                licenceDto.setExpiryDate(LicenceUtil.getExpiryDate(licenceDto.getStartDate(),appPremisesRecommendationDto));
                 //licenceDto.setEndDate(licenceDto.getExpiryDate());
                 licenceDto.setGrpLic(applicationGroupDto.isGrpLic());
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
