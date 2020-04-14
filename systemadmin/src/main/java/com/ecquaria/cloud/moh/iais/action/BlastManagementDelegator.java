@@ -180,7 +180,8 @@ public class BlastManagementDelegator {
             searchParam.addFilter("start",  start,true);
         }
         if(!StringUtil.isEmpty(end)){
-            searchParam.addFilter("end",  end,true);
+            String enddate = end + " 23:59:59";
+            searchParam.addFilter("end",  enddate,true);
         }
         ParamUtil.setRequestAttr(bpc.request,"descriptionSwitch",descriptionSwitch);
         ParamUtil.setRequestAttr(bpc.request,"msgName",msgName);

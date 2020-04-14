@@ -50,7 +50,7 @@
                                 <div class="col-xs-11 col-md-11">
                                     <div class="text-right">
                                         <a class="btn btn-secondary" onclick="javascript:clearSearch()">Clear</a>
-                                        <a class="btn btn-primary" onclick="javascript:search()">Search</a>
+                                        <a class="btn btn-primary" onclick="javascript:searchCondition()">Search</a>
                                     </div>
                                 </div>
                             </div>
@@ -80,7 +80,7 @@
                                 <c:when test="${empty blastSearchResult.rows}">
                                     <tr>
                                         <td colspan="10">
-                                            <iais:message key="No Result!" escape="true"></iais:message>
+                                            <iais:message key="ACK018" escape="true"></iais:message>
                                             <!--No Record!!-->
                                         </td>
                                     </tr>
@@ -177,7 +177,7 @@
         SOP.Crud.cfxSubmit("mainForm", "search");
     }
 
-    function search() {
+    function searchCondition() {
         SOP.Crud.cfxSubmit("mainForm", "search");
     }
 
