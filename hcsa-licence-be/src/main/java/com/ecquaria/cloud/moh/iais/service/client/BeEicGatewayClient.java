@@ -97,7 +97,7 @@ public interface BeEicGatewayClient {
                                                                 @RequestHeader("authorization-Secondary") String authorizationSec);
 
     @PostMapping(value = "/v1/inspec-sync-rectification/",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppEditSelectDto> createAppPremisesInspecApptDto(@RequestBody List<AppPremisesInspecApptDto> appPremisesInspecApptDtos,
+    FeignResponseEntity<List<AppPremisesInspecApptDto>> createAppPremisesInspecApptDto(@RequestBody List<AppPremisesInspecApptDto> appPremisesInspecApptDtos,
                                                                  @RequestHeader("date") String date,
                                                                  @RequestHeader("authorization") String authorization,
                                                                  @RequestHeader("date-Secondary") String dateSec,

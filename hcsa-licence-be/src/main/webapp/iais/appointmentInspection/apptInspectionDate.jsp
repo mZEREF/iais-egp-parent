@@ -226,6 +226,17 @@
                                   </div>
                                 </div>
                               </div>
+                              <c:if test="${not empty apptInspectionDateDto.inspectionDate}">
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <ul>
+                                      <c:forEach var="insepctionDate" items="${apptInspectionDateDto.inspectionDate}">
+                                        <li><span style="font-size: 16px"><c:out value="${insepctionDate}"/></span></li>
+                                      </c:forEach>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </c:if>
                               <iais:action>
                                 <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionDateSpecific()">Assign Specific Date</button>
                                 <span style="float:right">&nbsp;</span>

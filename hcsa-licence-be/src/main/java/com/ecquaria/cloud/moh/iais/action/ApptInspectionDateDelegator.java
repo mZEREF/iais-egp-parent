@@ -118,6 +118,8 @@ public class ApptInspectionDateDelegator {
     public void apptInspectionDateStep1(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptInspectionDateStep1 start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
+        String processDec = ParamUtil.getRequestString(bpc.request, "processDec");
+        apptInspectionDateDto.setProcessDec(processDec);
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
     }
 

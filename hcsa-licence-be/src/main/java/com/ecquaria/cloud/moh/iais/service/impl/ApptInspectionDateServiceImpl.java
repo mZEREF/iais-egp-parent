@@ -422,12 +422,14 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     public void saveSystemInspectionDate(ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
         List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
-        String serviceId = apptInspectionDateDto.getAppointmentDto().getServiceId();
+        String serviceId = applicationViewDto.getApplicationDto().getServiceId();
+        Map<String, List<ApptUserCalendarDto>> inspectionDateMap = apptInspectionDateDto.getInspectionDateMap();
         for(String appPremCorrId : appPremCorrIds) {
-            for (ApptUserCalendarDto aucDto : apptInspectionDateDto.getApptUserCalendarDtoListAll()) {
+            for(Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()){
+                String apptRefNo = inspDateMap.getKey();
                 AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
                 appPremisesInspecApptDto.setAppCorrId(appPremCorrId);
-                appPremisesInspecApptDto.setApptRefNo(aucDto.getApptRefNo());
+                appPremisesInspecApptDto.setApptRefNo(apptRefNo);
                 appPremisesInspecApptDto.setSpecificInspDate(null);
                 appPremisesInspecApptDto.setId(null);
                 appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
