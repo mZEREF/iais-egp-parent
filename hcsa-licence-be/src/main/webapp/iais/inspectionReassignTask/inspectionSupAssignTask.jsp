@@ -31,7 +31,7 @@
                             <iais:body >
                                 <iais:section title="" id = "assign_Task">
                                     <iais:row>
-                                        <iais:field value="Assign To:" required="true"/>
+                                        <iais:field value="${groupRoleFieldDto.groupMemBerName}:" required="true"/>
                                         <iais:value width="5">
                                             <c:if test="${'true' == inspectionTaskPoolListDto.inspectorFlag}">
                                                 <iais:select name="inspectorCheck" firstOption="Please Select" options="inspectorOption" value="${inspectionTaskPoolListDto.inspector}"></iais:select>

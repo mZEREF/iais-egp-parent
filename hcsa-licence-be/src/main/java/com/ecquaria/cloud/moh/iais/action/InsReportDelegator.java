@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -28,10 +27,8 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloudfeign.FeignException;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -202,7 +199,6 @@ public class InsReportDelegator {
         String enforcementRemarks = ParamUtil.getRequestString(bpc.request, "enforcementRemarks");
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         appPremisesRecommendationDto.setRemarks(remarks);
-        appPremisesRecommendationDto.setRecomInDate(new Date());
         appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
         appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.APPROVED);
         if (OTHERS.equals(periods) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
@@ -220,6 +216,7 @@ public class InsReportDelegator {
         }else if(InspectionReportConstants.REJECTED.equals(recommendation)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.REJECTED);
+            appPremisesRecommendationDto.setRecomInNumber(0);
         }
         AppPremisesRecommendationDto engageEnforcementAppPremisesRecommendationDto = new AppPremisesRecommendationDto();
         engageEnforcementAppPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE);

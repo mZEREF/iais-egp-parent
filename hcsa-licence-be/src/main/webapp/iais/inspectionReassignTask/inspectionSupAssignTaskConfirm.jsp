@@ -30,7 +30,7 @@
               <iais:body >
                 <iais:section title="" id = "assign_Task">
                   <iais:row>
-                    <iais:field value="Assign To:"/>
+                    <iais:field value="${groupRoleFieldDto.groupMemBerName}:"/>
                     <iais:value width="10">
                       <c:forEach items="${inspectionTaskPoolListDto.inspectorCheck}" var="name">
                         <p><label><c:out value="${name.text}"/></label></p>

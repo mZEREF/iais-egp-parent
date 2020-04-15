@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -67,7 +68,7 @@ public class InsReportAoDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String taskId = ParamUtil.getString(bpc.request,"taskId");
         if(StringUtil.isEmpty(taskId)){
-            taskId = "F6B680A9-1073-EA11-BE82-000C29F371DC";
+            taskId = "40D419C1-EC6F-EA11-BE82-000C29F371DC";
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
@@ -183,14 +184,10 @@ public class InsReportAoDelegator {
         if (appPremisesRecommendationDto != null) {
             String reportRemarks = appPremisesRecommendationDto.getRemarks();
             initRecommendationDto.setRemarks(reportRemarks);
-            String recomDecision = appPremisesRecommendationDto.getRecomDecision();
             String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
+            String codeDesc = MasterCodeUtil.getCodeDesc(chronoUnit);
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
-            if(StringUtil.isEmpty(chronoUnit)&&StringUtil.isEmpty(recomInNumber)){
-                period = appPremisesRecommendationDto.getRecomDecision();
-            }else {
-                period  = recomInNumber+" " + chronoUnit;
-            }
+            period  = recomInNumber+" " + codeDesc;
             initRecommendationDto.setPeriod(period);
         }
         if (engageRecommendationDto != null) {

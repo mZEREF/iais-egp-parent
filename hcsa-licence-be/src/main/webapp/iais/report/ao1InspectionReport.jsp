@@ -190,8 +190,24 @@
                                                                         <iais:field value="Fast Tracking?" required="false"/>
                                                                         <iais:value width="10">
                                                                             <p>
-                                                                                <input   id="fastTracking" name="fastTracking" disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
-                                                                                <label class="form-check-label" for="fastTracking" ><span class="check-square"></span></label>
+                                                                                <c:choose>
+                                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST019' || applicationViewDto.applicationDto.status=='APST020'}">
+                                                                                        <input class="form-check-input" id="fastTracking"
+                                                                                        <c:if test="${applicationViewDto.applicationDto.fastTracking}">
+                                                                                               checked disabled
+                                                                                        </c:if>
+                                                                                               type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
+                                                                                        <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
+                                                                                    </c:when>
+                                                                                    <c:otherwise>
+                                                                                        <input class="form-check-input" disabled
+                                                                                        <c:if test="${applicationViewDto.applicationDto.fastTracking}">
+                                                                                               checked
+                                                                                        </c:if>
+                                                                                               id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
+                                                                                        <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
+                                                                                    </c:otherwise>
+                                                                                </c:choose>
                                                                             </p>
                                                                         </iais:value>
                                                                     </iais:row>
