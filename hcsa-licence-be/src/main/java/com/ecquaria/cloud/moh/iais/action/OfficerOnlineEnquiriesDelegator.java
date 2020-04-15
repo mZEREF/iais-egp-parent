@@ -198,6 +198,9 @@ public class OfficerOnlineEnquiriesDelegator {
                         ) {
                             licenseeIds.add(r.getId());
                         }
+                        if(licenseeIds.size()==0){
+                            licenseeIds.add(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID);
+                        }
                     }
                     break;
                 default:

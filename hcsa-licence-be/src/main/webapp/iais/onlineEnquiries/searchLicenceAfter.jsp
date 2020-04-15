@@ -432,11 +432,13 @@
                             <thead>
                             <tr align="center">
                                 <th class="form-check">
-                                    <input class="form-check-input licenceCheck" type="checkbox" name="userUids"
-                                           id="checkboxAll" onchange="javascirpt:checkAll();"/>
-                                    <label class="form-check-label" for="checkboxAll">
-                                        <span class="check-square"></span>
-                                    </label>
+                                    <c:if test="${!empty SearchResult.rows}">
+                                        <input class="form-check-input licenceCheck" type="checkbox" name="userUids"
+                                               id="checkboxAll" onchange="javascirpt:checkAll();"/>
+                                        <label class="form-check-label" for="checkboxAll">
+                                            <span class="check-square"></span>
+                                        </label>
+                                    </c:if>
                                 </th>
                                 <iais:sortableHeader needSort="false" field="" value="S/N"/>
                                 <iais:sortableHeader needSort="false" field="APPLICATION_NO"
@@ -480,14 +482,12 @@
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
                                             <td class="form-check">
-                                                <c:if test="${!empty SearchResult.rows}">
-                                                    <input class="form-check-input licenceCheck"
-                                                           id="licence${status.index + 1}" type="checkbox"
-                                                           name="appIds" value="${pool.appId}|${pool.isCessation}">
-                                                    <label class="form-check-label" for="licence${status.index + 1}"><span
-                                                            class="check-square"></span>
-                                                    </label>
-                                                </c:if>
+                                                <input class="form-check-input licenceCheck"
+                                                       id="licence${status.index + 1}" type="checkbox"
+                                                       name="appIds" value="${pool.appId}|${pool.isCessation}">
+                                                <label class="form-check-label" for="licence${status.index + 1}"><span
+                                                        class="check-square"></span>
+                                                </label>
                                             </td>
                                             <td class="row_no">
                                                 <c:out value="${status.index + 1+ (SearchParam.pageNo - 1) * SearchParam.pageSize}"/>
