@@ -571,16 +571,16 @@ public class InsRepServiceImpl implements InsRepService {
         completedTask(taskDto);
         AppPremisesRoutingHistoryDto secondRouteBackHistoryByAppNo = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(applicationNo, status);
         String userId = secondRouteBackHistoryByAppNo.getActionby();
-        String id = secondRouteBackHistoryByAppNo.getId();
+        String roleId = secondRouteBackHistoryByAppNo.getRoleId();
         String subStage = getSubStage(appPremisesCorrelationId,taskKey);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
-        List<TaskDto> taskDtos = prepareBackTaskList(taskDto,userId);
+        List<TaskDto> taskDtos = prepareRoutBackTaskList(taskDto,userId,roleId);
         taskService.createTasks(taskDtos);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
         createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
-        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, historyRemarks, null, RoleConsts.USER_ROLE_AO1, groupId2, subStage);
+        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, historyRemarks, null, roleId, groupId2, subStage);
     }
 
     @Override
@@ -762,7 +762,6 @@ public class InsRepServiceImpl implements InsRepService {
             userId = inspectiors.iterator().next();
             taskDto.setUserId(userId);
         }
-
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
@@ -829,6 +828,21 @@ public class InsRepServiceImpl implements InsRepService {
         taskDto.setSlaRemainInDays(null);
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
+        taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
+        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        list.add(taskDto);
+        return list;
+    }
+
+    private List<TaskDto> prepareRoutBackTaskList(TaskDto taskDto,String userId,String roleId) {
+        List<TaskDto> list = IaisCommonUtils.genNewArrayList();
+        taskDto.setId(null);
+        taskDto.setUserId(userId);
+        taskDto.setDateAssigned(new Date());
+        taskDto.setSlaDateCompleted(null);
+        taskDto.setSlaRemainInDays(null);
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+        taskDto.setRoleId(roleId);
         taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         list.add(taskDto);

@@ -103,7 +103,7 @@ public class InsReportDelegator {
         List<SelectOption> chronoOption = getChronoOption();
         List<SelectOption> recommendationOption = getRecommendationOption();
         List<SelectOption> riskLevelOptions = getriskLevel();
-        List<SelectOption> processingDe = getProcessingDecision();
+        List<SelectOption> processingDe = getProcessingDecision(appStatus);
         String infoClassTop = "active";
         String infoClassBelow = "tab-pane active";
         String reportClassBelow = "tab-pane";
@@ -348,7 +348,13 @@ public class InsReportDelegator {
         return riskLevelResult;
     }
 
-    private List<SelectOption> getProcessingDecision() {
+    private List<SelectOption> getProcessingDecision(String status) {
+        if(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(status)){
+            List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
+            SelectOption so1 = new SelectOption("submit", "Give Clarification");
+            riskLevelResult.add(so1);
+            return riskLevelResult;
+        }
         List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption("submit", "Submit Inspection Report for review");
         riskLevelResult.add(so1);
