@@ -11,13 +11,14 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Shicheng
@@ -44,7 +45,7 @@ public class ApptInspectionDateValidate implements CustomizeValidator {
         }
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         List<Date> inspectionDate = IaisCommonUtils.genNewArrayList();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String strSpecDate = sdf.format(specificDate);
         List<TaskDto> taskDtoList = apptInspectionDateDto.getTaskDtos();
         if(!IaisCommonUtils.isEmpty(taskDtoList)){
