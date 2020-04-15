@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -56,7 +55,6 @@ public class InsReportAoDelegator {
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
-        AuditTrailHelper.auditFunction("Inspection Report", "Assign Report");
     }
 
     public void AoInit(BaseProcessClass bpc) {
@@ -67,12 +65,11 @@ public class InsReportAoDelegator {
 
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String taskId = ParamUtil.getString(bpc.request,"taskId");
-        if(StringUtil.isEmpty(taskId)){
-            taskId = "40D419C1-EC6F-EA11-BE82-000C29F371DC";
-        }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto  applicationViewDto = insRepService.getApplicationViewDto(correlationId);
+        AuditTrailHelper.auditFunctionWithAppNo("Inspection Report", "Assign Report",
+                applicationViewDto.getApplicationDto().getApplicationNo());
         InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
         InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto,applicationViewDto);
         insRepDto.setInspectors(inspectorAo.getInspectors());
