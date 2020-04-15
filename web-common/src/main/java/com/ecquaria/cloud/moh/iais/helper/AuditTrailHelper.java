@@ -30,6 +30,18 @@ import javax.servlet.http.HttpServletRequest;
 public class AuditTrailHelper {
 
     public static void auditFunction(String moduleName, String functionName) {
+        auditFunction(moduleName, functionName, null, null);
+    }
+
+    public static void auditFunctionWithAppNo(String moduleName, String functionName, String appNo) {
+        auditFunction(moduleName, functionName, appNo, null);
+    }
+
+    public static void auditFunctionWithLicNo(String moduleName, String functionName, String licNo) {
+        auditFunction(moduleName, functionName, null, licNo);
+    }
+
+    public static void auditFunction(String moduleName, String functionName, String appNo, String licenceNo) {
         HttpServletRequest request = MiscUtil.getCurrentRequest();
         AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(request,
                 AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
@@ -38,9 +50,23 @@ public class AuditTrailHelper {
         }
 
         IaisEGPHelper.setAuditLoginUserInfo(dto);
+        dto.setApplicationNum(appNo);
+        dto.setLicenseNum(licenceNo);
         dto.setModule(moduleName);
         dto.setFunctionName(functionName);
         ParamUtil.setSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME, dto);
+    }
+
+    public static void setAuditAppNo(String appNo) {
+        HttpServletRequest request = MiscUtil.getCurrentRequest();
+        AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        dto.setApplicationNum(appNo);
+    }
+
+    public static void setAuditLicNo(String licNo) {
+        HttpServletRequest request = MiscUtil.getCurrentRequest();
+        AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        dto.setLicenseNum(licNo);
     }
 
     public static AuditTrailDto getBatchJobDto(String domain) {
