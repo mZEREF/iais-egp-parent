@@ -168,19 +168,18 @@ public class ApptInspectionDateDelegator {
         String strHours = ParamUtil.getRequestString(bpc.request, "hours");
         List<SelectOption> hoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "hoursOption");
         if(containValueInList(strHours, hoursOption)){
-
             apptInspectionDateDto.setHours(strHours);
         } else {
             apptInspectionDateDto.setHours(null);
         }
-        Date specificDate = getSpecificDate(specificDate1, apptInspectionDateDto);
+        Date specificDate = getSpecificDate(specificDate1, apptInspectionDateDto, hoursOption);
         if(specificDate != null){
             apptInspectionDateDto.setSpecificDate(specificDate);
         }
         return apptInspectionDateDto;
     }
 
-    private Date getSpecificDate(String specificDate1, ApptInspectionDateDto apptInspectionDateDto) {
+    private Date getSpecificDate(String specificDate1, ApptInspectionDateDto apptInspectionDateDto, List<SelectOption> hoursOption) {
         if(specificDate1 != null) {
             Date specificDate = null;
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -193,7 +192,15 @@ public class ApptInspectionDateDelegator {
             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String sub_date = sdf2.format(sub_date1);
-            sub_date = sub_date + " " + apptInspectionDateDto.getHours() + ":00";
+            if(!StringUtil.isEmpty(apptInspectionDateDto.getHours())) {
+                for(SelectOption so : hoursOption){
+                    if(apptInspectionDateDto.getHours().equals(so.getValue())){
+                        sub_date = sub_date + " " + so.getText() + ":00";
+                    }
+                }
+            } else {
+                sub_date = sub_date + " " + ":00:00";
+            }
             try {
                 specificDate = sdf3.parse(sub_date);
             } catch (ParseException e) {

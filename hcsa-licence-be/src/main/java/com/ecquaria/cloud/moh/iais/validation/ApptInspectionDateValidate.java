@@ -47,27 +47,38 @@ public class ApptInspectionDateValidate implements CustomizeValidator {
         List<Date> inspectionDate = IaisCommonUtils.genNewArrayList();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String strSpecDate = sdf.format(specificDate);
+        if(specificDate.before(new Date())){
+            errMap.put("specificDate", "UC_INSP_ERR0006");
+            return errMap;
+        }
         List<TaskDto> taskDtoList = apptInspectionDateDto.getTaskDtos();
         if(!IaisCommonUtils.isEmpty(taskDtoList)){
             for(TaskDto tDto : taskDtoList){
                 List<TaskDto> taskDtos = organizationClient.getTasksByUserIdAndRole(tDto.getUserId(), tDto.getRoleId()).getEntity();
                 for(TaskDto taskDto : taskDtos){
                     AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-                    if(appPremisesRecommendationDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
-                        inspectionDate.add(appPremisesRecommendationDto.getRecomInDate());
+                    if(appPremisesRecommendationDto != null) {
+                        if (appPremisesRecommendationDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)) {
+                            inspectionDate.add(appPremisesRecommendationDto.getRecomInDate());
+                        }
                     }
                 }
             }
         }
-        for(Date inspDate : inspectionDate){
-            String inspecDate = sdf.format(inspDate);
-            if(specificDate.equals(inspecDate)){
-                errMap.put("specificDate", "UC_INSP_ERR0007");
+
+        if(!IaisCommonUtils.isEmpty(inspectionDate)) {
+            for (Date inspDate : inspectionDate) {
+                String inspecDate = sdf.format(inspDate);
+                if (specificDate.equals(inspecDate)) {
+                    errMap.put("specificDate", "UC_INSP_ERR0007");
+                    return errMap;
+                }
             }
         }
         String dateContainFlag = appointmentClient.isAvailableAppointmentDates(strSpecDate).getEntity();
         if(AppConsts.FALSE.equals(dateContainFlag)){
             errMap.put("specificDate", "UC_INSP_ERR0007");
+            return errMap;
         }
         return errMap;
     }

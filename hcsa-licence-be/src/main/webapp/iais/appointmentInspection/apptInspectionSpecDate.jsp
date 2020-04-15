@@ -24,7 +24,6 @@
     <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="apptInspectionDateType" value="">
     <input type="hidden" id="actionValue" name="actionValue" value="">
-    <input type="hidden" id="hours" name="hours" value="">
     <div class="main-content">
       <div class="row">
         <div class="col-lg-12 col-xs-12">
@@ -43,10 +42,10 @@
                     </div>
                     <div class="col-md-6">
                       <div class="col-xs-12 col-md-4">
-                        <iais:datePicker id = "specificDate" name = "specificDate" value="${apptInspectionDateDto.specificDate}"></iais:datePicker>
+                        <iais:datePicker id = "specificDate" name = "specificDate" dateVal="${apptInspectionDateDto.specificDate}"></iais:datePicker>
                       </div>
                       <div class="col-xs-12 col-md-3">
-                        <iais:select name="hoursOption" options="hoursOption" firstOption="--:--" value="${apptInspectionDateDto.hours}" onchange="javascript:apptInspectionDateHours(this.value)"></iais:select>
+                        <iais:select name="hours" options="hoursOption" firstOption="--:--" value="${apptInspectionDateDto.hours}"></iais:select>
                       </div>
                     </div>
                   </div>
@@ -69,10 +68,6 @@
         $("[name='apptInspectionDateType']").val(action);
         var mainPoolForm = document.getElementById('mainSpecInspDateForm');
         mainPoolForm.submit();
-    }
-
-    function apptInspectionDateHours(value) {
-        $("#hours").val(value);
     }
 
     function apptInspectionSpecDateConfirm() {
