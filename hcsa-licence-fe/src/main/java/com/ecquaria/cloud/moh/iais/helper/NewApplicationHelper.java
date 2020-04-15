@@ -1237,7 +1237,8 @@ public class NewApplicationHelper {
             long size = file.getSize();
             String filename = file.getOriginalFilename();
             String fileType=  filename.substring(filename.lastIndexOf(".")+1);
-            if(!fileTypes.contains(fileType)){
+            String s = fileType.toUpperCase();
+            if(!fileTypes.contains(s)){
                 map.put("fileType",errorMessage);
             }
             if(size>fileSize){
