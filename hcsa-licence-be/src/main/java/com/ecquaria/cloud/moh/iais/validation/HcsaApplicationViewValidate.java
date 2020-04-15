@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 public class HcsaApplicationViewValidate implements CustomizeValidator {
-    private final String VERIFIED = "VERIFIED";
-    private final String ROLLBACK = "ROLLBACK";
+    private final String VERIFIED = ApplicationConsts.APPLICATION_STATUS_VERIFIED;
+    private final String ROLLBACK = ApplicationConsts.APPLICATION_STATUS_ROLL_BACK;
     private final String DECISION_APPROVAL = "decisionApproval";
     private final String DECISION_REJECT = "decisionReject";
     private final String RECOMMENDATION_REJECT = "reject";
@@ -131,7 +131,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 errMap.put("recomInNumber","The field is mandatory.");
             }else{
                 if(!CommonValidator.isPositiveInteger(number)){
-                    errMap.put("recomInNumber","The field is illegal.");
+                    errMap.put("recomInNumber","The field is Invalid.");
                 }else{
                     ParamUtil.setRequestAttr(request,"otherNumber",number);
                 }

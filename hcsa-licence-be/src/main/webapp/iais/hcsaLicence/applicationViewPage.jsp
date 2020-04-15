@@ -860,11 +860,11 @@
 
     function check(){
         var selectValue = $("[name='nextStage']").val();
-        if (selectValue == "VERIFIED") {
+        if (selectValue == "APST016") {
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#comments').addClass('hidden');
-        } else if (selectValue == "ROLLBACK") {
+        } else if (selectValue == "APST057") {
             $('#rollBackDropdown').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#comments').addClass('hidden');
@@ -903,11 +903,11 @@
 
     $("[name='nextStage']").change(function selectChange() {
         var selectValue = $("[name='nextStage']").val();
-        if (selectValue == "VERIFIED") {
+        if (selectValue == "APST016") {
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#comments').addClass('hidden');
-        } else if (selectValue == "ROLLBACK") {
+        } else if (selectValue == "APST057") {
             $('#rollBackDropdown').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#comments').addClass('hidden');

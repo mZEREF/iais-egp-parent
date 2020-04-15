@@ -284,13 +284,14 @@ public class HcsaApplicationDelegator {
         List<SelectOption> nextStageList = IaisCommonUtils.genNewArrayList();
         nextStageList.add(new SelectOption("", "Please Select"));
         if(RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId)){
-            nextStageList.add(new SelectOption("VERIFIED", "Support"));
+//            nextStageList.add(new SelectOption("VERIFIED", "Support"));
+            nextStageList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_VERIFIED, "Support"));
         }else{
             //62875
             //role is ao3 && status is 'Pending AO3 Approval'  have no verified
             if(!(RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus()))){
                 if (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType())) {
-                    nextStageList.add(new SelectOption("VERIFIED", "Verified"));
+                    nextStageList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_VERIFIED, "Verified"));
                 }
             }
         }
@@ -299,7 +300,7 @@ public class HcsaApplicationDelegator {
                 && RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())){
 
         }else{
-            nextStageList.add(new SelectOption("ROLLBACK", "Internal Route Back"));
+            nextStageList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK, "Internal Route Back"));
         }
         //62761
         Integer rfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(),
@@ -426,7 +427,7 @@ public class HcsaApplicationDelegator {
                 insRepService.updateRecommendation(appPremisesRecommendationDto);
             }
             String verified = ParamUtil.getString(bpc.request,"verified");
-            String rollBack=ParamUtil.getString(bpc.request,"rollBack");
+            String rollBack = ParamUtil.getString(bpc.request,"rollBack");
             String nextStage=null;
 
             //62875
@@ -1254,10 +1255,18 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto.setApplicationDto(applicationDto);
         String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
         String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
-//        if(RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId)){
-//            TaskUrl = TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION;
-//            taskType = TaskConsts.TASK_TYPE_INSPECTION;
-//        }
+        if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
+            taskType = TaskConsts.TASK_TYPE_INSPECTION;
+            if(RoleConsts.USER_ROLE_AO1.equals(roleId)){
+                TaskUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1;
+            }else if((!RoleConsts.USER_ROLE_AO2.equals(roleId)) &&
+                    (!RoleConsts.USER_ROLE_AO3.equals(roleId)) &&
+                    (!RoleConsts.USER_ROLE_ASO.equals(roleId)) &&
+                    (!RoleConsts.USER_ROLE_PSO.equals(roleId))
+            ){
+                TaskUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT;
+            }
+        }
 
         TaskDto newTaskDto = TaskUtil.getTaskDto(stageId,taskType,
                 taskDto.getRefNo(),wrkGpId, userId,new Date(),0,TaskUrl,roleId,
