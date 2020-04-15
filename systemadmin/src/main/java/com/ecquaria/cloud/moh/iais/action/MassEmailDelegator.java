@@ -98,7 +98,7 @@ public class MassEmailDelegator {
 
         DistributionListWebDto distributionListDto = new DistributionListWebDto();
         if(email != null){
-            List<String> emaillist = Arrays.asList(email.split("\\n"));
+            List<String> emaillist = Arrays.asList(email.split("\r\n"));
             distributionListDto.setEmailAddress(emaillist);
         }
         if(id != null)
@@ -183,6 +183,8 @@ public class MassEmailDelegator {
         setServiceSelect(bpc);
         setModeSelection(bpc);
         setRoleSelection(bpc);
+        String emailAddress = StringUtils.join(distributionListDto.getEmailAddress(),"\n");
+        ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
         ParamUtil.setRequestAttr(bpc.request,"distribution",distributionListDto);
         ParamUtil.setRequestAttr(bpc.request, "firstOption", distributionListDto.getService());
     }

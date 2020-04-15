@@ -63,11 +63,18 @@
 
                         <div class="form-group">
                             <iais:field value="Mode of Delivery" required="true"/>
-                            <iais:value>
-                                <iais:value width="10">
-                                    <iais:select firstOption="Please Select" name="mode" options="modeSelection"  value="${distribution.getMode()}"></iais:select>
-                                </iais:value>
-                            </iais:value>
+                            <c:choose>
+                                <c:when test="${distribution.getId() == null}">
+                                    <iais:value width="10">
+                                        <iais:select firstOption="Please Select" name="mode" options="modeSelection" value="${distribution.getMode()}" ></iais:select>
+                                    </iais:value>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="col-xs-8 col-sm-6 col-md-5">
+                                        <input id="mode" type="text" name="mode" maxlength="500" value="${distribution.getMode()}" readonly>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
 
                     </div>

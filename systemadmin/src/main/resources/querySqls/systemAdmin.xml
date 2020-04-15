@@ -341,7 +341,7 @@
 
     <sql key="queryMassDistributionList"  remarks="Mass and email list">
         <![CDATA[
-            SELECT DISTINCT
+            SELECT
             T1.ID,T1.DISTRIBUTION_NAME,T1.SERVICE_CODE,T1.DELIVERY_MODE,T1.CREATED_DT,T1.CREATED_BY,T2.RECIPIENTS_ROLE
             FROM distribution T1
              JOIN distribution_role T2 ON T1.ID = T2.DISTRIBUTION_ID

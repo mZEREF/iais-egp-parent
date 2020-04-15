@@ -338,7 +338,7 @@ public class BlastManagementDelegator {
         String email = ParamUtil.getString(bpc.request, "email");
         String distribution = ParamUtil.getString(bpc.request, "distribution");
         if(email != null){
-            List<String> emaillist = Arrays.asList(email.split("\\n"));
+            List<String> emaillist = Arrays.asList(email.split("\r\n"));
             blastManagementDto.setEmailAddress(emaillist);
         }
 
