@@ -1231,18 +1231,18 @@ public class NewApplicationHelper {
 * @parameter errorMessage
 * */
 
-    public static Map<String,String> validateFile(CommonsMultipartFile file,List<String> fileTypes,Long fileSize,String errorMessage){
-        Map<String,String> map=new HashMap<>();
+    public static Map<String,Boolean> validateFile(CommonsMultipartFile file,List<String> fileTypes,Long fileSize,String errorMessage){
+        Map<String,Boolean> map=new HashMap<>();
         if(file!=null){
             long size = file.getSize();
             String filename = file.getOriginalFilename();
             String fileType=  filename.substring(filename.lastIndexOf(".")+1);
             String s = fileType.toUpperCase();
             if(!fileTypes.contains(s)){
-                map.put("fileType",errorMessage);
+                map.put("fileType",false);
             }
             if(size>fileSize){
-                map.put("fileSize","UC_CHKLMD001_ERR007");
+                map.put("fileSize",false);
             }
         }
 
