@@ -150,7 +150,7 @@ public class InsReportDelegator {
         saveRecommendations(appPremisesRecommendationDtoList);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String status = applicationDto.getStatus();
-        if(!ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(status)){
+        if(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(status)){
             insRepService.routTastToRoutBack(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto.getProcessRemarks());
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
