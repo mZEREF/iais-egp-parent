@@ -114,7 +114,7 @@ public class BackendInboxDelegator {
         ParamUtil.setSessionAttr(bpc.request, "taskMap",null);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", null);
         ParamUtil.setSessionAttr(bpc.request, "roleIds", (Serializable) selectOptionArrayList);
-        AuditTrailHelper.auditFunction("Inspection Sup Assign", "Sup Assign Task");
+        AuditTrailHelper.auditFunction("Backend Inbox", "Backend Inbox");
 
     }
 

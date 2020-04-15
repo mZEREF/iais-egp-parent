@@ -63,7 +63,6 @@ public class ApptInspectionDateDelegator {
      */
     public void apptInspectionDateStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptInspectionDateStart start ...."));
-        AuditTrailHelper.auditFunction("Appointment Inspection Date", "Appointment Inspection Date");
     }
 
     /**
@@ -97,6 +96,8 @@ public class ApptInspectionDateDelegator {
             apptInspectionDateDto = new ApptInspectionDateDto();
             apptInspectionDateDto  = apptInspectionDateService.getInspectionDate(taskDto, apptInspectionDateDto, applicationViewDto);
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+            AuditTrailHelper.auditFunctionWithAppNo("Appointment Inspection Date", "Appointment Inspection Date",
+                    applicationViewDto.getApplicationDto().getApplicationNo());
         } else {
             applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
             Map<ApplicationDto, List<String>> applicationInfoMap = apptInspectionDateService.getApplicationInfoToShow(apptInspectionDateDto.getRefNo(), apptInspectionDateDto.getTaskDtos());

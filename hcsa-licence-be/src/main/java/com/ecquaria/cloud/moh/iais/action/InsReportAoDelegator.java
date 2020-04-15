@@ -68,7 +68,7 @@ public class InsReportAoDelegator {
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto  applicationViewDto = insRepService.getApplicationViewDto(correlationId);
-        AuditTrailHelper.auditFunctionWithAppNo("Inspection Report", "Assign Report",
+        AuditTrailHelper.auditFunctionWithAppNo("Inspection Report", "AO1 process Report",
                 applicationViewDto.getApplicationDto().getApplicationNo());
         InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
         InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto,applicationViewDto);

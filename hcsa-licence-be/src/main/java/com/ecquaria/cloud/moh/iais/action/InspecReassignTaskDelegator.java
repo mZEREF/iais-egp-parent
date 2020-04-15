@@ -19,20 +19,20 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author weilu
@@ -386,6 +386,7 @@ public class InspecReassignTaskDelegator {
         String reassignRemarks = ParamUtil.getRequestString(bpc.request, "reassignRemarks");
         if(inspectionTaskPoolListDto!=null&&!StringUtil.isEmpty(inspectorCheck)) {
             String[] nameValue = {inspectorCheck};
+            AuditTrailHelper.setAuditAppNo(inspectionTaskPoolListDto.getApplicationNo());
             List<SelectOption> inspectorCheckList = inspectionService.getCheckInspector(nameValue, inspectionTaskPoolListDto);
             inspectionTaskPoolListDto.setInspectorCheck(inspectorCheckList);
             inspectionTaskPoolListDto.setInspector(inspectorCheck);

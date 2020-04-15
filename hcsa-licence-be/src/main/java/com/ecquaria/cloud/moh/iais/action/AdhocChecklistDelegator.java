@@ -80,8 +80,6 @@ public class AdhocChecklistDelegator {
      */
     public void startStep(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction("Pre-Inspection",
-                "Adhoc Checklist");
 
     }
 
@@ -93,8 +91,6 @@ public class AdhocChecklistDelegator {
      */
     public void initialize(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction("Pre-Inspection",
-                "Adhoc Checklist");
 
        /* boolean isIntranet = AccessUtil.isIntranet(IaisEGPHelper.getCurrentAuditTrailDto());
         if (!isIntranet){
@@ -107,6 +103,8 @@ public class AdhocChecklistDelegator {
             ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(refNo);
             if (applicationViewDto != null) {
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                AuditTrailHelper.auditFunctionWithAppNo("Pre-Inspection",
+                        "Adhoc Checklist", applicationDto.getApplicationNo());
                 if (inspectionChecklist == null) {
                     inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
                     log.info("inspectionChecklist info =====>>>>>>>>>>> " + inspectionChecklist.toString());
