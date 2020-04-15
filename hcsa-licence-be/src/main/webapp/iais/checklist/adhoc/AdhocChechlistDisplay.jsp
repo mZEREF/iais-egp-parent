@@ -66,10 +66,10 @@
                                                     <table class="table">
                                                         <thead>
                                                         <tr>
-                                                            <th>Regulation Clause Number</th>
-                                                            <th>Regulations</th>
-                                                            <th>Checklist Item</th>
-                                                            <th>Risk Level</th>
+                                                            <th width="10%">Regulation Clause Number</th>
+                                                            <th width="40%">Regulations</th>
+                                                            <th width="40%">Checklist Item</th>
+                                                            <th width="10%">Risk Level</th>
                                                         </tr>
                                                         </thead>
                                                         <tbody>
@@ -113,9 +113,9 @@
                                                 <table class="table">
                                                     <thead>
                                                     <tr>
-                                                        <th>Checklist Item</th>
-                                                        <th>Answer Type</th>
-                                                        <th>Risk Level</th>
+                                                        <th width="50%">Checklist Item</th>
+                                                        <th width="30%">Answer Type</th>
+                                                        <th width="10%">Risk Level</th>
                                                         <th>Action</th>
                                                     </tr>
                                                     </thead>

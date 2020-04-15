@@ -83,8 +83,6 @@ public class AdhocChecklistDelegator {
         AuditTrailHelper.auditFunction("Pre-Inspection",
                 "Adhoc Checklist");
 
-        ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, null);
-        ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, null);
     }
 
     /**
@@ -282,7 +280,7 @@ public class AdhocChecklistDelegator {
             }
         }
 
-        QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
+        QueryHelp.setMainSql("hcsaconfig", "queryChecklistItem", searchParam);
         SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT, searchResult);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH, searchParam);

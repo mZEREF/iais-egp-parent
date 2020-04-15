@@ -41,24 +41,28 @@
         <br><br>
         <div class="form-group">
           <div class="col-xs-12">
-            <td>
-              <label>
-                Common  &nbsp; <input class="form-check-input " id="commmon" type="radio" name="module" aria-invalid="false" value="General Regulation"> General Regulation
-              </label>
-            </td>
+            <tr>
+              <td>
+                <label>
+                  Common  &nbsp; <input class="form-check-input " id="commmon" type="radio" name="module" aria-invalid="false" value="General Regulation"> General Regulation
+                </label>
+              </td>
+            </tr>
+
+            <br><br>
+            <tr>
+              <td>
+                <iais:checkbox checkboxId="moduleCheckBox" codeCategory = "CATE_ID_CHECKLIST_MODULE" name= "moduleCheckBox" labelName = "Module" request="${pageContext.request}"></iais:checkbox>
+              </td>
+
+
+              <td>
+                <iais:checkbox checkboxId="typeCheckBox" codeCategory = "CATE_ID_CHECKLIST_TYPE" forName="typeCheckBoxFor" name= "typeCheckBox" labelName = "Type" request="${pageContext.request}"></iais:checkbox>
+              </td>
+            </tr>
+
           </div>
         </div>
-
-      <div>
-          <td>
-            <iais:checkbox checkboxId="moduleCheckBox" codeCategory = "CATE_ID_CHECKLIST_MODULE" name= "moduleCheckBox" labelName = "Module" request="${pageContext.request}"></iais:checkbox>
-          </td>
-
-
-          <td>
-            <iais:checkbox checkboxId="typeCheckBox" codeCategory = "CATE_ID_CHECKLIST_TYPE" forName="typeCheckBoxFor" name= "typeCheckBox" labelName = "Type" request="${pageContext.request}"></iais:checkbox>
-          </td>
-       </div>
 
 
         <br><br>

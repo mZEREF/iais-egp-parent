@@ -687,8 +687,8 @@ public class HcsaChklItemDelegator {
         List<String> selectedItemIdToConfig = (List<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG);
         if (!StringUtils.isEmpty(fromConfigPage) && !IaisCommonUtils.isEmpty(selectedItemIdToConfig)){
             SqlHelper.builderNotInSql(searchParam, "item.id", HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, selectedItemIdToConfig);
-            searchParam.addFilter("itemStatus", "CMSTAT001", true);
         }
+        searchParam.addFilter("itemStatus", "CMSTAT001", true);
     }
 
     

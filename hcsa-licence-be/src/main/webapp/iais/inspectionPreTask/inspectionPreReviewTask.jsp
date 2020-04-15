@@ -232,9 +232,9 @@
                                         <table class="table">
                                           <thead>
                                           <tr>
-                                            <th width="10%">Checklist Item</th>
-                                            <th width="70%">Answer Type</th>
-                                            <th width="20%">Risk Level</th>
+                                            <th width="50%">Checklist Item</th>
+                                            <th width="40%">Answer Type</th>
+                                            <th width="10%">Risk Level</th>
                                           </tr>
                                           </thead>
                                           <tbody>

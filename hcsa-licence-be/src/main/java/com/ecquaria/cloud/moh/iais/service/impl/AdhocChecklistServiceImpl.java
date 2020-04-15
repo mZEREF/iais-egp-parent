@@ -22,11 +22,12 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
-import java.util.List;
-import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.function.Function;
 
 @Slf4j
 @Service
@@ -55,8 +56,14 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
             return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.NEW);
         }else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
             return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.RENEWAL);
+        }else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+            return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.AMENDMENT);
+        }else if (ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT.equals(appType)){
+            return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.REINSTATEMENT);
+        }else if (ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)){
+            return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.AUDIT);
         }
-        return null;
+        return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.NEW);
     }
 
     @Override
