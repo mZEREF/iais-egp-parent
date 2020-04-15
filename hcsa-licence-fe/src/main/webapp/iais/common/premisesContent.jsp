@@ -244,11 +244,11 @@
 
                         <div class="col-xs-9 col-sm-5 col-md-6">
                             <div class="col-md-3" style="padding-left: unset">
-                                <iais:select name="onSiteStartHH" options="premiseHours" value="${appGrpPremisesDto.onsiteStartHH}" firstOption="--"></iais:select>
+                                <iais:select cssClass="onSiteStartHH" name="onSiteStartHH" options="premiseHours" value="${appGrpPremisesDto.onsiteStartHH}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                             <div class="col-md-3" style="padding-left: unset">
-                                <iais:select name="onSiteStartMM" options="premiseMinute" value="${appGrpPremisesDto.onsiteStartMM}" firstOption="--"></iais:select>
+                                <iais:select cssClass="onSiteStartMM" name="onSiteStartMM" options="premiseMinute" value="${appGrpPremisesDto.onsiteStartMM}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                         </div>
@@ -265,11 +265,11 @@
 
                         <div class="col-xs-9 col-sm-5 col-md-6">
                             <div class="col-md-3" style="padding-left: unset">
-                                <iais:select name="onSiteEndHH" options="premiseHours" value="${appGrpPremisesDto.onsiteEndHH}" firstOption="--"></iais:select>
+                                <iais:select cssClass="onSiteEndHH" name="onSiteEndHH" options="premiseHours" value="${appGrpPremisesDto.onsiteEndHH}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                             <div class="col-md-3" style="padding-left: unset">
-                                <iais:select name="onSiteEndMM" options="premiseMinute" value="${appGrpPremisesDto.onsiteEndMM}" firstOption="--"></iais:select>
+                                <iais:select cssClass="onSiteEndMM" name="onSiteEndMM" options="premiseMinute" value="${appGrpPremisesDto.onsiteEndMM}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                         </div>
@@ -483,11 +483,11 @@
                         </label>
                         <div class="col-xs-9 col-sm-5 col-md-6">
                             <div class="col-md-3" style="padding-left: unset">
-                                <iais:select name="conveyanceEndHH" options="premiseHours" value="${appGrpPremisesDto.conEndHH}" firstOption="--"></iais:select>
+                                <iais:select cssClass="conveyanceEndHH" name="conveyanceEndHH" options="premiseHours" value="${appGrpPremisesDto.conEndHH}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                             <div class="col-md-3" style="padding-left: unset">
-                                <iais:select name="conveyanceEndMM" options="premiseMinute" value="${appGrpPremisesDto.conEndMM}" firstOption="--"></iais:select>
+                                <iais:select cssClass="conveyanceEndMM" name="conveyanceEndMM" options="premiseMinute" value="${appGrpPremisesDto.conEndMM}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
 
@@ -677,11 +677,11 @@
                         </label>
                         <div class="col-xs-9 col-sm-5 col-md-6">
                             <div class="col-md-3" style="padding-left: unset">
-                                <iais:select name="offSiteStartHH" options="premiseHours" value="${appGrpPremisesDto.offSiteStartHH}" firstOption="--"></iais:select>
+                                <iais:select cssClass="offSiteStartHH" name="offSiteStartHH" options="premiseHours" value="${appGrpPremisesDto.offSiteStartHH}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                             <div class="col-md-3" style="padding-left: unset">
-                                <iais:select name="offSiteStartMM" options="premiseMinute" value="${appGrpPremisesDto.offSiteStartMM}" firstOption="--"></iais:select>
+                                <iais:select cssClass="offSiteStartMM" name="offSiteStartMM" options="premiseMinute" value="${appGrpPremisesDto.offSiteStartMM}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
                         </div>
@@ -696,11 +696,11 @@
                         </label>
                         <div class="col-xs-9 col-sm-5 col-md-6">
                             <div class="col-md-3" style="padding-left: unset">
-                                <iais:select name="offSiteEndHH" options="premiseHours" value="${appGrpPremisesDto.offSiteEndHH}" firstOption="--"></iais:select>
+                                <iais:select cssClass="offSiteEndHH" name="offSiteEndHH" options="premiseHours" value="${appGrpPremisesDto.offSiteEndHH}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(HH):</div>
                             <div class="col-md-3" style="padding-left: unset">
-                                <iais:select name="offSiteEndMM" options="premiseMinute" value="${appGrpPremisesDto.offSiteEndMM}" firstOption="--"></iais:select>
+                                <iais:select cssClass="offSiteEndMM" name="offSiteEndMM" options="premiseMinute" value="${appGrpPremisesDto.offSiteEndMM}" firstOption="--"></iais:select>
                             </div>
                             <div class="col-md-1" style="padding-left: unset;padding-top: 3%">(MM)</div>
 
