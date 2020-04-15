@@ -111,7 +111,6 @@
         // pageAction();
         if ($('.msgCheck').is(':checked')){
             submit('msgDoArchive');
-            console.log("Do Archive")
         }else{
             $('#doArchiveModal').modal('hide');
             window.setTimeout(function(){
@@ -120,7 +119,6 @@
             window.setTimeout(function(){
                 $('#archiveModal').modal('hide');
             },5000);
-            console.log("Do not Select")
         }
     }
 

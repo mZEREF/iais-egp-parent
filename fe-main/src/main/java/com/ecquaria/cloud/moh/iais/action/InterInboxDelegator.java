@@ -375,6 +375,7 @@ public class InterInboxDelegator {
                     result = false;
                 }
             }
+            ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",result);
             if (result){
                 StringBuilder url = new StringBuilder();
                 url.append("https://").append(bpc.request.getServerName())

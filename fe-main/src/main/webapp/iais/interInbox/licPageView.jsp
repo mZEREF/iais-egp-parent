@@ -46,6 +46,15 @@
 </style>
 <script type="text/javascript">
 
+    $(function () {
+        if ('${licIsRenewed}') {
+            $('#isRenewedModal').modal('show');
+            window.setTimeout(function(){
+                $('#isRenewedModal').modal('hide');
+            },3000);
+        }
+    });
+
     function submit(action){
         $("[name='lic_action_type']").val(action);
         $("#licForm").submit();
@@ -69,18 +78,45 @@
     }
 
     function doLicAmend() {
-        showWaiting();
-        submit('licDoAmend');
+        if ($('.licenceCheck').is(':checked')){
+            showWaiting();
+            submit('licDoAmend');
+        }else{
+            window.setTimeout(function(){
+                $('#licSlectModal').modal('show');
+            },1000);
+            window.setTimeout(function(){
+                $('#licSlectModal').modal('hide');
+            },5000);
+        }
     }
 
     function doLicRenew() {
-        showWaiting();
-        submit('licDoRenew');
+        if ($('.licenceCheck').is(':checked')){
+            showWaiting();
+            submit('licDoRenew');
+        }else{
+            window.setTimeout(function(){
+                $('#licSlectModal').modal('show');
+            },1000);
+            window.setTimeout(function(){
+                $('#licSlectModal').modal('hide');
+            },5000);
+        }
     }
 
     function doLicCease(){
-        showWaiting();
-        submit('licDoCease');
+        if ($('.licenceCheck').is(':checked')){
+            showWaiting();
+            submit('licDoCease');
+        }else {
+            window.setTimeout(function () {
+                $('#licSlectModal').modal('show');
+            }, 1000);
+            window.setTimeout(function () {
+                $('#licSlectModal').modal('hide');
+            }, 5000);
+        }
     }
 
     function doLicAction(licNo){
@@ -96,9 +132,18 @@
     }
     
     function doLicAppeal(licNo) {
-        showWaiting();
-        $("[name='crud_action_value']").val(licNo);
-        submit('licDoAppeal');
+        if ($('.licenceCheck').is(':checked')){
+            showWaiting();
+            $("[name='crud_action_value']").val(licNo);
+            submit('licDoAppeal');
+        }else{
+            window.setTimeout(function(){
+                $('#licSlectModal').modal('show');
+            },1000);
+            window.setTimeout(function(){
+                $('#licSlectModal').modal('hide');
+            },5000);
+        }
     }
     
     function scrollIntoLicView() {
@@ -110,6 +155,8 @@
         $("[name='crud_action_additional']").val(sortType);
         submit('licSort');
     }
+
+
 
     function doClearLic(){
         $("[name='licNoPath']").val("");

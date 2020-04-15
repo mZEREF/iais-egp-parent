@@ -85,9 +85,9 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="licence-btns col-md-6" style="width: 49%">
-                    <a class="btn btn-primary disabled" href="javascript:;" id="lic-renew">Renew</a>
-                    <a class="btn btn-primary disabled" href="javascript:;" id="lic-cease">Cease</a>
-                    <a class="btn btn-primary disabled" href="javascript:;" id="lic-amend">Amend</a>
+                    <a class="btn btn-primary" href="javascript:;" id="lic-renew">Renew</a>
+                    <a class="btn btn-primary" href="javascript:;" id="lic-cease">Cease</a>
+                    <a class="btn btn-primary" href="javascript:;" id="lic-amend">Amend</a>
                 </div>
                 <div class="col-md-6 text-right" style="width: 49%">
                     <button type="button" class="btn btn-primary" onclick="doPrint()">Print</button>
@@ -179,6 +179,44 @@
                     </c:choose>
                     </tbody>
                 </table>
+                <!-- Modal -->
+                <div class="modal fade" id="licSlectModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Please select at least one record</span></div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Modal End-->
+                <!-- Modal -->
+                <div class="modal fade" id="isRenewedModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:90%; overflow: visible;bottom: inherit;right: inherit;">
+                    <div class="modal-dialog" role="document" style="width: 760px;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">This application is performing the renew process</span></div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Modal End-->
             </div>
         </div>
     </div>
