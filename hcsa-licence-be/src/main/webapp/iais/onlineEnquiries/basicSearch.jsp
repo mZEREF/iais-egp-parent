@@ -142,10 +142,12 @@
                             <thead>
                             <tr align="center">
                                 <th class="form-check">
-                                    <input class="form-check-input licenceCheck" type="checkbox" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll();"/>
-                                    <label class="form-check-label" for="checkboxAll">
-                                        <span class="check-square"></span>
-                                    </label>
+                                    <c:if test="${!empty SearchResult.rows}">
+                                        <input class="form-check-input licenceCheck" type="checkbox" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll();"/>
+                                        <label class="form-check-label" for="checkboxAll">
+                                            <span class="check-square"></span>
+                                        </label>
+                                    </c:if>
                                 </th>
                                 <iais:sortableHeader needSort="false" field="" value="S/N"/>
                                 <iais:sortableHeader needSort="false"  field="APPLICATION_NO" value="Application No."/>

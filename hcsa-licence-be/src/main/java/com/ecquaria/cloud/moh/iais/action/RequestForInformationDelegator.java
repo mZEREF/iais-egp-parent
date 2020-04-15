@@ -12,6 +12,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -46,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.service.LicInspNcEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -111,6 +114,8 @@ public class RequestForInformationDelegator {
     OnlineEnquiriesService onlineEnquiriesService;
     @Autowired
     private SystemParamConfig systemParamConfig;
+    @Autowired
+    private ApplicationClient applicationClient;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -466,7 +471,7 @@ public class RequestForInformationDelegator {
         String subDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
         String toDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
-                SystemAdminBaseConstants.DATE_FORMAT);
+                SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
         Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
 
         if(!StringUtil.isEmpty(licenceNo)){
@@ -733,7 +738,10 @@ public class RequestForInformationDelegator {
         //send message to FE user.
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-        interMessageDto.setSubject(rfiEmailTemplateDto.getSubject());
+        List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
+        ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
+        String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",applicationDto.getApplicationNo());
+        interMessageDto.setSubject(subject);
         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
         String mesNO = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(mesNO);

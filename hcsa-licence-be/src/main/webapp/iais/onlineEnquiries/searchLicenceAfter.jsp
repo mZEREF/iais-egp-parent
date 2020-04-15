@@ -480,12 +480,14 @@
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
                                             <td class="form-check">
-                                                <input class="form-check-input licenceCheck"
-                                                       id="licence${status.index + 1}" type="checkbox"
-                                                       name="appIds" value="${pool.appId}|${pool.isCessation}">
-                                                <label class="form-check-label" for="licence${status.index + 1}"><span
-                                                        class="check-square"></span>
-                                                </label>
+                                                <c:if test="${!empty SearchResult.rows}">
+                                                    <input class="form-check-input licenceCheck"
+                                                           id="licence${status.index + 1}" type="checkbox"
+                                                           name="appIds" value="${pool.appId}|${pool.isCessation}">
+                                                    <label class="form-check-label" for="licence${status.index + 1}"><span
+                                                            class="check-square"></span>
+                                                    </label>
+                                                </c:if>
                                             </td>
                                             <td class="row_no">
                                                 <c:out value="${status.index + 1+ (SearchParam.pageNo - 1) * SearchParam.pageSize}"/>

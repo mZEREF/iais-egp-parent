@@ -431,7 +431,7 @@ public class OfficerOnlineEnquiriesDelegator {
         String appSubDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
         String appSubToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
-                SystemAdminBaseConstants.DATE_FORMAT);
+                SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
         String licStaDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "start_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
         String licStaToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "start_to_date")),

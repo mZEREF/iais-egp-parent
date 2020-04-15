@@ -22,8 +22,8 @@
             <#if appType??> AND app.app_type = :appType</#if>
             <#if appNo??> AND charindex(:appNo, app.application_no)>0</#if>
             <#if appStatus??> AND app.status = :appStatus</#if>
-            <#if subDate??> AND T4.submit_dt >= convert(date,:subDate)</#if>
-            <#if toDate??> AND T4.submit_dt <= convert(date,:toDate)</#if>
+            <#if subDate??> AND T4.submit_dt >= convert(datetime,:subDate)</#if>
+            <#if toDate??> AND T4.submit_dt <= convert(datetime,:toDate)</#if>
             <#if hciCode??> AND  charindex(:hciCode, T3.HCI_CODE )>0</#if>
             <#if hciName??> AND charindex(:hciName, T3.HCI_NAME )>0</#if>
             <#if hciStreetName??> AND charindex(:hciStreetName, T3.STREET_NAME )>0</#if>
