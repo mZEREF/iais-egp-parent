@@ -26,6 +26,7 @@ public class HcsaServiceTag extends DivTagSupport{
 
 	private String value;
 	private Boolean maskValue;
+	private Boolean isSvcCode;
 	private HttpServletRequest request;
 
 	public HcsaServiceTag() {
@@ -38,6 +39,7 @@ public class HcsaServiceTag extends DivTagSupport{
 		super.init();
 		value = null;
 		maskValue = false;
+		isSvcCode = false;
 	}
 
 	@Override
@@ -60,19 +62,14 @@ public class HcsaServiceTag extends DivTagSupport{
 			value = ParamUtil.getMaskedString(request, value);
 		}
 
-		String serviceName = HcsaServiceCacheHelper.getServiceNameById(value);
-		String serviceType = HcsaServiceCacheHelper.getServiceTypeById(value);
+		String serviceName;
+		if (!isSvcCode){
+			serviceName = HcsaServiceCacheHelper.getServiceNameById(value);
+		}else {
+			serviceName = HcsaServiceCacheHelper.getServiceByCode(value).getSvcName();
+		}
 
 		html.append(serviceName);
-
-		//<li><span>${baseItem}</span> (Base Service)</li>
-		/*if (isBaseService(serviceType)){
-			html.append("<li><span>" + serviceName +"</span> (Base Service)</li>");
-		}else if(isSpecifiedService(serviceType)){
-			html.append("<li><span>" + serviceName +"</span> (Specified Service)</li>");
-		}else if(isSubsumed(serviceType)){
-			html.append("<li><span>" + serviceName +"</span> (Subsumed Service)</li>");
-		}*/
 
 		try {
 			pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString().trim()));
@@ -87,17 +84,5 @@ public class HcsaServiceTag extends DivTagSupport{
 	public int doEndTag() {
 		init();
 		return EVAL_PAGE;
-	}
-
-	private Boolean isBaseService(String serviceType){
-		return ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceType) ? true : false;
-	}
-
-	private Boolean isSpecifiedService(String serviceType){
-		return ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED.equals(serviceType) ? true : false;
-	}
-
-	private Boolean isSubsumed(String serviceType){
-		return ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(serviceType) ? true : false;
 	}
 }

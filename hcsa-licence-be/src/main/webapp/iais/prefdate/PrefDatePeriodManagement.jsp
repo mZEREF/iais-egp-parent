@@ -20,7 +20,7 @@
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="prRegNo" value="">
         <%@ include file="/include/formHidden.jsp" %>
-        <div class="bg-title"><h2>Pref Date Period Management</h2></div>
+        <div class="bg-title"><h2>Preferred Date Period Management</h2></div>
         <span id="error_numberError" name="iaisErrorMsg" class="error-msg"></span>
 
 
@@ -36,24 +36,27 @@
             </iais:row>
 
             <iais:row>
-                <iais:field value="Block-out Period after Application "/> wks
+                <iais:field value="Block-out Period after Application "/>
                 <iais:value width="18">
                     <input type="text" name="periodAfterApp" value="${periodAfterApp}">
                 </iais:value>
+                <div style="padding-top: 12px;">Weeks</div>
             </iais:row>
 
             <iais:row>
-                <iais:field value="Block-out Period before Expiry"/> wks
+                <iais:field value="Block-out Period before Expiry"/>
                 <iais:value width="18">
                     <input type="text" name="periodBeforeExp" value="${periodBeforeExp}">
                 </iais:value>
+                <div style="padding-top: 12px;">Weeks</div>
             </iais:row>
 
             <iais:row>
-                <iais:field value="Non-reply Notification Window"/> working day
+                <iais:field value="Non-reply Notification Window"/>
                 <iais:value width="18">
                     <input type="text" name="nonReplyWindow" value="${nonReplyWindow}">
                 </iais:value>
+                <div style="padding-top: 12px;">Working days</div>
             </iais:row>
 
 

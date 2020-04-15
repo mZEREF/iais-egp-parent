@@ -31,35 +31,38 @@
         <div class="form-group">
             <iais:field value="Service Name" required="true"></iais:field>
             <div class="col-xs-5 col-md-3" >
-                <input type="text" disabled value="<c:out value="${requestPeriodAttr.svcCode}"></c:out>">
+                <iais:service value="${requestPeriodAttr.svcCode}" isSvcCode="true"></iais:service>
             </div>
             <span id="error_svcCode" name="iaisErrorMsg" class="error-msg"></span>
         </div>
 
 
         <div class="form-group">
-          <iais:field value="Block-out Period after Application" required="true"></iais:field> wks
+          <iais:field value="Block-out Period after Application" required="true"></iais:field>
           <div class="col-xs-5 col-md-3" >
             <input type="text" name="periodAfterApp" maxlength="3" value="${requestPeriodAttr.periodAfterApp}" />
             <span id="error_periodAfterApp" name="iaisErrorMsg" class="error-msg"></span>
           </div>
+            <div style="padding-top: 12px;">Weeks</div>
         </div>
 
         <div class="form-group">
-          <iais:field value="Block-out Period before Expiry" required="true"></iais:field> wks
+          <iais:field value="Block-out Period before Expiry" required="true"></iais:field>
           <div class="col-xs-5 col-md-3" >
             <input type="text" name="periodBeforeExp" maxlength="3" value="${requestPeriodAttr.periodBeforeExp}" />
             <span id="error_periodBeforeExp" name="iaisErrorMsg" class="error-msg"></span>
           </div>
+          <div style="padding-top: 12px;">Weeks</div>
         </div>
 
 
         <div class="form-group">
-          <iais:field value="Non-reply Notification Window" required="true"></iais:field> working day
+          <iais:field value="Non-reply Notification Window" required="true"></iais:field>
           <div class="col-xs-5 col-md-3" >
             <input type="text" name="nonReplyWindow" maxlength="3" value="${requestPeriodAttr.nonReplyWindow}" />
             <span id="error_nonReplyWindow" name="iaisErrorMsg" class="error-msg"></span>
           </div>
+            <div style="padding-top: 12px;">Working days</div>
         </div>
 
       </div>
