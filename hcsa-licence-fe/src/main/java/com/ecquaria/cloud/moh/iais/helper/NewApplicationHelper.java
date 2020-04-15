@@ -1228,10 +1228,9 @@ public class NewApplicationHelper {
 * @parameter file
 * @parameter fileTypes
 * @parameter fileSize
-* @parameter errorMessage
 * */
 
-    public static Map<String,Boolean> validateFile(CommonsMultipartFile file,List<String> fileTypes,Long fileSize,String errorMessage){
+    public static Map<String,Boolean> validateFile(CommonsMultipartFile file,List<String> fileTypes,Long fileSize){
         Map<String,Boolean> map=new HashMap<>();
         if(file!=null){
             long size = file.getSize();
