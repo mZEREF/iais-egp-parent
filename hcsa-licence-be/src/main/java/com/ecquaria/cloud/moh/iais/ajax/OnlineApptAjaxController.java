@@ -104,6 +104,7 @@ public class OnlineApptAjaxController {
                         appointmentUserDtos.add(appointmentUserDto);
                     }
                     appointmentDto.setUsers(appointmentUserDtos);
+                    apptInspectionDateDto.setAppointmentDto(appointmentDto);
                     Map<String, Collection<String>> headers = appointmentClient.getUserCalendarByUserId(appointmentDto).getHeaders();
                     //Has it been blown up
                     if(headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
