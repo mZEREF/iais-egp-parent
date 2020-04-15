@@ -40,7 +40,7 @@
         <div class="form-group">
           <iais:field value="Block-out Period after Application" required="true"></iais:field>
           <div class="col-xs-5 col-md-3" >
-            <input type="text" name="periodAfterApp" maxlength="3" value="${requestPeriodAttr.periodAfterApp}" />
+            <input type="text" name="periodAfterApp" maxlength="2" value="${requestPeriodAttr.periodAfterApp}" />
             <span id="error_periodAfterApp" name="iaisErrorMsg" class="error-msg"></span>
           </div>
             <div style="padding-top: 12px;">Weeks</div>
@@ -49,7 +49,7 @@
         <div class="form-group">
           <iais:field value="Block-out Period before Expiry" required="true"></iais:field>
           <div class="col-xs-5 col-md-3" >
-            <input type="text" name="periodBeforeExp" maxlength="3" value="${requestPeriodAttr.periodBeforeExp}" />
+            <input type="text" name="periodBeforeExp" maxlength="2" value="${requestPeriodAttr.periodBeforeExp}" />
             <span id="error_periodBeforeExp" name="iaisErrorMsg" class="error-msg"></span>
           </div>
           <div style="padding-top: 12px;">Weeks</div>
@@ -59,7 +59,7 @@
         <div class="form-group">
           <iais:field value="Non-reply Notification Window" required="true"></iais:field>
           <div class="col-xs-5 col-md-3" >
-            <input type="text" name="nonReplyWindow" maxlength="3" value="${requestPeriodAttr.nonReplyWindow}" />
+            <input type="text" name="nonReplyWindow" maxlength="2" value="${requestPeriodAttr.nonReplyWindow}" />
             <span id="error_nonReplyWindow" name="iaisErrorMsg" class="error-msg"></span>
           </div>
             <div style="padding-top: 12px;">Working days</div>

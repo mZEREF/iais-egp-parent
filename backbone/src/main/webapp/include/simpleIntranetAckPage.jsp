@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Administrator
-  Date: 2020/3/23
-  Time: 15:49
-  To change this template use File | Settings | File Templates.
---%>
 
 
 
@@ -19,14 +12,15 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 
+
+
 <webui:setLayout name="iais-intranet"/>
 
 
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
-        <br><br><br>
-        <div class="panel-heading"><h2><strong>Acknowledgement</strong></h2></div>
+        <div class="bg-title"><h2>Acknowledgement</h2></div>
 
         <p><c:out value="${ackMsg}"></c:out></p>
 

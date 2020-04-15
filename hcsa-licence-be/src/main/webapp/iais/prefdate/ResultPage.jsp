@@ -27,9 +27,6 @@
 <div class="main-content">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" name="currentValidateId" value="">
     <div class="bg-title"><h2>Acknowledgement</h2></div>
 
