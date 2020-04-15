@@ -336,7 +336,7 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="Service Professional Regn No."/>
+                                            <iais:field value="Service Personnel Professional Regn No."/>
                                             <iais:value width="18">
                                                 <label>
                                                     <input type="text" maxlength="20" style="width:180%; font-weight:normal;" name="personnelRegnNo" value="${SearchParam.filters['personnelRegnNo']}" />
@@ -344,7 +344,7 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="Service Professional Role"/>
+                                            <iais:field value="Service Personnel Role"/>
                                             <iais:value width="18">
                                                 <div id="personnelRoleOption">
                                                     <iais:select name="personnelRole" options="servicePersonnelRoleOption" firstOption="Please Select" value="${SearchParam.filters['personnelRole']}" ></iais:select>
