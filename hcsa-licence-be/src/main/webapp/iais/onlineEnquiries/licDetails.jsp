@@ -215,7 +215,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Email Address</td>
-                                                        <td>${organizationLicDto.licenseeEntityDto.officeEmailAddr}</td>
+                                                        <td><c:out value="${organizationLicDto.doMain}"/></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>

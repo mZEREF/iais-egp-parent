@@ -636,7 +636,11 @@ public class RequestForInformationDelegator {
         if(!licPremisesReqForInfoDtoList.isEmpty()) {
             for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
             ) {
-                licPreRfi.setEmail(IaisEGPHelper.getLicenseeEmailAddrs(licPreRfi.getLicenseeId()).get(0));
+                try {
+                    licPreRfi.setEmail(IaisEGPHelper.getLicenseeEmailAddrs(licPreRfi.getLicenseeId()).get(0));
+                }catch (Exception e){
+                    licPreRfi.setEmail("-");
+                }
                 if(StringUtil.isEmpty(licPreRfi.getUserReply())){
                     ParamUtil.setSessionAttr(request, "licenceNo", licPreRfi.getLicenceNo());
                 }

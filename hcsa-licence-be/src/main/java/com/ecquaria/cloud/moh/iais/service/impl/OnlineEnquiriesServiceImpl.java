@@ -160,6 +160,12 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
         LicenceDto licenceDto=licenceService.getLicenceDto(licenceId);
         OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
+        try{
+            organizationLicDto.setDoMain(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()).get(0));
+        }catch (Exception e){
+            log.info(e.getMessage());
+            organizationLicDto.setDoMain("-");
+        }
         List<PersonnelsDto> personnelsDto= hcsaLicenceClient.getPersonnelDtoByLicId(licenceId).getEntity();
 
         for (LicenseeKeyApptPersonDto org:organizationLicDto.getLicenseeKeyApptPersonDtos()
@@ -610,7 +616,11 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         AppInsRepDto appInsRepDto=insRepClient.getAppInsRepDto(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
         AppSubmissionDto appSubmissionDto = licenceViewService.getAppSubmissionByAppId(applicationViewDto.getApplicationDto().getId());
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(appInsRepDto.getLicenseeId());
-        licenseeDto.setEmilAddr(IaisEGPHelper.getLicenseeEmailAddrs(appInsRepDto.getLicenseeId()).get(0));
+        try{
+            licenseeDto.setEmilAddr(IaisEGPHelper.getLicenseeEmailAddrs(appInsRepDto.getLicenseeId()).get(0));
+        }catch (Exception e){
+            log.info(e.getMessage());
+        }
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos =  appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if(IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             return;
@@ -692,8 +702,24 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     }
     @Override
     public List<SelectOption> getServicePersonnelRoleOption() {
-        String[] personnelRoles={"DES001","DES002","DES003","DES004"};
-        return MasterCodeUtil.retrieveOptionsByCodes(personnelRoles);
+        List<SelectOption> svcPerRoleOption=IaisCommonUtils.genNewArrayList(4);
+        SelectOption selectOption=new SelectOption();
+        selectOption.setText(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
+        selectOption.setValue(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
+        svcPerRoleOption.add(selectOption);
+        selectOption=new SelectOption();
+        selectOption.setText(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+        selectOption.setValue(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+        svcPerRoleOption.add(selectOption);
+        selectOption=new SelectOption();
+        selectOption.setText(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+        selectOption.setValue(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+        svcPerRoleOption.add(selectOption);
+        selectOption=new SelectOption();
+        selectOption.setText(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT);
+        selectOption.setValue(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
+        svcPerRoleOption.add(selectOption);
+        return svcPerRoleOption;
     }
 
     @Override

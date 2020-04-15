@@ -15,6 +15,7 @@
              LEFT JOIN APPLICATION_GROUP T4 ON T4.ID = app.APP_GRP_ID
              LEFT JOIN app_grp_personnel appGrpPer ON appGrpPer.APP_GRP_ID = T4.ID
              LEFT JOIN app_grp_personnel_ext appGrpPerExt ON appGrpPer.ID = appGrpPerExt.APP_GRP_PSN_ID
+             LEFT JOIN app_svc_key_personnel appKeyPsn ON appKeyPsn.APPLICATION_ID = app.ID
              LEFT JOIN app_premises_adhoc_chkl_config chkl_config ON chkl_config.APP_PREM_CORRE_ID = T2.ID
              LEFT JOIN app_premises_adhoc_chkl_item chkl_item ON chkl_item.ADHOC_CONF_ID = chkl_config.ID
             WHERE 1=1
@@ -31,7 +32,7 @@
             <#if personnelName??> AND  charindex(:personnelName, appGrpPer.NAME )>0</#if>
             <#if personnelId??> AND charindex(:personnelId, appGrpPer.ID_NO )>0</#if>
             <#if personnelRegnNo??> AND charindex( :personnelRegnNo, appGrpPerExt.PROF_REG_NO )>0</#if>
-            <#if personnelRole??> AND  appGrpPer.DESIGNATION = :personnelRole</#if>
+            <#if personnelRole??> AND  appKeyPsn.PSN_TYPE = :personnelRole</#if>
 
             <#if licence_status??>AND :licence_status = :licence_status</#if>
             <#if start_date??>AND :start_date = :start_date</#if>

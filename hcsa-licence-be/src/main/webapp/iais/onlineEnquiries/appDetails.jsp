@@ -117,7 +117,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Email</td>
-                                                        <td>${licenseeDto.emilAddr}</td>
+                                                        <td><c:out value="${licenseeDto.emilAddr}"/></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
