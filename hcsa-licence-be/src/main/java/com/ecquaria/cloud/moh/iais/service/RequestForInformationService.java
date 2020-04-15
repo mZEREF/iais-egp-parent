@@ -25,7 +25,7 @@ public interface RequestForInformationService {
     List<String> getActionBysByLicPremCorrId(String licPremCorrId);
     SearchResult<RfiApplicationQueryDto> appDoQuery(SearchParam searchParam);
     SearchResult<RfiLicenceQueryDto> licenceDoQuery(SearchParam searchParam);
-    List<String> getSvcNamesByType(String type);
+    List<String> getSvcNamesByType();
     LicPremisesReqForInfoDto updateLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
 
     LicPremisesReqForInfoDto createLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);

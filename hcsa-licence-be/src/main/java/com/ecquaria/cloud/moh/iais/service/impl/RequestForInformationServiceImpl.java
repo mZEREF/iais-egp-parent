@@ -53,6 +53,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
@@ -160,8 +161,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     @Override
     public List<SelectOption> getLicSvcTypeOption() {
-        List<String> svcNames=getSvcNamesByType(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE);
-        List<String> svcNames1=getSvcNamesByType(ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED);
+        List<String> svcNames=getSvcNamesByType();
         List<SelectOption> selectOptions= IaisCommonUtils.genNewArrayList();
         for (String svcName:svcNames
         ) {
@@ -170,13 +170,9 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             selectOption.setValue(svcName);
             selectOptions.add(selectOption);
         }
-        for (String svcName:svcNames1
-        ) {
-            SelectOption selectOption=new SelectOption();
-            selectOption.setText(svcName);
-            selectOption.setValue(svcName);
-            selectOptions.add(selectOption);
-        }
+        HashSet<SelectOption> set = new HashSet<>(selectOptions);
+        selectOptions.clear();
+        selectOptions.addAll(set);
         return selectOptions;
     }
 
@@ -228,8 +224,8 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
 
     @Override
-    public List<String> getSvcNamesByType(String type) {
-        return hcsaConfigClient.getHcsaServiceNameByType(type).getEntity();
+    public List<String> getSvcNamesByType() {
+        return hcsaConfigClient.listServiceP1Name().getEntity();
     }
 
     @Override

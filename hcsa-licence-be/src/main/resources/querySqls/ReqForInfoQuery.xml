@@ -45,6 +45,7 @@
             <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
             <#if licenseeRegnNo??>AND :licenseeRegnNo = :licenseeRegnNo</#if>
             <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
+            <#if svc_name??> AND :svc_name = :svc_name</#if>
         ]]>
     </sql>
 
@@ -85,6 +86,7 @@
             <#if hciStreetName??> AND charindex(:hciStreetName, Prem.STREET_NAME )>0</#if>
             <#if hciPostalCode??> AND charindex(:hciPostalCode, Prem.POSTAL_CODE )>0</#if>
             <#if svc_names??> AND lic.SVC_NAME in( :svc_names)</#if>
+            <#if svc_name??> AND lic.SVC_NAME = :svc_name</#if>
             <#if licenseeIds??> AND lic.LICENSEE_ID in( :licenseeIds)</#if>
             <#if licenseeRegnNo??> AND charindex( :licenseeRegnNo,keyPsnExt.PROF_REG_NO )>0</#if>
 
@@ -143,7 +145,7 @@
             <#if personnelId??> AND :personnelId = :personnelId</#if>
             <#if personnelRegnNo??> AND :personnelRegnNo = :personnelRegnNo</#if>
             <#if personnelRole??> AND :personnelRole = :personnelRole</#if>
-
+            <#if svc_name??> AND :svc_name = :svc_name</#if>
             <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
         ]]>
     </sql>
@@ -184,7 +186,7 @@
             <#if personnelId??> AND :personnelId = :personnelId</#if>
             <#if personnelRegnNo??> AND :personnelRegnNo = :personnelRegnNo</#if>
             <#if personnelRole??> AND :personnelRole = :personnelRole</#if>
-
+            <#if svc_name??> AND :svc_name = :svc_name</#if>
         ]]>
     </sql>
 

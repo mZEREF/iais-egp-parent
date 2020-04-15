@@ -550,8 +550,13 @@ public class RequestForInformationDelegator {
     public void doSearchLicenceAfter(BaseProcessClass bpc) {
         log.info("=======>>>>>doSearchLicenceAfter>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        ParamUtil.setSessionAttr(request,"id",id);
+        try {
+            String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+            ParamUtil.setSessionAttr(request,"id",id);
+        }catch (Exception e){
+            log.info(e.getMessage());
+        }
+
         // 		doSearchLicenceAfter->OnStepProcess
     }
     public void preRfi(BaseProcessClass bpc) {

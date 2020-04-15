@@ -497,7 +497,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 filters.put("licence_status", licenceStatus);
             }
             if(!StringUtil.isEmpty(serviceLicenceType)){
-                svcNames.add(serviceLicenceType);
+                filters.put("svc_name", serviceLicenceType);
             }
             if(!StringUtil.isEmpty(svcSubType)){
                 filters.put("serviceSubTypeName", svcSubType);

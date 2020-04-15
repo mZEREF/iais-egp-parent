@@ -108,6 +108,9 @@ public interface HcsaConfigClient {
     @GetMapping(value = "/iais-hcsa-service/active-service",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceDto>> getActiveServices();
 
+    @GetMapping(value = "/iais-hcsa-service/svc-p1-name-results",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> listServiceP1Name();
+
 
     @RequestMapping(value = "/iais-hcsa-risk/FinancialShow",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<RiskFinancialShowDto> getRiskFinShow(@RequestBody List<HcsaServiceDto> svcList);
