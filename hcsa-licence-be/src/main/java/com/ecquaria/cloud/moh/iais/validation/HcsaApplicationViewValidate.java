@@ -132,11 +132,15 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }else{
                 if(!CommonValidator.isPositiveInteger(number)){
                     errMap.put("recomInNumber","The field is illegal.");
+                }else{
+                    ParamUtil.setRequestAttr(request,"otherNumber",number);
                 }
             }
             String chrono = ParamUtil.getString(request,"chrono");
             if(StringUtil.isEmpty(chrono)){
                 errMap.put("chronoUnit","The field is mandatory.");
+            }else{
+                ParamUtil.setRequestAttr(request,"otherChrono",chrono);
             }
         }
     }

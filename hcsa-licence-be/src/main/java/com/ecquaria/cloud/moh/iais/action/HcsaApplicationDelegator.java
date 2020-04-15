@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -226,26 +227,8 @@ public class HcsaApplicationDelegator {
         applicationViewDto.setVerified(routingStage);
         ParamUtil.setSessionAttr(bpc.request, "verifiedValues", (Serializable)routingStage);
 
-        //recomeDation
-        HcsaServiceDto hcsaServiceDto=applicationViewService.getHcsaServiceDtoById(applicationViewDto.getApplicationDto().getServiceId());
-        String svcCode=hcsaServiceDto.getSvcCode();
-        RiskAcceptiionDto riskAcceptiionDto=new RiskAcceptiionDto();
-        riskAcceptiionDto.setScvCode(svcCode);
-        List<RiskAcceptiionDto> listRiskAcceptiionDto = IaisCommonUtils.genNewArrayList();
-        listRiskAcceptiionDto.add(riskAcceptiionDto);
-        List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
-        List<String> riskResult = IaisCommonUtils.genNewArrayList();
-        if(listRiskResultDto!=null && !listRiskResultDto.isEmpty()){
-            for(RiskResultDto riskResultDto :listRiskResultDto){
-                String dateType = riskResultDto.getDateType();
-                String codeDesc = MasterCodeUtil.getCodeDesc(dateType);
-                String count = String.valueOf(riskResultDto.getTimeCount());
-                String recommTime = count+" "+codeDesc;
-                riskResult.add(recommTime);
-            }
-        }
-        applicationViewDto.setRecomeDation(riskResult);
-
+        //set recommendation dropdown
+        ParamUtil.setSessionAttr(bpc.request, "recommendationDropdown", (Serializable)getRecommendationDropdown(applicationViewDto));
         //set recommendation other dropdown
         ParamUtil.setSessionAttr(bpc.request, "recommendationOtherDropdown", (Serializable)getRecommendationOtherDropdown());
 
@@ -279,17 +262,19 @@ public class HcsaApplicationDelegator {
         if(appPremisesRecommendationDto != null){
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
             String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
+            String codeDesc = "";
             String recommendationOnlyShow = "";
             if(recomInNumber == null || recomInNumber == 0){
                 recommendationOnlyShow = "reject";
             }else{
-                recommendationOnlyShow = recomInNumber + " " + chronoUnit;
+                codeDesc = MasterCodeUtil.getCodeDesc(chronoUnit);
+                recommendationOnlyShow = recomInNumber + " " + codeDesc;
             }
             //PSO 0062307
             if(RoleConsts.USER_ROLE_PSO.equals(roleId)){
-                ParamUtil.setRequestAttr(bpc.request, "recommendationStr",recommendationOnlyShow);
+                //pso back fill
+                checkRecommendationDropdownValue(recomInNumber,chronoUnit,codeDesc,applicationViewDto,bpc);
             }
-
             Date recomInDate = appPremisesRecommendationDto.getRecomInDate();
             String recomInDateOnlyShow = Formatter.formatDateTime(recomInDate,Formatter.DATE);
             ParamUtil.setRequestAttr(bpc.request, "recomInDateOnlyShow",recomInDateOnlyShow);
@@ -1044,11 +1029,65 @@ public class HcsaApplicationDelegator {
     //private methods
     //*************************************
 
+    private void checkRecommendationDropdownValue(Integer  recomInNumber,String chronoUnit,String codeDesc,ApplicationViewDto applicationViewDto,BaseProcessClass bpc){
+        if(StringUtil.isEmpty(codeDesc)){
+            ParamUtil.setRequestAttr(bpc.request,"recommendationStr","reject");
+            return;
+        }
+        HcsaServiceDto hcsaServiceDto=applicationViewService.getHcsaServiceDtoById(applicationViewDto.getApplicationDto().getServiceId());
+        String svcCode=hcsaServiceDto.getSvcCode();
+        RiskAcceptiionDto riskAcceptiionDto=new RiskAcceptiionDto();
+        riskAcceptiionDto.setScvCode(svcCode);
+        List<RiskAcceptiionDto> listRiskAcceptiionDto = IaisCommonUtils.genNewArrayList();
+        listRiskAcceptiionDto.add(riskAcceptiionDto);
+        List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
+        boolean flag = true;
+        if(listRiskResultDto!=null && !listRiskResultDto.isEmpty()) {
+            for (RiskResultDto riskResultDto : listRiskResultDto) {
+                String dateType = riskResultDto.getDateType();
+                String count = String.valueOf(riskResultDto.getTimeCount());
+                String recommTime = count + " " + dateType;
+                if(recommTime.equals(recomInNumber + " "+ chronoUnit)){
+                    ParamUtil.setRequestAttr(bpc.request,"recommendationStr",recommTime);
+                    flag = false;
+                }
+            }
+            if(flag){
+                ParamUtil.setRequestAttr(bpc.request,"recommendationStr","other");
+                ParamUtil.setRequestAttr(bpc.request,"otherNumber",recomInNumber);
+                ParamUtil.setRequestAttr(bpc.request,"otherChrono",chronoUnit);
+            }
+        }
+    }
+
     private List<SelectOption> getRecommendationOtherDropdown(){
         List<SelectOption> recommendationOtherSelectOption = IaisCommonUtils.genNewArrayList();
-        recommendationOtherSelectOption.add(new SelectOption("Year", "Year"));
-        recommendationOtherSelectOption.add(new SelectOption("Month", "Month"));
+        recommendationOtherSelectOption.add(new SelectOption(RiskConsts.YEAR, "Year"));
+        recommendationOtherSelectOption.add(new SelectOption(RiskConsts.MONTH, "Month"));
         return recommendationOtherSelectOption;
+    }
+
+    private List<SelectOption> getRecommendationDropdown(ApplicationViewDto applicationViewDto){
+        List<SelectOption> recommendationSelectOption = IaisCommonUtils.genNewArrayList();
+        HcsaServiceDto hcsaServiceDto=applicationViewService.getHcsaServiceDtoById(applicationViewDto.getApplicationDto().getServiceId());
+        String svcCode=hcsaServiceDto.getSvcCode();
+        RiskAcceptiionDto riskAcceptiionDto=new RiskAcceptiionDto();
+        riskAcceptiionDto.setScvCode(svcCode);
+        List<RiskAcceptiionDto> listRiskAcceptiionDto = IaisCommonUtils.genNewArrayList();
+        listRiskAcceptiionDto.add(riskAcceptiionDto);
+        List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
+        if(listRiskResultDto!=null && !listRiskResultDto.isEmpty()) {
+            for (RiskResultDto riskResultDto : listRiskResultDto) {
+                String dateType = riskResultDto.getDateType();
+                String codeDesc = MasterCodeUtil.getCodeDesc(dateType);
+                String count = String.valueOf(riskResultDto.getTimeCount());
+                String recommTime = count + " " + codeDesc;
+                recommendationSelectOption.add(new SelectOption(count + " " + dateType, recommTime));
+            }
+        }
+        recommendationSelectOption.add(new SelectOption("other","Other"));
+        recommendationSelectOption.add(new SelectOption("reject","Reject"));
+        return recommendationSelectOption;
     }
 
     private void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ) throws FeignException, CloneNotSupportedException {

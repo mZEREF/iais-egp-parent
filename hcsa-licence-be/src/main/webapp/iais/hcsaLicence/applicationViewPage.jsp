@@ -645,17 +645,21 @@
                                                             <iais:value width="10">
                                                                 <c:choose>
                                                                     <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || applicationViewDto.applicationDto.status=='APST014'}">
-                                                                        <select name="recommendation"
-                                                                                class="nice-select input-large">
-                                                                            <option value="">Please Select</option>
-                                                                            <c:forEach items="${applicationViewDto.recomeDation}"
-                                                                                       var="recommendation">
-                                                                                <option value="${recommendation}" <c:if test="${recommendationStr == recommendation}">selected</c:if>><c:out
-                                                                                        value="${recommendation}"></c:out></option>
-                                                                            </c:forEach>
-                                                                            <option value="other" <c:if test="${recommendationStr == 'other'}">selected</c:if>>Other</option>
-                                                                            <option value="reject" <c:if test="${recommendationStr == 'reject'}">selected</c:if>>Reject</option>
-                                                                        </select>
+<%--                                                                        <select name="recommendation"--%>
+<%--                                                                                class="nice-select input-large">--%>
+<%--                                                                            <option value="">Please Select</option>--%>
+<%--                                                                            <c:forEach items="${applicationViewDto.recomeDation}"--%>
+<%--                                                                                       var="recommendation">--%>
+<%--                                                                                <option value="${recommendation}" <c:if test="${recommendationStr == recommendation}">selected</c:if>><c:out--%>
+<%--                                                                                        value="${recommendation}"></c:out></option>--%>
+<%--                                                                            </c:forEach>--%>
+<%--                                                                            <option value="other" <c:if test="${recommendationStr == 'other'}">selected</c:if>>Other</option>--%>
+<%--                                                                            <option value="reject" <c:if test="${recommendationStr == 'reject'}">selected</c:if>>Reject</option>--%>
+<%--                                                                        </select>--%>
+                                                                        <iais:select name="recommendation"
+                                                                                     options="recommendationDropdown"
+                                                                                     firstOption="Please Select"
+                                                                                     value="${recommendationStr}"></iais:select>
                                                                         <span id="error_recommendation" name="iaisErrorMsg" class="error-msg"></span>
                                                                     </c:when>
                                                                     <c:otherwise>
@@ -669,11 +673,11 @@
                                                         <iais:row>
                                                             <iais:field value="Other Period" required="true"/>
                                                             <iais:value width="10">
-                                                                <%String otherNumber = request.getParameter("number");%>
-                                                                <%String otherChrono = request.getParameter("chrono");%>
-                                                                <input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" id=recomInNumber type="text" name="number" maxlength="2" value="<%=otherNumber != null ? otherNumber : ""%>">
+<%--                                                                <%String otherNumber = request.getParameter("number");%>--%>
+<%--                                                                <%String otherChrono = request.getParameter("chrono");%>--%>
+                                                                <input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" id=recomInNumber type="text" name="number" maxlength="2" value="${otherNumber}">
                                                                 <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
-                                                                <iais:select id="chronoUnit" name="chrono" options="recommendationOtherDropdown" value="<%=otherChrono%>"/>
+                                                                <iais:select id="chronoUnit" name="chrono" options="recommendationOtherDropdown" value="${otherChrono}"/>
                                                                 <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
                                                             </iais:value>
                                                         </iais:row>
