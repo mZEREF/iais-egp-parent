@@ -55,6 +55,15 @@
         }
     });
 
+    function licClick(status) {
+        if ($('.licenceCheck').is(':checked')){
+            if ('LICEST005' == status){
+                $("#lic-cease").addClass('disabled');
+            }
+        }else {
+            $("#lic-cease").removeClass('disabled');
+        }
+    }
     function submit(action){
         $("[name='lic_action_type']").val(action);
         $("#licForm").submit();
@@ -78,17 +87,8 @@
     }
 
     function doLicAmend() {
-        if ($('.licenceCheck').is(':checked')){
-            showWaiting();
-            submit('licDoAmend');
-        }else{
-            window.setTimeout(function(){
-                $('#licSlectModal').modal('show');
-            },1000);
-            window.setTimeout(function(){
-                $('#licSlectModal').modal('hide');
-            },5000);
-        }
+        showWaiting();
+        submit('licDoAmend');
     }
 
     function doLicRenew() {

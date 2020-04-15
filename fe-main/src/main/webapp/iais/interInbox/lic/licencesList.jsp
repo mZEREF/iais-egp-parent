@@ -84,13 +84,13 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="licence-btns col-md-6" style="width: 49%">
+                <div class="col-md-8" style="width: 63%">
                     <a class="btn btn-primary" href="javascript:;" id="lic-renew">Renew</a>
                     <a class="btn btn-primary" href="javascript:;" id="lic-cease">Cease</a>
-                    <a class="btn btn-primary" href="javascript:;" id="lic-amend">Amend</a>
+                    <a class="btn btn-primary disabled" href="javascript:;" id="lic-amend">Amend</a>
+                    <a class="btn btn-primary disabled" onclick="doPrint()">Print</a>
                 </div>
-                <div class="col-md-6 text-right" style="width: 49%">
-                    <button type="button" class="btn btn-primary" onclick="doPrint()">Print</button>
+                <div class="col-md-4 text-right" style="width: 37%">
                     <button type="button" class="btn btn-secondary" onclick="doClearLic()">Clear</button>
                     <button type="button" class="btn btn-primary" onclick="doSearchLic()">Search</button>
                 </div>
@@ -133,7 +133,7 @@
                                         <p class="visible-xs visible-sm table-row-title">Licence No.</p>
                                         <div class="form-check">
                                             <input class="form-check-input licenceCheck" id="licence1" type="checkbox"
-                                                   name="licenceNo" value="licenId${status.index}" aria-invalid="false">
+                                                   name="licenceNo" value="licenId${status.index}" aria-invalid="false" onclick="licClick('${licenceQuery.status}')">
                                             <label class="form-check-label" for="licence1"><span
                                                     class="check-square"></span>
                                             </label>
