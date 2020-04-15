@@ -96,6 +96,7 @@ public class ApptInspectionDateDelegator {
             apptInspectionDateDto = new ApptInspectionDateDto();
             apptInspectionDateDto  = apptInspectionDateService.getInspectionDate(taskDto, apptInspectionDateDto, applicationViewDto);
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+            ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
             AuditTrailHelper.auditFunctionWithAppNo("Appointment Inspection Date", "Appointment Inspection Date",
                     applicationViewDto.getApplicationDto().getApplicationNo());
         } else {
