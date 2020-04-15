@@ -168,14 +168,21 @@ public class CessationApplicationDelegator {
 
     public void saveData(BaseProcessClass bpc) throws FeignException {
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
-        cessationService.saveCessations(appCessationDtos);
+        List<String> appIds = cessationService.saveCessations(appCessationDtos);
         List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
-        for (AppCessationDto appCessationDto : appCessationDtos) {
+        List<String> licIds = IaisCommonUtils.genNewArrayList();
+        List<String> listAppIds = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i < appCessationDtos.size(); i++) {
+            AppCessationDto appCessationDto = appCessationDtos.get(i);
             String licId = appCessationDto.getWhichTodo();
-            List<String> licIds = IaisCommonUtils.genNewArrayList();
+            licIds.clear();
             licIds.add(licId);
-            ApplicationDto applicationDto = applicationClient.getApplicationByLicId(licId).getEntity();
+            String appId = appIds.get(i);
+            listAppIds.clear();
+            listAppIds.add(appId);
+            List<ApplicationDto> applicationDtoList = applicationClient.getApplicationDtosByIds(listAppIds).getEntity();
+            ApplicationDto applicationDto = applicationDtoList.get(0);
             applicationDtos.add(applicationDto);
             List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
@@ -207,7 +214,6 @@ public class CessationApplicationDelegator {
         if(!licNos.isEmpty()){
             cessationService.updateLicence(licNos);
         }
-
         ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) appCessationDtosConfirms);
     }
 
@@ -361,7 +367,6 @@ public class CessationApplicationDelegator {
         if (StringUtil.isEmpty(readInfo)) {
             errorMap.put(i + READINFO + j, ERROR);
         }
-
         String cessationReason = ParamUtil.getRequestString(httpServletRequest, i + REASON + j);
         String otherReason = ParamUtil.getRequestString(httpServletRequest, i + OTHERREASON + j);
         String patientSelect = ParamUtil.getRequestString(httpServletRequest, i + PATIENTSELECT + j);
@@ -380,6 +385,12 @@ public class CessationApplicationDelegator {
         if ("yes".equals(patRadio)&&!StringUtil.isEmpty(patientSelect)) {
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect)&&StringUtil.isEmpty(patHciName)) {
                 errorMap.put(i + PATHCINAME + j, ERROR);
+            }
+            if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect)&&!StringUtil.isEmpty(patHciName)) {
+                List<String> hciName = cessationService.listHciName();
+                if(!hciName.contains(patHciName)){
+                    errorMap.put(i+"patHciName"+j, "HciName not exist !");
+                }
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect)&&StringUtil.isEmpty(patRegNo)) {
                 errorMap.put(i + PATREGNO + j, ERROR);

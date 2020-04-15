@@ -158,9 +158,7 @@ public class CessationServiceImpl implements CessationService {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         feEicGatewayClient.updateLicenceStatus(licenceDtos, signature.date(), signature.authorization(), signature2.date(), signature2.authorization());
-
     }
-
 
     @Override
     public void saveCessations(List<AppCessationDto> appCessationDtos) {
@@ -237,6 +235,9 @@ public class CessationServiceImpl implements CessationService {
     }
 
 
+    /*
+    utils
+     */
     private ApplicationGroupDto getApplicationGroupDto(String appNo, String appType) {
         ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
         applicationGroupDto.setSubmitDt(new Date());
@@ -317,6 +318,7 @@ public class CessationServiceImpl implements CessationService {
         }
         return appCessMiscDto;
     }
+
     private void setRiskToDto(AppSubmissionDto appSubmissionDto) {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<RiskAcceptiionDto> riskAcceptiionDtoList = new ArrayList();

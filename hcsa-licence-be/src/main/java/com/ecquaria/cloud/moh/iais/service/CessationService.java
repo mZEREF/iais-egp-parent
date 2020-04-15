@@ -15,8 +15,10 @@ import java.util.List;
 public interface CessationService {
 
     List<String> getActiveLicence(List<String> licIds);
+
     List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds);
-    void saveCessations(List<AppCessationDto> appCessationDtos);
+
+    List<String> saveCessations(List<AppCessationDto> appCessationDtos);
 
     void updateCesation(List<AppCessationDto> appCessationDtos);
 
@@ -25,4 +27,6 @@ public interface CessationService {
     void routingTaskToAo3(List<ApplicationDto> applicationDtos, LoginContext loginContext) throws FeignException;
 
     List<String> listLicIdsCeased(List<String> licIds);
+
+    List<String> listHciName();
 }

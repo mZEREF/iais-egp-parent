@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
@@ -117,7 +118,7 @@ public class CessationServiceImpl implements CessationService {
 
 
     @Override
-    public void saveCessations(List<AppCessationDto> appCessationDtos) {
+    public List<String> saveCessations(List<AppCessationDto> appCessationDtos) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
@@ -155,7 +156,8 @@ public class CessationServiceImpl implements CessationService {
             setMiscData(appCessationDto, appCessMiscDto, appId);
             appCessMiscDtos.add(appCessMiscDto);
         }
-        cessationClient.saveCessation(appCessMiscDtos).getEntity();
+        List<String> appIds = cessationClient.saveCessation(appCessMiscDtos).getEntity();
+        return appIds;
     }
 
 
@@ -196,6 +198,9 @@ public class CessationServiceImpl implements CessationService {
 
     @Override
     public void updateLicence(List<String> licNos) {
+        AppealLicenceDto appealLicenceDto = new AppealLicenceDto();
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<LicenceDto> licenceDtos = hcsaLicenceClient.getLicDtosByLicNos(licNos).getEntity();
         List<LicenceDto> licenceDtoNew = IaisCommonUtils.genNewArrayList();
         if (licenceDtos != null && !licenceDtos.isEmpty()) {
@@ -204,6 +209,9 @@ public class CessationServiceImpl implements CessationService {
                 licenceDtoNew.add(licenceDto);
             }
         }
+        appealLicenceDto.setAppealLicence(licenceDtoNew);
+        beEicGatewayClient.updateAppealLicence(appealLicenceDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
         hcsaLicenceClient.updateLicences(licenceDtoNew);
     }
 
@@ -223,10 +231,14 @@ public class CessationServiceImpl implements CessationService {
 
     @Override
     public List<String> listLicIdsCeased(List<String> licIds) {
-        for (String licId : licIds) {
+        List<String> activeLicIds = cessationClient.getlicIdToCessation(licIds).getEntity();
+        return activeLicIds;
+    }
 
-        }
-        return null;
+    @Override
+    public List<String> listHciName() {
+        List<String> hciNames = cessationClient.listHciNames().getEntity();
+        return hciNames;
     }
 
 
