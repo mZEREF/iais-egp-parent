@@ -94,7 +94,7 @@ public class BeEicGatewayClientFallback implements BeEicGatewayClient{
     }
 
     @Override
-    public FeignResponseEntity<AppEditSelectDto> createAppPremisesInspecApptDto(List<AppPremisesInspecApptDto> appPremisesInspecApptDtos, String date, String authorization, String dateSec, String authorizationSec) {
+    public FeignResponseEntity<List<AppPremisesInspecApptDto>> createAppPremisesInspecApptDto(List<AppPremisesInspecApptDto> appPremisesInspecApptDtos, String date, String authorization, String dateSec, String authorizationSec) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
