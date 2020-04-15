@@ -25,7 +25,6 @@
     <input type="hidden" name="apptInspectionDateType" value="">
     <input type="hidden" id="actionValue" name="actionValue" value="">
     <input type="hidden" id="hours" name="hours" value="">
-    <input type="hidden" id="amPm" name="amPm" value="">
     <div class="main-content">
       <div class="row">
         <div class="col-lg-12 col-xs-12">
@@ -38,7 +37,7 @@
               </div>
               <iais:body>
                 <iais:section title="" id = "inspection_date">
-                  <div class="row">
+                  <div class="row" style="margin-bottom:200px">
                     <div class="col-md-1">
                       <label style="font-size: 16px">Date</label>
                     </div>
@@ -49,12 +48,8 @@
                       <div class="col-xs-12 col-md-3">
                         <iais:select name="hoursOption" options="hoursOption" firstOption="--" value="${apptInspectionDateDto.hours}" onchange="javascript:apptInspectionDateHours(this.value)"></iais:select>
                       </div>
-                      <div class="col-xs-12 col-md-3">
-                        <iais:select name="amPmOption" options="amPmOption" firstOption="N/A" value="${apptInspectionDateDto.amPm}" onchange="javascript:apptInspectionDateAmPm(this.value)"></iais:select>
-                      </div>
                       <br><span class="error-msg" name="iaisErrorMsg" id="error_specificDate"></span>
-                      <br><span class="error-msg" name="iaisErrorMsg" id="error_hours"></span>
-                      <br><span class="error-msg" name="iaisErrorMsg" id="error_amPm"></span>
+                      <span class="error-msg" name="iaisErrorMsg" id="error_hours"></span>
                     </div>
                   </div>
                   <iais:action>
@@ -80,10 +75,6 @@
 
     function apptInspectionDateHours(value) {
         $("#hours").val(value);
-    }
-
-    function apptInspectionDateAmPm(value) {
-        $("#amPm").val(value);
     }
 
     function apptInspectionSpecDateConfirm() {

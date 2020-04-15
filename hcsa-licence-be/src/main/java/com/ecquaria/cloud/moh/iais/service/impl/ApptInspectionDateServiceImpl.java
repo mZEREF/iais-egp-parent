@@ -344,10 +344,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         cal.setTime(date);
         int curHour24 = cal.get(Calendar.HOUR_OF_DAY);
         if(curHour24 > 12){
-            int hours = curHour24 - 12;
-            specificDate = specificDate + " " + hours + ":00" + "PM";
+            specificDate = specificDate + Formatter.DAY_PM;
         } else {
-            specificDate = specificDate + " " + curHour24 + ":00" + "AM";
+            specificDate = specificDate + Formatter.DAY_AM;
         }
         return specificDate;
     }
@@ -362,15 +361,22 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Override
     public List<SelectOption> getInspectionDateHours() {
         List<SelectOption> hourOption = IaisCommonUtils.genNewArrayList();
-        for(int i = 0; i < 12; i++){
-            SelectOption so;
-            if(10 > i){
-                so = new SelectOption(i + "", "0" + i);
-            } else {
-                so = new SelectOption(i + "", i + "");
-            }
-            hourOption.add(so);
-        }
+        SelectOption so1 = new SelectOption("1", "09:00");
+        SelectOption so2 = new SelectOption("2", "10:00");
+        SelectOption so3 = new SelectOption("3", "11:00");
+        SelectOption so4 = new SelectOption("4", "12:00");
+        SelectOption so5 = new SelectOption("5", "14:00");
+        SelectOption so6 = new SelectOption("6", "15:00");
+        SelectOption so7 = new SelectOption("7", "16:00");
+        SelectOption so8 = new SelectOption("8", "17:00");
+        hourOption.add(so1);
+        hourOption.add(so2);
+        hourOption.add(so3);
+        hourOption.add(so4);
+        hourOption.add(so5);
+        hourOption.add(so6);
+        hourOption.add(so7);
+        hourOption.add(so8);
         return hourOption;
     }
 
