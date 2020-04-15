@@ -110,7 +110,7 @@ public class InspecReassignTaskDelegator {
         if (groupRoleFieldDto == null) {
             groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
             String groupLeadName = groupRoleFieldDto.getGroupLeadName();
-            if(StringUtil.isEmpty(groupLeadName)){
+            if (StringUtil.isEmpty(groupLeadName)) {
                 groupRoleFieldDto.setGroupLeadName("Inspection Lead");
             }
         }
@@ -281,7 +281,6 @@ public class InspecReassignTaskDelegator {
 
     /**
      * StartStep: inspectionSupSearchSort
-     *
      * @param bpc
      * @throws
      */
@@ -324,7 +323,6 @@ public class InspecReassignTaskDelegator {
 
     /**
      * StartStep: inspectionSupSearchAssign
-     *
      * @param bpc
      * @throws
      */
@@ -359,7 +357,6 @@ public class InspecReassignTaskDelegator {
 
     /**
      * StartStep: inspectionSupSearchValidate
-     *
      * @param bpc
      * @throws
      */
@@ -387,15 +384,12 @@ public class InspecReassignTaskDelegator {
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto) ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
         String inspectorCheck = ParamUtil.getString(bpc.request, "inspectorCheck");
         String reassignRemarks = ParamUtil.getRequestString(bpc.request, "reassignRemarks");
-        inspectionTaskPoolListDto.setReassignRemarks(reassignRemarks);
-        if (StringUtil.isEmpty(inspectionTaskPoolListDto)) {
-            inspectionTaskPoolListDto.setInspectorCheck(null);
-        } else {
-            String[] nameValue={inspectorCheck};
+        if(inspectionTaskPoolListDto!=null&&!StringUtil.isEmpty(inspectorCheck)) {
+            String[] nameValue = {inspectorCheck};
             List<SelectOption> inspectorCheckList = inspectionService.getCheckInspector(nameValue, inspectionTaskPoolListDto);
             inspectionTaskPoolListDto.setInspectorCheck(inspectorCheckList);
             inspectionTaskPoolListDto.setInspector(inspectorCheck);
-
+            inspectionTaskPoolListDto.setReassignRemarks(reassignRemarks);
         }
         return inspectionTaskPoolListDto;
     }
