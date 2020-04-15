@@ -23,12 +23,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.util.CopyUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -150,7 +152,13 @@ public class NewApplicationHelper {
                             errMap.put("idNo"+i,"CHKLMD001_ERR005");
                         }
                         stringBuilder1.append(idTyp).append(idNo);
-
+                        if(!StringUtil.isEmpty(stringBuilder1.toString())){
+                            if(stringList.contains(stringBuilder1.toString())){
+                                errMap.put("idNo"+i,"UC_CHKLMD001_ERR002");
+                            }else {
+                                stringList.add( stringBuilder1.toString());
+                            }
+                        }
                     }
                     if("NRIC".equals(idTyp)){
                         boolean b1 = SgNoValidator.validateNric(idNo);
@@ -159,6 +167,13 @@ public class NewApplicationHelper {
                         }
                         stringBuilder1.append(idTyp).append(idNo);
 
+                        if(!StringUtil.isEmpty(stringBuilder1.toString())){
+                            if(stringList.contains(stringBuilder1.toString())){
+                                errMap.put("idNo"+i,"UC_CHKLMD001_ERR002");
+                            }else {
+                                stringList.add( stringBuilder1.toString());
+                            }
+                        }
                     }
 
 
@@ -171,7 +186,7 @@ public class NewApplicationHelper {
                     errMap.put("name"+i,"UC_CHKLMD001_ERR001");
                 }else {
                     if(name.length()>66){
-
+                        errMap.put("name"+i,"Length is too long");
                     }
                 }
 
@@ -191,16 +206,14 @@ public class NewApplicationHelper {
                     if (! ValidationUtils.isEmail(emailAddr)) {
                         errMap.put("emailAddr"+i, "CHKLMD001_ERR006");
                     }else if(emailAddr.length()>66) {
-
+                        errMap.put("emailAddr"+i, "Length is too long");
                     }
                 }
 
 
                 if(!StringUtil.isEmpty(stringBuilder1.toString())){
-                    if(stringList.contains(stringBuilder1.toString())){
-                        errMap.put("idNo","UC_CHKLMD001_ERR002");
-                    }else {
-                        stringList.add( stringBuilder1.toString());
+                    if(!stringList.contains(stringBuilder1.toString())){
+                        stringList.add(stringBuilder1.toString());
                     }
                 }
 
@@ -361,7 +374,6 @@ public class NewApplicationHelper {
 
                 if(stringList.contains(s)) {
 
-                    oneErrorMap.put("NRICFIN", "UC_CHKLMD001_ERR002");
 
                 }else {
                     stringList.add(stringBuilder.toString());
@@ -455,7 +467,6 @@ public class NewApplicationHelper {
 
                 if(stringList.contains(s)&&!StringUtil.isEmpty(s)) {
 
-                    oneErrorMap.put("NRICFIN", "UC_CHKLMD001_ERR002");
 
                 }else {
                     stringList.add(stringBuilder.toString());
@@ -1213,5 +1224,28 @@ public class NewApplicationHelper {
             }
         }
     }
+/*
+* @parameter file
+* @parameter fileTypes
+* @parameter fileTypes
+* @parameter fileSize
+* @parameter errorMessage
+* */
 
+    public static Map<String,String> validateFile(CommonsMultipartFile file,List<String> fileTypes,Long fileSize,String errorMessage){
+        Map<String,String> map=new HashMap<>();
+        if(file!=null){
+            long size = file.getSize();
+            String filename = file.getOriginalFilename();
+            String fileType=  filename.substring(filename.lastIndexOf(".")+1);
+            if(!fileTypes.contains(fileType)){
+                map.put("fileType",errorMessage);
+            }
+            if(size>fileSize){
+                map.put("fileSize","UC_CHKLMD001_ERR007");
+            }
+        }
+
+        return map;
+    }
 }

@@ -281,11 +281,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                 by.write(size,0,count);
                                 count= fileInputStream.read(size);
                             }
+                            Long l = System.currentTimeMillis();
+                            fileToDto(by.toString(), listApplicationDto, requestForInfList,processFileTrackDto,submissionId,l);
 
-                            fileToDto(by.toString(), listApplicationDto, requestForInfList,processFileTrackDto,submissionId);
 
-
-                            saveFileRepo( fileName,groupPath,submissionId);
+                            saveFileRepo( fileName,groupPath,submissionId,l);
 
                         }catch (Exception e){
                             log.error(e.getMessage(),e);
@@ -370,7 +370,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
 
     private Boolean fileToDto(String str,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,ProcessFileTrackDto processFileTrackDto,
-                              String submissionId)
+                              String submissionId,Long l)
            {
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
@@ -438,7 +438,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationListDto.setApplicationNewAndRequstDto(applicationNewAndRequstDto);
         processFileTrackDto.setStatus("PFT003");
         applicationListDto.setProcessFileTrackDto(processFileTrackDto);
-        Long l = System.currentTimeMillis();
         applicationListDto.setEventRefNo(l.toString());
         applicationListDto.setRefNo(l.toString());
         eventBusHelper.submitAsyncRequest(applicationListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
@@ -453,7 +452,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     /*
     *
     * save file to fileRepro*/
-    private void saveFileRepo(String fileNames,String groupPath,String submissionId){
+    private void saveFileRepo(String fileNames,String groupPath,String submissionId,Long l){
         boolean aBoolean=false;
         File file =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+groupPath+File.separator+"files");
         if(!file.exists()){
@@ -486,7 +485,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         eventDto.setEventRefNo(groupPath);
                         log.info(f.getPath()+"file path");
                         eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
-                                EventBusConsts.OPERATION_BE_REC_DATA_COPY, groupPath, null);
+                                EventBusConsts.OPERATION_BE_REC_DATA_COPY, l.toString(), null);
 
                     }catch (Exception e){
                         continue;

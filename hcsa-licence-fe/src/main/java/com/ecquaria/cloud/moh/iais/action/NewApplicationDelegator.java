@@ -285,10 +285,7 @@ public class NewApplicationDelegator {
         if (!IaisCommonUtils.isEmpty(svcIds)) {
             log.info(StringUtil.changeForLog("svcId not null"));
             Set<String> premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
-            List<String> list=new ArrayList<>(premisesType.size());
-            list.addAll(premisesType);
-
-            ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) list);
+            ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
         }else{
             log.error(StringUtil.changeForLog("do not have select the services"));
         }
@@ -2999,10 +2996,10 @@ public class NewApplicationDelegator {
                                 Date phDate = appPremPhOpenPeriodList.get(j).getPhDate();
                                 if(!StringUtil.isEmpty(phDate)){
                                     if(StringUtil.isEmpty(convEndToHH)||StringUtil.isEmpty(convEndToMM)){
-                                        errorMap.put("convStartToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                        errorMap.put("convEndToHH"+i+j,"UC_CHKLMD001_ERR001");
                                     }
                                     if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)){
-                                        errorMap.put("convEndToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                        errorMap.put("convStartToHH"+i+j,"UC_CHKLMD001_ERR001");
                                     }
                                 }else if(StringUtil.isEmpty(phDate)){
                                     errorMap.put("convphDate"+i+j,"UC_CHKLMD001_ERR001");
@@ -3049,7 +3046,7 @@ public class NewApplicationDelegator {
                                         }
                                     }
                                 }else {
-                                    if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)||StringUtil.isEmpty(convStartFromHH)&&StringUtil.isEmpty(convStartFromMM)){
+                                    if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)||StringUtil.isEmpty(convStartFromMM)&&StringUtil.isEmpty(convStartFromHH)){
                                         errorMap.put("convStartToHH"+i+j,"UC_CHKLMD001_ERR001");
                                     }else {
                                         try {
@@ -3061,14 +3058,13 @@ public class NewApplicationDelegator {
                                                 errorMap.put("convStartToHH"+i+j,"UC_CHKLMD001_ERR010");
                                             }
                                         }catch (Exception e){
-                                            errorMap.put("convStartToHH"+i+j,"CHKLMD001_ERR003");
+
 
                                         }
                                     }
                                     if(StringUtil.isEmpty(convEndToHH)||StringUtil.isEmpty(convEndToMM)||StringUtil.isEmpty(convEndToHH)&&StringUtil.isEmpty(convEndToMM)){
                                         errorMap.put("convEndToHH"+i+j,"UC_CHKLMD001_ERR001");
                                     }else {
-
                                         try {
                                             int i3 = Integer.parseInt(convEndToHH);
                                             int i4 = Integer.parseInt(convEndToMM);
@@ -3079,7 +3075,7 @@ public class NewApplicationDelegator {
                                             }
 
                                         }catch (Exception e){
-                                            errorMap.put("convEndToHH"+i+j,"CHKLMD001_ERR003");
+
 
                                         }
                                     }
