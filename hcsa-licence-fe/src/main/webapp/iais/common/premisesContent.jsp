@@ -640,7 +640,7 @@
                         <iais:field value="Block / House No." width="12"/>
                         <iais:value width="11" cssClass="col-md-5">
                             <iais:input maxLength="10" cssClass="offSiteBlockNo" type="text" name="offSiteBlockNo" id="offSiteBlockNo" value="${appGrpPremisesDto.offSiteBlockNo}"></iais:input>
-                            <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteBlockNos${status.index}"></span>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteBlockNo${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>

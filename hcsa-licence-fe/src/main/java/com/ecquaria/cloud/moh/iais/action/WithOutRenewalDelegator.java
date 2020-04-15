@@ -349,7 +349,16 @@ public class WithOutRenewalDelegator {
                     .append("&backUrl=").append(backUrl);
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
+            try {
+                bpc.request.setAttribute("paymentAmount",totalAmount);
+                bpc.request.setAttribute("type","onlinePayment");
+                sendEmail(bpc.request);
 
+            }catch (Exception e){
+
+                log.error(e.getMessage(),e+" onlinePayment error");
+
+            }
 
         }
 
@@ -515,166 +524,45 @@ public class WithOutRenewalDelegator {
         return emailAddress;
     }
 
-    private void sendEmailGIRO(HttpServletRequest request) throws IOException, TemplateException {
-        MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById("");
-        if(msgTemplateDto!=null){
-            Double amount =(Double)request.getAttribute("amount");
-            String licenseeId =(String)request.getAttribute("licenseeId");
-            String appNumber=(String)request.getAttribute("appNumber");
-            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,AppServicesConsts.HCSASERVICEDTOLIST);
-            List<String> serviceNames = new ArrayList<String>();
-            String appGrpNo =(String)request.getAttribute("appGrpNo");
-            String  GIROAccountNumber=(String)request.getAttribute("GIROAccountNumber");
-            String appGrpId= (String) request.getAttribute("appGrpId");
-            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-            map.put("serviceNames", serviceNames);
-            map.put("paymentAmount",Formatter.formatNumber(amount));
-            map.put("GIROAccountNumber",GIROAccountNumber);
-            String  mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
-            EmailDto emailDto = new EmailDto();
-            emailDto.setContent(mesContext);
-            emailDto.setSubject("MOH IAIS – Successful Submission of New Application - "+appNumber);
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-            emailDto.setClientQueryCode(appGrpId);
-            appSubmissionService.feSendEmail(emailDto);
-        }
 
-    }
-
-    private void snedEmailOnlinePayment(HttpServletRequest request){
-
-        MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ONLINE_ID);
-        if(msgTemplateDto != null) {
-            Double amount =(Double)request.getAttribute("amount");
-            String licenseeId =(String)request.getAttribute("licenseeId");
-            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,AppServicesConsts.HCSASERVICEDTOLIST);
-            List<String> serviceNames = new ArrayList<String>();
-            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
-                String svcName = hcsaServiceDto.getSvcName();
-                if(!StringUtil.isEmpty(svcName)){
-                    serviceNames.add(svcName);
-                }
-            }
-            String appGrpNo =(String)request.getAttribute("appGrpNo");
-            String appGrpId= (String) request.getAttribute("appGrpId");
-            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-            map.put("serviceNames", serviceNames);
-            map.put("paymentAmount",Formatter.formatNumber(amount));
-            map.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-            String mesContext = null;
-            try {
-                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
-            } catch (IOException | TemplateException e) {
-                log.error(e.getMessage(),e);
-            }
-            EmailDto emailDto = new EmailDto();
-            emailDto.setContent(mesContext);
-            emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + appGrpNo);
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-            emailDto.setClientQueryCode(appGrpId);
-            //send email
-            appSubmissionService.feSendEmail(emailDto);
-        }
-    }
-
-    private void sendEmailsuccessfulOnlinePayment(HttpServletRequest request){
-
-        MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById("");
-        if(msgTemplateDto != null) {
-            Double amount =(Double)request.getAttribute("amount");
-            String licenseeId =(String)request.getAttribute("licenseeId");
-            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,AppServicesConsts.HCSASERVICEDTOLIST);
-            List<String> serviceNames = new ArrayList<String>();
-            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
-                String svcName = hcsaServiceDto.getSvcName();
-                if(!StringUtil.isEmpty(svcName)){
-                    serviceNames.add(svcName);
-                }
-            }
-            String appGrpNo =(String)request.getAttribute("appGrpNo");
-            String appGrpId= (String) request.getAttribute("appGrpId");
-            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-            map.put("serviceNames", serviceNames);
-            map.put("paymentAmount",Formatter.formatNumber(amount));
-            map.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-            String mesContext = null;
-            try {
-                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
-            } catch (IOException | TemplateException e) {
-                log.error(e.getMessage(),e);
-            }
-            EmailDto emailDto = new EmailDto();
-            emailDto.setContent(mesContext);
-            emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + appGrpNo);
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-            emailDto.setClientQueryCode(appGrpId);
-            //send email
-            appSubmissionService.feSendEmail(emailDto);
-        }
-
-    }
 
 
     public void sendEmail(HttpServletRequest request) throws IOException, TemplateException {
+        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,AppServicesConsts.HCSASERVICEDTOLIST);
+        List<String> serviceNames = new ArrayList<String>();
+        for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
+            String svcName = hcsaServiceDto.getSvcName();
+            if(!StringUtil.isEmpty(svcName)){
+                serviceNames.add(svcName);
+            }
+        }
         String type=(String)request.getAttribute("type");
         MsgTemplateDto msgTemplateDto=null;
-        String mesContext = null;
+        String mesContext ;
         String licenseeId =(String)request.getAttribute("licenseeId");
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         if("GIRO".equals(type)){
             msgTemplateDto = appSubmissionService.getMsgTemplateById("10FF81AF-267D-EA11-BE7A-000C29D29DB0");
-            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,AppServicesConsts.HCSASERVICEDTOLIST);
-            List<String> serviceNames = new ArrayList<>();
-            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
-                String svcName = hcsaServiceDto.getSvcName();
-                if(!StringUtil.isEmpty(svcName)){
-                    serviceNames.add(svcName);
-                }
-            }
             String GIROAccountNumber=(String)request.getAttribute("GIROAccountNumber");
             Double amount =(Double)request.getAttribute("amount");
             map.put("paymentAmount",Formatter.formatNumber(amount));
             map.put("serviceNames", serviceNames);
             map.put("GIROAccountNumber",GIROAccountNumber);
-            String messageContent = msgTemplateDto.getMessageContent();
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
 
 
         }else if("onlinePayment".equals(type)){
             msgTemplateDto = appSubmissionService.getMsgTemplateById("F77860C0-687D-EA11-BE7A-000C29D29DB0");
-            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,AppServicesConsts.HCSASERVICEDTOLIST);
-            List<String> serviceNames = new ArrayList<String>();
-            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
-                String svcName = hcsaServiceDto.getSvcName();
-                if(!StringUtil.isEmpty(svcName)){
-                    serviceNames.add(svcName);
-                }
-            }
             Double amount =(Double)request.getAttribute("amount");
             map.put("paymentAmount",Formatter.formatNumber(amount));
             map.put("serviceNames", serviceNames);
-            String messageContent = msgTemplateDto.getMessageContent();
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
 
 
         }else if("successfulOnlinePayment".equals(type)){
-            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,AppServicesConsts.HCSASERVICEDTOLIST);
-            List<String> serviceNames = new ArrayList<String>();
-            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
-                String svcName = hcsaServiceDto.getSvcName();
-                if(!StringUtil.isEmpty(svcName)){
-                    serviceNames.add(svcName);
-                }
-            }
             Double amount =(Double)request.getAttribute("amount");
             msgTemplateDto = appSubmissionService.getMsgTemplateById("A4CE953C-6A7D-EA11-BE7A-000C29D29DB0");
             map.put("paymentAmount",Formatter.formatNumber(amount));
             map.put("serviceNames", serviceNames);
-            String messageContent = msgTemplateDto.getMessageContent();
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+
 
 
         }else if("routesBack".equals(type)){
@@ -683,43 +571,23 @@ public class WithOutRenewalDelegator {
             msgTemplateDto = appSubmissionService.getMsgTemplateById("D792F706-6D7D-EA11-BE7A-000C29D29DB0");
             map.put("userName",userName);
             map.put("nameApprovalOfficer",nameApprovalOfficer);
-            String messageContent = msgTemplateDto.getMessageContent();
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
-
 
 
         }else if("earlyGIROPayment".equals(type)){
-            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,AppServicesConsts.HCSASERVICEDTOLIST);
-            List<String> serviceNames = new ArrayList<>();
-            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
-                String svcName = hcsaServiceDto.getSvcName();
-                if(!StringUtil.isEmpty(svcName)){
-                    serviceNames.add(svcName);
-                }
-            }
+
             msgTemplateDto = appSubmissionService.getMsgTemplateById("");
             Double amount =(Double)request.getAttribute("amount");
             map.put("paymentAmount",Formatter.formatNumber(amount));
             map.put("serviceNames", serviceNames);
-            String messageContent = msgTemplateDto.getMessageContent();
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
 
 
         }else if("earlyOnlinepayment ".equals(type)){
-            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,AppServicesConsts.HCSASERVICEDTOLIST);
-            List<String> serviceNames = new ArrayList<String>();
-            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
-                String svcName = hcsaServiceDto.getSvcName();
-                if(!StringUtil.isEmpty(svcName)){
-                    serviceNames.add(svcName);
-                }
-            }
+
             msgTemplateDto = appSubmissionService.getMsgTemplateById("");
             Double amount =(Double)request.getAttribute("amount");
             map.put("paymentAmount",Formatter.formatNumber(amount));
             map.put("serviceNames", serviceNames);
-            String messageContent = msgTemplateDto.getMessageContent();
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+
 
 
         }else if("pickedUpEarlyRenewal".equals(type)){
@@ -727,25 +595,13 @@ public class WithOutRenewalDelegator {
             msgTemplateDto = appSubmissionService.getMsgTemplateById("");
 
 
-
         }else if("emailLink".equals(type)){
             msgTemplateDto = appSubmissionService.getMsgTemplateById("2C775ADE-6B7D-EA11-BE7A-000C29D29DB0");
-            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,AppServicesConsts.HCSASERVICEDTOLIST);
-            List<String> serviceNames = new ArrayList<String>();
-            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
-                String svcName = hcsaServiceDto.getSvcName();
-                if(!StringUtil.isEmpty(svcName)){
-                    serviceNames.add(svcName);
-                }
-            }
             String GIROAccountNumber=(String)request.getAttribute("GIROAccountNumber");
             Double amount =(Double)request.getAttribute("amount");
             map.put("paymentAmount",Formatter.formatNumber(amount));
             map.put("serviceNames", serviceNames);
             map.put("GIROAccountNumber",GIROAccountNumber);
-            String messageContent = msgTemplateDto.getMessageContent();
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
-
 
         }
 

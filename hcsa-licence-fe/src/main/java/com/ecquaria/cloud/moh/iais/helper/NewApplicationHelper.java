@@ -117,7 +117,10 @@ public class NewApplicationHelper {
                     errMap.put("speciality"+i,"UC_CHKLMD001_ERR001");
                 }else {
                     if("other".equals(speciality)){
-                        errMap.put("other"+i,"UC_CHKLMD001_ERR001");
+                        String specialityOther = appSvcCgoList.get(i).getSpecialityOther();
+                        if(StringUtil.isEmpty(specialityOther)){
+                            errMap.put("other"+i,"UC_CHKLMD001_ERR001");
+                        }
                     }
                 }
                 String professionType = appSvcCgoList.get(i).getProfessionType();

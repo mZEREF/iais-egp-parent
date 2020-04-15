@@ -84,6 +84,9 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -282,7 +285,10 @@ public class NewApplicationDelegator {
         if (!IaisCommonUtils.isEmpty(svcIds)) {
             log.info(StringUtil.changeForLog("svcId not null"));
             Set<String> premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
-            ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
+            List<String> list=new ArrayList<>(premisesType.size());
+            list.addAll(premisesType);
+
+            ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) list);
         }else{
             log.error(StringUtil.changeForLog("do not have select the services"));
         }
@@ -2499,7 +2505,7 @@ public class NewApplicationDelegator {
             }else{
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
             }
-
+            bpc.request.getSession().setAttribute(SELECT_DRAFT_NO,null);
         }
         log.info(StringUtil.changeForLog("the do loadingDraft end ...."));
     }
@@ -3149,7 +3155,185 @@ public class NewApplicationDelegator {
                             }
                         }
 
+                    }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premiseType)){
+
+                        String offSitePostalCode = appGrpPremisesDtoList.get(i).getOffSitePostalCode();
+                        if (!StringUtil.isEmpty(offSitePostalCode)) {
+                            if (!offSitePostalCode.matches("^[0-9]{6}$")) {
+                                errorMap.put("offSitePostalCode"+i, "UC_CHKLMD001_ERR004");
+                            }else {
+
+                                if(!StringUtil.isEmpty(stringBuilder.toString())){
+                                    stringBuilder.append(offSitePostalCode);
+                                    if(list.contains(stringBuilder.toString())){
+                                        errorMap.put("offSitePostalCode"+i,"There is a duplicated entry for this premises address");
+
+                                    }else {
+                                        list.add(stringBuilder.toString());
+                                    }
+                                }
+                            }
+                        }else {
+                            errorMap.put("offSitePostalCode"+i, "UC_CHKLMD001_ERR001");
+                        }
+
+                        String offSiteStreetName = appGrpPremisesDtoList.get(i).getOffSiteStreetName();
+                        if(StringUtil.isEmpty(offSiteStreetName)){
+                            errorMap.put("offSiteStreetName"+i,"UC_CHKLMD001_ERR001");
+                        }
+
+                        String offSiteAddressType = appGrpPremisesDtoList.get(i).getOffSiteAddressType();
+
+                        if(StringUtil.isEmpty(offSiteAddressType)){
+                            errorMap.put("offSiteAddressType"+i, "UC_CHKLMD001_ERR001");
+                        }else {
+                            boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getOffSiteFloorNo());
+                            boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getOffSiteBlockNo());
+                            boolean empty2 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getOffSiteUnitNo());
+                            if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(offSiteAddressType)) {
+
+                                if (empty) {
+                                    errorMap.put("offSiteFloorNo"+i, "UC_CHKLMD001_ERR001");
+                                }
+                                if (empty1) {
+                                    errorMap.put("offSiteBlockNo"+i, "UC_CHKLMD001_ERR001");
+                                }
+                                if (empty2) {
+                                    errorMap.put("offSiteUnitNo"+i, "UC_CHKLMD001_ERR001");
+                                }
+                            }
+                            if(!empty&&!empty1&&!empty2){
+                                stringBuilder.append(appGrpPremisesDtoList.get(i).getFloorNo())
+                                        .append(appGrpPremisesDtoList.get(i).getBlkNo())
+                                        .append(appGrpPremisesDtoList.get(i).getUnitNo());
+                            }
+                        }
+
                     }
+                    String offSiteStartHH = appGrpPremisesDtoList.get(i).getOffSiteStartHH();
+                    String offSiteStartMM = appGrpPremisesDtoList.get(i).getOffSiteStartMM();
+                    int startDate=0;
+                    int endDate=0;
+                    if(StringUtil.isEmpty(offSiteStartHH)||StringUtil.isEmpty(offSiteStartMM)){
+                        errorMap.put("offSiteStartMM"+i,"UC_CHKLMD001_ERR001");
+                    }else {
+                        startDate = validateTime(errorMap, offSiteStartHH, offSiteStartMM, startDate, "offSiteStartMM", i);
+                    }
+
+                    String offSiteEndHH = appGrpPremisesDtoList.get(i).getOffSiteEndHH();
+                    String offSiteEndMM = appGrpPremisesDtoList.get(i).getOffSiteEndMM();
+                    if(StringUtil.isEmpty(offSiteEndHH)||StringUtil.isEmpty(offSiteEndMM)){
+                        errorMap.put("offSiteEndMM"+i,"UC_CHKLMD001_ERR001");
+                    }else {
+                        endDate = validateTime(errorMap, offSiteEndHH, offSiteEndMM, endDate, "offSiteEndMM", i);
+                    }
+                    if(!StringUtil.isEmpty(offSiteStartHH)&&!StringUtil.isEmpty(offSiteStartMM)&&!StringUtil.isEmpty(offSiteEndHH)&&!StringUtil.isEmpty(offSiteEndMM)){
+                        if(endDate<startDate){
+                            errorMap.put("offSiteEndMM"+i,"UC_CHKLMD001_ERR008");
+                        }
+                    }
+
+                    List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
+                    if(appPremPhOpenPeriodList!=null){
+
+                        for(int j=0;j<appPremPhOpenPeriodList.size();j++){
+                            String offSiteEndToHH = appPremPhOpenPeriodList.get(j).getOffSiteEndToHH();
+                            String offSiteEndToMM = appPremPhOpenPeriodList.get(j).getOffSiteEndToMM();
+                            String offSiteStartFromHH = appPremPhOpenPeriodList.get(j).getOffSiteStartFromHH();
+                            String offSiteStartFromMM = appPremPhOpenPeriodList.get(j).getOffSiteStartFromMM();
+                            Date phDate = appPremPhOpenPeriodList.get(j).getPhDate();
+                            if(!StringUtil.isEmpty(phDate)){
+                                if(StringUtil.isEmpty(offSiteEndToHH)||StringUtil.isEmpty(offSiteEndToMM)){
+                                    errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                }
+                                if(StringUtil.isEmpty(offSiteStartFromHH)||StringUtil.isEmpty(offSiteStartFromMM)){
+                                    errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                }
+                            }else if(StringUtil.isEmpty(phDate)){
+                                errorMap.put("offSitephDate"+i+j,"UC_CHKLMD001_ERR001");
+                            }
+
+                            if(StringUtil.isEmpty(offSiteEndToHH)&&StringUtil.isEmpty(offSiteEndToMM)&StringUtil.isEmpty(offSiteStartFromHH)
+                                    &StringUtil.isEmpty(offSiteStartFromMM)||!StringUtil.isEmpty(offSiteEndToHH)&&!StringUtil.isEmpty(offSiteEndToMM)
+                                    &&!StringUtil.isEmpty(offSiteStartFromHH)&!StringUtil.isEmpty(offSiteStartFromMM)){
+                                if(!StringUtil.isEmpty(offSiteEndToHH)&&!StringUtil.isEmpty(offSiteEndToMM)
+                                        &&!StringUtil.isEmpty(offSiteEndToHH)&!StringUtil.isEmpty(offSiteStartFromMM)){
+                                    try {
+                                        int i1 = Integer.parseInt(offSiteStartFromHH);
+                                        int i2 = Integer.parseInt(offSiteStartFromMM);
+                                        if(i1>=24){
+                                            errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR009");
+                                        }else if(i2>=60){
+                                            errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR010");
+                                        }
+
+                                    }catch (Exception e){
+                                        errorMap.put("offSiteStartToHH"+i+j,"CHKLMD001_ERR003");
+                                    }
+                                    try {
+                                        int i3 = Integer.parseInt(offSiteEndToHH);
+                                        int i4 = Integer.parseInt(offSiteEndToMM);
+                                        if(i3>=24){
+                                            errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR009");
+                                        }else if(i4>=60){
+                                            errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR010");
+                                        }
+                                    }catch (Exception e){
+                                        errorMap.put("offSiteEndToHH"+i+j,"CHKLMD001_ERR003");
+                                    }
+                                    try {
+                                        int i1 = Integer.parseInt(offSiteStartFromHH);
+                                        int i2 = Integer.parseInt(offSiteStartFromMM);
+                                        int i3 = Integer.parseInt(offSiteEndToHH);
+                                        int i4 = Integer.parseInt(offSiteEndToMM);
+                                        if((i1*60+i2)>(i3*60+i4)){
+                                            errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR008");
+                                        }
+                                    }catch (Exception e){
+
+                                    }
+                                }
+                            }else {
+                                if(StringUtil.isEmpty(offSiteStartFromHH)||StringUtil.isEmpty(offSiteStartFromMM)||StringUtil.isEmpty(offSiteStartFromHH)&&StringUtil.isEmpty(offSiteStartFromMM)){
+                                    errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                }else {
+                                    try {
+                                        int i1 = Integer.parseInt(offSiteStartFromHH);
+                                        int i2 = Integer.parseInt(offSiteStartFromMM);
+                                        if(i1>=24){
+                                            errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR009");
+                                        }else if(i2>=60){
+                                            errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR010");
+                                        }
+                                    }catch (Exception e){
+                                        errorMap.put("offSiteStartToHH"+i+j,"CHKLMD001_ERR003");
+
+                                    }
+                                }
+                                if(StringUtil.isEmpty(offSiteEndToHH)||StringUtil.isEmpty(offSiteEndToMM)||StringUtil.isEmpty(offSiteEndToHH)&&StringUtil.isEmpty(offSiteEndToMM)){
+                                    errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                }else {
+
+                                    try {
+                                        int i3 = Integer.parseInt(offSiteEndToHH);
+                                        int i4 = Integer.parseInt(offSiteEndToMM);
+                                        if(i3>=24){
+                                            errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR009");
+                                        }else if(i4>=60){
+                                            errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR010");
+                                        }
+
+                                    }catch (Exception e){
+                                        errorMap.put("offSiteEndToHH"+i+j,"CHKLMD001_ERR003");
+
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+
                 } else {
                     //premiseSelect = organization hci code
 
