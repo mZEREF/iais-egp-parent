@@ -42,7 +42,7 @@
     }
 
     .dashboard-gp .dashboard-tile-item .dashboard-tile h1.dashboard-count {
-        margin-left: -12px;
+        margin-left: -5px;
     }
 </style>
 <script type="text/javascript">
