@@ -61,10 +61,19 @@
               <p>
               <div class="file-upload-gp">
               <input class="hidden delFlag" type="hidden" name="commDelFlag" value="N"/>
-              <span></span>
-              <span class="hidden delBtn">
-                &nbsp;&nbsp;<button type="button" class="">Delete</button>
-              </span>
+              <span>${fileName}</span>
+              <c:choose>
+                <c:when test="${fileName == '' || fileName == null }">
+                              <span class="hidden delBtn">
+                                &nbsp;&nbsp;<button type="button" class="">Delete</button>
+                              </span>
+                </c:when>
+                <c:otherwise>
+                              <span class="existFile delBtn">
+                                &nbsp;&nbsp;<button type="button" class="">Delete</button>
+                              </span>
+                </c:otherwise>
+              </c:choose>
                 <input class="selectedFile" id="selectedFile"  name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile" >
                 <a class="btn btn-file-upload btn-secondary" >Upload</a>
                 <span name="iaisErrorMsg" class="error-msg" id="error_selectedFileError"></span>
@@ -76,6 +85,7 @@
           <div class="form-check">
             <input class="form-check-input" id="confirm" type="checkbox" name="confirm" aria-invalid="false" value="1">
             <label class="form-check-label" for="confirm"><span class="check-square"></span>I declare that the information that I have submitted is true</label>
+            <span name="iaisErrorMsg" class="error-msg" id="error_confirmError"></span>
           </div>
         </iais:section>
       </div>

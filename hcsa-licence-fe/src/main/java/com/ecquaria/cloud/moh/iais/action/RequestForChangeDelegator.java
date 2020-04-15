@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeO
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -138,6 +139,7 @@ public class RequestForChangeDelegator {
                 flag = true;
                 ParamUtil.setSessionAttr(bpc.request,"UEN",null);
                 ParamUtil.setSessionAttr(bpc.request,"premisesInput",null);
+                ParamUtil.setSessionAttr(bpc.request,"file",null);
             }else if(AppConsts.YES.equals(amendType)){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "doAmend");
             }
@@ -281,7 +283,16 @@ public class RequestForChangeDelegator {
     }
 
 
+    /**
+     * @param bpc
+     * @Decription compareChangePercentage
+     */
+    public void preparePage(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("The preparePage start ..."));
+         prepareTranfer(bpc);
 
+        log.info(StringUtil.changeForLog("The preparePage end ..."));
+    }
     /**
      * @param bpc
      * @Decription doTransfer
@@ -294,9 +305,34 @@ public class RequestForChangeDelegator {
         String[] selectCheakboxs = (String[]) ParamUtil.getSessionAttr(bpc.request, "premisesInput");
         String email = ParamUtil.getString(mulReq,"email");
         CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("selectedFile");
+        if(file ==  null || file.getSize() == 0){
+          String commDelFlag = (String) ParamUtil.getString(mulReq, "commDelFlag");
+          if("N".equals(commDelFlag)){
+              file = (CommonsMultipartFile)ParamUtil.getSessionAttr(bpc.request,"file");
+          }
+        }
+        String[] confirms = ParamUtil.getStrings(mulReq, "confirm");
         log.info(StringUtil.changeForLog("The compareChangePercentage licenceId is -->:"+licenceId));
         log.info(StringUtil.changeForLog("The compareChangePercentage uen is -->:"+uen));
         Map<String,String> error = doValidateEmpty(uen,selectCheakboxs);
+        boolean isEmail = ValidationUtils.isEmail(email);
+        if(file != null && file.getSize() != 0){
+           Map<String,Boolean> fileValidate =  ValidationUtils.validateFile(file);
+           if(fileValidate != null && fileValidate.size() >0){
+               if(!fileValidate.get("fileType")){
+                   error.put("selectedFileError","Please check the file type ... ");
+               }
+               if(!fileValidate.get("fileSize")){
+                   error.put("selectedFileError","Please check the file size ... ");
+               }
+           }
+        }
+        if(!isEmail){
+            error.put("emailError","UC_CHKLMD001_ERR001");
+        }
+        if(confirms == null || confirms.length == 0){
+            error.put("confirmError","UC_CHKLMD001_ERR001");
+        }
         if(error.isEmpty()){
             LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
@@ -389,6 +425,11 @@ public class RequestForChangeDelegator {
         if(!error.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"errorMsg" , WebValidationHelper.generateJsonStr(error));
             ParamUtil.setRequestAttr(bpc.request,"UEN",uen);
+            ParamUtil.setRequestAttr(bpc.request,"email",email);
+            if(file != null && file.getSize() != 0){
+                ParamUtil.setRequestAttr(bpc.request,"fileName",file.getOriginalFilename());
+                ParamUtil.setSessionAttr(bpc.request,"file",file);
+            }
             log.info(StringUtil.changeForLog("The selectCheakboxs.toString() is -->:"+ArrayUtils.toString(selectCheakboxs)));
             ParamUtil.setRequestAttr(bpc.request,"selectCheakboxs",ArrayUtils.toString(selectCheakboxs));
         }

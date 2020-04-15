@@ -66,4 +66,9 @@ public class INTERNET___MohRequestForChange___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doTransfer", this);
 	}
 
+	public void preparePage_OnStepProcess_0() throws Exception {
+	// 		PreparePage->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preparePage", this);
+	}
+
 }
