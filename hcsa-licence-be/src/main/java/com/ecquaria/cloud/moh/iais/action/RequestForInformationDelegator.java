@@ -736,38 +736,42 @@ public class RequestForInformationDelegator {
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         licPremisesReqForInfoDto1.setAction("create");
         log.info("=======>>>>>Create Lic Request for Information reqInfoId "+licPremisesReqForInfoDto1.getReqInfoId());
-        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1,
-                signature.date(), signature.authorization(), signature2.date(), signature2.authorization());
+        try{
+            gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1,
+                    signature.date(), signature.authorization(), signature2.date(), signature2.authorization());
 
-        //send message to FE user.
-        InterMessageDto interMessageDto = new InterMessageDto();
-        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-        List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
-        ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
-        String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",applicationDto.getApplicationNo());
-        interMessageDto.setSubject(subject);
-        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
-        String mesNO = inboxMsgService.getMessageNo();
-        interMessageDto.setRefNo(mesNO);
-        HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
-        interMessageDto.setService_id(svcDto.getId());
-        interMessageDto.setMsgContent(mesContext);
-        interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-        interMessageDto.setUserId(licenseeId);
-        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        inboxMsgService.saveInterMessage(interMessageDto);
-        log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
+            //send message to FE user.
+            InterMessageDto interMessageDto = new InterMessageDto();
+            interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+            List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
+            ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
+            String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",applicationDto.getApplicationNo());
+            interMessageDto.setSubject(subject);
+            interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
+            String mesNO = inboxMsgService.getMessageNo();
+            interMessageDto.setRefNo(mesNO);
+            HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
+            interMessageDto.setService_id(svcDto.getId());
+            interMessageDto.setMsgContent(mesContext);
+            interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
+            interMessageDto.setUserId(licenseeId);
+            interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            inboxMsgService.saveInterMessage(interMessageDto);
+            log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
 
-        try {
-            EmailDto emailDto=new EmailDto();
-            emailDto.setContent(mesContext);
-            emailDto.setSubject(rfiEmailTemplateDto.getSubject());
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-            emailDto.setClientQueryCode(licPremId);
-            String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+            try {
+                EmailDto emailDto=new EmailDto();
+                emailDto.setContent(mesContext);
+                emailDto.setSubject(rfiEmailTemplateDto.getSubject());
+                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                emailDto.setClientQueryCode(licPremId);
+                String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+            }catch (Exception e){
+                log.info(e.getMessage());
+            }
         }catch (Exception e){
-            log.info(e.getMessage());
+            requestForInformationService.deleteLicPremisesReqForInfo(licPremisesReqForInfoDto1.getReqInfoId());
         }
         // 		doCreateRequest->OnStepProcess
     }
