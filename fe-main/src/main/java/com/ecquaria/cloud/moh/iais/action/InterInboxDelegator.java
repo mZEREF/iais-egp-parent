@@ -674,7 +674,14 @@ public class InterInboxDelegator {
         selectApplicationSelectList.add(new SelectOption("Withdraw", "Withdraw"));
         ParamUtil.setRequestAttr(request, "selectApplication", selectApplicationSelectList);
 
+        List<SelectOption> selectWithdrawalSelectList = IaisCommonUtils.genNewArrayList();
+        selectWithdrawalSelectList.add(new SelectOption("Recall", "Recall"));
+        ParamUtil.setRequestAttr(request, "selectWithdrawApplication", selectWithdrawalSelectList);
 
+        List<SelectOption> selectAppealSelectList = IaisCommonUtils.genNewArrayList();
+        selectWithdrawalSelectList.add(new SelectOption("Recall", "Recall"));
+        selectWithdrawalSelectList.add(new SelectOption("Withdraw", "Withdraw"));
+        ParamUtil.setRequestAttr(request, "selectWithdrawApplication", selectAppealSelectList);
     }
 
     private void prepareLicSelectOption(HttpServletRequest request){
@@ -685,8 +692,7 @@ public class InterInboxDelegator {
         LicenceStatusList.add(new SelectOption("LICEST005", "Ceased"));
         LicenceStatusList.add(new SelectOption("LICEST006", "Lapsed"));
         LicenceStatusList.add(new SelectOption("LICEST007", "Approved"));
-        LicenceStatusList.add(new SelectOption("LICEST008", "SuspendedLapsed"));
-        LicenceStatusList.add(new SelectOption("LICEST004", "Request For Change"));
+        LicenceStatusList.add(new SelectOption("LICEST008", "Suspended"));
         LicenceStatusList.add(new SelectOption("LICEST009", "Revoked"));
         ParamUtil.setRequestAttr(request, "licStatus", LicenceStatusList);
 
