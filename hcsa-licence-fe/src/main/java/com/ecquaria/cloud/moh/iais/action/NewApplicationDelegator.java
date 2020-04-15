@@ -772,7 +772,7 @@ public class NewApplicationDelegator {
         if(!StringUtil.isEmpty(pmtMethod) && "GIRO".equals(pmtMethod)){
             switch2 = "ack";
             String txnDt = DateUtil.formatDate(new Date(), "yyyy-MM-dd");
-            ParamUtil.setRequestAttr(bpc.request,"txnDt",txnDt);
+            ParamUtil.setSessionAttr(bpc.request,"txnDt",txnDt);
         }
         String result = bpc.request.getParameter("result");
         if (!StringUtil.isEmpty(result)) {
@@ -782,8 +782,8 @@ public class NewApplicationDelegator {
                 log.info("credit card payment success");
                 String txnDt = ParamUtil.getString(bpc.request,"txnDt");
                 String txnRefNo = ParamUtil.getString(bpc.request,"txnRefNo");
-                ParamUtil.setRequestAttr(bpc.request,"txnDt",txnDt);
-                ParamUtil.setRequestAttr(bpc.request,"txnRefNo",txnRefNo);
+                ParamUtil.setSessionAttr(bpc.request,"txnDt",txnDt);
+                ParamUtil.setSessionAttr(bpc.request,"txnRefNo",txnRefNo);
                 switch2 = "ack";
                 //update status
                 String appGrpId = appSubmissionDto.getAppGrpId();
