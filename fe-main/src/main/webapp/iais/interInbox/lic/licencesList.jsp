@@ -151,7 +151,7 @@
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Status</p>
-                                        <p style="margin-right: 26px;">${licenceQuery.status}</p>
+                                        <p style="margin-right: 26px;"><iais:code code="${licenceQuery.status}"></iais:code></p>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Premises</p>

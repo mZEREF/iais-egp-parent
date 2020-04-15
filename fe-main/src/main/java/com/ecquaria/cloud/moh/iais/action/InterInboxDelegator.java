@@ -238,11 +238,6 @@ public class InterInboxDelegator {
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
         SearchResult licResult = inboxService.licenceDoQuery(licParam);
         List<InboxLicenceQueryDto> inboxLicenceQueryDtoList = licResult.getRows();
-        for (InboxLicenceQueryDto inboxLicenceQueryDto:inboxLicenceQueryDtoList){
-            if ("LICEST001".equals(inboxLicenceQueryDto.getStatus())){
-                inboxLicenceQueryDto.setStatus("Active");
-            }
-        }
         if(!StringUtil.isEmpty(licResult)){
             clearParameter("IILT");
             ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, licParam);
@@ -678,6 +673,8 @@ public class InterInboxDelegator {
         selectApplicationSelectList.add(new SelectOption("Appeal", "Appeal"));
         selectApplicationSelectList.add(new SelectOption("Withdraw", "Withdraw"));
         ParamUtil.setRequestAttr(request, "selectApplication", selectApplicationSelectList);
+
+
     }
 
     private void prepareLicSelectOption(HttpServletRequest request){
