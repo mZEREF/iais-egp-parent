@@ -1239,9 +1239,13 @@ public class NewApplicationHelper {
             String s = fileType.toUpperCase();
             if(!fileTypes.contains(s)){
                 map.put("fileType",false);
+            }else {
+                map.put("fileType",true);
             }
             if(size>fileSize){
                 map.put("fileSize",false);
+            }else {
+                map.put("fileSize",true);
             }
         }
 
