@@ -292,7 +292,7 @@ public class RequestForChangeDelegator {
         String uen = (String) ParamUtil.getSessionAttr(bpc.request, "UEN");
         String[] selectCheakboxs = (String[]) ParamUtil.getSessionAttr(bpc.request, "premisesInput");
         String email = ParamUtil.getString(mulReq,"email");
-        CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("commonDoc");
+        CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("selectedFile");
         log.info(StringUtil.changeForLog("The compareChangePercentage licenceId is -->:"+licenceId));
         log.info(StringUtil.changeForLog("The compareChangePercentage uen is -->:"+uen));
         Map<String,String> error = doValidateEmpty(uen,selectCheakboxs);

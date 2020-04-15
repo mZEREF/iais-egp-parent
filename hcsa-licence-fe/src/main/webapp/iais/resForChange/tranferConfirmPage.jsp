@@ -10,7 +10,7 @@
 <webui:setLayout name="iais-internet"/>
 <br/>
 <%@include file="../common/dashboard.jsp" %>
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+<form method="post" enctype="multipart/form-data" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <div class="row">
     <div class="container">
       <div class="col-xs-12">
@@ -50,7 +50,7 @@
             <iais:field value="Email address of transferee"></iais:field>
             <iais:value width="10">
               <p>
-                <input type="text" name="email" value="${email}" maxlength="10">
+                <input type="text" name="email" value="${email}" >
                 <span  class="error-msg" name="iaisErrorMsg" id="error_emailError"></span>
               </p>
             </iais:value>
@@ -65,9 +65,9 @@
               <span class="hidden delBtn">
                 &nbsp;&nbsp;<button type="button" class="">Delete</button>
               </span>
-                <input class="selectedFile commDoc" id="commonDoc"  name = "commonDoc" type="file" style="display: none;" aria-label="selectedFile" >
+                <input class="selectedFile" id="selectedFile"  name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile" >
                 <a class="btn btn-file-upload btn-secondary" >Upload</a>
-                <span name="iaisErrorMsg" class="error-msg" id="error_commonDocError"></span>
+                <span name="iaisErrorMsg" class="error-msg" id="error_selectedFileError"></span>
               </div>
               </p>
             </iais:value>
