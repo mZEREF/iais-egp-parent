@@ -56,16 +56,46 @@
     });
 
     function licClick(status) {
+        var checkedNum = $("[name='licenceNo']:checked").length;
         if ($('.licenceCheck').is(':checked')){
-            if ('LICEST001' == status) {
-                $("#lic-amend").removeClass('disabled');
-            }
-            if ('LICEST005' == status){
-                $("#lic-cease").addClass('disabled');
+            if (checkedNum == 1){
+                console.log("--->1");
+                var statusOne = [];
+                $("#lic-print").removeClass('disabled');
+                $("[name='licenceNo']:checked").each(function (k,v) {
+                    var $currentTr = $(this).closest('tr');
+                    statusOne.push($currentTr.find('td').eq(3).find('p').eq(1).html());
+                    if ($.inArray('Ceased',statusOne)){
+                        $("#lic-renew").removeClass('disabled');
+                        $("#lic-cease").removeClass('disabled');
+                        $("#lic-amend").removeClass('disabled');
+                    }else{
+                        $("#lic-renew").addClass('disabled');
+                        $("#lic-cease").addClass('disabled');
+                    }
+                });
+            }else{
+                var statusDuo = [];
+                $("[name='licenceNo']:checked").each(function (k,v) {
+                    var $currentTr = $(this).closest('tr');
+                    statusDuo.push($currentTr.find('td').eq(3).find('p').eq(1).html());
+                    if ($.inArray('Ceased',statusDuo)){
+                        $("#lic-renew").removeClass('disabled');
+                        $("#lic-cease").removeClass('disabled');
+                    }else{
+                        $("#lic-renew").addClass('disabled');
+                        $("#lic-cease").addClass('disabled');
+                    }
+                });
+                console.log(statusDuo);
+                $("#lic-print").addClass('disabled');
+                $("#lic-amend").addClass('disabled');
             }
         }else {
-            $("#lic-cease").removeClass('disabled');
             $("#lic-amend").addClass('disabled');
+            $("#lic-print").addClass('disabled');
+            $("#lic-renew").removeClass('disabled');
+            $("#lic-cease").removeClass('disabled');
         }
     }
 

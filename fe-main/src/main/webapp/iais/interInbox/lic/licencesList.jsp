@@ -88,7 +88,7 @@
                     <a class="btn btn-primary" href="javascript:;" id="lic-renew">Renew</a>
                     <a class="btn btn-primary" href="javascript:;" id="lic-cease">Cease</a>
                     <a class="btn btn-primary disabled" href="javascript:;" id="lic-amend">Amend</a>
-                    <a class="btn btn-primary disabled" onclick="doPrint()">Print</a>
+                    <a class="btn btn-primary disabled" id="lic-print" onclick="doPrint()">Print</a>
                 </div>
                 <div class="col-md-4 text-right" style="width: 37%">
                     <button type="button" class="btn btn-secondary" onclick="doClearLic()">Clear</button>
