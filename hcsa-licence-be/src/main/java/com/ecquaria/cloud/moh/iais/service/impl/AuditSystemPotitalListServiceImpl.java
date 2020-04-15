@@ -67,7 +67,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             List<AuditTaskDataDto> auditTaskDataDtos = searchResult.getRows();
             List<AuditTaskDataFillterDto> auditTaskDataFillterDtos = new ArrayList<>(auditTaskDataDtos.size());
             for(AuditTaskDataDto auditTaskDataDto : auditTaskDataDtos){
-                auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto,false));
+                auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto,false,false));
             }
             return auditTaskDataFillterDtos;
         }
@@ -82,17 +82,22 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             List<AuditTaskDataDto> auditTaskDataDtos = searchResult.getRows();
             List<AuditTaskDataFillterDto> auditTaskDataFillterDtos = new ArrayList<>(auditTaskDataDtos.size());
             for(AuditTaskDataDto auditTaskDataDto : auditTaskDataDtos){
-                auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto,true));
+                auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto,true,true));
             }
             return auditTaskDataFillterDtos;
         }
         return  null;
     }
 
-    public  AuditTaskDataFillterDto getAuditTaskDataFillterDto(AuditTaskDataDto auditTaskDataDto,Boolean isCancelTask){
+    public  AuditTaskDataFillterDto getAuditTaskDataFillterDto(AuditTaskDataDto auditTaskDataDto,Boolean isCancelTask,Boolean needCancelReason){
         AuditTaskDataFillterDto auditTaskDataFillterDto = MiscUtil.transferEntityDto(auditTaskDataDto,AuditTaskDataFillterDto.class);
         if(!isCancelTask)
         auditTaskDataFillterDto.setIsTcuNeeded(1);
+        if(needCancelReason){
+            auditTaskDataFillterDto.setCancelReason(auditTaskDataDto.getRemark());
+            auditTaskDataFillterDto.setInsGrpId(auditTaskDataDto.getInsGrpId());
+            auditTaskDataFillterDto.setLicPremGrpCorId(auditTaskDataDto.getLicPremGrpCorId());
+        }
         auditTaskDataFillterDto.setAuditType(auditTaskDataDto.getAuditType());
         auditTaskDataFillterDto.setInspectorId(auditTaskDataDto.getInspectorId());
         auditTaskDataFillterDto.setAddress(auditTaskDataDto.getAddress());
@@ -364,7 +369,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     }
 
     public AuditTaskDataFillterDto transferDtoToFiltterDto(AuditTaskDataDto dto, Double score) {
-        AuditTaskDataFillterDto fDto = getAuditTaskDataFillterDto(dto,true);
+        AuditTaskDataFillterDto fDto = getAuditTaskDataFillterDto(dto,true,false);
         if (score != null) {
             fDto.setScore(score);
         }

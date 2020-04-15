@@ -12,8 +12,6 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
-import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
-import com.ecquaria.cloud.moh.iais.validation.AuditAssginListValidate;
 import com.ecquaria.cloud.moh.iais.validation.AuditCancelOrRejectValidate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,13 +46,8 @@ public class AuditCancelTaskDelegator {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos = auditSystemPotitalListService.getSystemPotentailAdultCancelList();
-        ParamUtil.setSessionAttr(request, "auditTaskDataDtos", (Serializable) auditTaskDataDtos);
-        List<SelectOption> aduitTypeOp = auditSystemListService.getAuditOp();
         auditSystemListService.getInspectors(auditTaskDataDtos);
-        for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos ){
-            ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
-        }
-        ParamUtil.setSessionAttr(request, "aduitTypeOp", (Serializable) aduitTypeOp);
+        ParamUtil.setSessionAttr(request, "auditTaskDataDtos", (Serializable) auditTaskDataDtos);
         ParamUtil.setSessionAttr(request, "modulename", "Audit Cancel Task List");
     }
 
@@ -69,12 +62,15 @@ public class AuditCancelTaskDelegator {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
          String action = (String) ParamUtil.getSessionAttr( bpc.request,"actionTodo");
         HttpServletRequest request = bpc.request;
+        List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
          if( !StringUtil.isEmpty(action)){
              // action to do  1 :  Confirm , 0 :   Reject
             if("1".equalsIgnoreCase(action)){
+                auditSystemListService.doCanceledTask(auditTaskDataDtos);
                 ParamUtil.setRequestAttr(request, SUBMIT_MESSAGE_SUCCESS, HcsaLicenceBeConstant.AUDIT_INSPECTION_CANCEL_TASKS_SUCCESS_MESSAGE_CONFIRM);
                 ParamUtil.setRequestAttr(request, MAIN_URL, "MohAduitCancelTask");
             }else {
+                auditSystemListService.doRejectCancelTask(auditTaskDataDtos);
                 ParamUtil.setRequestAttr(request, SUBMIT_MESSAGE_SUCCESS, HcsaLicenceBeConstant.AUDIT_INSPECTION_CANCEL_TASKS_SUCCESS_MESSAGE_REJECT );
                 ParamUtil.setRequestAttr(request, MAIN_URL, "MohAduitCancelTask");
             }
@@ -89,8 +85,6 @@ public class AuditCancelTaskDelegator {
         AuditCancelOrRejectValidate auditCancelOrRejectValidate = new AuditCancelOrRejectValidate();
         Map<String, String> errMap = auditCancelOrRejectValidate.validate(request);
         if (!errMap.isEmpty()) {
-            List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
-
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
         } else {
@@ -105,26 +99,14 @@ public class AuditCancelTaskDelegator {
         List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
         if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
             for(int i = 0;i<auditTaskDataDtos.size();i++){
-                if(auditTaskDataDtos.get(i).isAddAuditList()){
-                    String auditType = ParamUtil.getString(request,i+"auditType");
-                    String inspectorId = ParamUtil.getString(request,i+"insOp");
-                    String inspectorName = LicenceUtil.getSelectOptionTextFromSelectOptions(auditTaskDataDtos.get(i).getInspectors(),inspectorId);
                     String forad = ParamUtil.getString(request,i+"selectForAd");
-                    String number = ParamUtil.getString(request,i+"number");
-                    auditTaskDataDtos.get(i).setAuditType(auditType);
-                    auditTaskDataDtos.get(i).setInspectorId(inspectorId);
-                    auditTaskDataDtos.get(i).setInspector(inspectorName);
+                    String reason =  ParamUtil.getString(request,i+"newReason");
                     if(!StringUtil.isEmpty(forad)){
                         auditTaskDataDtos.get(i).setSelectedForAudit(true);
                     }else{
                         auditTaskDataDtos.get(i).setSelectedForAudit(false);
                     }
-                    if(!StringUtil.isEmpty(number)){
-                        auditTaskDataDtos.get(i).setSelected(true);
-                    }else{
-                        auditTaskDataDtos.get(i).setSelected(false);
-                    }
-                }
+                    auditTaskDataDtos.get(i).setReasonForAO(reason);
             }
         }
         ParamUtil.setSessionAttr(request,"auditTaskDataDtos",(Serializable) auditTaskDataDtos);

@@ -178,6 +178,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         taskDto.setSlaAlertInDays(2);
         taskDto.setSlaRemainInDays(3);
         taskDto.setSlaInDays(5);
+        taskDto.setPriority(0);
         List<ApplicationDto> postApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
         if(postApps != null && postApps.size() >0 ){
             String corrId = applicationClient.getCorrIdByAppId(postApps.get(0).getId()).getEntity();
@@ -198,14 +199,13 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             return;
 
         }
-        taskDto.setPriority(0);
         List<TaskDto> createTaskDtoList = IaisCommonUtils.genNewArrayList();
         createTaskDtoList.add(taskDto);
         auditCombinationDto.setTaskDtos(createTaskDtoList);
         //taskService.createTasks(createTaskDtoList);
-        log.info("========================>>>>> create task !!!!");
         try {
-            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,auditCombinationDto.getEventRefNo(),null);
+            log.info("========================>>>>> create task !!!!");
+            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,EventBusConsts.OPERATION_CREATE_AUDIT_TASK_CALL_BACK,auditCombinationDto.getEventRefNo(),null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -226,6 +226,13 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
         return result;
     }
+    public void updateLicPremisesAuditDtoByEventBus(AuditTaskDataFillterDto temp,String status){
+        LicPremisesAuditDto licPremisesAuditDto = hcsaLicenceClient.getLicPremAuditByGuid(temp.getAuditId()).getEntity();
+        licPremisesAuditDto.setStatus(status);
+        licPremisesAuditDto.setRemarks(temp.getCancelReason());
+        hcsaLicenceClient.createLicPremAudit(licPremisesAuditDto);
+    }
+
     public void updateLicPremisesAuditDto(AuditTaskDataFillterDto temp,String status){
         LicPremisesAuditDto licPremisesAuditDto = hcsaLicenceClient.getLicPremAuditByGuid(temp.getAuditId()).getEntity();
         licPremisesAuditDto.setStatus(status);
@@ -312,6 +319,29 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
     }
 
+    @Override
+    public void doRejectCancelTask(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
+        if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
+            for(AuditTaskDataFillterDto temp: auditTaskDataDtos){
+                if(temp.isSelectedForAudit()) {
+                    temp.setCancelReason(temp.getReasonForAO());
+                    updateLicPremisesAuditDto(temp,AppConsts.COMMON_STATUS_ACTIVE);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void doCanceledTask(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
+        if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
+            for(AuditTaskDataFillterDto temp: auditTaskDataDtos){
+                if(temp.isSelectedForAudit()) {
+                    temp.setCancelReason(temp.getReasonForAO());
+                    updateLicPremisesAuditDtoByEventBus(temp,AppConsts.AUDIT_TASK_CANCELED_STATUS);
+                }
+            }
+        }
+    }
     private void cancelTask(AuditTaskDataFillterDto temp) {
         //update audit status
         updateLicPremisesAuditDto(temp,AppConsts.AUDIT_TASK_CANCEL_PENDING_STATUS);

@@ -134,13 +134,15 @@
         $('#fileRemarkShow').html('')
         var selectedFile = $('#uploadDoc').find('[name="selectedFile"]').val();
         var file = $('#selectedFile').get(0).files[0];
-        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
         if(selectedFile == null || selectedFile== ""){
             $('#selectedFileShow').html('The file cannot be empty.');
             return false;
-        }else if (fileSize> 4){
-            $('#selectedFileShow').html('The file size must less than 4M.');
-            return false;
+        }else {
+            var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
+            if(fileSize> 4){
+                $('#selectedFileShow').html('The file size must less than 4M.');
+                return false;
+            }
         }
         var fileRemarkMaxLength = 50;
         var fileRemarkLength = $('#fileRemark').val().length;

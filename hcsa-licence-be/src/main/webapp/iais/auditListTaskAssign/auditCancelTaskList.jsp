@@ -36,6 +36,7 @@
                                         <th>Inspector</th>
                                         <th>Cancel Reason</th>
                                         <th>Select for Audit</th>
+                                        <th>Reason</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -48,25 +49,19 @@
                                       </tr>
                                   </c:if>
                                     <c:forEach var = "item" items = "${auditTaskDataDtos}" varStatus="status">
-                                       <c:if test="${item.addAuditList}">
                                         <tr>
                                             <c:set var="id" value="${status.index}"></c:set>
                                             <td><c:out value="${item.hclCode}"/></td>
                                             <td><c:out value="${item.hclName}"/></td>
                                             <td><c:out value="${item.address}"/></td>
                                             <td><c:out value="${item.svcName}"/></td>
-                                            <td><iais:select name="${id}auditType" options="aduitTypeOp" firstOption="Please Select" value=""></iais:select>
-                                                <c:set value = "error_${id}adtype" var = "erradtype"/>
-                                                <span class="error-msg" id="<c:out value="${erradtype}"/>" name="iaisErrorMsg"></span>
+                                            <td>
+                                                <iais:code code= "${item.auditType}"/>
+                                                <input name="${id}auditType" id="${id}auditType" type="hidden" value="${item.auditType}">
                                             </td>
                                             <td>
-                                                <select name="<c:out value="${id}insOp"/>">
-                                                    <c:forEach var="inspOp" items="${item.inspectors}">
-                                                        <option  value="<c:out value="${inspOp.value}"/>"><c:out value="${inspOp.text}"/></option>
-                                                    </c:forEach>
-                                                </select>
-                                                <c:set value = "error_${id}insp" var = "errboth"/>
-                                                <span class="error-msg" id="<c:out value="${errboth}"/>" name="iaisErrorMsg"></span>
+                                                <label>${item.inspector}</label>
+                                                <input name="${id}insOp" id="${id}insOp" type="hidden" value="${item.inspectorId}">
                                             </td>
                                             <td>
                                                 <textarea cols="30" disabled rows="5" name="${id}reason"  maxlength="2000"><c:out value="${item.cancelReason}"></c:out></textarea>
@@ -78,10 +73,11 @@
                                                 <span class="error-msg" id="<c:out value="${errselect}"/>"
                                                       name="iaisErrorMsg"></span>
                                             </td>
+                                            <td>
+                                                <textarea cols="30" rows="5" name="${id}newReason"  maxlength="2000"><c:out value="${item.reasonForAO}"></c:out></textarea>
+                                            </td>
                                         </tr>
-                                       </c:if>
                                     </c:forEach>
-
                                     </tbody>
                                 </table>
                                 <div class="table-footnote">

@@ -133,7 +133,7 @@
                t6.ID as lic_prem_insp_grp_correlation_id,t6.INS_GRP_ID,t6.STATUS as lic_prem_insp_grp_correlation_status,
                t7.PREFER_END_DATE ,t7.PREFER_START_DATE,t7.STATUS as lic_inspection_group_status
                FROM lic_premises t3
-               LEFT JOIN (Select * FROM lic_premises_audit  WHERE STATUS = 'CMSTAT001' or STATUS = 'AUTACPS001') t1
+               LEFT JOIN (Select * FROM lic_premises_audit  WHERE STATUS = 'CMSTAT001') t1
                on t1.LIC_PREM_ID = t3.ID
                left join lic_premises_audit_inspector t2
                on t1.ID  = t2.AUDIT_ID
@@ -143,9 +143,9 @@
                left join   premises t5
                on
                t3.PREMISES_ID  = t5.ID
-               left  join  lic_prem_insp_grp_correlation t6 on
+               left  join  (select * FROM lic_prem_insp_grp_correlation WHERE lic_prem_insp_grp_correlation.STATUS = 'CMSTAT001') t6 on
                t1.LIC_PREM_ID = t6.LIC_PREM_ID
-               left join  lic_inspection_group t7
+               left join  (select * FROM lic_inspection_group WHERE lic_inspection_group.STATUS ='CMSTAT001') t7
                on  t6.INS_GRP_ID = t7.ID
                WHERE   t4.STATUS = 'LICEST001' AND (t1.STATUS is NULL OR t1.STATUS != 'AUTACPS001')
             <#if serviceNameList??> and t4.SVC_NAME IN ${serviceNameList} </#if>
@@ -159,7 +159,7 @@
 
     <sql key="aduitCancelTaskList"  remarks="query aduit cancel task">
         <![CDATA[
-               SELECT
+             SELECT
                t3.ID as id,t3.LICENCE_ID as licId,t3.PREMISES_ID,t3.IS_POST_INSP_NEEDED,t3.TCU_DATE,t3.IS_TCU_NEEDED,
                t4.LICENCE_NO,t4.SVC_NAME as serviceName,t4.START_DATE,t4.EXPIRY_DATE,t4.IS_GRP_LIC,t4.ORIGIN_LICENCE_ID,t4.IS_MIGRATED,t4.MIGRATED_DT,
                t4.IS_FEE_RETRO_NEEDED,t4.VERSION,t4.LICENSEE_ID,t4.END_DATE,
@@ -172,7 +172,7 @@
                t6.ID as lic_prem_insp_grp_correlation_id,t6.INS_GRP_ID,t6.STATUS as lic_prem_insp_grp_correlation_status,
                t7.PREFER_END_DATE ,t7.PREFER_START_DATE,t7.STATUS as lic_inspection_group_status
                FROM lic_premises t3
-               LEFT JOIN (Select * FROM lic_premises_audit  WHERE STATUS = 'CMSTAT001' or STATUS = 'AUTACPS001') t1
+               LEFT JOIN (Select * FROM lic_premises_audit  WHERE  STATUS = 'AUTACPS001') t1
                on t1.LIC_PREM_ID = t3.ID
                left join lic_premises_audit_inspector t2
                on t1.ID  = t2.AUDIT_ID
@@ -182,11 +182,11 @@
                left join   premises t5
                on
                t3.PREMISES_ID  = t5.ID
-               left  join  lic_prem_insp_grp_correlation t6 on
+               left  join  (select * FROM lic_prem_insp_grp_correlation WHERE lic_prem_insp_grp_correlation.STATUS = 'CMSTAT001') t6 on
                t1.LIC_PREM_ID = t6.LIC_PREM_ID
-               left join  lic_inspection_group t7
+               left join  (select * FROM lic_inspection_group WHERE lic_inspection_group.STATUS ='CMSTAT001') t7
                on  t6.INS_GRP_ID = t7.ID
-               WHERE   t4.STATUS = 'LICEST001' AND (t1.STATUS is NULL OR t1.STATUS != 'AUTACPS001')
+               WHERE   t4.STATUS = 'LICEST001' AND  t1.STATUS = 'AUTACPS001'
         ]]>
     </sql>
     <sql key="commonPoolAjax"  remarks="get Application By App Group in Common Pool">

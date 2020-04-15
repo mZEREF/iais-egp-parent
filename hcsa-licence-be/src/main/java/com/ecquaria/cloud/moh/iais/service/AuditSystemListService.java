@@ -25,5 +25,6 @@ public interface AuditSystemListService {
 
     List<SelectOption> getActiveHCIServicesByNameOrCode(List<HcsaServiceDto> hcsaServiceDtos, String type);
     List<SelectOption> getActiveHCICode();
-
+    void doRejectCancelTask(List<AuditTaskDataFillterDto> auditTaskDataDtos);
+    void doCanceledTask(List<AuditTaskDataFillterDto> auditTaskDataDtos);
 }
