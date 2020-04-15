@@ -275,29 +275,29 @@ public class NewApplicationAjaxController {
         //convyance operation time
         Map<String,String> conveyancestartHour = IaisCommonUtils.genNewHashMap();
         conveyancestartHour.put("class", "conveyanceStartHH");
-        conveyancestartHour.put("id", premName+"conveyanceStartHH0");
-        conveyancestartHour.put("name", premName+"conveyanceStartHH0");
+        conveyancestartHour.put("id", "conveyanceStartHH");
+        conveyancestartHour.put("name", "conveyanceStartHH");
         conveyancestartHour.put("style", "display: none;");
         String conveyancestartHH = NewApplicationHelper.generateDropDownHtml(conveyancestartHour, timeHourList,"--", null);
 
         Map<String,String> conveyancestartMin = IaisCommonUtils.genNewHashMap();
         conveyancestartMin.put("class", "conveyanceStartMM");
-        conveyancestartMin.put("id", premName+"conveyanceStartMM0");
-        conveyancestartMin.put("name", premName+"conveyanceStartMM0");
+        conveyancestartMin.put("id", "conveyanceStartMM");
+        conveyancestartMin.put("name", "conveyanceStartMM");
         conveyancestartMin.put("style", "display: none;");
         String conveyancestartMM = NewApplicationHelper.generateDropDownHtml(conveyancestartMin, timeMinList,"--", null);
 
         Map<String,String> conveyanceendHour = IaisCommonUtils.genNewHashMap();
         conveyanceendHour.put("class", "conveyanceEndHH");
-        conveyanceendHour.put("id", premName+"conveyanceEndHH0");
-        conveyanceendHour.put("name", premName+"conveyanceEndHH0");
+        conveyanceendHour.put("id", "conveyanceEndHH");
+        conveyanceendHour.put("name", "conveyanceEndHH");
         conveyanceendHour.put("style", "display: none;");
         String conveyanceendHH = NewApplicationHelper.generateDropDownHtml(conveyanceendHour, timeHourList,"--", null);
 
         Map<String,String> conveyanceendMin = IaisCommonUtils.genNewHashMap();
         conveyanceendMin.put("class", "conveyanceEndMM");
-        conveyanceendMin.put("id", premName+"conveyanceEndMM0");
-        conveyanceendMin.put("name", premName+"conveyanceEndMM0");
+        conveyanceendMin.put("id", "conveyanceEndMM");
+        conveyanceendMin.put("name", "conveyanceEndMM");
         conveyanceendMin.put("style", "display: none;");
         String conveyanceendMM = NewApplicationHelper.generateDropDownHtml(conveyanceendMin, timeMinList,"--", null);
 
