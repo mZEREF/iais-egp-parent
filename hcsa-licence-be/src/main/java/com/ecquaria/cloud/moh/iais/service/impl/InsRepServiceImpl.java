@@ -566,7 +566,7 @@ public class InsRepServiceImpl implements InsRepService {
         String status = applicationDto.getStatus();
         String applicationNo = applicationDto.getApplicationNo();
         String taskKey = taskDto.getTaskKey();
-        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION);
+        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto,ApplicationConsts.APPLICATION_STATUS_REPLY);
         updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
         completedTask(taskDto);
         AppPremisesRoutingHistoryDto secondRouteBackHistoryByAppNo = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(applicationNo, status);
@@ -837,13 +837,14 @@ public class InsRepServiceImpl implements InsRepService {
     private List<TaskDto> prepareRoutBackTaskList(TaskDto taskDto,String userId,String roleId) {
         List<TaskDto> list = IaisCommonUtils.genNewArrayList();
         taskDto.setId(null);
+        taskDto.setTaskType(TaskConsts.TASK_TYPE_MAIN_FLOW);
         taskDto.setUserId(userId);
         taskDto.setDateAssigned(new Date());
         taskDto.setSlaDateCompleted(null);
         taskDto.setSlaRemainInDays(null);
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         taskDto.setRoleId(roleId);
-        taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
+        taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_MAIN_FLOW);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         list.add(taskDto);
         return list;

@@ -62,6 +62,7 @@ public class InsReportDelegator {
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
+        AuditTrailHelper.auditFunction("Inspection Report", "Assign Report");
     }
 
     public void inspectionReportInit(BaseProcessClass bpc) {
@@ -69,7 +70,6 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", null);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
         String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
-
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto  applicationViewDto = insRepService.getApplicationViewDto(correlationId);
