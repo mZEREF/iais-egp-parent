@@ -46,6 +46,7 @@ public class PrefDateRangePeriodDelegator {
     private static final String PREF_PERIOD_SEARCH = "prefPeriodSearch";
     private static final String PREF_PERIOD_RESULT = "prefPeriodResult";
     private static final String REQUEST_PERIOD_ATTR = "requestPeriodAttr";
+    private static final String PREF_ITEM_ID = "prefItemId";
 
 
     @Autowired
@@ -114,7 +115,7 @@ public class PrefDateRangePeriodDelegator {
      */
     public void preUpdateData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String id = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        String id = ParamUtil.getMaskedString(request, PREF_ITEM_ID);
         if (StringUtil.isEmpty(id)){
             return;
         }

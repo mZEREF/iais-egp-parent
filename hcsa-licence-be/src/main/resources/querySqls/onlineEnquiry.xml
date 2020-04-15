@@ -37,7 +37,7 @@
             <#if address??> AND  charindex(:address, b.practive_location) >0</#if>
             <#if hciName??> AND charindex(:hciName, b.hci_name) >0 </#if>
             <#if hciCode??> AND charindex(:hciCode, b.hci_code) >0</#if>
-            <#if hciPostalode??> AND charindex(:hciPostalode, b.postal_code)  >0 </#if>
+            <#if hciPostalcode??> AND charindex(:hciPostalcode, b.postal_code)  >0 </#if>
             <#if practiceLocation??> AND charindex(:practiceLocation, b.practive_location ) >0 </#if>
             <#if serviceName??> AND b.service_name = :serviceName</#if>
             <#if designation??> AND charindex(:designation, a.designation) >0 </#if>

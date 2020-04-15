@@ -50,26 +50,6 @@
 
                 </tr>
 
-
-                <tr>
-                    <td>
-                        <iais:field value="Postal Code"/>
-                        <iais:value width="18">
-                            <input type="text" name="postalCode" value="${postalCode}"/>
-                            <span id="error_postalCode" name="iaisErrorMsg" class="error-msg"></span>
-                        </iais:value>
-                    </td>
-
-                    <td>
-                        <iais:field value="Address"/>
-                        <iais:value width="18">
-                            <input type="text" name="address" value="${address}"/>
-                            <span id="error_address" name="iaisErrorMsg" class="error-msg"></span>
-                        </iais:value>
-                    </td>
-
-                </tr>
-
                 <tr>
                     <td>
                         <iais:field value="Hci Name"/>

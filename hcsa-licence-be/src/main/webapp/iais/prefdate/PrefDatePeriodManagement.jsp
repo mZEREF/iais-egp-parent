@@ -19,6 +19,7 @@
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="prRegNo" value="">
+        <input type="hidden" id="prefItemId" name="prefItemId" value="">
         <%@ include file="/include/formHidden.jsp" %>
         <div class="bg-title"><h2>Preferred Date Period Management</h2></div>
         <span id="error_numberError" name="iaisErrorMsg" class="error-msg"></span>
@@ -129,7 +130,7 @@
                                                         <td>${prefItem.nonReplyWindow}</td>
                                                         <td>
                                                             <button type="button" class="btn btn-default btn-sm"
-                                                                    onclick="preUpdateData('${prefItem.id}')">Edit
+                                                                    onclick="preUpdateData('<iais:mask name="prefItemId" value="${prefItem.id}"/>')">Edit
                                                             </button>
                                                         </td>
                                                     </tr>
@@ -169,6 +170,7 @@
 
 <script>
     function preUpdateData(id) {
+        $('#prefItemId').val(id);
         SOP.Crud.cfxSubmit("mainForm", "preUpdateData", id);
     }
 </script>

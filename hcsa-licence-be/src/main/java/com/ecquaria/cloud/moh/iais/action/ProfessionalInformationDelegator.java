@@ -247,7 +247,7 @@ public class ProfessionalInformationDelegator {
 			}
 
 			if(!StringUtil.isEmpty(hciCode)){
-				searchParam.addFilter("hciCode", hciName, true);
+				searchParam.addFilter("hciCode", hciCode, true);
 			}
 
 			if(!StringUtil.isEmpty(hciPostalcode)){
