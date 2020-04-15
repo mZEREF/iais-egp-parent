@@ -35,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.sz.commons.util.FileUtil;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -362,6 +363,7 @@ public class RequestForChangeDelegator {
                         appPremisesSpecialDocDto.setFileRepoId(fileRepoGuid);
                         appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
                         appPremisesSpecialDocDto.setSubmitBy(auditTrailDto.getMohUserGuid());
+                        appPremisesSpecialDocDto.setSubmitDt(new Date());
                         appPremisesSpecialDocDtoList.add(appPremisesSpecialDocDto);
                         appSubmissionDto.setAppPremisesSpecialDocDtos(appPremisesSpecialDocDtoList);
                     }
