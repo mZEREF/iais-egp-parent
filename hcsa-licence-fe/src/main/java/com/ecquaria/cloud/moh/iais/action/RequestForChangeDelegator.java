@@ -5,7 +5,10 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
@@ -23,20 +26,24 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
+import com.ecquaria.sz.commons.util.FileUtil;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /****
  *
@@ -128,6 +135,8 @@ public class RequestForChangeDelegator {
                 //....
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "doTranfer");
                 flag = true;
+                ParamUtil.setSessionAttr(bpc.request,"UEN",null);
+                ParamUtil.setSessionAttr(bpc.request,"premisesInput",null);
             }else if(AppConsts.YES.equals(amendType)){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "doAmend");
             }
@@ -164,7 +173,6 @@ public class RequestForChangeDelegator {
      */
     public void prepareFirstView(BaseProcessClass bpc)  {
         log.debug(StringUtil.changeForLog("the do prepareFirstView start ...."));
-//        ParamUtil.setRequestAttr(bpc.request,"FirstView",AppConsts.TRUE);
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
 
 
@@ -273,100 +281,18 @@ public class RequestForChangeDelegator {
 
 
 
-    private boolean canTransfer(List<LicenseeKeyApptPersonDto> oldLicenseeKeyApptPersonDtos,
-                                List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoList){
-        boolean canTransfer = true;
-        if(IaisCommonUtils.isEmpty(oldLicenseeKeyApptPersonDtos)||IaisCommonUtils.isEmpty(licenseeKeyApptPersonDtoList)){
-            canTransfer = false;
-        }else{
-            int existCount = 0;
-            for(LicenseeKeyApptPersonDto newLicenseeKeyApptPersonDto : licenseeKeyApptPersonDtoList){
-              for(LicenseeKeyApptPersonDto oldLicenseeKeyApptPersonDto1 : oldLicenseeKeyApptPersonDtos){
-                if(newLicenseeKeyApptPersonDto.getIdType().equals(oldLicenseeKeyApptPersonDto1.getIdType())
-                        && newLicenseeKeyApptPersonDto.getIdNo().equals(oldLicenseeKeyApptPersonDto1.getIdNo())){
-                    existCount = existCount+1;
-                    break;
-                }
-              }
-            }
-            log.info(StringUtil.changeForLog("The  existCount  is -->:"+existCount));
-            log.info(StringUtil.changeForLog("The  licenseeKeyApptPersonDtoList.size()  is -->:"+licenseeKeyApptPersonDtoList.size()));
-            log.info(StringUtil.changeForLog("The  existCount/licenseeKeyApptPersonDtoList.size() is -->:"+existCount/licenseeKeyApptPersonDtoList.size()));
-            if((licenseeKeyApptPersonDtoList.size()-existCount)/licenseeKeyApptPersonDtoList.size()>0.5){
-                canTransfer = false;
-            }else{
-                log.info(StringUtil.changeForLog("can transfer"));
-            }
-        }
-
-        return canTransfer;
-
-    }
-
-    private FeeDto getTransferFee(){
-        AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
-        amendmentFeeDto.setChangeInHCIName(false);
-        amendmentFeeDto.setChangeInLicensee(true);
-        amendmentFeeDto.setChangeInLocation(false);
-        FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
-        return feeDto;
-    }
-
-    private boolean isSelect(String[] selectCheakboxs,String premisesIndexNo){
-        boolean isSelect = false;
-       if(!StringUtil.isEmpty(premisesIndexNo) && selectCheakboxs != null){
-          for(String select : selectCheakboxs){
-              if(premisesIndexNo.equals(select)){
-                  isSelect = true;
-                  break;
-              }
-          }
-       }
-       return isSelect;
-    }
-
-    private Map<String,String> doValidateEmpty(String uen,String[] selectCheakboxs){
-        Map<String,String> error = IaisCommonUtils.genNewHashMap();
-        if(selectCheakboxs == null || selectCheakboxs.length == 0){
-            error.put("premisesError","UC_CHKLMD001_ERR001");
-        }
-        if(StringUtil.isEmpty(uen) || uen.length() > 10){
-            error.put("uenError","UC_CHKLMD001_ERR001");
-        }
-        return error;
-    }
-    private Map<String,String> doValidateLojic(String uen,Map<String,String> error,LicenceDto licenceDto,LicenseeDto licenseeDto){
-        if(licenceDto==null){
-            error.put("uenError","Licence Error!!!");
-        }else{
-            if(licenseeDto == null){
-                error.put("uenError","uen error !!!");
-            }else{
-                List<LicenseeKeyApptPersonDto> oldLicenseeKeyApptPersonDtos = requestForChangeService.
-                        getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
-                List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoList = requestForChangeService.getLicenseeKeyApptPersonDtoListByUen(uen);
-                boolean canTransfer = canTransfer(oldLicenseeKeyApptPersonDtos,licenseeKeyApptPersonDtoList);
-                if(canTransfer){
-                    if(licenceDto.getLicenseeId().equals(licenseeDto.getId())){
-                        log.error(StringUtil.changeForLog("This Uen can not get the licensee -->:"+uen));
-                        error.put("uenError","can not transfer to self");
-                    }
-                }else{
-                    error.put("uenError","can not transfer");
-                }
-            }
-        }
-        return error;
-    }
     /**
      * @param bpc
      * @Decription doTransfer
      */
     public void doTransfer(BaseProcessClass bpc)throws CloneNotSupportedException,IOException{
         log.info(StringUtil.changeForLog("The compareChangePercentage start ..."));
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
-        String uen = ParamUtil.getString(bpc.request, "UEN");
-        String[] selectCheakboxs = ParamUtil.getStrings(bpc.request, "premisesInput");
+        String uen = (String) ParamUtil.getSessionAttr(bpc.request, "UEN");
+        String[] selectCheakboxs = (String[]) ParamUtil.getSessionAttr(bpc.request, "premisesInput");
+        String email = ParamUtil.getString(mulReq,"email");
+        CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("commonDoc");
         log.info(StringUtil.changeForLog("The compareChangePercentage licenceId is -->:"+licenceId));
         log.info(StringUtil.changeForLog("The compareChangePercentage uen is -->:"+uen));
         Map<String,String> error = doValidateEmpty(uen,selectCheakboxs);
@@ -424,6 +350,30 @@ public class RequestForChangeDelegator {
                     log.info(StringUtil.changeForLog("the draftNo -->:") + draftNo);
                     appSubmissionDto.setDraftNo(draftNo);
 
+                    //file
+                    if(file != null && file.getSize() != 0){
+                        List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList = IaisCommonUtils.genNewArrayList();
+                        String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
+                        Long size= file.getSize()/1024;
+                        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+                        AppPremisesSpecialDocDto appPremisesSpecialDocDto = new AppPremisesSpecialDocDto();
+                        appPremisesSpecialDocDto.setDocName(file.getOriginalFilename());
+                        appPremisesSpecialDocDto.setMd5Code(FileUtil.genMd5FileChecksum(file.getBytes()));
+                        appPremisesSpecialDocDto.setFileRepoId(fileRepoGuid);
+                        appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
+                        appPremisesSpecialDocDto.setSubmitBy(auditTrailDto.getMohUserGuid());
+                        appPremisesSpecialDocDtoList.add(appPremisesSpecialDocDto);
+                        appSubmissionDto.setAppPremisesSpecialDocDtos(appPremisesSpecialDocDtoList);
+                    }
+                    //save the email to the app_group_misc
+                    if(!StringUtil.isEmpty(email)){
+                        List<AppGroupMiscDto> appGroupMiscDtoList = IaisCommonUtils.genNewArrayList();
+                        AppGroupMiscDto appGroupMiscDto = new AppGroupMiscDto();
+                        appGroupMiscDto.setMiscType(ApplicationConsts.APP_GROUP_MISC_TYPE_TRANSFER_EMAIL);
+                        appGroupMiscDto.setMiscValue(email);
+                        appGroupMiscDtoList.add(appGroupMiscDto);
+                        appSubmissionDto.setAppGroupMiscDtos(appGroupMiscDtoList);
+                    }
                     AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
                     ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
                     StringBuffer url = new StringBuffer();
@@ -451,6 +401,8 @@ public class RequestForChangeDelegator {
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         String uen = ParamUtil.getString(bpc.request, "UEN");
         String[] selectCheakboxs = ParamUtil.getStrings(bpc.request, "premisesInput");
+        ParamUtil.setSessionAttr(bpc.request,"UEN",uen);
+        ParamUtil.setSessionAttr(bpc.request,"premisesInput",selectCheakboxs);
         log.info(StringUtil.changeForLog("The doValidate licenceId is -->:"+licenceId));
         log.info(StringUtil.changeForLog("The doValidate uen is -->:"+uen));
         Map<String,String> error = doValidateEmpty(uen,selectCheakboxs);
@@ -543,5 +495,91 @@ public class RequestForChangeDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, action);
         log.info(StringUtil.changeForLog("the do loadingDraft end ...."));
+    }
+
+    private boolean canTransfer(List<LicenseeKeyApptPersonDto> oldLicenseeKeyApptPersonDtos,
+                                List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoList){
+        boolean canTransfer = true;
+        if(IaisCommonUtils.isEmpty(oldLicenseeKeyApptPersonDtos)||IaisCommonUtils.isEmpty(licenseeKeyApptPersonDtoList)){
+            canTransfer = false;
+        }else{
+            int existCount = 0;
+            for(LicenseeKeyApptPersonDto newLicenseeKeyApptPersonDto : licenseeKeyApptPersonDtoList){
+                for(LicenseeKeyApptPersonDto oldLicenseeKeyApptPersonDto1 : oldLicenseeKeyApptPersonDtos){
+                    if(newLicenseeKeyApptPersonDto.getIdType().equals(oldLicenseeKeyApptPersonDto1.getIdType())
+                            && newLicenseeKeyApptPersonDto.getIdNo().equals(oldLicenseeKeyApptPersonDto1.getIdNo())){
+                        existCount = existCount+1;
+                        break;
+                    }
+                }
+            }
+            log.info(StringUtil.changeForLog("The  existCount  is -->:"+existCount));
+            log.info(StringUtil.changeForLog("The  licenseeKeyApptPersonDtoList.size()  is -->:"+licenseeKeyApptPersonDtoList.size()));
+            log.info(StringUtil.changeForLog("The  existCount/licenseeKeyApptPersonDtoList.size() is -->:"+existCount/licenseeKeyApptPersonDtoList.size()));
+            if((licenseeKeyApptPersonDtoList.size()-existCount)/licenseeKeyApptPersonDtoList.size()>0.5){
+                canTransfer = false;
+            }else{
+                log.info(StringUtil.changeForLog("can transfer"));
+            }
+        }
+
+        return canTransfer;
+
+    }
+
+    private FeeDto getTransferFee(){
+        AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
+        amendmentFeeDto.setChangeInHCIName(false);
+        amendmentFeeDto.setChangeInLicensee(true);
+        amendmentFeeDto.setChangeInLocation(false);
+        FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
+        return feeDto;
+    }
+
+    private boolean isSelect(String[] selectCheakboxs,String premisesIndexNo){
+        boolean isSelect = false;
+        if(!StringUtil.isEmpty(premisesIndexNo) && selectCheakboxs != null){
+            for(String select : selectCheakboxs){
+                if(premisesIndexNo.equals(select)){
+                    isSelect = true;
+                    break;
+                }
+            }
+        }
+        return isSelect;
+    }
+
+    private Map<String,String> doValidateEmpty(String uen,String[] selectCheakboxs){
+        Map<String,String> error = IaisCommonUtils.genNewHashMap();
+        if(selectCheakboxs == null || selectCheakboxs.length == 0){
+            error.put("premisesError","UC_CHKLMD001_ERR001");
+        }
+        if(StringUtil.isEmpty(uen) || uen.length() > 10){
+            error.put("uenError","UC_CHKLMD001_ERR001");
+        }
+        return error;
+    }
+    private Map<String,String> doValidateLojic(String uen,Map<String,String> error,LicenceDto licenceDto,LicenseeDto licenseeDto){
+        if(licenceDto==null){
+            error.put("uenError","Licence Error!!!");
+        }else{
+            if(licenseeDto == null){
+                error.put("uenError","uen error !!!");
+            }else{
+                List<LicenseeKeyApptPersonDto> oldLicenseeKeyApptPersonDtos = requestForChangeService.
+                        getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
+                List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoList = requestForChangeService.getLicenseeKeyApptPersonDtoListByUen(uen);
+                boolean canTransfer = canTransfer(oldLicenseeKeyApptPersonDtos,licenseeKeyApptPersonDtoList);
+                if(canTransfer){
+                    if(licenceDto.getLicenseeId().equals(licenseeDto.getId())){
+                        log.error(StringUtil.changeForLog("This Uen can not get the licensee -->:"+uen));
+                        error.put("uenError","can not transfer to self");
+                    }
+                }else{
+                    error.put("uenError","can not transfer");
+                }
+            }
+        }
+        return error;
     }
 }

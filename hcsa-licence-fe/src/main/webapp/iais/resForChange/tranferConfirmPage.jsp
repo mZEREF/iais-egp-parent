@@ -29,7 +29,7 @@
               <p>
               <c:forEach items="${prepareTranfer.appGrpPremisesDtoList}" var="premises">
                 <div class="form-check">
-                  <input class="form-check-input" id="premisesInput" type="checkbox" name="premisesInput" aria-invalid="false" value="${premises.tranferSelect}">
+                  <input class="form-check-input" id="premisesInput" type="checkbox" name="premisesInput" aria-invalid="false" value="${premises.tranferSelect}" disabled>
                   <label class="form-check-label" for="premisesInput"><span class="check-square"></span>${premises.tranferSelect} </label>
                 </div>
               </c:forEach>
@@ -41,7 +41,7 @@
           <iais:field value="UEN of Licence to transfer licence to"></iais:field>
           <iais:value width="10">
             <p>
-              <input type="text" name="UEN" value="${UEN}" maxlength="10">
+              <input type="text" name="UEN" value="${UEN}" maxlength="10" disabled>
               <span  class="error-msg" name="iaisErrorMsg" id="error_uenError"></span>
             </p>
           </iais:value>
