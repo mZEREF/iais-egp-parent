@@ -1227,7 +1227,6 @@ public class NewApplicationHelper {
 /*
 * @parameter file
 * @parameter fileTypes
-* @parameter fileTypes
 * @parameter fileSize
 * @parameter errorMessage
 * */
