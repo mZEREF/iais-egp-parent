@@ -43,16 +43,16 @@
           <div class="form-group">
             <iais:field value="Service Name" ></iais:field>
             <div class="col-md-5">
-              <iais:select name="svcName" id="svcName" options="svcNameSelect" firstOption="Select Service Name" value="${svcName}"></iais:select>
+              <iais:select name="svcName" id="svcName" options="svcNameSelect" firstOption="Please Select" value="${svcName}"></iais:select>
               <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
             </div>
           </div>
 
 
           <div class="form-group">
-            <iais:field value="Service Sub Type" ></iais:field>
+            <iais:field value="Service Sub-Type" ></iais:field>
             <div class="col-md-5">
-              <iais:select name="svcSubType" id="svcSubType" options="subtypeSelect" firstOption="Select Service Sub Type" value="${svcSubType}"></iais:select>
+              <iais:select name="svcSubType" id="svcSubType" options="subtypeSelect" firstOption="Please Select" value="${svcSubType}"></iais:select>
               <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
             </div>
           </div>
@@ -60,7 +60,7 @@
           <div class="form-group">
             <iais:field value="Module" ></iais:field>
             <div class="col-md-3">
-              <iais:select name="module" id="module" codeCategory="CATE_ID_CHECKLIST_MODULE" firstOption="Select Module" value="${module}"></iais:select>
+              <iais:select name="module" id="module" codeCategory="CATE_ID_CHECKLIST_MODULE" firstOption="Please Select" value="${module}"></iais:select>
               <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
             </div>
           </div>
@@ -68,7 +68,7 @@
           <div class="form-group">
             <iais:field value="Type" ></iais:field>
             <div class="col-md-3">
-              <iais:select name="type" id="type" codeCategory="CATE_ID_CHECKLIST_TYPE" firstOption="Select Type" value="${type}"></iais:select>
+              <iais:select name="type" id="type" codeCategory="CATE_ID_CHECKLIST_TYPE" firstOption="Please Select" value="${type}"></iais:select>
               <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
             </div>
           </div>

@@ -74,7 +74,7 @@
         </div>
 
         <div class="form-group">
-          <label class="col-md-2">Service Sub Type &nbsp;</label>
+          <label class="col-md-2">Service Sub-Type &nbsp;</label>
           <div class="col-md-5">
             <iais:select name="svcSubType" id="svcSubType"   options = "subtypeSelect" firstOption="Please Select" value="${svcSubType}"></iais:select>
           </div>
@@ -104,7 +104,7 @@
               <iais:sortableHeader needSort="true"   field="type" value="Type"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="service" value="Service"></iais:sortableHeader>
-              <iais:sortableHeader needSort="true"   field="subtype_name" value="Service Sub-type"></iais:sortableHeader>
+              <iais:sortableHeader needSort="true"   field="subtype_name" value="Service Sub-Type"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="START_DATE" value="Effective Start Date"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="END_DATE" value="Effective End Date"></iais:sortableHeader>
