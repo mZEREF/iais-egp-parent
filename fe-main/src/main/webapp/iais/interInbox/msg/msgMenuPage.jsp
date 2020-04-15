@@ -99,7 +99,7 @@
                                                   aria-haspopup="true" aria-expanded="false"
                                                   href="javascript:;">${iais_Login_User_Info_Attr.loginId}</a>
             <ol class="dropdown-menu" aria-labelledby="profileBtn">
-                <li class="management-account"><a href="#">Manage Account</a></li>
+                <li class="management-account"><a href="/main-web/eservice/INTERNET/MohFeUserManagement">Manage Account</a></li>
                 <li class="logout"><a href="${pageContext.request.contextPath}/eservice/INTERNET/InterLogout">Logout</a></li>
             </ol>
         </div>
