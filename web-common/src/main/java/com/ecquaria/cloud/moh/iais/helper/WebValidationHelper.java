@@ -169,7 +169,14 @@ public class WebValidationHelper {
                     int indx = value.indexOf("/");
                     try {
                         String num = value.substring(indx + 1);
+                        if (num.contains(".")){
+                            // The value returned by annotation @Min is a float number
+                            int signIndex = num.indexOf(".");
+                            num = num.substring(0, signIndex);
+                        }
+
                         Integer.parseInt(num);
+
                         msg = MessageUtil.getMessageDesc(value.substring(0, indx));
                         msg = msg.replace("%d", num);
                     }catch (NumberFormatException e){
@@ -208,7 +215,7 @@ public class WebValidationHelper {
             int indx = value.indexOf("/");
             try {
                 String num = value.substring(indx + 1);
-                Integer.parseInt(num);
+                Integer.valueOf(num);
                 msg = MessageUtil.getMessageDesc(value.substring(0, indx));
                 msg = msg.replace("%d", num);
             }catch (NumberFormatException e){

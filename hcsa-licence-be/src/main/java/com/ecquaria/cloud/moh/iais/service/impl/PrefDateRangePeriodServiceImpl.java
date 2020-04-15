@@ -27,6 +27,16 @@ public class PrefDateRangePeriodServiceImpl implements PrefDateRangePeriodServic
 
     @Override
     public Boolean savePrefInspPeriod(HcsaServicePrefInspPeriodDto period) {
+        period.setPeriodAfterApp(transformToDay(period.getPeriodAfterApp()));
+        period.setPeriodBeforeExp(transformToDay(period.getPeriodBeforeExp()));
         return hcsaConfigClient.savePrefInspPeriod(period).getEntity();
+    }
+
+    private Integer transformToDay(Integer week) {
+        if (week == null) {
+            return null;
+        }
+
+        return week * 7;
     }
 }

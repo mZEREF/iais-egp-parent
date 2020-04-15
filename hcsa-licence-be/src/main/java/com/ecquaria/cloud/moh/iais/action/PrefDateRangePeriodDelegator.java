@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -21,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.PrefDateRangePeriodService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -170,17 +170,31 @@ public class PrefDateRangePeriodDelegator {
         ParamUtil.setRequestAttr(request, PERIOD_BEFORE_APP_ATTR , periodBeforeExp);
         ParamUtil.setRequestAttr(request, NON_REPLY_WINDOW_ATTR , nonReplyWindow);
 
-
         HcsaServicePrefInspPeriodDto period = (HcsaServicePrefInspPeriodDto) ParamUtil.getSessionAttr(request, "requestPeriodAttr");
+
         try {
-            period.setPeriodAfterApp(transformToDay(Integer.parseInt(periodAfterApp)));
-            period.setPeriodBeforeExp(transformToDay(Integer.parseInt(periodBeforeExp)));
-            period.setNonReplyWindow(Integer.parseInt(nonReplyWindow));
+            if (StringUtils.isEmpty(periodAfterApp)){
+                period.setPeriodAfterApp(null);
+            }else {
+                period.setPeriodAfterApp(Integer.parseInt(periodAfterApp));
+            }
+
+            if (StringUtils.isEmpty(periodBeforeExp)) {
+                period.setPeriodBeforeExp(null);
+            }else {
+                period.setPeriodBeforeExp(Integer.parseInt(periodBeforeExp));
+            }
+
+            if (StringUtils.isEmpty(nonReplyWindow)) {
+                period.setNonReplyWindow(null);
+            }else {
+                period.setNonReplyWindow(Integer.parseInt(nonReplyWindow));
+            }
+
         }catch (NumberFormatException e){
-            HashMap<String, String> errorMap = new HashMap<>(1);
-            errorMap.put("numberError", MessageCodeKey.GENERAL_ERR0002);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("numberError", "GENERAL_ERR0002"));
+            ParamUtil.setSessionAttr(request, "requestPeriodAttr", period);
             return;
         }
 
@@ -189,6 +203,7 @@ public class PrefDateRangePeriodDelegator {
             Map<String,String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            ParamUtil.setSessionAttr(request, "requestPeriodAttr", period);
             return;
         }
 
@@ -199,19 +214,11 @@ public class PrefDateRangePeriodDelegator {
             return;
         }else {
             HashMap<String, String> errorMap = new HashMap<>(1);
-            errorMap.put("dataError", MessageCodeKey.GENERAL_ERR0001);
+            errorMap.put("dataError", "GENERAL_ERR0001");
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             return;
         }
-    }
-
-    private Integer transformToDay(Integer week){
-        if (week == null){
-            return null;
-        }
-
-        return week * 7;
     }
 
     private HashMap<String, String> validateResult(HttpServletRequest request, SearchParam searchParam){
@@ -246,7 +253,7 @@ public class PrefDateRangePeriodDelegator {
                 searchParam.addFilter(NON_REPLY_WINDOW_ATTR, nonRepyWindow, true);
             }
         }catch (NumberFormatException e){
-            errorMap.put("numberError", MessageCodeKey.GENERAL_ERR0002);
+            errorMap.put("numberError", "GENERAL_ERR0002");
             return errorMap;
         }
 
