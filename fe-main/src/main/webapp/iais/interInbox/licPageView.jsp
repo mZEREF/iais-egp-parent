@@ -57,11 +57,15 @@
 
     function licClick(status) {
         if ($('.licenceCheck').is(':checked')){
+            if ('LICEST001' == status) {
+                $("#lic-amend").removeClass('disabled');
+            }
             if ('LICEST005' == status){
                 $("#lic-cease").addClass('disabled');
             }
         }else {
             $("#lic-cease").removeClass('disabled');
+            $("#lic-amend").addClass('disabled');
         }
     }
     function submit(action){
