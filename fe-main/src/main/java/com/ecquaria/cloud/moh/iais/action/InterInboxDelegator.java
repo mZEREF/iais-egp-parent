@@ -186,9 +186,8 @@ public class InterInboxDelegator {
             }
         }
         if(msgSubject != null){
-            inboxSearchMap.put("msgSubject",msgSubject);
+            inboxSearchMap.put("msgSubject",'%'+msgSubject+'%');
         }else{
-
             inboxSearchMap.remove("msgSubject");
         }
         inboxParameter.setFilters(inboxSearchMap);

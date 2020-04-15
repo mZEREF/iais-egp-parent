@@ -16,7 +16,7 @@
             FROM INBOX_MSG AS inbox
             WHERE 1=1
             <#if id??> AND CHARINDEX(:id, inbox.id) >0</#if>
-            <#if msgSubject??> AND inbox.subject = :msgSubject</#if>
+            <#if msgSubject??> AND inbox.subject like :msgSubject</#if>
             <#if userId??> AND inbox.user_id = :userId</#if>
             <#if msgStatus??> AND inbox.status in :msgStatus</#if>
             <#if messageType??> AND inbox.message_type = :messageType</#if>

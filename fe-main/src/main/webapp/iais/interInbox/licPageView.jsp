@@ -68,6 +68,7 @@
             $("#lic-amend").addClass('disabled');
         }
     }
+
     function submit(action){
         $("[name='lic_action_type']").val(action);
         $("#licForm").submit();
@@ -159,8 +160,6 @@
         $("[name='crud_action_additional']").val(sortType);
         submit('licSort');
     }
-
-
 
     function doClearLic(){
         $("[name='licNoPath']").val("");
