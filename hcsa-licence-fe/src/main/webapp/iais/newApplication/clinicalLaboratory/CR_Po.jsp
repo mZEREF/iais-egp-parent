@@ -208,7 +208,7 @@
               <br/>
               <div class="row">
                 <div class="form-group form-horizontal formgap">
-                  <div class="col-sm-6 col-md-4">
+                  <div class="col-sm-6 col-md-4" style="font-size: 1.6rem;">
                     Deputy Principal Officer (Optional)
                   </div>
                   <c:if test="${DeputyPrincipalOfficersMandatory> 0}">
