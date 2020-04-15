@@ -46,10 +46,8 @@
                         <iais:datePicker id = "specificDate" name = "specificDate" value="${apptInspectionDateDto.specificDate}"></iais:datePicker>
                       </div>
                       <div class="col-xs-12 col-md-3">
-                        <iais:select name="hoursOption" options="hoursOption" firstOption="--" value="${apptInspectionDateDto.hours}" onchange="javascript:apptInspectionDateHours(this.value)"></iais:select>
+                        <iais:select name="hoursOption" options="hoursOption" firstOption="--:--" value="${apptInspectionDateDto.hours}" onchange="javascript:apptInspectionDateHours(this.value)"></iais:select>
                       </div>
-                      <br><span class="error-msg" name="iaisErrorMsg" id="error_specificDate"></span>
-                      <span class="error-msg" name="iaisErrorMsg" id="error_hours"></span>
                     </div>
                   </div>
                   <iais:action>

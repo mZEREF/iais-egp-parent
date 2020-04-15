@@ -128,8 +128,8 @@ public class ApptInspectionDateDelegator {
     public void apptInspectionDateSpec(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptInspectionDateSpec start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
-        List<SelectOption> amPm = apptInspectionDateService.getAmPmOption();
-        ParamUtil.setSessionAttr(bpc.request, "amPmOption", (Serializable) amPm);
+        List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
+        ParamUtil.setSessionAttr(bpc.request, "hoursOption", (Serializable) hours);
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
     }
 
@@ -146,17 +146,19 @@ public class ApptInspectionDateDelegator {
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         apptInspectionDateDto.setProcessDec(processDec);
         apptInspectionDateDto = getValidateValue(apptInspectionDateDto, bpc);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(apptInspectionDateDto,"specific");
-        if (validationResult.isHasErrors()) {
-            Map<String, String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
-        } else {
-            ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
-        }
         if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue)) {
             ParamUtil.setRequestAttr(bpc.request, "apptBackShow", InspectionConstants.SWITCH_ACTION_BACK);
+            ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+        } else {
+            ValidationResult validationResult = WebValidationHelper.validateProperty(apptInspectionDateDto, "specific");
+            if (validationResult.isHasErrors()) {
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+            } else {
+                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
+            }
         }
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
     }
