@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
+import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
@@ -30,6 +31,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1250,5 +1253,21 @@ public class NewApplicationHelper {
         }
 
         return map;
+    }
+
+    /*
+     * @parameter file
+     * @parameter fileTypes
+     * */
+
+    public static Map<String,Boolean> validateFile(CommonsMultipartFile file){
+        List<String> list=new ArrayList<>();
+        list.add("PDF");
+        list.add("JPG");
+        list.add("PNG");
+        list.add("DOCX");
+        list.add("DOC");
+        Long size=4*1024*1024L;
+        return validateFile(file,list,size);
     }
 }
