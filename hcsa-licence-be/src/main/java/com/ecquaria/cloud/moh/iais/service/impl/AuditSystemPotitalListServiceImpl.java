@@ -364,7 +364,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     }
 
     public AuditTaskDataFillterDto transferDtoToFiltterDto(AuditTaskDataDto dto, Double score) {
-        AuditTaskDataFillterDto fDto = new AuditTaskDataFillterDto();
+        AuditTaskDataFillterDto fDto = getAuditTaskDataFillterDto(dto,true);
         if (score != null) {
             fDto.setScore(score);
         }

@@ -59,6 +59,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private EventClient eventClient;
     @Autowired
     private ApplicationClient applicationClient;
+    @Autowired
+    private TaskHcsaConfigClient taskHcsaConfigClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -164,27 +166,37 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     public void createTask(AuditTaskDataFillterDto temp,String submitId,AuditCombinationDto auditCombinationDto,String eventRefNum){
         TaskDto taskDto = new TaskDto();
         taskDto.setId(generateIdClient.getSeqId().getEntity());
-        taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
         taskDto.setUserId(temp.getInspectorId());
-        taskDto.setProcessUrl("todo");//todo
+        taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE );
         taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION_SUPER);
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         taskDto.setSlaDateCompleted(null);
         taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         taskDto.setWkGrpId(temp.getWorkGroupId());
-        taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INP);
+        taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
         taskDto.setSlaAlertInDays(2);
         taskDto.setSlaRemainInDays(3);
         taskDto.setSlaInDays(5);
-        taskDto.setScore(4);
         List<ApplicationDto> postApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
         if(postApps != null && postApps.size() >0 ){
             String corrId = applicationClient.getCorrIdByAppId(postApps.get(0).getId()).getEntity();
             taskDto.setRefNo(corrId);
+            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList(1);
+            for(ApplicationDto applicationDto : postApps){
+                HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+                hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
+                hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+                hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
+                hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
+                hcsaSvcStageWorkingGroupDtos = taskHcsaConfigClient.getWrkGrp(hcsaSvcStageWorkingGroupDtos).getEntity();
+                taskDto.setScore(getConfigScoreForService( hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),HcsaConsts.ROUTING_STAGE_INS,applicationDto.getApplicationType()));
+                break;
+            }
         }else {
             log.info("=============== group id is null.==========");
             return;
+
         }
         taskDto.setPriority(0);
         List<TaskDto> createTaskDtoList = IaisCommonUtils.genNewArrayList();
@@ -197,6 +209,22 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private int getConfigScoreForService(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos,String serviceId,
+                                         String stageId,String appType){
+        int result = 0;
+        if(StringUtil.isEmpty(serviceId) || StringUtil.isEmpty(stageId) || StringUtil.isEmpty(appType)){
+            return result;
+        }
+        for (HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto :hcsaSvcStageWorkingGroupDtos){
+            if(serviceId.equals(hcsaSvcStageWorkingGroupDto.getServiceId())
+                    && stageId.equals(hcsaSvcStageWorkingGroupDto.getStageId())
+                    && appType.equals(hcsaSvcStageWorkingGroupDto.getType())){
+                result = hcsaSvcStageWorkingGroupDto.getCount() == null ? 0 :hcsaSvcStageWorkingGroupDto.getCount();
+            }
+        }
+        return result;
     }
     public void updateLicPremisesAuditDto(AuditTaskDataFillterDto temp,String status){
         LicPremisesAuditDto licPremisesAuditDto = hcsaLicenceClient.getLicPremAuditByGuid(temp.getAuditId()).getEntity();

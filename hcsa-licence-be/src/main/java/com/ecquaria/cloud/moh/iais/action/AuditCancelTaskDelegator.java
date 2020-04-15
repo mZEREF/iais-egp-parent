@@ -89,6 +89,8 @@ public class AuditCancelTaskDelegator {
         AuditCancelOrRejectValidate auditCancelOrRejectValidate = new AuditCancelOrRejectValidate();
         Map<String, String> errMap = auditCancelOrRejectValidate.validate(request);
         if (!errMap.isEmpty()) {
+            List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
+
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
         } else {
