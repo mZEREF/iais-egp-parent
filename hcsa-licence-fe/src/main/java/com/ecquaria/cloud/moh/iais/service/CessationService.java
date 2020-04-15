@@ -24,10 +24,12 @@ public interface CessationService {
 
     void updateLicenceFe(List<String> licNos);
 
-    void saveCessations(List<AppCessationDto> appCessationDtos);
+    List<String> saveCessations(List<AppCessationDto> appCessationDtos);
 
     void updateCesation(List<AppCessationDto> appCessationDtos);
 
     AppPremisesCorrelationDto getAppPreCorDto(String appId);
+
+    List<String> listHciName();
 
 }

@@ -561,6 +561,29 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     @Override
+    public void routTastToRoutBack(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,String historyRemarks) {
+        String serviceId = applicationDto.getServiceId();
+        String status = applicationDto.getStatus();
+        String applicationNo = applicationDto.getApplicationNo();
+        String taskKey = taskDto.getTaskKey();
+        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION);
+        updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
+        completedTask(taskDto);
+        AppPremisesRoutingHistoryDto secondRouteBackHistoryByAppNo = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(applicationNo, status);
+        String userId = secondRouteBackHistoryByAppNo.getActionby();
+        String id = secondRouteBackHistoryByAppNo.getId();
+        String subStage = getSubStage(appPremisesCorrelationId,taskKey);
+        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
+        String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
+        List<TaskDto> taskDtos = prepareBackTaskList(taskDto,userId);
+        taskService.createTasks(taskDtos);
+        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
+        String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
+        createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
+        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, historyRemarks, null, RoleConsts.USER_ROLE_AO1, groupId2, subStage);
+    }
+
+    @Override
     public InspectionReportDto getInspectorUser(TaskDto taskDto,LoginContext loginContext) {
         InspectionReportDto reportDtoForInspector = new InspectionReportDto();
         //get reported By

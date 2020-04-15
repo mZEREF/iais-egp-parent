@@ -225,7 +225,7 @@ public class CessationServiceImpl implements CessationService {
         String id = tasks.get(0).getId();
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
         appPremisesRoutingHistoryDtos.get(0).setRoleId(curRoleId);
-        appPremisesRoutingHistoryDtos.get(0).setProcessDecision("VERIFIED");
+        appPremisesRoutingHistoryDtos.get(0).setProcessDecision(ApplicationConsts.APPLICATION_STATUS_VERIFIED);
         taskService.createHistorys(appPremisesRoutingHistoryDtos);
     }
 

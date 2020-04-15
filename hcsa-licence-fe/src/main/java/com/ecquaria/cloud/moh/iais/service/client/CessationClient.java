@@ -13,6 +13,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public interface CessationClient {
     FeignResponseEntity<AppInsRepDto> getAppCessationDto(@PathVariable("appNo") String appNo);
 
     @PostMapping(value = "/appeal/application-cessation",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> saveCessation(@RequestBody List<AppCessMiscDto> appCessMiscDtos);
+    FeignResponseEntity<List<String>> saveCessation(@RequestBody List<AppCessMiscDto> appCessMiscDtos);
 
     @PostMapping(value = "/appeal/list-cessation-corrIds",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppCessMiscDto>> getAppCessMiscDtosByCorrIds(@RequestBody List<String> corrIds);
@@ -37,4 +38,7 @@ public interface CessationClient {
 
     @PostMapping(value = "/appeal/application-cessation-list",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity <List<AppCessLicDto>> getCessationByLicIds(@RequestBody List<String> licIds);
+
+    @GetMapping(value = "/appeal/listHciName",produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> listHciNames();
 }

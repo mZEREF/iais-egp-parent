@@ -149,6 +149,12 @@ public class InsReportDelegator {
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = prepareForSave(bpc, appPremisesCorrelationId);
         saveRecommendations(appPremisesRecommendationDtoList);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String status = applicationDto.getStatus();
+        if(!ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(status)){
+            insRepService.routTastToRoutBack(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto.getProcessRemarks());
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            return;
+        }
         insRepService.routingTaskToAo1(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
     }

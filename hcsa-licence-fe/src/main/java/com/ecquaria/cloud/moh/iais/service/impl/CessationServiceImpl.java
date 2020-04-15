@@ -161,7 +161,7 @@ public class CessationServiceImpl implements CessationService {
     }
 
     @Override
-    public void saveCessations(List<AppCessationDto> appCessationDtos) {
+    public List<String> saveCessations(List<AppCessationDto> appCessationDtos) {
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         for(AppCessationDto appCessationDto : appCessationDtos){
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
@@ -192,7 +192,8 @@ public class CessationServiceImpl implements CessationService {
             setMiscData(appCessationDto, appCessMiscDto, appId);
             appCessMiscDtos.add(appCessMiscDto);
         }
-        cessationClient.saveCessation(appCessMiscDtos).getEntity();
+        List<String> listAppIds = cessationClient.saveCessation(appCessMiscDtos).getEntity();
+        return listAppIds;
     }
 
 
@@ -234,6 +235,11 @@ public class CessationServiceImpl implements CessationService {
         cessationClient.updateCessation(appCessMiscDtos).getEntity();
     }
 
+    @Override
+    public List<String> listHciName() {
+        List<String> hciNames = cessationClient.listHciNames().getEntity();
+        return hciNames;
+    }
 
     /*
     utils
