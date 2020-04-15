@@ -682,6 +682,11 @@ public class InterInboxDelegator {
         selectWithdrawalSelectList.add(new SelectOption("Recall", "Recall"));
         selectWithdrawalSelectList.add(new SelectOption("Withdraw", "Withdraw"));
         ParamUtil.setRequestAttr(request, "selectWithdrawApplication", selectAppealSelectList);
+
+        List<SelectOption> selectApproveOrRejectSelectList = IaisCommonUtils.genNewArrayList();
+        selectApproveOrRejectSelectList.add(new SelectOption("Recall", "Recall"));
+        selectApproveOrRejectSelectList.add(new SelectOption("Appeal", "Appeal"));
+        ParamUtil.setRequestAttr(request, "selectApproveOrRejectSelectList", selectApproveOrRejectSelectList);
     }
 
     private void prepareLicSelectOption(HttpServletRequest request){

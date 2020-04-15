@@ -149,15 +149,16 @@
                                     <p class="visible-xs visible-sm table-row-title" for="appAction">Actions</p>
                                     <c:choose>
                                         <c:when test="${app.status == 'APST008'}">
-                                            <iais:select name="draftAction" id="draftAction"
-                                                         options="selectDraftApplication" firstOption="Select"
-                                                         onchange="doDraftAction('${app.applicationNo}',this.value)"></iais:select>
+                                            <iais:select name="draftAction" id="draftAction" options="selectDraftApplication" firstOption="Select" onchange="doDraftAction('${app.applicationNo}',this.value)"/>
+                                        </c:when>
+                                        <c:when test="${app.status == 'APST038' || (app.status == 'APST007' && app.applicationType == 'APTY006') || (app.status == 'APST007' && app.applicationType == 'APTY001')}">
+                                            <iais:select options="noAction" name="noAction" firstOption="Select"/>
+                                        </c:when>
+                                        <c:when test="${app.status == 'APST006' || app.status == 'APST005'}">
+                                            <iais:select name="appAction" id="appAction" options="selectApproveOrRejectSelectList" firstOption="Select" onchange="doAppAction('${app.id}','${app.applicationNo}',this.value)"/>
                                         </c:when>
                                         <c:otherwise>
-                                            <iais:select name="appAction" id="appAction"
-                                                         options="selectApplication"
-                                                         firstOption="Select"
-                                                         onchange="doAppAction('${app.id}','${app.applicationNo}',this.value)"></iais:select>
+                                            <iais:select name="appAction" id="appAction" options="selectApplication" firstOption="Select" onchange="doAppAction('${app.id}','${app.applicationNo}',this.value)"/>
                                         </c:otherwise>
                                     </c:choose>
                                 </td>
