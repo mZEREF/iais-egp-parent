@@ -863,6 +863,13 @@ public class HcsaApplicationDelegator {
     public void reject(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do reject start ...."));
         routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_REJECTED,null);
+
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
+        String appGrpId = applicationViewDto.getApplicationDto().getAppGrpId();
+        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+        //send email
+        sendRejectEmail(applicationNo,licenseeId,appGrpId);
         log.debug(StringUtil.changeForLog("the do reject end ...."));
     }
 
@@ -1035,6 +1042,32 @@ public class HcsaApplicationDelegator {
     //***************************************
     //private methods
     //*************************************
+
+    private void sendRejectEmail(String applicationNo,String licenseeId,String groupNo){
+        //send email
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_ID).getEntity();
+        if(msgTemplateDto != null){
+            Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
+            tempMap.put("applicationNumber",StringUtil.viewHtml(applicationNo));
+            tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+
+            String mesContext = null;
+            try {
+                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+            } catch (IOException | TemplateException e) {
+                log.error(e.getMessage(),e);
+            }
+
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(mesContext);
+            emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + applicationNo + " is Rejected");
+            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+            emailDto.setClientQueryCode(groupNo);
+            //send
+            emailClient.sendNotification(emailDto).getEntity();
+        }
+    }
 
     private void checkRecommendationDropdownValue(Integer  recomInNumber,String chronoUnit,String codeDesc,ApplicationViewDto applicationViewDto,BaseProcessClass bpc){
         if(StringUtil.isEmpty(codeDesc)){
