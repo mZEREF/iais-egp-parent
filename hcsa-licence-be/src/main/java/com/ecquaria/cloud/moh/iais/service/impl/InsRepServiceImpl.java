@@ -572,10 +572,11 @@ public class InsRepServiceImpl implements InsRepService {
         AppPremisesRoutingHistoryDto secondRouteBackHistoryByAppNo = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(applicationNo, status);
         String userId = secondRouteBackHistoryByAppNo.getActionby();
         String roleId = secondRouteBackHistoryByAppNo.getRoleId();
+        String stageId = secondRouteBackHistoryByAppNo.getStageId();
         String subStage = getSubStage(appPremisesCorrelationId,taskKey);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
-        List<TaskDto> taskDtos = prepareRoutBackTaskList(taskDto,userId,roleId);
+        List<TaskDto> taskDtos = prepareRoutBackTaskList(taskDto,userId,roleId,stageId);
         taskService.createTasks(taskDtos);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
@@ -834,9 +835,10 @@ public class InsRepServiceImpl implements InsRepService {
         return list;
     }
 
-    private List<TaskDto> prepareRoutBackTaskList(TaskDto taskDto,String userId,String roleId) {
+    private List<TaskDto> prepareRoutBackTaskList(TaskDto taskDto,String userId,String roleId,String stageId) {
         List<TaskDto> list = IaisCommonUtils.genNewArrayList();
         taskDto.setId(null);
+        taskDto.setTaskKey(stageId);
         taskDto.setTaskType(TaskConsts.TASK_TYPE_MAIN_FLOW);
         taskDto.setUserId(userId);
         taskDto.setDateAssigned(new Date());
