@@ -1,4 +1,3 @@
-<div class="tab-pane active" id="tabInfo" role="tabpanel">
 
     <div class="panel panel-default">
         <!-- Default panel contents -->
@@ -80,4 +79,4 @@
             </div>
         </div>
     </div>
-</div>
+
