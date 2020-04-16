@@ -77,7 +77,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
     }
     public void therholdVad(Map<String, String> errMap,HcsaRiskFinanceMatrixDto fdto){
         if(StringUtil.isEmpty(fdto.getInThershold())){
-            errMap.put(fdto.getServiceCode()+"inThershold","Thershold is mandatory");
+            errMap.put(fdto.getServiceCode()+"inThershold","UC_CHKLMD001_ERR001");
             fdto.setInThersholderr(true);
         }else{
             try {
@@ -92,7 +92,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             }
         }
         if(StringUtil.isEmpty(fdto.getPrThershold())){
-            errMap.put(fdto.getServiceCode()+"prThershold","Thershold is mandatory");
+            errMap.put(fdto.getServiceCode()+"prThershold","UC_CHKLMD001_ERR001");
             fdto.setPrThersholderr(true);
         }else{
             try {
@@ -298,36 +298,36 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
     public void mandatoryCaseCounthVad(Map<String, String> errMap,HcsaRiskFinanceMatrixDto fdto){
         //in
         if(StringUtil.isEmpty(fdto.getInLeftModCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"inLeftModCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getServiceCode()+"inLeftModCaseCounth","UC_CHKLMD001_ERR001");
             fdto.setInLeftModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getInRightModCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"inRightModCaseCounth()","CaseCounth is mandatory");
+            errMap.put(fdto.getServiceCode()+"inRightModCaseCounth()","UC_CHKLMD001_ERR001");
             fdto.setInRightModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getInRightLowCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"inRightLowCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getServiceCode()+"inRightLowCaseCounth","UC_CHKLMD001_ERR001");
             fdto.setInRightLowCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getInLeftHighCaseCount())){
-            errMap.put(fdto.getServiceCode()+"inLeftHighCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getServiceCode()+"inLeftHighCaseCounth","UC_CHKLMD001_ERR001");
             fdto.setInLeftHighCaseCounterr(true);
         }
         //pr
         if(StringUtil.isEmpty(fdto.getPrLeftModCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"prLeftModCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getServiceCode()+"prLeftModCaseCounth","UC_CHKLMD001_ERR001");
             fdto.setPrLeftModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getPrRightModCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"prRightModCaseCounth()","CaseCounth is mandatory");
+            errMap.put(fdto.getServiceCode()+"prRightModCaseCounth()","UC_CHKLMD001_ERR001");
             fdto.setPrRightModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getPrRightLowCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"prRightLowCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getServiceCode()+"prRightLowCaseCounth","UC_CHKLMD001_ERR001");
             fdto.setPrRightLowCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getPrLeftHighCaseCount())){
-            errMap.put(fdto.getServiceCode()+"prLeftHighCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getServiceCode()+"prLeftHighCaseCounth","UC_CHKLMD001_ERR001");
             fdto.setPrLeftHighCaseCounterr(true);
         }
     }
@@ -439,10 +439,10 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         if(StringUtil.isEmpty(strEffDate)){
             vadFlag = false;
             if(isIn){
-                errMap.put(serviceCode+"inEffDate","EffectiveDate is mandatory");
+                errMap.put(serviceCode+"inEffDate","UC_CHKLMD001_ERR001");
                 fdto.setInEffectiveStartDateerr(true);
             }else{
-                errMap.put(serviceCode+"prEffDate","EffectiveDate is mandatory");
+                errMap.put(serviceCode+"prEffDate","UC_CHKLMD001_ERR001");
                 fdto.setPrEffectiveStartDateerr(true);
             }
         }else{
@@ -462,10 +462,10 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         if(StringUtil.isEmpty(strEndDate)){
             vadFlag = false;
             if(isIn){
-                errMap.put(serviceCode+"inEndDate","EndDate is mandatory");
+                errMap.put(serviceCode+"inEndDate","UC_CHKLMD001_ERR001");
                 fdto.setInEffectiveEndDateerr(true);
             }else{
-                errMap.put(serviceCode+"prEndDate","EndDate is mandatory");
+                errMap.put(serviceCode+"prEndDate","UC_CHKLMD001_ERR001");
                 fdto.setPrEffectiveEndDateerr(true);
             }
         }else{

@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.ecquaria.cloudfeign.FeignException;
@@ -178,6 +179,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         taskDto.setSlaRemainInDays(3);
         taskDto.setSlaInDays(5);
         taskDto.setPriority(0);
+        taskDto.setDateAssigned(new Date());
         List<ApplicationDto> postApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
         if(postApps != null && postApps.size() >0 ){
             String corrId = applicationClient.getCorrIdByAppId(postApps.get(0).getId()).getEntity();
@@ -228,9 +230,10 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     public void updateLicPremisesAuditDtoByEventBus(AuditTaskDataFillterDto temp,String status){
         String submitId = generateIdClient.getSeqId().getEntity();
         AuditCombinationDto auditCombinationDto = new AuditCombinationDto();
-        String  RefNo = applicationClient. getRefNoByLicId(submitId,auditCombinationDto.getAuditTaskDataFillterDto().getHclCode()).getEntity();
+        auditCombinationDto.setAuditTaskDataFillterDto(temp);
+        String  RefNo = applicationClient.getRefNoByLicId(temp.getLicId(),temp.getHclCode()).getEntity();
         auditCombinationDto.setEventRefNo(RefNo);
-        updateLicenceSaveCancelTask(auditCombinationDto,temp,status,submitId);
+        updateLicenceSaveCancelTask(auditCombinationDto,status,submitId);
         updateAppCancelTaskByEventBus(auditCombinationDto,submitId);
         updateTaskCancelTaskByEventBus(auditCombinationDto,submitId);
     }
@@ -255,13 +258,13 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
     }
 
-    public void updateLicenceSaveCancelTask( AuditCombinationDto auditCombinationDto,AuditTaskDataFillterDto temp,String status,String submitId){
+    public void updateLicenceSaveCancelTask( AuditCombinationDto auditCombinationDto,String status,String submitId){
+       AuditTaskDataFillterDto temp = auditCombinationDto.getAuditTaskDataFillterDto();
         LicPremisesAuditDto licPremisesAuditDto = hcsaLicenceClient.getLicPremAuditByGuid(temp.getAuditId()).getEntity();
         licPremisesAuditDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         licPremisesAuditDto.setStatus(status);
         licPremisesAuditDto.setRemarks(temp.getCancelReason());
         auditCombinationDto.setLicPremisesAuditDto(licPremisesAuditDto);
-        auditCombinationDto.setAuditTaskDataFillterDto(temp);
         log.info("========================>>>>> canceled audit !!!!");
         try {
             eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts. OPERATION__AUDIT_TASK_CANCELED,auditCombinationDto.getEventRefNo(),null);
