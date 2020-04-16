@@ -202,13 +202,13 @@
                             '<thead>' +
                             '<tr>';
 
-                        html += '<th>Application No</th>' +
-                            '<th>Application Status</th>' +
-                            '<th>HCI Code</th>' +
-                            '<th>HCI Name / Address</th>' +
-                            '<th>Licence Expiry Date</th>' +
-                            '<th>Inspection Date</th>' +
-                            '<th>' + memberName + '</th>' +
+                        html += '<th width="12.5%">Application No</th>' +
+                            '<th width="12.5%">Application Status</th>' +
+                            '<th width="12.5%">HCI Code</th>' +
+                            '<th width="25%">HCI Name / Address</th>' +
+                            '<th width="12.5%">Licence Expiry Date</th>' +
+                            '<th width="12.5%">Inspection Date</th>' +
+                            '<th width="12.5%">' + memberName + '</th>' +
                             '</tr>' +
                             '</thead>' +
                             '<tbody>';
