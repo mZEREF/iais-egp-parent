@@ -35,7 +35,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -91,6 +90,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             List<ApplicationDto> applicationDtos = applicationClient.getPremisesApplicationsByCorreId(appPremCorrId).getEntity();
             apptFeConfirmDateDto.setApplicationDtos(applicationDtos);
             List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.getSystemDtosByAppPremCorrIdList(taskRefNo).getEntity();
+            apptFeConfirmDateDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
+            apptFeConfirmDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDtoList.get(0));
             if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtoList)){
                 List<String> apptRefNos = IaisCommonUtils.genNewArrayList();
                 for(AppPremisesInspecApptDto aDto : appPremisesInspecApptDtoList){
@@ -105,8 +106,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                     setSystemDateMap(apptFeConfirmDateDto);
                 }
             }
-            apptFeConfirmDateDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
-            apptFeConfirmDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDtoList.get(0));
+
             apptFeConfirmDateDto.setAppPremCorrId(appPremCorrId);
         }
         return apptFeConfirmDateDto;
@@ -493,16 +493,23 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     }
 
     private String apptDateToStringShow(Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("d MMM");
-        String specificDate = format.format(date);
+        String specificDate = Formatter.formatDateTime(date, "dd MMM");
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int curHour24 = cal.get(Calendar.HOUR_OF_DAY);
         if(curHour24 > 12){
             int hours = curHour24 - 12;
-            specificDate = specificDate + " " + hours + ":00" + "PM";
+            String hoursShow = "";
+            if(hours < 10){
+                hoursShow = "0";
+            }
+            specificDate = specificDate + " " + hoursShow + hours + ":00" + " PM";
         } else {
-            specificDate = specificDate + " " + curHour24 + ":00" + "AM";
+            String hoursShow = "";
+            if(curHour24 < 10){
+                hoursShow = "0";
+            }
+            specificDate = specificDate + " " + hoursShow + curHour24 + ":00" + " AM";
         }
         return specificDate;
     }
