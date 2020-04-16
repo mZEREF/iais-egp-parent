@@ -18,7 +18,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="dashboard-page-title">
-                        <h1>HCSA Internet Admin Account</h1>
+                        <h1>Internet User Accounts</h1>
                     </div>
                 </div>
             </div>
@@ -36,22 +36,16 @@
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
                     <div class="intranet-content">
-                        <div class="bg-title">
-                            <h2>Admin User</h2>
-                        </div>
                         <table class="table">
                             <thead>
                             <tr>
-                                <th>No</th>
-                                <th>UEN</th>
-                                <th>UIN</th>
+                                <th>ID No.</th>
+                                <th>ID Type</th>
                                 <th>Salutation</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Email</th>
+                                <th>Name</th>
+                                <th>Designation</th>
                                 <th>Is Administrator</th>
-                                <th></th>
-                                <th></th>
+                                <th>Is Active</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -67,53 +61,46 @@
                                 <c:otherwise>
                                     <c:forEach var="item"  items="${feAdmin.rows}" varStatus="status">
                                         <tr style="display: table-row;">
-                                            <td>
-                                                <p><c:out  value="${(status.index + 1) + (feAdminSearchParam.pageNo - 1) * feAdminSearchParam.pageSize}"/></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${item.uenNo}"/></p>
-                                            </td>
+                                            <%--<td>--%>
+                                                <%--<p><c:out  value="${(status.index + 1) + (feAdminSearchParam.pageNo - 1) * feAdminSearchParam.pageSize}"/></p>--%>
+                                            <%--</td>--%>
                                             <td>
                                                 <p><c:out value="${item.idNo}"/></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out value="${item.idType}"/></p>
                                             </td>
                                             <td>
                                                 <p><c:out value="${item.salutation}"/></p>
                                             </td>
                                             <td>
-                                                <p><c:out value="${item.firstname}"/></p>
+                                                <p><c:out value="${item.name}"/></p>
                                             </td>
                                             <td>
-                                                <p><c:out value="${item.lastname}"/></p>
+                                                <p><c:out value="${item.designation}"/></p>
                                             </td>
                                             <td>
-                                                <p><c:out value="${item.emailAddr}"/></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${item.roleId}"/></p>
+                                                <c:choose>
+                                                    <c:when test="${item.role eq 'ORG_ADMIN'}">
+                                                        <p>Yes</p>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <p>No</p>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </td>
                                             <td id="active${item.id}">
                                                 <c:choose>
-                                                <c:when test="${item.status eq '1'}">
-                                                    <p><a onclick="doActive('${item.id}','inActive')">Active</a></p>
+                                                <c:when test="${item.isActive eq '1'}">
+                                                    <p>Yes</p>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <p>Active</p>
+                                                    <p>No</p>
                                                 </c:otherwise>
                                                 </c:choose>
-
                                             </td>
                                             <td>
                                                 <p><a onclick="edit('${item.id}')">Edit</a></p>
-                                            </td>
-                                            <td  id="inactive${item.id}">
-                                                <c:choose>
-                                                    <c:when test="${item.status eq '0'}">
-                                                        <p><a onclick="doActive('${item.id}','Active')">De-activate</a></p>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <p>De-active</p>
-                                                    </c:otherwise>
-                                                </c:choose>
                                             </td>
                                         </tr>
                                     </c:forEach>

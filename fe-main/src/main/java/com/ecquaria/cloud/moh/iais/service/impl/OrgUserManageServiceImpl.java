@@ -5,7 +5,6 @@ import com.ecquaria.cloud.client.rbac.UserClient;
 import com.ecquaria.cloud.moh.iais.common.constant.JsonKeyConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -43,10 +42,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         return feUserClient.getFeUserList(searchParam).getEntity();
     }
 
-    @Override
-    public SearchResult<FeAdminQueryDto> getFeAdminList(SearchParam searchParam){
-        return feAdminClient.getFeAdminList(searchParam).getEntity();
-    }
 
     @Override
     public OrganizationDto getOrganizationById( String id){

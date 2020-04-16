@@ -7,8 +7,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.FeAdminQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -61,26 +61,15 @@ public class FeAdminManageDelegate {
      */
     public void preparePage(BaseProcessClass bpc) {
         log.debug("****preparePage Process ****");
-        SearchParam searchParam = new SearchParam(FeAdminQueryDto.class.getName());
+        SearchParam searchParam = new SearchParam(FeUserQueryDto.class.getName());
         searchParam.setSort("ID", SearchParam.ASCENDING);
         searchParam.addFilter("orgid",organizationId,true);
         searchParam.addFilter("roleid", RoleConsts.USER_ROLE_ORG_ADMIN,true);
-        QueryHelp.setMainSql("interInboxQuery", "feAdminList",searchParam);
-        SearchResult<FeAdminQueryDto> feAdminQueryDtoSearchResult = orgUserManageService.getFeAdminList(searchParam);
-        for (FeAdminQueryDto item:feAdminQueryDtoSearchResult.getRows()
+        QueryHelp.setMainSql("interInboxQuery", "feUserList",searchParam);
+        SearchResult<FeUserQueryDto> feAdminQueryDtoSearchResult = orgUserManageService.getFeUserList(searchParam);
+        for (FeUserQueryDto item:feAdminQueryDtoSearchResult.getRows()
              ) {
             item.setSalutation(MasterCodeUtil.getCodeDesc(item.getSalutation()));
-            if(RoleConsts.USER_ROLE_ORG_ADMIN.equals(item.getRoleId())){
-                item.setRoleId(AppConsts.TRUE);
-            }else{
-                item.setRoleId(AppConsts.FALSE);
-            }
-            if(ACTIVE.equals(item.getStatus())){
-                item.setStatus("1");
-            }else{
-                item.setStatus("0");
-            }
-
         }
         CrudHelper.doPaging(searchParam,bpc.request);
         ParamUtil.setRequestAttr(bpc.request, "feAdmin",feAdminQueryDtoSearchResult);
@@ -115,9 +104,9 @@ public class FeAdminManageDelegate {
             accountDto.setIdType("NRIC");
             accountDto.setUserId(idNo);
             accountDto.setSalutation(salutation);
-            accountDto.setIsAdmin(role);
+            accountDto.setUserRole(role);
             accountDto.setOrgId(organizationId);
-            accountDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            accountDto.setAvailable(true);
             accountDto.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
             accountDto.setAvailable(true);
             Date now = new Date();
