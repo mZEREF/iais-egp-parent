@@ -444,7 +444,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         inspectionDateSendEmail(submitDt, loginUrl, licenseeId, taskId);
-        createMessage(url, serviceId, submitDt);
+        createMessage(url, serviceId, submitDt, licenseeId);
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_SPECIFIC_INSP_DATE, InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
     }
 
@@ -478,7 +478,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         Date submitDt = apptInspectionDateDto.getAppointmentDto().getSubmitDt();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         inspectionDateSendEmail(submitDt, loginUrl, licenseeId, taskId);
-        createMessage(url, serviceId, submitDt);
+        createMessage(url, serviceId, submitDt, licenseeId);
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_INSPECTION_DATE, InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE);
     }
 
@@ -752,19 +752,18 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         }
     }
 
-    private void createMessage(String url, String serviceId, Date submitDt) {
+    private void createMessage(String url, String serviceId, Date submitDt, String licenseeId) {
         MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST).getEntity();
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         String strSubmitDt = Formatter.formatDateTime(submitDt, "dd MMM yyyy");
         map.put("submitDt", StringUtil.viewHtml(strSubmitDt));
         map.put("process_url", StringUtil.viewHtml(url));
-        String templateMessageByContent = null;
+        String templateMessageByContent;
         try {
             templateMessageByContent = MsgUtil.getTemplateMessageByContent(mtd.getMessageContent(), map);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TemplateException e) {
-            e.printStackTrace();
+        }catch (IOException | TemplateException e) {
+            log.error(e.getMessage(), e);
+            throw new IaisRuntimeException(e);
         }
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
@@ -773,7 +772,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String mesNO = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(mesNO);
         interMessageDto.setService_id(serviceId);
-        interMessageDto.setUserId(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        interMessageDto.setUserId(licenseeId);
         interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         interMessageDto.setMsgContent(templateMessageByContent);
         interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
