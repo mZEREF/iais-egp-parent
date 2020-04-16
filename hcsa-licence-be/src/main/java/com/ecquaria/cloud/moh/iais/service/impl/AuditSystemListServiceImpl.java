@@ -61,7 +61,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private ApplicationClient applicationClient;
     @Autowired
     private TaskHcsaConfigClient taskHcsaConfigClient;
-
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -227,10 +226,48 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         return result;
     }
     public void updateLicPremisesAuditDtoByEventBus(AuditTaskDataFillterDto temp,String status){
+        String submitId = generateIdClient.getSeqId().getEntity();
+        AuditCombinationDto auditCombinationDto = new AuditCombinationDto();
+        String  RefNo = applicationClient. getRefNoByLicId(submitId,auditCombinationDto.getAuditTaskDataFillterDto().getHclCode()).getEntity();
+        auditCombinationDto.setEventRefNo(RefNo);
+        updateLicenceSaveCancelTask(auditCombinationDto,temp,status,submitId);
+        updateAppCancelTaskByEventBus(auditCombinationDto,submitId);
+        updateTaskCancelTaskByEventBus(auditCombinationDto,submitId);
+    }
+
+    public void updateAppCancelTaskByEventBus(AuditCombinationDto auditCombinationDto,String submitId){
+        log.info("========================>>>>> canceled app !!!!");
+        try {
+            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts. OPERATION__AUDIT_TASK_CANCELED,auditCombinationDto.getEventRefNo(),null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateTaskCancelTaskByEventBus(AuditCombinationDto auditCombinationDto,String submitId){
+        log.info("========================>>>>> canceled task !!!!");
+        try {
+            List<TaskDto> taskDtos = organizationClient .getCurrTaskByRefNo(auditCombinationDto.getEventRefNo()).getEntity();
+            auditCombinationDto.setTaskDtos(taskDtos);
+            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,EventBusConsts. OPERATION__AUDIT_TASK_CANCELED,auditCombinationDto.getEventRefNo(),null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateLicenceSaveCancelTask( AuditCombinationDto auditCombinationDto,AuditTaskDataFillterDto temp,String status,String submitId){
         LicPremisesAuditDto licPremisesAuditDto = hcsaLicenceClient.getLicPremAuditByGuid(temp.getAuditId()).getEntity();
+        licPremisesAuditDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         licPremisesAuditDto.setStatus(status);
         licPremisesAuditDto.setRemarks(temp.getCancelReason());
-        hcsaLicenceClient.createLicPremAudit(licPremisesAuditDto);
+        auditCombinationDto.setLicPremisesAuditDto(licPremisesAuditDto);
+        auditCombinationDto.setAuditTaskDataFillterDto(temp);
+        log.info("========================>>>>> canceled audit !!!!");
+        try {
+            eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts. OPERATION__AUDIT_TASK_CANCELED,auditCombinationDto.getEventRefNo(),null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateLicPremisesAuditDto(AuditTaskDataFillterDto temp,String status){
@@ -400,6 +437,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             entity.setRequirement(true);
             entity.setStatus(ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK);
             entity.setEventRefNo(grpNo);
+            entity.setLicenceId(auditCombinationDto.getAuditTaskDataFillterDto().getLicId());
             setRiskToDto(entity);
         }
         auditCombinationDto.setAppSubmissionDtoList(appSubmissionDtoList);
