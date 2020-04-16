@@ -373,9 +373,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         cal.setTime(date);
         int curHour24 = cal.get(Calendar.HOUR_OF_DAY);
         if(curHour24 > 12){
-            specificDate = specificDate + Formatter.DAY_PM;
+            specificDate = specificDate + " " +  Formatter.DAY_PM;
         } else {
-            specificDate = specificDate + Formatter.DAY_AM;
+            specificDate = specificDate + " " + Formatter.DAY_AM;
         }
         return specificDate;
     }
