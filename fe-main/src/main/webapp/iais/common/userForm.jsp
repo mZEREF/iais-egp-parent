@@ -16,18 +16,34 @@
 </iais:row>
 <iais:row>
     <iais:field value="ID Type" width="11"/>
-    <iais:value width="11">
-        <iais:select name="idType" id="idType" value="${user.idType}"
-                     codeCategory="CATE_ID_ID_TYPE" firstOption="Please Select"/>
-        <div class="col-xs-12">
-            <span class="error-msg" name="errorMsg" id="error_idType"></span>
-        </div>
-    </iais:value>
+    <c:choose>
+        <c:when test="${'Y'.equals(canEditFlag)}">
+                <iais:value width="11">
+                    <iais:select name="idType" id="idType" value="${user.idType}"
+                                 codeCategory="CATE_ID_ID_TYPE" firstOption="Please Select"/>
+                </iais:value>
+        </c:when>
+        <c:otherwise>
+                <iais:value width="11">
+                    <input name="idType" id="idType" type="text" value="<iais:code code= "${user.idType}"/>" disabled/>
+                </iais:value>
+        </c:otherwise>
+    </c:choose>
+    <div class="col-xs-12">
+        <span class="error-msg" name="errorMsg" id="error_idType"></span>
+    </div>
 </iais:row>
 <iais:row>
     <iais:field value="ID No" width="11"/>
     <iais:value width="11">
-        <iais:input type="text" name="idNo" id="idNo" value="${user.identityNo}"/>
+        <c:choose>
+            <c:when test="${'Y'.equals(canEditFlag)}">
+                <iais:input type="text" name="idNo" id="idNo" value="${user.identityNo}"/>
+            </c:when>
+            <c:otherwise>
+                    <iais:input type="text" name="idNo" id="idNo" value="${user.identityNo}" needDisabled="true"/>
+            </c:otherwise>
+        </c:choose>
         <div class="col-xs-12">
             <span class="error-msg" name="errorMsg" id="error_identityNo"></span>
         </div>
