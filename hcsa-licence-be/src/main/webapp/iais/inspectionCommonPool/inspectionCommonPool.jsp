@@ -194,11 +194,11 @@
                   '<thead>' +
                   '<tr>';
 
-              html += '<th>Application No</th>' +
-                  '<th>Service</th>' +
-                  '<th>Application Status</th>' +
-                  '<th>HCI Code</th>' +
-                  '<th>HCI Name / Address</th>' +
+              html += '<th width="17%">Application No</th>' +
+                  '<th width="17%">Service</th>' +
+                  '<th width="17%">Application Status</th>' +
+                  '<th width="17%">HCI Code</th>' +
+                  '<th width="32%">HCI Name / Address</th>' +
                   '</tr>' +
                   '</thead>' +
                   '<tbody>';
