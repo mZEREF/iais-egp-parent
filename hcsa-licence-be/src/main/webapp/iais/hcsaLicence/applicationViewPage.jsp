@@ -53,7 +53,7 @@
                         </div>
                         <div class="tab-content">
                             <%--info page--%>
-                            <%@include file="applicationInfo.jsp.jsp" %>
+                            <%@include file="applicationInfo.jsp" %>
 
                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
                                 <div class="alert alert-info" role="alert"><strong>
