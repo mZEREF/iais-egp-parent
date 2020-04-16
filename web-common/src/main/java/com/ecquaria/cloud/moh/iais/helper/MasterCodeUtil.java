@@ -22,11 +22,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * MasterCodeUtil
@@ -59,6 +60,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_ANSWER_TYPE                 = "35AA431C-270C-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_COMMON_STATUS               = "8CEB1F80-730B-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_SALUTATION                  = "DFF3D597-730B-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_ID_TYPE                     = "73B14DAE-A87F-EA11-BE82-000C29F371DC";
     public static final String CATE_ID_RISK_WEIGHTAGE_MATRIX       = "199B036A-230C-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_DATE_TYPE                   = "1B1C8815-280C-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_DATE_RANGE                  = "38E90928-240C-EA11-BE7D-000C29F371DC";
