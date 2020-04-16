@@ -133,7 +133,7 @@
                t6.ID as lic_prem_insp_grp_correlation_id,t6.INS_GRP_ID,t6.STATUS as lic_prem_insp_grp_correlation_status,
                t7.PREFER_END_DATE ,t7.PREFER_START_DATE,t7.STATUS as lic_inspection_group_status
                FROM lic_premises t3
-               LEFT JOIN (Select * FROM lic_premises_audit  WHERE STATUS = 'CMSTAT001') t1
+               LEFT JOIN (Select * FROM lic_premises_audit  WHERE STATUS = 'CMSTAT001' OR STATUS = 'AUTACPS001') t1
                on t1.LIC_PREM_ID = t3.ID
                left join lic_premises_audit_inspector t2
                on t1.ID  = t2.AUDIT_ID
