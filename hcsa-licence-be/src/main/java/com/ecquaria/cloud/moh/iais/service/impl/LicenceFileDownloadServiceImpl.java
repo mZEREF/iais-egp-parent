@@ -485,7 +485,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         eventDto.setEventRefNo(groupPath);
                         log.info(f.getPath()+"file path");
                         eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
-                                EventBusConsts.OPERATION_BE_REC_DATA_COPY, l.toString(), null);
+                                EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION, l.toString(), null);
 
                     }catch (Exception e){
                         continue;

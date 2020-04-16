@@ -396,7 +396,10 @@ public class NewApplicationHelper {
                 /*if(StringUtil.isEmpty(modeOfMedAlert)||"-1".equals(modeOfMedAlert)){
                     oneErrorMap.put("modeOfMedAlert"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }*/
-
+                String assignSelect = poDto.get(i).getAssignSelect();
+                if(StringUtil.isEmpty(assignSelect)||"-1".equals(assignSelect)){
+                    oneErrorMap.put("deputyAssignSelect"+dpoIndex,"UC_CHKLMD001_ERR001");
+                }
                 if(StringUtil.isEmpty(designation)||"-1".equals(designation)){
                     oneErrorMap.put("deputyDesignation"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }

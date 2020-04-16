@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
@@ -318,7 +319,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppPremiseMiscDto> appPremiseMiscEntities = applicationListDto.getAppPremiseMiscEntities();
         List<AppPremisesSpecialDocDto> appPremisesSpecialDocEntities = applicationListDto.getAppPremisesSpecialDocEntities();
         List<AppEditSelectDto> appEditSelects = applicationListDto.getAppEditSelects();
-
+        List<AppGroupMiscDto> appGroupMiscs = applicationListDto.getAppGroupMiscs();
 
         List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
 
@@ -362,6 +363,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList=IaisCommonUtils.genNewArrayList();
 
             List<AppEditSelectDto> appEditSelectDtos=IaisCommonUtils.genNewArrayList();
+            List<AppGroupMiscDto> appGroupMiscDtos=IaisCommonUtils.genNewArrayList();
 
             groupDtos.add(every);
             String groupId = every.getId();
@@ -380,7 +382,13 @@ public class UploadFileServiceImpl implements UploadFileService {
                     }
                 }
             }
-
+            if(appGroupMiscs!=null){
+                for(AppGroupMiscDto appGroupMiscDto : appGroupMiscs){
+                    if(appGroupMiscDto.getAppGrpId().equals(groupId)){
+                        appGroupMiscDtos.add(appGroupMiscDto);
+                    }
+                }
+            }
             for(ApplicationDto applicationDto:application){
                 String applicationDtoId = applicationDto.getId();
                 String appGrpId = applicationDto.getAppGrpId();
@@ -520,7 +528,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             applicationListFileDto.setAppPremiseMiscEntities(appPremiseMiscDtoList);
             applicationListFileDto.setAppPremisesSpecialDocEntities(appPremisesSpecialDocDtoList);
             applicationListFileDto.setAppEditSelects(appEditSelectDtos);
-
+            applicationListFileDto.setAppGroupMiscs(appGroupMiscDtos);
             applicationListFileDtoList.add(applicationListFileDto);
         }
         return applicationListFileDtoList;

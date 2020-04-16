@@ -297,6 +297,7 @@
                           </div>
                           <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
                             <iais:select cssClass="deputyPoSelect"  name="deputyPoSelect" options="DeputyPrincipalOfficersAssignSelect"  value="${deputy.assignSelect}" ></iais:select>
+                            <span id="error_deputyAssignSelect${status.index}" name="iaisErrorMsg" class="error-msg"></span>
                           </div>
                         </div>
                         <c:if test="${!status.first}">
