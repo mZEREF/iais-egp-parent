@@ -191,43 +191,45 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     @Override
     public ApptFeConfirmDateDto getApptNewSystemDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        //get new Inspection date
-        AppPremisesInspecApptDto appPremisesInspecApptDto = apptFeConfirmDateDto.getAppPremisesInspecApptDtoList().get(0);
-        List<AppointmentUserDto> appointmentUserDtos = getUserCalendarDtosByMap(apptFeConfirmDateDto.getApptInspDateMap());
-        String appGroupId = apptFeConfirmDateDto.getApplicationDtos().get(0).getAppGrpId();
-        ApplicationGroupDto applicationGroupDto = applicationClient.getApplicationGroup(appGroupId).getEntity();
+        if(IaisCommonUtils.isEmpty(apptFeConfirmDateDto.getInspectionNewDate())) {
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            //get new Inspection date
+            AppPremisesInspecApptDto appPremisesInspecApptDto = apptFeConfirmDateDto.getAppPremisesInspecApptDtoList().get(0);
+            List<AppointmentUserDto> appointmentUserDtos = getUserCalendarDtosByMap(apptFeConfirmDateDto.getApptInspDateMap());
+            String appGroupId = apptFeConfirmDateDto.getApplicationDtos().get(0).getAppGrpId();
+            ApplicationGroupDto applicationGroupDto = applicationClient.getApplicationGroup(appGroupId).getEntity();
 
-        AppointmentDto appointmentDto = new AppointmentDto();
-        appointmentDto.setUsers(appointmentUserDtos);
-        appointmentDto.setSubmitDt(applicationGroupDto.getSubmitDt());
-        appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
-        appointmentDto.setStartDate(Formatter.formatDateTime(appPremisesInspecApptDto.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
-        appointmentDto.setEndDate(Formatter.formatDateTime(appPremisesInspecApptDto.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
-        Map<String, List<ApptUserCalendarDto>> appInspDateMap = feEicGatewayClient.getUserCalendarByUserId(appointmentDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
+            AppointmentDto appointmentDto = new AppointmentDto();
+            appointmentDto.setUsers(appointmentUserDtos);
+            appointmentDto.setSubmitDt(applicationGroupDto.getSubmitDt());
+            appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+            appointmentDto.setStartDate(Formatter.formatDateTime(appPremisesInspecApptDto.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+            appointmentDto.setEndDate(Formatter.formatDateTime(appPremisesInspecApptDto.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+            Map<String, List<ApptUserCalendarDto>> appInspDateMap = feEicGatewayClient.getUserCalendarByUserId(appointmentDto, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
 
-        Map<String, Date> inspectionNewDateMap = IaisCommonUtils.genNewHashMap();
-        List<SelectOption> inspectionNewDate = IaisCommonUtils.genNewArrayList();
-        Map<String, String> refMap = IaisCommonUtils.genNewHashMap();
-        int index = 0;
-        if(appInspDateMap != null) {
-            for(Map.Entry<String, List<ApptUserCalendarDto>> map : appInspDateMap.entrySet()) {
-                List<ApptUserCalendarDto> apptUserCalendarDtos = map.getValue();
-                ApptUserCalendarDto apptUserCalendarDto = apptUserCalendarDtos.get(0);
-                Date inspDate = apptUserCalendarDto.getTimeSlot().get(0);
-                String dateStr = apptDateToStringShow(inspDate);
-                //key is inspectionNewDateMap.checkNewDate
-                inspectionNewDateMap.put(index + "", inspDate);
-                refMap.put(index + "", apptUserCalendarDto.getApptRefNo());
-                SelectOption so = new SelectOption(index + "", dateStr);
-                inspectionNewDate.add(so);
-                index++;
+            Map<String, Date> inspectionNewDateMap = IaisCommonUtils.genNewHashMap();
+            List<SelectOption> inspectionNewDate = IaisCommonUtils.genNewArrayList();
+            Map<String, String> refMap = IaisCommonUtils.genNewHashMap();
+            int index = 0;
+            if (appInspDateMap != null) {
+                for (Map.Entry<String, List<ApptUserCalendarDto>> map : appInspDateMap.entrySet()) {
+                    List<ApptUserCalendarDto> apptUserCalendarDtos = map.getValue();
+                    ApptUserCalendarDto apptUserCalendarDto = apptUserCalendarDtos.get(0);
+                    Date inspDate = apptUserCalendarDto.getTimeSlot().get(0);
+                    String dateStr = apptDateToStringShow(inspDate);
+                    //key is inspectionNewDateMap.checkNewDate
+                    inspectionNewDateMap.put(index + "", inspDate);
+                    refMap.put(index + "", apptUserCalendarDto.getApptRefNo());
+                    SelectOption so = new SelectOption(index + "", dateStr);
+                    inspectionNewDate.add(so);
+                    index++;
+                }
+                apptFeConfirmDateDto.setInspectionNewDate(inspectionNewDate);
+                apptFeConfirmDateDto.setInspectionNewDateMap(inspectionNewDateMap);
+                apptFeConfirmDateDto.setRefNoMap(refMap);
             }
-            apptFeConfirmDateDto.setInspectionNewDate(inspectionNewDate);
-            apptFeConfirmDateDto.setInspectionNewDateMap(inspectionNewDateMap);
-            apptFeConfirmDateDto.setRefNoMap(refMap);
         }
         return apptFeConfirmDateDto;
     }
@@ -392,8 +394,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     @Override
     public List<SelectOption> getAmPmOption() {
         List<SelectOption> amPmOption = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption(Formatter.DAY_AM, "am");
-        SelectOption so2 = new SelectOption(Formatter.DAY_PM, "pm");
+        SelectOption so1 = new SelectOption(Formatter.DAY_AM, Formatter.DAY_AM);
+        SelectOption so2 = new SelectOption(Formatter.DAY_PM, Formatter.DAY_PM);
         amPmOption.add(so1);
         amPmOption.add(so2);
         return amPmOption;

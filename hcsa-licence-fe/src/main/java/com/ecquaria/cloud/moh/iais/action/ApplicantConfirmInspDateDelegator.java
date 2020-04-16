@@ -141,7 +141,7 @@ public class ApplicantConfirmInspDateDelegator {
         Map<String, Date> inspectionDateMap = apptFeConfirmDateDto.getInspectionDateMap();
         Date checkDate = inspectionDateMap.get(dateValue);
         apptFeConfirmDateDto.setSaveDate(checkDate);
-        applicantConfirmInspDateService.confirmInspectionDate(apptFeConfirmDateDto);
+        //applicantConfirmInspDateService.confirmInspectionDate(apptFeConfirmDateDto);
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }
 
@@ -213,7 +213,7 @@ public class ApplicantConfirmInspDateDelegator {
         ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
         String actionValue = apptFeConfirmDateDto.getActionValue();
         if(InspectionConstants.SWITCH_ACTION_RE_CONFIRM.equals(actionValue)){
-            apptFeConfirmDateDto = applicantConfirmInspDateService.confirmNewDate(apptFeConfirmDateDto);
+            //apptFeConfirmDateDto = applicantConfirmInspDateService.confirmNewDate(apptFeConfirmDateDto);
         }
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }
@@ -227,9 +227,7 @@ public class ApplicantConfirmInspDateDelegator {
     public void userConfirmInspDateReject(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmInspDateReject start ...."));
         ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
-        List<SelectOption> hours = applicantConfirmInspDateService.getInspectionDateHours();
         List<SelectOption> amPm = applicantConfirmInspDateService.getAmPmOption();
-        ParamUtil.setSessionAttr(bpc.request, "hoursFeOption", (Serializable) hours);
         ParamUtil.setSessionAttr(bpc.request, "amPmFeOption", (Serializable) amPm);
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }
@@ -250,13 +248,12 @@ public class ApplicantConfirmInspDateDelegator {
             List<SelectOption> hoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "hoursFeOption");
             List<SelectOption> amPmOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "amPmFeOption");
             String rejectDate = ParamUtil.getRequestString(bpc.request, "rejectDate");
-            String apptHours = ParamUtil.getRequestString(bpc.request, "apptHours");
             String apptAmPm = ParamUtil.getRequestString(bpc.request, "apptAmPm");
             String apptRejectReason = ParamUtil.getRequestString(bpc.request, "apptRejectReason");
             apptFeConfirmDateDto.setRejectDate(rejectDate);
             apptFeConfirmDateDto.setReason(apptRejectReason);
 
-            apptFeConfirmDateDto = setHoursAndAmPm(apptFeConfirmDateDto, hoursOption, amPmOption, apptHours, apptAmPm);
+            apptFeConfirmDateDto = setHoursAndAmPm(apptFeConfirmDateDto, hoursOption, amPmOption, apptAmPm);
 
             ValidationResult validationResult = WebValidationHelper.validateProperty(apptFeConfirmDateDto,"reject");
             if (validationResult.isHasErrors()) {
@@ -271,32 +268,20 @@ public class ApplicantConfirmInspDateDelegator {
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }
 
-    private ApptFeConfirmDateDto setHoursAndAmPm(ApptFeConfirmDateDto apptFeConfirmDateDto, List<SelectOption> hoursOption, List<SelectOption> amPmOption, String apptHours, String apptAmPm) {
+    private ApptFeConfirmDateDto setHoursAndAmPm(ApptFeConfirmDateDto apptFeConfirmDateDto, List<SelectOption> hoursOption, List<SelectOption> amPmOption, String apptAmPm) {
         boolean flagContain = containValueInList(apptAmPm, amPmOption);
         if(flagContain){
             apptFeConfirmDateDto.setAmPm(apptAmPm);
         } else {
             apptFeConfirmDateDto.setAmPm(null);
         }
-        if(containValueInList(apptHours, hoursOption)){
-            try {
-                int hours = Integer.parseInt(apptHours);
-                if(Formatter.DAY_PM.equals(apptAmPm)){
-                    hours = hours + 12;
-                }
-                if(hours < 10) {
-                    apptFeConfirmDateDto.setHours("0" + hours);
-                } else {
-                    apptFeConfirmDateDto.setHours(hours + "");
-                }
-
-            } catch (Exception e){
-                e.printStackTrace();
-                apptFeConfirmDateDto.setHours(null);
-            }
-        } else {
-            apptFeConfirmDateDto.setHours(null);
+        String hours = null;
+        if(Formatter.DAY_PM.equals(apptAmPm)){
+            hours = "09";
+        } else if(Formatter.DAY_AM.equals(apptAmPm)) {
+            hours = "14";
         }
+        apptFeConfirmDateDto.setHours(hours);
         return apptFeConfirmDateDto;
     }
 
