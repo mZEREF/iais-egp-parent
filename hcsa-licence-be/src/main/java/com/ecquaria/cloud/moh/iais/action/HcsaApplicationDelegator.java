@@ -440,9 +440,9 @@ public class HcsaApplicationDelegator {
                 }
             }
 
-            if(!StringUtil.isEmpty(rollBack)){
+            if(!StringUtil.isEmpty(rollBack) && ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(stage)){
                 nextStage = "PROCRB";
-            }else if(!StringUtil.isEmpty(verified)){
+            }else if(!StringUtil.isEmpty(verified) && ApplicationConsts.APPLICATION_STATUS_VERIFIED.equals(stage)){
                 nextStage = verified;
             }
 
@@ -479,8 +479,14 @@ public class HcsaApplicationDelegator {
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         String roleId = taskDto.getRoleId();
         String successInfo = MessageCodeKey.ACK003;
-        String verified = ParamUtil.getString(bpc.request,"verified");
-        String rollBack = ParamUtil.getString(bpc.request,"rollBack");
+        String nextStage = ParamUtil.getString(bpc.request,"nextStage");
+        String verified = "";
+        String rollBack = "";
+        if(ApplicationConsts.APPLICATION_STATUS_VERIFIED.equals(nextStage)){
+            verified = ParamUtil.getString(bpc.request,"verified");
+        }else if(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(nextStage)){
+            rollBack = ParamUtil.getString(bpc.request,"rollBack");
+        }
         String decisionValue = ParamUtil.getString(bpc.request,"decisionValues");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
