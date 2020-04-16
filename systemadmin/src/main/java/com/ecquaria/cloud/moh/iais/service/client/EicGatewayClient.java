@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(value = "eicgate", url="${iais.intra.gateway.url}", configuration = {FeignConfiguration.class},
 		fallback = EicGatewayClientFallBack.class)
 public interface EicGatewayClient {
-	@PostMapping(value = "/iais/intra-out-dev/api/v1/sys-params",consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/v1/sys-params",consumes = MediaType.APPLICATION_JSON_VALUE)
 	FeignResponseEntity<ApplicationDto> saveSystemParameterFe(@RequestBody SystemParameterDto systemParameterDto,
 	                                                      @RequestHeader("date") String date,
 	                                                      @RequestHeader("authorization") String authorization,
 	                                                      @RequestHeader("date-Secondary") String dateSec,
 	                                                      @RequestHeader("authorization-Secondary") String authorizationSec);
 
-	@PostMapping(value = "/iais/intra-out-dev/api/v1/message-configs",consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/v1/message-configs",consumes = MediaType.APPLICATION_JSON_VALUE)
 	FeignResponseEntity<MessageDto> syncMessageToFe(@RequestBody MessageDto messageDto,
 															  @RequestHeader("date") String date,
 															  @RequestHeader("authorization") String authorization,
