@@ -300,7 +300,8 @@ public class HcsaApplicationDelegator {
                 && RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())){
 
         }else{
-            nextStageList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK, "Internal Route Back"));
+//            nextStageList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK, "Internal Route Back"));
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROLLBACK, "Internal Route Back"));
         }
         //62761
         Integer rfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(),
@@ -440,7 +441,7 @@ public class HcsaApplicationDelegator {
                 }
             }
 
-            if(!StringUtil.isEmpty(rollBack) && ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(stage)){
+            if(!StringUtil.isEmpty(rollBack) && ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(stage)){
                 nextStage = "PROCRB";
             }else if(!StringUtil.isEmpty(verified) && ApplicationConsts.APPLICATION_STATUS_VERIFIED.equals(stage)){
                 nextStage = verified;
@@ -484,7 +485,7 @@ public class HcsaApplicationDelegator {
         String rollBack = "";
         if(ApplicationConsts.APPLICATION_STATUS_VERIFIED.equals(nextStage)){
             verified = ParamUtil.getString(bpc.request,"verified");
-        }else if(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(nextStage)){
+        }else if(ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(nextStage)){
             rollBack = ParamUtil.getString(bpc.request,"rollBack");
         }
         String decisionValue = ParamUtil.getString(bpc.request,"decisionValues");

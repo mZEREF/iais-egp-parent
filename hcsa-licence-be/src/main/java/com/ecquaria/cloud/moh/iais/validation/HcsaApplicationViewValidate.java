@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class HcsaApplicationViewValidate implements CustomizeValidator {
     private final String VERIFIED = ApplicationConsts.APPLICATION_STATUS_VERIFIED;
-    private final String ROLLBACK = ApplicationConsts.APPLICATION_STATUS_ROLL_BACK;
+    private final String ROLLBACK = ApplicationConsts.PROCESSING_DECISION_ROLLBACK;
     private final String DECISION_APPROVAL = "decisionApproval";
     private final String DECISION_REJECT = "decisionReject";
     private final String RECOMMENDATION_REJECT = "reject";

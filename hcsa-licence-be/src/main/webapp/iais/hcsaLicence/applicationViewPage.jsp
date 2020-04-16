@@ -785,7 +785,7 @@
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#comments').addClass('hidden');
-        } else if (selectValue == "APST057") {
+        } else if (selectValue == "PROCRB") {
             $('#rollBackDropdown').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#comments').addClass('hidden');
@@ -828,7 +828,7 @@
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#comments').addClass('hidden');
-        } else if (selectValue == "APST057") {
+        } else if (selectValue == "PROCRB") {
             $('#rollBackDropdown').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#comments').addClass('hidden');
