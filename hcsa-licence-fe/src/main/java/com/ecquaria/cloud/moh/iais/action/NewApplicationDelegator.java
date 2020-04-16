@@ -84,9 +84,6 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -2764,12 +2761,12 @@ public class NewApplicationDelegator {
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
                         if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
                             for(int j=0;j<appPremPhOpenPeriodList.size();j++){
-
-                                String convStartFromHH = appPremPhOpenPeriodList.get(j).getOnsiteStartFromHH();
-                                String convStartFromMM = appPremPhOpenPeriodList.get(j).getOnsiteStartFromMM();
-                                String onsiteEndToHH = appPremPhOpenPeriodList.get(j).getOnsiteEndToHH();
-                                String onsiteEndToMM = appPremPhOpenPeriodList.get(j).getOnsiteEndToMM();
-                                Date phDate = appPremPhOpenPeriodList.get(j).getPhDate();
+                                AppPremPhOpenPeriodDto appPremPhOpenPeriodDto = appPremPhOpenPeriodList.get(j);
+                                String convStartFromHH = appPremPhOpenPeriodDto.getOnsiteStartFromHH();
+                                String convStartFromMM = appPremPhOpenPeriodDto.getOnsiteStartFromMM();
+                                String onsiteEndToHH = appPremPhOpenPeriodDto.getOnsiteEndToHH();
+                                String onsiteEndToMM = appPremPhOpenPeriodDto.getOnsiteEndToMM();
+                                Date phDate = appPremPhOpenPeriodDto.getPhDate();
                                 if(!StringUtil.isEmpty(phDate)){
                                     if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)){
                                         errorMap.put("onsiteStartToMM"+i+j,"UC_CHKLMD001_ERR001");
@@ -2857,21 +2854,15 @@ public class NewApplicationDelegator {
 
                                     }
                                 }
-                            }
-                            //set ph time
-                            String errorOnsiteEndToMM = errorMap.get("onsiteEndToMM"+i);
-                            if(StringUtil.isEmpty(errorOnsiteEndToMM) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
-                                for(AppPremPhOpenPeriodDto ph :appPremPhOpenPeriodList){
-                                    if(!StringUtil.isEmpty(ph.getOnsiteStartFromHH()) && !StringUtil.isEmpty(ph.getOnsiteStartFromMM())){
-                                        LocalTime startTime = LocalTime.of(Integer.parseInt(ph.getOnsiteStartFromHH()),Integer.parseInt(ph.getOnsiteStartFromMM()));
-                                        ph.setStartFrom(Time.valueOf(startTime));
-                                    }
-                                    if(!StringUtil.isEmpty(ph.getOnsiteEndToHH()) && !StringUtil.isEmpty(ph.getOnsiteEndToMM())){
-                                        LocalTime endTime = LocalTime.of(Integer.parseInt(ph.getOnsiteEndToHH()),Integer.parseInt(ph.getOnsiteEndToMM()));
-                                        ph.setEndTo(Time.valueOf(endTime));
-                                    }
+                                //set ph time
+                                String errorOnsiteStartToMM = errorMap.get("onsiteStartToMM"+i+j);
+                                String errorOnsiteEndToMM = errorMap.get("onsiteEndToMM"+i+j);
+                                if(StringUtil.isEmpty(errorOnsiteEndToMM) && StringUtil.isEmpty(errorOnsiteStartToMM) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
+                                    LocalTime startTime = LocalTime.of(Integer.parseInt(convStartFromHH),Integer.parseInt(convStartFromMM));
+                                    appPremPhOpenPeriodDto.setStartFrom(Time.valueOf(startTime));
+                                    LocalTime endTime = LocalTime.of(Integer.parseInt(onsiteEndToHH),Integer.parseInt(onsiteEndToMM));
+                                    appPremPhOpenPeriodDto.setEndTo(Time.valueOf(endTime));
                                 }
-
                             }
                         }
                         String hciName = appGrpPremisesDtoList.get(i).getHciName();
@@ -2989,11 +2980,12 @@ public class NewApplicationDelegator {
                         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
                         if(appPremPhOpenPeriodList!=null){
                             for(int j=0;j<appPremPhOpenPeriodList.size();j++){
-                                String convEndToHH = appPremPhOpenPeriodList.get(j).getConvEndToHH();
-                                String convEndToMM = appPremPhOpenPeriodList.get(j).getConvEndToMM();
-                                String convStartFromHH = appPremPhOpenPeriodList.get(j).getConvStartFromHH();
-                                String convStartFromMM = appPremPhOpenPeriodList.get(j).getConvStartFromMM();
-                                Date phDate = appPremPhOpenPeriodList.get(j).getPhDate();
+                                AppPremPhOpenPeriodDto appPremPhOpenPeriodDto = appPremPhOpenPeriodList.get(j);
+                                String convEndToHH = appPremPhOpenPeriodDto.getConvEndToHH();
+                                String convEndToMM = appPremPhOpenPeriodDto.getConvEndToMM();
+                                String convStartFromHH = appPremPhOpenPeriodDto.getConvStartFromHH();
+                                String convStartFromMM = appPremPhOpenPeriodDto.getConvStartFromMM();
+                                Date phDate = appPremPhOpenPeriodDto.getPhDate();
                                 if(!StringUtil.isEmpty(phDate)){
                                     if(StringUtil.isEmpty(convEndToHH)||StringUtil.isEmpty(convEndToMM)){
                                         errorMap.put("convEndToHH"+i+j,"UC_CHKLMD001_ERR001");
@@ -3080,24 +3072,15 @@ public class NewApplicationDelegator {
                                         }
                                     }
                                 }
-                            }
-
-                            //set ph time
-                            String errorConvEndToHH = errorMap.get("convEndToHH"+i);
-                            if(StringUtil.isEmpty(errorConvEndToHH) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList) ){
-                                for(AppPremPhOpenPeriodDto ph :appPremPhOpenPeriodList){
-                                    if(!StringUtil.isEmpty(ph.getConvStartFromHH()) && !StringUtil.isEmpty(ph.getConvStartFromMM())){
-                                        LocalTime startTime = LocalTime.of(Integer.parseInt(ph.getConvStartFromHH()),Integer.parseInt(ph.getConvStartFromMM()));
-                                        ph.setStartFrom(Time.valueOf(startTime));
-                                    }
-
-                                    if(!StringUtil.isEmpty(ph.getConvEndToHH()) && !StringUtil.isEmpty(ph.getConvEndToMM())){
-                                        LocalTime endTime = LocalTime.of(Integer.parseInt(ph.getConvEndToHH()),Integer.parseInt(ph.getConvEndToMM()));
-                                        ph.setEndTo(Time.valueOf(endTime));
-                                    }
-
+                                //set ph time
+                                String errorConvStartToMM = errorMap.get("convStartToHH"+i+j);
+                                String errorConvEndToMM = errorMap.get("convEndToHH"+i+j);
+                                if(StringUtil.isEmpty(errorConvStartToMM) && StringUtil.isEmpty(errorConvEndToMM) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
+                                    LocalTime startTime = LocalTime.of(Integer.parseInt(convStartFromHH),Integer.parseInt(convStartFromMM));
+                                    appPremPhOpenPeriodDto.setStartFrom(Time.valueOf(startTime));
+                                    LocalTime endTime = LocalTime.of(Integer.parseInt(convEndToHH),Integer.parseInt(convEndToMM));
+                                    appPremPhOpenPeriodDto.setEndTo(Time.valueOf(endTime));
                                 }
-
                             }
                         }
                         String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
@@ -3229,15 +3212,27 @@ public class NewApplicationDelegator {
                         }
                     }
 
+                    //set  time
+                    String errorStartMM = errorMap.get("offSiteStartMM"+i);
+                    String errorEndMM = errorMap.get("offSiteEndMM"+i);
+                    if(StringUtil.isEmpty(errorStartMM) && StringUtil.isEmpty(errorEndMM)){
+                        LocalTime startTime = LocalTime.of(Integer.parseInt(offSiteStartHH),Integer.parseInt(offSiteStartMM));
+                        appGrpPremisesDtoList.get(i).setWrkTimeFrom(Time.valueOf(startTime));
+
+                        LocalTime endTime = LocalTime.of(Integer.parseInt(offSiteEndHH),Integer.parseInt(offSiteEndMM));
+                        appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(endTime));
+                    }
+
                     List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
                     if(appPremPhOpenPeriodList!=null){
 
                         for(int j=0;j<appPremPhOpenPeriodList.size();j++){
-                            String offSiteEndToHH = appPremPhOpenPeriodList.get(j).getOffSiteEndToHH();
-                            String offSiteEndToMM = appPremPhOpenPeriodList.get(j).getOffSiteEndToMM();
-                            String offSiteStartFromHH = appPremPhOpenPeriodList.get(j).getOffSiteStartFromHH();
-                            String offSiteStartFromMM = appPremPhOpenPeriodList.get(j).getOffSiteStartFromMM();
-                            Date phDate = appPremPhOpenPeriodList.get(j).getPhDate();
+                            AppPremPhOpenPeriodDto appPremPhOpenPeriodDto = appPremPhOpenPeriodList.get(j);
+                            String offSiteEndToHH = appPremPhOpenPeriodDto.getOffSiteEndToHH();
+                            String offSiteEndToMM = appPremPhOpenPeriodDto.getOffSiteEndToMM();
+                            String offSiteStartFromHH = appPremPhOpenPeriodDto.getOffSiteStartFromHH();
+                            String offSiteStartFromMM = appPremPhOpenPeriodDto.getOffSiteStartFromMM();
+                            Date phDate = appPremPhOpenPeriodDto.getPhDate();
                             if(!StringUtil.isEmpty(phDate)){
                                 if(StringUtil.isEmpty(offSiteEndToHH)||StringUtil.isEmpty(offSiteEndToMM)){
                                     errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR001");
@@ -3326,8 +3321,16 @@ public class NewApplicationDelegator {
                                 }
                             }
 
+                            //set ph time
+                            String errorOffSiteStartToMM = errorMap.get("offSiteStartToHH"+i+j);
+                            String errorOffSiteEndToMM = errorMap.get("offSiteEndToHH"+i+j);
+                            if(StringUtil.isEmpty(errorOffSiteStartToMM) && StringUtil.isEmpty(errorOffSiteEndToMM) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
+                                LocalTime startTime = LocalTime.of(Integer.parseInt(offSiteStartFromHH),Integer.parseInt(offSiteStartFromMM));
+                                appPremPhOpenPeriodDto.setStartFrom(Time.valueOf(startTime));
+                                LocalTime endTime = LocalTime.of(Integer.parseInt(offSiteEndToHH),Integer.parseInt(offSiteEndToMM));
+                                appPremPhOpenPeriodDto.setEndTo(Time.valueOf(endTime));
+                            }
                         }
-
                     }
 
                 } else {
