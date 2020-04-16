@@ -65,8 +65,9 @@
                         <div class="swiper-button-next"></div>
                       </div>
                       <div class="tab-content">
-                        <div class="tab-pane active" id="tabInfo" role="tabpanel"></div>
+                        <div class="tab-pane active" id="tabInfo" role="tabpanel">
                           <%@ include file="../hcsaLicence/applicationInfo.jsp" %>
+                        </div>
                         <div class="tab-pane" id="tabDocuments" role="tabpanel">
                           <%@ include file="../inspectionncList/tabDocuments.jsp" %>
                         </div>
