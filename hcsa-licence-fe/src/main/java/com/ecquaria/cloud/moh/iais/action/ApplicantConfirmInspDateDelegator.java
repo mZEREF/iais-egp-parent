@@ -110,12 +110,17 @@ public class ApplicantConfirmInspDateDelegator {
         log.debug(StringUtil.changeForLog("the userConfirmInspDateConfirm start ...."));
         ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
         String dateValue = ParamUtil.getRequestString(bpc.request, "apptCheckDate");
-        boolean dateFlag = checkDateFlag(dateValue, apptFeConfirmDateDto.getInspectionDateMap());
-        if(dateFlag){
-            apptFeConfirmDateDto.setCheckDate(dateValue);
+        if(!StringUtil.isEmpty(dateValue)){
+            boolean dateFlag = checkDateFlag(dateValue, apptFeConfirmDateDto.getInspectionDateMap());
+            if(dateFlag){
+                apptFeConfirmDateDto.setCheckDate(dateValue);
+            } else {
+                apptFeConfirmDateDto.setCheckDate(null);
+            }
         } else {
             apptFeConfirmDateDto.setCheckDate(null);
         }
+
         ValidationResult validationResult = WebValidationHelper.validateProperty(apptFeConfirmDateDto,"confirm");
         if (validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
@@ -172,9 +177,13 @@ public class ApplicantConfirmInspDateDelegator {
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         } else {
             String newDateValue = ParamUtil.getRequestString(bpc.request, "apptCheckNewDate");
-            boolean dateFlag = checkDateFlag(newDateValue, apptFeConfirmDateDto.getInspectionNewDateMap());
-            if(dateFlag) {
-                apptFeConfirmDateDto.setCheckNewDate(newDateValue);
+            if(!StringUtil.isEmpty(newDateValue)) {
+                boolean dateFlag = checkDateFlag(newDateValue, apptFeConfirmDateDto.getInspectionNewDateMap());
+                if (dateFlag) {
+                    apptFeConfirmDateDto.setCheckNewDate(newDateValue);
+                } else {
+                    apptFeConfirmDateDto.setCheckNewDate(null);
+                }
             } else {
                 apptFeConfirmDateDto.setCheckNewDate(null);
             }

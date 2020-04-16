@@ -106,7 +106,7 @@ public interface FeEicGatewayClient {
                                                                @RequestHeader("date-Secondary") String dateSec,
                                                                @RequestHeader("authorization-Secondary") String authorizationSec);
 
-    @PostMapping(value = "/v1/hcsa-reschedule-appt/",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/v1/hcsa-reschedule-appt/",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> getUserCalendarByUserId(@RequestBody AppointmentDto appointmentDto,
                                                                                  @RequestHeader("date") String date,
                                                                                  @RequestHeader("authorization") String authorization,

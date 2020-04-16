@@ -30,20 +30,21 @@
               <div class="intranet-content">
                 <iais:body >
                   <iais:section title="" id = "ava_appt_date">
-                    <iais:row>
-                      <iais:field value="Available Appointment Dates"/>
-                    </iais:row>
-                    <iais:row>
-                      <iais:value width="7">
-                        <c:if test="${apptFeConfirmDateDto.inspectionDate != null}">
-                          <c:forEach items="${apptFeConfirmDateDto.inspectionDate}" var="date">
-                            <br><input class="form-check-input" type="radio" name="apptCheckDate" aria-invalid="true" value="${date.value}" <c:if test="${date.value eq apptFeConfirmDateDto.checkDate}">checked</c:if>>
-                            <span><c:out value = "${date.text}"/></span>
-                          </c:forEach>
-                          <br><span class="error-msg" name="iaisErrorMsg" id="error_checkDate"></span>
-                        </c:if>
-                      </iais:value>
-                    </iais:row>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <label style="font-size: 16px">Available Appointment Dates</label>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <c:forEach items="${apptFeConfirmDateDto.inspectionDate}" var="date">
+                          <br><input class="form-check-input" type="radio" name="apptCheckDate" aria-invalid="true" value="${date.value}" <c:if test="${date.value eq apptFeConfirmDateDto.checkDate}">checked</c:if>>
+                          <span><c:out value = "${date.text}"/></span>
+                        </c:forEach>
+                        <br><span class="error-msg" name="iaisErrorMsg" id="error_checkDate"></span>
+                      </div>
+                    </div>
+                    <br>
                     <iais:action>
                       <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptFirstConFirmInspDateRej()">Request a particular date</button>
                       <span style="float:right">&nbsp;</span>
