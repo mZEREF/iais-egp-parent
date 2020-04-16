@@ -56,15 +56,15 @@
                         <tbody>
                         <tr>
                             <td class="col-xs-6" align="right">HCI Code</td>
-                            <td class="col-xs-6">-</td>
+                            <td class="col-xs-6">${applicationViewDto.hciCode == null || applicationViewDto.hciCode == "" ? '-' : applicationViewDto.hciCode}</td>
                         </tr>
                         <tr>
                             <td align="right">HCI Name</td>
-                            <td>${applicationViewDto.hciName}</td>
+                            <td>${applicationViewDto.hciName == null || applicationViewDto.hciName == "" ? '-' : applicationViewDto.hciName}</td>
                         </tr>
                         <tr>
                             <td align="right">HCI Address</td>
-                            <td>${applicationViewDto.hciAddress}</td>
+                            <td>${applicationViewDto.hciAddress == null || applicationViewDto.hciAddress == "" ? '-' : applicationViewDto.hciAddress}</td>
                         </tr>
                         <tr>
                             <td align="right">Telephone</td>
