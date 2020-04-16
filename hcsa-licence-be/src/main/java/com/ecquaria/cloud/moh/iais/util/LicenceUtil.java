@@ -21,23 +21,21 @@ import java.util.List;
 public class LicenceUtil {
     public static Date getExpiryDate(Date startDate, AppPremisesRecommendationDto appPremisesRecommendationDto){
         Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        calendar.add(Calendar.DATE,-1);
         if(appPremisesRecommendationDto != null){
             switch (appPremisesRecommendationDto.getChronoUnit()){
                 case RiskConsts.YEAR :
-                    calendar.setTime(startDate);
                     calendar.add(Calendar.YEAR,appPremisesRecommendationDto.getRecomInNumber());
                     break;
                 case RiskConsts.MONTH :
-                    calendar.setTime(startDate);
                     calendar.add(Calendar.MONTH,appPremisesRecommendationDto.getRecomInNumber());
                     break;
                 case RiskConsts.WEEK  :
-                    calendar.setTime(startDate);
                     calendar.add(Calendar.WEEK_OF_YEAR,appPremisesRecommendationDto.getRecomInNumber());
                     break;
             }
         }else{
-            calendar.setTime(startDate);
             calendar.add(Calendar.YEAR,1);
         }
         return  calendar.getTime();
