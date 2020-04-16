@@ -11,14 +11,14 @@
     <iais:field value="Salutation" width="11"/>
     <iais:value width="11">
         <iais:select name="salutation" id="salutation" value="${user.salutation}"
-                     codeCategory="CATE_ID_SALUTATION" />
+                     codeCategory="CATE_ID_SALUTATION"  firstOption="Please Select" />
     </iais:value>
 </iais:row>
 <iais:row>
     <iais:field value="ID Type" width="11"/>
     <iais:value width="11">
-        <iais:select name="idType" id="idType" options="mcStatusSelectList"
-                     value="${user.idType}"/>
+        <iais:select name="idType" id="idType" value="${user.idType}"
+                     codeCategory="CATE_ID_ID_TYPE" firstOption="Please Select"/>
         <div class="col-xs-12">
             <span class="error-msg" name="errorMsg" id="error_idType"></span>
         </div>
