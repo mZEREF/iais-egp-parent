@@ -116,7 +116,6 @@ public class CessationServiceImpl implements CessationService {
         }
     }
 
-
     @Override
     public List<String> saveCessations(List<AppCessationDto> appCessationDtos) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -159,7 +158,6 @@ public class CessationServiceImpl implements CessationService {
         List<String> appIds = cessationClient.saveCessation(appCessMiscDtos).getEntity();
         return appIds;
     }
-
 
     @Override
     public void updateCesation(List<AppCessationDto> appCessationDtos) {
@@ -222,7 +220,6 @@ public class CessationServiceImpl implements CessationService {
         TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtos,HcsaConsts.ROUTING_STAGE_AO3,RoleConsts.USER_ROLE_AO3,IaisEGPHelper.getCurrentAuditTrailDto());
         List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
         List<TaskDto> tasks = taskService.createTasks(taskDtos);
-        String id = tasks.get(0).getId();
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
         appPremisesRoutingHistoryDtos.get(0).setRoleId(curRoleId);
         appPremisesRoutingHistoryDtos.get(0).setProcessDecision(ApplicationConsts.APPLICATION_STATUS_VERIFIED);
@@ -239,39 +236,6 @@ public class CessationServiceImpl implements CessationService {
     public List<String> listHciName() {
         List<String> hciNames = cessationClient.listHciNames().getEntity();
         return hciNames;
-    }
-
-
-    private ApplicationGroupDto getApplicationGroupDto(String appNo, String appType) {
-        ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
-        applicationGroupDto.setSubmitDt(new Date());
-        applicationGroupDto.setGroupNo(appNo);
-        applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
-        applicationGroupDto.setAmount(0.0);
-        applicationGroupDto.setIsPreInspection(1);
-        applicationGroupDto.setIsInspectionNeeded(1);
-        applicationGroupDto.setLicenseeId("36F8537B-FE17-EA11-BE78-000C29D29DB0");
-        applicationGroupDto.setIsBundledFee(9966);
-        applicationGroupDto.setIsCharitable(0);
-        applicationGroupDto.setIsByGiro(0);
-        applicationGroupDto.setGrpLic(false);
-        applicationGroupDto.setDeclStmt("N");
-        applicationGroupDto.setSubmitBy("C55C9E62-750B-EA11-BE7D-000C29F371DC");
-        applicationGroupDto.setAppType(appType);
-        applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-        return applicationGroupDto;
-
-    }
-
-    private List<AppGrpPremisesDto> getAppGrpPremisesDto() {
-        List<AppGrpPremisesDto> appGrpPremisesDtos = IaisCommonUtils.genNewArrayList();
-        AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-        appGrpPremisesDto.setPremisesType(ApplicationConsts.PREMISES_TYPE_ON_SITE);
-        appGrpPremisesDto.setPostalCode("999666");
-        appGrpPremisesDto.setAddrType(ApplicationConsts.ADDRESS_TYPE_APT_BLK);
-        appGrpPremisesDto.setStreetName("Lor 27 Geylang");
-        appGrpPremisesDtos.add(appGrpPremisesDto);
-        return appGrpPremisesDtos;
     }
 
     private AppCessMiscDto setMiscData(AppCessationDto appCessationDto, AppCessMiscDto appCessMiscDto, String appId) {

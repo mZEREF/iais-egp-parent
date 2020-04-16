@@ -147,6 +147,10 @@ public class InsReportAoDelegator {
             ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", reportClassBelow);
             return;
         }
+        String[] fastTracking =  ParamUtil.getStrings(bpc.request,"fastTracking");
+        if(fastTracking!=null){
+            applicationDto.setFastTracking(true);
+        }
         saveAoRecommendation(appPremisesCorrelationId,preapreRecommendationDto);
         insRepService.routingTaskToAo2(taskDto,applicationDto,appPremisesCorrelationId);
         ParamUtil.setSessionAttr(bpc.request, INSREPDTO, insRepDto);

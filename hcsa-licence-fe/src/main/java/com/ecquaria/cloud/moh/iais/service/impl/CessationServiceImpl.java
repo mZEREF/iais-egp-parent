@@ -206,32 +206,32 @@ public class CessationServiceImpl implements CessationService {
     @Override
     public void updateCesation(List<AppCessationDto> appCessationDtos) {
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
-        for (AppCessationDto appCessationDto : appCessationDtos) {
-            AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
-            String licId = appCessationDto.getWhichTodo();
-            ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
-            ApplicationDto applicationDto = applicationClient.getApplicationByLicId(licId).getEntity();
-            String appGrpId = applicationDto.getAppGrpId();
-            applicationGroupDto.setId(appGrpId);
-            List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
-            String applicationNo = applicationDto.getApplicationNo();
-            applicationDto.setStatus("APST009");
-            applicationDtoList.add(applicationDto);
-            ApplicationDto applicationDto1 = new ApplicationDto();
-            applicationDto1.setApplicationType("APTY001");
-            applicationDto1.setApplicationNo(applicationNo);
-            applicationDto1.setStatus("APST007");
-            applicationDto1.setAppGrpId(appGrpId);
-            applicationDto1.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
-            applicationDto1.setVersion(1);
-            applicationDto1.setOriginLicenceId(licId);
-            applicationDtoList.add(applicationDto1);
-            appCessMiscDto.setApplicationDto(applicationDtoList);
-            List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
-            appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
-            appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
-            appCessMiscDtos.add(appCessMiscDto);
-        }
+//        for (AppCessationDto appCessationDto : appCessationDtos) {
+//            AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
+//            String licId = appCessationDto.getWhichTodo();
+//            ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
+//            ApplicationDto applicationDto = applicationClient.getApplicationByLicId(licId).getEntity();
+//            String appGrpId = applicationDto.getAppGrpId();
+//            applicationGroupDto.setId(appGrpId);
+//            List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
+//            String applicationNo = applicationDto.getApplicationNo();
+//            applicationDto.setStatus("APST009");
+//            applicationDtoList.add(applicationDto);
+//            ApplicationDto applicationDto1 = new ApplicationDto();
+//            applicationDto1.setApplicationType("APTY001");
+//            applicationDto1.setApplicationNo(applicationNo);
+//            applicationDto1.setStatus("APST007");
+//            applicationDto1.setAppGrpId(appGrpId);
+//            applicationDto1.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
+//            applicationDto1.setVersion(1);
+//            applicationDto1.setOriginLicenceId(licId);
+//            applicationDtoList.add(applicationDto1);
+//            appCessMiscDto.setApplicationDto(applicationDtoList);
+//            List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
+//            appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
+//            appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
+//            appCessMiscDtos.add(appCessMiscDto);
+//        }
         cessationClient.updateCessation(appCessMiscDtos).getEntity();
     }
 
@@ -244,56 +244,6 @@ public class CessationServiceImpl implements CessationService {
     /*
     utils
      */
-    private ApplicationGroupDto getApplicationGroupDto(String appNo, String appType) {
-        ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
-        applicationGroupDto.setSubmitDt(new Date());
-        applicationGroupDto.setGroupNo(appNo);
-        applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
-        applicationGroupDto.setAmount(0.0);
-        applicationGroupDto.setIsPreInspection(1);
-        applicationGroupDto.setIsInspectionNeeded(1);
-        applicationGroupDto.setLicenseeId("9ED45E34-B4E9-E911-BE76-000C29C8FBE4");
-        applicationGroupDto.setIsBundledFee(9966);
-        applicationGroupDto.setIsCharitable(0);
-        applicationGroupDto.setIsByGiro(0);
-        applicationGroupDto.setGrpLic(false);
-        applicationGroupDto.setDeclStmt("N");
-        applicationGroupDto.setSubmitBy("C55C9E62-750B-EA11-BE7D-000C29F371DC");
-        applicationGroupDto.setAppType(appType);
-        applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-        return applicationGroupDto;
-
-    }
-
-    private List<AppGrpPremisesDto> getAppGrpPremisesDto() {
-        List<AppGrpPremisesDto> appGrpPremisesDtos = IaisCommonUtils.genNewArrayList();
-        AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-        appGrpPremisesDto.setPremisesType(ApplicationConsts.PREMISES_TYPE_ON_SITE);
-        appGrpPremisesDto.setPostalCode("999666");
-        appGrpPremisesDto.setAddrType(ApplicationConsts.ADDRESS_TYPE_APT_BLK);
-        appGrpPremisesDto.setStreetName("Lor 27 Geylang");
-        appGrpPremisesDtos.add(appGrpPremisesDto);
-        return appGrpPremisesDtos;
-    }
-
-    private List<ApplicationDto> getApplicationDtos(String grpNo,String serviceId,String licId,Date effectiveDate){
-        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
-        String appNo = grpNo + "-01";
-        ApplicationDto applicationDto = new ApplicationDto();
-        applicationDto.setApplicationType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
-        applicationDto.setApplicationNo(appNo);
-        if(effectiveDate.after(new Date())){
-            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
-        }else {
-            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-        }
-        applicationDto.setServiceId(serviceId);
-        applicationDto.setOriginLicenceId(licId);
-        applicationDto.setVersion(1);
-        applicationDtos.add(applicationDto);
-        return applicationDtos;
-    }
-
     private AppCessMiscDto setMiscData(AppCessationDto appCessationDto, AppCessMiscDto appCessMiscDto,String appId) {
         Date effectiveDate = appCessationDto.getEffectiveDate();
         String reason = appCessationDto.getReason();

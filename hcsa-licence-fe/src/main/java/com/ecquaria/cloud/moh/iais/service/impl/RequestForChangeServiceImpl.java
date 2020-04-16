@@ -160,7 +160,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public void sendEmail(String appGrpId,String type, String appNo, String serviceName, String licenceNo, Double amount, String licenceeName, String giroNo, String licenseeId, String subject) throws Exception {
+    public void sendEmail(String appGrpId,String type, String appNo, String serviceName, String licenceNo, Double amount, String licenceeName, String giroNo, String licenseeId, String subject,String aoName) throws Exception {
         //send email  rfc submit and pay giro
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -240,11 +240,49 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 MsgTemplateDto rfcToLicenseeMsgTemplateDto = msgTemplateClient.getMsgTemplate("8D3AC0E0-6684-490C-8DE8-D0452129C67D").getEntity();
                 if (rfcToLicenseeMsgTemplateDto != null) {
                     Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
-                    tempMap.put("appNo", appNo);
+                    tempMap.put("licenceeName", licenceeName);
+                    tempMap.put("licNo-serviceNameList", serviceName);
                     String mesContext = MsgUtil.getTemplateMessageByContent(rfcToLicenseeMsgTemplateDto.getMessageContent(), tempMap);
                     EmailDto emailDto = new EmailDto();
                     emailDto.setContent(mesContext);
-                    emailDto.setSubject("MOH IAIS – Request for Change "+appNo+" – Rejected  ");
+                    emailDto.setSubject("MOH IAIS – Notification of Change of Licensee");
+                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                    emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                    emailDto.setClientQueryCode(appGrpId);
+                    //send
+                    feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
+                            signature2.date(), signature2.authorization());
+                }
+                break;
+            case "rfcForInterClarification":
+                MsgTemplateDto rfcForInterClMsgTemplateDto = msgTemplateClient.getMsgTemplate("7C6DD026-7EC3-4D58-AAE5-170C8CF208C4").getEntity();
+                if (rfcForInterClMsgTemplateDto != null) {
+                    Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
+                    tempMap.put("appNo", appNo);
+                    tempMap.put("aoName", aoName);
+                    String mesContext = MsgUtil.getTemplateMessageByContent(rfcForInterClMsgTemplateDto.getMessageContent(), tempMap);
+                    EmailDto emailDto = new EmailDto();
+                    emailDto.setContent(mesContext);
+                    emailDto.setSubject("MOH IAIS – Internal Clarification for Request for Change "+appNo);
+                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                    emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                    emailDto.setClientQueryCode(appGrpId);
+                    //send
+                    feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
+                            signature2.date(), signature2.authorization());
+                }
+                break;
+            case "rfcToNotificationLicence":
+                MsgTemplateDto rfcToNotificationMsgTemplateDto = msgTemplateClient.getMsgTemplate("CC3610B1-01A4-4370-9DEF-936827D2880D").getEntity();
+                if (rfcToNotificationMsgTemplateDto != null) {
+                    Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
+                    tempMap.put("licenceeName", licenceeName);
+                    tempMap.put("licNo-serviceNameList", serviceName);
+                    tempMap.put("result", "Is Approved");
+                    String mesContext = MsgUtil.getTemplateMessageByContent(rfcToNotificationMsgTemplateDto.getMessageContent(), tempMap);
+                    EmailDto emailDto = new EmailDto();
+                    emailDto.setContent(mesContext);
+                    emailDto.setSubject("MOH IAIS – Notification of Change of Licensee ");
                     emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                     emailDto.setClientQueryCode(appGrpId);
