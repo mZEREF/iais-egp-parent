@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
-import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
@@ -32,7 +31,6 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -692,10 +690,10 @@ public class NewApplicationHelper {
                 appGrpPremisesDto.setOnsiteStartMM(String.valueOf(localTimeFrom.getMinute()));
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premType)){
                 appGrpPremisesDto.setConStartHH(String.valueOf(localTimeFrom.getHour()));
-                appGrpPremisesDto.setConStartMM(String.valueOf(localTimeFrom.getHour()));
+                appGrpPremisesDto.setConStartMM(String.valueOf(localTimeFrom.getMinute()));
             }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premType)){
                 appGrpPremisesDto.setOffSiteStartHH(String.valueOf(localTimeFrom.getHour()));
-                appGrpPremisesDto.setOffSiteStartMM(String.valueOf(localTimeFrom.getHour()));
+                appGrpPremisesDto.setOffSiteStartMM(String.valueOf(localTimeFrom.getMinute()));
             }
         }
         if(!StringUtil.isEmpty(wrkTimeTo)){
