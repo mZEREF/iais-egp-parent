@@ -60,6 +60,8 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -75,6 +77,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * LicenceApproveBatchjob
@@ -93,7 +97,10 @@ public class LicenceApproveBatchjob {
     private ApplicationGroupService applicationGroupService;
     @Autowired
     private SystemParamConfig systemParamConfig;
-
+    @Autowired
+    private EmailClient emailClient;
+    @Autowired
+    private MsgTemplateClient msgTemplateClient;
     private Map<String,Integer> hciCodeVersion = new HashMap();
     private Map<String,Integer> keyPersonnelVersion = IaisCommonUtils.genNewHashMap();
 
@@ -1242,4 +1249,22 @@ public class LicenceApproveBatchjob {
         private LicenceGroupDto licenceGroupDto;
     }
 
+    private void  sendEmail(HttpServletRequest request){
+        Map<String,Object> map=new HashMap<>();
+        String licenseeId =(String)request.getAttribute("licenseeId");
+        String userName=(String)request.getAttribute("userName");
+        String nameApprovalOfficer=(String)request.getAttribute("nameApprovalOfficer");
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate("D792F706-6D7D-EA11-BE7A-000C29D29DB0").getEntity();
+        map.put("userName",userName);
+        map.put("nameApprovalOfficer",nameApprovalOfficer);
+        if(msgTemplateDto!=null){
+            String messageContent = msgTemplateDto.getMessageContent();
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(messageContent);
+            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+            emailClient.sendNotification(emailDto).getEntity();
+        }
+
+    }
 }

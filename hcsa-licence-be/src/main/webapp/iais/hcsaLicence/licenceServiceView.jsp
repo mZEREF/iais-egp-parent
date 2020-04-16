@@ -69,6 +69,7 @@
                                       <div class="col-md-6">
                                         <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">On-site</c:if>
                                         <c:if test="${appGrpPremDto.premisesType=='CONVEYANCE'}">Conveyance</c:if>
+                                        <c:if test="${appGrpPremDto.premisesType=='OFFSIET'}">Off-site</c:if>
                                         <wrms:value width="7">
                                         <span class="newVal " attr="${appGrpPremDto.premisesType}"
                                               style="display: none"><label><c:out value=""/></label></span>

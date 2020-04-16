@@ -504,7 +504,7 @@ public class ApplicationClientFallback implements ApplicationClient {
     }
 
     @Override
-    public FeignResponseEntity<String> selectDarft(List<String> serviceCodes) {
+    public FeignResponseEntity<String> selectDarft(Map<String ,Object> serviceCodes) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

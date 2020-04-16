@@ -360,6 +360,16 @@ public class WithOutRenewalDelegator {
 
             }
 
+        }else if("GIRO".equals(payMethod)){
+            try {
+                bpc.request.setAttribute("paymentAmount",totalAmount);
+                bpc.request.setAttribute("type","GIRO");
+                sendEmail(bpc.request);
+
+            }catch (Exception e){
+                log.error(e.getMessage(),e+"GIRO error");
+            }
+
         }
 
     }
@@ -564,7 +574,6 @@ public class WithOutRenewalDelegator {
             map.put("serviceNames", serviceNames);
 
 
-
         }else if("routesBack".equals(type)){
             String userName=(String)request.getAttribute("userName");
             String nameApprovalOfficer=(String)request.getAttribute("nameApprovalOfficer");
@@ -587,7 +596,6 @@ public class WithOutRenewalDelegator {
             Double amount =(Double)request.getAttribute("amount");
             map.put("paymentAmount",Formatter.formatNumber(amount));
             map.put("serviceNames", serviceNames);
-
 
 
         }else if("pickedUpEarlyRenewal".equals(type)){

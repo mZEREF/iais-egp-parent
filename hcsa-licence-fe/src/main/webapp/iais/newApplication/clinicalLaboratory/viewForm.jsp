@@ -30,6 +30,9 @@
     <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST006'}">
       <%@include file="../../common/previewSvcPerson.jsp"%>
     </c:if><%--STEP_SERVICE_PERSONNEL--%>
+    <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST007'}">
+      <%@include file="../../common/previewMedAlert.jsp"%>
+    </c:if>
   </c:forEach>
 
 </div>

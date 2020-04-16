@@ -137,6 +137,7 @@ public class AppealServiceImpl implements AppealService {
         String proposedHciName = request.getParameter("proposedHciName");
         String remarks = request.getParameter("remarks");
         String othersReason = request.getParameter("othersReason");
+        String draftStatus=(String)request.getAttribute("draftStatus");
         CommonsMultipartFile selectedFile =(CommonsMultipartFile) request.getFile("selectedFile");
         if(selectedFile!=null&&selectedFile.getSize()>0){
             String filename = selectedFile.getOriginalFilename();
@@ -167,6 +168,9 @@ public class AppealServiceImpl implements AppealService {
             AppSubmissionDto entity = applicationClient.draftNumberGet(saveDraftId).getEntity();
             entity.setAmountStr(s);
             entity.setAppGrpId(groupId);
+            if(!StringUtil.isEmpty(draftStatus)){
+                entity.setDraftStatus(draftStatus);
+            }
             applicationClient.saveDraft(entity).getEntity();
             appPremiseMiscDto.setRemarks(remarks);
             appPremiseMiscDto.setReason(reasonSelect);
@@ -606,6 +610,7 @@ public class AppealServiceImpl implements AppealService {
         ApplicationGroupDto applicationGroupDto1 = appealDto.getApplicationGroupDto();
         String groupId = applicationGroupDto1.getId();
         request.setAttribute("groupId",groupId);
+        request.setAttribute("draftStatus",AppConsts.COMMON_STATUS_IACTIVE);
         saveData(request);
         request.setAttribute("newApplicationNo",s);
         //todo send email
@@ -709,6 +714,7 @@ public class AppealServiceImpl implements AppealService {
         ApplicationGroupDto applicationGroupDto1 = appealPageDto.getApplicationGroupDto();
         String groupId = applicationGroupDto1.getId();
         request.setAttribute("groupId",groupId);
+        request.setAttribute("draftStatus",AppConsts.COMMON_STATUS_IACTIVE);
         saveData(request);
         request.setAttribute("newApplicationNo",s);
         try {

@@ -233,7 +233,7 @@ public interface ApplicationClient  {
     @GetMapping(value = "/")
     FeignResponseEntity<String> getRequestForInfo(@RequestParam(value = "applicationId") String applicationId);
     @PostMapping(value = "/iais-submission/darft-service-codes",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> selectDarft(@RequestBody List<String> serviceCodes);
+    FeignResponseEntity<String> selectDarft(@RequestBody Map<String,Object> serviceCodes);
 
     @PostMapping(value = "/iais-submission/application/without-renew",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto> createApplicationDataByWithOutRenewal(@RequestBody RenewDto renewDto);

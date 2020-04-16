@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -79,7 +80,10 @@ public class ServiceMenuDelegator {
             serviceCodeList.add(hcsaServiceDto.getSvcCode());
         }
         serviceCodeList.sort(String::compareTo);
-        String entity = applicationClient.selectDarft(serviceCodeList).getEntity();
+        Map<String,Object> map=new HashMap<>();
+        map.put("serviceCodesList",serviceCodeList);
+        map.put("appType", ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        String entity = applicationClient.selectDarft(map).getEntity();
         bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);
     }
 

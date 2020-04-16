@@ -355,7 +355,7 @@ public class AppealApproveBatchjob {
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealOther is end ..."));
     }
-
+    //reject
     public void  sendEmail(HttpServletRequest request) throws IOException, TemplateException {
         MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("3BA1C87A-5F7D-EA11-BE82-000C29F371DC").getEntity();
         ApplicationDto applicationDto=(ApplicationDto)request.getAttribute("application");

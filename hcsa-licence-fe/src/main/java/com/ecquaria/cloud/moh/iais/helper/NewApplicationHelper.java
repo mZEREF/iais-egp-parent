@@ -303,7 +303,7 @@ public class NewApplicationHelper {
                     String designation = poDto.get(i).getDesignation();
                     String idType = poDto.get(i).getIdType();
 
-                    if("-1".equals(idType)){
+                    if("-1".equals(idType)||StringUtil.isEmpty(idType)){
                         oneErrorMap.put("idType"+poIndex,"UC_CHKLMD001_ERR001");
                     }
                     if(StringUtil.isEmpty(name)){

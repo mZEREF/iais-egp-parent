@@ -867,6 +867,22 @@
                 $(this).parent().parent().next().next().next().children("label").children().remove();
             }
         });
+
+        $("select[name='offSiteAddrType']").change(function () {
+            var $addrTypeContent = $(this).closest('div.premContent');
+
+            if('ADDTY001'==$( this).val()){
+                if( $(this).parent().parent().next().children("label").children().length<1){
+                    $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
+                    $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
+                    $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
+                }
+            }else if('ADDTY002'==$( this).val()) {
+                $(this).parent().parent().next().children("label").children().remove();
+                $(this).parent().parent().next().next().children("label").children().remove();
+                $(this).parent().parent().next().next().next().children("label").children().remove();
+            }
+        });
     }
 
 
