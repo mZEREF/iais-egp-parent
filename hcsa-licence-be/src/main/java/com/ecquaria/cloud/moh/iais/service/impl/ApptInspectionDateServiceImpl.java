@@ -139,10 +139,13 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String actionButtonFlag;
         List<String> premCorrIds;
         List<TaskDto> taskDtoList;
+        Map<String, ApplicationDto> corrAppMap = IaisCommonUtils.genNewHashMap();
         if(!fastFlag) {
             //get all application info from same premises
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = getAppPremisesCorrelationsByPremises(taskDto.getRefNo());
-            premCorrIds = getCorrIdsByCorrIdFromPremises(appPremisesCorrelationDtos);
+            //filter cancel application
+            corrAppMap = filterCancelAppByCorr(appPremisesCorrelationDtos);
+            premCorrIds = getCorrIdsByCorrIdFromPremises(corrAppMap);
             apptInspectionDateDto.setRefNo(premCorrIds);
             //get Other Tasks From The Same Premises
             taskDtoList = getAllTaskFromSamePremises(premCorrIds);
@@ -152,6 +155,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             actionButtonFlag = AppConsts.SUCCESS;
             premCorrIds = IaisCommonUtils.genNewArrayList();
             premCorrIds.add(taskDto.getRefNo());
+            corrAppMap.put(taskDto.getRefNo(), applicationDto);
             apptInspectionDateDto.setRefNo(premCorrIds);
             taskDtoList = IaisCommonUtils.genNewArrayList();
             List<TaskDto> taskDtos = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
@@ -162,8 +166,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             }
         }
         //get application info show
-        Map<ApplicationDto, List<String>> applicationInfoMap = getApplicationInfoToShow(premCorrIds, taskDtoList);
-
+        Map<ApplicationDto, List<String>> applicationInfoMap = getApplicationInfoToShow(premCorrIds, taskDtoList, corrAppMap);
+        apptInspectionDateDto.setCorrAppMap(corrAppMap);
         apptInspectionDateDto.setApplicationInfoShow(applicationInfoMap);
         apptInspectionDateDto.setActionButtonFlag(actionButtonFlag);
         apptInspectionDateDto.setTaskDto(taskDto);
@@ -172,14 +176,37 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         return apptInspectionDateDto;
     }
 
+    private Map<String, ApplicationDto> filterCancelAppByCorr(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {
+        Map<String, ApplicationDto> map = IaisCommonUtils.genNewHashMap();
+        if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){
+            for(int i = 0; i < appPremisesCorrelationDtos.size(); i++){
+                String applicationId = appPremisesCorrelationDtos.get(i).getApplicationId();
+                ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(applicationId).getEntity();
+                if(ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED.equals(applicationDto.getStatus())){
+                    appPremisesCorrelationDtos.remove(i);
+                    i--;
+                } else {
+                    String appPremCorrId = appPremisesCorrelationDtos.get(i).getId();
+                    map.put(appPremCorrId, applicationDto);
+                }
+            }
+        }
+        return map;
+    }
+
     @Override
-    public Map<ApplicationDto, List<String>> getApplicationInfoToShow(List<String> premCorrIds, List<TaskDto> taskDtoList) {
+    public Map<ApplicationDto, List<String>> getApplicationInfoToShow(List<String> premCorrIds, List<TaskDto> taskDtoList, Map<String, ApplicationDto> corrAppMap) {
         Map<ApplicationDto, List<String>> applicationInfoMap = IaisCommonUtils.genNewHashMap();
         if(!IaisCommonUtils.isEmpty(premCorrIds)) {
             for (String appPremCorrId : premCorrIds) {
                 List<String> workerName = IaisCommonUtils.genNewArrayList();
                 List<String> ids = IaisCommonUtils.genNewArrayList();
-                ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+                ApplicationDto applicationDto;
+                if(corrAppMap == null){
+                    applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+                } else {
+                    applicationDto = corrAppMap.get(appPremCorrId);
+                }
                 if(!IaisCommonUtils.isEmpty(taskDtoList)){
                     for(TaskDto taskDto : taskDtoList){
                         if(taskDto.getRefNo().equals(appPremCorrId)) {
@@ -324,11 +351,12 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         return false;
     }
 
-    private List<String> getCorrIdsByCorrIdFromPremises(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {
+    private List<String> getCorrIdsByCorrIdFromPremises(Map<String, ApplicationDto> corrAppMap) {
         List<String> appPremCorrIds = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){
-            for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
-                appPremCorrIds.add(appPremisesCorrelationDto.getId());
+        if(corrAppMap != null){
+            for(Map.Entry<String, ApplicationDto> map : corrAppMap.entrySet()){
+                String appPremCorrId = map.getKey();
+                appPremCorrIds.add(appPremCorrId);
             }
         }
         return appPremCorrIds;
@@ -468,7 +496,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         TaskDto taskDto = taskService.getTaskById(taskId);
         //get All app from the same Premises
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = getAppPremisesCorrelationsByPremises(taskDto.getRefNo());
-        List<String> premCorrIds = getCorrIdsByCorrIdFromPremises(appPremisesCorrelationDtos);
+        //filter cancel application
+        Map<String, ApplicationDto> corrAppMap = filterCancelAppByCorr(appPremisesCorrelationDtos);
+        List<String> premCorrIds = getCorrIdsByCorrIdFromPremises(corrAppMap);
         //get All inspection date
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtos = inspectionTaskClient.getSpecificDtosByAppPremCorrIds(premCorrIds).getEntity();
         apptInspectionDateDto.setRefNo(premCorrIds);

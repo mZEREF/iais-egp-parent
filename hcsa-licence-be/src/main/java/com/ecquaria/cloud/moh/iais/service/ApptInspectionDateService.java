@@ -100,11 +100,11 @@ public interface ApptInspectionDateService {
     /**
       * @author: shicheng
       * @Date 2020/3/12
-      * @Param: premCorrIds, taskDtoList
+      * @Param: premCorrIds, taskDtoList, corrAppMap
       * @return: List<ApplicationDto>
       * @Descripation: getApplicationInfoToShow
       */
-    Map<ApplicationDto, List<String>> getApplicationInfoToShow(List<String> premCorrIds, List<TaskDto> taskDtoList);
+    Map<ApplicationDto, List<String>> getApplicationInfoToShow(List<String> premCorrIds, List<TaskDto> taskDtoList, Map<String, ApplicationDto> corrAppMap);
 
     /**
       * @author: shicheng
