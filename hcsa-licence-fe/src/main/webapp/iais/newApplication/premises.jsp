@@ -67,6 +67,9 @@
                               <c:if test="${'CONVEYANCE' == appGrpPremDto.premisesType}">
                                 <c:out value="Conveyance"/>
                               </c:if>
+                              <c:if test="${'OFFSIET' == appGrpPremDto.premisesType}">
+                                <c:out value="Off-site"/>
+                              </c:if>
                               :
                             </strong>
                           </span>
