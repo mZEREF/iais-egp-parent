@@ -181,7 +181,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){
             for(int i = 0; i < appPremisesCorrelationDtos.size(); i++){
                 String applicationId = appPremisesCorrelationDtos.get(i).getApplicationId();
-                ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(applicationId).getEntity();
+                ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
                 if(ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED.equals(applicationDto.getStatus())){
                     appPremisesCorrelationDtos.remove(i);
                     i--;
