@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplate
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -422,6 +423,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     public void saveLeadSpecificDate(ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
+        String taskId = apptInspectionDateDto.getTaskDto().getId();
         List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
         String serviceId = apptInspectionDateDto.getAppointmentDto().getServiceId();
         Date submitDt = apptInspectionDateDto.getAppointmentDto().getSubmitDt();
@@ -441,7 +443,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE + urlId;
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
-        inspectionDateSendEmail(submitDt, loginUrl, licenseeId);
+        inspectionDateSendEmail(submitDt, loginUrl, licenseeId, taskId);
         createMessage(url, serviceId, submitDt);
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_SPECIFIC_INSP_DATE, InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
     }
@@ -469,12 +471,13 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         appPremisesInspecApptDtoList = applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList).getEntity();
         createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
+        String taskId = apptInspectionDateDto.getTaskDto().getId();
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
                 MessageConstants.MESSAGE_INBOX_URL_APPT_SYS_INSP_DATE + urlId;
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName();
         Date submitDt = apptInspectionDateDto.getAppointmentDto().getSubmitDt();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
-        inspectionDateSendEmail(submitDt, loginUrl, licenseeId);
+        inspectionDateSendEmail(submitDt, loginUrl, licenseeId, taskId);
         createMessage(url, serviceId, submitDt);
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_INSPECTION_DATE, InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE);
     }
@@ -725,26 +728,26 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         appInspectionStatusClient.update(appInspectionStatusDto);
     }
 
-    private void inspectionDateSendEmail(Date submitDt, String url, String licenseeId) {
+    private void inspectionDateSendEmail(Date submitDt, String url, String licenseeId, String taskId) {
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST);
         if(inspectionEmailTemplateDto != null) {
             String strSubmitDt = Formatter.formatDateTime(submitDt, "dd MMM yyyy");
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
             map.put("submitDt", StringUtil.viewHtml(strSubmitDt));
             map.put("process_url", StringUtil.viewHtml(url));
-            String mesContext = null;
+            String mesContext;
             try {
                 mesContext = MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(), map);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (TemplateException e) {
-                e.printStackTrace();
+            } catch (IOException | TemplateException e) {
+                log.error(e.getMessage(), e);
+                throw new IaisRuntimeException(e);
             }
             EmailDto emailDto = new EmailDto();
             emailDto.setContent(mesContext);
             emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
             emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
             emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+            emailDto.setClientQueryCode(taskId);
             emailClient.sendNotification(emailDto);
         }
     }
