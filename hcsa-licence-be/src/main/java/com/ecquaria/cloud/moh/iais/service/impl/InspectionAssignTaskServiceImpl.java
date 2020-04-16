@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -44,9 +45,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
-
-import static java.util.regex.Pattern.compile;
 
 /**
  * @author Shicheng
@@ -386,6 +384,13 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             appGrpPremisesDto.setConveyanceFloorNo(appGrpPremisesDto.getFloorNo());
             appGrpPremisesDto.setConveyanceUnitNo(appGrpPremisesDto.getUnitNo());
             appGrpPremisesDto.setConveyancePostalCode(appGrpPremisesDto.getPostalCode());
+        } else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+            appGrpPremisesDto.setOffSiteBlockNo(appGrpPremisesDto.getBlkNo());
+            appGrpPremisesDto.setOffSiteStreetName(appGrpPremisesDto.getStreetName());
+            appGrpPremisesDto.setOffSiteBuildingName(appGrpPremisesDto.getBuildingName());
+            appGrpPremisesDto.setOffSiteFloorNo(appGrpPremisesDto.getFloorNo());
+            appGrpPremisesDto.setOffSiteUnitNo(appGrpPremisesDto.getUnitNo());
+            appGrpPremisesDto.setOffSitePostalCode(appGrpPremisesDto.getPostalCode());
         }
         return appGrpPremisesDto;
     }
@@ -415,43 +420,14 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     public String getAddress(AppGrpPremisesDto appGrpPremisesDto) {
         String result = "";
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-            if (!StringUtil.isEmpty(appGrpPremisesDto.getBlkNo())) {
-                result = result + appGrpPremisesDto.getBlkNo();
-            }
-            if (!StringUtil.isEmpty(appGrpPremisesDto.getStreetName())) {
-                result = result + " " + appGrpPremisesDto.getStreetName();
-            }
-            if (!StringUtil.isEmpty(appGrpPremisesDto.getBuildingName())) {
-                result = result + " " + appGrpPremisesDto.getBuildingName();
-            }
-            if (!StringUtil.isEmpty(appGrpPremisesDto.getFloorNo())) {
-                String floorNo = appGrpPremisesDto.getFloorNo();
-                if (floorNo.length() < 3) {
-                    Pattern pattern = compile("[0-9]*");
-                    boolean noFlag = pattern.matcher(floorNo).matches();
-                    if (noFlag) {
-                        int floorNum = Integer.parseInt(floorNo);
-                        if (10 > floorNum) {
-                            floorNo = "0" + floorNum;
-                            result = result + " " + " # " + floorNo;
-                        } else {
-                            result = result + " " + " # " + floorNo;
-                        }
-                    } else {
-                        result = result + " " + " # " + floorNo;
-                    }
-                } else {
-                    result = result + " " + " # " + floorNo;
-                }
-            }
-            if (!StringUtil.isEmpty(appGrpPremisesDto.getUnitNo())) {
-                result = result + (StringUtil.isEmpty(appGrpPremisesDto.getFloorNo()) ? "" : "-") + appGrpPremisesDto.getUnitNo();
-            }
-            if (!StringUtil.isEmpty(appGrpPremisesDto.getPostalCode())) {
-                result = result + ", " + appGrpPremisesDto.getPostalCode();
-            }
-        } else {
-            result = getOtherAddress(appGrpPremisesDto, result);
+            result = MiscUtil.getAddress(appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getStreetName(), appGrpPremisesDto.getBuildingName(),
+                    appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo(), appGrpPremisesDto.getPostalCode());
+        } else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
+            result = MiscUtil.getAddress(appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getStreetName(), appGrpPremisesDto.getBuildingName(),
+                    appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo(), appGrpPremisesDto.getPostalCode());
+        } else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+            result = MiscUtil.getAddress(appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getStreetName(), appGrpPremisesDto.getBuildingName(),
+                    appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo(), appGrpPremisesDto.getPostalCode());
         }
 
         return result;
@@ -491,45 +467,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         groupRoleFieldDto.setGroupLeadName(groupLeadName);
         groupRoleFieldDto.setGroupMemBerName(groupMemBerName);
         return groupRoleFieldDto;
-    }
-
-    private String getOtherAddress(AppGrpPremisesDto appGrpPremisesDto, String result) {
-        if (!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceBlockNo())) {
-            result = result + appGrpPremisesDto.getConveyanceBlockNo();
-        }
-        if (!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceStreetName())) {
-            result = result + " " + appGrpPremisesDto.getConveyanceStreetName();
-        }
-        if (!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceBuildingName())) {
-            result = result + " " + appGrpPremisesDto.getConveyanceBuildingName();
-        }
-        if (!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceFloorNo())) {
-            String floorNo = appGrpPremisesDto.getConveyanceFloorNo();
-            if (floorNo.length() < 3) {
-                Pattern pattern = compile("[0-9]*");
-                boolean noFlag = pattern.matcher(floorNo).matches();
-                if (noFlag) {
-                    int floorNum = Integer.parseInt(floorNo);
-                    if (10 > floorNum) {
-                        floorNo = "0" + floorNum;
-                        result = result + " " + " # " + floorNo;
-                    } else {
-                        result = result + " " + " # " + floorNo;
-                    }
-                } else {
-                    result = result + " " + " # " + floorNo;
-                }
-            } else {
-                result = result + " " + " # " + floorNo;
-            }
-        }
-        if (!StringUtil.isEmpty(appGrpPremisesDto.getConveyanceUnitNo())) {
-            result = result + (StringUtil.isEmpty(appGrpPremisesDto.getConveyanceFloorNo()) ? "" : "-") + appGrpPremisesDto.getConveyanceUnitNo();
-        }
-        if (!StringUtil.isEmpty(appGrpPremisesDto.getConveyancePostalCode())) {
-            result = result + ", " + appGrpPremisesDto.getConveyancePostalCode();
-        }
-        return result;
     }
 
     /**
