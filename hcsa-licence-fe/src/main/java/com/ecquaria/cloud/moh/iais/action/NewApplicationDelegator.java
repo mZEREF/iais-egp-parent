@@ -786,6 +786,8 @@ public class NewApplicationDelegator {
                 appGrp.setPmtRefNo(pmtRefNo);
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
+                //send email
+                sendNewApplicationPaymentOnlineSuccesedEmail(appSubmissionDto,pmtMethod,pmtRefNo);
             }
         }
 
@@ -1205,6 +1207,8 @@ public class NewApplicationDelegator {
             bpc.response.sendRedirect(tokenUrl);
             return;
         }else if("GIRO".equals(payMethod)){
+            //send email
+            sendNewApplicationPaymentGIROEmail(appSubmissionDto,bpc);
             String appGrpId = appSubmissionDto.getAppGrpId();
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
@@ -1280,6 +1284,81 @@ public class NewApplicationDelegator {
     //=============================================================================
     //private method
     //=============================================================================
+
+    private void sendNewApplicationPaymentOnlineSuccesedEmail(AppSubmissionDto appSubmissionDto,String paymentMethod,String pmtRefNo) {
+        MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_SUCCESSED_PAYMENT_ID);
+        if(msgTemplateDto != null) {
+            Double amount = appSubmissionDto.getAmount();
+            String licenseeId = appSubmissionDto.getLicenseeId();
+            List<ApplicationDto> applicationDtos = appSubmissionDto.getApplicationDtos();
+            List<String> applicationNos = new ArrayList<String>();
+            for(ApplicationDto applicationDto : applicationDtos){
+                String applicationNo = applicationDto.getApplicationNo();
+                if(!StringUtil.isEmpty(applicationNo)){
+                    applicationNos.add(applicationNo);
+                }
+            }
+            String appGrpNo = appSubmissionDto.getAppGrpNo();
+            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+            map.put("applications", applicationNos);
+            map.put("paymentType", paymentMethod);
+            map.put("pmtRefNo", pmtRefNo);
+            map.put("paymentDate", Formatter.formatDateTime(new Date(),Formatter.DATE_EMAIL_DAY));
+            map.put("paymentAmount",Formatter.formatNumber(amount));
+            map.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+            String mesContext = null;
+            try {
+                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
+            } catch (IOException | TemplateException e) {
+                log.error(e.getMessage(),e);
+            }
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(mesContext);
+            emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + appGrpNo);
+            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+            emailDto.setClientQueryCode(appSubmissionDto.getAppGrpId());
+            //send email
+            appSubmissionService.feSendEmail(emailDto);
+        }
+    }
+
+    private void sendNewApplicationPaymentGIROEmail(AppSubmissionDto appSubmissionDto,BaseProcessClass bpc) {
+        String GIROAccountNumber = "xxxxxxxx";
+        MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID);
+        if(msgTemplateDto != null) {
+            Double amount = appSubmissionDto.getAmount();
+            String licenseeId = appSubmissionDto.getLicenseeId();
+            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST);
+            List<String> serviceNames = new ArrayList<String>();
+            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
+                String svcName = hcsaServiceDto.getSvcName();
+                if(!StringUtil.isEmpty(svcName)){
+                    serviceNames.add(svcName);
+                }
+            }
+            String appGrpNo = appSubmissionDto.getAppGrpNo();
+            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+            map.put("serviceNames", serviceNames);
+            map.put("paymentAmount",Formatter.formatNumber(amount));
+            map.put("GIROAccountNumber",GIROAccountNumber);
+            map.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+            String mesContext = null;
+            try {
+                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
+            } catch (IOException | TemplateException e) {
+                log.error(e.getMessage(),e);
+            }
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(mesContext);
+            emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + appGrpNo);
+            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+            emailDto.setClientQueryCode(appSubmissionDto.getAppGrpId());
+            //send email
+            appSubmissionService.feSendEmail(emailDto);
+        }
+    }
 
     private void inspectionDateSendNewApplicationPaymentOnlineEmail(AppSubmissionDto appSubmissionDto,BaseProcessClass bpc) {
         MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ONLINE_ID);
