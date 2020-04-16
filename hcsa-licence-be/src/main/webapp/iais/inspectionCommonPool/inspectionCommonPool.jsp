@@ -198,7 +198,7 @@
                   '<th>Service</th>' +
                   '<th>Application Status</th>' +
                   '<th>HCI Code</th>' +
-                  '<th>HCI Address</th>' +
+                  '<th>HCI Name / Address</th>' +
                   '</tr>' +
                   '</thead>' +
                   '<tbody>';
