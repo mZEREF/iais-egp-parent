@@ -15,62 +15,54 @@
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
-
+<%@include file="../common/dashboard.jsp"%>
 <div class="container">
   <div class="component-gp">
     <br>
     <form method="post" id="mainReConfirmForm" action=<%=process.runtime.continueURL()%>>
       <%@ include file="/include/formHidden.jsp" %>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
       <input type="hidden" name="userComfireInspDateType" value="">
       <input type="hidden" id="actionValue" name="actionValue" value="">
-      <iais:body >
-        <div class="container">
-          <div class="col-xs-12">
-            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-              <h3>
-                <span>Recomputing of Dates</span>
-              </h3>
-              <div class="panel panel-default">
-                <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                  <div class="panel-body">
-                    <div class="panel-main-content">
-                      <iais:section title="" id = "ava_apptrej_date">
-                        <iais:row>
-                          <iais:field value="Available Appointment Dates" required="true"/>
-                          <iais:value width="7">
-                            <iais:datePicker id = "rejectDate" name = "rejectDate" value="${apptFeConfirmDateDto.rejectDate}"></iais:datePicker>
-                            <iais:select name="apptHours" options="hoursFeOption" firstOption="Please select" value="${apptFeConfirmDateDto.hours}"></iais:select>
-                            <iais:select name="apptAmPm" options="amPmFeOption" firstOption="Please select" value="${apptFeConfirmDateDto.amPm}"></iais:select>
-                            <br><span class="error-msg" name="iaisErrorMsg" id="error_rejectDate"></span>
-                            <br><span class="error-msg" name="iaisErrorMsg" id="error_hours"></span>
-                            <br><span class="error-msg" name="iaisErrorMsg" id="error_amPm"></span>
-                          </iais:value>
-                        </iais:row>
-                        <iais:row>
-                          <iais:field value="Enter Reason" required="true"/>
-                          <iais:value width="7">
-                            <textarea maxlength="300" id="apptRejectReason" name="apptRejectReason" cols="70" rows="7" ><c:out value="${apptFeConfirmDateDto.reason}"></c:out></textarea>
-                            <br><span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
-                          </iais:value>
-                        </iais:row>
-                        <iais:action >
-                          <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:apptRejectInspDateCon()">Confirm</button>
-                          <button class="btn btn-lg btn-login-next" style="float:left" type="button" onclick="javascript:apptRejectInspDateBack()">back</button>
-                        </iais:action>
-                      </iais:section>
+      <div class="main-content">
+        <div class="row">
+          <div class="col-lg-12 col-xs-12">
+            <div class="center-content">
+              <div class="intranet-content">
+                <iais:body >
+                  <iais:section title="" id = "ava_apptrej_date">
+                    <div class="row">
+                      <div class="col-md-4" style="padding-right: 0px;">
+                        <label style="font-size: 16px">Available Appointment Dates<span style="color: red"> *</span></label>
+                      </div>
+                      <div class="col-md-6" style="padding-left: 0px;">
+                        <div class="col-xs-12 col-md-4">
+                          <iais:datePicker id = "rejectDate" name = "rejectDate" value="${apptFeConfirmDateDto.rejectDate}"></iais:datePicker>
+                          <br><span class="error-msg" name="iaisErrorMsg" id="error_rejectDate"></span>
+                        </div>
+                        <div class="col-xs-12 col-md-3">
+                          <iais:select name="apptAmPm" options="amPmFeOption" firstOption="N/A" value="${apptFeConfirmDateDto.amPm}"></iais:select>
+                          <br><span class="error-msg" name="iaisErrorMsg" id="error_amPm"></span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                    <iais:row>
+                      <iais:field value="Enter Reason" required="true"/>
+                      <iais:value width="7">
+                        <textarea maxlength="300" id="apptRejectReason" name="apptRejectReason" cols="70" rows="7" ><c:out value="${apptFeConfirmDateDto.reason}"></c:out></textarea>
+                        <br><span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
+                      </iais:value>
+                    </iais:row>
+                    <iais:action >
+                      <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptRejectInspDateCon()">Confirm</button>
+                      <a class="back" id="Back" onclick="javascript:apptRejectInspDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                    </iais:action>
+                  </iais:section>
+                </iais:body>
               </div>
             </div>
           </div>
         </div>
-      </iais:body>
+      </div>
     </form>
   </div>
 </div>

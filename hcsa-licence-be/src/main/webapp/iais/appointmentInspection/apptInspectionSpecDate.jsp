@@ -38,7 +38,7 @@
                 <iais:section title="" id = "inspection_date">
                   <div class="row" style="margin-bottom:200px">
                     <div class="col-md-1">
-                      <label style="font-size: 16px">Date</label>
+                      <label style="font-size: 16px">Date<span style="color: red"> *</span></label>
                     </div>
                     <div class="col-md-6">
                       <div class="col-xs-12 col-md-4">

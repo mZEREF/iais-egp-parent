@@ -15,63 +15,54 @@
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
-
+<%@include file="../common/dashboard.jsp"%>
 <div class="container">
   <div class="component-gp">
     <br>
     <form method="post" id="mainReConfirmForm" action=<%=process.runtime.continueURL()%>>
       <%@ include file="/include/formHidden.jsp" %>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
       <input type="hidden" name="userComfireInspDateType" value="">
       <input type="hidden" id="actionValue" name="actionValue" value="">
-      <iais:body >
-        <div class="container">
-          <div class="col-xs-12">
-            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-              <h3>
-                <span>Recomputing of Dates</span>
-              </h3>
-              <div class="panel panel-default">
-                <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                  <div class="panel-body">
-                    <div class="panel-main-content">
-                      <iais:section title="" id = "ava_apptnew_date">
-                        <iais:row>
-                          <iais:field value="Available Appointment Dates" required="true"/>
-                        </iais:row>
-                        <iais:row>
-                          <iais:value width="7">
-                            <c:if test="${apptFeConfirmDateDto.inspectionNewDate != null}">
-                              <c:forEach items="${apptFeConfirmDateDto.inspectionNewDate}" var="newDate">
-                                <input class="form-check-input" type="radio" name="apptCheckNewDate" aria-invalid="true" value="${newDate.value}" <c:if test="${newDate.value eq apptFeConfirmDateDto.checkNewDate}">checked</c:if>>
-                                <label><c:out value = "${newDate.text}"/></label>
-                              </c:forEach>
-                              <br><span class="error-msg" name="iaisErrorMsg" id="error_checkNewDate"></span>
-                            </c:if>
-                            <c:if test="${apptFeConfirmDateDto.inspectionNewDate == null}">
-                              <label><c:out value = "-"/></label>
-                            </c:if>
-                          </iais:value>
-                        </iais:row>
-                        <iais:action >
-                          <c:if test="${apptFeConfirmDateDto.inspectionNewDate != null}">
-                            <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:apptTwoConfirmInspDateCon()">Confirm</button>
-                          </c:if>
-                          <button class="btn btn-lg btn-login-next" style="float:left" type="button" onclick="javascript:apptTwoConfirmInspDateBack()">back</button>
-                        </iais:action>
-                      </iais:section>
+      <div class="main-content">
+        <div class="row">
+          <div class="col-lg-12 col-xs-12">
+            <div class="center-content">
+              <div class="intranet-content">
+                <iais:body >
+                  <iais:section title="" id = "ava_apptnew_date">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <label style="font-size: 16px">Available Appointment Dates</label>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <c:if test="${apptFeConfirmDateDto.inspectionNewDate != null}">
+                          <c:forEach items="${apptFeConfirmDateDto.inspectionNewDate}" var="newDate">
+                            <br><input class="form-check-input" type="radio" name="apptCheckNewDate" aria-invalid="true" value="${newDate.value}" <c:if test="${newDate.value eq apptFeConfirmDateDto.checkNewDate}">checked</c:if>>
+                            <span><c:out value = "${newDate.text}"/></span>
+                          </c:forEach>
+                          <br><span class="error-msg" name="iaisErrorMsg" id="error_checkNewDate"></span>
+                        </c:if>
+                        <c:if test="${apptFeConfirmDateDto.inspectionNewDate == null}">
+                          <span><c:out value = "-"/></span>
+                        </c:if>
+                      </div>
+                    </div>
+                    <br>
+                    <iais:action >
+                      <c:if test="${apptFeConfirmDateDto.inspectionNewDate != null}">
+                        <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptTwoConfirmInspDateCon()">Confirm</button>
+                      </c:if>
+                      <a class="back" id="Back" onclick="javascript:apptTwoConfirmInspDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                    </iais:action>
+                  </iais:section>
+                </iais:body>
               </div>
             </div>
           </div>
         </div>
-      </iais:body>
+      </div>
     </form>
   </div>
 </div>

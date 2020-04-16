@@ -81,7 +81,7 @@ public class ApplicantConfirmInspDateDelegator {
             apptFeConfirmDateDto = applicantConfirmInspDateService.getApptSystemDate(appPremCorrId);
         }
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
-        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Appointment Scheduling");
+        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Appointment Scheduling");
     }
 
     /**
@@ -160,6 +160,7 @@ public class ApplicantConfirmInspDateDelegator {
         log.debug(StringUtil.changeForLog("the userConfirmInspDateRe start ...."));
         ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
         apptFeConfirmDateDto = applicantConfirmInspDateService.getApptNewSystemDate(apptFeConfirmDateDto);
+        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Recomputing of Dates");
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }
 
@@ -239,6 +240,7 @@ public class ApplicantConfirmInspDateDelegator {
         List<SelectOption> amPm = applicantConfirmInspDateService.getAmPmOption();
         ParamUtil.setSessionAttr(bpc.request, "amPmFeOption", (Serializable) amPm);
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
+        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Requests a Particular Date");
     }
 
     /**
