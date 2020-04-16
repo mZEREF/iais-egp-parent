@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -13,11 +14,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -46,9 +47,13 @@ public class ApptReSchedulingInspDateDelegator {
     private ApplicationViewService applicationViewService;
 
     @Autowired
-    private ApptReSchedulingInspDateDelegator(ApplicationViewService applicationViewService, ApptInspectionDateService apptInspectionDateService){
+    private TaskService taskService;
+
+    @Autowired
+    private ApptReSchedulingInspDateDelegator(TaskService taskService, ApplicationViewService applicationViewService, ApptInspectionDateService apptInspectionDateService){
         this.apptInspectionDateService = apptInspectionDateService;
         this.applicationViewService = applicationViewService;
+        this.taskService = taskService;
     }
 
     /**
@@ -86,18 +91,18 @@ public class ApptReSchedulingInspDateDelegator {
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
         if(apptInspectionDateDto == null){
             String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
+            TaskDto taskDto = taskService.getTaskById(taskId);
             ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskId);
             apptInspectionDateDto = new ApptInspectionDateDto();
             apptInspectionDateDto  = apptInspectionDateService.getApptSpecificDate(taskId, apptInspectionDateDto);
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+            ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         }
         List<SelectOption> processDecList = apptInspectionDateService.getReShProcessDecList(apptInspectionDateDto);
         List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
-        List<SelectOption> amPm = apptInspectionDateService.getAmPmOption();
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
         ParamUtil.setSessionAttr(bpc.request, "inspecProDec", (Serializable) processDecList);
         ParamUtil.setSessionAttr(bpc.request, "hours", (Serializable) hours);
-        ParamUtil.setSessionAttr(bpc.request, "amPm", (Serializable) amPm);
     }
 
     /**
