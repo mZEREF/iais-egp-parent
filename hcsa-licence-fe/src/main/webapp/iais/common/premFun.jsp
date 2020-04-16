@@ -163,7 +163,7 @@
         $('.retrieveAddr').click(function(){
             var $postalCodeEle = $(this).closest('div.postalCodeDiv');
             var $premContent = $(this).closest('div.premContent');
-            var postalCode = $postalCodeEle.find('.sitePostalCode').val();
+            var postalCode = $postalCodeEle.find('.postalCode').val();
             var thisId = $(this).attr('id');
             //alert(postalCode);
             var re=new RegExp('^[0-9]*$');
@@ -193,22 +193,21 @@
                         return;
                     }
                     var premType = '';
-
+                    var prefixName = '';
                     if("conveyance" == thisId){
-                        $premContent.find('.conveyanceBlockNo').val(data.blkHseNo);
-                        $premContent.find('.conveyanceStreetName').val(data.streetName);
-                        $premContent.find('.conveyanceBuildingName').val(data.buildingName);
-                    }else{
-                        $premContent.find('.siteBlockNo').val(data.blkHseNo);
-                        $premContent.find('.siteStreetName').val(data.streetName);
-                        $premContent.find('.siteBuildingName').val(data.buildingName);
-                        /*if(null == data.addressType || ''== data.addressType){
-                        }else{
-                        }*/
+                        prefixName = 'conveyance';
+                    }else if("onSite" == thisId){
+                        prefixName = 'site';
+                    }else if("offSite" == thisId){
+                        prefixName = 'offSite';
                     }
-                    $premContent.find('.siteBlockNo').prop('readonly',true);
-                    $premContent.find('.siteStreetName').prop('readonly',true);
-                    $premContent.find('.siteBuildingName').prop('readonly',true);
+                    $premContent.find('.'+prefixName+'BlockNo').val(data.blkHseNo);
+                    $premContent.find('.'+prefixName+'StreetName').val(data.streetName);
+                    $premContent.find('.'+prefixName+'BuildingName').val(data.buildingName);
+
+                    $premContent.find('.'+prefixName+'BlockNo').prop('readonly',true);
+                    $premContent.find('.'+prefixName+'StreetName').prop('readonly',true);
+                    $premContent.find('.'+prefixName+'BuildingName').prop('readonly',true);
                 },
                 'error':function () {
                     $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");

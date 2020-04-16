@@ -75,11 +75,11 @@
               <div class="form-group postalCodeDiv">
                 <label class="col-xs-12 col-md-4 control-label">Postal Code <span class="mandatory">*</span></label>
                 <div class=" col-md-5">
-                  <input type="text" name="onSitePostalCode" class="sitePostalCode" maxlength="6" autocomplete="off"><span id="error_onSitePostalCode" name="iaisErrorMsg" class="error-msg"></span>
+                  <input type="text" name="onSitePostalCode" class="postalCode" maxlength="6" autocomplete="off"><span id="error_onSitePostalCode" name="iaisErrorMsg" class="error-msg"></span>
                   <span id="error_postalCode0" class="error-msg" name="iaisErrorMsg"></span>
                 </div>
                 <div class="col-xs-7 col-sm-6 col-md-3">
-                  <p><a class="retrieveAddr">Retrieve your address</a></p>
+                  <p><a class="retrieveAddr" id="onSite">Retrieve your address</a></p>
                 </div>
               <div class="clear"></div></div>
 
@@ -242,7 +242,7 @@
               <div class="form-group postalCodeDiv">
                 <label class="col-xs-12 col-md-4 control-label">Postal Code <span class="mandatory">*</span></label>
                 <div class="col-sm-4 col-md-5 col-xs-5">
-                  <input type="text" id="conveyancePostalCode" name="conveyancePostalCode" class="sitePostalCode" maxlength="6" autocomplete="off">
+                  <input type="text" id="conveyancePostalCode" name="conveyancePostalCode" class="postalCode" maxlength="6" autocomplete="off">
                   <span  class="error-msg" name="iaisErrorMsg" id="error_conveyancePostalCode(00)"></span>
                 </div>
                 <div class="col-xs-7 col-sm-6 col-md-3">
@@ -375,7 +375,7 @@
                                 class="mandatory">*</span></label>
                         <div class="col-sm-4 col-md-5 col-xs-5">
                             <input type="text" id="offSitePostalCode" name="offSitePostalCode"
-                                   class="sitePostalCode" maxlength="6" autocomplete="off">
+                                   class="postalCode" maxlength="6" autocomplete="off">
                         </div>
                         <div class="col-xs-7 col-sm-6 col-md-3">
                             <p><a class="retrieveAddr" id="offSite">Retrieve your address</a></p>

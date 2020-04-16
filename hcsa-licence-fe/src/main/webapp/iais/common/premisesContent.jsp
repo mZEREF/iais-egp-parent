@@ -165,11 +165,11 @@
                     <iais:row cssClass="postalCodeDiv">
                         <iais:field value="Postal Code " mandatory="true" width="12"/>
                         <iais:value  cssClass="col-md-5">
-                            <iais:input cssClass="sitePostalCode" maxLength="6" type="text"  name="onSitePostalCode"  value="${appGrpPremisesDto.postalCode}"></iais:input>
+                            <iais:input cssClass="postalCode" maxLength="6" type="text"  name="onSitePostalCode"  value="${appGrpPremisesDto.postalCode}"></iais:input>
                             <span  id="error_postalCode${status.index}" class="error-msg" name="iaisErrorMsg"></span>
                         </iais:value>
                         <div class="col-xs-7 col-sm-6 col-md-3">
-                            <p><a class="retrieveAddr" >Retrieve your address</a></p>
+                            <p><a class="retrieveAddr" id="onSite" >Retrieve your address</a></p>
                         </div>
 
                     </iais:row>
@@ -408,7 +408,7 @@
                     <iais:row cssClass="postalCodeDiv">
                         <iais:field value="Postal Code " mandatory="true" width="12"/>
                         <iais:value width="11" cssClass="col-md-5">
-                            <iais:input maxLength="6" cssClass="sitePostalCode" type="text" name="conveyancePostalCode"  value="${appGrpPremisesDto.conveyancePostalCode}"></iais:input>
+                            <iais:input maxLength="6" cssClass="postalCode" type="text" name="conveyancePostalCode"  value="${appGrpPremisesDto.conveyancePostalCode}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyancePostalCode${status.index}"></span>
                         </iais:value>
                         <div class="col-xs-7 col-sm-6 col-md-3">
@@ -621,11 +621,11 @@
                     <iais:row cssClass="postalCodeDiv">
                         <iais:field value="Postal Code " mandatory="true" width="12"/>
                         <iais:value width="11" cssClass="col-md-5">
-                            <iais:input maxLength="6" cssClass="offSitePostalCode" type="text" name="offSitePostalCode"  value="${appGrpPremisesDto.offSitePostalCode}"></iais:input>
+                            <iais:input maxLength="6" cssClass="postalCode" type="text" name="offSitePostalCode"  value="${appGrpPremisesDto.offSitePostalCode}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSitePostalCode${status.index}"></span>
                         </iais:value>
                         <div class="col-xs-7 col-sm-6 col-md-3">
-                            <p><a class="retrieveAddr" id="">Retrieve your address</a></p>
+                            <p><a class="retrieveAddr" id="offSite">Retrieve your address</a></p>
                         </div>
 
                     </iais:row>
