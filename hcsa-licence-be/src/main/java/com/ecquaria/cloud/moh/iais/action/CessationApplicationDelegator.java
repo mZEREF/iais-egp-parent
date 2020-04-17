@@ -74,6 +74,7 @@ public class CessationApplicationDelegator {
         if(licIds==null||licIds.size()==0){
             licIds = IaisCommonUtils.genNewArrayList();
             licIds.add("1D83B3AD-B04D-EA11-BE7F-000C29F371DC");
+            licIds.add("52570F86-834D-EA11-BE7F-000C29F371DC");
         }
         List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
         int size = appCessDtosByLicIds.size();
@@ -136,7 +137,8 @@ public class CessationApplicationDelegator {
         }
 
         for (int i = 1; i <= size; i++) {
-            for (int j = 1; j <= size; j++) {
+            int size1 = appCessHciDtos.get(i-1).getAppCessHciDtos().size();
+            for (int j = 1; j <= size1; j++) {
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + WHICHTODO + j);
                 if (!StringUtil.isEmpty(whichTodo)) {
                     Map<String, String> validate = validate(bpc,i,j);
@@ -350,7 +352,6 @@ public class CessationApplicationDelegator {
     private Map<String, String> validate(BaseProcessClass bpc,int i,int j) {
         HttpServletRequest httpServletRequest = bpc.request;
         Map<String, String> errorMap = new HashMap<>(34);
-
         String effectiveDateStr = ParamUtil.getRequestString(httpServletRequest, i + EFFECTIVEDATE + j);
         if (StringUtil.isEmpty(effectiveDateStr)) {
             errorMap.put(i + EFFECTIVEDATE + j, ERROR);
@@ -389,7 +390,7 @@ public class CessationApplicationDelegator {
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect)&&!StringUtil.isEmpty(patHciName)) {
                 List<String> hciName = cessationService.listHciName();
                 if(!hciName.contains(patHciName)){
-                    errorMap.put(i+"patHciName"+j, "HciName not exist !");
+                    errorMap.put(i+"patHciName"+j, "HCI Name cannot be found.");
                 }
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect)&&StringUtil.isEmpty(patRegNo)) {
@@ -408,7 +409,7 @@ public class CessationApplicationDelegator {
     private List<SelectOption> getReasonOption() {
         List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, "Not Profitable");
-        SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, "Reduce Workloa");
+        SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, "Reduce Workload");
         SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_REASON_OTHER, "Others");
         riskLevelResult.add(so1);
         riskLevelResult.add(so2);

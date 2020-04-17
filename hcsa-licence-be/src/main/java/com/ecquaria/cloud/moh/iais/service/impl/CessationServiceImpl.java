@@ -130,7 +130,7 @@ public class CessationServiceImpl implements CessationService {
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.clear();
             licIds.add(licId);
-            String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+            String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_CESSATION, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
             List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
             AppSubmissionDto appSubmissionDto = appSubmissionDtoList.get(0);
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -216,8 +216,8 @@ public class CessationServiceImpl implements CessationService {
     @Override
     public void routingTaskToAo3(List<ApplicationDto> applicationDtos, LoginContext loginContext) throws FeignException {
         String curRoleId = loginContext.getCurRoleId();
-        log.info("=============>>>roleId"+curRoleId);
-        TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtos,HcsaConsts.ROUTING_STAGE_AO3,RoleConsts.USER_ROLE_AO3,IaisEGPHelper.getCurrentAuditTrailDto());
+        log.info("=============>>>roleId" + curRoleId);
+        TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtos, HcsaConsts.ROUTING_STAGE_AO3, RoleConsts.USER_ROLE_AO3, IaisEGPHelper.getCurrentAuditTrailDto());
         List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
         List<TaskDto> tasks = taskService.createTasks(taskDtos);
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
