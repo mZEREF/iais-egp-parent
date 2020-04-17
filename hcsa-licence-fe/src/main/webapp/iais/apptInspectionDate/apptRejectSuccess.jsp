@@ -8,37 +8,46 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
-
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
-
-<div class="container">
-  <div class="component-gp">
-    <br>
-    <form method="post" id="mainReConfirmForm" action=<%=process.runtime.continueURL()%>>
-      <%@ include file="/include/formHidden.jsp" %>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <input type="hidden" name="userComfireInspDateType" value="">
-      <input type="hidden" id="actionValue" name="actionValue" value="">
-      <iais:body >
-        <div class="container">
-          <div class="col-xs-12">
-            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-              <h3>
-                <span>Success</span>
-              </h3>
-            </div>
+<%@include file="../common/dashboard.jsp"%>
+<form method="post" id="mainRecAckForm" action=<%=process.runtime.continueURL()%>>
+  <div class="main-content">
+    <div class="row">
+      <div class="col-lg-12 col-xs-12">
+        <div class="center-content">
+          <div class="intranet-content">
+            <iais:body >
+              <iais:section title="" id = "rec_ack_page">
+                <div class="bg-title">
+                  <h3 style="border-bottom: 0px solid">Submission successful</h3>
+                </div>
+                <iais:row>
+                  <iais:value width="7">
+                    <p><label>Your request for a particular date has been submitted.</label></p>
+                  </iais:value>
+                </iais:row>
+                <iais:action >
+                  <p class="print">
+                    <a href="#" id="print-ack"> <em class="fa fa-print"></em>Print</a>
+                    <a class="btn btn-primary" style="float:right" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to Dashboard</a>
+                  </p>
+                </iais:action>
+              </iais:section>
+            </iais:body>
           </div>
         </div>
-      </iais:body>
-    </form>
+      </div>
+    </div>
   </div>
-</div>
+</form>
+<script type="text/javascript">
+    $("#print-ack").click(function () {
+        showWaiting();
+        window.print();
+    })
+</script>

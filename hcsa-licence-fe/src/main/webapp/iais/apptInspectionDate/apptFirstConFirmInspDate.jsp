@@ -29,30 +29,50 @@
             <div class="center-content">
               <div class="intranet-content">
                 <iais:body >
-                  <iais:section title="" id = "ava_appt_date">
-                    <div class="row">
-                      <div class="col-md-4">
-                        <label style="font-size: 16px">Available Appointment Dates</label>
+                  <c:if test="${'SUCCESS' eq apptInspFlag}">
+                    <iais:section title="" id = "rec_ack_page">
+                      <div class="bg-title">
+                        <h3 style="border-bottom: 0px solid">Submission successful</h3>
                       </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-6">
-                        <c:forEach items="${apptFeConfirmDateDto.inspectionDate}" var="date">
-                          <br><input class="form-check-input" type="radio" name="apptCheckDate" aria-invalid="true" value="${date.value}" <c:if test="${date.value eq apptFeConfirmDateDto.checkDate}">checked</c:if>>
-                          <span><c:out value = "${date.text}"/></span>
-                        </c:forEach>
-                        <br><span class="error-msg" name="iaisErrorMsg" id="error_checkDate"></span>
+                      <iais:row>
+                        <iais:value width="7">
+                          <p><label>Your request for a particular date has been submitted.</label></p>
+                        </iais:value>
+                      </iais:row>
+                      <iais:action >
+                        <p class="print">
+                          <a href="#" id="print-ack"> <em class="fa fa-print"></em>Print</a>
+                          <a class="btn btn-primary" style="float:right" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to Dashboard</a>
+                        </p>
+                      </iais:action>
+                    </iais:section>
+                  </c:if>
+                  <c:if test="${'SUCCESS' ne apptInspFlag}">
+                    <iais:section title="" id = "ava_appt_date">
+                      <div class="row">
+                        <div class="col-md-4">
+                          <label style="font-size: 16px">Available Appointment Dates</label>
+                        </div>
                       </div>
-                    </div>
-                    <br>
-                    <iais:action>
-                      <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptFirstConFirmInspDateRej()">Request a particular date</button>
-                      <span style="float:right">&nbsp;</span>
-                      <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptFirstConFirmInspDateRec()">Recompute other dates</button>
-                      <span style="float:right">&nbsp;</span>
-                      <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptFirstConFirmInspDateCon()">Confirm</button>
-                    </iais:action>
-                  </iais:section>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <c:forEach items="${apptFeConfirmDateDto.inspectionDate}" var="date">
+                            <br><input class="form-check-input" type="radio" name="apptCheckDate" aria-invalid="true" value="${date.value}" <c:if test="${date.value eq apptFeConfirmDateDto.checkDate}">checked</c:if>>
+                            <span><c:out value = "${date.text}"/></span>
+                          </c:forEach>
+                          <br><span class="error-msg" name="iaisErrorMsg" id="error_checkDate"></span>
+                        </div>
+                      </div>
+                      <br>
+                      <iais:action>
+                        <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptFirstConFirmInspDateRej()">Request a particular date</button>
+                        <span style="float:right">&nbsp;</span>
+                        <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptFirstConFirmInspDateRec()">Recompute other dates</button>
+                        <span style="float:right">&nbsp;</span>
+                        <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptFirstConFirmInspDateCon()">Confirm</button>
+                      </iais:action>
+                    </iais:section>
+                  </c:if>
                 </iais:body>
               </div>
             </div>
@@ -64,6 +84,11 @@
 </div>
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
+    $("#print-ack").click(function () {
+        showWaiting();
+        window.print();
+    })
+
     function apptFirstConFirmInspDateSubmit(action){
         $("[name='userComfireInspDateType']").val(action);
         var mainPoolForm = document.getElementById('mainConfirmForm');
