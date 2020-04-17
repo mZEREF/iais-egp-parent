@@ -171,6 +171,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         setCreateHistoryDto(apptFeConfirmDateDto, apptInspectionDateDto);
         setCreateInspectionStatus(apptInspectionDateDto, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
         setRecommendationDto(apptFeConfirmDateDto, apptInspectionDateDto);
+        apptInspectionDateDto.setRefNo(apptFeConfirmDateDto.getTaskRefNo());
 
         feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
@@ -269,6 +270,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         setCreateHistoryDto(apptFeConfirmDateDto, apptInspectionDateDto);
         setCreateInspectionStatus(apptInspectionDateDto, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
         setRecommendationDto(apptFeConfirmDateDto, apptInspectionDateDto);
+        apptInspectionDateDto.setRefNo(apptFeConfirmDateDto.getTaskRefNo());
 
         feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
@@ -285,6 +287,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         setCreateHistoryDto(apptFeConfirmDateDto, apptInspectionDateDto);
         setCreateInspectionStatus(apptInspectionDateDto, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
         setRecommendationDto(apptFeConfirmDateDto, apptInspectionDateDto);
+        apptInspectionDateDto.setRefNo(apptFeConfirmDateDto.getTaskRefNo());
 
         feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
