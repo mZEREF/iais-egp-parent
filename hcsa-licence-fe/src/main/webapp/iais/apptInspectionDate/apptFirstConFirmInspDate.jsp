@@ -36,7 +36,7 @@
                       </div>
                       <iais:row>
                         <iais:value width="7">
-                          <p><label>Your request for a particular date has been submitted.</label></p>
+                          <p><label>Congratulations, you have successfully submitted to MOH.</label></p>
                         </iais:value>
                       </iais:row>
                       <iais:action >
