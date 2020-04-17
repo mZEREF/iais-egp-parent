@@ -73,14 +73,28 @@
         }
 
         var file = $('#selectedFile').get(0).files[0];
-        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
-        var selectedFile = $('#uploadDoc').find('[name="selectedFile"]').val();
-        if(selectedFile==""){
+        if(file==null || file=="" || file==undefined){
             $('[name="selectedFile"]').parent().nextAll('.error').html('<span style="color: #D22727; font-size: 1.6rem">The file cannot be empty.</span>');
             flag = flag && false;
-        }else if(fileSize> 4){
-            $('[name="selectedFile"]').parent().nextAll('.error').html('<span style="color: #D22727; font-size: 1.6rem">The file size must less than 4M.</span>');
-            flag = flag && false;
+        }else{
+            var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
+            var selectedFile = $('#uploadDoc').find('[name="selectedFile"]').val();
+            var fileName = $('#selectedFile').get(0).files[0].name;
+            var fileType = fileName.substr(fileName.lastIndexOf(".")).toUpperCase();
+
+            //check file type
+            if (fileType != ".PDF" && fileType != ".PNG" && fileType != ".DOCX" && fileType != ".JPG" && fileType != ".JPEG" && fileType != ".DOC") {
+                $('[name="selectedFile"]').parent().nextAll('.error').html('<span style="color: #D22727; font-size: 1.6rem">The file type is invalid.</span>');
+                flag = flag && false;
+            }
+            //check file size
+            if(selectedFile==""){
+                $('[name="selectedFile"]').parent().nextAll('.error').html('<span style="color: #D22727; font-size: 1.6rem">The file cannot be empty.</span>');
+                flag = flag && false;
+            }else if(fileSize> 4){
+                $('[name="selectedFile"]').parent().nextAll('.error').html('<span style="color: #D22727; font-size: 1.6rem">The file size must less than 4M.</span>');
+                flag = flag && false;
+            }
         }
 
         if(!flag){

@@ -1033,8 +1033,6 @@ public class HcsaApplicationDelegator {
 //                ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
             }
         }
-
-
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));
     }
 
