@@ -46,6 +46,7 @@ public class EventbusCallBackDelegate {
         boolean isLeagal = IaisEGPHelper.verifyCallBackToken(submissionId, serviceName, token);
         String eventRefNum = ParamUtil.getString(request, "eventRefNo");
         log.info("event Ref number ===========> {}", eventRefNum);
+        long curUpdateDt = ParamUtil.getLong(request, "updateDate");
         if (!isLeagal) {
             throw new IaisRuntimeException("Visit without Token!!");
         }
@@ -61,6 +62,9 @@ public class EventbusCallBackDelegate {
             for (Map.Entry<String, List<ServiceStatus>> ent : map.entrySet()) {
                 for (ServiceStatus status : ent.getValue()) {
                     log.info("Result status ===========> {}", status.getStatus());
+                    if (status.getUpdateDt().getTime() > curUpdateDt) {
+                        pending = true;
+                    }
                     if (status.getStatus().contains(GlobalConstants.STATE_PENDING)) {
                         pending = true;
                     } else if (!status.getServiceStatus().contains(GlobalConstants.STATUS_SUCCESS)) {
