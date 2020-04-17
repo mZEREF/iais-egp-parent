@@ -1,5 +1,5 @@
 <iais:row>
-    <iais:field value="Name" width="11"/>
+    <iais:field value="Name" width="11" required="true"/>
     <iais:value width="11">
         <iais:input type="text" name="name" id="name" value="${user.displayName}"/>
         <div class="col-xs-12">
@@ -8,14 +8,17 @@
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field value="Salutation" width="11"/>
+    <iais:field value="Salutation" width="11" required="true"/>
     <iais:value width="11">
         <iais:select name="salutation" id="salutation" value="${user.salutation}"
                      codeCategory="CATE_ID_SALUTATION"  firstOption="Please Select" />
+        <div class="col-xs-12">
+            <span class="error-msg" name="errorMsg" id="error_salutation"></span>
+        </div>
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field value="ID Type" width="11"/>
+    <iais:field value="ID Type" width="11" required="true"/>
     <c:choose>
         <c:when test="${'Y'.equals(canEditFlag)}">
                 <iais:value width="11">
@@ -34,11 +37,11 @@
     </div>
 </iais:row>
 <iais:row>
-    <iais:field value="ID No" width="11"/>
+    <iais:field value="ID No" width="11" required="true"/>
     <iais:value width="11">
         <c:choose>
             <c:when test="${'Y'.equals(canEditFlag)}">
-                <iais:input type="text" name="idNo" id="idNo" value="${user.identityNo}"/>
+                <input type="text" name="idNo" id="idNo" value="${user.identityNo}"/>
             </c:when>
             <c:otherwise>
                     <input type="text" name="idNo" id="idNo" value="${user.identityNo}" readonly/>
@@ -50,7 +53,7 @@
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field value="Designation" width="11"/>
+    <iais:field value="Designation" width="11" required="true"/>
     <iais:value width="11">
         <iais:input type="text" name="designation" id="designation" value="${user.designation}"/>
         <div class="col-xs-12">
@@ -59,7 +62,7 @@
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field value="Mobile No" width="11"/>
+    <iais:field value="Mobile No" width="11" required="true"/>
     <iais:value width="11">
         <iais:input type="text" name="mobileNo" id="mobileNo" maxLength="8" value="${user.mobileNo}"/>
         <div class="col-xs-12">
@@ -68,7 +71,7 @@
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field value="Office/Telephone No" width="11"/>
+    <iais:field value="Office/Telephone No" width="11" required="true"/>
     <iais:value width="11">
         <iais:input type="text" name="officeNo" id="officeNo" maxLength="8" value="${user.officeTelNo}"/>
         <div class="col-xs-12">
@@ -77,7 +80,7 @@
     </iais:value>
 </iais:row>
 <iais:row>
-    <iais:field value="Email" width="11"/>
+    <iais:field value="Email" width="11" required="true"/>
     <iais:value width="11">
         <iais:input type="text" name="email" id="email" value="${user.email}"/>
         <div class="col-xs-12">

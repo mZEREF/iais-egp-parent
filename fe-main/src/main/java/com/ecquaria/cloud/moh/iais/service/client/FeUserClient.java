@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -39,6 +38,9 @@ public interface FeUserClient {
     @GetMapping(value = "/iais-internet-user/{nric}/uen-list/")
     FeignResponseEntity<List<String>> getUenListByNric(@PathVariable("nric") String nric);
 
+    @GetMapping(value = "/iais-internet-user/user-account/{nric}")
+    FeignResponseEntity<FeUserDto> getInternetUserByNric(@PathVariable("nric") String nric);
+
     @RequestMapping(path = "/iais-internet-user/edit-user-account",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeUserDto> editUserAccount(@RequestBody FeUserDto feUserDto);
 
@@ -46,13 +48,13 @@ public interface FeUserClient {
     FeignResponseEntity<OrgUserRoleDto> addUserRole(@RequestBody OrgUserRoleDto orgUserRoleDto);
 
     @PostMapping(path = "/iais-internet-user/user-account/", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-	FeignResponseEntity<OrgUserDto> singPassLoginFe(@RequestBody String jsonOpt);
+	FeignResponseEntity<FeUserDto> createSingpassAccount(@RequestBody OrganizationDto organizationDto);
 
     @GetMapping(value = "/iais-internet-user/organization/{uen}/user/{nric}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Map<String, Object>> getUserByNricAndUen(@PathVariable(value = "uen") String uen, @PathVariable(value = "nric") String nric);
+    FeignResponseEntity<FeUserDto> getUserByNricAndUen(@PathVariable(value = "uen") String uen, @PathVariable(value = "nric") String nric);
 
     @PostMapping(path = "/iais-internet-user/organization/user-account/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<OrgUserDto> createCropUser(@RequestBody String json);
+    FeignResponseEntity<FeUserDto> createCropUser(@RequestBody OrganizationDto organizationDto);
 
     @GetMapping(value = "/iais-internet-user/user-info/{userId}")
     FeignResponseEntity<InterInboxUserDto> findUserInfoByUserId(@PathVariable("userId")String UserId);

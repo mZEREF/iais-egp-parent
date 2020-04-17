@@ -28,18 +28,22 @@
         <div class="prelogin" style="background-image: url('/web/themes/fe/img/prelogin-masthead-banner.jpg');">
             <div class="container">
                 <div class="col-xs-12">
+                    <div class="dashboard-page-title">
+                        <h2>Declaration </h2>
+                    </div>
+                </div>
+                <div class="col-xs-12">
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                         <div class="panel panel-default">
                             <div class="panel-heading completed" id="headingPremise" role="tab">
-                                <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePremise" aria-expanded="true" aria-controls="collapsePremise">Declares</a></h4>
+                                <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePremise" aria-expanded="true" aria-controls="collapsePremise">TERMS OF USE</a></h4>
                             </div>
                             <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
                                 <div class="panel-body">
                                     <p class="text-right"></p>
                                     <div class="panel-main-content">
                                         <div class="preview-info">
-                                            <p>If the new CorpPass user declares that he/she has been delegated by a key appointment holder to act on behalf of the entity,
-                                                he or she will be designated as and given the role of a HCSA Internet Company Administrator. Otherwise, the user will not be allowed to access the System.</p>
+                                            <p>I declare that I am authorised by my company to apply/manage HCSA licences</p>
                                         </div>
                                     </div>
                                 </div>
@@ -48,19 +52,18 @@
 
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input"  type="checkbox" name="declarationCheckbox" value="Y" aria-invalid="false">
-                        <label class="form-check-label" ><span class="check-square"></span>Yes, I have authorization</label>
+                        <input class="form-check-input"  type="checkbox" name="declarationCheckbox" value="Y" onclick="Utils.disableButton(this, 'internet_login_declared_submit_btn')" aria-invalid="false">
+                        <label class="form-check-label" ><span class="check-square"></span>I agree to the Terms and Conditions</label>
                     </div>
-                    <div class="form-check">
+                    <%--<div class="form-check">
                         <input class="form-check-input"  type="checkbox" name="declarationCheckbox" value="N" aria-invalid="false">
                         <label class="form-check-label" ><span class="check-square"></span>&lt;No&gt;</label>
-                    </div>
+                    </div>--%>
                 </div>
 
                 <div class="text-right text-center-mobile">
-                    <a class="btn btn-primary next" href="javascript:void(0);"
+                    <a class="btn btn-primary disabled" id="internet_login_declared_submit_btn" href="javascript:void(0);"
                        onclick="Utils.submit('mainForm', 'doSubmit')">Submit</a>
-
                 </div>
 
             </div>
@@ -71,10 +74,16 @@
 
 <%@include file="/include/utils.jsp"%>
 <script>
-    $(":checkbox").bind("click",function(){
+   /* $(":checkbox").bind("click",function(){
             $(":checkbox").removeAttr("checked");
             $(this).attr("checked","checked");
         }
-    );
+    );*/
+
+  /* $(":checkbox").bind("click",function() {
+       //console.log($('input[name="declarationCheckbox"]').val());
+       checkButton('internet_login_declared_submit_btn')
+
+   } );*/
 
 </script>

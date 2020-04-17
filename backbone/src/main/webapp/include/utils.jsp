@@ -30,6 +30,14 @@
             $(".current").text("Please Select");
             $(".form-horizontal option").val("");
         },
+
+        disableButton: function (obj, id) {
+            if ($(obj).attr("checked")){
+                $('#' + id).attr("class", "btn btn-primary next");
+            }else {
+                $('#' + id).attr("class", "btn btn-primary disabled");
+            }
+        }
     }
 
     $("#crud_search_button").click(function () {

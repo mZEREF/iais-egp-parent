@@ -110,12 +110,32 @@ public final class IaisEGPHelper extends EGPHelper {
         return dto;
     }
 
+    /**
+     * It can't be the same day
+     * @param start
+     * @param end
+     * @return
+     */
     public static Boolean isAfterDate(Date start, Date end){
         if (start == null || end == null){
             throw new IaisRuntimeException("No has input for Date!");
         }
 
         return end.compareTo(start) == 1  || end.compareTo(start) == 0 ? true : false;
+    }
+
+    /**
+     * It could be the same day
+     * @param start
+     * @param end
+     * @return
+     */
+    public static Boolean isAfterDateSecond(Date start, Date end){
+        if (start == null || end == null){
+            throw new IaisRuntimeException("No has input for Date!");
+        }
+
+        return end.compareTo(start) == 1 ? true : false;
     }
 
 

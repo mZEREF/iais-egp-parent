@@ -6,20 +6,23 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+
 @Slf4j
 public final class LoginHelper {
-    private static final String INBOX_URL = "/main-web/eservice/INTERNET/MohInternetInbox";
+    public static final String INBOX_URL = "/main-web/eservice/INTERNET/MohInternetInbox";
+    public static final String MAIN_WEB_URL = "/main-web/";
+    public static final String CORPPASS_URL = "/main-web/eservice/INTERNET/FE_Landing/1/croppass";
 
     private LoginHelper(){}
 
-    public static void login(HttpServletRequest request, HttpServletResponse response, User user){
+    public static void initUserInfo(HttpServletRequest request, HttpServletResponse response, User user){
         SessionManager.getInstance(request).imitateLogin(user, true, true);
         SessionManager.getInstance(request).initSopLoginInfo(request);
 
@@ -37,7 +40,6 @@ public final class LoginHelper {
             log.error(e.getMessage(), e);
         }
 
-        IaisEGPHelper.sendRedirect(request, response, INBOX_URL);
     }
 
 }
