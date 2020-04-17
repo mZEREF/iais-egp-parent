@@ -87,8 +87,8 @@ public class ApplicantConfirmInspDateDelegator {
             String appPremCorrId = ParamUtil.getRequestString(bpc.request, "appPremCorrId");
             if(!StringUtil.isEmpty(appPremCorrId)) {
                 ApplicationDto applicationDto = inspecUserRecUploadService.getApplicationByCorrId(appPremCorrId);
-                String appType = applicationDto.getApplicationType();
-                if(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING.equals(appType)){
+                String appStatus = applicationDto.getStatus();
+                if(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING.equals(appStatus)){
                     apptFeConfirmDateDto = applicantConfirmInspDateService.getApptSystemDate(appPremCorrId);
                     ParamUtil.setSessionAttr(bpc.request, "apptInspFlag", AppConsts.FALSE);
                 } else {
