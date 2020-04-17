@@ -3,16 +3,16 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.service.ResponseForInformationService;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.FileRepositoryClient;
-import com.ecquaria.cloud.moh.iais.service.client.ResponseForInformationClient;
+import com.ecquaria.cloud.moh.iais.service.SyncAuditTrailRecordsService;
+import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,26 +28,27 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
- * ResponseForInformationServiceImpl
+ * SyncAuditTrailRecordsServiceImpl
  *
  * @author junyu
- * @date 2019/12/30
+ * @date 2020/4/16
  */
 @Service
 @Slf4j
-public class ResponseForInformationServiceImpl implements ResponseForInformationService {
+public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsService {
     @Autowired
-    ResponseForInformationClient responseForInformationClient;
+    AuditTrailMainClient auditTrailClient;
+
     @Autowired
-    private FeEicGatewayClient eicGatewayClient;
-    @Autowired
-    private FileRepositoryClient fileRepositoryClient;
+    private EicGatewayFeMainClient eicGatewayClient;
+
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
     private String download;
@@ -67,51 +68,12 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     private String secSecretKey;
 
     @Override
-    public List<LicPremisesReqForInfoDto> searchLicPreRfiBylicenseeId(String licenseeId) {
-        return responseForInformationClient.searchLicPreRfiBylicenseeId(licenseeId).getEntity();
+    public List<AuditTrailEntityDto> getAuditTrailsByMigrated1() {
+        return auditTrailClient.getAuditTrailsByMigrated1().getEntity();
     }
 
     @Override
-    public LicPremisesReqForInfoDto getLicPreReqForInfo(String id) {
-        return responseForInformationClient.getLicPreReqForInfo(id).getEntity();
-    }
-
-
-
-    @Override
-    public LicPremisesReqForInfoDto acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
-        return responseForInformationClient.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto).getEntity();
-    }
-
-    @Override
-    public void saveFile(String data) throws IOException {
-        fileName = "userRecFile";
-        download = sharedPath + fileName;
-        backups = sharedPath + "backupsRec";
-
-        String s = FileUtil.genMd5FileChecksum(data.getBytes());
-        File file=MiscUtil.generateFile(download+File.separator, s+fileFormat);
-        if(!file.exists()){
-            file.createNewFile();
-        }
-        File groupPath=new File(download+File.separator);
-
-        if(!groupPath.exists()){
-            groupPath.mkdirs();
-        }
-        try (FileOutputStream fileInputStream = new FileOutputStream(backups+File.separator+file.getName());
-             FileOutputStream fileOutputStream  =new FileOutputStream(file);){
-
-            fileOutputStream.write(data.getBytes());
-            fileInputStream.write(data.getBytes());
-
-        } catch (Exception e) {
-            log.error(e.getMessage(),e);
-        }
-    }
-
-    @Override
-    public String getData(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
+    public String getData(List<AuditTrailEntityDto> auditTrailDtos) {
         fileName = "userRecFile";
         download = sharedPath +fileName;
         backups = sharedPath + "backupsRec";
@@ -120,26 +82,51 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         if(!fileRepPath.exists()){
             fileRepPath.mkdirs();
         }
-        String entity1= JsonUtil.parseToJson(licPremisesReqForInfoDto);
-        if(licPremisesReqForInfoDto.getFileRepoId()!=null){
-            byte[] entity = fileRepositoryClient.getFileFormDataBase(licPremisesReqForInfoDto.getFileRepoId()).getEntity();
-            File file = MiscUtil.generateFile(download + File.separator + "files",
-                    licPremisesReqForInfoDto.getFileRepoId() + "@" + licPremisesReqForInfoDto.getDocName());
-            try (FileOutputStream outputStream=new FileOutputStream(file);){
-                outputStream.write(entity);
-            } catch (Exception e) {
-                log.error(e.getMessage(),e);
-            }
-        }
-        return entity1;
+
+        AuditTrailEntityEventDto auditTrailEntityEventDto=new AuditTrailEntityEventDto();
+        auditTrailEntityEventDto.setEventRefNo(System.currentTimeMillis()+"");
+        auditTrailEntityEventDto.setAuditTrailEntityDtos(auditTrailDtos);
+        return JsonUtil.parseToJson(auditTrailEntityEventDto);
     }
 
+    @Override
+    public void saveFile(String data)  {
+        fileName = "userRecFile";
+        download = sharedPath + fileName;
+        backups = sharedPath + "backupsRec";
+
+        String s = FileUtil.genMd5FileChecksum(data.getBytes());
+        File file=MiscUtil.generateFile(download+File.separator, s+fileFormat);
+        File groupPath=new File(download+File.separator);
+
+        if(!groupPath.exists()){
+            groupPath.mkdirs();
+        }
+        try {
+            if(!file.exists()){
+                file.createNewFile();
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+
+        try (FileOutputStream fileInputStream = new FileOutputStream(backups+File.separator+file.getName());
+             FileOutputStream fileOutputStream  =new FileOutputStream(file);){
+
+            fileOutputStream.write(data.getBytes());
+            fileInputStream.write(data.getBytes());
+
+        } catch (Exception e) {
+
+            log.error(e.getMessage(),e);
+        }
+    }
 
     @Override
-    public void compressFile(String licPreId){
+    public void compressFile(){
         String compress = compress();
         log.info("-------------compress() end --------------");
-        rename(compress,licPreId);
+        rename(compress);
 
         deleteFile();
     }
@@ -155,6 +142,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         try (OutputStream is=new FileOutputStream(backups+File.separator+ l+".zip");
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
+
             log.info("------------zip file name is"+backups+File.separator+ l+".zip"+"--------------------");
             File file = new File(download+File.separator);
 
@@ -177,7 +165,8 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                 zipFile(zos,f);
             }
         } else {
-            try  ( BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));){
+            try  (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));){
+
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))));
                 int count ;
                 byte [] b =new byte[1024];
@@ -194,7 +183,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
     }
 
-    private void rename(String fileNamesss,String licPreId)  {
+    private void rename(String fileNamesss)  {
         log.info("--------------rename start ---------------------");
         flag = true;
         File zipFile =new File(backups);
@@ -209,6 +198,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
             for(File file:files){
                 try (FileInputStream is=new FileInputStream(file);
                      ByteArrayOutputStream by=new ByteArrayOutputStream();){
+
                     int count=0;
                     byte [] size=new byte[1024];
                     count=is.read(size);
@@ -222,7 +212,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                     File curFile =new File(backups + File.separator + s + ".zip");
                     file.renameTo(curFile);
                     log.info("----------- new zip file name is"+backups+File.separator+fileNamesss+".zip");
-                    String s1 = saveFileName(fileNamesss+".zip","backupsRec" + File.separator+fileNamesss+".zip",licPreId);
+                    String s1 = saveFileName(fileNamesss+".zip","backupsRec" + File.separator+fileNamesss+".zip");
                     if(!s1.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
                         flag=false;
@@ -277,12 +267,12 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         }
     }
 
-    private String saveFileName(String fileName ,String filePath,String licPreId){
+    private String saveFileName(String fileName ,String filePath){
         ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         processFileTrackDto.setFileName(fileName);
         processFileTrackDto.setFilePath(filePath);
-        processFileTrackDto.setRefId(licPreId);
+        processFileTrackDto.setRefId(UUID.randomUUID().toString());
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
         AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
         processFileTrackDto.setAuditTrailDto(intenet);
@@ -299,5 +289,4 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
         return s;
     }
-
 }

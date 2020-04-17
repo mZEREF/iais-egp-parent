@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -27,4 +28,11 @@ public interface EicGatewayFeMainClient {
                                                                                      @RequestHeader("authorization") String authorization,
                                                                                      @RequestHeader("date-Secondary") String dateSec,
                                                                                      @RequestHeader("authorization-Secondary") String authorizationSec);
+
+    @PostMapping(value = "/v1/file-sync-trackings/",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> saveFile(@RequestBody ProcessFileTrackDto processFileTrackDto,
+                                         @RequestHeader("date") String date,
+                                         @RequestHeader("authorization") String authorization,
+                                         @RequestHeader("date-Secondary") String dateSec,
+                                         @RequestHeader("authorization-Secondary") String authorizationSec);
 }

@@ -119,7 +119,7 @@ public class ResponseForInformationDelegator {
         log.info("------------------- getData  end --------------");
         responseForInformationService.saveFile(data);
         log.info("------------------- saveFile  end --------------");
-        responseForInformationService.compressFile();
+        responseForInformationService.compressFile(licPremisesReqForInfoDto1.getLicPremId());
         log.info("------------------- compressFile  end --------------");
 
 
