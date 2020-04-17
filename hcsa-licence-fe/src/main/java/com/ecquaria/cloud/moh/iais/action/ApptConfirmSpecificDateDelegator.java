@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -73,6 +74,7 @@ public class ApptConfirmSpecificDateDelegator {
                 String appStatus = applicationDto.getStatus();
                 if(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING.equals(appStatus)){
                     apptFeConfirmDateDto = applicantConfirmInspDateService.getSpecificDateDto(appPremCorrId);
+                    apptFeConfirmDateDto.setCTaskUrl(TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE);
                     ParamUtil.setSessionAttr(bpc.request, "apptInspFlag", AppConsts.FALSE);
                 } else {
                     ParamUtil.setSessionAttr(bpc.request, "apptInspFlag", AppConsts.SUCCESS);
