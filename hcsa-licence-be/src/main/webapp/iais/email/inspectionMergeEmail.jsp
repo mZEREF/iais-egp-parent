@@ -103,23 +103,25 @@
                                                         </td>
                                                     </tr>
                                                     <tr height="1">
-                                                        <td class="col-xs-2">
-                                                            <strong>
-                                                                Processing Decision<strong style="color:#ff0000;">*</strong>
-                                                            </strong>
-                                                        </td>
-                                                        <td>
-                                                            <div class="col-sm-9">
-                                                                <select id="decision_merge_email" name="decision"
-                                                                        onchange="thisTime()">
-                                                                    <option value="Select" selected>Please Select
-                                                                    </option>
-                                                                    <c:forEach items="${appTypeOption}" var="decision">
-                                                                        <option value="${decision.value}">${decision.text}</option>
-                                                                    </c:forEach>
-                                                                </select>
-                                                            </div>
-                                                        </td>
+                                                        <iais:row>
+                                                            <td class="col-xs-2">
+                                                                <strong>
+                                                                    Processing Decision<strong style="color:#ff0000;">*</strong>
+                                                                </strong>
+                                                            </td>
+                                                            <td>
+                                                                <iais:value width="6">
+                                                                    <select id="decision_merge_email" name="decision"
+                                                                            onchange="thisTime()">
+                                                                        <option value="Select" selected>Please Select
+                                                                        </option>
+                                                                        <c:forEach items="${appTypeOption}" var="decision">
+                                                                            <option value="${decision.value}">${decision.text}</option>
+                                                                        </c:forEach>
+                                                                    </select>
+                                                                </iais:value>
+                                                            </td>
+                                                        </iais:row>
                                                     </tr>
                                                     <tr height="1" style="display: none" id="selectDecisionMsg">
                                                         <td class="col-xs-2">
