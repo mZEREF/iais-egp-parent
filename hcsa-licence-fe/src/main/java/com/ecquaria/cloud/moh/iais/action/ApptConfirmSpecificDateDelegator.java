@@ -1,12 +1,16 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicantConfirmInspDateService;
+import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -24,8 +28,12 @@ public class ApptConfirmSpecificDateDelegator {
     private ApplicantConfirmInspDateService applicantConfirmInspDateService;
 
     @Autowired
-    private ApptConfirmSpecificDateDelegator(ApplicantConfirmInspDateService applicantConfirmInspDateService){
+    private InspecUserRecUploadService inspecUserRecUploadService;
+
+    @Autowired
+    private ApptConfirmSpecificDateDelegator(InspecUserRecUploadService inspecUserRecUploadService, ApplicantConfirmInspDateService applicantConfirmInspDateService){
         this.applicantConfirmInspDateService = applicantConfirmInspDateService;
+        this.inspecUserRecUploadService = inspecUserRecUploadService;
     }
     /**
      * StartStep: userConfirmSpecificDateStart
@@ -60,7 +68,16 @@ public class ApptConfirmSpecificDateDelegator {
         ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
         if(apptFeConfirmDateDto == null){
             String appPremCorrId = ParamUtil.getRequestString(bpc.request, "appPremCorrId");
-            apptFeConfirmDateDto = applicantConfirmInspDateService.getSpecificDateDto(appPremCorrId);
+            if(!StringUtil.isEmpty(appPremCorrId)) {
+                ApplicationDto applicationDto = inspecUserRecUploadService.getApplicationByCorrId(appPremCorrId);
+                String appType = applicationDto.getApplicationType();
+                if(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING.equals(appType)){
+                    apptFeConfirmDateDto = applicantConfirmInspDateService.getSpecificDateDto(appPremCorrId);
+                    ParamUtil.setSessionAttr(bpc.request, "apptInspFlag", AppConsts.FALSE);
+                } else {
+                    ParamUtil.setSessionAttr(bpc.request, "apptInspFlag", AppConsts.SUCCESS);
+                }
+            }
         }
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Inspector Assigns Specific Date");
