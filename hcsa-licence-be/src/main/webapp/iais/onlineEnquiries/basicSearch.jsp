@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
@@ -178,11 +179,13 @@
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
                                             <td class="form-check">
-                                                <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
-                                                       name="appIds" value="${pool.appId}|${pool.isCessation}"   >
-                                                <label class="form-check-label" for="licence${status.index + 1}"><span
-                                                        class="check-square"></span>
-                                                </label>
+                                                <c:if test="${pool.licenceStatus!=ApplicationConsts.LICENCE_STATUS_LAPSED&&pool.licenceStatus!=ApplicationConsts.LICENCE_STATUS_CEASED&&pool.licenceStatus!=ApplicationConsts.LICENCE_STATUS_EXPIRY}">
+                                                    <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
+                                                           name="appIds" value="${pool.appId}|${pool.isCessation}"   >
+                                                    <label class="form-check-label" for="licence${status.index + 1}"><span
+                                                            class="check-square"></span>
+                                                    </label>
+                                                </c:if>
                                             </td>
                                             <td class="row_no">
                                                 <c:out value="${status.index + 1+ (SearchParam.pageNo - 1) * SearchParam.pageSize}"/>

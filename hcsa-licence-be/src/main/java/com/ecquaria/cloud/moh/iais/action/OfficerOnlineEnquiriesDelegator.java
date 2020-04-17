@@ -762,7 +762,7 @@ public class OfficerOnlineEnquiriesDelegator {
             reqForInfoSearchListDto.setLastComplianceHistory("Full");
             RequestForInformationDelegator.setSearchListComplianceHistory(rfiApplicationQueryDto, reqForInfoSearchListDto, insepctionNcCheckListService, fillupChklistService);
         }catch (Exception e){
-            reqForInfoSearchListDto.setPastComplianceHistory("-");
+            reqForInfoSearchListDto.setLastComplianceHistory("-");
         }
         reqForInfoSearchListDto.setCurrentRiskTagging(rfiApplicationQueryDto.getRiskLevel());
         log.debug(StringUtil.changeForLog("licenseeId start ...."+rfiApplicationQueryDto.getLicenseeId()));

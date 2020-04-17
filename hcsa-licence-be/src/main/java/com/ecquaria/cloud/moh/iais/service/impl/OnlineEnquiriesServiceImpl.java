@@ -160,6 +160,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
         LicenceDto licenceDto=licenceService.getLicenceDto(licenceId);
         OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
+        organizationLicDto.getLicenseeIndividualDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{organizationLicDto.getLicenseeIndividualDto().getSalutation()}).get(0).getText());
         try{
             organizationLicDto.setDoMain(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()).get(0));
         }catch (Exception e){
