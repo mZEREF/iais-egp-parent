@@ -808,6 +808,7 @@ public class InsRepServiceImpl implements InsRepService {
             taskDto.setUserId(null);
         }
         taskDto.setId(null);
+        taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_AO2);
         taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
         taskDto.setWkGrpId(groupId);
         taskDto.setDateAssigned(new Date());
