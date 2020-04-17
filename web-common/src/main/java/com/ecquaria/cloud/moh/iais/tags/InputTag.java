@@ -122,4 +122,7 @@ public class InputTag extends DivTagSupport{
         this.maxLength = maxLength;
     }
     public void setNeedDisabled(boolean needDisabled){ this.needDisabled = needDisabled;}
+    public void setNeedErrorSpan(boolean needErrorSpan) {
+        this.needErrorSpan = needErrorSpan;
+    }
 }
