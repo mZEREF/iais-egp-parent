@@ -10,6 +10,7 @@
             <div class="modal-body">
                 <form id="fileUploadForm" name="fileUploadForm" enctype="multipart/form-data"
                   action="" method="post">
+                    <div class="form-horizontal">
                     <div class="form-group">
                         <label class="col-xs-12 col-md-4 control-label">Document</label>
                         <div class="col-xs-8 col-sm-8 col-md-8">
@@ -23,6 +24,7 @@
                             <p><input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file"/></p>
                             <br /> <small class="error"><span id="selectedFileShow" style="color: #D22727; font-size: 1.6rem"></span></small>
                         </div>
+                    </div>
                     </div>
                 </form>
             </div>
@@ -134,7 +136,7 @@
         $('#fileRemarkShow').html('')
         var selectedFile = $('#uploadDoc').find('[name="selectedFile"]').val();
         var file = $('#selectedFile').get(0).files[0];
-        if(selectedFile == null || selectedFile== ""){
+        if(selectedFile == null || selectedFile== "" ||file==null|| file==undefined){
             $('#selectedFileShow').html('The file cannot be empty.');
             return false;
         }else {

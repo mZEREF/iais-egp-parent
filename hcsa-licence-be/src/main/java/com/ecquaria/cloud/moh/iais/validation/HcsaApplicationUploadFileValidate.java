@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,8 +21,16 @@ public class HcsaApplicationUploadFileValidate implements CustomizeValidator {
         if(commonsMultipartFile.isEmpty()){
             errMap.put("selectedFile","The file cannot be empty.");
         }else{
-            if(commonsMultipartFile.getSize() > FileMaxLength * 1024 * 1024){
-                errMap.put("selectedFile","The file size must less than 4M.");
+            Map<String, Boolean> booleanMap = ValidationUtils.validateFile(commonsMultipartFile);
+            Boolean fileSize = booleanMap.get("fileSize");
+            Boolean fileType = booleanMap.get("fileType");
+            //size
+            if(!fileSize){
+                errMap.put("selectedFile","The file size must less than " + FileMaxLength + "M.");
+            }
+            //type
+            if(!fileType){
+                errMap.put("selectedFile","The file type is invalid.");
             }
         }
         return errMap;
