@@ -256,6 +256,7 @@ public class MasterCodeDelegator {
                 masterCodeService.deleteMasterCodeById(masterCodeId);
             }
         }
+        ParamUtil.setRequestAttr(request,"DELETE_DATE",new Date());
     }
 
     public void doCreateCategory(BaseProcessClass bpc) throws ParseException {
