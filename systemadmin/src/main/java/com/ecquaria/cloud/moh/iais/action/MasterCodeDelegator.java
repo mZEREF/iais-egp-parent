@@ -267,7 +267,7 @@ public class MasterCodeDelegator {
             return;
         }
         MasterCodeCategoryDto masterCodeCategoryDto = new MasterCodeCategoryDto();
-        String categoryDescription = ParamUtil.getString(request,"codeKey");
+        String categoryDescription = ParamUtil.getString(request,"categoryKey");
         String isEditable = ParamUtil.getString(request,"editable");
         masterCodeCategoryDto.setCategoryDescription(categoryDescription);
         masterCodeCategoryDto.setIsEditable(isEditable == null?null:Integer.valueOf(isEditable));

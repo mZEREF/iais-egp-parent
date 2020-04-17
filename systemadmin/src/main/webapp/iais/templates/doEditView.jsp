@@ -27,7 +27,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="msgType">Message Type</label>
 
                             <div class="col-xs-8 col-sm-6 col-md-4">
-                                <iais:select name="msgType" id="msgType" options="messageTypeSelect"></iais:select>
+                                <iais:select name="msgType" id="msgType" options="messageTypeSelect" disabled="true"></iais:select>
                                 <span id="error_msgTypeErr" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
@@ -35,7 +35,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="templateName">Template Name</label>
                             <div class="col-xs-8 col-sm-6 col-md-6">
                                 <input id="templateName" type="text" value="${MsgTemplateDto.templateName}"
-                                       name="templateName">
+                                       name="templateName" maxlength="500">
                                 <span id="error_templateName" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
@@ -43,7 +43,7 @@
                             <label class="col-xs-12 col-md-4 control-label">Delivery Mode</label>
                             <div class="col-xs-8 col-sm-6 col-md-4">
                                 <iais:select name="deliveryMode" id="deliveryMode"
-                                             options="deliveryModeSelect"></iais:select>
+                                             options="deliveryModeSelect" disabled="true"></iais:select>
                                 <span id="error_deliveryModeErr" name="iaisErrorMsg"
                                       class="error-msg"></span>
                             </div>
@@ -115,12 +115,63 @@
                 'advlist autolink lists link image charmap print preview anchor',
                 'searchreplace visualblocks code fullscreen',
                 'insertdatetime media table paste code help wordcount',
-                'noneditable'
+                'noneditable','code ax_wordlimit','autoresize'
             ],
             toolbar: 'undo redo | formatselect | ' +
             ' bold italic backcolor | alignleft aligncenter ' +
             ' alignright alignjustify | bullist numlist outdent indent |' +
-            ' removeformat | help',
+            ' removeformat | help | code',
+            ax_wordlimit_num: 10,
+            ax_wordlimit_callback: function(editor,txt,num){
+
+            }
         });
     });
+
+    tinymce.PluginManager.add('ax_wordlimit', function(editor) {
+        var global$1 = tinymce.util.Tools.resolve('tinymce.util.Tools');
+        var global$2 = tinymce.util.Tools.resolve('tinymce.util.Delay');
+        var ax_wordlimit_type = editor.getParam('ax_wordlimit_type', 'letter' );
+        var ax_wordlimit_num = editor.getParam('ax_wordlimit_num', false );
+        var ax_wordlimit_delay = editor.getParam('ax_wordlimit_delay', 500 );
+        var ax_wordlimit_callback = editor.getParam('ax_wordlimit_callback', function(){});
+        var ax_wordlimit_event = editor.getParam('ax_wordlimit_event', 'SetContent Undo Redo Keyup' );
+        var onsign=1;
+        //size
+        var sumLetter = function(){
+            var html = editor.getContent();
+            var re1 = new RegExp("<.+?>","g");
+            var txt = html.replace(re1,'');
+            txt = txt.replace(/\n/g,'');
+            txt = txt.replace(/&nbsp;/g,' ');
+            var num=txt.length;
+            return {txt:txt,num:num}
+        };
+        var onAct = function(){
+            if(onsign){
+                onsign=0;
+                switch(ax_wordlimit_type){
+                    case 'letter':
+                    default:
+                        var res = sumLetter();
+                }
+
+                if( res.num > ax_wordlimit_num ){
+                    ax_wordlimit_callback(editor, res.txt, ax_wordlimit_num);
+                }
+                setTimeout(function(){onsign=1}, ax_wordlimit_delay);
+            }
+
+        };
+        var setup = function(){
+            if( ax_wordlimit_num>0 ){
+                global$2.setEditorTimeout(editor, function(){
+                    var doth = editor.on(ax_wordlimit_event, onAct);
+                }, 300);
+            }
+        };
+
+        setup();
+    });
+
 </script>

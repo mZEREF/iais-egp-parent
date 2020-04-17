@@ -76,9 +76,10 @@ public class TemplatesDelegator {
         List<SelectOption> messageTypeSelectList = IaisCommonUtils.genNewArrayList();
         messageTypeSelectList.add(new SelectOption("", "Please Select"));
         messageTypeSelectList.add(new SelectOption("MTTP001", "Alert"));
-        messageTypeSelectList.add(new SelectOption("MTTP002", "Banner Alert"));
         messageTypeSelectList.add(new SelectOption("MTTP003", "Letter"));
         messageTypeSelectList.add(new SelectOption("MTTP004", "Notification"));
+        messageTypeSelectList.add(new SelectOption("MTTP002", "Banner Alert"));
+        messageTypeSelectList.add(new SelectOption("MTTP005", "Scheduled Maintenance"));
         ParamUtil.setRequestAttr(bpc.request, "msgType", messageTypeSelectList);
 
         List<SelectOption> deliveryModeSelectList = IaisCommonUtils.genNewArrayList();

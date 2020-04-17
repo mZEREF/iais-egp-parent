@@ -71,7 +71,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeSequence = request.getParameter("codeSequence")==null?"":request.getParameter("codeSequence");%>
-                                    <input id="codeSequence" type="text" name="codeSequence" value="<%=codeSequence%>" oninput= "this.value=this.value.replace(/[^\d]/g,'')" maxlength="3"/>
+                                    <input id="codeSequence" type="text" name="codeSequence" value="<%=codeSequence%>" maxlength="3"/>
                                     <span id="error_sequence" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -81,7 +81,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeRemarks = request.getParameter("codeRemarks")==null?"":request.getParameter("codeRemarks");%>
-                                    <input id="codeRemarks" type="text" name="codeRemarks" value="<%=codeRemarks%>" maxlength="255"/>
+                                    <form><textarea cols="38" rows="6" id="codeRemarks" type="text" name="codeRemarks" value="<%=codeRemarks%>" maxlength="255"></textarea></form>
                                 </div>
                             </iais:value>
                         </div>
@@ -90,7 +90,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeVersion = request.getParameter("codeVersion")==null?"":request.getParameter("codeVersion");%>
-                                    <input id="codeVersion" type="text" name="codeVersion" value="<%=codeVersion%>" oninput= "this.value=this.value.replace(/[^\d]/g,'')"/>
+                                    <input id="codeVersion" type="text" name="codeVersion" value="<%=codeVersion%>" onkeyup= "this.value=this.value.replace(/^\D*(\d{0,1}(?:\.\d{0,2})?).*$/g, '$1')"/>
                                     <span id="error_version" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
