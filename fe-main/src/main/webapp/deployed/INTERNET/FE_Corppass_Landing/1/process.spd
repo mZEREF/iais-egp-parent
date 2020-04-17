@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="" dtdVersion="6.0" executable="true" majorVersion="8" minorVersion="0" name="FE_Corppass_Landing" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Step3" x="130" y="70">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step3_OnStepProcess_0" name="step3_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="isDeclare" x="1080" y="360">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="isDeclare_OnStepProcess_0" name="isDeclare_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ban" x="1210" y="490">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="ban_OnStepProcess_0" name="ban_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="validateKeyAppointment" x="710" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="validateKeyAppointment_OnStepProcess_0" name="validateKeyAppointment_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="loginUser" x="370" y="520">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="loginUser_OnStepProcess_0" name="loginUser_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <StopStep defClass="" executor="" icon="" name="redirectToInbox" x="530" y="780">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="redirectToInbox_OnStepProcess_0" name="redirectToInbox_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StopStep>
+  <StopStep defClass="" executor="" icon="" name="Step4" x="1220" y="620">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StopStep>
+  <AutomaticStep defClass="" executor="" icon="" name="initCorppassUserInfo" x="700" y="650">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="initCorppassUserInfo_OnStepProcess_0" name="initCorppassUserInfo_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="corppassCallBack" x="340" y="70">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="corppassCallBack_OnStepProcess_0" name="corppassCallBack_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="entityDeclares" stageIndicator="" x="1070" y="230">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="fillParticulars" stageIndicator="" x="900" y="490">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="250" y="670">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Pages/WebPage/entityDeclares" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(930,250)(1090,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/isDeclare" style="oblique">
+   <position>{(1100,380)(1100,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ban" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(1100,510)(1230,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/validateKeyAppointment" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond3" style="oblique">
+   <position>{(390,250)(730,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/loginUser" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond3" style="oblique">
+   <position>{(390,250)(390,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/validateKeyAppointment" style="oblique">
+   <position>{(730,250)(930,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/StopStep/Step4" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/ban" style="rectanular">
+   <position>{(1230,510)(1240,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/isDeclare" linkstyle="Direct" name="" sourceName="/Pages/WebPage/entityDeclares" style="oblique">
+   <position>{(1090,250)(1100,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/fillParticulars" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(1100,510)(920,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/initCorppassUserInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(760,510)(720,670)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/fillParticulars" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(930,250)(920,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/entityDeclares" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(760,510)(780,249)(1090,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/corppassCallBack" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step3" style="rectanular">
+   <position>{(150,90)(360,90)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/corppassCallBack" style="rectanular">
+   <position>{(360,90)(390,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/fillParticulars" style="rectanular">
+   <position>{(920,510)(760,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond4" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/initCorppassUserInfo" style="rectanular">
+   <position>{(720,670)(760,800)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/StopStep/redirectToInbox" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond4" style="rectanular">
+   <position>{(760,800)(550,800)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/fillParticulars" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond4" style="rectanular">
+   <position>{(760,800)(937,802)(920,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond5" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/loginUser" style="rectanular">
+   <position>{(390,540)(400,690)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/StopStep/redirectToInbox" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond5" style="oblique">
+   <position>{(400,690)(573,689)(550,800)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond5" style="oblique">
+   <position>{(400,690)(270,690)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Pages/WebPage/entityDeclares" componentIfTrue="/Pages/WebPage/fillParticulars" defClass="" executor="" icon="" leftOperand="isKeyAppointment" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="910" y="230">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/ban" componentIfTrue="/Pages/WebPage/fillParticulars" defClass="" executor="" icon="" leftOperand="isDeclare" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="1080" y="490">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/loginUser" componentIfTrue="/Steps/AutomaticStep/validateKeyAppointment" defClass="" executor="" icon="" leftOperand="isFirstLogin" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="370" y="230">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Pages/WebPage/fillParticulars" componentIfTrue="/Steps/StopStep/redirectToInbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond4" operator="=" rightOperand="&quot;Y&quot;" x="740" y="780">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Pages/WebPage/Page1" componentIfTrue="/Steps/StopStep/redirectToInbox" defClass="" executor="" icon="" leftOperand="isAdminRole" name="Cond5" operator="=" rightOperand="&quot;Y&quot;" x="380" y="670">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="740" y="490">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/initCorppassUserInfo" value="&quot;doSubmit&quot;"/>
+   <SwitchCase component="/Pages/WebPage/entityDeclares" value="&quot;doBack&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>
