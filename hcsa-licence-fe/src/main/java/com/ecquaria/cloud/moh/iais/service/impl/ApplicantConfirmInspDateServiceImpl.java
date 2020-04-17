@@ -328,7 +328,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     private void setApptCreateList(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto, String processDo) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
-        for(String appPremCorrId : apptInspectionDateDto.getRefNo()) {
+        for(String appPremCorrId : apptFeConfirmDateDto.getTaskRefNo()) {
             AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
             appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

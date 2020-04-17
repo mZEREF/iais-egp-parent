@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -101,10 +102,10 @@ public interface ApptInspectionDateService {
       * @author: shicheng
       * @Date 2020/3/12
       * @Param: premCorrIds, taskDtoList, corrAppMap
-      * @return: List<ApplicationDto>
+      * @return: ApptAppInfoShowDto
       * @Descripation: getApplicationInfoToShow
       */
-    Map<ApplicationDto, List<String>> getApplicationInfoToShow(List<String> premCorrIds, List<TaskDto> taskDtoList, Map<String, ApplicationDto> corrAppMap);
+    List<ApptAppInfoShowDto> getApplicationInfoToShow(List<String> premCorrIds, List<TaskDto> taskDtoList, Map<String, ApplicationDto> corrAppMap);
 
     /**
       * @author: shicheng

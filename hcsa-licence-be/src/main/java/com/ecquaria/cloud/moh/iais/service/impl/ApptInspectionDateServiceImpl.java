@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
@@ -169,9 +170,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             }
         }
         //get application info show
-        Map<ApplicationDto, List<String>> applicationInfoMap = getApplicationInfoToShow(premCorrIds, taskDtoList, corrAppMap);
+        List<ApptAppInfoShowDto> applicationInfoShow = getApplicationInfoToShow(premCorrIds, taskDtoList, corrAppMap);
         apptInspectionDateDto.setCorrAppMap(corrAppMap);
-        apptInspectionDateDto.setApplicationInfoShow(applicationInfoMap);
+        apptInspectionDateDto.setApplicationInfoShow(applicationInfoShow);
         apptInspectionDateDto.setActionButtonFlag(actionButtonFlag);
         apptInspectionDateDto.setTaskDto(taskDto);
         apptInspectionDateDto.setTaskDtos(taskDtoList);
@@ -198,10 +199,11 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     }
 
     @Override
-    public Map<ApplicationDto, List<String>> getApplicationInfoToShow(List<String> premCorrIds, List<TaskDto> taskDtoList, Map<String, ApplicationDto> corrAppMap) {
-        Map<ApplicationDto, List<String>> applicationInfoMap = IaisCommonUtils.genNewHashMap();
+    public List<ApptAppInfoShowDto> getApplicationInfoToShow(List<String> premCorrIds, List<TaskDto> taskDtoList, Map<String, ApplicationDto> corrAppMap) {
+        List<ApptAppInfoShowDto> apptAppInfoShowDtos = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(premCorrIds)) {
             for (String appPremCorrId : premCorrIds) {
+                ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
                 List<String> workerName = IaisCommonUtils.genNewArrayList();
                 List<String> ids = IaisCommonUtils.genNewArrayList();
                 ApplicationDto applicationDto;
@@ -227,10 +229,13 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 } else {
                     workerName.add(HcsaConsts.HCSA_PREMISES_HCI_NULL);
                 }
-                applicationInfoMap.put(applicationDto, workerName);
+                apptAppInfoShowDto.setApplicationNo(applicationDto.getApplicationNo());
+                apptAppInfoShowDto.setStatus(applicationDto.getStatus());
+                apptAppInfoShowDto.setUserDisName(workerName);
+                apptAppInfoShowDtos.add(apptAppInfoShowDto);
             }
         }
-        return applicationInfoMap;
+        return apptAppInfoShowDtos;
     }
 
     @Override

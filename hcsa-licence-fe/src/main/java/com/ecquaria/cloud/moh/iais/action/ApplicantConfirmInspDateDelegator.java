@@ -146,7 +146,7 @@ public class ApplicantConfirmInspDateDelegator {
         Map<String, Date> inspectionDateMap = apptFeConfirmDateDto.getInspectionDateMap();
         Date checkDate = inspectionDateMap.get(dateValue);
         apptFeConfirmDateDto.setSaveDate(checkDate);
-        //applicantConfirmInspDateService.confirmInspectionDate(apptFeConfirmDateDto);
+        applicantConfirmInspDateService.confirmInspectionDate(apptFeConfirmDateDto);
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }
 
@@ -223,7 +223,7 @@ public class ApplicantConfirmInspDateDelegator {
         ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
         String actionValue = apptFeConfirmDateDto.getActionValue();
         if(InspectionConstants.SWITCH_ACTION_RE_CONFIRM.equals(actionValue)){
-            //apptFeConfirmDateDto = applicantConfirmInspDateService.confirmNewDate(apptFeConfirmDateDto);
+            apptFeConfirmDateDto = applicantConfirmInspDateService.confirmNewDate(apptFeConfirmDateDto);
         }
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }
@@ -316,8 +316,10 @@ public class ApplicantConfirmInspDateDelegator {
     public void userConfirmInspDateRejSucc(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmInspDateRejSucc start ...."));
         ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
+        String reason = ParamUtil.getRequestString(bpc.request, "apptRejectReason");
         Date saveDate = getSaveDate(apptFeConfirmDateDto);
         apptFeConfirmDateDto.setSaveDate(saveDate);
+        apptFeConfirmDateDto.setReason(reason);
         applicantConfirmInspDateService.rejectSystemDateAndCreateTask(apptFeConfirmDateDto);
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }

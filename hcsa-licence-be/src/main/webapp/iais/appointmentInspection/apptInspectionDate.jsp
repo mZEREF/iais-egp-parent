@@ -100,11 +100,11 @@
                                     <c:otherwise>
                                       <c:forEach var="appInfoShow" items="${apptInspectionDateDto.applicationInfoShow}">
                                         <tr>
-                                          <td><c:out value="${appInfoShow.key.applicationNo}"/></td>
-                                          <td><iais:code code="${appInfoShow.key.status}"/></td>
+                                          <td><c:out value="${appInfoShow.applicationNo}"/></td>
+                                          <td><iais:code code="${appInfoShow.status}"/></td>
                                           <td>
-                                            <c:if test="${appInfoShow.value != null}">
-                                              <c:forEach var="worker" items="${appInfoShow.value}" varStatus="status">
+                                            <c:if test="${appInfoShow.userDisName != null}">
+                                              <c:forEach var="worker" items="${appInfoShow.userDisName}" varStatus="status">
                                                 <c:out value="${worker}"/><br>
                                               </c:forEach>
                                             </c:if>
