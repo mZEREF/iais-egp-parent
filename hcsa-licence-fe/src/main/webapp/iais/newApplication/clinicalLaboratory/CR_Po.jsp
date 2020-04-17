@@ -206,6 +206,35 @@
               </c:if>
               <br/>
               <br/>
+              <c:if test="${AppSubmissionDto.needEditController }">
+                <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+                  <c:if test="${'APPSPN05' == clickEditPage}">
+                    <c:set var="isClickEditDpo" value="true"/>
+                  </c:if>
+                </c:forEach>
+                <c:choose>
+                  <c:when test="${!isClickEditDpo}">
+                    <input id="isEditDpoHiddenVal" type="hidden" name="isEditDpo" value="0"/>
+                  </c:when>
+                  <c:otherwise>
+                    <input id="isEditDpoHiddenVal" type="hidden" name="isEditDpo" value="1"/>
+                  </c:otherwise>
+                </c:choose>
+                <c:if test="${!isClickEditDpo}">
+                  <c:set var="showPreview" value="true"/>
+                  <c:set var="cancanEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.dpoEdit || AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+                  <div class=" <c:if test="${'true' != showPreview}">hidden</c:if>">
+                    <c:choose>
+                      <c:when test="${cancanEditDpoEdit}">
+                        <p class="text-right"><a id="edit-dpo"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                      </c:when>
+                      <c:otherwise>
+
+                      </c:otherwise>
+                    </c:choose>
+                  </div>
+                </c:if>
+              </c:if>
               <div class="row">
                 <div class="form-group form-horizontal formgap">
                   <div class="col-sm-6 col-md-4" style="font-size: 1.6rem;">
@@ -232,35 +261,6 @@
                     <br/>
                   </div>
                 </div>
-                <c:if test="${AppSubmissionDto.needEditController }">
-                  <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
-                    <c:if test="${'APPSPN05' == clickEditPage}">
-                      <c:set var="isClickEditDpo" value="true"/>
-                    </c:if>
-                  </c:forEach>
-                  <c:choose>
-                    <c:when test="${!isClickEditDpo}">
-                      <input id="isEditDpoHiddenVal" type="hidden" name="isEditDpo" value="0"/>
-                    </c:when>
-                    <c:otherwise>
-                      <input id="isEditDpoHiddenVal" type="hidden" name="isEditDpo" value="1"/>
-                    </c:otherwise>
-                  </c:choose>
-                  <c:if test="${!isClickEditDpo}">
-                    <c:set var="showPreview" value="true"/>
-                    <c:set var="cancanEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.dpoEdit || AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
-                    <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
-                      <c:choose>
-                        <c:when test="${cancanEditDpoEdit}">
-                          <p class="text-right"><a id="edit-dpo"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
-                        </c:when>
-                        <c:otherwise>
-
-                        </c:otherwise>
-                      </c:choose>
-                    </div>
-                  </c:if>
-                </c:if>
                 </c:if>
               </div>
 
@@ -412,15 +412,16 @@
                   </c:forEach>
                   </c:if>
                 </div>
-
-            <div class="row <c:if test="${'APTY005' ==AppSubmissionDto.appType  &&'1' == canEditDpo}">disabled</c:if>">
-              <div class="col-sm-5">
-                <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Deputy Principal Officer</span>
+            <c:if test="${requestInformationConfig==null}">
+              <div class="row <c:if test="${'APTY005' ==AppSubmissionDto.appType  &&'1' == canEditDpo}">disabled</c:if>">
+                <div class="col-sm-5">
+                  <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Deputy Principal Officer</span>
+                </div>
+                <div  class="col-sm-5 col-md-5">
+                  <span class="dpoErrorMsg" style="color: red;margin-left: -75px;"></span>
+                </div>
               </div>
-              <div  class="col-sm-5 col-md-5">
-                <span class="dpoErrorMsg" style="color: red;margin-left: -75px;"></span>
-              </div>
-            </div>
+            </c:if>
             <br/>
             <br/>
             <br/>

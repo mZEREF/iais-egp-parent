@@ -88,7 +88,7 @@
                   <div class="row ">
                     <div class="col-xs-12">
                       <div class="premises-txt">
-                        <p>Premises are your service operation sites that can either be at a fixed address<strong> - &#34;on-site&#34;</strong>, or in a mobile clinic or ambulance<strong> - &#34;conveyance&#34;</strong>, or provided from a remote location <strong>&#34;off-site&#34;</strong>.</p>
+                        <p>Premises are your service operation sites that can either be at a fixed address<strong> - &#34;on-site&#34;</strong>, or in a mobile clinic or ambulance<strong> - &#34;conveyance&#34;</strong>, or provided from a remote location <strong> - &#34;off-site&#34;</strong>.</p>
                       </div>
                     </div>
                   </div>
