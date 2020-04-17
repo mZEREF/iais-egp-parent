@@ -155,8 +155,8 @@
         $('input[type="file"]').prop('disabled',true);
         $('input[type="checkbox"]').prop('disabled',true);
         $('div.nice-select').addClass('disabled');
-        $Ele.find('input[type="text"]').css('border-color','#ededed');
-        $Ele.find('input[type="text"]').css('color','#999');
+        /*$Ele.find('input[type="text"]').css('border-color','#ededed');
+        $Ele.find('input[type="text"]').css('color','#999');*/
     }
 
     function readonlyPartPage($Ele) {

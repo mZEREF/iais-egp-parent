@@ -1105,16 +1105,12 @@ public class NewApplicationHelper {
         if(appEditSelectDto != null){
             if(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION.equals(currentType)){
                 pageCanEdit = appEditSelectDto.isPremisesEdit();
-            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_MEDALERT_PERSONNEL.equals(currentType)) {
-                pageCanEdit = appEditSelectDto.isMedAlertEdit();
-            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PRINCIPAL_OFFICER.equals(currentType)) {
-                pageCanEdit = appEditSelectDto.isPoEdit();
-            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_DEPUTY_PRINCIPAL_OFFICER.equals(currentType)) {
-                pageCanEdit = appEditSelectDto.isDocEdit();
-            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION.equals(currentType)) {
+            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION.equals(currentType)) {
                 pageCanEdit = appEditSelectDto.isServiceEdit();
             } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT.equals(currentType)) {
                 pageCanEdit = appEditSelectDto.isDocEdit();
+            }else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_DOCUMENT.equals(currentType)) {
+                pageCanEdit = appEditSelectDto.isServiceEdit() || appEditSelectDto.isDocEdit();
             }
         }
         return pageCanEdit;

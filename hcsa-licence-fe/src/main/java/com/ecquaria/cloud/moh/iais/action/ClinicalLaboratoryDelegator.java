@@ -447,7 +447,7 @@ public class ClinicalLaboratoryDelegator {
         if(requestInformationConfig != null){
             isRfi = true;
         }
-        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit, isRfi);
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.debug("isGetDataFromPage:"+isGetDataFromPage);
         if(isGetDataFromPage) {
             AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = null;
@@ -601,7 +601,7 @@ public class ClinicalLaboratoryDelegator {
         if(requestInformationConfig != null){
             isRfi = true;
         }
-        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit, isRfi);
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.debug("isGetDataFromPage:"+isGetDataFromPage);
         if(isGetDataFromPage) {
             List<AppSvcCgoDto> appSvcCgoDtoList = genAppSvcCgoDto(bpc.request);
@@ -678,7 +678,7 @@ public class ClinicalLaboratoryDelegator {
         if(requestInformationConfig != null){
             isRfi = true;
         }
-        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit, isRfi);
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.debug("isGetDataFromPage:"+isGetDataFromPage);
         if (isGetDataFromPage) {
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -777,8 +777,8 @@ public class ClinicalLaboratoryDelegator {
         }
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
         String isEditDpo = ParamUtil.getString(bpc.request, "isEditDpo");
-        boolean isGetDataFromPagePo = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit, isRfi);
-        boolean isGetDataFromPageDpo = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEditDpo, isRfi);
+        boolean isGetDataFromPagePo = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION , isEdit, isRfi);
+        boolean isGetDataFromPageDpo = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION , isEditDpo, isRfi);
 
         if (isGetDataFromPagePo || isGetDataFromPageDpo) {
             List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = genAppSvcPrincipalOfficersDto(bpc.request, isGetDataFromPagePo, isGetDataFromPageDpo);
@@ -882,7 +882,7 @@ public class ClinicalLaboratoryDelegator {
             isRfi = true;
         }
         String isEdit = ParamUtil.getString(mulReq, NewApplicationDelegator.IS_EDIT);
-        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT, isEdit, isRfi);
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_DOCUMENT, isEdit, isRfi);
         log.debug("isGetDataFromPage:"+isGetDataFromPage);
         if(isGetDataFromPage){
             Map<String,AppSvcDocDto> beforeReloadDocMap = (Map<String, AppSvcDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADSVCDOC);
@@ -1080,7 +1080,7 @@ public class ClinicalLaboratoryDelegator {
         if(requestInformationConfig != null){
             isRfi = true;
         }
-        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit, isRfi);
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
 
 
         if(isGetDataFromPage){
@@ -1185,27 +1185,47 @@ public class ClinicalLaboratoryDelegator {
     public void doMedAlertPerson (BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doMedAlertPerson start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-        AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request,currentSvcId);
-        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = genAppSvcMedAlertPerson(bpc.request);
-        currentSvcRelatedDto.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
-        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
-        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
-        String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
-        if("next".equals(nextStep)){
-            Map<String,String> errorMap = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList);
-
-            if(!errorMap.isEmpty()){
-                ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.MEDALERT_PERSON);
-                return;
-            }else{
-                //set person into dropdown
-                NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcMedAlertPersonList);
-                //sync data
-                NewApplicationHelper.syncPsnData(bpc.request, appSubmissionDto, appSvcMedAlertPersonList);
-            }
+        String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
+        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
+        boolean isRfi = false;
+        if(requestInformationConfig != null){
+            isRfi = true;
         }
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION , isEdit, isRfi);
+        log.info("isGetDataFromPage:"+isGetDataFromPage);
+        if(isGetDataFromPage){
+            String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+            AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request,currentSvcId);
+            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = genAppSvcMedAlertPerson(bpc.request);
+            currentSvcRelatedDto.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
+            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
+            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
+            String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
+            if("next".equals(nextStep)){
+                if (appSubmissionDto.isNeedEditController()) {
+                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
+                    clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_MEDALERT_PERSON);
+                    appSubmissionDto.setClickEditPage(clickEditPages);
+                    AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
+                    appEditSelectDto.setServiceEdit(true);
+                    appSubmissionDto.setChangeSelectDto(appEditSelectDto);
+                }
+
+                Map<String,String> errorMap = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList);
+                if(!errorMap.isEmpty()){
+                    ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(errorMap));
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.MEDALERT_PERSON);
+                    return;
+                }else{
+                    //set person into dropdown
+                    NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcMedAlertPersonList);
+                    //sync data
+                    NewApplicationHelper.syncPsnData(bpc.request, appSubmissionDto, appSvcMedAlertPersonList);
+                }
+            }
+            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
+        }
+
         log.debug(StringUtil.changeForLog("the do doMedAlertPerson end ...."));
     }
 

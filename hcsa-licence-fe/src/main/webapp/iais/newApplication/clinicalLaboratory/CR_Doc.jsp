@@ -1,7 +1,7 @@
-<c:set var="isClickEdit" value="true"/>
+<%--<c:set var="isClickEdit" value="true"/>--%>
 <c:if test="${AppSubmissionDto.needEditController}">
-  <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
     <c:set var="isClickEdit" value="false"/>
+  <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
     <c:if test="${'APPSPN06' == clickEditPage}">
       <c:set var="isClickEdit" value="true"/>
     </c:if>
@@ -19,7 +19,7 @@
   </c:if>
   <c:if test="${'true' != isClickEdit}">
     <c:set var="locking" value="true"/>
-    <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+    <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit || AppSubmissionDto.appEditSelectDto.docEdit}"/>
     <div id="edit-content">
       <c:choose>
         <c:when test="${'true' == canEdit}">

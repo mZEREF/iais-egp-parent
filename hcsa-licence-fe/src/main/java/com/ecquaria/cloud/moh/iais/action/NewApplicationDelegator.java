@@ -135,6 +135,7 @@ public class NewApplicationDelegator {
     public static final String APPLICATION_SVC_PAGE_NAME_DEPUTY_PRINCIPAL_OFFICERS  = "APPSPN05";
     public static final String APPLICATION_SVC_PAGE_NAME_DOCUMENT                   = "APPSPN06";
     public static final String APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL          = "APPSPN07";
+    public static final String APPLICATION_SVC_PAGE_NAME_MEDALERT_PERSON            = "APPSPN08";
     public static final String SELECT_DRAFT_NO                                      ="selectDraftNo";
     //isClickEdit
     public static final String IS_EDIT = "isEdit";
@@ -2642,8 +2643,10 @@ public class NewApplicationDelegator {
             if(appSubmissionDto != null){
                 String appType =  appSubmissionDto.getAppType();
                 boolean isRenewalOrRfc = ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);
-                if (isRenewalOrRfc){
-                    appSubmissionDto.setNeedEditController(true);
+                appSubmissionDto.setNeedEditController(true);
+                //appSubmissionDto.getAppEditSelectDto().setDocEdit(true);
+                //appSubmissionDto.getAppEditSelectDto().setServiceEdit(true);
+                    if (isRenewalOrRfc){
                     // set the required information
                     String licenceId = appSubmissionDto.getLicenceId();
                     appSubmissionDto.setLicenceNo(withOutRenewalService.getLicenceNumberByLicenceId(licenceId));
@@ -3412,149 +3415,7 @@ public class NewApplicationDelegator {
 
 
                     }
-                    String offSiteStartHH = appGrpPremisesDtoList.get(i).getOffSiteStartHH();
-                    String offSiteStartMM = appGrpPremisesDtoList.get(i).getOffSiteStartMM();
-                    int startDate=0;
-                    int endDate=0;
-                    if(StringUtil.isEmpty(offSiteStartHH)||StringUtil.isEmpty(offSiteStartMM)){
-                        errorMap.put("offSiteStartMM"+i,"UC_CHKLMD001_ERR001");
-                    }else {
-                        startDate = validateTime(errorMap, offSiteStartHH, offSiteStartMM, startDate, "offSiteStartMM", i);
-                    }
 
-                    String offSiteEndHH = appGrpPremisesDtoList.get(i).getOffSiteEndHH();
-                    String offSiteEndMM = appGrpPremisesDtoList.get(i).getOffSiteEndMM();
-                    if(StringUtil.isEmpty(offSiteEndHH)||StringUtil.isEmpty(offSiteEndMM)){
-                        errorMap.put("offSiteEndMM"+i,"UC_CHKLMD001_ERR001");
-                    }else {
-                        endDate = validateTime(errorMap, offSiteEndHH, offSiteEndMM, endDate, "offSiteEndMM", i);
-                    }
-                    if(!StringUtil.isEmpty(offSiteStartHH)&&!StringUtil.isEmpty(offSiteStartMM)&&!StringUtil.isEmpty(offSiteEndHH)&&!StringUtil.isEmpty(offSiteEndMM)){
-                        if(endDate<startDate){
-                            errorMap.put("offSiteEndMM"+i,"UC_CHKLMD001_ERR008");
-                        }
-                    }
-
-                    //set  time
-                    String errorStartMM = errorMap.get("offSiteStartMM"+i);
-                    String errorEndMM = errorMap.get("offSiteEndMM"+i);
-                    if(StringUtil.isEmpty(errorStartMM) && StringUtil.isEmpty(errorEndMM)){
-                        LocalTime startTime = LocalTime.of(Integer.parseInt(offSiteStartHH),Integer.parseInt(offSiteStartMM));
-                        appGrpPremisesDtoList.get(i).setWrkTimeFrom(Time.valueOf(startTime));
-
-                        LocalTime endTime = LocalTime.of(Integer.parseInt(offSiteEndHH),Integer.parseInt(offSiteEndMM));
-                        appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(endTime));
-                    }
-
-                    List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
-                    if(appPremPhOpenPeriodList!=null){
-
-                        for(int j=0;j<appPremPhOpenPeriodList.size();j++){
-                            AppPremPhOpenPeriodDto appPremPhOpenPeriodDto = appPremPhOpenPeriodList.get(j);
-                            String offSiteEndToHH = appPremPhOpenPeriodDto.getOffSiteEndToHH();
-                            String offSiteEndToMM = appPremPhOpenPeriodDto.getOffSiteEndToMM();
-                            String offSiteStartFromHH = appPremPhOpenPeriodDto.getOffSiteStartFromHH();
-                            String offSiteStartFromMM = appPremPhOpenPeriodDto.getOffSiteStartFromMM();
-                            Date phDate = appPremPhOpenPeriodDto.getPhDate();
-                            if(!StringUtil.isEmpty(phDate)){
-                                if(StringUtil.isEmpty(offSiteEndToHH)||StringUtil.isEmpty(offSiteEndToMM)){
-                                    errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR001");
-                                }
-                                if(StringUtil.isEmpty(offSiteStartFromHH)||StringUtil.isEmpty(offSiteStartFromMM)){
-                                    errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR001");
-                                }
-                            }else if(StringUtil.isEmpty(phDate)){
-                                errorMap.put("offSitephDate"+i+j,"UC_CHKLMD001_ERR001");
-                            }
-
-                            if(StringUtil.isEmpty(offSiteEndToHH)&&StringUtil.isEmpty(offSiteEndToMM)&StringUtil.isEmpty(offSiteStartFromHH)
-                                    &StringUtil.isEmpty(offSiteStartFromMM)||!StringUtil.isEmpty(offSiteEndToHH)&&!StringUtil.isEmpty(offSiteEndToMM)
-                                    &&!StringUtil.isEmpty(offSiteStartFromHH)&!StringUtil.isEmpty(offSiteStartFromMM)){
-                                if(!StringUtil.isEmpty(offSiteEndToHH)&&!StringUtil.isEmpty(offSiteEndToMM)
-                                        &&!StringUtil.isEmpty(offSiteEndToHH)&!StringUtil.isEmpty(offSiteStartFromMM)){
-                                    try {
-                                        int i1 = Integer.parseInt(offSiteStartFromHH);
-                                        int i2 = Integer.parseInt(offSiteStartFromMM);
-                                        if(i1>=24){
-                                            errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR009");
-                                        }else if(i2>=60){
-                                            errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR010");
-                                        }
-
-                                    }catch (Exception e){
-                                        errorMap.put("offSiteStartToHH"+i+j,"CHKLMD001_ERR003");
-                                    }
-                                    try {
-                                        int i3 = Integer.parseInt(offSiteEndToHH);
-                                        int i4 = Integer.parseInt(offSiteEndToMM);
-                                        if(i3>=24){
-                                            errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR009");
-                                        }else if(i4>=60){
-                                            errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR010");
-                                        }
-                                    }catch (Exception e){
-                                        errorMap.put("offSiteEndToHH"+i+j,"CHKLMD001_ERR003");
-                                    }
-                                    try {
-                                        int i1 = Integer.parseInt(offSiteStartFromHH);
-                                        int i2 = Integer.parseInt(offSiteStartFromMM);
-                                        int i3 = Integer.parseInt(offSiteEndToHH);
-                                        int i4 = Integer.parseInt(offSiteEndToMM);
-                                        if((i1*60+i2)>(i3*60+i4)){
-                                            errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR008");
-                                        }
-                                    }catch (Exception e){
-
-                                    }
-                                }
-                            }else {
-                                if(StringUtil.isEmpty(offSiteStartFromHH)||StringUtil.isEmpty(offSiteStartFromMM)||StringUtil.isEmpty(offSiteStartFromHH)&&StringUtil.isEmpty(offSiteStartFromMM)){
-                                    errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR001");
-                                }else {
-                                    try {
-                                        int i1 = Integer.parseInt(offSiteStartFromHH);
-                                        int i2 = Integer.parseInt(offSiteStartFromMM);
-                                        if(i1>=24){
-                                            errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR009");
-                                        }else if(i2>=60){
-                                            errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR010");
-                                        }
-                                    }catch (Exception e){
-                                        errorMap.put("offSiteStartToHH"+i+j,"CHKLMD001_ERR003");
-
-                                    }
-                                }
-                                if(StringUtil.isEmpty(offSiteEndToHH)||StringUtil.isEmpty(offSiteEndToMM)||StringUtil.isEmpty(offSiteEndToHH)&&StringUtil.isEmpty(offSiteEndToMM)){
-                                    errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR001");
-                                }else {
-
-                                    try {
-                                        int i3 = Integer.parseInt(offSiteEndToHH);
-                                        int i4 = Integer.parseInt(offSiteEndToMM);
-                                        if(i3>=24){
-                                            errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR009");
-                                        }else if(i4>=60){
-                                            errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR010");
-                                        }
-
-                                    }catch (Exception e){
-                                        errorMap.put("offSiteEndToHH"+i+j,"CHKLMD001_ERR003");
-
-                                    }
-                                }
-                            }
-
-                            //set ph time
-                            String errorOffSiteStartToMM = errorMap.get("offSiteStartToHH"+i+j);
-                            String errorOffSiteEndToMM = errorMap.get("offSiteEndToHH"+i+j);
-                            if(StringUtil.isEmpty(errorOffSiteStartToMM) && StringUtil.isEmpty(errorOffSiteEndToMM) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
-                                LocalTime startTime = LocalTime.of(Integer.parseInt(offSiteStartFromHH),Integer.parseInt(offSiteStartFromMM));
-                                appPremPhOpenPeriodDto.setStartFrom(Time.valueOf(startTime));
-                                LocalTime endTime = LocalTime.of(Integer.parseInt(offSiteEndToHH),Integer.parseInt(offSiteEndToMM));
-                                appPremPhOpenPeriodDto.setEndTo(Time.valueOf(endTime));
-                            }
-                        }
-                    }
 
                 } else {
                     //premiseSelect = organization hci code

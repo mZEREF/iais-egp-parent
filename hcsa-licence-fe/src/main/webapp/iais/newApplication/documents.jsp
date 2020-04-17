@@ -40,10 +40,10 @@
                   </div>
                   <div class="document-upload-gp">
                     <h2>PRIMARY DOCUMENTS</h2>
-                    <c:set var="isClickEdit" value="true"/>
+                   <%-- <c:set var="isClickEdit" value="true"/>--%>
                     <c:if test="${AppSubmissionDto.needEditController}">
-                      <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
                         <c:set var="isClickEdit" value="false"/>
+                      <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
                         <c:if test="${'APPPN02' == clickEditPage}">
                           <c:set var="isClickEdit" value="true"/>
                         </c:if>

@@ -6,7 +6,41 @@
 <div class="row">
     <div class="col-xs-12">
         <h2>MedAlert Person</h2>
-        <br/>
+        <div class="row">
+            <c:if test="${AppSubmissionDto.needEditController }">
+                <c:set var="isClickEdit" value="false"/>
+                <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+                    <c:if test="${'APPSPN08' == clickEditPage}">
+                        <c:set var="isClickEdit" value="true"/>
+                    </c:if>
+                </c:forEach>
+                <c:choose>
+                    <c:when test="${'true' != isClickEdit}">
+                        <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+                    </c:when>
+                    <c:otherwise>
+                        <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
+                    </c:otherwise>
+                </c:choose>
+                <c:if test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
+                    <p class="text-right"><a class="back" id="RfcSkip">Skip<em class="fa fa-angle-right"></em></a></p>
+                </c:if>
+                <c:if test="${'true' != isClickEdit}">
+                    <c:set var="locking" value="true"/>
+                    <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+                    <div id="edit-content">
+                        <c:choose>
+                            <c:when test="${'true' == canEdit}">
+                                <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                            </c:when>
+                            <c:otherwise>
+
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                </c:if>
+            </c:if>
+        </div>
         <div class="medAlertContent">
         </div>
         <c:choose>
@@ -153,18 +187,20 @@
                 <br/>
             </div>
         </c:forEach>
-        <div class="row">
-            <div class="control control-caption-horizontal">
-                <div class=" form-group form-horizontal formgap">
-                    <div class="col-sm-3 control-label formtext col-md-5">
-                        <span id="addMapBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another MedAlert Person</span>
-                    </div>
-                    <div class="col-sm-3 control-label formtext col-md-7">
-                        <span class="error-msg mapErrorMsg" style=""></span>
+        <c:if test="${requestInformationConfig==null}">
+            <div class="row">
+                <div class="control control-caption-horizontal">
+                    <div class=" form-group form-horizontal formgap">
+                        <div class="col-sm-3 control-label formtext col-md-5">
+                            <span id="addMapBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another MedAlert Person</span>
+                        </div>
+                        <div class="col-sm-3 control-label formtext col-md-7">
+                            <span class="error-msg mapErrorMsg" style=""></span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </c:if>
     </div>
 </div>
 
@@ -180,9 +216,12 @@
 
         mapDel();
 
-
         $('select.assignSel').trigger('change');
 
+        if(${AppSubmissionDto.needEditController && !isClickEdit}){
+            disabledPage();
+        }
+        doEdit();
         //init end
         init =1;
     })
@@ -266,6 +305,15 @@
             });
         });
     }
+
+    $('#edit').click(function () {
+
+        $('input[type="text"]').prop('disabled',false);
+        $('input[type="checkbox"]').prop('disabled',false);
+        $('div.nice-select').removeClass('disabled');
+        $('#isEditHiddenVal').val('1');
+        $('#edit-content').addClass('hidden');
+    });
 
 
 
