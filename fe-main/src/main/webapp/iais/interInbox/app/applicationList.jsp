@@ -122,10 +122,7 @@
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
                                     <p><a href="#"
-                                          onclick="doDraft('<iais:mask name="action_no_value"
-                                                                       value="${app.applicationNo}"/>','<iais:mask
-                                                  name="action_type_value"
-                                                  value="${app.applicationType}"/>','${app.status}')">${app.applicationNo}</a>
+                                          onclick="doDraft('<iais:mask name="action_no_value" value="${app.applicationNo}"/>','<iais:mask name="action_type_value" value="${app.applicationType}"/>','${app.status}')">${app.applicationNo}</a>
                                     </p>
                                 </td>
                                 <td>

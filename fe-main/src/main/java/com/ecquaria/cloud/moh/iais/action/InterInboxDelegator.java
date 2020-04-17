@@ -664,7 +664,7 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request, "appServiceType", appServiceTypeSelectList);
 
         List<SelectOption> selectDraftApplicationSelectList = IaisCommonUtils.genNewArrayList();
-        selectDraftApplicationSelectList.add(new SelectOption("Reload", "Reload"));
+        selectDraftApplicationSelectList.add(new SelectOption("Edit", "Edit"));
         selectDraftApplicationSelectList.add(new SelectOption("Delete", "Delete"));
         ParamUtil.setRequestAttr(request, "selectDraftApplication", selectDraftApplicationSelectList);
 
