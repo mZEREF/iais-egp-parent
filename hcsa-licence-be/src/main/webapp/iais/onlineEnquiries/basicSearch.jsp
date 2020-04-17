@@ -228,14 +228,14 @@
     <c:choose>
         <c:when test="${isASO==1}">
             <iais:action style="text-align:right;">
-                <button type="button" class="btn btn-secondary"
-                        onclick="javascript:doCessation();">Cessation</button>
+                <button type="button" class="btn btn-primary"
+                        onclick="javascript:doCessation();">Cease</button>
             </iais:action>
         </c:when>
         <c:otherwise>
             <iais:action style="text-align:right;">
-                <button type="button" class="btn btn-secondary" disabled
-                        onclick="javascript:doCessation();">Cessation</button>
+                <button type="button" class="btn btn-primary" disabled
+                        onclick="javascript:doCessation();">Cease</button>
             </iais:action>
         </c:otherwise>
     </c:choose>
