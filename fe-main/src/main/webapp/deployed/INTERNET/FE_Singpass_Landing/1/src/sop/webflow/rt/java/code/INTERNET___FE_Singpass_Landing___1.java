@@ -21,4 +21,33 @@ public class INTERNET___FE_Singpass_Landing___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "singpassCallBack", this);
 	}
 
+	public void initSingpassInfo_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "initSingpassInfo", this);
+	// 		initSingpassInfo->OnStepProcess
+	}
+
+	public void step1_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "step1", this);
+	// 		Step1->OnStepProcess
+	}
+
+	public void redirectToInbox_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "redirectToInbox", this);
+	// 		redirectToInbox->OnStepProcess
+	}
+
+	public void temp1() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "step3", this);
+	}
+
+	public void receiveUserInfo_OnStepProcess_0() throws Exception {
+	// 		receiveUserInfo->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "receiveUserInfo", this);
+	}
+
+	public void initLoginInfo_OnStepProcess_0() throws Exception {
+	// 		initLoginInfo->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "initLoginInfo", this);
+	}
+
 }

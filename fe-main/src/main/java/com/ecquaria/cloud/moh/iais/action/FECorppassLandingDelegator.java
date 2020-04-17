@@ -3,18 +3,21 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.JsonKeyConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -23,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-@Delegator(value = "croppassLandingDelegator")
+@Delegator(value = "corpassLandingDelegator")
 @Slf4j
 public class FECorppassLandingDelegator {
 
@@ -33,18 +36,6 @@ public class FECorppassLandingDelegator {
     @Autowired
     private OrgUserManageService orgUserManageService;
 
-
-
-    /**
-     * StartStep: callCroppass
-     *
-     * @param bpc
-     * @throws
-     */
-    public void callCroppass(BaseProcessClass bpc){
-
-    }
-
     /**
      * StartStep: startStep
      *
@@ -52,7 +43,17 @@ public class FECorppassLandingDelegator {
      * @throws
      */
     public void startStep(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction("FE Corppass Landing", "Login");
+
+    }
+
+    /**
+     * StartStep: redirectToInbox
+     *
+     * @param bpc
+     * @throws
+     */
+    public void redirectToInbox(BaseProcessClass bpc){
+        IaisEGPHelper.sendRedirect(bpc.request, bpc.response, LoginHelper.INBOX_URL);
     }
 
     /**
@@ -61,15 +62,24 @@ public class FECorppassLandingDelegator {
      * @param bpc
      * @throws
      */
-    public void croppassCallBack(BaseProcessClass bpc){
+    public void corppassCallBack(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
+        AuditTrailHelper.auditFunction("FE Corppass Singpass", "Login");
 
-        String uen = ParamUtil.getRequestString(request, "entityId");
-        String nric =  ParamUtil.getRequestString(request, "corpPassId");
+        ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
+        String uen = ParamUtil.getRequestString(request, UserConstants.ENTITY_ID);
+        String nric =  ParamUtil.getRequestString(request, UserConstants.CORPPASS_ID);
 
-        ParamUtil.setSessionAttr(request, "entityId", uen);
-        ParamUtil.setSessionAttr(request, "corpPassId", nric);
+        FeUserDto userDto = new FeUserDto();
+        userDto.setUenNo(uen);
+        userDto.setIdentityNo(nric);
+        userDto.setIdType(OrganizationConstants.ID_TYPE_NRIC);
+
+        ParamUtil.setSessionAttr(request, UserConstants.SESSION_CAN_EDIT_USERINFO, "N");
+        ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userDto);
+        ParamUtil.setSessionAttr(request, UserConstants.ENTITY_ID, uen);
+        ParamUtil.setSessionAttr(request, UserConstants.CORPPASS_ID, nric);
 
         OrganizationDto organizationDto = orgUserManageService.findOrganizationByUen(uen);
         if (organizationDto != null){
@@ -78,6 +88,8 @@ public class FECorppassLandingDelegator {
             ParamUtil.setRequestAttr(request, "isFirstLogin", "Y");
         }
     }
+
+
 
     /**
      * StartStep: validateKeyAppointment
@@ -88,8 +100,8 @@ public class FECorppassLandingDelegator {
     public void validateKeyAppointment(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
-        String uen = ParamUtil.getRequestString(request, "entityId");
-        String nric =  ParamUtil.getRequestString(request, "corpPassId");
+        String uen = ParamUtil.getRequestString(request, UserConstants.ENTITY_ID);
+        String nric =  ParamUtil.getRequestString(request, UserConstants.CORPPASS_ID);
 
         // a key appointment holder
         //boolean isKeyAppointment = orgUserManageService.isKeyappointment(uen, nric);
@@ -109,63 +121,80 @@ public class FECorppassLandingDelegator {
      * @throws
      */
     public void loginUser(BaseProcessClass bpc){
-        String uen = ParamUtil.getRequestString(bpc.request, "entityId");
-        String nric =  ParamUtil.getRequestString(bpc.request, "corpPassId");
+        String uen = ParamUtil.getRequestString(bpc.request, UserConstants.ENTITY_ID);
+        String nric =  ParamUtil.getRequestString(bpc.request, UserConstants.CORPPASS_ID);
 
-        Map<String, Object> userInfo =  orgUserManageService.getUserByNricAndUen(uen, nric);
-        log.info(" croppass login -> user info " + userInfo.toString());
-
-        boolean isAdminRole = false;
-        if (!userInfo.isEmpty()){
-            if (userInfo.containsKey("isAdmin")){
-                isAdminRole = true;
-            }
-        }
-
-        if (isAdminRole){
+        FeUserDto feUserDto =  orgUserManageService.getUserByNricAndUen(uen, nric);
+        if (feUserDto != null){
             User user = new User();
-            user.setDisplayName("Internet User");
-            user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
-            String userId = userInfo.get("userId").toString();
-            user.setId(userId);
-            LoginHelper.login(bpc.request, bpc.response, user);
+            user.setDisplayName(feUserDto.getDisplayName());
+            user.setUserDomain(feUserDto.getUserDomain());
+            user.setId(feUserDto.getUserId());
+            LoginHelper.initUserInfo(bpc.request, bpc.response, user);
+            ParamUtil.setRequestAttr(bpc.request, "isAdminRole", "Y");
         }else {
-            IaisEGPHelper.sendRedirect(bpc.request, bpc.response, "/main-web/");
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0012"));
+            ParamUtil.setRequestAttr(bpc.request, "isAdminRole", "N");
         }
     }
 
     /**
-     * StartStep: createCropUser
+     * StartStep: initCorppassUserInfo
      *
      * @param bpc
      * @throws
      */
-    public void createCropUser(BaseProcessClass bpc){
+    public void initCorppassUserInfo(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
-        ParamUtil.setSessionAttr(bpc.request, "uenList", null);
 
-        String uen = (String) ParamUtil.getScopeAttr(request, "entityId");
-        String nric = (String) ParamUtil.getScopeAttr(request, "corpPassId");
+        String name = ParamUtil.getString(request, UserConstants.NAME);
+        String salutation = ParamUtil.getString(request, UserConstants.SALUTATION);
+        String designation = ParamUtil.getString(request, UserConstants.DESIGNATION);
+        String idNo = ParamUtil.getString(request, UserConstants.ID_NUMBER);
+        String idType = ParamUtil.getString(request, UserConstants.ID_TYPE);
+        String mobileNo = ParamUtil.getString(request, UserConstants.MOBILE_NO);
+        String officeNo = ParamUtil.getString(request, UserConstants.OFFICE_NO);
+        String email = ParamUtil.getString(request, UserConstants.EMAIL);
 
-        if (StringUtils.isEmpty(uen) && StringUtil.isEmpty(nric)){
-            return;
+        FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
+        if (feUserDto != null){
+            feUserDto.setDisplayName(name);
+            feUserDto.setDesignation(designation);
+            feUserDto.setSalutation(salutation);
+            feUserDto.setIdentityNo(idNo);
+            feUserDto.setMobileNo(mobileNo);
+            feUserDto.setOfficeTelNo(officeNo);
+            feUserDto.setIdType(idType);
+            feUserDto.setEmail(email);
+            ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, feUserDto);
+            ValidationResult validationResult = WebValidationHelper.validateProperty(feUserDto, "create");
+            if (validationResult.isHasErrors()) {
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            } else {
+                OrganizationDto organizationDto = new OrganizationDto();
+                organizationDto.setDoMain(AppConsts.USER_DOMAIN_INTERNET);
+                organizationDto.setOrgType(UserConstants.ORG_TYPE);
+                organizationDto.setUenNo(feUserDto.getUenNo());
+                organizationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+
+                organizationDto.setFeUserDto(feUserDto);
+
+                FeUserDto postUpdate = orgUserManageService.createCropUser(organizationDto);
+                orgUserManageService.createClientUser(postUpdate);
+
+                User user = new User();
+                user.setDisplayName(postUpdate.getDisplayName());
+                user.setUserDomain(postUpdate.getUserDomain());
+                user.setId(postUpdate.getUserId());
+                LoginHelper.initUserInfo(request, response, user);
+
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            }
         }
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("uen", uen);
-        jsonObject.put("nric", nric);
-        jsonObject.put(JsonKeyConstants.USER_ID, AppConsts.USER_DOMAIN_INTERNET);
-
-        OrgUserDto orgUserDto = orgUserManageService.createCropUser(jsonObject.toString());
-        orgUserManageService.createClientUser(orgUserDto);
-
-        User user = new User();
-        user.setDisplayName("Internet User");
-        user.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
-        user.setId(orgUserDto.getUserId());
-
-        LoginHelper.login(request, response, user);
     }
 
     /**

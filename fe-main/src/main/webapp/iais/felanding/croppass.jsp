@@ -22,7 +22,7 @@
 <webui:setLayout name="iais-internet"/>
 
 <div class="main-content">
-  <form id="mainForm" method="post" action="/main-web/eservice/INTERNET/FE_Croppass_Landing/1/croppassCallBack">
+  <form id="mainForm" method="post" action="/main-web/eservice/INTERNET/FE_Corppass_Landing/1/corppassCallBack">
   <%@ include file="/include/formHidden.jsp" %>
   <div class="prelogin" style="background-image: url('/web/themes/fe/img/prelogin-masthead-banner.jpg');">
     <div class="container">
@@ -36,10 +36,8 @@
             <div class="linebreak"></div>
           </div>
 
-          <c:if test="${uenList != null}">
-            You already have UEN, please login with corppass
-            <c:out value="${s}"></c:out>
-          </c:if>
+
+
           <br>
           <div id="login" class="login-area" style="display:block;">
             <div class="form-group">

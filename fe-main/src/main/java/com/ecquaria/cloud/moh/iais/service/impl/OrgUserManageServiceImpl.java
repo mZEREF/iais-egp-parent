@@ -2,12 +2,10 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.client.rbac.UserClient;
-import com.ecquaria.cloud.moh.iais.common.constant.JsonKeyConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -15,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.FeAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +38,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     public SearchResult<FeUserQueryDto> getFeUserList(SearchParam searchParam){
         return feUserClient.getFeUserList(searchParam).getEntity();
     }
-
 
     @Override
     public OrganizationDto getOrganizationById( String id){
@@ -92,38 +88,41 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-	public OrgUserDto createSingpassAccount(String nric) {
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put(JsonKeyConstants.SINGPASS_ID, nric);
-
-		return feUserClient.singPassLoginFe(jsonObject.toString()).getEntity();
+	public FeUserDto createSingpassAccount(OrganizationDto organizationDto) {
+		return feUserClient.createSingpassAccount(organizationDto).getEntity();
 	}
 
     @Override
-    public OrgUserDto createCropUser(String jsonStr) {
-        return feUserClient.createCropUser(jsonStr).getEntity();
+    public FeUserDto createCropUser(OrganizationDto organizationDto) {
+        return feUserClient.createCropUser(organizationDto).getEntity();
     }
 
     @Override
-    public Map<String, Object> getUserByNricAndUen(String uen, String nric) {
+    public FeUserDto getUserByNricAndUen(String uen, String nric) {
         return feUserClient.getUserByNricAndUen(uen, nric).getEntity();
     }
 
     @Override
-    public void createClientUser(OrgUserDto orgUserDto) {
+    public FeUserDto getFeUserAccountByNric(String nric) {
+        return feUserClient.getInternetUserByNric(nric).getEntity();
+    }
+
+
+    @Override
+    public void createClientUser(FeUserDto userDto) {
 
         //TODO : simple create
-        ClientUser clientUser = userClient.findUser("internet", orgUserDto.getUserId()).getEntity();
+        ClientUser clientUser = userClient.findUser("internet", userDto.getUserId()).getEntity();
         if (clientUser != null){
             return;
         }
 
-        clientUser = MiscUtil.transferEntityDto(orgUserDto, ClientUser.class);
-        clientUser.setUserDomain(orgUserDto.getUserDomain());
-        clientUser.setId(orgUserDto.getUserId());
+        clientUser = MiscUtil.transferEntityDto(userDto, ClientUser.class);
+        clientUser.setUserDomain(userDto.getUserDomain());
+        clientUser.setId(userDto.getUserId());
         clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
-        String email = orgUserDto.getEmail();
-        String salutation = orgUserDto.getSalutation();
+        String email = userDto.getEmail();
+        String salutation = userDto.getSalutation();
         clientUser.setSalutation(salutation);
         clientUser.setEmail(email);
         clientUser.setPassword("password$2");

@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 
@@ -27,13 +26,15 @@ public interface OrgUserManageService {
 
     List<String> getUenListByNric(String nric);
 
-    OrgUserDto createSingpassAccount(String nric);
+    FeUserDto createSingpassAccount(OrganizationDto organizationDto);
 
-    OrgUserDto createCropUser(String jsonStr);
+    FeUserDto createCropUser(OrganizationDto organizationDto);
 
-    Map<String, Object>  getUserByNricAndUen(String uen, String nric);
+    FeUserDto getUserByNricAndUen(String uen, String nric);
 
-    void createClientUser(OrgUserDto orgUserDto);
+    FeUserDto getFeUserAccountByNric(String nric);
+
+    void createClientUser(FeUserDto userDto);
     void saveEgpUser(FeUserDto feUserDto);
     void updateEgpUser(FeUserDto feUserDto);
 
