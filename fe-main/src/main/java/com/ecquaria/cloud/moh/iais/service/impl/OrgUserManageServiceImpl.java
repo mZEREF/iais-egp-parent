@@ -179,13 +179,40 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public void updateEgpUser(FeUserDto feUserDto) {
         ClientUser clientUser = userClient.findUser(feUserDto.getUserDomain(), feUserDto.getUserId()).getEntity();
-        clientUser.setSalutation(feUserDto.getSalutation());
-        clientUser.setEmail(feUserDto.getEmail());
-        clientUser.setDisplayName(feUserDto.getDisplayName());
-        clientUser.setIdentityNo(feUserDto.getIdentityNo());
-        clientUser.setMobileNo(feUserDto.getMobileNo());
-        clientUser.setContactNo(feUserDto.getOfficeTelNo());
-        userClient.updateClientUser(clientUser);
+        if (clientUser != null){
+            clientUser.setSalutation(feUserDto.getSalutation());
+            clientUser.setEmail(feUserDto.getEmail());
+            clientUser.setDisplayName(feUserDto.getDisplayName());
+            clientUser.setIdentityNo(feUserDto.getIdentityNo());
+            clientUser.setMobileNo(feUserDto.getMobileNo());
+            clientUser.setContactNo(feUserDto.getOfficeTelNo());
+            userClient.updateClientUser(clientUser);
+        }else{
+            clientUser = MiscUtil.transferEntityDto(feUserDto, ClientUser.class);
+            clientUser.setUserDomain(feUserDto.getUserDomain());
+            clientUser.setId(feUserDto.getUserId());
+            clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+            String email = feUserDto.getEmail();
+            String salutation = feUserDto.getSalutation();
+            clientUser.setSalutation(salutation);
+            clientUser.setEmail(email);
+            clientUser.setDisplayName(feUserDto.getFirstName()+feUserDto.getLastName());
+            clientUser.setPassword("password$2");
+            clientUser.setPasswordChallengeQuestion("A");
+            clientUser.setPasswordChallengeAnswer("A");
+
+            Date activeDate = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(activeDate);
+            calendar.add(Calendar.DAY_OF_MONTH, 12);
+            clientUser.setAccountActivateDatetime(activeDate);
+            clientUser.setAccountDeactivateDatetime(calendar.getTime());
+
+            userClient.createClientUser(clientUser);
+        }
+
+
+
     }
 
 

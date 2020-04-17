@@ -24,14 +24,6 @@ public class INTERNET___MohFeAdminUserManagement___1 extends BaseProcessClass {
 	// 		PreCreate->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "preparePage", this);
 	}
-	public void validation_OnStepProcess_0() throws Exception {
-	// 		CreateValidation->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "createValidation", this);
-	}
-	public void create_OnStepProcess_0() throws Exception {
-	// 		Create->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "create", this);
-	}
 	public void edit_OnStepProcess_0() throws Exception {
 		// 		Edit->OnStepProcess
 			EngineHelper.delegate(DELEGATOR, "edit", this);
@@ -44,5 +36,9 @@ public class INTERNET___MohFeAdminUserManagement___1 extends BaseProcessClass {
 	// 		Page->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doPage", this);
 	}
+	public void create_OnStepProcess_0() throws Exception {
+		// 		Create->OnStepProcess
+			EngineHelper.delegate(DELEGATOR, "create", this);
+		}
 
 }

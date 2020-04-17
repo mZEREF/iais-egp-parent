@@ -25,7 +25,7 @@
         </c:when>
         <c:otherwise>
                 <iais:value width="11">
-                    <input name="idType" id="idType" type="text" value="<iais:code code= "${user.idType}"/>" disabled/>
+                    <input name="idType" id="idType" type="text" value="<iais:code code= "${user.idType}"/>" readonly/>
                 </iais:value>
         </c:otherwise>
     </c:choose>
@@ -41,7 +41,7 @@
                 <iais:input type="text" name="idNo" id="idNo" value="${user.identityNo}"/>
             </c:when>
             <c:otherwise>
-                    <iais:input type="text" name="idNo" id="idNo" value="${user.identityNo}" needDisabled="true"/>
+                    <input type="text" name="idNo" id="idNo" value="${user.identityNo}" readonly/>
             </c:otherwise>
         </c:choose>
         <div class="col-xs-12">

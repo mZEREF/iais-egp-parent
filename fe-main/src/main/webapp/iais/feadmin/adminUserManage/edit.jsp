@@ -35,26 +35,26 @@
                         <div class="col-xs-12">
                             <div class="new-premise-form-conveyance">
                                 <div class="form-horizontal">
-
+                                    <%@include file="../../common/userForm.jsp"%>
                                     <iais:row>
                                         <iais:field value="Is Administrator" width="11"/>
                                         <div class="col-md-3">
-                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="admin" name="role" <c:if test="${user.isAdmin=='ORG_ADMIN'}">checked</c:if>></div>
+                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="admin" name="role" <c:if test="${user.userRole=='ORG_ADMIN'}">checked</c:if>></div>
                                             <label class="col-md-2 control-label" >Yes</label>
                                         </div>
                                         <div class="col-md-3">
-                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="user" name="role" <c:if test="${user.isAdmin!='ORG_ADMIN'}">checked</c:if>></div>
+                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="user" name="role" <c:if test="${user.userRole!='ORG_ADMIN'}">checked</c:if>></div>
                                             <label class="col-md-2 control-label" >No</label>
                                         </div>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Is Active" width="11"/>
                                         <div class="col-md-3">
-                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="admin" name="role" <c:if test="${user.available}">checked</c:if>></div>
+                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="active" name="active" <c:if test="${user.available}">checked</c:if>></div>
                                             <label class="col-md-2 control-label" >Yes</label>
                                         </div>
                                         <div class="col-md-3">
-                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="user" name="role" <c:if test="${!user.available}">checked</c:if>></div>
+                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="inactive" name="active" <c:if test="${!user.available}">checked</c:if>></div>
                                             <label class="col-md-2 control-label" >No</label>
                                         </div>
                                     </iais:row>

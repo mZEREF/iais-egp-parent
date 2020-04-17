@@ -46,7 +46,7 @@
                                 <th>Designation</th>
                                 <th>Is Administrator</th>
                                 <th>Is Active</th>
-                                <th></th>
+                                <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>

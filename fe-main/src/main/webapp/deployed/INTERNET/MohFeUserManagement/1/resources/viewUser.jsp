@@ -1,1 +1,0 @@
-<%@include file="/iais/feadmin/userManage/viewUser.jsp"%>
