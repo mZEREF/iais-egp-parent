@@ -93,7 +93,6 @@ public class MasterCodeDelegator {
         List<SelectOption> selectCodeStatusList = IaisCommonUtils.genNewArrayList();
         selectCodeStatusList.add(new SelectOption("", "Please Select"));
         selectCodeStatusList.add(new SelectOption("CMSTAT001", "Active"));
-        selectCodeStatusList.add(new SelectOption("CMSTAT002", "Deleted"));
         selectCodeStatusList.add(new SelectOption("CMSTAT003", "Inactive"));
         ParamUtil.setRequestAttr(bpc.request, "codeStatus", selectCodeStatusList);
         SearchParam searchParam = SearchResultHelper.getSearchParam(request,filterParameter,true);
