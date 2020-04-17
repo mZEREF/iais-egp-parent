@@ -148,6 +148,7 @@ public class ApplicantConfirmInspDateDelegator {
         apptFeConfirmDateDto.setSaveDate(checkDate);
         applicantConfirmInspDateService.confirmInspectionDate(apptFeConfirmDateDto);
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
+        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Appointment Scheduling");
     }
 
     /**
@@ -226,6 +227,7 @@ public class ApplicantConfirmInspDateDelegator {
             apptFeConfirmDateDto = applicantConfirmInspDateService.confirmNewDate(apptFeConfirmDateDto);
         }
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
+        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Recomputing of Dates");
     }
 
     /**
@@ -322,6 +324,7 @@ public class ApplicantConfirmInspDateDelegator {
         apptFeConfirmDateDto.setReason(reason);
         applicantConfirmInspDateService.rejectSystemDateAndCreateTask(apptFeConfirmDateDto);
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
+        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Requests a Particular Date");
     }
 
     private Date getSaveDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
