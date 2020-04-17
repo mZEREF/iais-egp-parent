@@ -55,7 +55,7 @@
 <iais:row>
     <iais:field value="Designation" width="11" required="true"/>
     <iais:value width="11">
-        <iais:input type="text" name="designation" id="designation" value="${user.designation}"/>
+        <iais:select cssClass="designation" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${user.designation}" firstOption="Please Select"/>
         <div class="col-xs-12">
             <span class="error-msg" name="errorMsg" id="error_designation"></span>
         </div>
