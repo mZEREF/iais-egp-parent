@@ -56,10 +56,6 @@
             <artifactId>ecq-sz-commons</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.ecquaria.submission.client</groupId>
-            <artifactId>submissionclient</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.ecquaria.kafka</groupId>
             <artifactId>servicewrapper</artifactId>
         </dependency>
