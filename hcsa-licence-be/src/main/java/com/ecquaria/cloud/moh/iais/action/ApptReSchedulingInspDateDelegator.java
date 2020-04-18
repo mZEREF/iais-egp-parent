@@ -204,7 +204,7 @@ public class ApptReSchedulingInspDateDelegator {
         log.debug(StringUtil.changeForLog("the apptInspectionDateSuccess start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        //apptInspectionDateService.saveSpecificDateLast(apptInspectionDateDto, loginContext);
+        apptInspectionDateService.saveSpecificDateLast(apptInspectionDateDto, loginContext);
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
     }
 }
