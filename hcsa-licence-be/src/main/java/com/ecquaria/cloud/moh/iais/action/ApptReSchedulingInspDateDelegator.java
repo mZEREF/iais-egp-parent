@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -92,7 +91,7 @@ public class ApptReSchedulingInspDateDelegator {
         if(apptInspectionDateDto == null){
             String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
             TaskDto taskDto = taskService.getTaskById(taskId);
-            ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskId);
+            ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
             apptInspectionDateDto = new ApptInspectionDateDto();
             apptInspectionDateDto  = apptInspectionDateService.getApptSpecificDate(taskId, apptInspectionDateDto);
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
@@ -114,14 +113,8 @@ public class ApptReSchedulingInspDateDelegator {
     public void apptReSchInspDateVali(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptReSchInspDateVali start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
-        List<SelectOption> processDecList = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
-        String processDec = ParamUtil.getRequestString(bpc.request, "processDec");
-        boolean processFlag = containValueInList(processDec, processDecList);
-        if(StringUtil.isEmpty(processDec) || !processFlag){
-            apptInspectionDateDto.setProcessDec(null);
-        } else {
-            apptInspectionDateDto.setProcessDec(processDec);
-        }
+        String processDec = InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE;
+        apptInspectionDateDto.setProcessDec(processDec);
         apptInspectionDateDto = getValidateValue(apptInspectionDateDto, bpc);
         ValidationResult validationResult;
         if(processDec.equals(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE)) {
@@ -143,60 +136,49 @@ public class ApptReSchedulingInspDateDelegator {
     private ApptInspectionDateDto getValidateValue(ApptInspectionDateDto apptInspectionDateDto, BaseProcessClass bpc) {
         String specificDate1 = ParamUtil.getDate(bpc.request, "specificDate");
         String strHours = ParamUtil.getRequestString(bpc.request, "hours");
-        String amPm = ParamUtil.getRequestString(bpc.request, "amPm");
-        List<SelectOption> hoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "hours");
-        List<SelectOption> amPmOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "amPm");
-        boolean flagContain = containValueInList(amPm, amPmOption);
-        if(flagContain){
-            apptInspectionDateDto.setAmPm(amPm);
-        } else {
-            apptInspectionDateDto.setAmPm(null);
-        }
+        List<SelectOption> hoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "hoursOption");
         if(containValueInList(strHours, hoursOption)){
-            try {
-                int hours = Integer.parseInt(strHours);
-                if(Formatter.DAY_PM.equals(amPm)){
-                    hours = hours + 12;
-                }
-                if(hours < 10) {
-                    apptInspectionDateDto.setHours("0" + hours);
-                } else {
-                    apptInspectionDateDto.setHours(hours + "");
-                }
-
-            } catch (Exception e){
-                e.printStackTrace();
-                apptInspectionDateDto.setHours(null);
-            }
+            apptInspectionDateDto.setHours(strHours);
         } else {
             apptInspectionDateDto.setHours(null);
         }
-        Date specificDate = getSpecificDate(specificDate1, apptInspectionDateDto);
+        Date specificDate = getSpecificDate(specificDate1, apptInspectionDateDto, hoursOption);
         if(specificDate != null){
             apptInspectionDateDto.setSpecificDate(specificDate);
         }
         return apptInspectionDateDto;
     }
 
-    private Date getSpecificDate(String specificDate1, ApptInspectionDateDto apptInspectionDateDto) {
-        Date specificDate = null;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        Date sub_date1 = null;
-        try {
-            sub_date1 = sdf.parse(specificDate1);
-        } catch (ParseException e) {
-            e.printStackTrace();
+    private Date getSpecificDate(String specificDate1, ApptInspectionDateDto apptInspectionDateDto, List<SelectOption> hoursOption) {
+        if(specificDate1 != null) {
+            Date specificDate = null;
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Date sub_date1 = null;
+            try {
+                sub_date1 = sdf.parse(specificDate1);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String sub_date = sdf2.format(sub_date1);
+            if(!StringUtil.isEmpty(apptInspectionDateDto.getHours())) {
+                for(SelectOption so : hoursOption){
+                    if(apptInspectionDateDto.getHours().equals(so.getValue())){
+                        sub_date = sub_date + " " + so.getText() + ":00";
+                    }
+                }
+            } else {
+                sub_date = sub_date + " " + ":00:00";
+            }
+            try {
+                specificDate = sdf3.parse(sub_date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return specificDate;
         }
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String sub_date = sdf2.format(sub_date1);
-        sub_date = sub_date + " " + apptInspectionDateDto.getHours() + ":00:00";
-        try {
-            specificDate = sdf3.parse(sub_date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return specificDate;
+        return null;
     }
 
     private boolean containValueInList(String str, List<SelectOption> optionList) {

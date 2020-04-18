@@ -22,93 +22,83 @@
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="mainInspDateForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
     <input type="hidden" name="apptReSchInspDateType" value="">
     <input type="hidden" id="actionValue" name="actionValue" value="">
     <input type="hidden" id="processDec" name="processDec" value="${apptInspectionDateDto.processDec}">
-    <iais:body >
-      <div class="container">
-        <div class="col-xs-12">
-          <div class="tab-gp dashboard-tab">
-            <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-              <li id="ReApptInspTabInfo" class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
-                                                                            data-toggle="tab">Info</a></li>
-              <li id="ReApptInspTabDocuments" class="complete" role="presentation"><a href="#tabDocuments"
-                                                                                   aria-controls="tabDocuments" role="tab"
-                                                                                   data-toggle="tab">Documents</a></li>
-              <li id="ReApptInspTabProcessing" class="incomplete" role="presentation"><a href="#tabProcessing"
-                                                                                      aria-controls="tabProcessing" role="tab"
-                                                                                      data-toggle="tab">Processing</a></li>
-            </ul>
-            <div class="tab-nav-mobile visible-xs visible-sm">
-              <div class="swiper-wrapper" role="tablist">
-                <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
-                                             data-toggle="tab">Info</a></div>
-                <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments"
-                                             role="tab" data-toggle="tab">Documents</a></div>
-                <div class="swiper-slide"><a id="apptReInspectionDate" href="#tabProcessing" aria-controls="tabProcessing"
-                                             role="tab" data-toggle="tab">Processing</a></div>
-              </div>
-              <div class="swiper-button-prev"></div>
-              <div class="swiper-button-next"></div>
-            </div>
-            <div class="tab-content">
-              <div class="tab-pane active" id="tabInfo" role="tabpanel">
-                <%@ include file="../hcsaLicence/applicationInfo.jsp" %>
-              </div>
+    <div class="main-content">
+      <div class="row">
+        <div class="col-lg-12 col-xs-12">
+          <div class="center-content">
+            <div class="intranet-content">
+              <iais:body >
+                <div class="container">
+                  <div class="col-xs-12">
+                    <div class="tab-gp dashboard-tab">
+                      <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
+                        <li id="ReApptInspTabInfo" class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
+                                                                                      data-toggle="tab">Info</a></li>
+                        <li id="ReApptInspTabDocuments" class="complete" role="presentation"><a href="#tabDocuments"
+                                                                                             aria-controls="tabDocuments" role="tab"
+                                                                                             data-toggle="tab">Documents</a></li>
+                        <li id="ReApptInspTabProcessing" class="incomplete" role="presentation"><a href="#tabProcessing"
+                                                                                                aria-controls="tabProcessing" role="tab"
+                                                                                                data-toggle="tab">Processing</a></li>
+                      </ul>
+                      <div class="tab-nav-mobile visible-xs visible-sm">
+                        <div class="swiper-wrapper" role="tablist">
+                          <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
+                                                       data-toggle="tab">Info</a></div>
+                          <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments"
+                                                       role="tab" data-toggle="tab">Documents</a></div>
+                          <div class="swiper-slide"><a id="apptReInspectionDate" href="#tabProcessing" aria-controls="tabProcessing"
+                                                       role="tab" data-toggle="tab">Processing</a></div>
+                        </div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                      </div>
+                      <div class="tab-content">
+                        <div class="tab-pane active" id="tabInfo" role="tabpanel">
+                          <%@ include file="../hcsaLicence/applicationInfo.jsp" %>
+                        </div>
 
-              <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                <%@ include file="../inspectionncList/tabDocuments.jsp" %>
-              </div>
+                        <div class="tab-pane" id="tabDocuments" role="tabpanel">
+                          <%@ include file="../inspectionncList/tabDocuments.jsp" %>
+                        </div>
 
-              <div class="tab-pane" id="tabProcessing" role="tabpanel">
-                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                  <h3>
-                    <span>Choosing of Appointment Date</span>
-                  </h3>
-                  <div class="panel panel-default">
-                    <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                      <div class="panel-body">
-                        <div class="panel-main-content">
+                        <div class="tab-pane" id="tabProcessing" role="tabpanel">
+                          <div class="alert alert-info" role="alert">
+                            <strong>
+                              <h4>Appointment Re-Scheduling</h4>
+                            </strong>
+                          </div>
                           <iais:section title="" id = "inspection_date">
                             <iais:row>
                               <iais:field value="Available Appointment Dates"/>
                               <iais:value width="7">
-                                <label><c:out value="${apptInspectionDateDto.apptFeSpecificDate}"/></label>
+                                <span style="font-size: 16px"><c:out value="${apptInspectionDateDto.apptFeSpecificDate}"/></span>
                               </iais:value>
                             </iais:row>
                             <iais:row>
                               <iais:field value="Reason"/>
                               <iais:value width="7">
-                                <label><c:out value="${apptInspectionDateDto.apptFeReason}"/></label>
+                                <span style="font-size: 16px"><c:out value="${apptInspectionDateDto.apptFeReason}"/></span>
                               </iais:value>
                             </iais:row>
-                            <iais:row>
-                              <iais:field value="Processing Decision" required="true"/>
-                              <iais:value width="7">
-                                <iais:select name="inspecProcessDec" options="inspecProDec" firstOption="Please select" value="${apptInspectionDateDto.processDec}" onchange="javascript:apptReShInspectionDateChange(this.value)"></iais:select>
-                                <br><span class="error-msg" name="iaisErrorMsg" id="error_processDec"></span>
-                              </iais:value>
-                            </iais:row>
-                            <div id = "specificDate">
-                              <iais:row>
-                                <iais:field value="Date"/>
-                                <iais:value width="7">
-                                  <iais:datePicker id = "specificDate" name = "specificDate" value="${apptInspectionDateDto.specificDate}"></iais:datePicker>
-                                  <iais:select name="hoursOption" options="hoursOption" firstOption="Please Select" value="${apptInspectionDateDto.hours}"></iais:select>
-                                  <iais:select name="amPmOption" options="amPmOption" firstOption="Please Select" value="${apptInspectionDateDto.amPm}"></iais:select>
-                                  <br><span class="error-msg" name="iaisErrorMsg" id="error_specificDate"></span>
-                                  <br><span class="error-msg" name="iaisErrorMsg" id="error_hours"></span>
-                                  <br><span class="error-msg" name="iaisErrorMsg" id="error_amPm"></span>
-                                </iais:value>
-                              </iais:row>
+                            <div class="row">
+                              <div class="col-md-1">
+                                <label style="font-size: 16px">Date<span style="color: red"> *</span></label>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="col-xs-12 col-md-4">
+                                  <iais:datePicker id = "specificDate" name = "specificDate" dateVal="${apptInspectionDateDto.specificDate}"></iais:datePicker>
+                                </div>
+                                <div class="col-xs-12 col-md-3">
+                                  <iais:select name="hours" options="hoursOption" firstOption="--:--" value="${apptInspectionDateDto.hours}"></iais:select>
+                                </div>
+                              </div>
                             </div>
                             <iais:action >
-                              <button class="btn btn-lg btn-login-submit" style="float:right" type="button" onclick="javascript:apptReShInspectionDateConfirm()">Confirm</button>
+                              <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptReShInspectionDateConfirm()">Submit</button>
                             </iais:action>
                             <br>
                             <br>
@@ -169,12 +159,12 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </iais:body>
             </div>
           </div>
         </div>
       </div>
-    </iais:body>
+    </div>
   </form>
 </div>
 <%@ include file="/include/validation.jsp" %>
@@ -190,9 +180,9 @@
     function apptReShInspectionDateHidOrSh(){
         var processDec = $("#processDec").val();
         if(processDec == "REDECI018"){
-            $("#specificDate").hide();
-        } else {
             $("#specificDate").show();
+        } else {
+            $("#specificDate").hide();
         }
     }
 

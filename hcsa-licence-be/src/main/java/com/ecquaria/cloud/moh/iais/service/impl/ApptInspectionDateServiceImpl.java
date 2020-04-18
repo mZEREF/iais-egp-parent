@@ -552,9 +552,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String specificDateStr = "-";
         String apptFeReason = "-";
         if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtos)) {
-            for(AppPremisesInspecApptDto appPremisesInspecApptDto : appPremisesInspecApptDtos) {
-                specificDateStr = getApptDateToShow(appPremisesInspecApptDto.getSpecificInspDate());
-            }
+            specificDateStr = getApptDateToShow(appPremisesInspecApptDtos.get(0).getSpecificInspDate());
+            apptFeReason = appPremisesInspecApptDtos.get(0).getReason();
             apptInspectionDateDto.setAppPremisesInspecApptDtos(appPremisesInspecApptDtos);
         }
         apptInspectionDateDto.setApptFeSpecificDate(specificDateStr);
