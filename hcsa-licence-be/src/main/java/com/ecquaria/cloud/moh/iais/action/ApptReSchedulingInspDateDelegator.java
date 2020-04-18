@@ -101,7 +101,7 @@ public class ApptReSchedulingInspDateDelegator {
         List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
         ParamUtil.setSessionAttr(bpc.request, "inspecProDec", (Serializable) processDecList);
-        ParamUtil.setSessionAttr(bpc.request, "hours", (Serializable) hours);
+        ParamUtil.setSessionAttr(bpc.request, "hoursOption", (Serializable) hours);
     }
 
     /**
@@ -134,6 +134,8 @@ public class ApptReSchedulingInspDateDelegator {
     }
 
     private ApptInspectionDateDto getValidateValue(ApptInspectionDateDto apptInspectionDateDto, BaseProcessClass bpc) {
+        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        apptInspectionDateDto.setActionValue(actionValue);
         String specificDate1 = ParamUtil.getDate(bpc.request, "specificDate");
         String strHours = ParamUtil.getRequestString(bpc.request, "hours");
         List<SelectOption> hoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "hoursOption");
@@ -202,7 +204,7 @@ public class ApptReSchedulingInspDateDelegator {
         log.debug(StringUtil.changeForLog("the apptInspectionDateSuccess start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        apptInspectionDateService.saveSpecificDateLast(apptInspectionDateDto, loginContext);
+        //apptInspectionDateService.saveSpecificDateLast(apptInspectionDateDto, loginContext);
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
     }
 }

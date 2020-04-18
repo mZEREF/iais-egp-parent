@@ -23,7 +23,7 @@
   <form method="post" id="mainInspDateForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="apptReSchInspDateType" value="">
-    <input type="hidden" id="actionValue" name="actionValue" value="">
+    <input type="hidden" id="actionValue" name="actionValue" value="${apptInspectionDateDto.actionValue}">
     <input type="hidden" id="processDec" name="processDec" value="${apptInspectionDateDto.processDec}">
     <div class="main-content">
       <div class="row">
@@ -35,12 +35,12 @@
                   <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
                       <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                        <li id="ReApptInspTabInfo" class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
+                        <li id="reApptInspTabInfo" class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
                                                                                       data-toggle="tab">Info</a></li>
-                        <li id="ReApptInspTabDocuments" class="complete" role="presentation"><a href="#tabDocuments"
+                        <li id="reApptInspTabDocuments" class="complete" role="presentation"><a href="#tabDocuments"
                                                                                              aria-controls="tabDocuments" role="tab"
                                                                                              data-toggle="tab">Documents</a></li>
-                        <li id="ReApptInspTabProcessing" class="incomplete" role="presentation"><a href="#tabProcessing"
+                        <li id="reApptInspTabProcessing" class="incomplete" role="presentation"><a href="#tabProcessing"
                                                                                                 aria-controls="tabProcessing" role="tab"
                                                                                                 data-toggle="tab">Processing</a></li>
                       </ul>
@@ -75,28 +75,26 @@
                             <iais:row>
                               <iais:field value="Available Appointment Dates"/>
                               <iais:value width="7">
-                                <span style="font-size: 16px"><c:out value="${apptInspectionDateDto.apptFeSpecificDate}"/></span>
+                                <p><span style="font-size: 16px"><c:out value="${apptInspectionDateDto.apptFeSpecificDate}"/></span></p>
                               </iais:value>
                             </iais:row>
                             <iais:row>
                               <iais:field value="Reason"/>
                               <iais:value width="7">
-                                <span style="font-size: 16px"><c:out value="${apptInspectionDateDto.apptFeReason}"/></span>
+                                <p><span style="font-size: 16px"><c:out value="${apptInspectionDateDto.apptFeReason}"/></span></p>
                               </iais:value>
                             </iais:row>
-                            <div class="row">
-                              <div class="col-md-1">
-                                <label style="font-size: 16px">Date<span style="color: red"> *</span></label>
-                              </div>
+                            <iais:row>
+                              <iais:field value="Date" required="true"/>
                               <div class="col-md-6">
-                                <div class="col-xs-12 col-md-4">
+                                <div class="col-xs-12 col-md-4" style="padding-left: 0px;">
                                   <iais:datePicker id = "specificDate" name = "specificDate" dateVal="${apptInspectionDateDto.specificDate}"></iais:datePicker>
                                 </div>
                                 <div class="col-xs-12 col-md-3">
                                   <iais:select name="hours" options="hoursOption" firstOption="--:--" value="${apptInspectionDateDto.hours}"></iais:select>
                                 </div>
                               </div>
-                            </div>
+                            </iais:row>
                             <iais:action >
                               <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptReShInspectionDateConfirm()">Submit</button>
                             </iais:action>
@@ -174,8 +172,17 @@
         var actionValue = $("#actionValue").val();
         if(actionValue == "success"){
             apptReShInspectionDateHidOrSh();
+            apptReShInspectionDateJump();
         }
     });
+
+    function apptReShInspectionDateJump(){
+        $("#apptReInspectionDate").click();
+        $("#reApptInspTabInfo").removeClass('active');
+        $("#reApptInspTabDocuments").removeClass('active');
+        $("#reApptInspTabProcessing").removeClass('active');
+        $("#reApptInspTabProcessing").addClass('active');
+    }
 
     function apptReShInspectionDateHidOrSh(){
         var processDec = $("#processDec").val();
