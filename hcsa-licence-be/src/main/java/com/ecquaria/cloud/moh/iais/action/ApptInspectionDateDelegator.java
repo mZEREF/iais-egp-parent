@@ -147,7 +147,10 @@ public class ApptInspectionDateDelegator {
     public void apptInspectionDateVali(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptInspectionDateVali start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
-        String processDec = InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE;
+        String processDec = ParamUtil.getRequestString(bpc.request, "processDec");
+        if(StringUtil.isEmpty(processDec)) {
+            processDec = InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE;
+        }
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         apptInspectionDateDto.setProcessDec(processDec);
         apptInspectionDateDto = getValidateValue(apptInspectionDateDto, bpc);
