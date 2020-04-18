@@ -15,7 +15,7 @@
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
-
+<%@include file="../common/dashboard.jsp"%>
 <div class="container">
   <div class="component-gp">
     <br>
@@ -53,34 +53,34 @@
                         <iais:field value="Application No"/>
                         <iais:value width="7">
                           <c:forEach items="${apptFeConfirmDateDto.applicationDtos}" var="app">
-                            <label><c:out value = "${app.applicationNo}"/></label><br>
+                            <p><span><c:out value = "${app.applicationNo}"/></span></p>
                           </c:forEach>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Application Type"/>
                         <iais:value width="7">
-                          <label><iais:code code = "${apptFeConfirmDateDto.applicationType}"/></label>
+                          <p><span><iais:code code = "${appType}"/></span></p>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Licence Period"/>
                         <iais:value width="7">
                           <c:forEach items="${apptFeConfirmDateDto.licencePeriods}" var="lic">
-                            <label><c:out value = "${lic}"/></label><br>
+                            <p><span><c:out value = "${lic}"/></span></p>
                           </c:forEach>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Date"/>
                         <iais:value width="7">
-                          <label><c:out value = "${apptFeConfirmDateDto.specificDateShow}"/></label>
+                          <p><span><c:out value = "${apptFeConfirmDateDto.specificDateShow}"/></span></p>
                         </iais:value>
                       </iais:row>
                       <iais:action >
-                        <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:userConfirmSpecificDateAccept()">Accept</button>
+                        <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:userConfirmSpecificDateReject()">Reject</button>
                         <span style="float:right">&nbsp;</span>
-                        <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:userConfirmSpecificDateReject()">Reject</button>
+                        <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:userConfirmSpecificDateAccept()">Accept</button>
                       </iais:action>
                     </iais:section>
                   </c:if>
