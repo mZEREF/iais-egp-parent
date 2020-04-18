@@ -566,6 +566,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Override
     public void saveSpecificDateLast(ApptInspectionDateDto apptInspectionDateDto, LoginContext loginContext) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtos = apptInspectionDateDto.getAppPremisesInspecApptDtos();
+        AppPremisesInspecApptDto appPremInspApptDto1 = new AppPremisesInspecApptDto();
         List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
         List<TaskDto> taskDtoList = apptInspectionDateDto.getTaskDtos();
         updateTaskDtoList(taskDtoList);
@@ -585,6 +586,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             saveDate = apptInspectionDateDto.getSpecificDate();
             //remove inactive inspection date
             if (!IaisCommonUtils.isEmpty(appPremisesInspecApptDtos)) {
+                appPremInspApptDto1 = appPremisesInspecApptDtos.get(0);
                 for (AppPremisesInspecApptDto appPremisesInspecApptDto : appPremisesInspecApptDtos) {
                     appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                     appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -603,20 +605,22 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                     appPremInspApptDto.setId(null);
                     appPremInspApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     AppointmentDto appointmentDto = apptInspectionDateDto.getAppointmentDto();
-                    if(appointmentDto.getStartDate() != null) {
-                        try {
-                            appPremInspApptDto.setStartDate(Formatter.parseDateTime(appointmentDto.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
-                        } catch (ParseException e) {
-                            log.error(e.getMessage(), e);
-                            throw new IaisRuntimeException(e);
+                    if(appPremInspApptDto1 != null){
+                        if(appointmentDto.getStartDate() != null) {
+                            try {
+                                appPremInspApptDto.setStartDate(Formatter.parseDateTime(appointmentDto.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                            } catch (ParseException e) {
+                                log.error(e.getMessage(), e);
+                                throw new IaisRuntimeException(e);
+                            }
                         }
-                    }
-                    if(appointmentDto.getEndDate() != null) {
-                        try {
-                            appPremInspApptDto.setEndDate(Formatter.parseDateTime(appointmentDto.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
-                        } catch (ParseException e) {
-                            log.error(e.getMessage(), e);
-                            throw new IaisRuntimeException(e);
+                        if(appointmentDto.getEndDate() != null) {
+                            try {
+                                appPremInspApptDto.setEndDate(Formatter.parseDateTime(appointmentDto.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                            } catch (ParseException e) {
+                                log.error(e.getMessage(), e);
+                                throw new IaisRuntimeException(e);
+                            }
                         }
                     }
                     appPremInspApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
