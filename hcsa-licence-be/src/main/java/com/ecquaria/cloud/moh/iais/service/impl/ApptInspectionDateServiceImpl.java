@@ -604,23 +604,12 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                     appPremInspApptDto.setSpecificInspDate(saveDate);
                     appPremInspApptDto.setId(null);
                     appPremInspApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                    AppointmentDto appointmentDto = apptInspectionDateDto.getAppointmentDto();
                     if(appPremInspApptDto1 != null){
-                        if(appointmentDto.getStartDate() != null) {
-                            try {
-                                appPremInspApptDto.setStartDate(Formatter.parseDateTime(appointmentDto.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
-                            } catch (ParseException e) {
-                                log.error(e.getMessage(), e);
-                                throw new IaisRuntimeException(e);
-                            }
+                        if(appPremInspApptDto1.getStartDate() != null) {
+                            appPremInspApptDto.setStartDate(appPremInspApptDto1.getStartDate());
                         }
-                        if(appointmentDto.getEndDate() != null) {
-                            try {
-                                appPremInspApptDto.setEndDate(Formatter.parseDateTime(appointmentDto.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
-                            } catch (ParseException e) {
-                                log.error(e.getMessage(), e);
-                                throw new IaisRuntimeException(e);
-                            }
+                        if(appPremInspApptDto1.getEndDate() != null) {
+                            appPremInspApptDto.setEndDate(appPremInspApptDto1.getEndDate());
                         }
                     }
                     appPremInspApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
