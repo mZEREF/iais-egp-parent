@@ -33,11 +33,8 @@
                 </c:choose>
               </div>
 
-              <span class="upload_controls"></span>
-
-              <div id="control--runtime--1--errorMsg_section_top" class="error_placements"></div>
               <div class="personnel-edit">
-                <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+                <c:if test="${AppSubmissionDto.needEditController }">
                   <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
                     <c:if test="${'APPSPN07' == clickEditPage}">
                       <c:set var="isClickEdit" value="true"/>
@@ -51,20 +48,18 @@
                       <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
                     </c:otherwise>
                   </c:choose>
+                  <c:if test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
+                    <p class="text-right"><a class="back" id="RfcSkip">Skip<em class="fa fa-angle-right"></em></a></p>
+                  </c:if>
                   <c:if test="${'true' != isClickEdit}">
                     <c:set var="locking" value="true"/>
-                    <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
-                      <c:if test="${amendType =='RFCATYPE05'}">
-                        <c:set var="canEdit" value="1"/>
-                      </c:if>
-                    </c:forEach>
+                    <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
                     <div id="edit-content">
                       <c:choose>
-                        <c:when test="${'1' == canEdit}">
+                        <c:when test="${'true' == canEdit}">
                           <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                         </c:when>
                         <c:otherwise>
-                          <p class="text-right" style="color: gray"><em class="fa fa-pencil-square-o"></em>Edit</p>
                         </c:otherwise>
                       </c:choose>
                     </div>
@@ -199,7 +194,7 @@
                   </table>
               </c:forEach>
               </c:if>
-              <c:if test="${'APTY005' !=AppSubmissionDto.appType}">
+              <c:if test="${'APTY005' !=AppSubmissionDto.appType && requestInformationConfig==null}">
               <div class="row">
                 <div class="col-sm-5">
                   <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Service Personnel</span>
@@ -236,6 +231,12 @@
           personnelSelFun(personnelSel,$personnelContentEle);
       });
       </c:if>
+
+      if(${AppSubmissionDto.needEditController && !isClickEdit}){
+          disabledPage();
+      }
+
+      doEdit();
 
   });
 
@@ -353,6 +354,16 @@
       absencePsnSel('Tissue Banking p1');
       </c:when>
       </c:choose>
+  }
+
+
+  var doEdit = function () {
+      $('#edit').click(function () {
+          $('input[type="text"]').prop('disabled',false);
+          $('div.nice-select').removeClass('disabled');
+          $('#isEditHiddenVal').val('1');
+          $('#edit-content').addClass('hidden');
+      });
   }
 
 

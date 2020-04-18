@@ -221,7 +221,7 @@
         if(${AppSubmissionDto.needEditController && !isClickEdit}){
             disabledPage();
         }
-        doEdit();
+        //doEdit();
         //init end
         init =1;
     })

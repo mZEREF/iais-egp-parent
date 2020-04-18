@@ -259,7 +259,27 @@ public class NewApplicationHelper {
                             }
 
                         }
-
+                    }
+                    //set svc cgo dropdown info
+                    List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                    List<SelectOption> specialtyList = genSpecialtySelectList(appSvcRelatedInfoDto.getServiceCode(),true);
+                    List<String> specialtyKeyList = IaisCommonUtils.genNewArrayList();
+                    for(SelectOption sp:specialtyList){
+                        specialtyKeyList.add(sp.getText());
+                    }
+                    List<SelectOption> allSpecialtyList = getAllSpecialtySelList();
+                    for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtos){
+                        if(specialtyKeyList.contains(appSvcCgoDto.getSpeciality())){
+                           continue;
+                        }
+                        appSvcCgoDto.setNeedSpcOptList(true);
+                        appSvcCgoDto.setSpcOptList(allSpecialtyList);
+                        Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
+                        specialtyAttr.put("name", "specialty");
+                        specialtyAttr.put("class", "specialty");
+                        specialtyAttr.put("style", "display: none;");
+                        String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, allSpecialtyList, null, appSvcCgoDto.getSpeciality());
+                        appSvcCgoDto.setSpecialityHtml(specialtySelectStr);
                     }
                 }
             }
@@ -1061,6 +1081,24 @@ public class NewApplicationHelper {
                 }
             }
         }
+        return specialtySelectList;
+    }
+
+    //todo: change this mode
+    public static List<SelectOption> getAllSpecialtySelList(){
+        List<SelectOption> specialtySelectList = IaisCommonUtils.genNewArrayList();
+        SelectOption ssl1 = new SelectOption("-1", "Please Select");
+        SelectOption ssl2 = new SelectOption("Pathology", "Pathology");
+        SelectOption ssl3 = new SelectOption("Haematology", "Haematology");
+        SelectOption ssl4 = new SelectOption("Diagnostic Radiology", "Diagnostic Radiology");
+        SelectOption ssl5 = new SelectOption("Nuclear Medicine", "Nuclear Medicine");
+        SelectOption ssl6 = new SelectOption("other", "Others");
+        specialtySelectList.add(ssl1);
+        specialtySelectList.add(ssl2);
+        specialtySelectList.add(ssl3);
+        specialtySelectList.add(ssl4);
+        specialtySelectList.add(ssl5);
+        specialtySelectList.add(ssl6);
         return specialtySelectList;
     }
 

@@ -2680,7 +2680,6 @@ public class NewApplicationDelegator {
                     if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getServiceName())){
                         names.add(appSvcRelatedInfoDto.getServiceName());
                     }
-                    //todo:init personnelDropDown
 
                 }
             }
@@ -3499,7 +3498,9 @@ public class NewApplicationDelegator {
             }
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         }else{
-            //set svc info
+            //set dropDown
+
+            //set svc info,this fun will set oldAppSubmission
             appSubmissionDto = NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
             Object rfi = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
             if(rfi != null){
