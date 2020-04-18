@@ -69,7 +69,8 @@ public class ApptInspectionDateValidate implements CustomizeValidator {
         if(!IaisCommonUtils.isEmpty(inspectionDate)) {
             for (Date inspDate : inspectionDate) {
                 String inspecDate = sdf.format(inspDate);
-                if (specificDate.equals(inspecDate)) {
+                String specificDateStr = sdf.format(specificDate);
+                if (specificDateStr.equals(inspecDate)) {
                     errMap.put("specificDate", "UC_INSP_ERR0007");
                     return errMap;
                 }
