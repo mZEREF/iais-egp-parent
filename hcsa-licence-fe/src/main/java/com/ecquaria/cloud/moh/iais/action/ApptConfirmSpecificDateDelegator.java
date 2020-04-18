@@ -56,6 +56,8 @@ public class ApptConfirmSpecificDateDelegator {
     public void userConfirmSpecificDateInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmSpecificDateInit start ...."));
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "apptInspFlag", null);
+        ParamUtil.setSessionAttr(bpc.request, "appType", null);
     }
 
     /**
@@ -75,7 +77,9 @@ public class ApptConfirmSpecificDateDelegator {
                 if(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING.equals(appStatus)){
                     apptFeConfirmDateDto = applicantConfirmInspDateService.getSpecificDateDto(appPremCorrId);
                     apptFeConfirmDateDto.setCTaskUrl(TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE);
+                    String appType = apptFeConfirmDateDto.getApplicationDtos().get(0).getApplicationType();
                     ParamUtil.setSessionAttr(bpc.request, "apptInspFlag", AppConsts.FALSE);
+                    ParamUtil.setSessionAttr(bpc.request, "appType", appType);
                 } else {
                     ParamUtil.setSessionAttr(bpc.request, "apptInspFlag", AppConsts.SUCCESS);
                 }

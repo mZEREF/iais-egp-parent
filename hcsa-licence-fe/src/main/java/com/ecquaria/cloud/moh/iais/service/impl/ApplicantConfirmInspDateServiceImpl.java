@@ -460,12 +460,14 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     private ApptFeConfirmDateDto getLicencePeriods(ApptFeConfirmDateDto apptFeConfirmDateDto, List<ApplicationDto> applicationDtos) {
         List<String> licencePeriods = IaisCommonUtils.genNewArrayList();
         for(ApplicationDto applicationDto : applicationDtos) {
-            LicenceDto licenceDto = licenceClient.getLicBylicId(applicationDto.getOriginLicenceId()).getEntity();
-            if(licenceDto != null) {
-                String licenceStartDate = Formatter.formatDateTime(licenceDto.getStartDate(), "dd/MM/yyyy");
-                String licenceEndDate = Formatter.formatDateTime(licenceDto.getEndDate(), "dd/MM/yyyy");
-                String licensePeriod = licenceStartDate + " - " + licenceEndDate;
-                licencePeriods.add(licensePeriod);
+            if(!StringUtil.isEmpty(applicationDto.getOriginLicenceId())) {
+                LicenceDto licenceDto = licenceClient.getLicBylicId(applicationDto.getOriginLicenceId()).getEntity();
+                if (licenceDto != null) {
+                    String licenceStartDate = Formatter.formatDateTime(licenceDto.getStartDate(), "dd/MM/yyyy");
+                    String licenceEndDate = Formatter.formatDateTime(licenceDto.getEndDate(), "dd/MM/yyyy");
+                    String licensePeriod = licenceStartDate + " - " + licenceEndDate;
+                    licencePeriods.add(licensePeriod);
+                }
             }
         }
         if(IaisCommonUtils.isEmpty(licencePeriods)){
