@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
@@ -566,6 +567,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Override
     public void saveSpecificDateLast(ApptInspectionDateDto apptInspectionDateDto, LoginContext loginContext) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtos = apptInspectionDateDto.getAppPremisesInspecApptDtos();
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         AppPremisesInspecApptDto appPremInspApptDto1 = new AppPremisesInspecApptDto();
         List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
         List<TaskDto> taskDtoList = apptInspectionDateDto.getTaskDtos();
@@ -589,9 +591,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 appPremInspApptDto1 = appPremisesInspecApptDtos.get(0);
                 for (AppPremisesInspecApptDto appPremisesInspecApptDto : appPremisesInspecApptDtos) {
                     appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                    appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    appPremisesInspecApptDto.setAuditTrailDto(auditTrailDto);
                     appPremisesInspecApptDto = applicationClient.updateAppPremisesInspecApptDto(appPremisesInspecApptDto).getEntity();
-                    appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    appPremisesInspecApptDto.setAuditTrailDto(auditTrailDto);
                     appPremisesInspecApptDtoUpdateList.add(appPremisesInspecApptDto);
                 }
             }
@@ -612,13 +614,13 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                             appPremInspApptDto.setEndDate(appPremInspApptDto1.getEndDate());
                         }
                     }
-                    appPremInspApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    appPremInspApptDto.setAuditTrailDto(auditTrailDto);
                     appPremisesInspecApptDtoCreateList.add(appPremInspApptDto);
                 }
             }
             appPremisesInspecApptDtoCreateList = applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoCreateList).getEntity();
             for (AppPremisesInspecApptDto apptDto : appPremisesInspecApptDtoCreateList) {
-                apptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                apptDto.setAuditTrailDto(auditTrailDto);
             }
             //synchronize FE
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -626,6 +628,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
             apptFeConfirmDateDto.setAppPremisesInspecApptCreateList(appPremisesInspecApptDtoCreateList);
             apptFeConfirmDateDto.setAppPremisesInspecApptUpdateList(appPremisesInspecApptDtoUpdateList);
+            appPremInspApptDto1.setAuditTrailDto(auditTrailDto);
+            apptFeConfirmDateDto.setAppPremisesInspecApptDto(appPremInspApptDto1);
             beEicGatewayClient.reSchedulingSaveFeDate(apptFeConfirmDateDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization());
 
