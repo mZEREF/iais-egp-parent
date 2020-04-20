@@ -746,23 +746,18 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setUnitNo(rfiApplicationQueryDto.getUnitNo());
         reqForInfoSearchListDto.setStreetName(rfiApplicationQueryDto.getStreetName());
         reqForInfoSearchListDto.setFloorNo(rfiApplicationQueryDto.getFloorNo());
-        try {
+        try{
             List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
             if(appPremisesRecommendationDtos.size()>=2){
                 reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
             }
-            else {
-                reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
+            if(appPremisesRecommendationDtos.size()>=1){
+                reqForInfoSearchListDto.setLastComplianceHistory("Full");
+                RequestForInformationDelegator.setSearchListComplianceHistory(rfiApplicationQueryDto, reqForInfoSearchListDto, insepctionNcCheckListService, fillupChklistService);
             }
         }catch (Exception e){
-            reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
-        }
-
-        try{
-            reqForInfoSearchListDto.setLastComplianceHistory("Full");
-            RequestForInformationDelegator.setSearchListComplianceHistory(rfiApplicationQueryDto, reqForInfoSearchListDto, insepctionNcCheckListService, fillupChklistService);
-        }catch (Exception e){
             reqForInfoSearchListDto.setLastComplianceHistory("-");
+            reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
         }
         reqForInfoSearchListDto.setCurrentRiskTagging(rfiApplicationQueryDto.getRiskLevel());
         log.debug(StringUtil.changeForLog("licenseeId start ...."+rfiApplicationQueryDto.getLicenseeId()));

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
@@ -51,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
@@ -114,6 +117,8 @@ public class RequestForInformationDelegator {
     OnlineEnquiriesService onlineEnquiriesService;
     @Autowired
     private SystemParamConfig systemParamConfig;
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private ApplicationClient applicationClient;
     @Value("${iais.hmac.keyId}")
@@ -414,10 +419,16 @@ public class RequestForInformationDelegator {
         String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getRiskLevel()}).get(0).getText();
         reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
         try{
-            reqForInfoSearchListDto.setPastComplianceHistory("Full");
-            setSearchListComplianceHistory(rfiApplicationQueryDto, reqForInfoSearchListDto, insepctionNcCheckListService, fillupChklistService);
+            List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+            if(appPremisesRecommendationDtos.size()>=1){
+                reqForInfoSearchListDto.setLastComplianceHistory("Full");
+                RequestForInformationDelegator.setSearchListComplianceHistory(rfiApplicationQueryDto, reqForInfoSearchListDto, insepctionNcCheckListService, fillupChklistService);
+            }
+            else {
+                reqForInfoSearchListDto.setLastComplianceHistory("-");
+            }
         }catch (Exception e){
-            reqForInfoSearchListDto.setPastComplianceHistory("-");
+            reqForInfoSearchListDto.setLastComplianceHistory("-");
         }
 
         log.debug(StringUtil.changeForLog("licenseeId start ...."+rfiApplicationQueryDto.getLicenseeId()));
@@ -575,8 +586,13 @@ public class RequestForInformationDelegator {
     public void doSearchApplicationAfter(BaseProcessClass bpc) {
         log.info("=======>>>>>doSearchApplicationAfter>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        ParamUtil.setSessionAttr(request,"id",id);
+        try {
+            String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+            ParamUtil.setSessionAttr(request,"id",id);
+        }catch (Exception e){
+            log.info(e.getMessage());
+        }
+
 // 		doSearchApplicationAfter->OnStepProcess
     }
 
