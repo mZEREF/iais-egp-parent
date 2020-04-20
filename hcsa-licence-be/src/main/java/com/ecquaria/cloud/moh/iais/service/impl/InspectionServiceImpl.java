@@ -99,7 +99,15 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public List<SelectOption> getAppTypeOption() {
-        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, ApplicationConsts.APPLICATION_TYPE_RENEWAL, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE});
+        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{
+                ApplicationConsts.APPLICATION_TYPE_APPEAL,
+                ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,
+                ApplicationConsts.APPLICATION_TYPE_CESSATION,
+                ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
+                ApplicationConsts.APPLICATION_TYPE_RENEWAL,
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
+                ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL
+        });
         return appTypeOption;
     }
 

@@ -79,7 +79,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public List<TaskDto> getCommPoolByGroupWordId(LoginContext loginContext) {
-        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
+        /*List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         String curRole = loginContext.getCurRoleId();
         Set<String> workGrpIds = loginContext.getWrkGrpIds();
         if (workGrpIds == null || workGrpIds.size() <= 0) {
@@ -91,6 +91,17 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 if (tDto.getRoleId().equals(curRole)) {
                     taskDtoList.add(tDto);
                 }
+            }
+        }*/
+        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
+        Set<String> workGrpIds = loginContext.getWrkGrpIds();
+        if(workGrpIds == null || workGrpIds.size() <= 0){
+            return null;
+        }
+        List<String> workGrpIdList = new ArrayList<>(workGrpIds);
+        for(String workGrpId:workGrpIdList){
+            for(TaskDto tDto:taskService.getCommPoolByGroupWordId(workGrpId)){
+                taskDtoList.add(tDto);
             }
         }
         return taskDtoList;
@@ -236,7 +247,15 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public List<SelectOption> getAppTypeOption() {
-        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, ApplicationConsts.APPLICATION_TYPE_RENEWAL, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE});
+        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{
+                ApplicationConsts.APPLICATION_TYPE_APPEAL,
+                ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,
+                ApplicationConsts.APPLICATION_TYPE_CESSATION,
+                ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
+                ApplicationConsts.APPLICATION_TYPE_RENEWAL,
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
+                ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL
+        });
         return appTypeOption;
     }
 
