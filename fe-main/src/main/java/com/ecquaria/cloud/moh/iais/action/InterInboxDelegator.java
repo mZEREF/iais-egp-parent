@@ -160,6 +160,8 @@ public class InterInboxDelegator {
 
     public void msgToView(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        String msgId = ParamUtil.getMaskedString(request,InboxConst.MSG_ACTION_ID);
+        inboxService.updateMsgStatusToRead(msgId);
         String msgContent = ParamUtil.getMaskedString(request,InboxConst.CRUD_ACTION_VALUE);
         ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_CONTENT, msgContent);
         setNumInfoToRequest(request,interInboxUserDto);
@@ -236,7 +238,6 @@ public class InterInboxDelegator {
         licParam.addFilter("licenseeId",interInboxUserDto.getLicenseeId(),true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
         SearchResult licResult = inboxService.licenceDoQuery(licParam);
-        List<InboxLicenceQueryDto> inboxLicenceQueryDtoList = licResult.getRows();
         if(!StringUtil.isEmpty(licResult)){
             clearParameter("IILT");
             ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, licParam);

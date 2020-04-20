@@ -24,6 +24,7 @@ public class InboxConst {
     public static final String ACTION_TYPE_VALUE            = "action_type_value";
 
 
+    public static final String MSG_ACTION_ID                = "msg_action_id";
     public static final String CRUD_ACTION_VALUE            = "crud_action_value";
     public static final String CRUD_ACTION_ADDITIONAL       = "crud_action_additional";
 

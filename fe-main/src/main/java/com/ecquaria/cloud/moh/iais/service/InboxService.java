@@ -28,4 +28,5 @@ public interface InboxService {
     boolean updateMsgStatus(String[] msgId);
     Boolean recallApplication(RecallApplicationDto recallApplicationDto);
     public boolean checkRenewalStatus(String licenceId);
+    void updateMsgStatusToRead(String msgId);
 }

@@ -59,7 +59,6 @@
         var checkedNum = $("[name='licenceNo']:checked").length;
         if ($('.licenceCheck').is(':checked')){
             if (checkedNum == 1){
-                console.log("--->1");
                 var statusOne = [];
                 $("#lic-print").removeClass('disabled');
                 $("[name='licenceNo']:checked").each(function (k,v) {

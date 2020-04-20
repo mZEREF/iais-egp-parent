@@ -61,6 +61,7 @@
     <sql key = "licenceQuery" remarks = "Query Inter-Licence Data by condition">
         <![CDATA[
             SELECT
+                pre.ID AS premises_id,
                 lic.id,
                 lic.licence_no,
                 lic.svc_name,

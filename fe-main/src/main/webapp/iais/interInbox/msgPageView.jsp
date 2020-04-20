@@ -127,8 +127,9 @@
         submit('toMsgPage');
     }
 
-    function toMsgView(msgContent) {
+    function toMsgView(msgContent,msgId) {
         $("[name='crud_action_value']").val(msgContent);
+        $("[name='msg_action_id']").val(msgId);
         submit('msgToView');
     }
 
