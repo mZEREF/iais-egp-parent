@@ -238,6 +238,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 for (AppPremisesRecommendationDto appPremisesRecommendationDto:appPremisesRecommendationDtos
                 ) {
                     c.setTime(appPremisesRecommendationDto.getRecomInDate());
+                    complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
                     complianceHistoryDto.setInspectionDateYear(c.get(Calendar.YEAR));
                     complianceHistoryDtos.add(complianceHistoryDto);
                 }
