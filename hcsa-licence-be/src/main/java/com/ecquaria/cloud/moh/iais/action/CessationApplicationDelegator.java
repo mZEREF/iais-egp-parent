@@ -203,19 +203,24 @@ public class CessationApplicationDelegator {
             appCessatonConfirmDto.setHciName(hciName);
             appCessationDtosConfirms.add(appCessatonConfirmDto);
         }
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        cessationService.routingTaskToAo3(applicationDtos,loginContext);
-        List<String> licNos = IaisCommonUtils.genNewArrayList();
-        for(AppCessatonConfirmDto appCessatonConfirmDto :appCessationDtosConfirms){
-            String licenceNo = appCessatonConfirmDto.getLicenceNo();
-            Date effectiveDate = appCessatonConfirmDto.getEffectiveDate();
-            if(effectiveDate.before(new Date())){
-                licNos.add(licenceNo);
+        try {
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            cessationService.routingTaskToAo3(applicationDtos,loginContext);
+            List<String> licNos = IaisCommonUtils.genNewArrayList();
+            for(AppCessatonConfirmDto appCessatonConfirmDto :appCessationDtosConfirms){
+                String licenceNo = appCessatonConfirmDto.getLicenceNo();
+                Date effectiveDate = appCessatonConfirmDto.getEffectiveDate();
+                if(effectiveDate.before(new Date())){
+                    licNos.add(licenceNo);
+                }
             }
+            if(!licNos.isEmpty()){
+                cessationService.updateLicence(licNos);
+            }
+        }catch (Exception e){
+            e.getMessage();
         }
-        if(!licNos.isEmpty()){
-            cessationService.updateLicence(licNos);
-        }
+
         ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) appCessationDtosConfirms);
     }
 

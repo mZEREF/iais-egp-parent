@@ -25,7 +25,7 @@
             <table border="1">
                 <thead>
                 <tr>
-                    <th style="text-align:center;width: 3%">S/N</th>
+                    <th style="text-align:center;width: 3%;padding: 0">S/N</th>
                     <th style="text-align:center;width: 7%">Licence No.</th>
                     <th style="text-align:center;width: 10%">Service Name</th>
                     <th style="text-align:center;width: 7%">HCI Name</th>
@@ -46,7 +46,7 @@
                         <td style="text-align:center" rowspan="${hciDtoNum}">
                             <p><c:out value="${num.count}"/></p>
                         </td>
-                        <td style="text-align:center" rowspan="${hciDtoNum}">
+                        <td style="text-align:center;padding: 0" rowspan="${hciDtoNum}">
                             <p><c:out value="${appCess.licenceNo}"/></p>
                         </td>
                         <td style="text-align:center" rowspan="${hciDtoNum}">
@@ -72,6 +72,9 @@
                                                    id="${num.count}radioYes${uid.count}"
                                                    <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if>
                                                    onchange="javascirpt:changePatSelect(this.value);"> Yes
+                                            <span style="position: absolute;top: 70%;left: 20% ;width: 200%"
+                                                  id="error_${num.count}patRadio${uid.count}" name="iaisErrorMsg"
+                                                  class="error-msg"></span>
                                         </td>
                                         <td style="padding-left: 2%;width: 10%;position: absolute;top: 5%;right: 30% ;width: 20%">
                                             <input type="radio" name="${num.count}patRadio${uid.count}" value="no"
@@ -79,9 +82,6 @@
                                                    <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if>
                                                    onchange="javascirpt:changePatSelect(this.value);"> No
                                         </td>
-                                        <span style="position: absolute;top: 85%;left: 23% ;width: 80%"
-                                              id="error_${num.count}patRadio${uid.count}" name="iaisErrorMsg"
-                                              class="error-msg"></span>
                                     </tr>
                                     <tr id="${num.count}patYes${uid.count}" hidden>
                                         <td style="position: absolute;top: 25%;left: 3% ;width: 40%">
@@ -154,6 +154,9 @@
                                                    id="${num.count}radioYes${uid.count+1}"
                                                    <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if>
                                                    onchange="javascirpt:changePatSelect(this.value);"> Yes
+                                            <span style="position: absolute;top: 70%;left: 20% ;width: 200%"
+                                                  id="error_${num.count}patRadio${uid.count+1}" name="iaisErrorMsg"
+                                                  class="error-msg"></span>
                                         </td>
                                         <td style="padding-left: 2%;width: 10%;position: absolute;top: 5%;right: 30% ;width: 20%">
                                             <input type="radio" name="${num.count}patRadio${uid.count+1}" value="no"
@@ -161,9 +164,6 @@
                                                    <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if>
                                                    onchange="javascirpt:changePatSelect(this.value);"> No
                                         </td>
-                                        <span style="position: absolute;top: 85%;left: 23% ;width: 80%"
-                                              id="error_${num.count}patRadio${uid.count+1}" name="iaisErrorMsg"
-                                              class="error-msg"></span>
                                     </tr>
                                     <tr id="${num.count}patYes${uid.count+1}" hidden>
                                         <td style="position: absolute;top: 25%;left: 3% ;width: 40%">
@@ -219,8 +219,7 @@
         <br/>
         <div style="width: 70%;margin-left: 1%;margin-right: 1%"><c:out value="${text2}"/></div>
         <br/>
-        <div style="margin-left: 1%;margin-right: 1%"><input type="checkbox" name="readInfo" id="confirmInfo"
-                                                             <c:if test="${readInfo != null}">checked</c:if>>
+        <div style="margin-left: 1%;margin-right: 1%"><input type="checkbox" name="readInfo" id="confirmInfo" <c:if test="${readInfo != null}">checked</c:if>>
             <label style="font-weight: normal" for="confirmInfo">I have read the information</label>
         </div>
         <iais:action>

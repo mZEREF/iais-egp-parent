@@ -21,43 +21,42 @@
         <div class="row" style="margin-left: 1%;margin-right: 1%">
             <table border="1">
                 <thead>
-                <tr style="padding: 1%">
-                    <th style="text-align:center;padding: 1%;width: 5%">S/N</th>
-                    <th style="text-align:center;padding: 1%;width: 5%">Licence No.</th>
-                    <th style="text-align:center;padding: 1%;width: 10%">Service Name</th>
-                    <th style="text-align:center;padding: 1%;width: 10%">HCI Name</th>
-                    <th style="text-align:center;padding: 1%;width: 10%">HCI Address</th>
-                    <th style="text-align:center;padding: 1%;width: 13%">Effective Date <a
+                <tr>
+                    <th style="text-align:center;width: 3%;padding: 0">S/N</th>
+                    <th style="text-align:center;width: 7%">Licence No.</th>
+                    <th style="text-align:center;width: 10%">Service Name</th>
+                    <th style="text-align:center;width: 7%">HCI Name</th>
+                    <th style="text-align:center;width: 10%">HCI Address</th>
+                    <th style="text-align:center;width: 13%">Effective Date <a
                             class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true"
                             data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">i</a>
                     </th>
-                    <th style="text-align:center;padding: 1%;width: 14%">Cessation Reasons</th>
-                    <th style="text-align:center;padding: 1%;width: 28%">Patients' Record will be transferred</th>
-                    <th style="text-align:center;padding: 1%;width: 5%">To Cease?</th>
+                    <th style="text-align:center;width: 14%">Cessation Reasons</th>
+                    <th style="text-align:center;width: 28%">Patients' Record will be transferred</th>
+                    <th style="text-align:center;width: 8%">To Cease?</th>
                 </tr>
                 </thead>
                 <tbody>
                 <c:forEach items="${confirmDtos}" var="appCess" varStatus="num">
                     <c:set var="hciDtoNum" value="${fn:length(appCess.appCessHciDtos)}"/>
-                    <%--                           <c:if test="${hciDtoNum > 1}">--%>
-                    <tr style="text-align:center;height: 14em">
-                        <td rowspan="${hciDtoNum}">
+                    <tr style="height: 14em">
+                        <td style="text-align:center" rowspan="${hciDtoNum}">
                             <p><c:out value="${num.count}"/></p>
                         </td>
-                        <td rowspan="${hciDtoNum}">
+                        <td style="text-align:center;padding: 0" rowspan="${hciDtoNum}">
                             <p><c:out value="${appCess.licenceNo}"/></p>
                         </td>
-                        <td rowspan="${hciDtoNum}">
+                        <td style="text-align:center" rowspan="${hciDtoNum}">
                             <p><c:out value="${appCess.svcName}"/></p>
                         </td>
                         <c:forEach items="${appCess.appCessHciDtos}" var="appCessHci" varStatus="uid" begin="0" end="0">
-                            <td><p><c:out value="${appCessHci.hciName}"></c:out></p></td>
-                            <td><p><c:out value="${appCessHci.hciAddress}"></c:out></p></td>
-                            <td style="padding: 1%"><fmt:formatDate value="${appCessHci.effectiveDate}" pattern="dd/MM/yyyy"/></td>
-                            <td style="margin-right: 1%;padding: 1%"><iais:select disabled="true" id="${num.count}reasonId${uid.count}" name="${num.count}reason${uid.count}" options="reasonOption" value="${appCessHci.reason}"/>
+                            <td style="text-align:center"><p><c:out value="${appCessHci.hciName}"></c:out></p></td>
+                            <td style="text-align:center"><p><c:out value="${appCessHci.hciAddress}"></c:out></p></td>
+                            <td style="text-align:center"><fmt:formatDate value="${appCessHci.effectiveDate}" pattern="dd/MM/yyyy"/></td>
+                            <td style="text-align:center"><iais:select disabled="true" id="${num.count}reasonId${uid.count}" name="${num.count}reason${uid.count}" options="reasonOption" value="${appCessHci.reason}"/>
                                 <div style="margin-top: 30%" id="${num.count}reason${uid.count}" hidden><iais:input needDisabled="true" type="text" name="${num.count}otherReason${uid.count}" value="${appCessHci.otherReason}"></iais:input></div>
                             </td>
-                            <td style="padding-left: 4%;width: 30em; position: relative">
+                            <td style="width: 30em; position: relative">
                                 <table>
                                     <tr>
                                         <td style="padding-left: 4%;width: 10%;position: absolute;top: 5%;left: 30% ;width: 20%">
@@ -87,25 +86,16 @@
                                     </tr>
                                 </table>
                             </td>
-                            <td style="width: 2%;"><input type="checkbox" name="${num.count}whichTodo${uid.count}" value="${appCess.licenceId}" <c:if test="${appCessHci.whichTodo != null}">checked</c:if>></td>
+                            <td style="text-align:center"><input type="checkbox" name="${num.count}whichTodo${uid.count}" value="${appCess.licenceId}" <c:if test="${appCessHci.whichTodo != null}">checked</c:if>></td>
                         </c:forEach>
                     </tr>
 
-
-
-
-
-
-
-
-
-
                     <c:forEach items="${appCess.appCessHciDtos}" var="appCessHci" varStatus="uid" begin="1">
-                        <tr style="text-align:center;height: 14em">
-                            <td><p><c:out value="${appCessHci.hciName}"></c:out></p></td>
-                            <td><p><c:out value="${appCessHci.hciAddress}"></c:out></p></td>
-                            <td style="padding: 1%"><fmt:formatDate value="${appCessHci.effectiveDate}" pattern="dd/MM/yyyy"/></td>
-                            <td style="margin-right: 1%;padding: 1%"><iais:select disabled="true" id="${num.count}reasonId${uid.count+1}" name="${num.count}reason${uid.count+1}" options="reasonOption" value="${appCessHci.reason}"/>
+                        <tr style="height: 14em">
+                            <td style="text-align:center"><p><c:out value="${appCessHci.hciName}"></c:out></p></td>
+                            <td style="text-align:center"><p><c:out value="${appCessHci.hciAddress}"></c:out></p></td>
+                            <td style="text-align:center"><fmt:formatDate value="${appCessHci.effectiveDate}" pattern="dd/MM/yyyy"/></td>
+                            <td style="text-align:center"><iais:select disabled="true" id="${num.count}reasonId${uid.count+1}" name="${num.count}reason${uid.count+1}" options="reasonOption" value="${appCessHci.reason}"/>
                                 <div style="margin-top: 30%" id="${num.count}reason${uid.count+1}" hidden><iais:input needDisabled="true" type="text" name="${num.count}otherReason${uid.count}" value="${appCessHci.otherReason}"></iais:input></div>
                             </td>
                             <td style="padding-left: 4%;width: 30em; position: relative">
@@ -138,10 +128,9 @@
                                     </tr>
                                 </table>
                             </td>
-                            <td style="width: 2%;"><input type="checkbox" name="${num.count}whichTodo${uid.count+1}" value="${appCess.licenceId}" <c:if test="${appCessHci.whichTodo != null}">checked</c:if>></td>
+                            <td style="text-align:center"><input type="checkbox" name="${num.count}whichTodo${uid.count+1}" value="${appCess.licenceId}" <c:if test="${appCessHci.whichTodo != null}">checked</c:if>></td>
                         </tr>
                     </c:forEach>
-                    <%--                            </c:if>--%>
                 </c:forEach>
                 </tbody>
             </table>
@@ -159,10 +148,21 @@
     </div>
 </form>
 
+<style>
+    td {
+        padding: 1%
+    }
+    th {
+        padding: 1%
+    }
+    #effectiveDate{
+        margin-bottom: 0px;
+    }
+    input[type='text']{
+        margin-bottom: 0px;
+    }
+</style>
 <script type="text/javascript">
-
-    // $Ele.find('input[type="text"]').css('border-color','#ededed');
-    // $Ele.find('input[type="text"]').css('color','#999');
 
     function confirmSubmit(action) {
         $("[name='crud_action_type']").val(action);
@@ -173,7 +173,6 @@
         $("[name='crud_action_type']").val(action);
         $("#mainForm").submit();
     }
-
 
     function changeReason() {
         for (var i = 1; i < 8; i++) {
@@ -261,6 +260,20 @@
     });
 
     $(document).ready(function () {
+        for (var i = 1; i < 8; i++) {
+            for (var j = 1; j < 8; j++) {
+                if ($('#' + i + 'radioNo' + j).is(':checked')) {
+                    $("#" + i + "patYes" + j).hide();
+                    $("#" + i + "patHciName" + j).hide();
+                    $("#" + i + "patOthers" + j).hide();
+                    $("#" + i + "patRegNo" + j).hide();
+                    $("#" + i + "div" + j).hide();
+                }
+            }
+        }
+    });
+
+    $(document).ready(function () {
         $('input[type="text"]').css('border-color','#ededed');
         $('input[type="text"]').css('color','#999');
         for (var i = 1; i < 8; i++) {
@@ -275,4 +288,5 @@
             }
         }
     });
+
 </script>

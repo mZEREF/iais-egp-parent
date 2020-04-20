@@ -168,7 +168,7 @@ public class CessationServiceImpl implements CessationService {
             String licId = appCessationDto.getWhichTodo();
             Double amount = 0.0;
             AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
-            String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT).getEntity();
+            String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_CESSATION).getEntity();
             AppSubmissionDto appSubmissionDto = licenceClient.getAppSubmissionDto(licId).getEntity();
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();

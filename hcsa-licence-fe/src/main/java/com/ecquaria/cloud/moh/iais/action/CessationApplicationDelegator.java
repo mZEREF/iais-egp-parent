@@ -68,7 +68,7 @@ public class CessationApplicationDelegator {
         List<String> licIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "licIds");
         if(licIds==null){
             licIds = IaisCommonUtils.genNewArrayList();
-            licIds.add("7451A3C3-027B-EA11-BE82-000C29F371DC");
+            licIds.add("4176FF73-895E-EA11-BE7F-000C29F371DC");
         }
         List<String> activeLicence = cessationService.getActiveLicence(licIds);
         List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(activeLicence);
@@ -130,7 +130,8 @@ public class CessationApplicationDelegator {
         }
 
         for (int i = 1; i <= size; i++) {
-            for (int j = 1; j <= size; j++) {
+            int size1 = appCessHciDtos.get(i-1).getAppCessHciDtos().size();
+            for (int j = 1; j <= size1; j++) {
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + WHICHTODO + j);
                 if (!StringUtil.isEmpty(whichTodo)) {
                     Map<String, String> validate = validate(bpc,i,j);
@@ -205,7 +206,7 @@ public class CessationApplicationDelegator {
         if(!licNos.isEmpty()){
             cessationService.updateLicenceFe(licNos);
         }
-        ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, (Serializable) appCessationDtosConfirms);
+        ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) appCessationDtosConfirms);
     }
 
     public void response(BaseProcessClass bpc) throws IOException {
@@ -381,7 +382,7 @@ public class CessationApplicationDelegator {
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect)&&!StringUtil.isEmpty(patHciName)) {
                 List<String> hciName = cessationService.listHciName();
                 if(!hciName.contains(patHciName)){
-                    errorMap.put(i+"patHciName"+j, "HciName not exist !");
+                    errorMap.put(i+"patHciName"+j, "HCI Name cannot be found.");
                 }
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect)&&StringUtil.isEmpty(patRegNo)) {
