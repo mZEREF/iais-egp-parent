@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="6" minorVersion="0" name="MohChecklistConfiguration" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="8" minorVersion="0" name="MohChecklistConfiguration" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
@@ -391,8 +391,8 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSort" style="oblique">
    <position>{(1570,190)(1400,370)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/cloneConfig" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond4" style="oblique">
-   <position>{(1620,460)(510,220)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/ConfigAddPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond4" style="rectanular">
+   <position>{(1620,460)(680,430)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -405,7 +405,7 @@
   <Condition componentIfFalse="/Merges/Merge/Merge5" componentIfTrue="/Steps/AutomaticStep/prepareConfigSectionInfo" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="1060" y="680">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/cloneConfig" componentIfTrue="/Merges/Merge/Merge9" defClass="" executor="" icon="" leftOperand="isValid" name="Cond4" operator="=" rightOperand="&quot;Y&quot;" x="1600" y="440">
+  <Condition componentIfFalse="/Pages/WebPage/ConfigAddPage" componentIfTrue="/Merges/Merge/Merge9" defClass="" executor="" icon="" leftOperand="isValid" name="Cond4" operator="=" rightOperand="&quot;Y&quot;" x="1600" y="440">
    <Description/>
   </Condition>
  </Conditions>

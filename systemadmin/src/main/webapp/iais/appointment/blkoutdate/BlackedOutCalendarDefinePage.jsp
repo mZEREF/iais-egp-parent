@@ -45,22 +45,16 @@
     <div class="form-horizontal">
       <c:if test="${switchPageAction == 'create'}">
         <div class="form-group">
-          <div class="col-md-12">
             <iais:field value="Working Group" required="true"></iais:field>
             <div class="col-md-5">
               <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt" options="wrlGrpNameOpt"
                            firstOption="Please Select" value="${shortName}"></iais:select>
               <br><br>  <br><br><span id="error_shortName" name="iaisErrorMsg" class="error-msg"></span>
             </div>
-          </div>
         </div>
       </c:if>
 
-
-
-
       <div class="form-group">
-          <div class="col-md-12">
             <iais:field value="Blacked Out Date Start :" required="true"></iais:field>
             <div class="col-md-5">
               <%Date ssd = Formatter.parseDate((String) request.getAttribute("startDate"));%>
@@ -69,11 +63,9 @@
               ></iais:datePicker>
               <span id="error_startDate" name="iaisErrorMsg" class="error-msg"></span>
             </div>
-          </div>
       </div>
 
       <div class="form-group">
-          <div class="col-md-12">
             <iais:field value="Blacked Out Date End:" required="true"></iais:field>
 
             <div class="col-md-5">
@@ -82,12 +74,10 @@
                                 dateVal="<%=esd%>"></iais:datePicker>
             </div>
             <span id="error_endDate" name="iaisErrorMsg" class="error-msg"></span>
-          </div>
       </div>
 
 
       <div class="form-group">
-          <div class="col-md-12">
             <iais:field value="Blacked Out Date Description:" required="true"></iais:field>
 
             <div class="col-md-5">
@@ -95,17 +85,16 @@
                      value="${desc}">
               <span id="error_desc" name="iaisErrorMsg" class="error-msg"></span>
             </div>
-          </div>
       </div>
 
       <div class="form-group">
-          <div class="col-md-12">
             <iais:field value="Status:" required="true"></iais:field>
             <div class="col-md-5">
               <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                           firstOption="Select Status" filterValue="CMSTAT002, CMSTAT004" value="${status}"></iais:select>
+                           firstOption="Please Select" filterValue="CMSTAT002, CMSTAT004" needErrorSpan="false" value="${status}"></iais:select>
+
+              <br><br>  <br><br><span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
             </div>
-        </div>
       </div>
 
       <div class="col-xs-12 col-sm-6">

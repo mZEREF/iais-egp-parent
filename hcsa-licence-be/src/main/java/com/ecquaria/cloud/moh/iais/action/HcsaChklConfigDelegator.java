@@ -208,13 +208,13 @@ public class HcsaChklConfigDelegator {
             subtypeSelect.add(new SelectOption(sn, sn));
         }
 
-        ParamUtil.setRequestAttr(request, "subtypeSelect", subtypeSelect);
+        ParamUtil.setSessionAttr(request, "subtypeSelect", (Serializable) subtypeSelect);
 
         for (String s : svcNames){
             svcNameSelect.add(new SelectOption(s,s));
         }
 
-        ParamUtil.setRequestAttr(request, "svcNameSelect", svcNameSelect);
+        ParamUtil.setSessionAttr(request, "svcNameSelect", (Serializable) svcNameSelect);
 
     }
 
@@ -381,11 +381,12 @@ public class HcsaChklConfigDelegator {
                 if (type != null){
                     configDto.setType(MasterCodeUtil.getCodeDesc(type));
                 }
-
-
-
             }else {
-                configDto = new ChecklistConfigDto();
+                configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
+                if(configDto == null){
+                    configDto = new ChecklistConfigDto();
+                }
+
                 if (common != null){
                     configDto.setCommon(true);
                 }

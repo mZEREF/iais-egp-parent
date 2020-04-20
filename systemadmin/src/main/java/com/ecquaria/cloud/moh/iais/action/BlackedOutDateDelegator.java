@@ -16,7 +16,11 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +30,12 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author: yichen
@@ -268,7 +277,7 @@ public class BlackedOutDateDelegator {
             propertName = "insert";
             blackoutDateDto.setSrcSystemId(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID);
             blackoutDateDto.setShortName(groupName);
-            blackoutDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            blackoutDateDto.setStatus(status);
 
         }else if ((ans == UPDATE_ACTION)){
             propertName = "update";
