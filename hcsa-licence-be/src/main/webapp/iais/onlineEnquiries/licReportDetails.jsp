@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%
@@ -137,7 +138,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td align="right">Designation Appointment Date</td>
-                                                            <td><fmt:formatDate value="${member.apptDt}" pattern="dd/MM/yyyy" /></td>
+                                                            <td><fmt:formatDate value="${member.apptDt}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
                                                         </tr>
 
                                                         </tbody>
@@ -391,7 +392,7 @@
                                                         </td>
                                                         <td class="col-xs-8">
                                                             <fmt:formatDate value="${insRepDto.inspectionDate}"
-                                                                            pattern="dd/MM/yyyy"></fmt:formatDate>
+                                                                            pattern="${AppConsts.DEFAULT_DATE_FORMAT}"></fmt:formatDate>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -400,9 +401,9 @@
                                                         </td>
                                                         <td class="col-xs-8">
                                                             <fmt:formatDate value="${insRepDto.inspectionStartTime}"
-                                                                            pattern="dd/MM/yyyy"></fmt:formatDate>-
+                                                                            pattern="${AppConsts.DEFAULT_DATE_FORMAT}"></fmt:formatDate>-
                                                             <fmt:formatDate value="${insRepDto.inspectionEndTime}"
-                                                                            pattern="dd/MM/yyyy"></fmt:formatDate>
+                                                                            pattern="${AppConsts.DEFAULT_DATE_FORMAT}"></fmt:formatDate>
                                                         </td>
                                                     </tr>
                                                     <tr>

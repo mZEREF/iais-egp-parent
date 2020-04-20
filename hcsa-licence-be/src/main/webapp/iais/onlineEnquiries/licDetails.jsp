@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
@@ -143,7 +144,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td align="right">Designation Appointment Date</td>
-                                                            <td><fmt:formatDate value="${member.apptDt}" pattern="dd/MM/yyyy" /></td>
+                                                            <td><fmt:formatDate value="${member.apptDt}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
                                                         </tr>
 
                                                         </tbody>
