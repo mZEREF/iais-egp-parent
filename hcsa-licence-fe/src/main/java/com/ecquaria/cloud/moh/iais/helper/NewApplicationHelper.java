@@ -262,25 +262,28 @@ public class NewApplicationHelper {
                     }
                     //set svc cgo dropdown info
                     List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-                    List<SelectOption> specialtyList = genSpecialtySelectList(appSvcRelatedInfoDto.getServiceCode(),true);
-                    List<String> specialtyKeyList = IaisCommonUtils.genNewArrayList();
-                    for(SelectOption sp:specialtyList){
-                        specialtyKeyList.add(sp.getText());
-                    }
-                    List<SelectOption> allSpecialtyList = getAllSpecialtySelList();
-                    for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtos){
-                        if(specialtyKeyList.contains(appSvcCgoDto.getSpeciality())){
-                           continue;
+                    if(!IaisCommonUtils.isEmpty(appSvcCgoDtos)){
+                        List<SelectOption> specialtyList = genSpecialtySelectList(appSvcRelatedInfoDto.getServiceCode(),true);
+                        List<String> specialtyKeyList = IaisCommonUtils.genNewArrayList();
+                        for(SelectOption sp:specialtyList){
+                            specialtyKeyList.add(sp.getText());
                         }
-                        appSvcCgoDto.setNeedSpcOptList(true);
-                        appSvcCgoDto.setSpcOptList(allSpecialtyList);
-                        Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
-                        specialtyAttr.put("name", "specialty");
-                        specialtyAttr.put("class", "specialty");
-                        specialtyAttr.put("style", "display: none;");
-                        String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, allSpecialtyList, null, appSvcCgoDto.getSpeciality());
-                        appSvcCgoDto.setSpecialityHtml(specialtySelectStr);
+                        List<SelectOption> allSpecialtyList = getAllSpecialtySelList();
+                        for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtos){
+                            if(specialtyKeyList.contains(appSvcCgoDto.getSpeciality())){
+                                continue;
+                            }
+                            appSvcCgoDto.setNeedSpcOptList(true);
+                            appSvcCgoDto.setSpcOptList(allSpecialtyList);
+                            Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
+                            specialtyAttr.put("name", "specialty");
+                            specialtyAttr.put("class", "specialty");
+                            specialtyAttr.put("style", "display: none;");
+                            String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, allSpecialtyList, null, appSvcCgoDto.getSpeciality());
+                            appSvcCgoDto.setSpecialityHtml(specialtySelectStr);
+                        }
                     }
+
                 }
             }
         }
@@ -1129,7 +1132,7 @@ public class NewApplicationHelper {
         psnSelectList.add(sp1);
         Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
         personMap.forEach((k,v)->{
-            SelectOption sp = new SelectOption(k,v.getName()+v.getIdNo());
+            SelectOption sp = new SelectOption(k,v.getName()+", "+v.getIdNo()+" ("+v.getIdType()+")");
             psnSelectList.add(sp);
         });
         return psnSelectList;
