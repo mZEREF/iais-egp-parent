@@ -40,7 +40,9 @@
                   </div>
                   <div class="document-upload-gp">
                     <h2>PRIMARY DOCUMENTS</h2>
-                   <%-- <c:set var="isClickEdit" value="true"/>--%>
+                    <c:if test="${'APTY002' ==AppSubmissionDto.appType && requestInformationConfig == null}">
+                      <c:set var="isClickEdit" value="true"/>
+                    </c:if>
                     <c:if test="${AppSubmissionDto.needEditController}">
                         <c:set var="isClickEdit" value="false"/>
                       <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
