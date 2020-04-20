@@ -81,7 +81,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeRemarks = request.getParameter("codeRemarks")==null?"":request.getParameter("codeRemarks");%>
-                                    <form><textarea cols="38" rows="6" id="codeRemarks" type="text" name="codeRemarks" value="<%=codeRemarks%>" maxlength="255"></textarea></form>
+                                    <form><textarea cols="38" rows="6" id="codeRemarks"  name="codeRemarks" value="<%=codeRemarks%>" maxlength="255"></textarea></form>
                                 </div>
                             </iais:value>
                         </div>
