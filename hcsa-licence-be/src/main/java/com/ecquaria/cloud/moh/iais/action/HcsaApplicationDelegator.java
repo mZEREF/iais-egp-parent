@@ -531,6 +531,7 @@ public class HcsaApplicationDelegator {
 
             }else if(!StringUtil.isEmpty(rollBack)){
                 //roll back
+                successInfo = MessageCodeKey.ACK006;
                 if(RoleConsts.USER_ROLE_AO1.equals(roleId)){
                     //AO1
                     successInfo = MessageCodeKey.ACK006;
