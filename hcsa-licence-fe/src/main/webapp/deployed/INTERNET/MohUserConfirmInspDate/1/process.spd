@@ -199,8 +199,8 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/userConfirmInspDateConDo" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
    <position>{(780,440)(720,580)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/userConfirmInspDateStep" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/userConfirmInspDateConDo" style="oblique">
-   <position>{(720,580)(672,580)(720,160)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/userConfirmInspDateAckPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/userConfirmInspDateConDo" style="oblique">
+   <position>{(720,580)(1320,160)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
