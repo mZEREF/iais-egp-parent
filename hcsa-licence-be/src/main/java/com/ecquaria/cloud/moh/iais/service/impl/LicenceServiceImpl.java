@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
@@ -171,18 +172,24 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum,String submissionId) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-
         EventBusLicenceGroupDtos eventBusLicenceGroupDtos =  getEventBusLicenceGroupDtosByRefNo(eventRefNum);
         if(eventBusLicenceGroupDtos!=null){
-            eventBusLicenceGroupDtos =beEicGatewayClient.createLicence(eventBusLicenceGroupDtos, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
+            EicRequestTrackingDto trackDto = hcsaLicenceClient.getLicEicRequestTrackingDto(eventRefNum).getEntity();
+            eicCallFeSuperLic(eventBusLicenceGroupDtos);
+            trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+            hcsaLicenceClient.updateEicTrackStatus(trackDto);
         }else{
             log.error(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
         }
 
         return eventBusLicenceGroupDtos;
+    }
+
+    public void eicCallFeSuperLic(EventBusLicenceGroupDtos dto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        beEicGatewayClient.createLicence(dto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
     }
 
     @Override

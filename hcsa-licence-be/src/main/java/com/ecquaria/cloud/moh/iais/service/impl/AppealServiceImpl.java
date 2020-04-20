@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -131,14 +132,14 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public AppealLicenceDto updateFEAppealLicenceDto(String eventRefNum,String submissionId) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         log.info(StringUtil.changeForLog("The eventRefNum is -->:"+eventRefNum));
         EicRequestTrackingDto licEicRequestTrackingDto = licenceService.getLicEicRequestTrackingDtoByRefNo(eventRefNum);
         AppealLicenceDto appealLicenceDto = getObjectLic(licEicRequestTrackingDto,AppealLicenceDto.class);
         if(appealLicenceDto!=null){
-            appealLicenceDto = beEicGatewayClient.updateAppealLicence(appealLicenceDto, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
+            EicRequestTrackingDto trackDto = hcsaLicenceClient.getLicEicRequestTrackingDto(eventRefNum).getEntity();
+            callFeEicAppealLicence(appealLicenceDto);
+            trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+            hcsaLicenceClient.updateEicTrackStatus(trackDto);
         }else{
             log.error(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
         }
@@ -146,6 +147,12 @@ public class AppealServiceImpl implements AppealService {
         return appealLicenceDto;
     }
 
+    public void callFeEicAppealLicence(AppealLicenceDto appealLicenceDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        beEicGatewayClient.updateAppealLicence(appealLicenceDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
+    }
 
     private <T> T getObjectLic(EicRequestTrackingDto licEicRequestTrackingDto, Class<T> cls){
         T result = null;
