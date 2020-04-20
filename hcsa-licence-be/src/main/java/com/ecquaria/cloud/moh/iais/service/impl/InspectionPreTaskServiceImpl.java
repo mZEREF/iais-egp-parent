@@ -117,31 +117,6 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         }
         saveInspectionChecklist(inspectionChecklist, taskDto.getRefNo());
         updateInspectionStatus(taskDto.getRefNo(), InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION);
-        //todo:call inspection date
-
-        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-        if(appPremisesRecommendationDto == null){
-            appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-            appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
-            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            appPremisesRecommendationDto.setVersion(1);
-            //todo:set inspection date
-            appPremisesRecommendationDto.setRecomInDate(new Date());
-            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
-            appPremisesRecommendationDto.setRecomDecision(InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY);
-            appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
-        } else {
-            appPremisesRecommendationDto.setId(null);
-            appPremisesRecommendationDto.setVersion(appPremisesRecommendationDto.getVersion() + 1);
-            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            //todo:set inspection date
-            appPremisesRecommendationDto.setRecomInDate(new Date());
-            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
-            appPremisesRecommendationDto.setRecomDecision(InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY);
-            appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
-        }
     }
 
     private void saveInspectionChecklist(List<ChecklistConfigDto> inspectionChecklist, String appCorrId) {
