@@ -351,8 +351,9 @@ public class LicenceApproveBatchjob {
         LicFeeGroupDto licFeeGroupDto = getLicFeeGroupDto(applicationGroupDto.getAmount().toString());
         licenceGroupDto.setLicFeeGroupDto(licFeeGroupDto);
 
+        LicenseeDto oldLicenseeDto = getOrganizationIdBylicenseeId(applicationGroupDto.getLicenseeId());
         //get organizationId
-        String organizationId = getOrganizationIdBylicenseeId(applicationGroupDto.getLicenseeId());
+        String organizationId = oldLicenseeDto.getOrganizationId();
         log.debug(StringUtil.changeForLog("The organizationId is -->:"+organizationId));
         if(IaisCommonUtils.isEmpty(applicationListDtoList)){
             result.setSuccess(false);
@@ -447,6 +448,24 @@ public class LicenceApproveBatchjob {
                         }
                         personnelsDtos.addAll(personnelsDto1s);
                     }
+                    ApplicationDto applicationDto = applicationListDto.getApplicationDto();
+                    String appType = applicationDto.getApplicationType();
+                    String applicationNo = applicationDto.getApplicationNo();
+                    String loginUrl = "#";
+                    //new application send email
+                    if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+                        String uenNo = oldLicenseeDto.getUenNo();
+                        boolean isNew = false;
+                        if(StringUtil.isEmpty(uenNo)){
+                            //new uenNo
+                            uenNo = "new UEN";
+                            isNew = true;
+                        }
+                        //send email
+                        newApplicationApproveSendEmail(licenceDto,applicationNo,licenceNo,loginUrl,isNew,uenNo);
+                    }
+
+
                     //create the lic_app_correlation
                     LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
                     licAppCorrelationDto.setApplicationId(applicationListDto.getApplicationDto().getId());
@@ -494,6 +513,46 @@ public class LicenceApproveBatchjob {
         }
         log.debug(StringUtil.changeForLog("The generateGroupLicence is end ..."));
        return result;
+    }
+
+    private void newApplicationApproveSendEmail(LicenceDto licenceDto,String applicationNo,String licenceNo,String loginUrl,boolean isNew,String uenNo){
+        Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
+        tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+        tempMap.put("loginUrl",loginUrl);
+        tempMap.put("licenceNumber",licenceNo);
+        tempMap.put("applicationNumber",applicationNo);
+        tempMap.put("isNewApplication",null);
+        if(isNew){
+            tempMap.put("isNewApplication","Y");
+            tempMap.put("UEN_NO",uenNo);
+        }
+        String subject = " " + applicationNo + " is Approved ";
+        sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_POST_INSPECTION_IS_IDENTIFIED_ID,subject,licenceDto.getLicenseeId(),licenceDto.getId());
+    }
+    //send email helper
+    private void sendEmailHelper(Map<String ,Object> tempMap,String msgTemplateId,String subject,String licenseeId,String clientQueryCode){
+        MsgTemplateDto msgTemplateDto = licenceService.getMsgTemplateById(msgTemplateId);
+        if(tempMap==null || tempMap.isEmpty()
+                         || StringUtil.isEmpty(msgTemplateId)
+                         || StringUtil.isEmpty(subject)
+                         || StringUtil.isEmpty(licenseeId)
+                         || StringUtil.isEmpty(clientQueryCode)){
+            return;
+        }
+        String mesContext = null;
+        try {
+            mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+        } catch (IOException | TemplateException e) {
+            log.error(e.getMessage(),e);
+        }
+        EmailDto emailDto = new EmailDto();
+        emailDto.setContent(mesContext);
+        emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + subject);
+        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+        emailDto.setClientQueryCode(clientQueryCode);
+        //send
+        licenceService.sendEmail(emailDto);
     }
 
     //send email
@@ -558,8 +617,9 @@ public class LicenceApproveBatchjob {
         LicFeeGroupDto licFeeGroupDto = getLicFeeGroupDto(applicationGroupDto.getAmount().toString());
         licenceGroupDto.setLicFeeGroupDto(licFeeGroupDto);
 
+        LicenseeDto oldLicenseeDto = getOrganizationIdBylicenseeId(applicationGroupDto.getLicenseeId());
         //get organizationId
-        String organizationId = getOrganizationIdBylicenseeId(applicationGroupDto.getLicenseeId());
+        String organizationId = oldLicenseeDto.getOrganizationId();
         log.debug(StringUtil.changeForLog("The organizationId is -->:"+organizationId));
 
         if(applicationListDtoList == null || applicationListDtoList.size() == 0){
@@ -635,6 +695,23 @@ public class LicenceApproveBatchjob {
                 if(isPostInspNeeded == Integer.parseInt(AppConsts.YES)){
                     sendEmailInspection(licenceDto);
                 }
+
+                String appType = applicationDto.getApplicationType();
+                String applicationNo = applicationDto.getApplicationNo();
+                String loginUrl = "#";
+                //new application send email
+                if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+                    String uenNo = oldLicenseeDto.getUenNo();
+                    boolean isNew = false;
+                    if(StringUtil.isEmpty(uenNo)){
+                        //new uenNo
+                        uenNo = "new UEN";
+                        isNew = true;
+                    }
+                    //send email
+                    newApplicationApproveSendEmail(licenceDto,applicationNo,licenceNo,loginUrl,isNew,uenNo);
+                }
+
                 //create the lic_app_correlation
                 List<LicAppCorrelationDto> licAppCorrelationDtos = IaisCommonUtils.genNewArrayList();
                 LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
@@ -1162,22 +1239,30 @@ public class LicenceApproveBatchjob {
     }
     @Autowired
     private InspEmailService inspEmailService;
-    private String getOrganizationIdBylicenseeId(String licenseeId){
+    private LicenseeDto getOrganizationIdBylicenseeId(String licenseeId){
         log.info(StringUtil.changeForLog("The  getOrganizationIdBylicenseeId start ..."));
         //todo:get the organizationid , if do not exist need create the Organizaton.
         String organizationId = "29ABCF6D-770B-EA11-BE7D-000C29F371DC";
+        LicenseeDto licenseeDto = null;
+
         if(!StringUtil.isEmpty(licenseeId)){
-            LicenseeDto licenseeDto = inspEmailService.getLicenseeDtoById(licenseeId);
+            licenseeDto = inspEmailService.getLicenseeDtoById(licenseeId);
             if(licenseeDto != null){
                 organizationId = licenseeDto.getOrganizationId();
+                if(StringUtil.isEmpty(organizationId)){
+                    licenseeDto.setOrganizationId(organizationId);
+                }
             }else{
                 log.error(StringUtil.changeForLog("This licenseeId can not get he licensee -->:"+licenseeId));
             }
         }else{
             log.error(StringUtil.changeForLog("The  licenseeId is null ..."));
         }
+        if(licenseeDto == null){
+            licenseeDto = new LicenseeDto();
+        }
         log.info(StringUtil.changeForLog("The  getOrganizationIdBylicenseeId end ..."));
-       return organizationId;
+       return licenseeDto;
     }
 
 
