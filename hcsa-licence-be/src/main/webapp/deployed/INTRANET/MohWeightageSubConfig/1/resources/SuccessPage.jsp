@@ -1,1 +1,1 @@
-<%@include file="/iais/riskconfig/RiskWeightageSuccess.jsp"%>
+<%@include file="/iais/riskconfig/SumbitSuccess.jsp"%>

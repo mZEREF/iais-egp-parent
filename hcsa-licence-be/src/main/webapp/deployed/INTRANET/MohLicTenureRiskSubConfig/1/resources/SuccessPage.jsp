@@ -1,1 +1,1 @@
-<%@include file="/iais/riskconfig/RiskLicenceTenureSuccess.jsp"%>
+<%@include file="/iais/riskconfig/SumbitSuccess.jsp"%>
