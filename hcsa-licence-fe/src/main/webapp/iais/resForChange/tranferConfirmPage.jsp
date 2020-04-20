@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
@@ -81,7 +82,9 @@
               </p>
             </iais:value>
           </iais:row>
-
+          <iais:row>
+           <iais:message key="<%=MessageCodeKey.TRANSFER_REASION001%>%>"></iais:message>
+          </iais:row>
           <div class="form-check">
             <input class="form-check-input" id="confirm" type="checkbox" name="confirm" aria-invalid="false" value="1">
             <label class="form-check-label" for="confirm"><span class="check-square"></span>I declare that the information that I have submitted is true</label>
