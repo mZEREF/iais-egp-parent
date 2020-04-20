@@ -1,4 +1,4 @@
-<c:if test="${'APTY002' ==AppSubmissionDto.appType && requestInformationConfig == null}">
+<c:if test="${requestInformationConfig == null}">
   <c:set var="isClickEdit" value="true"/>
 </c:if>
 <c:if test="${AppSubmissionDto.needEditController}">
