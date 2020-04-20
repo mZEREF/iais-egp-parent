@@ -13,10 +13,14 @@
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
                     <div class="intranet-content">
-                        <c:forEach items="${errorMap}" var="error">
-                            <c:out value="${error.key}"></c:out>
-                            <c:out value="${error.value}"></c:out>
-                        </c:forEach>
+                        <table>
+                            <c:forEach items="${errorMap}" var="error">
+                                <tr>
+                                    <td><c:out value="${error.key}"></c:out></td>
+                                    <td><c:out value="${error.value}"></c:out></td>
+                                </tr>
+                            </c:forEach>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -26,8 +30,9 @@
         </iais:action>
     </form>
 </div>
+<%@include file="/include/validation.jsp" %>
 <script>
-function submit() {
-    $("#mainForm").submit();
-}
+    function submit() {
+        $("#mainForm").submit();
+    }
 </script>

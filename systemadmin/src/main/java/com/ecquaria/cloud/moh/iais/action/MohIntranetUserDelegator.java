@@ -31,10 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
@@ -656,76 +653,80 @@ public class MohIntranetUserDelegator {
             orgUserDto.setStatus(status);
             orgUserDtos.add(orgUserDto);
         }
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        int i = 1 ;
         for (OrgUserDto orgUserDto : orgUserDtos) {
-            Map<String, String> errorMap = valiant(orgUserDto);
-            if (!errorMap.isEmpty()) {
-                bpc.request.setAttribute("errorMap",errorMap);
-                return;
+            Map<String, String> errorMap1 = valiant(orgUserDto,i);
+            if (!errorMap1.isEmpty()) {
+                errorMap.putAll(errorMap1);
             }
+            i ++ ;
+        }
+        if(!errorMap.isEmpty()){
+            bpc.request.setAttribute("errorMap",errorMap);
+            return;
         }
         intranetUserService.createIntranetUsers(orgUserDtos);
     }
 
 
-    private Map<String, String> valiant(OrgUserDto orgUserDto) {
+    private Map<String, String> valiant(OrgUserDto orgUserDto,int i) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String userId = orgUserDto.getUserId();
         if (!StringUtil.isEmpty(userId)) {
             if (!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")) {
-                errorMap.put("userId", "USER_ERR002");
+                errorMap.put("userId" + i, "userId is Alphanumeric.");
             } else {
                 OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
                 if (intranetUserByUserId != null) {
                     String valiuserId = intranetUserByUserId.getUserId();
                     if (userId.equals(valiuserId)) {
-                        errorMap.put("userId", "USER_ERR003");
+                        errorMap.put("userId"+ i, "userId is exist.");
                     }
                 }
             }
         } else {
-            errorMap.put("userId", "userId must be not empty");
+            errorMap.put("userId"+ i, "userId must be not empty.");
         }
         String userDomain = orgUserDto.getUserDomain();
         if (StringUtil.isEmpty(userDomain)) {
-            errorMap.put("userDomain", "userDomain must be not empty");
+            errorMap.put("userDomain"+ i, "userDomain must be not empty.");
         }
         String displayName = orgUserDto.getDisplayName();
         if (StringUtil.isEmpty(displayName)) {
-            errorMap.put("displayName", "displayName must be not empty");
+            errorMap.put("displayName"+ i, "displayName must be not empty.");
         }
         Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
         if (accountActivateDatetime == null) {
-            errorMap.put("accountActivateDatetime", "accountActivateDatetime must be not empty");
+            errorMap.put("activateDate"+ i, "activateDate must be not empty.");
         }
         Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
         if (accountDeactivateDatetime == null) {
-            errorMap.put("accountDeactivateDatetime", "accountDeactivateDatetime must be not empty");
+            errorMap.put("deactivateDate"+ i, "deactivateDate must be not empty.");
         }
         if (accountDeactivateDatetime != null && accountActivateDatetime != null) {
             Date date = new Date();
             boolean after1 = date.after(accountActivateDatetime);
             boolean after = accountActivateDatetime.after(accountDeactivateDatetime);
             if (!after) {
-                errorMap.put("accountDeactivateDatetime", "USER_ERR006");
+                errorMap.put("activateDate"+ i, "Effective End Date must be after Effective Start Date.");
             } else if (!after1) {
-                errorMap.put("accountDeactivateDatetime", "accountActivateDatetime must be after today");
+                errorMap.put("activateDate"+ i, "activateDate must be after today.");
             }
         }
         String lastName = orgUserDto.getLastName();
         if (StringUtil.isEmpty(lastName)) {
-            errorMap.put("lastName", "lastName must be not empty");
+            errorMap.put("lastName"+ i, "lastName must be not empty.");
         }
         String firstName = orgUserDto.getFirstName();
         if (StringUtil.isEmpty(firstName)) {
-            errorMap.put("firstName", "firstName must be not empty");
+            errorMap.put("firstName"+ i, "firstName must be not empty.");
         }
         String email = orgUserDto.getEmail();
         if (StringUtil.isEmpty(email)) {
-            errorMap.put("email", "email must be not empty");
+            errorMap.put("email"+ i, "email must be not empty.");
         }
-
         return errorMap;
-
     }
 
 
