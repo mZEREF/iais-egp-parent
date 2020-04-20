@@ -458,7 +458,7 @@ public class LicenceApproveBatchjob {
                             String uenNo = oldLicenseeDto.getUenNo();
                             boolean isNew = false;
                             if(StringUtil.isEmpty(uenNo)){
-                                //new uenNo
+                                //todo set new uenNo
                                 uenNo = "new UEN";
                                 isNew = true;
                             }
@@ -697,7 +697,6 @@ public class LicenceApproveBatchjob {
                 if(isPostInspNeeded == Integer.parseInt(AppConsts.YES)){
                     sendEmailInspection(licenceDto);
                 }
-
                 String appType = applicationDto.getApplicationType();
                 String applicationNo = applicationDto.getApplicationNo();
                 String loginUrl = "#";
@@ -706,7 +705,7 @@ public class LicenceApproveBatchjob {
                     String uenNo = oldLicenseeDto.getUenNo();
                     boolean isNew = false;
                     if(StringUtil.isEmpty(uenNo)){
-                        //new uenNo
+                        //todo set new uenNo
                         uenNo = "new UEN";
                         isNew = true;
                     }
