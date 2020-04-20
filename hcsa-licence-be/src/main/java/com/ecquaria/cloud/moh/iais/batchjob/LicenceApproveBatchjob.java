@@ -449,20 +449,22 @@ public class LicenceApproveBatchjob {
                         personnelsDtos.addAll(personnelsDto1s);
                     }
                     ApplicationDto applicationDto = applicationListDto.getApplicationDto();
-                    String appType = applicationDto.getApplicationType();
-                    String applicationNo = applicationDto.getApplicationNo();
-                    String loginUrl = "#";
-                    //new application send email
-                    if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
-                        String uenNo = oldLicenseeDto.getUenNo();
-                        boolean isNew = false;
-                        if(StringUtil.isEmpty(uenNo)){
-                            //new uenNo
-                            uenNo = "new UEN";
-                            isNew = true;
+                    if(applicationDto != null){
+                        String appType = applicationDto.getApplicationType();
+                        String applicationNo = applicationDto.getApplicationNo();
+                        String loginUrl = "#";
+                        //new application send email
+                        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+                            String uenNo = oldLicenseeDto.getUenNo();
+                            boolean isNew = false;
+                            if(StringUtil.isEmpty(uenNo)){
+                                //new uenNo
+                                uenNo = "new UEN";
+                                isNew = true;
+                            }
+                            //send email
+                            newApplicationApproveSendEmail(licenceDto,applicationNo,licenceNo,loginUrl,isNew,uenNo);
                         }
-                        //send email
-                        newApplicationApproveSendEmail(licenceDto,applicationNo,licenceNo,loginUrl,isNew,uenNo);
                     }
 
 
@@ -532,7 +534,7 @@ public class LicenceApproveBatchjob {
     //send email helper
     private void sendEmailHelper(Map<String ,Object> tempMap,String msgTemplateId,String subject,String licenseeId,String clientQueryCode){
         MsgTemplateDto msgTemplateDto = licenceService.getMsgTemplateById(msgTemplateId);
-        if(tempMap==null || tempMap.isEmpty()
+        if(tempMap == null || tempMap.isEmpty() || msgTemplateDto == null
                          || StringUtil.isEmpty(msgTemplateId)
                          || StringUtil.isEmpty(subject)
                          || StringUtil.isEmpty(licenseeId)
