@@ -98,7 +98,7 @@ public class TaskServiceImpl implements TaskService {
             String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
             String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
             if(HcsaConsts.ROUTING_STAGE_INS.equals(statgId)){
-                TaskUrl = TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION;
+                TaskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
                 taskType = TaskConsts.TASK_TYPE_INSPECTION;
             }
             result = TaskUtil.getTaskDto(statgId,taskType,
