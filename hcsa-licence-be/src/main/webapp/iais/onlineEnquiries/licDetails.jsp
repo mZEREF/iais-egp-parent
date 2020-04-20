@@ -1,5 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
@@ -143,7 +143,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td align="right">Designation Appointment Date</td>
-                                                            <td>${member.apptDt}</td>
+                                                            <td><fmt:formatDate value="${member.apptDt}" pattern="dd/MM/yyyy" /></td>
                                                         </tr>
 
                                                         </tbody>
@@ -257,7 +257,7 @@
                                                             <td align="right">Designation</td>
                                                             <td>${personnel.keyPersonnelDto.designation}</td>
                                                         </tr>
-                                                        <c:if test="${personnel.licKeyPersonnelDto.psnType==ApplicationConsts.PERSONNEL_PSN_TYPE_CLINICAL_GOVERNANCE_OFFICER}">
+                                                        <c:if test="${personnel.licKeyPersonnelDto.psnType=='Clinical Governance Officer'}">
                                                             <tr>
                                                                 <td align="right">Professional Type</td>
                                                                 <td>${personnel.keyPersonnelExtDto.professionType}</td>
@@ -283,7 +283,7 @@
                                                             <td align="right">Email Address</td>
                                                             <td>${personnel.keyPersonnelDto.emailAddr}</td>
                                                         </tr>
-                                                        <c:if test="${personnel.licKeyPersonnelDto.psnType==ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT}">
+                                                        <c:if test="${personnel.licKeyPersonnelDto.psnType=='MedAlert'}">
                                                             <tr>
                                                                 <td align="right">Preferred Mode of Receiving MedAlert</td>
                                                                 <td>${personnel.keyPersonnelExtDto.preferredMode}</td>

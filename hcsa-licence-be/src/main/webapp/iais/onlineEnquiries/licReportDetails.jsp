@@ -1,4 +1,4 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%
@@ -137,7 +137,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td align="right">Designation Appointment Date</td>
-                                                            <td>${member.apptDt}</td>
+                                                            <td><fmt:formatDate value="${member.apptDt}" pattern="dd/MM/yyyy" /></td>
                                                         </tr>
 
                                                         </tbody>

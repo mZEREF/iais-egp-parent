@@ -751,9 +751,14 @@ public class OfficerOnlineEnquiriesDelegator {
             if(appPremisesRecommendationDtos.size()>=2){
                 reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
             }
+            else {
+                reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
+            }
             if(appPremisesRecommendationDtos.size()>=1){
                 reqForInfoSearchListDto.setLastComplianceHistory("Full");
                 RequestForInformationDelegator.setSearchListComplianceHistory(rfiApplicationQueryDto, reqForInfoSearchListDto, insepctionNcCheckListService, fillupChklistService);
+            }else {
+                reqForInfoSearchListDto.setLastComplianceHistory("-");
             }
         }catch (Exception e){
             reqForInfoSearchListDto.setLastComplianceHistory("-");

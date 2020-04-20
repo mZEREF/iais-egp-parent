@@ -171,26 +171,13 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
         for (LicenseeKeyApptPersonDto org:organizationLicDto.getLicenseeKeyApptPersonDtos()
         ) {
+            org.setDesignation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{org.getDesignation()}).get(0).getText());
             org.setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{org.getSalutation()}).get(0).getText());
         }
         for (PersonnelsDto per:personnelsDto
         ) {
-            switch (per.getLicKeyPersonnelDto().getPsnType()){
-            case ApplicationConsts.PERSONNEL_PSN_TYPE_MAP:
-                per.getLicKeyPersonnelDto().setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT);
-                break;
-            case ApplicationConsts.PERSONNEL_PSN_TYPE_DPO:
-                per.getLicKeyPersonnelDto().setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DEPUTY_PRINCIPAL_OFFICER);
-                break;
-            case ApplicationConsts.PERSONNEL_PSN_TYPE_PO:
-                per.getLicKeyPersonnelDto().setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PRINCIPAL_OFFICER);
-                break;
-            case ApplicationConsts.PERSONNEL_PSN_TYPE_CGO:
-                per.getLicKeyPersonnelDto().setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_CLINICAL_GOVERNANCE_OFFICER);
-                break;
-            default:
-            }
             try{
+                per.getLicKeyPersonnelDto().setPsnType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getLicKeyPersonnelDto().getPsnType()}).get(0).getText());
                 per.getKeyPersonnelDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getSalutation()}).get(0).getText());
                 per.getKeyPersonnelDto().setDesignation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getDesignation()}).get(0).getText());
                 per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelExtDto().getProfessionType()}).get(0).getText());
@@ -265,7 +252,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appId = applicationDto.getId();
-        String applicationNo = applicationDto.getApplicationNo();
         String appGrpId = applicationDto.getAppGrpId();
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         String status = applicationDto.getStatus();
