@@ -84,13 +84,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="col-md-8" style="width: 63%">
-                    <a class="btn btn-primary" href="javascript:;" id="lic-renew">Renew</a>
-                    <a class="btn btn-primary" href="javascript:;" id="lic-cease">Cease</a>
-                    <a class="btn btn-primary disabled" href="javascript:;" id="lic-amend">Amend</a>
-                    <a class="btn btn-primary disabled" id="lic-print" onclick="doPrint()">Print</a>
-                </div>
-                <div class="col-md-4 text-right" style="width: 37%">
+                <div class="col-md-12 text-right">
                     <button type="button" class="btn btn-secondary" onclick="doClearLic()">Clear</button>
                     <button type="button" class="btn btn-primary" onclick="doSearchLic()">Search</button>
                 </div>
@@ -217,6 +211,17 @@
                     </div>
                 </div>
                 <!--Modal End-->
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12 text-right">
+                            <a class="btn btn-primary" href="javascript:;" id="lic-renew">Renew</a>
+                            <a class="btn btn-primary" href="javascript:;" id="lic-cease">Cease</a>
+                            <a class="btn btn-primary disabled" href="javascript:;" id="lic-amend">Amend</a>
+                            <a class="btn btn-primary disabled" id="lic-print" onclick="doPrint()">Print</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
