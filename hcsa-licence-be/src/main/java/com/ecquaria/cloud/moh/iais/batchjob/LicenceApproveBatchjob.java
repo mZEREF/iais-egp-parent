@@ -527,7 +527,7 @@ public class LicenceApproveBatchjob {
             tempMap.put("UEN_NO",uenNo);
         }
         String subject = " " + applicationNo + " is Approved ";
-        sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_POST_INSPECTION_IS_IDENTIFIED_ID,subject,licenceDto.getLicenseeId(),licenceDto.getId());
+        sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_ID,subject,licenceDto.getLicenseeId(),licenceDto.getId());
     }
     //send email helper
     private void sendEmailHelper(Map<String ,Object> tempMap,String msgTemplateId,String subject,String licenseeId,String clientQueryCode){
