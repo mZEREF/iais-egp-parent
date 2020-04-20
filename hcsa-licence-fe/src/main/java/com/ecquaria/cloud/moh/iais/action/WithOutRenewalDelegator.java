@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -209,8 +210,12 @@ public class WithOutRenewalDelegator {
         RenewDto renewDto = (RenewDto)ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         String groupId = "";
+        Double amount=0.0;
+        String licenseeId=null;
         if(appSubmissionDtos.size() != 0){
             groupId = appSubmissionDtos.get(0).getAppGrpId();
+            amount = appSubmissionDtos.get(0).getAmount();
+            licenseeId = appSubmissionDtos.get(0).getLicenseeId();
         }
         String result = ParamUtil.getString(bpc.request,"result");
         if (!StringUtil.isEmpty(result)) {
@@ -232,6 +237,16 @@ public class WithOutRenewalDelegator {
                 //update application status
                 appSubmissionService.updateApplicationsStatus(groupId,ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                 //jump page to acknowledgement
+                //send email pay success
+                try {
+                    bpc.request.setAttribute("applicationNumber",groupId);
+                    bpc.request.setAttribute("type","successfulOnlinePayment");
+                    bpc.request.setAttribute("amount",amount);
+                    bpc.request.setAttribute("licenseeId",licenseeId);
+                    sendEmail(bpc.request);
+                }catch (Exception e){
+
+                }
                 ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE4);
             }else{
                 //jump page to payment
@@ -336,8 +351,10 @@ public class WithOutRenewalDelegator {
         //
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
         String groupNo = "";
+        String licenseeId=null;
         if(appSubmissionDtos.size() != 0){
             groupNo = appSubmissionDtos.get(0).getAppGrpNo();
+            licenseeId = appSubmissionDtos.get(0).getLicenseeId();
         }
         if("Credit".equals(payMethod)){
             StringBuffer url = new StringBuffer();
@@ -352,18 +369,21 @@ public class WithOutRenewalDelegator {
             try {
                 bpc.request.setAttribute("paymentAmount",totalAmount);
                 bpc.request.setAttribute("type","onlinePayment");
+                bpc.request.setAttribute("licenseeId",licenseeId);
+                bpc.request.setAttribute("applicationNumber",groupNo);
                 sendEmail(bpc.request);
 
             }catch (Exception e){
-
                 log.error(e.getMessage(),e+" onlinePayment error");
-
             }
 
         }else if("GIRO".equals(payMethod)){
             try {
                 bpc.request.setAttribute("paymentAmount",totalAmount);
+                bpc.request.setAttribute("licenseeId",licenseeId);
+                bpc.request.setAttribute("applicationNumber",groupNo);
                 bpc.request.setAttribute("type","GIRO");
+                bpc.request.setAttribute("GIROAccountNumber","XXXX-XXXX-XXXX");
                 sendEmail(bpc.request);
 
             }catch (Exception e){
@@ -551,51 +571,53 @@ public class WithOutRenewalDelegator {
         String mesContext ;
         String licenseeId =(String)request.getAttribute("licenseeId");
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        String subject="";
+        String applicationNumber =(String)request.getAttribute("applicationNumber");
         if("GIRO".equals(type)){
             msgTemplateDto = appSubmissionService.getMsgTemplateById("10FF81AF-267D-EA11-BE7A-000C29D29DB0");
             String GIROAccountNumber=(String)request.getAttribute("GIROAccountNumber");
             Double amount =(Double)request.getAttribute("amount");
             map.put("paymentAmount",Formatter.formatNumber(amount));
-            map.put("serviceNames", serviceNames);
+            map.put("serviceLicenceName", serviceNames.toString());
             map.put("GIROAccountNumber",GIROAccountNumber);
-
+            subject="MOH IAIS – Successful Submission of Renewal "+applicationNumber;
 
         }else if("onlinePayment".equals(type)){
             msgTemplateDto = appSubmissionService.getMsgTemplateById("F77860C0-687D-EA11-BE7A-000C29D29DB0");
             Double amount =(Double)request.getAttribute("amount");
             map.put("paymentAmount",Formatter.formatNumber(amount));
-            map.put("serviceNames", serviceNames);
-
+            map.put("serviceLicenceName", serviceNames.toString());
+            subject="MOH IAIS – Successful Submission of Renewal "+applicationNumber;
 
         }else if("successfulOnlinePayment".equals(type)){
             Double amount =(Double)request.getAttribute("amount");
             msgTemplateDto = appSubmissionService.getMsgTemplateById("A4CE953C-6A7D-EA11-BE7A-000C29D29DB0");
             map.put("paymentAmount",Formatter.formatNumber(amount));
-            map.put("serviceNames", serviceNames);
-
-
+            map.put("serviceLicenceName", serviceNames.toString());
+            subject="MOH IAIS – Successful Submission of Auto Renewal Application "+applicationNumber;
+        //todo huacong
         }else if("routesBack".equals(type)){
             String userName=(String)request.getAttribute("userName");
             String nameApprovalOfficer=(String)request.getAttribute("nameApprovalOfficer");
             msgTemplateDto = appSubmissionService.getMsgTemplateById("D792F706-6D7D-EA11-BE7A-000C29D29DB0");
             map.put("userName",userName);
             map.put("nameApprovalOfficer",nameApprovalOfficer);
-
+            subject="MOH IAIS – Internal Clarification for Renewal "+applicationNumber;
 
         }else if("earlyGIROPayment".equals(type)){
 
             msgTemplateDto = appSubmissionService.getMsgTemplateById("");
             Double amount =(Double)request.getAttribute("amount");
             map.put("paymentAmount",Formatter.formatNumber(amount));
-            map.put("serviceNames", serviceNames);
+            map.put("serviceLicenceName", serviceNames);
 
 
-        }else if("earlyOnlinepayment ".equals(type)){
+        }else if("earlyOnlinepayment".equals(type)){
 
             msgTemplateDto = appSubmissionService.getMsgTemplateById("");
             Double amount =(Double)request.getAttribute("amount");
             map.put("paymentAmount",Formatter.formatNumber(amount));
-            map.put("serviceNames", serviceNames);
+            map.put("serviceLicenceName", serviceNames);
 
 
         }else if("pickedUpEarlyRenewal".equals(type)){
@@ -608,16 +630,17 @@ public class WithOutRenewalDelegator {
             String GIROAccountNumber=(String)request.getAttribute("GIROAccountNumber");
             Double amount =(Double)request.getAttribute("amount");
             map.put("paymentAmount",Formatter.formatNumber(amount));
-            map.put("serviceNames", serviceNames);
+            map.put("serviceLicenceName", serviceNames);
             map.put("GIROAccountNumber",GIROAccountNumber);
 
         }
-
         mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
         EmailDto emailDto = new EmailDto();
         emailDto.setContent(mesContext);
         emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setSubject(subject);
         emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+        emailDto.setClientQueryCode(applicationNumber);
         appSubmissionService.feSendEmail(emailDto);
     }
 }

@@ -61,6 +61,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -71,6 +72,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * HcsaApplicationDelegator
@@ -129,6 +132,8 @@ public class HcsaApplicationDelegator {
     @Autowired
     FileRepoClient fileRepoClient;
 
+    @Autowired
+    private SystemBeLicClient systemBeLicClient;
     /**
      * StartStep: doStart
      *
@@ -876,6 +881,17 @@ public class HcsaApplicationDelegator {
         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
             sendRejectEmail(applicationNo,licenseeId,appGrpId);
         }
+        //send email
+        sendRejectEmail(applicationNo,licenseeId,appGrpId);
+
+        try {
+            bpc.request.setAttribute("application",applicationViewDto.getApplicationDto());
+            bpc.request.setAttribute("licenseeId",licenseeId);
+            sendAppealReject(bpc.request);
+
+        }catch (Exception e){
+            log.error(e.getMessage(),e+"error");
+        }
         log.debug(StringUtil.changeForLog("the do reject end ...."));
     }
 
@@ -1406,5 +1422,38 @@ public class HcsaApplicationDelegator {
     }
 
     /************************/
+    private void sendAppealApproved(HttpServletRequest request){
+        ApplicationDto applicationDto=(ApplicationDto)request.getAttribute("application");
+        String applicationType = applicationDto.getApplicationType();
+        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+            Map<String,Object> map=new HashMap<>();
+            String licenseeId =(String)request.getAttribute("licenseeId");
+            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate("5B9EADD2-F27D-EA11-BE82-000C29F371DC").getEntity();
+            map.put("applicationNumber",applicationDto.getApplicationNo());
 
+        }
+
+    }
+
+    private  void  sendAppealReject(HttpServletRequest request) throws IOException, TemplateException {
+        ApplicationDto applicationDto=(ApplicationDto)request.getAttribute("application");
+        String applicationType = applicationDto.getApplicationType();
+        String applicationNo = applicationDto.getApplicationNo();
+        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+            Map<String,Object> map=new HashMap<>();
+            String licenseeId =(String)request.getAttribute("licenseeId");
+            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate("3BA1C87A-5F7D-EA11-BE82-000C29F371DC").getEntity();
+            if(msgTemplateDto!=null){
+                map.put("applicationNumber",applicationNo);
+                String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
+                EmailDto emailDto = new EmailDto();
+                emailDto.setContent(mesContext);
+                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                emailDto.setSubject("MOH IAIS – Appeal, "+applicationNo+" , is Rejected");
+                emailDto.setClientQueryCode(applicationNo);
+                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                emailClient.sendNotification(emailDto).getEntity();
+            }
+        }
+    }
 }

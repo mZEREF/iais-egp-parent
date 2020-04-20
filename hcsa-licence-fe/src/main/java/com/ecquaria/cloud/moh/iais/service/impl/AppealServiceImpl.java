@@ -166,12 +166,14 @@ public class AppealServiceImpl implements AppealService {
         AppPremiseMiscDto appPremiseMiscDto=new AppPremiseMiscDto();
         if(!StringUtil.isEmpty(saveDraftId)){
             AppSubmissionDto entity = applicationClient.draftNumberGet(saveDraftId).getEntity();
-            entity.setAmountStr(s);
-            entity.setAppGrpId(groupId);
-            if(!StringUtil.isEmpty(draftStatus)){
-                entity.setDraftStatus(draftStatus);
+            if(entity!=null){
+                entity.setAmountStr(s);
+                entity.setAppGrpId(groupId);
+                if(!StringUtil.isEmpty(draftStatus)){
+                    entity.setDraftStatus(draftStatus);
+                }
+                applicationClient.saveDraft(entity).getEntity();
             }
-            applicationClient.saveDraft(entity).getEntity();
             appPremiseMiscDto.setRemarks(remarks);
             appPremiseMiscDto.setReason(reasonSelect);
 

@@ -165,9 +165,9 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                       <span class="col-xs-6 col-md-6">
                             <c:choose>
-                              <c:when test="${cgo.professionType=='PROF001'  }">Dentist</c:when>
-                              <c:when test="${cgo.professionType=='PROF002'  }">Doctor</c:when>
-                              <c:when test="${cgo.professionType=='PROF003'  }">Nurse</c:when>
+                              <c:when test="${cgo.professionType=='PROF001'}">Dentist</c:when>
+                              <c:when test="${cgo.professionType=='PROF002'}">Doctor</c:when>
+                              <c:when test="${cgo.professionType=='PROF003'}">Nurse</c:when>
                             </c:choose>
                         </span>
                       <wrms:value width="7">
@@ -191,10 +191,10 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn No.</p>
                   </td>
                   <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6">${cgo.professionRegoNo }</span>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6">${cgo.professionRegoNo}</span>
                       <span  class="col-xs-6 col-md-6">
                               <wrms:value width="7">
-                                <span class="newVal compareTdStyle" attr="${cgo.professionRegoNo }" style="display: none"><label><c:out value="${cgo.professionRegoNo }"/></label></span>
+                                <span class="newVal compareTdStyle" attr="${cgo.professionRegoNo }" style="display: none"><label><c:out value="${cgo.professionRegoNo}"/></label></span>
                                 <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionRegoNo}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionRegoNo}"/></label></span>
                               </wrms:value>
                         </span>
@@ -228,7 +228,7 @@
                 </c:if>
                 <tr>
                   <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Subspeciality or relevant qualification :</p>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Subspeciality or relevant qualification </p>
                   </td>
                   <td>
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> </p>
@@ -236,21 +236,39 @@
                 </tr>
 
                 <tr>
-                  <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.</p>
-                  </td>
-                  <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6">${cgo.mobileNo}</span>
+                <td class="col-xs-6">
+                  <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.</p>
+                </td>
+                <td>
+                  <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6">${cgo.mobileNo}</span>
 
-                      <span class="col-xs-6 col-md-6">
+                    <span class="col-xs-6 col-md-6">
                             <wrms:value width="7">
                               <span class="newVal compareTdStyle" attr="${cgo.mobileNo}"  style="display: none"><label><c:out value="${cgo.mobileNo}"/></label></span>
                               <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].mobileNo}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].mobileNo}"/></label></span>
                             </wrms:value>
                         </span>
+                  </p>
+                </td>
+              </tr>
+
+                <tr>
+                  <td class="col-xs-6">
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email Address</p>
+                  </td>
+                  <td>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6">${cgo.emailAddr}</span>
+
+                      <span class="col-xs-6 col-md-6">
+                            <wrms:value width="7">
+                              <span class="newVal compareTdStyle" attr="${cgo.emailAddr}"  style="display: none"><label><c:out value="${cgo.emailAddr}"/></label></span>
+                              <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].emailAddr}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].mobileNo}"/></label></span>
+                            </wrms:value>
+                        </span>
                     </p>
                   </td>
                 </tr>
+
               </table>
             </div>
           </div>
