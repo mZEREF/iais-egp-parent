@@ -80,7 +80,7 @@
                       <iais:action >
                         <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:userConfirmSpecificDateReject()">Reject</button>
                         <span style="float:right">&nbsp;</span>
-                        <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:userConfirmSpecificDateAccept()">Accept</button>
+                        <iais:confirm yesBtnCls="btn btn-primary" msg="ACKAPPT_002" callBack="userConfirmSpecificDateAccept()" popupOrder="saveDraft" title="Message from webpage" needCancel="false"></iais:confirm>
                       </iais:action>
                     </iais:section>
                   </c:if>
