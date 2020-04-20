@@ -186,13 +186,20 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             }
         }
 
-        List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
+        List<ComplianceHistoryDto> complianceHistoryDtos= getComplianceHistoryDtosByLicId(licenceId);
 
+        ParamUtil.setSessionAttr(request,"complianceHistoryDtos", (Serializable) complianceHistoryDtos);
+        ParamUtil.setSessionAttr(request,"organizationLicDto",organizationLicDto);
+        ParamUtil.setSessionAttr(request,"personnelsDto", (Serializable) personnelsDto);
+    }
+
+    public List<ComplianceHistoryDto> getComplianceHistoryDtosByLicId(String licenceId){
+        List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
         List<ComplianceHistoryDto> complianceHistoryDtos= IaisCommonUtils.genNewArrayList();
-        for(LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos){
+        for(LicAppCorrelationDto appCorrelationDto:licAppCorrelationDtos){
             ComplianceHistoryDto complianceHistoryDto=new ComplianceHistoryDto();
-            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDto.getApplicationId()).getEntity();
-            ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDto.getApplicationId()).getEntity();
+            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appCorrelationDto.getApplicationId()).getEntity();
+            ApplicationDto applicationDto=applicationClient.getApplicationById(appCorrelationDto.getApplicationId()).getEntity();
             ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
             complianceHistoryDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Post":"Pre");
             complianceHistoryDto.setAppPremCorrId(appPremisesCorrelationDto.getId());
@@ -239,10 +246,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 // complianceHistoryDtos.add(complianceHistoryDto);
             }
         }
-
-        ParamUtil.setSessionAttr(request,"complianceHistoryDtos", (Serializable) complianceHistoryDtos);
-        ParamUtil.setSessionAttr(request,"organizationLicDto",organizationLicDto);
-        ParamUtil.setSessionAttr(request,"personnelsDto", (Serializable) personnelsDto);
+        return complianceHistoryDtos;
     }
 
     @Override
