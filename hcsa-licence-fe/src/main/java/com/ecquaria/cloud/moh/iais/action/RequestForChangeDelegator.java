@@ -34,11 +34,6 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.sz.commons.util.FileUtil;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +41,12 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /****
  *
@@ -503,6 +504,9 @@ public class RequestForChangeDelegator {
                 svcNames.add(svcName);
                 List<HcsaServiceDto> hcsaServiceDtoList  = serviceConfigService.getHcsaServiceByNames(svcNames);
                 ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+                for(AppGrpPremisesDto appGrpPremisesDto:appSubmissionDto.getAppGrpPremisesDtoList()){
+                    NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                }
                 //set svcInfo
                 NewApplicationHelper.setSubmissionDtoSvcData(bpc.request,appSubmissionDto);
                 //set laboratory disciplines info
