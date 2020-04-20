@@ -32,4 +32,6 @@ public interface CessationService {
 
     List<String> listHciName();
 
+    Boolean getlicIdToCessation(List<String> licIds);
+
 }

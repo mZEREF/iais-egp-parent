@@ -241,6 +241,16 @@ public class CessationServiceImpl implements CessationService {
         return hciNames;
     }
 
+    @Override
+    public Boolean getlicIdToCessation(List<String> licIds) {
+        List<String> entity = cessationClient.getlicIdToCessation(licIds).getEntity();
+        if(entity!=null&&!entity.isEmpty()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     /*
     utils
      */

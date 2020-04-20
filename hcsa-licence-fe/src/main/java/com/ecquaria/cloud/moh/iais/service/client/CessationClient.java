@@ -41,4 +41,7 @@ public interface CessationClient {
 
     @GetMapping(value = "/appeal/listHciName",produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> listHciNames();
+
+    @PostMapping(value = "/appeal/list-cessation-licIds",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getlicIdToCessation(@RequestBody List<String> licIds);
 }
