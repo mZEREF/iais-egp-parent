@@ -193,6 +193,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         ParamUtil.setSessionAttr(request,"personnelsDto", (Serializable) personnelsDto);
     }
 
+    @Override
     public List<ComplianceHistoryDto> getComplianceHistoryDtosByLicId(String licenceId){
         List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
         List<ComplianceHistoryDto> complianceHistoryDtos= IaisCommonUtils.genNewArrayList();
