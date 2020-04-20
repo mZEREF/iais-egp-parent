@@ -77,7 +77,7 @@
     function apptTwoConfirmInspDateCon() {
         showWaiting();
         $("#actionValue").val('reconfirm');
-        apptTwoConfirmInspDateSubmit('reconfirm');
+        apptTwoConfirmInspDateSubmit('success');
     }
 
     function apptTwoConfirmInspDateBack() {
