@@ -174,6 +174,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         apptInspectionDateDto.setRefNo(apptFeConfirmDateDto.getTaskRefNo());
         AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
         appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        apptInspectionDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDto);
 
         feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
@@ -275,6 +276,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         apptInspectionDateDto.setRefNo(apptFeConfirmDateDto.getTaskRefNo());
         AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
         appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        apptInspectionDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDto);
 
         feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
