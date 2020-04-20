@@ -1,1 +1,0 @@
-<%@include file="/iais/riskconfig/RiskLeadershipConfirmPage.jsp"%>

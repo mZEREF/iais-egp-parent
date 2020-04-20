@@ -11,7 +11,10 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
+
+import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___MohLeadershipRiskSubConfig___1 extends BaseProcessClass {
 
@@ -39,11 +42,6 @@ public class INTRANET___MohLeadershipRiskSubConfig___1 extends BaseProcessClass 
 	public void doNext_OnStepProcess_0() throws Exception {
 	// 		DoNext->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doNext", this);
-	}
-
-	public void preConfirm_OnStepProcess_0() throws Exception {
-	// 		PreConfirm->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "confirm", this);
 	}
 
 	public void backMenu_OnStepProcess_0() throws Exception {
