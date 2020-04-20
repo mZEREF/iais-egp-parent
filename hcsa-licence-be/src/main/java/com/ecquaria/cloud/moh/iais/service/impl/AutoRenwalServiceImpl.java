@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
@@ -53,7 +54,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     private OrganizationClient organizationClient;
     @Autowired
     private SystemBeLicClient systemBeLicClient;
-    private SimpleDateFormat simpleDateFormat =new SimpleDateFormat("dd/MM/yyyy");
+    private SimpleDateFormat simpleDateFormat =new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
 
     private static final String EMAIL_SUBJECT="MOH IAIS – REMINDER TO RENEW LICENCE";
     @Override

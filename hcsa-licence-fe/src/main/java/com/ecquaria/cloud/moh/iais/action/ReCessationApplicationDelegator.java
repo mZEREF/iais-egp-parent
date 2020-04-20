@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -214,7 +215,7 @@ public class ReCessationApplicationDelegator {
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + "whichTodo" + j);
                 if (!StringUtil.isEmpty(whichTodo)) {
                     String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i + "effectiveDate" + j);
-                    Date effectiveDate = DateUtil.parseDate(effectiveDateStr, "dd/MM/yyyy");
+                    Date effectiveDate = DateUtil.parseDate(effectiveDateStr, AppConsts.DEFAULT_DATE_FORMAT);
                     String reason = ParamUtil.getRequestString(bpc.request, i + "reason" + j);
                     String otherReason = ParamUtil.getRequestString(bpc.request, i + "otherReason" + j);
                     String patRadio = ParamUtil.getRequestString(bpc.request, i + "patRadio" + j);

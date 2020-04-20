@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -113,8 +114,8 @@ public class SubmitInspectionDateDelegator {
             return;
         }
 
-        Date sDate = IaisEGPHelper.parseToDate(startDate, "dd/MM/yyyy");
-        Date eDate = IaisEGPHelper.parseToDate(endDate, "dd/MM/yyyy");
+        Date sDate = IaisEGPHelper.parseToDate(startDate, AppConsts.DEFAULT_DATE_FORMAT);
+        Date eDate = IaisEGPHelper.parseToDate(endDate, AppConsts.DEFAULT_DATE_FORMAT);
         ParamUtil.setRequestAttr(bpc.request, "inspStartDate", sDate);
         ParamUtil.setRequestAttr(bpc.request, "inspEndDate", eDate);
 

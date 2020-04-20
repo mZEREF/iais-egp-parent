@@ -190,7 +190,7 @@ public class ApptInspectionDateDelegator {
     private Date getSpecificDate(String specificDate1, ApptInspectionDateDto apptInspectionDateDto, List<SelectOption> hoursOption) {
         if(specificDate1 != null) {
             Date specificDate = null;
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
             Date sub_date1 = null;
             try {
                 sub_date1 = sdf.parse(specificDate1);

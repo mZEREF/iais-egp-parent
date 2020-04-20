@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -23,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
+import com.sun.xml.internal.bind.v2.TODO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +39,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author: yichen
@@ -64,6 +68,7 @@ public class ProfessionalInformationDelegator {
 			.searchAttr(PROFESSIONAL_INFORMATION_SEARCH)
 			.resultAttr(PROFESSIONAL_INFORMATION_RESULT)
 			.sortField("id").sortType(SearchParam.ASCENDING).build();
+
 
 	/**
 	 * StartStep: preLoad
@@ -157,13 +162,32 @@ public class ProfessionalInformationDelegator {
 
 	}
 
+	private List<HcsaServiceDto> receiveHcsaService(){
+		List<HcsaServiceDto> svcNames = HcsaServiceCacheHelper.receiveAllHcsaService();
+
+		//TODO phase 1 value
+		return svcNames.stream().filter(i ->
+				i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY) || i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_TISSUE_BANKING)
+						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)
+						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY) || i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING)
+		).collect(Collectors.toList());
+	}
+
 	/**
 	 * setup option to web page
 	 * @param request
 	 */
 	private void preSelectOption(HttpServletRequest request){
-		List<HcsaServiceDto> svcNames = HcsaServiceCacheHelper.receiveAllHcsaService();;
+		List<HcsaServiceDto> svcNames = receiveHcsaService();
 		List<SelectOption> svcNameSelect = IaisCommonUtils.genNewArrayList();
+
+		List<SelectOption> psnType =  IaisCommonUtils.genNewArrayList();
+		psnType.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO));
+		psnType.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, ApplicationConsts.PERSONNEL_PSN_TYPE_PO));
+		psnType.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO));
+		psnType.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT, ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT));
+
+		ParamUtil.setRequestAttr(request, "psnType", psnType);
 
 		for (HcsaServiceDto s : svcNames){
 			svcNameSelect.add(new SelectOption(s.getSvcName(), s.getSvcName()));

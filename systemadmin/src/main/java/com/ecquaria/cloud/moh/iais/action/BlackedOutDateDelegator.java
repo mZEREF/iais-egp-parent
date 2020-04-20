@@ -167,8 +167,8 @@ public class BlackedOutDateDelegator {
                         .filter(item -> item.getId().equals(blackDateId)).findFirst().orElse(null);
                 if (Optional.of(blackoutDateQueryDto).isPresent()){
                     ParamUtil.setRequestAttr(request, "shortName", blackoutDateQueryDto.getShortName());
-                    ParamUtil.setRequestAttr(request, "startDate", IaisEGPHelper.parseToString(blackoutDateQueryDto.getStartDate(), "dd/MM/yyyy"));
-                    ParamUtil.setRequestAttr(request, "endDate", IaisEGPHelper.parseToString(blackoutDateQueryDto.getEndDate(), "dd/MM/yyyy"));
+                    ParamUtil.setRequestAttr(request, "startDate", IaisEGPHelper.parseToString(blackoutDateQueryDto.getStartDate(), AppConsts.DEFAULT_DATE_FORMAT));
+                    ParamUtil.setRequestAttr(request, "endDate", IaisEGPHelper.parseToString(blackoutDateQueryDto.getEndDate(), AppConsts.DEFAULT_DATE_FORMAT));
                     ParamUtil.setRequestAttr(request, "desc", blackoutDateQueryDto.getDesc());
                     ParamUtil.setRequestAttr(request, "status", blackoutDateQueryDto.getStatus());
                     ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_ATTR, blackoutDateQueryDto);
@@ -281,11 +281,11 @@ public class BlackedOutDateDelegator {
         }
 
         if (!StringUtils.isEmpty(ldate)){
-            blackoutDateDto.setStartDate(IaisEGPHelper.parseToDate(ldate, "dd/MM/yyyy"));
+            blackoutDateDto.setStartDate(IaisEGPHelper.parseToDate(ldate, AppConsts.DEFAULT_DATE_FORMAT));
         }
 
         if (!StringUtils.isEmpty(rdate)){
-            blackoutDateDto.setEndDate(IaisEGPHelper.parseToDate(rdate, "dd/MM/yyyy"));
+            blackoutDateDto.setEndDate(IaisEGPHelper.parseToDate(rdate, AppConsts.DEFAULT_DATE_FORMAT));
         }
 
         blackoutDateDto.setDesc(desc);
@@ -301,8 +301,8 @@ public class BlackedOutDateDelegator {
             return;
         }
 
-        boolean isAfterDate = IaisEGPHelper.isAfterDate(IaisEGPHelper.parseToDate(ldate, "dd/MM/yyyy"),
-                IaisEGPHelper.parseToDate(rdate, "dd/MM/yyyy"));
+        boolean isAfterDate = IaisEGPHelper.isAfterDate(IaisEGPHelper.parseToDate(ldate, AppConsts.DEFAULT_DATE_FORMAT),
+                IaisEGPHelper.parseToDate(rdate, AppConsts.DEFAULT_DATE_FORMAT));
 
         if (!isAfterDate){
             errorMap.put(CUSTOM_VALIDATEION_ATTR, MessageCodeKey.USER_ERR007);

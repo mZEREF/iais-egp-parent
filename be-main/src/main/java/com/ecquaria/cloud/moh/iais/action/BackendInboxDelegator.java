@@ -556,7 +556,7 @@ public class BackendInboxDelegator {
             SearchResult<InspectionAppGroupQueryDto> searchResult3 = inspectionService.searchInspectionBeAppGroup(searchParamGroup);
             List<InspectionAppGroupQueryDto> inspectionAppGroupQueryDtoList = searchResult3.getRows();
             SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd");
-            SimpleDateFormat newformat =  new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat newformat =  new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
             for (InspectionAppGroupQueryDto item:inspectionAppGroupQueryDtoList
                  ) {
                 long lt = format.parse(item.getSubmitDate()).getTime();

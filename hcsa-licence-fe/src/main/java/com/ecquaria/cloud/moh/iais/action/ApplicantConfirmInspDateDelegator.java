@@ -347,7 +347,7 @@ public class ApplicantConfirmInspDateDelegator {
 
     private Date getSaveDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
         Date saveDate = null;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
         Date sub_date1 = null;
         try {
             sub_date1 = sdf.parse(apptFeConfirmDateDto.getRejectDate());

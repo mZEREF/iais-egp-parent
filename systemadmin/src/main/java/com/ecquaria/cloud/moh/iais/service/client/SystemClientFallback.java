@@ -37,7 +37,7 @@ public class SystemClientFallback implements SystemClient{
     }
 
     @Override
-    public FeignResponseEntity<String> saveSystemParameter(SystemParameterDto dto) {
+    public FeignResponseEntity<SystemParameterDto> saveSystemParameter(SystemParameterDto dto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

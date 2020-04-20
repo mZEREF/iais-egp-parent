@@ -275,7 +275,7 @@ public class InspectionServiceImpl implements InspectionService {
                 AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(superPoolTaskQueryDto.getTaskRefNo(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
                 if(appPremisesRecommendationDto != null){
                     superPoolTaskQueryDto.setInspectionDate(appPremisesRecommendationDto.getRecomInDate());
-                    String inspDateStr = Formatter.formatDateTime(appPremisesRecommendationDto.getRecomInDate(), "dd/MM/yyyy");
+                    String inspDateStr = Formatter.formatDateTime(appPremisesRecommendationDto.getRecomInDate(), AppConsts.DEFAULT_DATE_FORMAT);
                     superPoolTaskQueryDto.setInspectionDateStr(inspDateStr);
                 } else {
                     superPoolTaskQueryDto.setInspectionDate(null);
@@ -289,7 +289,7 @@ public class InspectionServiceImpl implements InspectionService {
                     Date licExpiryDate = licenceDto.getExpiryDate();
                     if(licExpiryDate != null) {
                         superPoolTaskQueryDto.setLicenceExpiryDate(licExpiryDate);
-                        String licExpiryDateStr = Formatter.formatDateTime(licExpiryDate, "dd/MM/yyyy");
+                        String licExpiryDateStr = Formatter.formatDateTime(licExpiryDate, AppConsts.DEFAULT_DATE_FORMAT);
                         superPoolTaskQueryDto.setLicenceExpiryDateStr(licExpiryDateStr);
                     } else {
                         superPoolTaskQueryDto.setLicenceExpiryDate(null);

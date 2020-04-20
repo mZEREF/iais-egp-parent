@@ -208,7 +208,7 @@ public class InspSupAddAvailabilityDelegator {
     }
 
     private Date nonAvaStringToDate(String stringDate) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
         Date date1 = null;
         try {
             date1 = sdf.parse(stringDate);

@@ -234,7 +234,7 @@ public class BlastManagementDelegator {
         blastManagementDto.setStatus(status);
         blastManagementDto.setHH(HH);
         blastManagementDto.setMM(MM);
-        SimpleDateFormat newformat =  new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat newformat =  new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
 
         if(!StringUtil.isEmpty(date)){
             try {

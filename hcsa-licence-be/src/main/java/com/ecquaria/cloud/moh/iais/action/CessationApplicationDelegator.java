@@ -247,7 +247,7 @@ public class CessationApplicationDelegator {
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + WHICHTODO + j);
                 if (!StringUtil.isEmpty(whichTodo)) {
                     String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i + EFFECTIVEDATE + j);
-                    Date effectiveDate = DateUtil.parseDate(effectiveDateStr, "dd/MM/yyyy");
+                    Date effectiveDate = DateUtil.parseDate(effectiveDateStr, AppConsts.DEFAULT_DATE_FORMAT);
                     String reason = ParamUtil.getRequestString(bpc.request, i + REASON + j);
                     String otherReason = ParamUtil.getRequestString(bpc.request, i + OTHERREASON + j);
                     String patRadio = ParamUtil.getRequestString(bpc.request, i + PATRADIO + j);

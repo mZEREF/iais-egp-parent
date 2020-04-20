@@ -27,102 +27,98 @@
         <span id="error_checkBoxError" name="iaisErrorMsg" class="error-msg"></span>
 
 
-        <iais:section title="" id="demoList">
+        <div class="form-horizontal">
+            <table width="100%">
 
-            <table class="table">
-                <tbody>
-                <tr>
-                    <td>
-                        <iais:field value="Name.(Professional, CGO, PO & etc)"/>
-                        <iais:value width="18">
-                            <input type="text" name="name" value="${name}"/>
-                            <span id="error_name" name="iaisErrorMsg" class="error-msg"></span>
-                        </iais:value>
-                    </td>
 
-                    <td>
-                        <iais:field value="Professional RgnNo(MCR,DCR)"/>
-                        <iais:value width="18">
-                            <input type="text" name="profRegNo" value="${profRegNo}"/>
-                            <span id="error_profRegNo" name="iaisErrorMsg" class="error-msg"></span>
-                        </iais:value>
-                    </td>
+            <tr>
+                <td>
+                    <label class="col-xs-0 col-md-5 control-label">Name</label>
+                    <div class="col-sm-7 col-md-5 col-xs-6">
+                        <input type="text" name="name" value="${name}" maxlength="66">
+                        <span id="error_name" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                </td>
 
-                </tr>
+                <td>
+                    <label class="col-xs-0 col-md-5 control-label">Professional Regn No</label>
+                    <div class="col-sm-7 col-md-5 col-xs-6">
+                        <input type="text" name="profRegNo" value="${profRegNo}" maxlength="20"/>
+                        <span id="error_profRegNo" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                </td>
+            </tr>
 
-                <tr>
-                    <td>
-                        <iais:field value="Hci Name"/>
-                        <iais:value width="18">
-                            <input type="text" name="hciName" value="${hciName}"/>
-                            <span id="error_hciName" name="iaisErrorMsg" class="error-msg"></span>
-                        </iais:value>
-                    </td>
+            <tr>
+                <td>
+                    <label class="col-xs-0 col-md-5 control-label">HCI Name</label>
+                    <div class="col-sm-7 col-md-5 col-xs-6">
+                        <input type="text" name="hciName" value="${hciName}" maxlength="100"/>
+                        <span id="error_hciName" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                </td>
 
-                    <td>
-                        <iais:field value="Hci Code"/>
-                        <iais:value width="18">
-                            <input type="text" name="hciCode" value="${hciCode}"/>
-                            <span id="error_hciCode" name="iaisErrorMsg" class="error-msg"></span>
-                        </iais:value>
-                    </td>
+                <td>
+                    <label class="col-xs-0 col-md-5 control-label">HCI Code</label>
+                    <div class="col-sm-7 col-md-5 col-xs-6">
+                        <input type="text" name="hciCode" value="${hciCode}" maxlength="7"/>
+                        <span id="error_hciCode" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                </td>
+            </tr>
 
-                </tr>
 
-                <tr>
-                    <td>
-                        <iais:field value="Hci Postalode"/>
-                        <iais:value width="18">
-                            <input type="text" name="hciPostalcode" value="${hciPostalcode}"/>
-                            <span id="error_hciPostalcode" name="iaisErrorMsg" class="error-msg"></span>
-                        </iais:value>
-                    </td>
+            <tr>
+                <td>
+                    <label class="col-xs-0 col-md-5 control-label">HCI Postal Code</label>
+                    <div class="col-sm-7 col-md-5 col-xs-6">
+                        <input type="text" name="hciPostalcode" value="${hciPostalcode}" maxlength="6"/>
+                        <span id="error_hciPostalcode" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                </td>
 
-                    <td>
-                        <iais:field value="Hci Address"/>
-                        <iais:value width="18">
-                            <input type="text" name="practiceLocation" value="${practiceLocation}"/>
-                            <span id="error_practiceLocation" name="iaisErrorMsg" class="error-msg"></span>
-                        </iais:value>
-                    </td>
+                <td>
+                    <label class="col-xs-0 col-md-5 control-label">HCI Address</label>
+                    <div class="col-sm-7 col-md-5 col-xs-6">
+                        <input type="text" name="practiceLocation" value="${practiceLocation}" maxlength="32"/>
+                        <span id="error_practiceLocation" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                </td>
+            </tr>
 
-                </tr>
+            <tr>
+                <td>
+                    <label class="col-xs-0 col-md-5 control-label">Service Name</label>
+                    <div class="col-sm-7 col-md-5 col-xs-6">
+                        <iais:select name="serviceName" id="serviceName" options="svcNameSelect"
+                                     firstOption="Please Select" value="${serviceName}"></iais:select>
+                        <span id="error_serviceName" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                </td>
 
-                <tr>
-                    <td>
-                        <iais:field value="Service Name"/>
-                        <iais:value width="18">
-                            <iais:select name="serviceName" id="serviceName" options="svcNameSelect"
-                                         firstOption="Please Select" value="${serviceName}"></iais:select>
-                            <span id="error_serviceName" name="iaisErrorMsg" class="error-msg"></span>
-                        </iais:value>
-                    </td>
+                <td>
+                    <label class="col-xs-0 col-md-5 control-label">Designation</label>
+                    <div class="col-sm-7 col-md-5 col-xs-6">
+                        <iais:select name="designation" id="designation" codeCategory="CATE_ID_DESIGNATION"
+                                     firstOption="Please Select" value="${designation}"></iais:select>
+                        <span id="error_designation" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                </td>
+            </tr>
 
-                    <td>
-                        <iais:field value="Designation Name"/>
-                        <iais:value width="18">
-                            <iais:select name="designation" id="designation" codeCategory="CATE_ID_DESIGNATION"
-                                         firstOption="Please Select" value="${designation}"></iais:select>
-                            <span id="error_designation" name="iaisErrorMsg" class="error-msg"></span>
-                        </iais:value>
-                    </td>
+            <tr>
+                <td>
+                    <label class="col-xs-0 col-md-5 control-label">Service Personnal Role</label>
+                    <div class="col-sm-7 col-md-5 col-xs-6">
+                        <iais:select name="role" id="role" options="psnType"
+                                     firstOption="Please Select"
+                                     value="${role}"></iais:select>
+                        <span id="error_role" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                </td>
 
-                </tr>
+            </tr>
 
-                <tr>
-                    <td>
-                        <iais:field value="Service Personnal Role"/>
-                        <iais:value width="18">
-                            <iais:select name="role" id="role" codeCategory="CATE_ID_DESIGNATION"
-                                         firstOption="Please Select"
-                                         value="${role}"></iais:select>
-                            <span id="error_role" name="iaisErrorMsg" class="error-msg"></span>
-                        </iais:value>
-                    </td>
-
-                </tr>
-
-                </tbody>
             </table>
 
             <div class="application-tab-footer">
@@ -136,11 +132,9 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-        </iais:section>
 
-
-        <br><br>
         <div>
             <div class="tab-pane active" id="tabInbox" role="tabpanel">
                 <div class="tab-content">
@@ -159,15 +153,17 @@
                                             <iais:sortableHeader needSort="true" field="name"
                                                                  value="Name"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true" field="prof_reg_no"
-                                                                 value="Professional Registration No"></iais:sortableHeader>
+                                                                 value="Professional Regn No"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true" field="practive_location"
-                                                                 value="Practive_Location"></iais:sortableHeader>
+                                                                 value="Practive Location"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true" field="licence_no"
                                                                  value="Active Licence"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true" field="service_name"
                                                                  value="Service"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true" field="designation"
-                                                                 value="Designation Name"></iais:sortableHeader>
+                                                                 value="Designation"></iais:sortableHeader>
+                                            <iais:sortableHeader needSort="true" field="psn_type"
+                                                                 value="Service Personnel Role"></iais:sortableHeader>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -193,7 +189,7 @@
                                                         <td>${info.licence}</td>
                                                         <td>${info.serviceName}</td>
                                                         <td><iais:code code="${info.designation}"></iais:code></td>
-                                                        <td>
+                                                        <td>${info.role}</td>
                                                     </tr>
                                                 </c:forEach>
 

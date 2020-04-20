@@ -117,7 +117,7 @@ public class EmailResendDelegator {
         String HH = ParamUtil.getString(bpc.request, "HH");
         String MM = ParamUtil.getString(bpc.request, "MM");
         blastManagementDto.setId(id);
-        SimpleDateFormat newformat =  new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat newformat =  new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
         Date schedule = new Date();
         if(!StringUtil.isEmpty(date)){
             try {

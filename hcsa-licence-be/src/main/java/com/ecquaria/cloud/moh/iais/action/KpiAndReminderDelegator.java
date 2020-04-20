@@ -96,7 +96,7 @@ public class KpiAndReminderDelegator {
 
         bpc.request.getSession().setAttribute("hcsaSvcRoutingStageDtos",entity);
         Date date=new Date();
-        String format = new SimpleDateFormat("dd/MM/yyyy ", Locale.ENGLISH).format(date);
+        String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT, Locale.ENGLISH).format(date);
         bpc.request.setAttribute("date",format);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();

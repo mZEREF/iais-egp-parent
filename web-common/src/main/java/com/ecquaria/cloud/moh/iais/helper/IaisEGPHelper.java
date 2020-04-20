@@ -212,7 +212,7 @@ public final class IaisEGPHelper extends EGPHelper {
         }
 
         try {
-            return FastDateFormat.getInstance("dd/MM/yyyy").parse(val);
+            return FastDateFormat.getInstance(AppConsts.DEFAULT_DATE_FORMAT).parse(val);
         } catch (ParseException e) {
             throw new IaisRuntimeException(e.getMessage());
         }

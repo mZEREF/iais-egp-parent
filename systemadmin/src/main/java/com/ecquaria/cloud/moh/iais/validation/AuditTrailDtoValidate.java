@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.audit.AuditTrailConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -33,8 +34,8 @@ public class AuditTrailDtoValidate implements CustomizeValidator {
 						|| StringUtils.isEmpty(endDate)){
 					errMap.put("actionTime", MessageCodeKey.ERR0010);
 				}else {
-					int reduceDay = getReduceDay(IaisEGPHelper.parseToDate(startDate, "dd/MM/yyyy"),
-							IaisEGPHelper.parseToDate(endDate, "dd/MM/yyyy"));
+					int reduceDay = getReduceDay(IaisEGPHelper.parseToDate(startDate, AppConsts.DEFAULT_DATE_FORMAT),
+							IaisEGPHelper.parseToDate(endDate, AppConsts.DEFAULT_DATE_FORMAT));
 
 					String paramVal = SystemParamCacheHelper
 							.getParamValueById(SystemParamCacheHelper.AUDIT_TRAIL_TIME_LIMIT) == null ? "3" :

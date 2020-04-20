@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.MapFormat;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +69,7 @@ public class MessageUtil {
     }
 
     public static String dateIntoMessage(String codeKey){
-        return dateIntoMessage(codeKey, "dd/MM/yyyy");
+        return dateIntoMessage(codeKey, AppConsts.DEFAULT_DATE_FORMAT);
     }
 
     public static String dateIntoMessage(String codeKey, String pattern){

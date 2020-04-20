@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.IaisApiStatusCode;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaRegulationConstants;
@@ -359,11 +360,11 @@ public class RegulationDelegator {
             switch (action){
                 case "update":
                     apiResult =  regulationService.updateRegulation(dto);
-                    ParamUtil.setRequestAttr(bpc.request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ERR023", "dd/MM/yyyy"));
+                    ParamUtil.setRequestAttr(bpc.request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ERR023", AppConsts.DEFAULT_DATE_FORMAT));
                     break;
                 case "create":
                     apiResult =  regulationService.createRegulation(dto);
-                    ParamUtil.setRequestAttr(bpc.request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ERR024", "dd/MM/yyyy"));
+                    ParamUtil.setRequestAttr(bpc.request,"ackMsg", MessageUtil.dateIntoMessage("CHKL_ERR024", AppConsts.DEFAULT_DATE_FORMAT));
                     break;
                 default:
             }

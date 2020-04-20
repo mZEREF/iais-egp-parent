@@ -289,7 +289,7 @@ public class InspecAssignTaskDelegator {
             searchParam.addFilter("hci_name",hci_name,true);
         }
         if(!StringUtil.isEmpty(sub_date2)){
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
             Date sub_date1 = sdf.parse(sub_date2);
             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
             String sub_date = sdf2.format(sub_date1);

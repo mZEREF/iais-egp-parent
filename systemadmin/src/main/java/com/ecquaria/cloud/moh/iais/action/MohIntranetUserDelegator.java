@@ -451,9 +451,9 @@ public class MohIntranetUserDelegator {
         String userId = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_USERID);
         String displayName = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_DISPLAYNAME);
         String startDateStr = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_STARTDATE);
-        Date startDate = DateUtil.parseDate(startDateStr, "dd/MM/yyyy");
+        Date startDate = DateUtil.parseDate(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
         String endDateStr = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_ENDDATE);
-        Date endDate = DateUtil.parseDate(endDateStr, "dd/MM/yyyy");
+        Date endDate = DateUtil.parseDate(endDateStr, AppConsts.DEFAULT_DATE_FORMAT);
         String[] salutation = ParamUtil.getStrings(request, IntranetUserConstant.INTRANET_SALUTATION);
         if (!StringUtil.isEmpty(equals(salutation[0]))) {
             orgUserDto.setSalutation(salutation[0]);
@@ -493,7 +493,7 @@ public class MohIntranetUserDelegator {
         OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         String displayName = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_DISPLAYNAME);
         String endDateStr = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_ENDDATE);
-        Date endDate = DateUtil.parseDate(endDateStr, "dd/MM/yyyy");
+        Date endDate = DateUtil.parseDate(endDateStr, AppConsts.DEFAULT_DATE_FORMAT);
         String[] salutation = ParamUtil.getStrings(bpc.request, IntranetUserConstant.INTRANET_SALUTATION);
         if (!"".equals(salutation[0])) {
             orgUserDto.setSalutation(salutation[0]);

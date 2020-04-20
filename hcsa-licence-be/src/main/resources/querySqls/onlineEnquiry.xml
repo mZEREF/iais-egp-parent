@@ -2,7 +2,7 @@
 <sqls catalog="onlineEnquiry">
     <sql key = "searchByProfessionalInfo" remarks="search by professional information">
         <![CDATA[
-            select a.id, a.name, a.prof_reg_no, b.practive_location, b.licence_no, b.service_name, a.designation
+            select a.id, a.name, a.prof_reg_no, b.practive_location, b.licence_no, b.service_name, a.designation, a.psn_type
             from
             (
             select

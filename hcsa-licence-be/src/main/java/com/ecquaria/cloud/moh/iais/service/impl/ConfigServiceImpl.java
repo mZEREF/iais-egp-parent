@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.RedirectUtil;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCategoryDto;
@@ -731,7 +732,7 @@ public class ConfigServiceImpl implements ConfigService {
         hcsaServiceDto.setSvcCode(serviceCode);
 
         try {
-            Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(startDate);
+            Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(startDate);
             String format = new SimpleDateFormat("yyyy-MM-dd").format(parse);
             hcsaServiceDto.setEffectiveDate(format);
             if(parse.after(new Date())){
@@ -746,7 +747,7 @@ public class ConfigServiceImpl implements ConfigService {
 
         if (!StringUtil.isEmpty(endDate)) {
             try {
-                hcsaServiceDto.setEndDate(new SimpleDateFormat("dd/MM/yyyy").parse(endDate));
+                hcsaServiceDto.setEndDate(new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(endDate));
             } catch (ParseException e) {
                 hcsaServiceDto.setEndDate(new Date(99,1,1));
             }
@@ -1402,7 +1403,7 @@ public class ConfigServiceImpl implements ConfigService {
         } catch (ParseException e) {
           log.error(e.getMessage(),e);
         }
-        String format = new SimpleDateFormat("dd/MM/yyyy").format(parse);
+        String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(parse);
         hcsaServiceDto.setEffectiveDate(format);
         List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getServiceVersions(hcsaServiceDto.getSvcCode()).getEntity();
         request.setAttribute("hcsaServiceDtosVersion",hcsaServiceDtos);
