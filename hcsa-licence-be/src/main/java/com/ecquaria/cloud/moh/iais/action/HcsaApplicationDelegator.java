@@ -869,8 +869,12 @@ public class HcsaApplicationDelegator {
         String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
         String appGrpId = applicationViewDto.getApplicationDto().getAppGrpId();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
-        //send email
-        sendRejectEmail(applicationNo,licenseeId,appGrpId);
+        //new application send email
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String applicationType = applicationDto.getApplicationType();
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
+            sendRejectEmail(applicationNo,licenseeId,appGrpId);
+        }
         log.debug(StringUtil.changeForLog("the do reject end ...."));
     }
 
@@ -913,33 +917,35 @@ public class HcsaApplicationDelegator {
         InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
                 messageNo,applicationDto.getServiceId(),templateMessageByContent, applicationViewDto.getApplicationGroupDto().getLicenseeId(),IaisEGPHelper.getCurrentAuditTrailDto());
         inboxMsgService.saveInterMessage(interMessageDto);
-        //send email
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVAL_OFFICE_ROUTES_ID).getEntity();
-        if(msgTemplateDto != null){
-            String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
-            String username = licenseeDto.getName();
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            String approvalOfficerName = loginContext.getUserName();
+        //new application send email
+        String applicationType = applicationDto.getApplicationType();
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
+            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVAL_OFFICE_ROUTES_ID).getEntity();
+            if(msgTemplateDto != null){
+                String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
+                String username = licenseeDto.getName();
+                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+                String approvalOfficerName = loginContext.getUserName();
 
-            Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
-            tempMap.put("userName",StringUtil.viewHtml(username));
-            tempMap.put("applicationNumber",StringUtil.viewHtml(applicationNo));
-            tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-            tempMap.put("approvalOfficerName",StringUtil.viewHtml(approvalOfficerName));
+                Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
+                tempMap.put("userName",StringUtil.viewHtml(username));
+                tempMap.put("applicationNumber",StringUtil.viewHtml(applicationNo));
+                tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+                tempMap.put("approvalOfficerName",StringUtil.viewHtml(approvalOfficerName));
 
-            String mesContext = null;
-            mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+                String mesContext = null;
+                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
 
-            EmailDto emailDto = new EmailDto();
-            emailDto.setContent(mesContext);
-            emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + applicationNo);
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-            emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
-            //send
-            emailClient.sendNotification(emailDto).getEntity();
+                EmailDto emailDto = new EmailDto();
+                emailDto.setContent(mesContext);
+                emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + applicationNo);
+                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
+                //send
+                emailClient.sendNotification(emailDto).getEntity();
+            }
         }
-
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
     }
 
