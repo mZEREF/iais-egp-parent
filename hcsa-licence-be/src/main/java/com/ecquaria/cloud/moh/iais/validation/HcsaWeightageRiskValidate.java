@@ -119,7 +119,6 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
             }catch (Exception e){
                 vadFlag = false;
                 errMap.put(serviceCode+"inEndDate","Date Format Error");
-                return false;
             }
         }
         return vadFlag;

@@ -27,6 +27,7 @@ import java.util.Map;
 public class HcsaRiskWeightageConfigDelegator {
     @Autowired
     HcsaRiskWeightageService hcsaRiskWeightageService;
+    private static final String  HCSA_RISK_WEIGHTAGE_SHOW_DTO = "wightageDto";
     public HcsaRiskWeightageConfigDelegator(HcsaRiskWeightageService hcsaRiskWeightageService){
         this.hcsaRiskWeightageService = hcsaRiskWeightageService;
 
@@ -43,7 +44,7 @@ public class HcsaRiskWeightageConfigDelegator {
         log.debug(StringUtil.changeForLog("the init start ...."));
         HttpServletRequest request = bpc.request;
         HcsaRiskWeightageShowDto wightageDto = hcsaRiskWeightageService.getWeightage();
-        ParamUtil.setSessionAttr(request, "wightageDto", wightageDto);
+        ParamUtil.setSessionAttr(request, HCSA_RISK_WEIGHTAGE_SHOW_DTO, wightageDto);
         ;
     }
 
@@ -60,8 +61,8 @@ public class HcsaRiskWeightageConfigDelegator {
     public void doNext(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doNext start ...."));
         HttpServletRequest request = bpc.request;
-        HcsaRiskWeightageShowDto wightageDto = (HcsaRiskWeightageShowDto)ParamUtil.getSessionAttr(request, "wightageDto");
-        wightageDto = getDataFrompage(request, wightageDto);
+        HcsaRiskWeightageShowDto wightageDto = (HcsaRiskWeightageShowDto)ParamUtil.getSessionAttr(request, HCSA_RISK_WEIGHTAGE_SHOW_DTO);
+        getDataFrompage(request, wightageDto);
         HcsaWeightageRiskValidate weightageRiskValidate = new HcsaWeightageRiskValidate();
         Map<String, String> errMap = weightageRiskValidate.validate(request);
         if(errMap.isEmpty()){
@@ -76,7 +77,7 @@ public class HcsaRiskWeightageConfigDelegator {
     public void submit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doSubmit start ...."));
         HttpServletRequest request = bpc.request;
-        HcsaRiskWeightageShowDto wightageDto = (HcsaRiskWeightageShowDto)ParamUtil.getSessionAttr(request, "wightageDto");
+        HcsaRiskWeightageShowDto wightageDto = (HcsaRiskWeightageShowDto)ParamUtil.getSessionAttr(request, HCSA_RISK_WEIGHTAGE_SHOW_DTO);
         hcsaRiskWeightageService.saveDto(wightageDto);
 
 
@@ -100,12 +101,12 @@ public class HcsaRiskWeightageConfigDelegator {
             hcsaRiskWeightageService.getOneWdto(fin,lastInp,secLastInp,finan,leadership,legislative,inStartDate,inEndDate);
         }
         weightageShowDto.setWeightageDtoList(finList);
-        ParamUtil.setSessionAttr(request, "wightageDto", weightageShowDto);
+        ParamUtil.setSessionAttr(request, HCSA_RISK_WEIGHTAGE_SHOW_DTO, weightageShowDto);
         return weightageShowDto;
     }
     public HcsaRiskFinianceVadlidateDto getValueFromPage(HttpServletRequest request) {
         HcsaRiskFinianceVadlidateDto dto = new HcsaRiskFinianceVadlidateDto();
-        HcsaRiskWeightageShowDto wightageDto = (HcsaRiskWeightageShowDto)ParamUtil.getSessionAttr(request, "wightageDto");
+        HcsaRiskWeightageShowDto wightageDto = (HcsaRiskWeightageShowDto)ParamUtil.getSessionAttr(request, HCSA_RISK_WEIGHTAGE_SHOW_DTO);
         getDataFrompage(request, wightageDto);
         return dto;
     }
