@@ -42,9 +42,10 @@ public class EicSelfRecoveDelegator {
 
     public void selfRecover(BaseProcessClass bpc) {
         log.info("<======== Start EIC Self Recover Job =========>");
-        List<EicRequestTrackingDto> atList = atEicClient.getPendingRecords(currentApp).getEntity();
-        List<EicRequestTrackingDto> appList = appEicClient.getPendingRecords(currentApp).getEntity();
-        List<EicRequestTrackingDto> licList = licEicClient.getPendingRecords(currentApp).getEntity();
+        String moduleName = currentApp + "-" + currentDomain;
+        List<EicRequestTrackingDto> atList = atEicClient.getPendingRecords(moduleName).getEntity();
+        List<EicRequestTrackingDto> appList = appEicClient.getPendingRecords(moduleName).getEntity();
+        List<EicRequestTrackingDto> licList = licEicClient.getPendingRecords(moduleName).getEntity();
         AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(currentDomain);
         if (!IaisCommonUtils.isEmpty(atList)) {
             atList.forEach(ert -> {
