@@ -1,3 +1,6 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
+<%@ page import="org.springframework.web.multipart.MultipartHttpServletRequest" %>
+<%@ page import="sop.servlet.webflow.HttpHandler" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
@@ -34,7 +37,10 @@
                         <div class="row">
                             <div class="center-content">
                                 <div class="col-md-7">
-                                    <%String wReason = request.getParameter("withdrawalReason");%>
+                                    <%
+                                        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+                                        String wReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
+                                    %>
                                     <iais:select name="withdrawalReason" id="withdrawalReason"
                                                  options="withdrawalReasonList"
                                                  onchange="withdrawalReasons(this.value);" value="<%=wReason%>"></iais:select>
@@ -42,7 +48,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="reason" hidden>
+
+                        <div id="reason" <%
+                            if (!"WDR005".equals(wReason)){
+                                %>hidden
+                            <%}%>
+                        >
                             <div class="row">
                                 <div class="center-content">
                                     <label class="col-md-4">Any supporting remarks</label>
@@ -52,8 +63,8 @@
                                 <div class="center-content">
                                     <div class="col-md-6">
                                         <%String withdrawnRemarks = request.getParameter("withdrawnRemarks");%>
-                        <textarea name="withdrawnRemarks" cols="58" rows="15" id="htmlEditroArea"
-                                  title="content" content="<%=withdrawnRemarks%>"></textarea>
+                                    <textarea name="withdrawnRemarks" cols="90" rows="15" id="withdrawnRemarks"
+                                        title="content" content="<%=withdrawnRemarks%>" maxlength="500"></textarea>
                                         <span id="error_withdrawnRemarks" name="iaisErrorMsg"
                                               class="error-msg"></span>
                                     </div>

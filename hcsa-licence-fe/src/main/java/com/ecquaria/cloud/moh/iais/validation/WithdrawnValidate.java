@@ -40,7 +40,7 @@ public class WithdrawnValidate implements CustomizeValidator {
         if (StringUtil.isEmpty(withdrawnReason)) {
             errorMap.put("withdrawnReason", "ERR0009");
         }
-        if ("Others".equals(withdrawnReason)) {
+        if ("WDR005".equals(withdrawnReason)) {
             String withdrawnRemarks = ParamUtil.getRequestString(mulReq, "withdrawnRemarks");
             if (StringUtil.isEmpty(withdrawnRemarks)) {
                 errorMap.put("withdrawnRemarks", "ERR0009");
