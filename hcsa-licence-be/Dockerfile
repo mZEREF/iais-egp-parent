@@ -14,7 +14,10 @@ COPY glowroot /glowroot
 RUN chmod +x /usr/local/tomcat/bin/setenv.sh
 RUN chmod +x /run.sh
 
-RUN adduser - -D -u 1000 iais && \
-    chown -R iais: iais /usr/local/ tomcat
+RUN cp -rp /usr/local/tomcat /usr/local/tomcat-bak && \
+    rm -rf /usr/local/tomcat && \
+    mv /usr/local/tomcat-bak /usr/local/tomcat && \
+    adduser -D -u 1000 iais && \
+    chown -R iais:iais /usr/local/tomcat
 
 USER iais
