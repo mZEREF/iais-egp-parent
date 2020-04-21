@@ -59,18 +59,11 @@
         var checkedNum = $("[name='licenceNo']:checked").length;
         if ($('.licenceCheck').is(':checked')){
             if (checkedNum == 1){
-                var statusOne = [];
                 $("#lic-print").removeClass('disabled');
-                $("[name='licenceNo']:checked").each(function (k,v) {
-                    var $currentTr = $(this).closest('tr');
-                    statusOne.push($currentTr.find('td').eq(3).find('p').eq(1).html());
-                });
-                if (!statusOne.includes('Ceased')){
-                    $("#lic-renew").removeClass('disabled');
-                    $("#lic-cease").removeClass('disabled');
-                }else{
-                    $("#lic-amend").removeClass('disabled');
-                }
+                $("#lic-renew").removeClass('disabled');
+                $("#lic-cease").removeClass('disabled');
+                $("#lic-amend").removeClass('disabled');
+
             } else{
                 var statusDuo = [];
                 $("[name='licenceNo']:checked").each(function (k,v) {

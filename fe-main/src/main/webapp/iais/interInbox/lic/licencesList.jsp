@@ -127,7 +127,7 @@
                                         <p class="visible-xs visible-sm table-row-title">Licence No.</p>
                                         <div class="form-check">
                                             <input class="form-check-input licenceCheck" id="licence1" type="checkbox"
-                                                   name="licenceNo" value="licenId${status.index}" aria-invalid="false" onclick="licClick('${licenceQuery.status}')">
+                                                   name="licenceNo" value="licenId${status.index}" aria-invalid="false" <c:if test="${licenceQuery.status != 'LICEST001'}">disabled = "disabled"</c:if>onclick="licClick('${licenceQuery.status}')">
                                             <label class="form-check-label" for="licence1"><span
                                                     class="check-square"></span>
                                             </label>
