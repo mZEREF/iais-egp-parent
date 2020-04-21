@@ -223,7 +223,7 @@
             <label style="font-weight: normal" for="confirmInfo">I have read the information</label>
         </div>
         <iais:action>
-            <a href="/main-web/eservice/INTERNET/MohInternetInbox" style="margin-bottom: 1%;margin-left: 1%"><em class="fa fa-angle-left"></em>Back</a>
+            <a href="/main-web/eservice/INTERNET/MohInternetInbox" style="margin-bottom: 1%;margin-left: 1%"><em class="fa fa-angle-left"></em> Back</a>
             <a style="margin-bottom: 1%;margin-left: 89%" class="btn btn-primary" onclick="submitSure('submit')">Next</a>
         </iais:action>
     </div>

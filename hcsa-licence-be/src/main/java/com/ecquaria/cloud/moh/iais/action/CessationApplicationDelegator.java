@@ -208,7 +208,6 @@ public class CessationApplicationDelegator {
             }else {
                 cessationService.sendEmail(PRESENTDATECESSATION,effectiveDate,svcName,licId,licenseeId);
             }
-
             AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
             appCessatonConfirmDto.setAppNo(applicationNo);
             appCessatonConfirmDto.setEffectiveDate(effectiveDate);

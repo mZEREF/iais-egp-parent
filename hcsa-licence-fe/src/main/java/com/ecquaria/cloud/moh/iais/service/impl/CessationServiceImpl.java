@@ -183,6 +183,7 @@ public class CessationServiceImpl implements CessationService {
             appSubmissionDto.setAuditTrailDto(internet);
             appSubmissionDto.setPreInspection(true);
             appSubmissionDto.setRequirement(true);
+            appSubmissionDto.setLicenseeId("9ED45E34-B4E9-E911-BE76-000C29C8FBE4");
             appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             setRiskToDto(appSubmissionDto);
             AppSubmissionDto entity = applicationClient.saveSubmision(appSubmissionDto).getEntity();

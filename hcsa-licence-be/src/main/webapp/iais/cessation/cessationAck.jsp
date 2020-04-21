@@ -49,7 +49,7 @@
                     </c:forEach>
                 </div>
                 <div align="right">
-                    <button id="ackBack" type="button" class="btn btn-primary" onclick="back('back')">Back</button>
+                    <button id="ackBack" type="button" class="btn btn-primary" onclick="back('back')"> Back</button>
                 </div>
             </div>
         </div>
