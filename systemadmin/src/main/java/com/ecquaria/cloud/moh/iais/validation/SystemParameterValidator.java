@@ -6,6 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
@@ -59,7 +61,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 	private Map<String, String> verifyPageSize(Map<String, String> errorMap, int value){
 		boolean hasError = value < 10 || (value > 50) ? true : false;
 		if (hasError){
-			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "The page size must be between 10 and 50.");
+			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, MessageUtil.getMessageDesc("SYSPAM_ERROR0003"));
 		}
 		return errorMap;
 	}
@@ -67,7 +69,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 	private Map<String, String> verifyAuditTrailWeek(Map<String, String> errorMap, int value){
 		boolean hasError = value < 1 || (value > 52) ? true : false;
 		if (hasError){
-			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "The Audit trail week must be between 1 and 52.");
+			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, MessageUtil.getMessageDesc("SYSPAM_ERROR0002"));
 		}
 		return errorMap;
 	}
@@ -75,7 +77,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 	private Map<String, String> verifyFileUploadSize(Map<String, String> errorMap, int value){
 		boolean hasError = value < 1 || value > 10 ? true : false;
 		if (hasError){
-			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "The file upload size must be between 1 and 10.");
+			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, MessageUtil.getMessageDesc("SYSPAM_ERROR0001"));
 		}
 		return errorMap;
 	}
