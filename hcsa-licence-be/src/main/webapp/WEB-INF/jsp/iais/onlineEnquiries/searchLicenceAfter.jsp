@@ -557,7 +557,7 @@
 
 
 </form>
-<%@include file="/include/utils.jsp" %>
+<%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
     function jumpToPagechangePage() {
         licSearch()
