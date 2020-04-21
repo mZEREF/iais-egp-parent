@@ -25,7 +25,7 @@
 
       <div class="form-group">
         <div>
-          <label class="col-xs-12 col-md-4 control-label">Module:</label>
+          <label class="col-xs-12 col-md-4 control-label">Module</label>
           <div class="col-xs-8 col-sm-6 col-md-5" style="margin-bottom: 1%">
             <select  name="module"  id="module" >
               <option  value="">Please Select</option>
@@ -68,7 +68,7 @@
         <td style="text-align:center;vertical-align:middle;">Reminder Threshold</td>
         <td style="text-align:center;vertical-align:middle;">
           <input name="reminderThreshold" type="text" value="${reminderThreshold}" placeholder="Enter required man-days" maxlength="5" style="width: 50% ;height: 10%"/>
-          man-days
+          man-days<br>
           <span name="iaisErrorMsg" id="error_reminderThreshold" class="error-msg"></span>
          </td>
 
@@ -90,7 +90,7 @@
                     <c:when test="${hcsaSvcRoutingStageDto.stageCode=='POT'}">value="${POT}" </c:when>
                   </c:choose>
                 maxlength="5" style="width: 50% ;height: 10%"/>
-          man-days
+          man-days<br>
           <span name="iaisErrorMsg" id="error_${hcsaSvcRoutingStageDto.stageCode}" class="error-msg"></span>
         </td>
       </tr>
@@ -123,7 +123,7 @@
            <div class="col-xs-12 col-sm-10">
              <div class="text-right text-center-mobile">
 
-                  <a class="btn btn-primary" href="#" id="cancel">Cancel</a>
+                  <a class="btn btn-secondary" href="#" id="cancel">Cancel</a>
                   <a class="btn btn-primary" href="#" id="createRole">Submit</a>
 
              </div>
@@ -137,6 +137,17 @@
   </form>
 
   </div>
+<style>
+  .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    padding: 8px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: 1px solid #000000;
+  }
+  input[type=text], input[type=email], input[type=number] {
+    margin-bottom: 0px;
+  }
+</style>
 <script type="text/javascript">
 
 $(document).ready(function () {

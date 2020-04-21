@@ -51,6 +51,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
                     .append("/main-web/eservice/INTRANET/MohBackendInbox");
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(),request);
             try {
+                clearSession(request);
                 response.sendRedirect(tokenUrl);
 
             } catch (IOException e) {
@@ -139,15 +140,15 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         String configKpi = (String)request.getSession().getAttribute("configKpi");
         if(!"configKpi".equals(configKpi)){
             String service = request.getParameter("service");
-            request.getSession().setAttribute("service",service);
+            request.setAttribute("service",service);
             if(StringUtil.isEmpty(service)){
                 errorMap.put("service","UC_CHKLMD001_ERR001");
             }
         }
         String module = request.getParameter("module");
-        request.getSession().setAttribute("module",module);
+        request.setAttribute("module",module);
         String reminderThreshold = request.getParameter("reminderThreshold");
-        request.getSession().setAttribute("reminderThreshold",reminderThreshold);
+        request.setAttribute("reminderThreshold",reminderThreshold);
         List<HcsaSvcRoutingStageDto> entity = (List<HcsaSvcRoutingStageDto>) request.getSession().getAttribute("hcsaSvcRoutingStageDtos");
 
         for(HcsaSvcRoutingStageDto every:entity){
@@ -179,5 +180,20 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         return errorMap;
     }
 
+    public static void   clearSession(HttpServletRequest request){
+        request.getSession().removeAttribute("module");
+        request.getSession().removeAttribute("configKpi");
+        request.getSession().removeAttribute("service");
+        request.getSession().removeAttribute("reminderThreshold");
+        request.getSession().removeAttribute("date");
+        request.getSession().removeAttribute("entity");
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = (List<HcsaSvcRoutingStageDto>)request.getSession().getAttribute("hcsaSvcRoutingStageDtos");
+        if(hcsaSvcRoutingStageDtos!=null){
+            for(HcsaSvcRoutingStageDto every:hcsaSvcRoutingStageDtos){
+                String stageCode = every.getStageCode();
+                request.getSession().removeAttribute(stageCode);
+            }
+        }
 
+    }
 }

@@ -266,6 +266,9 @@ public class AppealServiceImpl implements AppealService {
             if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
                 requetForInformationGetMessage(request);
             }
+            if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status)){
+                request.getSession().setAttribute("applicationAPPROVED","APPROVED");
+            }
 
             request.getSession().setAttribute("serviceId",applicationDto.getServiceId());
         }

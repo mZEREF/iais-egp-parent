@@ -28,7 +28,7 @@
 
     </div>
     <div class="table-gp">
-      <table class="table" border="1px">
+      <table class="table" border="1px" >
       <tr>
         <c:if test="${type=='licence'}"> <td style="text-align: center">Licence No.</td></c:if>
         <c:if test="${type=='application'}"> <td style="text-align: center">Application No.</td></c:if>
@@ -40,9 +40,11 @@
           <c:when test="${not empty hciNames}">
             <c:forEach items="${hciNames}" var="hciName" varStatus="stauts">
               <tr>
-                <c:if test="${type=='application'}"><td style="text-align: center">${applicationNo}</td>  </c:if>
-                <c:if test="${type=='licence'}"><td style="text-align: center">${licenceNo}</td></c:if>
-                <td style="text-align: center">${serviceName}</td>
+                <c:if test="${stauts.first}">
+                  <c:if test="${type=='application'}"><td style="text-align: center" rowspan="${hciNames.size()}">${applicationNo}</td>  </c:if>
+                  <c:if test="${type=='licence'}"><td style="text-align: center" rowspan="${hciNames.size()}">${licenceNo}</td></c:if>
+                  <td style="text-align: center" rowspan="${hciNames.size()}">${serviceName}</td>
+                </c:if>
                 <td style="text-align: center">${hciName}</td>
                 <td style="text-align: center">${hciAddress[stauts.index]}</td>
               </tr>
@@ -64,6 +66,13 @@
     </div>
   </form>
 </div>
+<style>
+  .table-gp table.table > tbody > tr > td {
+    padding: 15px 25px 15px 0;
+    border: 1px solid #000000;
+    vertical-align: top;
+  }
+</style>
 <script>
 
     $('#cancel').click(function () {

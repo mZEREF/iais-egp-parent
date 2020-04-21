@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.impl.KpiAndReminderServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +49,7 @@ public class KpiAndReminderDelegator {
     @Autowired
     private OrganizationClient organizationClient;
     public void  start(BaseProcessClass bpc){
-        clearSession(bpc.request);
+        KpiAndReminderServiceImpl.clearSession(bpc.request);
         bpc.request.removeAttribute("errorMsg");
     }
 
@@ -82,7 +83,7 @@ public class KpiAndReminderDelegator {
             if("ASO".equals(stageCode)){
                 every.setStageName("Admin Screening Process");
             }
-            else if("".equals(stageCode)){
+            else if("PSO".equals(stageCode)){
                 every.setStageName("Professional Screening Process");
             }else if("AO1".equals(stageCode)){
                 every.setStageName("Approval Officer Level 1");
@@ -97,11 +98,11 @@ public class KpiAndReminderDelegator {
         bpc.request.getSession().setAttribute("hcsaSvcRoutingStageDtos",entity);
         Date date=new Date();
         String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT, Locale.ENGLISH).format(date);
-        bpc.request.setAttribute("date",format);
+        bpc.request.getSession().setAttribute("date",format);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
         this.entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
-        bpc.request.setAttribute("entity", this.entity.getDisplayName());
+        bpc.request.getSession().setAttribute("entity", this.entity.getDisplayName());
         kpiAndReminderService.getKpiAndReminder(bpc.request);
 
     }
@@ -166,19 +167,5 @@ public class KpiAndReminderDelegator {
     }
 
 
-    public void  clearSession(HttpServletRequest request){
-        request.getSession().removeAttribute("module");
-        request.getSession().removeAttribute("configKpi");
-        request.getSession().removeAttribute("service");
-        request.getSession().removeAttribute("reminderThreshold");
-        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = (List<HcsaSvcRoutingStageDto>)request.getSession().getAttribute("hcsaSvcRoutingStageDtos");
-        if(hcsaSvcRoutingStageDtos!=null){
-            for(HcsaSvcRoutingStageDto every:hcsaSvcRoutingStageDtos){
-                String stageCode = every.getStageCode();
-                request.getSession().removeAttribute(stageCode);
-            }
-        }
 
-
-    }
 }
