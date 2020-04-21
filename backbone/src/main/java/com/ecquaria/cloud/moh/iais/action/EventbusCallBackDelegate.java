@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -14,6 +15,7 @@ import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.kafka.GlobalConstants;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +49,8 @@ public class EventbusCallBackDelegate {
         String eventRefNum = ParamUtil.getString(request, "eventRefNo");
         log.info("event Ref number ===========> {}", eventRefNum);
         long curUpdateDt = ParamUtil.getLong(request, "updateDate");
+        log.info(StringUtil.changeForLog("Last update time ===========> {}" + Formatter.formatDateTime(new Date(curUpdateDt),
+                "yyyy-MM-dd HH:mm:ss,SSS")));
         if (!isLeagal) {
             throw new IaisRuntimeException("Visit without Token!!");
         }
