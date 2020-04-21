@@ -6,7 +6,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
+import freemarker.template.TemplateException;
 
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,5 +36,7 @@ public interface CessationService {
     List<String> listHciName();
 
     Boolean getlicIdToCessation(List<String> licIds);
+
+    void sendEmail(String msgId, Date date, String svcName, String appGrpId, String licenseeId) throws IOException, TemplateException;
 
 }

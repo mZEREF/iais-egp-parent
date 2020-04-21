@@ -1,1 +1,1 @@
-<%@include file = "/iais/cessation/cessationForm.jsp"%>
+<%@include file = "/WEB-INF/jsp/iais/cessation/cessationForm.jsp"%>

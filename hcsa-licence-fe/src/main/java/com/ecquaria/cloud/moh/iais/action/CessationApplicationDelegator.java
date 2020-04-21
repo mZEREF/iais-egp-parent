@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -25,6 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
@@ -43,6 +47,8 @@ public class CessationApplicationDelegator {
     private CessationService cessationService;
     @Autowired
     private ApplicationClient applicationClient;
+    @Autowired
+    private LicenceClient licenceClient;
 
     private static final String APPCESSATIONDTOS ="appCessationDtos";
     private static final String READINFO ="readInfo";
@@ -57,6 +63,8 @@ public class CessationApplicationDelegator {
     private static final String PATREGNO ="patRegNo";
     private static final String PATOTHERS ="patOthers";
     private static final String ERROR ="ERR0009";
+    private final String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
+    private final String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
 
     public void start(BaseProcessClass bpc) {
@@ -162,7 +170,7 @@ public class CessationApplicationDelegator {
         }
     }
 
-    public void saveData(BaseProcessClass bpc) {
+    public void saveData(BaseProcessClass bpc) throws IOException, TemplateException {
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
         List<String> appIds = cessationService.saveCessations(appCessationDtos);
         List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
@@ -172,6 +180,9 @@ public class CessationApplicationDelegator {
         for (int i = 0; i < appCessationDtos.size(); i++) {
             AppCessationDto appCessationDto = appCessationDtos.get(i);
             String licId = appCessationDto.getWhichTodo();
+
+            LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
+            String licenseeId = licenceDto.getLicenseeId();
             licIds.clear();
             licIds.add(licId);
             String appId = appIds.get(i);
@@ -187,6 +198,11 @@ public class CessationApplicationDelegator {
             String hciAddress = appCessLicDto.getAppCessHciDtos().get(0).getHciAddress();
             String applicationNo = applicationDto.getApplicationNo();
             Date effectiveDate = appCessationDto.getEffectiveDate();
+            if(effectiveDate.after(new Date())){
+                cessationService.sendEmail(FURTHERDATECESSATION,effectiveDate,svcName,licId,licenseeId);
+            }else {
+                cessationService.sendEmail(PRESENTDATECESSATION,effectiveDate,svcName,licId,licenseeId);
+            }
             AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
             appCessatonConfirmDto.setAppNo(applicationNo);
             appCessatonConfirmDto.setEffectiveDate(effectiveDate);

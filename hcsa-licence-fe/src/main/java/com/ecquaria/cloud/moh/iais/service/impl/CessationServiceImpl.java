@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
@@ -13,17 +14,23 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
+
+import com.ecquaria.sz.commons.util.DateUtil;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -55,6 +62,8 @@ public class CessationServiceImpl implements CessationService {
     private String secSecretKey;
     @Autowired
     private AppConfigClient appConfigClient;
+    @Autowired
+    AppSubmissionService appSubmissionService;
 
     @Override
     public List<String> getActiveLicence(List<String> licIds) {
@@ -184,6 +193,7 @@ public class CessationServiceImpl implements CessationService {
             appSubmissionDto.setPreInspection(true);
             appSubmissionDto.setRequirement(true);
             appSubmissionDto.setLicenseeId("9ED45E34-B4E9-E911-BE76-000C29C8FBE4");
+            appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
             appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             setRiskToDto(appSubmissionDto);
             AppSubmissionDto entity = applicationClient.saveSubmision(appSubmissionDto).getEntity();
@@ -252,6 +262,23 @@ public class CessationServiceImpl implements CessationService {
         }
     }
 
+    @Override
+    public void sendEmail(String msgId, Date date,String svcName,String appGrpId,String licenseeId) throws IOException, TemplateException {
+        Map<String,Object> map = new HashMap<>(34);
+        String dateStr = DateUtil.formatDateTime(date, "dd/MM/yyyy");
+        map.put("date",dateStr);
+        map.put("licenceA",svcName);
+        MsgTemplateDto entity = appSubmissionService.getMsgTemplateById(msgId);
+        String messageContent = entity.getMessageContent();
+        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+        EmailDto emailDto = new EmailDto();
+        emailDto.setContent(templateMessageByContent);
+        emailDto.setSubject("MOH IAIS – Cessation");
+        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+        emailDto.setClientQueryCode(appGrpId);
+        appSubmissionService.feSendEmail(emailDto);
+    }
     /*
     utils
      */
