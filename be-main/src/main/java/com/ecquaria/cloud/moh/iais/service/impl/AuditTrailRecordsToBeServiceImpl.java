@@ -200,8 +200,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
         File[] files = file.listFiles();
         for(File  filzz:files){
             if(filzz.isFile() &&filzz.getName().endsWith(fileFormat)){
-                try {
-                    FileInputStream fileInputStream =new FileInputStream(filzz);
+                try (FileInputStream fileInputStream =new FileInputStream(filzz)){
                     ByteArrayOutputStream by=new ByteArrayOutputStream();
                     int count=0;
                     byte [] size=new byte[1024];
