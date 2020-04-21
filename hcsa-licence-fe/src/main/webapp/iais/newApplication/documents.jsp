@@ -96,7 +96,7 @@
                               </span>
                             </c:when>
                             <c:otherwise>
-                              <span class="existFile delBtn <c:if test="${!isClickEdit}">hidden</c:if>">
+                              <span class="existFile delBtn <c:if test="${!isClickEdit || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if>">
                                 &nbsp;&nbsp;<button type="button" class="">Delete</button>
                               </span>
                             </c:otherwise>
@@ -181,7 +181,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        if(${AppSubmissionDto.needEditController && !isClickEdit}){
+        if(${(AppSubmissionDto.needEditController && !isClickEdit) || doSpecifiedServiceConfig != null }){
             disabledPage();
         }
         

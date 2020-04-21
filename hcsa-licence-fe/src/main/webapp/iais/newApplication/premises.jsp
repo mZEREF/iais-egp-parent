@@ -97,7 +97,7 @@
                 </div>
                 <div class="row">
                   <div class="col-xs-12" id="addPremBody" hidden>
-                    <c:if test="${requestInformationConfig==null && 'APTY005' !=AppSubmissionDto.appType && !multiBase && 'APTY004' !=AppSubmissionDto.appType}">
+                    <c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && doSpecifiedServiceConfig == null}">
                       <button id="addPremBtn" class="btn btn-primary" type="button">Add Premises</button>
                     </c:if>
                   </div>
@@ -261,7 +261,7 @@
             }
         });
 
-        <c:if test="${AppSubmissionDto.appEditSelectDto!=null && !AppSubmissionDto.appEditSelectDto.premisesEdit}">
+        <c:if test="${(AppSubmissionDto.appEditSelectDto!=null && !AppSubmissionDto.appEditSelectDto.premisesEdit) || AppSubmissionDto.onlySpecifiedSvc}">
         disabledPage();
         </c:if>
 
