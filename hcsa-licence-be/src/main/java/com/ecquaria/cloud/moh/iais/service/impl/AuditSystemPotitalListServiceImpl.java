@@ -178,6 +178,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
                 if(!exist)
                     list.add(auditTaskDataFillterDto);
             }
+            return list;
         }
         return ncFdtoList;
     }
