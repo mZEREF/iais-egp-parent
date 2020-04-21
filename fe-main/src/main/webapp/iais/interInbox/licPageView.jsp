@@ -73,19 +73,20 @@
                         $("#lic-cease").addClass('disabled');
                     }
                 });
-            }else{
+            } else{
                 var statusDuo = [];
                 $("[name='licenceNo']:checked").each(function (k,v) {
                     var $currentTr = $(this).closest('tr');
                     statusDuo.push($currentTr.find('td').eq(3).find('p').eq(1).html());
-                    if ($.inArray('Ceased',statusDuo)){
-                        $("#lic-renew").removeClass('disabled');
-                        $("#lic-cease").removeClass('disabled');
-                    }else{
-                        $("#lic-renew").addClass('disabled');
-                        $("#lic-cease").addClass('disabled');
-                    }
+
                 });
+                if (!statusDuo.includes('Ceased')){
+                    $("#lic-renew").removeClass('disabled');
+                    $("#lic-cease").removeClass('disabled');
+                }else{
+                    $("#lic-renew").addClass('disabled');
+                    $("#lic-cease").addClass('disabled');
+                }
                 console.log(statusDuo);
                 $("#lic-print").addClass('disabled');
                 $("#lic-amend").addClass('disabled');
