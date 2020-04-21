@@ -1,1 +1,1 @@
-<%@include file = "/iais/inspectionPreTask/inspectionSupAssignTask.jsp"%>
+<%@include file = "/WEB-INF/jsp/iais/inspectionPreTask/inspectionSupAssignTask.jsp"%>
