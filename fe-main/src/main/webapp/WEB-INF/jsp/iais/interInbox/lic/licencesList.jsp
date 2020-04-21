@@ -41,7 +41,7 @@
                     </iais:value>
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 1.5%">
+            <div class="row">
                 <div class="col-md-12">
                     <iais:value>
                         <label class="col-md-3" for="fStartDate" style="text-align:left;margin-top: 1.5%">Licence Start
@@ -58,6 +58,14 @@
                             <iais:datePicker id="eStartDate" name="eStartDate" dateVal="<%=eStartDate%>"/>
                         </div>
                     </iais:value>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <span class="col-xs-3 col-md-3"></span>
+                    <div class="col-md-9">
+                        <span class="error-msg" style="padding: 0">${LDEM}</span>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -84,7 +92,11 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="col-md-12 text-right">
+                <span class="col-xs-3 col-md-3"></span>
+                <div class="col-md-4">
+                    <span class="error-msg" style="width: 150%;position: absolute;">${LEEM}</span>
+                </div>
+                <div class="text-right">
                     <button type="button" class="btn btn-secondary" onclick="doClearLic()">Clear</button>
                     <button type="button" class="btn btn-primary" onclick="doSearchLic()">Search</button>
                 </div>
