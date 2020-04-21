@@ -484,7 +484,7 @@
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
                                             <td class="form-check">
-                                                <c:if test="${pool.licenceStatus!=ApplicationConsts.LICENCE_STATUS_LAPSED&&pool.licenceStatus!=ApplicationConsts.LICENCE_STATUS_CEASED&&pool.licenceStatus!=ApplicationConsts.LICENCE_STATUS_EXPIRY}">
+                                                <c:if test="${pool.licenceStatus!='Lapsed'&&pool.licenceStatus!='Ceased'&&pool.licenceStatus!='Expired'}">
                                                     <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
                                                            name="appIds" value="${pool.appId}|${pool.isCessation}"   >
                                                     <label class="form-check-label" for="licence${status.index + 1}"><span
@@ -539,6 +539,7 @@
     <c:choose>
         <c:when test="${isASO==1}">
             <iais:action style="text-align:right;">
+                <a class="btn btn-secondary" onclick="$(this).attr('class', 'btn btn-secondary disabled')" href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>
                 <button type="button" class="btn btn-primary"
                         onclick="javascript:doCessation();">Cease
                 </button>
@@ -546,6 +547,7 @@
         </c:when>
         <c:otherwise>
             <iais:action style="text-align:right;">
+                <a class="btn btn-secondary" onclick="$(this).attr('class', 'btn btn-secondary disabled')" href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>
                 <button type="button" class="btn btn-primary" disabled
                         onclick="javascript:doCessation();">Cease
                 </button>
@@ -555,6 +557,7 @@
 
 
 </form>
+<%@include file="/include/utils.jsp" %>
 <script type="text/javascript">
     function jumpToPagechangePage() {
         licSearch()

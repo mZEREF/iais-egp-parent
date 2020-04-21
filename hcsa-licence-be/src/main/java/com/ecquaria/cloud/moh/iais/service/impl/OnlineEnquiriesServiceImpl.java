@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -32,7 +33,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
@@ -81,9 +81,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -599,7 +597,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         ParamUtil.setSessionAttr(request, "insRepDto", insRepDto);
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
         ParamUtil.setSessionAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
-        // 		preAppInfo->OnStepProcess
+        // 		preInspReport->OnStepProcess
     }
 
     @Override
@@ -622,8 +620,11 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
         List<AppSvcDisciplineAllocationDto> allocationDto = null;
         List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = null;
-        allocationDto = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
-
+        if(appSvcRelatedInfoDto != null){
+            String serviceId = appSvcRelatedInfoDto.getServiceId();
+            hcsaSvcSubtypeOrSubsumedDtos = applicationViewService.getHcsaSvcSubtypeOrSubsumedByServiceId(serviceId);
+            allocationDto = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
+        }
         if( allocationDto !=null && allocationDto.size()>0 ){
             for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto:allocationDto){
 
@@ -664,15 +665,15 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         String appType= MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationType()}).get(0).getText();
         applicationViewDto.setApplicationType(appType);
         applicationViewDto.getApplicationDto().setApplicationType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getApplicationType()}).get(0).getText());
-        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos=hcsaConfigClient.getServiceStepsByServiceIds(new ArrayList<>(Collections.singleton(applicationViewDto.getApplicationDto().getServiceId()))).getEntity();
-        for (HcsaServiceStepSchemeDto h :hcsaServiceStepSchemeDtos
-        ) {
-            h.setStepCode(MasterCodeUtil.retrieveOptionsByCodes(new String[]{h.getStepCode()}).get(0).getText());
+        List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos=applicationClient.getAppSvcPremisesScopeListByCorreId(appCorrId).getEntity();
+        for (AppSvcPremisesScopeDto a:appSvcPremisesScopeDtos
+             ) {
+            a.setScopeName(hcsaConfigClient.getHcsaServiceSubTypeById(a.getScopeName()).getEntity().getSubtypeName());
         }
         ParamUtil.setRequestAttr(request,"applicationViewDto",applicationViewDto);
         ParamUtil.setRequestAttr(request,"appSvcRelatedInfoDto",appSvcRelatedInfoDto);
         ParamUtil.setRequestAttr(request,"licenseeDto",licenseeDto);
-        ParamUtil.setRequestAttr(request,"serviceStep",hcsaServiceStepSchemeDtos);
+        ParamUtil.setRequestAttr(request,"serviceStep",appSvcPremisesScopeDtos);
         // 		preAppInfo->OnStepProcess
     }
 

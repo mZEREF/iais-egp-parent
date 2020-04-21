@@ -70,7 +70,7 @@
                                                             <c:forEach var="pool" items="${serviceStep}" >
                                                                 <tr>
                                                                     <td align="right">Service Discipline/Modality</td>
-                                                                    <td class="row_no"><c:out value="${pool.stepCode}"/></td>
+                                                                    <td class="row_no"><c:out value="${pool.scopeName}"/></td>
                                                                 </tr>
                                                             </c:forEach>
                                                         </c:otherwise>
@@ -206,7 +206,7 @@
                                                             <c:forEach var="pool" items="${serviceStep}" >
                                                                 <tr>
                                                                     <td align="right">Service (Lab Discipline, Modality, Subsumed and etc)</td>
-                                                                    <td class="row_no"><c:out value="${pool.stepCode}"/></td>
+                                                                    <td class="row_no"><c:out value="${pool.scopeName}"/></td>
                                                                 </tr>
                                                             </c:forEach>
                                                         </c:otherwise>
@@ -223,7 +223,7 @@
                                                 <thead >
                                                 <tr >
                                                     <th  style="text-align: center">Premises</th>
-                                                    <th  style="text-align: center">Radiological Modalities</th>
+                                                    <th  style="text-align: center">Service / Granular Service</th>
                                                     <th  style="text-align: center">Clinical Governance Officers</th>
                                                 </tr>
                                                 </thead>

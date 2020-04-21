@@ -24,9 +24,12 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
@@ -42,15 +45,21 @@ import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * OfficerOnlineEnquiriesDelegator
@@ -348,7 +357,7 @@ public class OfficerOnlineEnquiriesDelegator {
             }
         }
         searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
-        ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
+        ParamUtil.setSessionAttr(request,"SearchResult", searchListDtoSearchResult);
     }
 
     public void doBasicSearch(BaseProcessClass bpc) {
@@ -846,4 +855,29 @@ public class OfficerOnlineEnquiriesDelegator {
         return errMap;
     }
 
+    @GetMapping(value = "officer-online-enquiries-information-file")
+    public @ResponseBody
+    void fileHandler(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        File file = null;
+
+        SearchResult<ReqForInfoSearchListDto>  results = (SearchResult<ReqForInfoSearchListDto>) ParamUtil.getSessionAttr(request,"SearchResult");
+
+        for (ReqForInfoSearchListDto info:results.getRows()
+             ) {
+            info.setServiceName(HcsaServiceCacheHelper.getServiceNameById(info.getServiceName()));
+        }
+        if (!Objects.isNull(results)){
+            List<ReqForInfoSearchListDto> queryList = results.getRows();
+            file = ExcelWriter.exportExcel(queryList, ReqForInfoSearchListDto.class, "Officer Online Enquiries Information_Search_Template");
+        }
+
+        try {
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
 }
