@@ -101,7 +101,6 @@ public class InspecTaskToLeaderBatchJob {
                 int report = 0;
                 int leadTask = 0;
                 for(int i = 0; i < appInspectionStatusDtos.size(); i++){
-
                     if (appInspectionStatusDtos.get(i) == null) {
                         continue;
                     }
