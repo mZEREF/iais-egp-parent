@@ -440,7 +440,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
                             appPremisesRecommendationDtoList.add(appPremCorrDto);
                             info.setAppId(appId);
                             info.setAppPremId(appprem.getId());
-                            info.setCreateDate(appPremCorrDto.getRecomInDate());
+                            info.setCreateDate(appPremCorrDto.getRecomInDate() == null ? new Date(): appPremCorrDto.getRecomInDate() );
                             inspInfoList.add(info);
                         }
                     }

@@ -27,19 +27,19 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
-                        <h2>Individual Risk Configuration</h2>
+                        <h2>Individual Compliance Risk Configuration</h2>
                         <div class="gray-content-box">
                             <div class="table-gp">
                                 <table class="table">
                                     <thead>
                                     <tr>
                                         <th>Service Name</th>
-                                        <th>Risk Level</th>
+                                        <th>Impact of Non Compliance (NC) on Patient Safety</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
-                                        <th>Minimum Number of Cases</th>
-                                        <th>Maximum Number of Cases</th>
-                                        <th>Risk Rating</th>
+                                        <th>Minimum Number of NCs</th>
+                                        <th>Maximum Number of NCs</th>
+                                        <th>Compliance Risk</th>
                                         <th></th>
                                     </tr>
                                     </thead>
