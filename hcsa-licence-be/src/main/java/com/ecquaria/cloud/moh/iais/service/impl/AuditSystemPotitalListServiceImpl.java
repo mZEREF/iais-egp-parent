@@ -69,7 +69,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             for(AuditTaskDataDto auditTaskDataDto : auditTaskDataDtos){
                 auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto,false,false));
             }
-            return auditTaskDataFillterDtos;
+            return removeDuplicates(auditTaskDataFillterDtos);
         }
         return  null;
     }
@@ -84,7 +84,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             for(AuditTaskDataDto auditTaskDataDto : auditTaskDataDtos){
                 auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto,true,true));
             }
-            return auditTaskDataFillterDtos;
+            return removeDuplicates(auditTaskDataFillterDtos);
         }
         return  null;
     }
@@ -160,6 +160,25 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         List<AuditTaskDataFillterDto> ncFdtoList = getNcFitter(dtoList, dto);
         //get Last inspDate info
         getLastInspDateInfo(ncFdtoList, dto);
+        return removeDuplicates(ncFdtoList);
+    }
+
+    private List<AuditTaskDataFillterDto> removeDuplicates(List<AuditTaskDataFillterDto> ncFdtoList){
+        if(ncFdtoList != null){
+            List<AuditTaskDataFillterDto> list = new ArrayList<>(ncFdtoList.size());
+            for(AuditTaskDataFillterDto auditTaskDataFillterDto : ncFdtoList){
+                boolean exist = false;
+                for(AuditTaskDataFillterDto taskDataFillterDto :  list){
+                    if(auditTaskDataFillterDto.getLicId().equalsIgnoreCase(taskDataFillterDto.getLicId())
+                            && auditTaskDataFillterDto.getId().equalsIgnoreCase(taskDataFillterDto.getId())){
+                        exist = true;
+                        break;
+                    }
+                }
+                if(!exist)
+                    list.add(auditTaskDataFillterDto);
+            }
+        }
         return ncFdtoList;
     }
 
