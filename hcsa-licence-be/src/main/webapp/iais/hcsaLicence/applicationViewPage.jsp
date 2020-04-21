@@ -36,21 +36,6 @@
                                                                           aria-controls="tabProcessing" role="tab"
                                                                           data-toggle="tab">Processing</a></li>
                         </ul>
-                        <div class="tab-nav-mobile visible-xs visible-sm">
-                            <div class="swiper-wrapper" role="tablist">
-                                <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
-                                                             data-toggle="tab">Info</a></div>
-                                <div class="swiper-slide"><a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments"
-                                                             role="tab" data-toggle="tab">Documents</a></div>
-
-                                <div class="swiper-slide"><a href="#tabInspection" aria-controls="tabInspection"
-                                                             role="tab" data-toggle="tab">Inspection</a></div>
-                                <div class="swiper-slide"><a href="#tabProcessing" id="doProcess" aria-controls="tabProcessing"
-                                                             role="tab" data-toggle="tab">Processing</a></div>
-                            </div>
-                            <div class="swiper-button-prev"></div>
-                            <div class="swiper-button-next"></div>
-                        </div>
                         <div class="tab-content">
                             <%--info page--%>
                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
@@ -88,7 +73,7 @@
                                                         <td width="20%">
                                                             <p>
                                                                 <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${appSupDocDto.fileRepoId}"/>&fileRepoName=${appSupDocDto.document}" title="Download" class="downloadFile">
-                                                                <c:out value="${appSupDocDto.document}"></c:out>
+                                                                    <c:out value="${appSupDocDto.document}"></c:out>
                                                                 </a>
                                                             </p>
                                                         </td>
@@ -132,49 +117,49 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-<%--                                                <tr>--%>
-<%--                                                    <td colspan="7" align="center">--%>
-<%--                                                        <iais:message key="ACK018" escape="true"></iais:message>--%>
-<%--                                                    </td>--%>
-<%--                                                </tr>--%>
+                                                <%--                                                <tr>--%>
+                                                <%--                                                    <td colspan="7" align="center">--%>
+                                                <%--                                                        <iais:message key="ACK018" escape="true"></iais:message>--%>
+                                                <%--                                                    </td>--%>
+                                                <%--                                                </tr>--%>
 
-                                                    <c:choose>
-                                                        <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">
+                                                <c:choose>
+                                                    <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">
+                                                        <tr>
+                                                            <td colspan="6"  align="center">
+                                                                <iais:message key="ACK018" escape="true"></iais:message>
+                                                            </td>
+                                                        </tr>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
                                                             <tr>
-                                                                <td colspan="6"  align="center">
-                                                                    <iais:message key="ACK018" escape="true"></iais:message>
+                                                                <td width="30%">
+                                                                    <p><c:out value="${interalFile.docDesc}"></c:out></p>
+                                                                </td>
+                                                                <td width="20%">
+                                                                        <%--                                                                        <p><a href="#"><c:out--%>
+                                                                        <%--                                                                                value="${interalFile.docName}.${interalFile.docType}"></c:out></a></p>--%>
+                                                                    <p><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${interalFile.docName}" title="Download" class="downloadFile">
+                                                                        <c:out value="${interalFile.docName}.${interalFile.docType}"></c:out>
+                                                                    </a></p>
+                                                                </td>
+                                                                <td width="10%">
+                                                                    <p><c:out value="${interalFile.docSize}"></c:out></p>
+                                                                </td>
+                                                                <td width="20%">
+                                                                    <p><c:out value="${interalFile.submitByName}"></c:out></p>
+                                                                </td>
+                                                                <td width="15%">
+                                                                    <p><fmt:formatDate value='${interalFile.submitDt}' pattern='dd/MM/yyyy HH:mm:ss'/></p>
+                                                                </td>
+                                                                <td width="5%">
+                                                                    <a href="javascript:deleteFile('${interalFile.id}');"><label style="color: #D22727; font-size: 2rem; cursor:pointer;">X</label></a>
                                                                 </td>
                                                             </tr>
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
-                                                                <tr>
-                                                                    <td width="30%">
-                                                                        <p><c:out value="${interalFile.docDesc}"></c:out></p>
-                                                                    </td>
-                                                                    <td width="20%">
-<%--                                                                        <p><a href="#"><c:out--%>
-<%--                                                                                value="${interalFile.docName}.${interalFile.docType}"></c:out></a></p>--%>
-                                                                        <p><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${interalFile.docName}" title="Download" class="downloadFile">
-                                                                            <c:out value="${interalFile.docName}.${interalFile.docType}"></c:out>
-                                                                        </a></p>
-                                                                    </td>
-                                                                    <td width="10%">
-                                                                        <p><c:out value="${interalFile.docSize}"></c:out></p>
-                                                                    </td>
-                                                                    <td width="20%">
-                                                                        <p><c:out value="${interalFile.submitByName}"></c:out></p>
-                                                                    </td>
-                                                                    <td width="15%">
-                                                                        <p><fmt:formatDate value='${interalFile.submitDt}' pattern='dd/MM/yyyy HH:mm:ss'/></p>
-                                                                    </td>
-                                                                    <td width="5%">
-                                                                        <a href="javascript:deleteFile('${interalFile.id}');"><label style="color: #D22727; font-size: 2rem; cursor:pointer;">X</label></a>
-                                                                    </td>
-                                                                </tr>
-                                                            </c:forEach>
-                                                        </c:otherwise>
-                                                    </c:choose>
+                                                        </c:forEach>
+                                                    </c:otherwise>
+                                                </c:choose>
 
 
 
@@ -192,237 +177,11 @@
                                 </div>
 
                             </div>
+                            <%--         Inspection start                       --%>
                             <div class="tab-pane" id="tabInspection" role="tabpanel">
-                                <div class="alert alert-info" role="alert">
-                                    <strong>
-                                        <h4>Inspection Findings</h4>
-                                    </strong>
-                                </div>
-                                <div class="text ">
-                                    <p><span><strong>Part I: Inspection Checklist</strong></span></p>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <div class="table-gp">
-                                            <table class="table">
-                                                <thead>
-                                                <tr>
-                                                    <th class="col-xs-2"><span>Checklist</span></th>
-                                                    <th class="col-xs-10"><span>Interviewed</span></th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <p>Radiological Service</p>
-                                                    </td>
-                                                    <td>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Angiography</p>
-                                                    </td>
-                                                    <td>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Mammography</p>
-                                                    </td>
-                                                    <td>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                            <div class="text ">
-                                                <p><span><strong>Part II: Findings</strong></span></p>
-                                            </div>
-                                            <table class="table">
-                                                <tr>
-                                                    <td class="col-xs-2">
-                                                        <p>Licence Type</p>
-                                                    </td>
-                                                    <td class="col-xs-10">
-                                                        <p>Radiological Service</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Findings/Remarks</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>The clinic offers in-house laboratory services</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Others</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Refer to ack. no. 180911007711 for x-ray laboratory licence
-                                                            (ultrasound only). At the time of
-                                                            inspection, LIA Br was still awaiting clarification on the
-                                                            deputy manager's qualifications and was
-                                                            unable to complete the inspection of the ultrasound facility
-                                                            as the sonographer / radiographer and
-                                                            radiologist were not on-site. The ultrasound room, N2
-                                                            licence (N2/06421/001) and preventive maintenance
-                                                            records for the ultrasound machine were in place. The
-                                                            ultrasound procedure is limited to abdominal area
-                                                            only</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Status</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Full Compliance</p>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                            <div class="text ">
-                                                <p><span><strong>Part III: Inspectors</strong></span></p>
-                                            </div>
-                                            <table class="table">
-                                                <tr>
-                                                    <td class="col-xs-2">
-                                                        <p>Inspected By</p>
-                                                    </td>
-                                                    <td class="col-xs-10">
-                                                        <p>Jenny</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Other Inspection Officer</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                            <div class="text ">
-                                                <p><span><strong>Part IV: Report</strong></span></p>
-                                            </div>
-                                            <table class="table">
-                                                <tr>
-                                                    <td class="col-xs-2">
-                                                        <p>Reported By</p>
-                                                    </td>
-                                                    <td class="col-xs-10">
-                                                        <p>Jenny</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Report Noted By</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Steven</p>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="alert alert-info" role="alert">
-                                    <strong>
-                                        <h4>Recommendations</h4>
-                                    </strong>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <div class="table-gp">
-                                            <table class="table">
-                                                <tr>
-                                                    <td class="col-xs-2">
-                                                        <p>Recommendation</p>
-                                                    </td>
-                                                    <td class="col-xs-10">
-                                                        <p>2 Years</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Other Remarks</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="alert alert-info" role="alert">
-                                    <strong>
-                                        <h4>Follow up actions</h4>
-                                    </strong>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <div class="table-gp">
-                                            <table class="table">
-                                                <tr>
-                                                    <td class="col-xs-2">
-                                                        <p>Follow up actions</p>
-                                                    </td>
-                                                    <td class="col-xs-10">
-                                                        <p>-</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Other</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Rectification</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Other</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="alert alert-info" role="alert">
-                                    <strong>
-                                        <h4>Rectification</h4>
-                                    </strong>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <div class="table-gp">
-                                            <table class="table">
-                                                <tr>
-                                                    <td class="col-xs-2">
-                                                        <p>Rectifications</p>
-                                                    </td>
-                                                    <td class="col-xs-10">
-                                                        <p>N.A</p>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
+                                <%@include file="applicationInspection.jsp" %>
                             </div>
+                            <%--         Inspection end                       --%>
                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                 <div class="alert alert-info" role="alert">
                                     <strong>
@@ -437,24 +196,24 @@
                                         <div class="col-xs-12">
                                             <div class="table-gp">
                                                 <iais:section title="">
-                                                        <iais:row>
-                                                            <iais:field value="Current Status" required="false"/>
-                                                            <iais:value width="10"><p>${applicationViewDto.currentStatus}</p></iais:value>
-                                                        </iais:row>
+                                                    <iais:row>
+                                                        <iais:field value="Current Status" required="false"/>
+                                                        <iais:value width="10"><p>${applicationViewDto.currentStatus}</p></iais:value>
+                                                    </iais:row>
                                                     <%--<div>--%>
-                                                        <iais:row>
-                                                            <iais:field value="Internal Remarks" required="false"  width="12"/>
-                                                            <iais:value width="10">
-                                                                <div class="input-group">
-                                                                    <div class="ax_default text_area">
+                                                    <iais:row>
+                                                        <iais:field value="Internal Remarks" required="false"  width="12"/>
+                                                        <iais:value width="10">
+                                                            <div class="input-group">
+                                                                <div class="ax_default text_area">
                                                                         <textarea id="internalRemarksId"
                                                                                   name="internalRemarks" cols="70"
                                                                                   rows="7" maxlength="300">${internalRemarks}</textarea>
-                                                                        <span id="error_internalRemarks" name="iaisErrorMsg" class="error-msg"></span>
-                                                                    </div>
+                                                                    <span id="error_internalRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                                                 </div>
-                                                            </iais:value>
-                                                        </iais:row>
+                                                            </div>
+                                                        </iais:value>
+                                                    </iais:row>
                                                     <%--</div>--%>
                                                     <div id="processingDecision">
                                                         <iais:row>
@@ -471,7 +230,7 @@
                                                         <div id="replytr" class="hidden">
                                                             <iais:row>
                                                                 <iais:field value="Processing Decision" required="true"/>
-<%--                                                                <%String selectNextStageReply = request.getParameter("selectNextStageReply");%>--%>
+                                                                <%--                                                                <%String selectNextStageReply = request.getParameter("selectNextStageReply");%>--%>
                                                                 <iais:value width="10">
                                                                     <iais:select name="nextStageReplys" id="nextStageReply"
                                                                                  options="nextStageReply"
@@ -513,13 +272,13 @@
                                                         <iais:row>
                                                             <iais:field value="Verified" required="true"/>
                                                             <iais:value width="10">
-<%--                                                                <select name="verified" class="nice-select input-large">--%>
-<%--                                                                    <option value="">Please Select</option>--%>
-<%--                                                                    <c:forEach items="${applicationViewDto.verified}"--%>
-<%--                                                                               var="verified">--%>
-<%--                                                                        <option value="${verified.key}" <c:if test="${verified.key == selectVerified}">selected</c:if>>${verified.value}</option>--%>
-<%--                                                                    </c:forEach>--%>
-<%--                                                                </select>--%>
+                                                                <%--                                                                <select name="verified" class="nice-select input-large">--%>
+                                                                <%--                                                                    <option value="">Please Select</option>--%>
+                                                                <%--                                                                    <c:forEach items="${applicationViewDto.verified}"--%>
+                                                                <%--                                                                               var="verified">--%>
+                                                                <%--                                                                        <option value="${verified.key}" <c:if test="${verified.key == selectVerified}">selected</c:if>>${verified.value}</option>--%>
+                                                                <%--                                                                    </c:forEach>--%>
+                                                                <%--                                                                </select>--%>
                                                                 <iais:select name="verified"
                                                                              options="verifiedValues"
                                                                              value="${selectVerified}"></iais:select>
@@ -549,8 +308,8 @@
                                                             <iais:value width="10">
                                                                 <c:choose>
                                                                     <c:when test="${applicationViewDto.applicationDto.status=='APST007'}">
-                                                                    <iais:datePicker id="licenceStartDate" name="tuc"
-                                                                                     value="${date}"></iais:datePicker>
+                                                                        <iais:datePicker id="licenceStartDate" name="tuc"
+                                                                                         value="${date}"></iais:datePicker>
                                                                     </c:when>
                                                                     <c:otherwise>
                                                                         <p>${(recomInDateOnlyShow == "" || recomInDateOnlyShow == null) ? "-" : recomInDateOnlyShow}</p>
@@ -566,17 +325,6 @@
                                                             <iais:value width="10">
                                                                 <c:choose>
                                                                     <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || applicationViewDto.applicationDto.status=='APST014'}">
-<%--                                                                        <select name="recommendation"--%>
-<%--                                                                                class="nice-select input-large">--%>
-<%--                                                                            <option value="">Please Select</option>--%>
-<%--                                                                            <c:forEach items="${applicationViewDto.recomeDation}"--%>
-<%--                                                                                       var="recommendation">--%>
-<%--                                                                                <option value="${recommendation}" <c:if test="${recommendationStr == recommendation}">selected</c:if>><c:out--%>
-<%--                                                                                        value="${recommendation}"></c:out></option>--%>
-<%--                                                                            </c:forEach>--%>
-<%--                                                                            <option value="other" <c:if test="${recommendationStr == 'other'}">selected</c:if>>Other</option>--%>
-<%--                                                                            <option value="reject" <c:if test="${recommendationStr == 'reject'}">selected</c:if>>Reject</option>--%>
-<%--                                                                        </select>--%>
                                                                         <iais:select name="recommendation"
                                                                                      options="recommendationDropdown"
                                                                                      firstOption="Please Select"
@@ -594,8 +342,8 @@
                                                         <iais:row>
                                                             <iais:field value="Other Period" required="true"/>
                                                             <iais:value width="10">
-<%--                                                                <%String otherNumber = request.getParameter("number");%>--%>
-<%--                                                                <%String otherChrono = request.getParameter("chrono");%>--%>
+                                                                <%--                                                                <%String otherNumber = request.getParameter("number");%>--%>
+                                                                <%--                                                                <%String otherChrono = request.getParameter("chrono");%>--%>
                                                                 <input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" id=recomInNumber type="text" name="number" maxlength="2" value="${otherNumber}">
                                                                 <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
                                                                 <iais:select id="chronoUnit" name="chrono" options="recommendationOtherDropdown" value="${otherChrono}"/>
@@ -609,24 +357,24 @@
                                                             <iais:field value="Fast Tracking?" required="false"/>
                                                             <iais:value width="10">
                                                                 <p>
-                                                                <c:choose>
-                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
-                                                                        <input class="form-check-input" id="fastTracking"
-                                                                        <c:if test="${applicationViewDto.applicationDto.fastTracking}">
-                                                                               checked disabled
-                                                                        </c:if>
-                                                                               type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
-                                                                        <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        <input class="form-check-input" disabled
-                                                                        <c:if test="${applicationViewDto.applicationDto.fastTracking}">
-                                                                            checked
-                                                                        </c:if>
-                                                                               id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
-                                                                        <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
-                                                                    </c:otherwise>
-                                                                </c:choose>
+                                                                    <c:choose>
+                                                                        <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
+                                                                            <input class="form-check-input" id="fastTracking"
+                                                                            <c:if test="${applicationViewDto.applicationDto.fastTracking}">
+                                                                                   checked disabled
+                                                                            </c:if>
+                                                                                   type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
+                                                                            <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <input class="form-check-input" disabled
+                                                                            <c:if test="${applicationViewDto.applicationDto.fastTracking}">
+                                                                                   checked
+                                                                            </c:if>
+                                                                                   id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
+                                                                            <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
                                                                 </p>
                                                             </iais:value>
                                                         </iais:row>
@@ -641,12 +389,12 @@
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
-                                                <%--</table>--%>
+                                                    <%--</table>--%>
                                                 </iais:section>
                                                 <div align="right">
-                                                        <button id="submitButton" type="button" class="btn btn-primary">
-                                                            Submit
-                                                        </button>
+                                                    <button id="submitButton" type="button" class="btn btn-primary">
+                                                        Submit
+                                                    </button>
                                                 </div>
                                                 <div>&nbsp</div>
                                             </div>
@@ -705,6 +453,21 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="tab-nav-mobile visible-xs visible-sm">
+                            <div class="swiper-wrapper" role="tablist">
+                                <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
+                                                             data-toggle="tab">Info</a></div>
+                                <div class="swiper-slide"><a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments"
+                                                             role="tab" data-toggle="tab">Documents</a></div>
+
+                                <div class="swiper-slide"><a href="#tabInspection" aria-controls="tabInspection"
+                                                             role="tab" data-toggle="tab">Inspection</a></div>
+                                <div class="swiper-slide"><a href="#tabProcessing" id="doProcess" aria-controls="tabProcessing"
+                                                             role="tab" data-toggle="tab">Processing</a></div>
+                            </div>
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -722,7 +485,7 @@
             }
         });
         if ('${taskDto.taskKey}' == '12848A70-820B-EA11-BE7D-000C29F371DC' || '${taskDto.taskKey}' == '13848A70-820B-EA11-BE7D-000C29F371DC') {
-            $('#ApplicationViewInspection').css('display', 'none');
+            // $('#ApplicationViewInspection').css('display', 'none');
             // $('#recommendationDropdown').removeClass('hidden');
         }
         if ('${applicationViewDto.applicationDto.status}' == 'APST057' || '${applicationViewDto.applicationDto.status}' == 'APST014' || '${applicationViewDto.applicationDto.status}' == 'APST013') {
@@ -743,6 +506,7 @@
         //check DMS
         DMSCheck();
         checkRecommendationOtherDropdown();
+        checkInspectionShow();
 
         if('APTY006' == '${applicationViewDto.applicationDto.applicationType}' && 'APST007' == '${applicationViewDto.applicationDto.status}'){
             $('#recommendationDropdown').addClass('hidden');
@@ -764,6 +528,12 @@
     <%--        }--%>
     <%--    }--%>
     <%--}--%>
+
+    function checkInspectionShow(){
+        if('${isShowInspection}' == 'N'){
+            $('#ApplicationViewInspection').css('display', 'none');
+        }
+    }
 
     function DMSCheck(){
         if('${applicationViewDto.applicationDto.status}' == 'APST014'){
