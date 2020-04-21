@@ -454,6 +454,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
             if(appPremisesInspecApptDto != null){
                 apptFeConfirmDateDto.setSpecificDate(appPremisesInspecApptDto.getSpecificInspDate());
+                apptFeConfirmDateDto.setSaveDate(appPremisesInspecApptDto.getSpecificInspDate());
                 apptFeConfirmDateDto.setApptStartDate(appPremisesInspecApptDto.getStartDate());
                 apptFeConfirmDateDto.setApptEndDate(appPremisesInspecApptDto.getEndDate());
                 apptFeConfirmDateDto.setAppPremCorrId(appPremCorrId);
