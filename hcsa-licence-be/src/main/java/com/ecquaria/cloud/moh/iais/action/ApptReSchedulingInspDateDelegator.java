@@ -63,7 +63,6 @@ public class ApptReSchedulingInspDateDelegator {
      */
     public void apptReSchInspDateStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptReSchInspDateStart start ...."));
-        AuditTrailHelper.auditFunction("Re-Scheduling Appointment Inspection Date", "Re-Scheduling Appointment Inspection Date");
     }
 
     /**
@@ -94,6 +93,8 @@ public class ApptReSchedulingInspDateDelegator {
             ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
             apptInspectionDateDto = new ApptInspectionDateDto();
             apptInspectionDateDto  = apptInspectionDateService.getApptSpecificDate(taskId, apptInspectionDateDto);
+            AuditTrailHelper.auditFunctionWithAppNo("Re-Scheduling Appointment Inspection Date", "Re-Scheduling Appointment Inspection Date",
+                    applicationViewDto.getApplicationDto().getApplicationNo());
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
             ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         }
