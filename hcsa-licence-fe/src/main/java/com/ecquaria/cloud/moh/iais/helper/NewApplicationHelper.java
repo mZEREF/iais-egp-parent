@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
@@ -17,16 +18,20 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.util.CopyUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
@@ -1291,6 +1296,39 @@ public class NewApplicationHelper {
         }
 
         return map;
+    }
+
+    /**
+     * @author huachong & zhilin
+     * @param tempMap
+     * @param msgTemplateDto
+     * @param msgTemplateId
+     * @param subject
+     * @param licenseeId
+     * @param clientQueryCode
+     * @return
+     */
+    private EmailDto sendEmailHelper(Map<String ,Object> tempMap,MsgTemplateDto msgTemplateDto,String msgTemplateId,String subject,String licenseeId,String clientQueryCode) {
+        if (tempMap == null || tempMap.isEmpty() || msgTemplateDto == null
+                || StringUtil.isEmpty(msgTemplateId)
+                || StringUtil.isEmpty(subject)
+                || StringUtil.isEmpty(licenseeId)
+                || StringUtil.isEmpty(clientQueryCode)) {
+            return null;
+        }
+        String mesContext = null;
+        try {
+            mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+        } catch (IOException | TemplateException e) {
+            e.getMessage();
+        }
+        EmailDto emailDto = new EmailDto();
+        emailDto.setContent(mesContext);
+        emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + subject);
+        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+        emailDto.setClientQueryCode(clientQueryCode);
+        return emailDto;
     }
 
     /*
