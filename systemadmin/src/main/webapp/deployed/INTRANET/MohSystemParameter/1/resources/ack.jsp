@@ -1,1 +1,1 @@
-<%@include file = "/iais/systemparameter/ack.jsp"%>
+<%@include file = "/WEB-INF/jsp/iais/systemparameter/ack.jsp"%>

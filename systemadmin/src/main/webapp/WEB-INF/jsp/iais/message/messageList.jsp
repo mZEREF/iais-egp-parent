@@ -2,12 +2,17 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
 <webui:setLayout name="iais-intranet"/>
-<meta http-equiv="Content-Type" content="text/html charset=gb2312">
-
+<%@ page contentType="text/html; charset=UTF-8"  %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
+
+
+
+<webui:setLayout name="iais-intranet"/>
+
+
 <div class="main-content">
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>

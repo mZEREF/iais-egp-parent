@@ -1,1 +1,1 @@
-<%@include file = "/iais/cessation/reCessationAck.jsp"%>
+<%@include file = "/WEB-INF/jsp/iais/cessation/reCessationAck.jsp"%>

@@ -1,1 +1,1 @@
-<%@include file = "/iais/appointment/nonwrkday/NonWorkingDayDefine.jsp"%>
+<%@include file = "/WEB-INF/jsp/iais/appointment/nonwrkday/NonWorkingDayDefine.jsp"%>

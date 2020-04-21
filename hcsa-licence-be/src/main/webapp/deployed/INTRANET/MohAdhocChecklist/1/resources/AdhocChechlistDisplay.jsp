@@ -1,1 +1,1 @@
-<%@include file = "/iais/checklist/adhoc/AdhocChechlistDisplay.jsp"%>
+<%@include file = "/WEB-INF/jsp/iais/checklist/adhoc/AdhocChechlistDisplay.jsp"%>

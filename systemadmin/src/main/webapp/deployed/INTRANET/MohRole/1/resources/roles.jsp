@@ -1,1 +1,1 @@
-<%@include file = "/iais/createRole/role.jsp"%>
+<%@include file = "/WEB-INF/jsp/iais/createRole/role.jsp"%>

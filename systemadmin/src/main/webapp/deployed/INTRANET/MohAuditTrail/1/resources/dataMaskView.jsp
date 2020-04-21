@@ -1,1 +1,1 @@
-<%@include file = "/iais/audittrail/limitedDisplaylist.jsp"%>
+<%@include file = "/WEB-INF/jsp/iais/audittrail/limitedDisplaylist.jsp"%>

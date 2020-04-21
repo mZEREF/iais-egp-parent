@@ -1,1 +1,1 @@
-<%@include file = "/iais/CreateUser/confirm.jsp"%>
+<%@include file = "/WEB-INF/jsp/iais/CreateUser/confirm.jsp"%>
