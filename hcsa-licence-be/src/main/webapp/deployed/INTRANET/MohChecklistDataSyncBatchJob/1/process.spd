@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohChecklistDataSyncBatchJob" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="run" x="290" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="run_OnStepProcess_0" name="run_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <StopStep defClass="" executor="" icon="" name="stop" x="440" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="stop_OnStepProcess_0" name="stop_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StopStep>
+ </Steps>
+ <Pages/>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/run" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step1" style="rectanular">
+   <position>{(120,120)(310,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/StopStep/stop" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/run" style="rectanular">
+   <position>{(310,120)(460,120)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches/>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>
