@@ -9,6 +9,7 @@
 
 <html lang="en">
 <head>
+    <title>HALP</title>
     <%@ include file="/WEB-INF/jsp/inc/iais-internet-common-include.jsp" %>
 
     <%-- BEGIN additional header --%>

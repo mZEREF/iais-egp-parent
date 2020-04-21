@@ -3,7 +3,7 @@
     String webrooth=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
 %>
 <header>
-    <title>HALP</title>
+
     <div class="container">
         <div class="row">
             <div class="col-xs-10 col-lg-6">

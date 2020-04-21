@@ -15,6 +15,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+	<title>HALP</title>
 	<%@ include file="/WEB-INF/jsp/inc/iais-intranet-common-include.jsp" %>
 	<%-- BEGIN additional header --%>
 	<tiles:insertAttribute name="header-ext" ignore="true" />
