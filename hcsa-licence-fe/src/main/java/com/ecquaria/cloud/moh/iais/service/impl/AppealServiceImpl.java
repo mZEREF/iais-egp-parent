@@ -96,8 +96,6 @@ public class AppealServiceImpl implements AppealService {
     @Autowired
     private ServiceConfigService serviceConfigService;
     @Autowired
-    private FileRepositoryClient fileRepositoryClient;
-    @Autowired
     private FeEicGatewayClient feEicGatewayClient;
     @Override
     public List<String> reasonAppeal(String applicationNoOrLicenceNo) {
@@ -386,9 +384,15 @@ public class AppealServiceImpl implements AppealService {
         }
         String appealReason = appealPageDto.getAppealReason();
         String id = (String)request.getSession().getAttribute("id");
+       /* Boolean flag = applicationClient.isAppealEligibility(id).getEntity();
+        if(!flag){
+            map.put("submit","Only one appeal may be submitted");
+            return;
+        }*/
         Boolean entity = applicationClient.isUseReason(id, appealReason).getEntity();
         if(!entity){
-            map.put("reason","This reason can no longer be selected");
+            map.put("reason","An appeal has previously submitted under the same reason, please select another");
+            return;
         }
         if (StringUtil.isEmpty(appealReason)){
             map.put("reason","UC_CHKLMD001_ERR001");
@@ -528,7 +532,6 @@ public class AppealServiceImpl implements AppealService {
     private String licencePresmises(HttpServletRequest request,String  licenceNo){
 
         LicenceDto licenceDto = licenceClient.getLicBylicNo(licenceNo).getEntity();
-
         ApplicationDto entity1 = applicationClient.getApplicationsByLicenceId(licenceDto.getId()).getEntity();
         String licenseeId = licenceDto.getLicenseeId();
 
@@ -608,7 +611,7 @@ public class AppealServiceImpl implements AppealService {
 
         }
         appealDto.setAppGrpPremisesDtos(premisesDtos);
-        applicationClient.submitAppeal(appealDto);
+  /*      applicationClient.submitAppeal(appealDto);*/
         ApplicationGroupDto applicationGroupDto1 = appealDto.getApplicationGroupDto();
         String groupId = applicationGroupDto1.getId();
         request.setAttribute("groupId",groupId);

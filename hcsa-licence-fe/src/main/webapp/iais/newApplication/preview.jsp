@@ -65,6 +65,9 @@
                                                 <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" aria-invalid="false">
                                                 <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span>I hereby certify that the information I provided is all correct and accurate</label>
                                             </div>
+                                            <div>
+                                                <span id="error_fieldMandatory"  class="error-msg"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -111,7 +114,15 @@
             }
         });
         $('#Next').click(function(){
-            submit('payment','doSubmit',null);
+            let jQuery = $('#verifyInfoCheckbox').prop("checked");
+            if(!jQuery){
+                $('#error_fieldMandatory').html("The field is mandatory");
+                return;
+            }else if(jQuery) {
+                $('#error_fieldMandatory').html("");
+                submit('payment','doSubmit',null);
+            }
+
         });
 
         $('.doSvcEdit').click(function () {

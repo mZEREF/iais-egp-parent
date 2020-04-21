@@ -159,7 +159,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         String svcName = licenceDto.getSvcName();
 
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId());
-
+        log.info(licenseeEmailAddrs.toString()+"----------");
+        log.info(licenceDto.getLicenseeId()+"licenseeId");
         Date expiryDate = licenceDto.getExpiryDate();
 
         String id = licenceDto.getId();
@@ -183,7 +184,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 EmailDto emailDto=new EmailDto();
                 emailDto.setContent(templateMessageByContent);
                 emailDto.setSubject(EMAIL_SUBJECT);
-                emailDto.setSender("MOH");
+                emailDto.setSender("Ministry of Health");
                 emailDto.setClientQueryCode("isNotAuto");
 
                 if(!licenseeEmailAddrs.isEmpty()){
@@ -274,8 +275,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 EmailDto emailDto=new EmailDto();
                 emailDto.setContent(templateMessageByContent);
                 emailDto.setSubject(EMAIL_SUBJECT);
-                emailDto.setSender("MOH");
-                emailDto.setClientQueryCode("");
+                emailDto.setSender("Ministry of Health");
+                emailDto.setClientQueryCode("auto");
 
                 if(!licenseeEmailAddrs.isEmpty()){
                     emailDto.setReceipts(licenseeEmailAddrs);

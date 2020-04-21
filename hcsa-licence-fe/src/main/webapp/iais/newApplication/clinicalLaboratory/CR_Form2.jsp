@@ -3,6 +3,9 @@
     margin-bottom: 15px;margin-top: 25px;
   }
 
+  .control-font-label{
+    margin-top: 19px;
+  }
 </style>
 
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
@@ -106,7 +109,7 @@
                                 </div>
                                 <br/>
                                 <div class="col-sm-5 control-label formtext ">
-                                  <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Add/Assign a Clinical Governance Officer</label>
+                                  <label id="control--runtime--2--label" class="control-label control-set-font control-font-label" >Add/Assign a Clinical Governance Officer</label>
                                   <span class="upload_controls"></span>
                                 </div>
                                 <div class="col-sm-5 col-md-7" id="assignSelect${suffix}">

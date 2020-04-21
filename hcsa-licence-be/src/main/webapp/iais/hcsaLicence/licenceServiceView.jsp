@@ -309,7 +309,7 @@
                                         Operating Hours (Start)
                                       </div>
                                       <div class="col-md-6">
-                                          ${appGrpPremDto.onsiteStartHH}: ${appGrpPremDto.onsiteStartMM}
+                                          ${appGrpPremDto.onsiteStartHH} : ${appGrpPremDto.onsiteStartMM}
                                         <wrms:value width="7">
                                         <span class="newVal " attr="${appGrpPremDto.wrkTimeFrom}" style="display: none"><label><c:out
                                                 value=""/></label></span>
@@ -326,7 +326,7 @@
                                        Operating Hours (End)
                                       </div>
                                       <div class="col-md-6">
-                                          ${appGrpPremDto.onsiteEndHH}: ${appGrpPremDto.onsiteEndMM}
+                                          ${appGrpPremDto.onsiteEndHH} : ${appGrpPremDto.onsiteEndMM}
                                             <wrms:value width="7">
                                               <span class="newVal " attr="${appGrpPremDto.wrkTimeTo}"
                                               style="display: none"><label><c:out value=""/></label></span>
@@ -365,7 +365,7 @@
                                      Public Holidays Operating Hours (Start)
                                     </div>
                                     <div class="col-md-6">
-                                        ${appPremPhOpenPeriod.convStartFromHH}:  ${appPremPhOpenPeriod.convStartFromMM}
+                                        ${appPremPhOpenPeriod.convStartFromHH} : ${appPremPhOpenPeriod.convStartFromMM}
                                           <wrms:value width="7">
                                           <span class="newVal " attr="${appPremPhOpenPeriod.convStartFromHH}" style="display: none"><label><c:out
                                                   value=""/></label></span>
@@ -382,7 +382,7 @@
                                       Public Holidays Operating Hours (End)
                                     </div>
                                     <div class="col-md-6">
-                                        ${appPremPhOpenPeriod.convEndToHH}:  ${appPremPhOpenPeriod.convEndToMM}
+                                        ${appPremPhOpenPeriod.convEndToHH} : ${appPremPhOpenPeriod.convEndToMM}
 
                                           <wrms:value width="7">
                                           <span class="newVal " attr="${appPremPhOpenPeriod.endTo}"

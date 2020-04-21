@@ -25,6 +25,7 @@
     <div  class="col-xs-12 col-md-10">
       <div class="col-xs-12 col-md-6">
         <input type="text" name="appealingFor" disabled  value="${appealingFor}" >
+        <span name="iaisErrorMsg" class="error-msg" id="error_submit"></span>
       </div>
     </div>
   </div>
@@ -135,6 +136,7 @@
             <a class="btn btn-secondary" href="#" id="cancel">Cancel</a>
             <a class="btn btn-secondary" href="#" id="save">Save</a>
             <a class="btn btn-primary" href="#" id="submit">Submit</a>
+
           </div>
         </div>
       </div>

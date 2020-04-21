@@ -237,4 +237,6 @@ public interface ApplicationClient  {
 
     @PostMapping(value = "/iais-submission/application/without-renew",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto> createApplicationDataByWithOutRenewal(@RequestBody RenewDto renewDto);
+    @GetMapping(value = "/appeal/appeal-eligibility")
+    FeignResponseEntity<Boolean> isAppealEligibility(@RequestParam("id") String id);
 }
