@@ -117,7 +117,7 @@ public class InspTeamNonWorkingDayDelegator {
 			nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(shotName);
 			ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, shotName);
 		}else {
-			Optional<WorkingGroupQueryDto> wrkOtional = workingGroupQueryList.stream().findFirst();
+			Optional<WorkingGroupQueryDto> wrkOtional = Optional.ofNullable(workingGroupQueryList.get(0));
 			if (wrkOtional.isPresent()){
 				String defualtId = wrkOtional.get().getId();
 				nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(defualtId);

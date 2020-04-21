@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -56,35 +56,19 @@ public final class FileUtils {
         }
     }
 
-
-    private static void inputStreamToFile(InputStream ins, File file) {
-        try (OutputStream os = new FileOutputStream(file)){
-            int bytesRead;
-            byte[] buffer = new byte[8192];
-            while ((bytesRead = ins.read(buffer, 0,
-                    8192)) != -1) {
-                os.write(buffer, 0, bytesRead);
-            }
-        } catch (Exception e) {
-            log.info(e.getMessage());
-        }
-    }
-
-
     private static void copyInputStreamToFile(final InputStream source, final File file) {
         try {
             org.apache.commons.io.FileUtils.copyInputStreamToFile(source, file);
         } catch (IOException e) {
-            throw new IaisRuntimeException("the file encounter an error with input by stream.");
+            throw new IaisRuntimeException("the file encounter an error with input by stream.", e);
         }
 
     }
 
     public static void deleteTempFile(final File file) {
         if (file != null) {
-            File del = new File(file.toURI());
-            log.debug("delete temp file uri" + file.toURI());
-            boolean success = del.delete();
+            log.info(StringUtil.changeForLog("delete temp file uri" + file.toURI()));
+            boolean success = file.delete();
             if (success){
                 log.info("delete temp file success");
             }else {
@@ -103,12 +87,12 @@ public final class FileUtils {
         try {
             return  org.apache.commons.io.FileUtils.readFileToByteArray(file);
         } catch (IOException e) {
-            throw new IaisRuntimeException("the file encounter an error with convert to byte[].");
+            throw new IaisRuntimeException("the file encounter an error with convert to byte[].", e);
         }
     }
 
     public static boolean outFileSize(long fileSize){
-        double size = (double) (fileSize / 0x400) / 0x400;
+        long size = (fileSize / 0x400) / 0x400;
         if (Math.ceil(size) > 0x10) {
             return true;
         }

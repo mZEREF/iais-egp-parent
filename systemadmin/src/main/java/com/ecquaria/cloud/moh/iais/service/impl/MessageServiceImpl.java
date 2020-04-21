@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageQueryDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.MessageService;
@@ -63,7 +64,7 @@ public class MessageServiceImpl implements MessageService {
                 eicGatewayClient.syncMessageToFe(retMsg, signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization()).getEntity();
             }catch (IaisRuntimeException e){
-                log.error("encounter failure when sync message to fe " + e.getMessage());
+                log.error(StringUtil.changeForLog("encounter failure when sync message to fe " + e.getMessage()));
 
                 //set message to eic event
             }

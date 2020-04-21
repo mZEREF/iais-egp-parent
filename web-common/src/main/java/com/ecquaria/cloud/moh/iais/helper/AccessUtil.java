@@ -82,36 +82,6 @@ public class AccessUtil {
         throw new IllegalStateException("Utility class");
     }
 
-    /**
-    * @description: use for judeg is intranet user
-    * @param: 
-    * @return: 
-    * @author: yichen 
-    */
-    public static Boolean isIntranet(AuditTrailDto currentAuditTrail){
-        String userDomain = currentAuditTrail.getUserDomain();
-        if ("Intranet".equals(userDomain)){
-            return true;
-        }else {
-            return false;
-        }
-    }
-
-    /**
-    * @description: use for judeg is internet user
-    * @param:
-    * @return:
-    * @author: yichen
-    */
-    public static Boolean isInternet(AuditTrailDto currentAuditTrail){
-        String userDomain = currentAuditTrail.getUserDomain();
-        if ("Internet".equals(userDomain)){
-            return true;
-        }else {
-            return false;
-        }
-    }
-
     public static void initLoginUserInfo(HttpServletRequest request) {
         LoginContext loginContext = new LoginContext();
         User user = SessionManager.getInstance(request).getCurrentUser();

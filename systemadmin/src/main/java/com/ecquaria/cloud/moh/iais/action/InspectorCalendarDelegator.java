@@ -62,7 +62,6 @@ public class InspectorCalendarDelegator {
 	public void startStep(BaseProcessClass bpc){
 		HttpServletRequest request = bpc.request;
 		log.debug(StringUtil.changeForLog("the inspector calendar start ...."));
-		log.info("Step 1 ==============>" + bpc.request.getSession().getId());
 		request.getSession().removeAttribute(AppointmentConstants.USER_NAME_ATTR);
 		request.getSession().removeAttribute(AppointmentConstants.INSPECTOR_CALENDAR_QUERY_ATTR);
 		request.getSession().removeAttribute(AppointmentConstants.ACTION_VALUE);
@@ -119,8 +118,8 @@ public class InspectorCalendarDelegator {
 		LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request,
 				AppConsts.SESSION_ATTR_LOGIN_USER);
 
-		if (!Optional.ofNullable(loginContext).isPresent()){
-			log.info("===>> don't have loginContext" + loginContext);
+		if (loginContext == null){
+			log.info(StringUtil.changeForLog("===>> don't have loginContext" + loginContext));
 			return;
 		}
 
@@ -153,7 +152,7 @@ public class InspectorCalendarDelegator {
 
 		SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
 
-		String defaultId = workingGroupQueryList.stream().findFirst().get().getId();
+		String defaultId = workingGroupQueryList.get(0).getId();
 		String afterSelectWrkGroup = ParamUtil.getRequestString(request, AppointmentConstants.SHORT_NAME_ATTR);
 
 		boolean isGroupLead = false;

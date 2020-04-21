@@ -90,7 +90,6 @@ public class AuditTrailDelegator {
         log.debug("The prepareSwitch start ...");
         String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
 
-        log.debug("*******************crudAction-->:" + crudAction);
         log.debug("The prepareSwitch end ...");
     }
 
@@ -107,7 +106,7 @@ public class AuditTrailDelegator {
                 AppConsts.SESSION_ATTR_LOGIN_USER);
 
         if (!Optional.ofNullable(loginContext).isPresent()){
-            log.info("===>> don't have loginContext" + loginContext);
+            log.info(StringUtil.changeForLog("===>> don't have loginContext" + loginContext));
         }
 
         boolean isAdmin = AccessUtil.isAdministrator();
@@ -214,7 +213,7 @@ public class AuditTrailDelegator {
 
         AuditTrailQueryDto queryDto = new AuditTrailQueryDto();
         if(operation != null){
-            queryDto.setOperation(Integer.valueOf(operation));
+            queryDto.setOperation(Integer.parseInt(operation));
         }
 
 	    if(!StringUtil.isEmpty(operationType)) {

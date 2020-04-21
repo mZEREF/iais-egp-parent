@@ -77,7 +77,7 @@
                     <tbody>
                     <tr><td style="text-align:right;">
                       <c:if test="${status.count > 1}">
-                        <h4 class="text-danger"><i class="fa fa-times-circle" onclick="$('#personnelRemoveId${status.index}').remove();removeSp()"></i></h4>
+                        <h4 class="text-danger"><em class="fa fa-times-circle" onclick="$('#personnelRemoveId${status.index}').remove();removeSp()"></em></h4>
                       </c:if>
                     </td></tr>
                     <tr height="1">

@@ -88,13 +88,11 @@ public final class HcsaServiceCacheHelper {
 		HcsaServiceClient serviceClient = SpringContextHelper.getContext().getBean(HcsaServiceClient.class);
 		if (serviceClient == null){
 			log.info("================== receive service on startup failed ==================");
-			log.info(HcsaServiceCacheHelper.class.getName() +  " service client is null");
 			return;
 		}
 
 		int status = serviceClient.getActiveServices().getStatusCode();
 
-		log.info("HcsaServiceCacheHelper status  =====>" + status);
 
 		if (status == HttpStatus.SC_OK){
 			List<HcsaServiceDto> serviceList = serviceClient.getActiveServices().getEntity();

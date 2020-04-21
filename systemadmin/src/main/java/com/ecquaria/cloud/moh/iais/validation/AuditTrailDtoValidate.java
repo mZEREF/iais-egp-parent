@@ -37,15 +37,13 @@ public class AuditTrailDtoValidate implements CustomizeValidator {
 					int reduceDay = getReduceDay(IaisEGPHelper.parseToDate(startDate, AppConsts.DEFAULT_DATE_FORMAT),
 							IaisEGPHelper.parseToDate(endDate, AppConsts.DEFAULT_DATE_FORMAT));
 
-					String paramVal = SystemParamCacheHelper
-							.getParamValueById(SystemParamCacheHelper.AUDIT_TRAIL_TIME_LIMIT) == null ? "3" :
-								SystemParamCacheHelper
-							.getParamValueById(SystemParamCacheHelper.AUDIT_TRAIL_TIME_LIMIT);
+					String value = SystemParamCacheHelper.getParamValueById(SystemParamCacheHelper.AUDIT_TRAIL_TIME_LIMIT);
+					String postValue = value == null ? "3" : value;
 
 					String msg = MessageUtil.getMessageDesc("GENERAL_ERR0010");
 
-					if ((reduceDay > (Integer.valueOf(paramVal) * MONTH_DAY))){
-						errMap.put("actionTime", MessageUtil.formatMessage(msg, paramVal));
+					if ((reduceDay > (Integer.parseInt(postValue) * MONTH_DAY))){
+						errMap.put("actionTime", MessageUtil.formatMessage(msg, postValue));
 					}
 				}
 				break;

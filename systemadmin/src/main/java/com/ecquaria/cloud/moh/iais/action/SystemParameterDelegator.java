@@ -62,8 +62,6 @@ public class SystemParameterDelegator {
      */
     public void prepareSwitch(BaseProcessClass bpc) {
         log.debug("The prepareSwitch start ...");
-        String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        log.debug("*******************crudAction-->:" + crudAction);
         log.debug("The prepareSwitch end ...");
     }
 

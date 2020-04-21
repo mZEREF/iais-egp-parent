@@ -166,12 +166,12 @@ public class WebValidationHelper {
                 String value = ent.getValue();
                 String msg;
                 if (value.contains("/")){
-                    int indx = value.indexOf("/");
+                    int indx = value.indexOf('/');
                     try {
                         String num = value.substring(indx + 1);
                         if (num.contains(".")){
                             // The value returned by annotation @Min is a float number
-                            int signIndex = num.indexOf(".");
+                            int signIndex = num.indexOf('.');
                             num = num.substring(0, signIndex);
                         }
 
@@ -212,7 +212,7 @@ public class WebValidationHelper {
         String value = errorMsg;
         String msg;
         if (value.contains("/")){
-            int indx = value.indexOf("/");
+            int indx = value.indexOf('/');
             try {
                 String num = value.substring(indx + 1);
                 Integer.valueOf(num);

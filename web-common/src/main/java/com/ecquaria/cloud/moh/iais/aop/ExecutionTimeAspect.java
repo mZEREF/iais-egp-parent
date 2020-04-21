@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.aop;
 
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -29,12 +30,13 @@ public class ExecutionTimeAspect {
         long start = System.currentTimeMillis();
         log.info("feign call execution timer start");
 
-        log.info("feign call execution timer [ " + clazzName + "]");
+        log.info(StringUtil.changeForLog("feign call execution timer [ " + clazzName + "]"));
 
         Object result = joinPoint.proceed();
 
         long time = System.currentTimeMillis() - start;
-        log.info("feign call execution timer end [ " + time + "]" + "ms");
+
+        log.info(StringUtil.changeForLog("feign call execution timer end [ " + time + "]" + "ms"));
 
         return result;
     }

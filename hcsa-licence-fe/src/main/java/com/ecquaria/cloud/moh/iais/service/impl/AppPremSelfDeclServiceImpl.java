@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -52,8 +53,6 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
     @Autowired
     private FeEicGatewayClient gatewayClient;
-
-    private List<AppSvcPremisesScopeDto> premScopeList;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -244,7 +243,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
             gatewayClient.routeSelfDeclData(selfDeclSyncDataDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getStatusCode();
         }catch (Exception e){
-            log.error("encounter failure when sync self decl to be" + e.getMessage());
+            log.info(StringUtil.changeForLog("encounter failure when sync self decl to be" + e.getMessage()));
         }
 
     }

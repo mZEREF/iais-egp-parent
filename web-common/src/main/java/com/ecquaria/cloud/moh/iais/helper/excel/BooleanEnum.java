@@ -26,15 +26,7 @@ public enum BooleanEnum {
 		return name;
 	}
 
-	void setName(String name) {
-		this.name = name;
-	}
-
 	Boolean getValue() {
 		return value;
-	}
-
-	void setValue(Boolean value) {
-		this.value = value;
 	}
 }

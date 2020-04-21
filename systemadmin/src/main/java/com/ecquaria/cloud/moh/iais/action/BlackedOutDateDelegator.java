@@ -174,7 +174,7 @@ public class BlackedOutDateDelegator {
                 List<ApptBlackoutDateQueryDto> blackoutDateQueryList = dtoSearchResult.getRows();
                 ApptBlackoutDateQueryDto blackoutDateQueryDto = blackoutDateQueryList.stream()
                         .filter(item -> item.getId().equals(blackDateId)).findFirst().orElse(null);
-                if (Optional.of(blackoutDateQueryDto).isPresent()){
+                if (blackoutDateQueryDto != null){
                     ParamUtil.setRequestAttr(request, "shortName", blackoutDateQueryDto.getShortName());
                     ParamUtil.setRequestAttr(request, "startDate", IaisEGPHelper.parseToString(blackoutDateQueryDto.getStartDate(), AppConsts.DEFAULT_DATE_FORMAT));
                     ParamUtil.setRequestAttr(request, "endDate", IaisEGPHelper.parseToString(blackoutDateQueryDto.getEndDate(), AppConsts.DEFAULT_DATE_FORMAT));
@@ -335,7 +335,6 @@ public class BlackedOutDateDelegator {
         switch (ans){
             case 0:
                 boolean isCreate = appointmentService.createBlackedOutCalendar(blackoutDateDto);
-                log.debug("createBlackedOutCalendar ===>>> " + blackoutDateDto.getShortName() + " result ==>>> "+ isCreate);
                 ParamUtil.setRequestAttr(request,"ackMsg", "You have successfully create a block-out date.");
                 break;
             case 1:
@@ -362,14 +361,12 @@ public class BlackedOutDateDelegator {
     }
 
     private Boolean canBlock(String groupName, Date startDate, Date endDate){
-        log.info(startDate + "===" + endDate);
         List<Date> currentInspDate = appointmentService.getCurrentWorkingGroupInspectionDate(groupName);
         if (IaisCommonUtils.isEmpty(currentInspDate)){
-            return true;
+            return Boolean.TRUE;
         }
 
         long reduceDay = (endDate.getTime() - startDate.getTime())/(1000*3600*24);
-        log.info("reduceDay : " + reduceDay);
 
         Calendar calendar = Calendar.getInstance();
 
@@ -382,10 +379,10 @@ public class BlackedOutDateDelegator {
         }
 
         for (Date inspDate : currentInspDate){
-            if (includeDayList.contains(inspDate)){return false;}
+            if (includeDayList.contains(inspDate)){return Boolean.FALSE;}
         }
 
-        return true;
+        return Boolean.TRUE;
     }
 
     /**

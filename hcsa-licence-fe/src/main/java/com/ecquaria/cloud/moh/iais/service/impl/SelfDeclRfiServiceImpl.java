@@ -161,7 +161,7 @@ public class SelfDeclRfiServiceImpl implements SelfDeclRfiService {
         return serviceSelf;
     }
 
-    private SelfDeclaration loadServiceData(AppPremisesSelfDeclChklDto selfdecl, Boolean isSubtype, Boolean isCommon){
+    private SelfDeclaration loadServiceData(AppPremisesSelfDeclChklDto selfdecl, boolean isSubtype, boolean isCommon){
         SelfDeclaration serviceSelf = new SelfDeclaration();
         serviceSelf.setConfigId(selfdecl.getChkLstConfId());
         serviceSelf.setCommon(isCommon);

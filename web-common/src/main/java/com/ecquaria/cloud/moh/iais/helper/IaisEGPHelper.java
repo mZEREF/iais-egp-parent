@@ -41,12 +41,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import static org.eclipse.jdt.internal.compiler.util.Util.UTF_8;
 
 @Slf4j
 public final class IaisEGPHelper extends EGPHelper {
@@ -116,12 +119,12 @@ public final class IaisEGPHelper extends EGPHelper {
      * @param end
      * @return
      */
-    public static Boolean isAfterDate(Date start, Date end){
+    public static boolean isAfterDate(Date start, Date end){
         if (start == null || end == null){
             throw new IaisRuntimeException("No has input for Date!");
         }
 
-        return end.compareTo(start) == 1  || end.compareTo(start) == 0 ? true : false;
+        return end.compareTo(start) > 0  || end.compareTo(start) == 0 ? true : false;
     }
 
     /**
@@ -130,12 +133,12 @@ public final class IaisEGPHelper extends EGPHelper {
      * @param end
      * @return
      */
-    public static Boolean isAfterDateSecond(Date start, Date end){
+    public static boolean isAfterDateSecond(Date start, Date end){
         if (start == null || end == null){
             throw new IaisRuntimeException("No has input for Date!");
         }
 
-        return end.compareTo(start) == 1 ? true : false;
+        return end.compareTo(start) > 0 ? true : false;
     }
 
 
@@ -183,7 +186,7 @@ public final class IaisEGPHelper extends EGPHelper {
                 ParamUtil.setSessionAttr(request, filter.getSearchAttr(), searchParam);
             }
         }catch (NullPointerException e){
-            log.info("getSearchParam ===>>>> " + e.getMessage());
+            log.error(StringUtil.changeForLog("getSearchParam ===>>>> " + e.getMessage()));
         }
         return searchParam;
     }
@@ -195,8 +198,14 @@ public final class IaisEGPHelper extends EGPHelper {
     * @author: yichen
     */
     public static String capitalized(String str) {
-        byte[] val = str.getBytes();
-        val[0] = (byte) ((char) val[0] - 'a' + 'A');
+        byte[] val;
+        try {
+            val = str.getBytes(UTF_8);
+            val[0] = (byte) ((char) val[0] - 'a' + 'A');
+        } catch (UnsupportedEncodingException e) {
+            throw new IaisRuntimeException(e);
+        }
+
         return new String(val);
     }
 
@@ -214,7 +223,7 @@ public final class IaisEGPHelper extends EGPHelper {
         try {
             return FastDateFormat.getInstance(AppConsts.DEFAULT_DATE_FORMAT).parse(val);
         } catch (ParseException e) {
-            throw new IaisRuntimeException(e.getMessage());
+            throw new IaisRuntimeException(e.getMessage(), e);
         }
     }
 
@@ -232,7 +241,7 @@ public final class IaisEGPHelper extends EGPHelper {
         try {
             return FastDateFormat.getInstance(pattern).parse(val);
         } catch (ParseException e) {
-            throw new IaisRuntimeException(e.getMessage());
+            throw new IaisRuntimeException(e.getMessage(), e);
         }
     }
 

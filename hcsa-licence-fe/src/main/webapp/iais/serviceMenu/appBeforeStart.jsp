@@ -62,7 +62,7 @@
           <div class="license-info-gp">
             <div class="license-info-row">
               <div class="licnese-info">
-                <p>Licensee: <b>Greenwood Clinic</b> </p>
+                <p>Licensee: <strong>Greenwood Clinic</strong> </p>
               </div>
               <div class="license-edit">
                 <p><a href="#">View</a></p>
@@ -70,7 +70,7 @@
             </div>
             <div class="license-info-row">
               <div class="licnese-info">
-                <p>Authorised User 1: <b>Mo Delan</b> </p>
+                <p>Authorised User 1: <strong>Mo Delan</strong> </p>
               </div>
               <div class="license-edit">
                 <p><a href="#">View</a></p>
@@ -78,7 +78,7 @@
             </div>
             <div class="license-info-row">
               <div class="licnese-info">
-                <p>Authorised User 2: <b>Linda Tan</b> </p>
+                <p>Authorised User 2: <strong>Linda Tan</strong> </p>
               </div>
               <div class="license-edit">
                 <p><a href="#">View</a></p>
@@ -86,7 +86,7 @@
             </div>
             <div class="license-info-row">
               <div class="licnese-info">
-                <p>MedAlert Contact Person: <b>Shun Qiu</b></p>
+                <p>MedAlert Contact Person: <strong>Shun Qiu</strong></p>
               </div>
               <div class="license-edit">
                 <p><a href="#">View</a></p>

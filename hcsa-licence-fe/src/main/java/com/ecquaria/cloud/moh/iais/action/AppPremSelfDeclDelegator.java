@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -78,7 +79,7 @@ public class AppPremSelfDeclDelegator {
 
         ParamUtil.setSessionAttr(request, "currentSelfDeclGroupId", groupId);
         SelfDeclSubmitDto selfDeclSubmitDto = (SelfDeclSubmitDto) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
-        log.info("assign to self decl group id ==>>>>> " + groupId);
+        log.info(StringUtil.changeForLog("assign to self decl group id ==>>>>> " + groupId));
         if (selfDeclSubmitDto == null) {
             if ("rfi".equals(action)){
                 selfDeclSubmitDto  = selfDeclRfiService.getSelfDeclRfiData(groupId);

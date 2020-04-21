@@ -64,7 +64,7 @@ public class SubmitInspectionDateDelegator {
         String groupId = appSubmissionDto.getAppGrpId();
 
         if(StringUtils.isEmpty(groupId)){
-            log.info("submit inspection date can not find app group id" + groupId);
+            log.info(StringUtil.changeForLog("submit inspection date can not find app group id" + groupId));
             return;
         }
 

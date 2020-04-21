@@ -245,8 +245,6 @@ public class MessageDelegator {
      */
     public void prepareSwitch(BaseProcessClass bpc) {
         log.debug("The prepareSwitch start ...");
-        String nextAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        log.debug("*******************nextAction-->:" + nextAction);
         log.debug("The prepareSwitch end ...");
     }
 

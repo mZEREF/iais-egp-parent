@@ -74,12 +74,12 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
         //TODO : call egp api to do validation
 
-        return true;
+        return Boolean.TRUE;
     }
 
     @Override
     public Boolean isKeyappointment(String uen, String nricNumber){
-        return false;
+        return Boolean.FALSE;
     }
 
     @Override
