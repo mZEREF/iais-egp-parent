@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.dto.HcsaRiskLicTenValidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskLicenceTenureSerice;
+import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.HcsaLicTenVadlidate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import java.util.Map;
 @Slf4j
 public class HcsaRiskLicenceTenureConfigDelegator {
     private HcsaRiskLicenceTenureSerice hcsaRiskLicenceTenureSerice;
+    private static final String TEN_SHOW_DTO = "tenShowDto";
 
     @Autowired
     public HcsaRiskLicenceTenureConfigDelegator(HcsaRiskLicenceTenureSerice hcsaRiskLicenceTenureSerice) {
@@ -51,45 +53,46 @@ public class HcsaRiskLicenceTenureConfigDelegator {
         LicenceTenShowDto showDto = hcsaRiskLicenceTenureSerice.getTenShowDto();
         List<SelectOption> ops = hcsaRiskLicenceTenureSerice.getDateTypeOps();
         ParamUtil.setSessionAttr(request,"timeType",(Serializable) ops);
-        ParamUtil.setSessionAttr(request,"tenShowDto", showDto);
+      /*  ParamUtil.setSessionAttr(request,"yearSelectOptions",(Serializable)LicenceUtil.getRiskYearsOrMonthDrop(true));
+        ParamUtil.setSessionAttr(request,"monthSelectOptions",(Serializable) LicenceUtil.getRiskYearsOrMonthDrop(false));*/
+        ParamUtil.setSessionAttr(request,TEN_SHOW_DTO, showDto);
         ;
     }
 
     public void prepare(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the PreConfig start ...."));
         HttpServletRequest request = bpc.request;
-        RiskFinancialShowDto financialShowDto = (RiskFinancialShowDto) ParamUtil.getSessionAttr(request, RiskConsts.FINANCIALSHOWDTO);
-        ParamUtil.setSessionAttr(request, RiskConsts.FINANCIALSHOWDTO, financialShowDto);
+        LicenceTenShowDto showDto = ( LicenceTenShowDto )ParamUtil.getSessionAttr(request, TEN_SHOW_DTO);
+        ParamUtil.setSessionAttr(request,TEN_SHOW_DTO, showDto);
     }
 
     public void confirm(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the PreConfirm start ...."));
         HttpServletRequest request = bpc.request;
-        RiskFinancialShowDto financialShowDto = (RiskFinancialShowDto) ParamUtil.getSessionAttr(request, RiskConsts.FINANCIALSHOWDTO);
-        ParamUtil.setSessionAttr(request, RiskConsts.FINANCIALSHOWDTO, financialShowDto);
-        ParamUtil.setSessionAttr(request, RiskConsts.FINANCIALSHOWDTO, financialShowDto);
+        LicenceTenShowDto showDto = ( LicenceTenShowDto )ParamUtil.getSessionAttr(request, TEN_SHOW_DTO);
+        ParamUtil.setSessionAttr(request,TEN_SHOW_DTO, showDto);
     }
 
     public void doNext(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doNext start ...."));
         HttpServletRequest request = bpc.request;
-        LicenceTenShowDto showDto = (LicenceTenShowDto)ParamUtil.getSessionAttr(request,"tenShowDto");
+        LicenceTenShowDto showDto = (LicenceTenShowDto)ParamUtil.getSessionAttr(request, TEN_SHOW_DTO);
         String removeVal = ParamUtil.getString(request,"removeValue");
         String addValue = ParamUtil.getString(request,"addValue");
         if(!StringUtil.isEmpty(removeVal)){
             hcsaRiskLicenceTenureSerice.remove(removeVal,showDto);
             ParamUtil.setRequestAttr(request, "isValid", "Y");
-            ParamUtil.setSessionAttr(request,"tenShowDto", showDto);
+            ParamUtil.setSessionAttr(request, TEN_SHOW_DTO, showDto);
         }else if(!StringUtil.isEmpty(addValue)){
             showDto.setAddFlag(true);
             showDto.setAddSvcCode(addValue);
             ParamUtil.setRequestAttr(request, "isValid", "Y");
-            ParamUtil.setSessionAttr(request,"tenShowDto", showDto);
+            ParamUtil.setSessionAttr(request, TEN_SHOW_DTO, showDto);
             HcsaLicTenVadlidate hcsaLicTenVadlidate = new HcsaLicTenVadlidate();
             Map<String, String> errMap = hcsaLicTenVadlidate.validate(request);
             showDto.setAddFlag(false);
             showDto.setAddSvcCode(null);
-            ParamUtil.setSessionAttr(request,"tenShowDto", showDto);
+            ParamUtil.setSessionAttr(request, TEN_SHOW_DTO, showDto);
             if (!errMap.isEmpty()) {
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
             }else{
@@ -98,7 +101,6 @@ public class HcsaRiskLicenceTenureConfigDelegator {
             }
         }else {
             getDataFrompage(request,showDto);
-            ParamUtil.setSessionAttr(request,"tenShowDto", showDto);
             HcsaLicTenVadlidate hcsaLicTenVadlidate = new HcsaLicTenVadlidate();
             Map<String, String> errMap = hcsaLicTenVadlidate.validate(request);
             if (errMap.isEmpty()) {
@@ -114,7 +116,7 @@ public class HcsaRiskLicenceTenureConfigDelegator {
     public void submit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doSubmit start ...."));
         HttpServletRequest request = bpc.request;
-        LicenceTenShowDto showDto = (LicenceTenShowDto)ParamUtil.getSessionAttr(request,"tenShowDto");
+        LicenceTenShowDto showDto = (LicenceTenShowDto)ParamUtil.getSessionAttr(request, TEN_SHOW_DTO);
         hcsaRiskLicenceTenureSerice.saveDto(showDto);
 
     }
@@ -125,7 +127,6 @@ public class HcsaRiskLicenceTenureConfigDelegator {
     }
 
     public LicenceTenShowDto getDataFrompage(HttpServletRequest request, LicenceTenShowDto showDto) {
-        LicenceTenShowDto ltShowDto = new LicenceTenShowDto();
         List<HcsaRiskLicenceTenureDto> ltDtoList = showDto.getLicenceTenureDtoList();
         if(ltDtoList!=null &&!ltDtoList.isEmpty()){
             for(HcsaRiskLicenceTenureDto temp:ltDtoList){
@@ -138,8 +139,8 @@ public class HcsaRiskLicenceTenureConfigDelegator {
                 temp.setEdit(!editFlag);
             }
         }
-        ltShowDto.setLicenceTenureDtoList(ltDtoList);
-        return ltShowDto;
+        ParamUtil.setSessionAttr(request, TEN_SHOW_DTO, showDto);
+        return showDto;
     }
 
 
@@ -180,7 +181,7 @@ public class HcsaRiskLicenceTenureConfigDelegator {
     }
     public HcsaRiskLicTenValidateDto getValueFromPage(HttpServletRequest request) {
         HcsaRiskLicTenValidateDto dto = new HcsaRiskLicTenValidateDto();
-        LicenceTenShowDto showDto = (LicenceTenShowDto)ParamUtil.getSessionAttr(request,"tenShowDto");
+        LicenceTenShowDto showDto = (LicenceTenShowDto)ParamUtil.getSessionAttr(request, TEN_SHOW_DTO);
         getDataFrompage(request, showDto);
         return dto;
     }

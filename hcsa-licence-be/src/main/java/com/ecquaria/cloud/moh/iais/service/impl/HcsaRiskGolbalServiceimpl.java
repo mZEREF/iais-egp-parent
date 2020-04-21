@@ -132,7 +132,6 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
             fin.setDoAutoRenew(autoreop);
             fin.setDonewInspectType(newinpTypeOps);
             fin.setDonewIsPreInspect(newPreOrPostOps);
-            fin.setDonewIsPreInspect(newPreOrPostOps);
             fin.setDorenewInspectType(renewinpTypeOps);
             fin.setDorenewIsPreInspect(renewPreOrPostOps);
             fin.setDoEffectiveDate(instartdate);
@@ -157,14 +156,13 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
         HcsaRiskFeSupportDto supportDto = new HcsaRiskFeSupportDto();
         supportDto.setGolbalRiskShowDto(golbalShowDto);
         supportDto.setGolbalFlag(true);
-        beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+       /* beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());*/
     }
 
     private void dosave(GobalRiskTotalDto temp) {
-        HcsaRiskGlobalDto golDto = new HcsaRiskGlobalDto();
-        HcsaRiskGolbalExtDto golExtDto = new HcsaRiskGolbalExtDto();
-        List<HcsaRiskGolbalExtDto> extDtoList = IaisCommonUtils.genNewArrayList();
+        HcsaRiskGlobalDto golDto;
+        List<HcsaRiskGolbalExtDto> extDtoList;
         if (temp.getId() != null) {
             golDto = transferTogolDto(temp);
             extDtoList = transferToextDtoList(temp);

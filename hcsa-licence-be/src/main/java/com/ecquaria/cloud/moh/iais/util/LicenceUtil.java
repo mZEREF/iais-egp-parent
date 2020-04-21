@@ -7,6 +7,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -72,4 +75,19 @@ public class LicenceUtil {
         return null;
     }
 
+    public static   List<SelectOption> getRiskYearsOrMonthDrop(Boolean isYear){
+        List<SelectOption> selectOptions;
+        if(isYear){
+            String dateTypeText =  MasterCodeUtil.getCodeDesc(RiskConsts.YEAR);
+            selectOptions = new ArrayList<>(6);
+            for(int i = 0;i<6;i++)
+                selectOptions.add(new SelectOption(String.valueOf(i),i + " " + dateTypeText));
+        }else {
+            String dateTypeText =  MasterCodeUtil.getCodeDesc(RiskConsts.MONTH);
+            selectOptions = new ArrayList<>(12);
+            for(int i = 0;i<12;i++)
+                selectOptions.add(new SelectOption(String.valueOf(i),i + " " + dateTypeText));
+        }
+        return selectOptions;
+    }
 }

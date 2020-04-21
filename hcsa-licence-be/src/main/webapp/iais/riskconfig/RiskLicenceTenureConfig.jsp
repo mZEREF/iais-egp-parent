@@ -50,15 +50,15 @@
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th>Service Name</th>
-                                        <th>Effective Start Date</th>
-                                        <th>Effective End Date</th>
-                                        <th>Minimum Risk Score (greater than)</th>
-                                        <th>Maximum Risk Score (less than or equal to)</th>
-                                        <th>DateType</th>
-                                        <th>Licence Tenure</th>
-                                        <th>Remove</th>
-                                        <th>Add</th>
+                                        <th width="10%">Service Name</th>
+                                        <th width="15%">Effective Start Date</th>
+                                        <th width="15%">Effective End Date</th>
+                                        <th width="10%">Minimum Risk Score (greater than)</th>
+                                        <th width="10%">Maximum Risk Score (less than or equal to)</th>
+                                        <th width="10%">Licence Tenure</th>
+                                        <th width="10%">DateType</th>
+                                        <th width="10%">Remove</th>
+                                        <th width="10%">Add</th>
 
                                     </tr>
                                     </thead>
@@ -66,7 +66,7 @@
                                     <span class="error-msg" id="error_All" name="iaisErrorMsg"></span>
                                     <c:forEach var="ten" items="${tenShowDto.licenceTenureDtoList}" varStatus="status">
                                         <tr>
-                                            <td>
+                                            <td width="10%">
                                                 <c:choose>
                                                     <c:when test="${ten.edit}">
                                                         <p><strong>${ten.serviceName}</strong></p>
@@ -76,15 +76,15 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
-                                            <td><iais:datePicker id = "${ten.svcCode}instartdate" name = "${ten.svcCode}instartdate" value="${ten.doEffectiveDate}"></iais:datePicker>
+                                            <td width="15%"><iais:datePicker id = "${ten.svcCode}instartdate" name = "${ten.svcCode}instartdate" value="${ten.doEffectiveDate}"></iais:datePicker>
                                                 <c:set value = "error_${ten.svcCode}inEffDate" var = "inEffdate"/>
                                                 <span class="error-msg" id="<c:out value="${inEffdate}"/>" name="iaisErrorMsg"></span>
                                             </td>
-                                            <td><iais:datePicker id = "${ten.svcCode}inenddate" name = "${ten.svcCode}inenddate" value="${ten.doEndDate}"></iais:datePicker>
+                                            <td width="15%"><iais:datePicker id = "${ten.svcCode}inenddate" name = "${ten.svcCode}inenddate" value="${ten.doEndDate}"></iais:datePicker>
                                                 <c:set value = "error_${ten.svcCode}inEndDate" var = "inEnddate"/>
                                                 <span class="error-msg" id="<c:out value="${inEnddate}"/>" name="iaisErrorMsg"></span>
                                             </td>
-                                            <td>
+                                            <td  width="10%">
                                                 <c:choose>
                                                     <c:when test="${ten.subDtoList!=null&&!empty ten.subDtoList}">
                                                         <c:forEach var="sub" items="${ten.subDtoList}" varStatus="status">
@@ -107,7 +107,7 @@
                                                 </c:choose>
 
                                             </td>
-                                            <td>
+                                            <td  width="10%">
                                                 <c:choose>
                                                     <c:when test="${ten.subDtoList!=null&&!empty ten.subDtoList}">
                                                         <c:forEach var="sub" items="${ten.subDtoList}" varStatus="status">
@@ -131,7 +131,7 @@
 
                                             </td>
 
-                                            <td>
+                                            <td  width="10%">
                                                 <c:choose>
                                                     <c:when test="${ten.subDtoList!=null&&!empty ten.subDtoList}">
                                                         <c:forEach var="sub" items="${ten.subDtoList}" varStatus="status">
@@ -149,7 +149,7 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
-                                            <td>
+                                            <td  width="10%">
                                                 <c:choose>
                                                     <c:when test="${ten.subDtoList!=null&&!empty ten.subDtoList}">
                                                         <c:forEach var="sub" items="${ten.subDtoList}" varStatus="status">
@@ -167,7 +167,7 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
-                                            <td>
+                                            <td  width="10%">
                                                 <c:choose>
                                                     <c:when test="${ten.subDtoList!=null&&!empty ten.subDtoList}">
                                                         <c:forEach var="sub" items="${ten.subDtoList}" varStatus="status">
@@ -192,27 +192,27 @@
 
                                         </tr>
                                         <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td>
+                                            <td  width="10%"></td>
+                                            <td  width="20%"></td>
+                                            <td width="20%"></td>
+                                            <td width="10%"></td>
+                                            <td width="10%">
 
                                                 <c:set value = "error_${ten.svcCode}maxsort" var = "maxsort"/>
                                                 <span class="error-msg" id="<c:out value="${maxsort}"/>" name="iaisErrorMsg"></span>
                                             </td>
-                                            <td>
+                                            <td width="10%">
                                                 <c:set value = "error_${ten.svcCode}maxminsort" var = "maxminsort"/>
                                                 <span class="error-msg" id="<c:out value="${maxminsort}"/>" name="iaisErrorMsg"></span>
                                             </td>
-                                            <td>
+                                            <td width="10%">
                                                 <c:set value = "error_${ten.svcCode}ltsort" var = "ltsort"/>
                                                 <span class="error-msg" id="<c:out value="${ltsort}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${ten.svcCode}maxSubList" var = "ltsort"/>
                                                 <span class="error-msg" id="<c:out value="${ltsort}"/>" name="iaisErrorMsg"></span>
                                             </td>
-                                            <td></td>
-                                            <td></td>
+                                            <td width="10%"></td>
+                                            <td width="10%"></td>
 
                                         </tr>
                                     </c:forEach>

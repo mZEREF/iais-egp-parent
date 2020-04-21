@@ -42,7 +42,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                     subVad(errMap, fdto);
                 }
             }else{
-                errMap.put("notEidt","please do some change");
+                errMap.put("All","please do some change");
             }
         }
         return errMap;
@@ -78,7 +78,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                 itFlagNum++;
             }
             boolean f= maxAndMinVad(temp,errMap,fdto.getSvcCode());
-            if(f){
+            if(!f){
                 maxAndMinFlagNum++;
             }
         }
@@ -187,7 +187,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                    errMap.put(svcCode+temp.getOrderNum()+"righterr","Invalid Number.");
                }
             }
-            if(StringUtil.isEmpty(temp.getColumRight())){
+            if(StringUtil.isEmpty(temp.getColumLeft())){
                 errMap.put(svcCode+temp.getOrderNum()+"lefterr","The Filed is mandatory.");
                 numfalg = false;
             }else{
@@ -229,12 +229,12 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                 Integer num = Integer.parseInt(temp.getLicenceTenure());
                 if(RiskConsts.MONTH.equals(temp.getDateType())){
                     if(num<0||num>13){
-                        errMap.put(svcCode+temp.getOrderNum()+"lterr","Invalid Number.");
+                        errMap.put(svcCode+temp.getOrderNum()+"lterr","Licence Tenure should be less than 12 months");
                         flag = false;
                     }
                 }else{
-                    if(num<0||num>99){
-                        errMap.put(svcCode+temp.getOrderNum()+"lterr","Invalid Number.");
+                    if(num<0||num>5){
+                        errMap.put(svcCode+temp.getOrderNum()+"lterr","Licence Tenure should be less than 5 years");
                         flag = false;
                     }
                 }
