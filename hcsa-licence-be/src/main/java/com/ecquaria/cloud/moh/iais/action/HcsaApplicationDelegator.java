@@ -886,10 +886,9 @@ public class HcsaApplicationDelegator {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String applicationType = applicationDto.getApplicationType();
         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
+            //send email
             sendRejectEmail(applicationNo,licenseeId,appGrpId);
         }
-        //send email
-        sendRejectEmail(applicationNo,licenseeId,appGrpId);
 
         try {
             bpc.request.setAttribute("application",applicationViewDto.getApplicationDto());
