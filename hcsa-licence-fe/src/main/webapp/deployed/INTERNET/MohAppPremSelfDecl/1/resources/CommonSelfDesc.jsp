@@ -1,3 +1,3 @@
-<%@include file="/iais/selfdesc/CommonSelfDesc.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/selfdesc/CommonSelfDesc.jsp"%>
 
 

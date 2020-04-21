@@ -1,1 +1,1 @@
-<%@include file="/iais/resForChange/personnelEdit.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/resForChange/personnelEdit.jsp"%>

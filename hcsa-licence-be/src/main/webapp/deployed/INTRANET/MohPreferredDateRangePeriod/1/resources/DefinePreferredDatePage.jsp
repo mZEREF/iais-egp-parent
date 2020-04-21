@@ -1,1 +1,1 @@
-<%@include file="/iais/prefdate/DefinePreferredDatePage.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/prefdate/DefinePreferredDatePage.jsp"%>

@@ -1,1 +1,1 @@
-<%@include file="/iais/mastercode/doCreateCategoryView.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/mastercode/doCreateCategoryView.jsp"%>

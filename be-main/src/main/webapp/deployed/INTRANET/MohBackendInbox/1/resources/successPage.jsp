@@ -1,1 +1,1 @@
-<%@include file="/iais/inbox/successPage.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/inbox/successPage.jsp"%>

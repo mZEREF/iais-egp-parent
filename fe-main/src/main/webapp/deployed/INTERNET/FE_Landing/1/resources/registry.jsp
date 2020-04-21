@@ -1,1 +1,1 @@
-<%@include file="/iais/felanding/registry.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/felanding/registry.jsp"%>

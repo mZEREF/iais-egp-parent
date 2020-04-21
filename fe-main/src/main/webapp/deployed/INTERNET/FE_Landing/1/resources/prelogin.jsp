@@ -1,1 +1,1 @@
-<%@include file="/iais/felanding/prelogin.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/felanding/prelogin.jsp"%>

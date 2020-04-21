@@ -1,1 +1,1 @@
-<%@include file="/iais/defineUnavailbility/list.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/defineUnavailbility/list.jsp"%>

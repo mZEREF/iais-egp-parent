@@ -1,1 +1,1 @@
-<%@include file="/iais/test/suochengTestForm.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/test/suochengTestForm.jsp"%>

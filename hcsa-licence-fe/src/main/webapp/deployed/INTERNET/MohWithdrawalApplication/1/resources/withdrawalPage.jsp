@@ -1,1 +1,1 @@
-<%@include file="/iais/withdrawal/withdrawalPage.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/withdrawal/withdrawalPage.jsp"%>

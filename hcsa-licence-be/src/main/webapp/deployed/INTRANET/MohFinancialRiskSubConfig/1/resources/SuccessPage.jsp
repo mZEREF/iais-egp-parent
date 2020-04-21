@@ -1,1 +1,1 @@
-<%@include file="/iais/riskconfig/SumbitSuccess.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/riskconfig/SumbitSuccess.jsp"%>

@@ -1,1 +1,1 @@
-<%@include file="/iais/newApplication/clinicalLaboratory/viewForm.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/newApplication/clinicalLaboratory/viewForm.jsp"%>

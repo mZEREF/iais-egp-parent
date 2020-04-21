@@ -1,1 +1,1 @@
-<%@include file="/iais/felanding/singpassCallBackPage.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/felanding/singpassCallBackPage.jsp"%>

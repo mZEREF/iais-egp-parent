@@ -1,1 +1,1 @@
-<%@include file="/iais/resForChange/tranferConfirmPage.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/resForChange/tranferConfirmPage.jsp"%>

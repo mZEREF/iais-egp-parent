@@ -1,1 +1,1 @@
-<%@include file="/iais/auditListTaskAssign/manSearchAudit.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/auditListTaskAssign/manSearchAudit.jsp"%>

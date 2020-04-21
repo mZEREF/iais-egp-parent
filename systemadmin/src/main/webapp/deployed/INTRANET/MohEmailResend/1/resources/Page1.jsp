@@ -1,1 +1,1 @@
-<%@include file="/iais/emailResend/list.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/emailResend/list.jsp"%>

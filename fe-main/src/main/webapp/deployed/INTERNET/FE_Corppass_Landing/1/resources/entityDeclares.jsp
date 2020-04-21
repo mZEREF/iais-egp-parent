@@ -1,1 +1,1 @@
-<%@include file="/iais/felanding/entityDeclares.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/felanding/entityDeclares.jsp"%>

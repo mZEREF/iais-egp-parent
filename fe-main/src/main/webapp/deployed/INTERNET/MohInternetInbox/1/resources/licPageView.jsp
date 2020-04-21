@@ -1,1 +1,1 @@
-<%@include file="/iais/interInbox/licPageView.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/interInbox/licPageView.jsp"%>

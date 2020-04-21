@@ -1,1 +1,1 @@
-<%@include file="/iais/kpiAndReminder/message.jsp" %>>
+<%@include file="/WEB-INF/jsp/iais/kpiAndReminder/message.jsp" %>>

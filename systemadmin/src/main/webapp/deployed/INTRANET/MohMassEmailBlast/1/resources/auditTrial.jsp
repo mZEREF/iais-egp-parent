@@ -1,1 +1,1 @@
-<%@include file="/iais/blastManagement/auditTrial.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/blastManagement/auditTrial.jsp"%>

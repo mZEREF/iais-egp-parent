@@ -1,1 +1,1 @@
-<%@include file="/iais/publicHoliday/publicHoliday.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/publicHoliday/publicHoliday.jsp"%>

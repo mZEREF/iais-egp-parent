@@ -1,1 +1,1 @@
-<%@include file="/iais/resForInfo/rfiDetail.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/resForInfo/rfiDetail.jsp"%>

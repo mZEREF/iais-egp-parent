@@ -1,1 +1,1 @@
-<%@include file="/iais/org/orgUserAccountCreate.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/org/orgUserAccountCreate.jsp"%>

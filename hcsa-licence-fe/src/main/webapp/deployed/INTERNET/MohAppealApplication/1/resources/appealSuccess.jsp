@@ -1,1 +1,1 @@
-<%@include file="/iais/appeal/appealAcknowledgement.jsp" %>
+<%@include file="/WEB-INF/jsp/iais/appeal/appealAcknowledgement.jsp" %>

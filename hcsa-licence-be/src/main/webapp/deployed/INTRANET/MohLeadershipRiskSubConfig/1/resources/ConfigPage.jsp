@@ -1,1 +1,1 @@
-<%@include file="/iais/riskconfig/RiskLeaderShipAddPage.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/riskconfig/RiskLeaderShipAddPage.jsp"%>

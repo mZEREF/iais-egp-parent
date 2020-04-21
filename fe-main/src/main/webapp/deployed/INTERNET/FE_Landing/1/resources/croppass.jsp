@@ -1,1 +1,1 @@
-<%@include file="/iais/felanding/croppass.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/felanding/croppass.jsp"%>

@@ -1,1 +1,1 @@
-<%@include file="/iais/newApplication/clinicalLaboratory/ack.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/newApplication/clinicalLaboratory/ack.jsp"%>

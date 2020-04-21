@@ -1,1 +1,1 @@
-<%@include file="/iais/templates/ackPage.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/templates/ackPage.jsp"%>

@@ -1,1 +1,1 @@
-<%@include file="/iais/mastercode/masterCodeView.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/mastercode/masterCodeView.jsp"%>

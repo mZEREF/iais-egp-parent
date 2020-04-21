@@ -1,1 +1,1 @@
-<%@include file="/iais/config/delete.jsp" %>
+<%@include file="/WEB-INF/jsp/iais/config/delete.jsp" %>

@@ -1,1 +1,1 @@
-<%@include file="/iais/onlineEnquiries/searchLicence.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/onlineEnquiries/searchLicence.jsp"%>

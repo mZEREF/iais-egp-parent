@@ -1,1 +1,1 @@
-<%@include file="/iais/withoutrenewal/licenceReview.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/withoutrenewal/licenceReview.jsp"%>

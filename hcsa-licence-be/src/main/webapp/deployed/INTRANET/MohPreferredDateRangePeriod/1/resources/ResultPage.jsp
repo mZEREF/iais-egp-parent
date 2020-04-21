@@ -1,1 +1,1 @@
-<%@include file="/iais/prefdate/ResultPage.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/prefdate/ResultPage.jsp"%>

@@ -1,1 +1,1 @@
-<%@include file="/iais/hcsaLicence/ackSuccess.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/hcsaLicence/ackSuccess.jsp"%>

@@ -1,1 +1,1 @@
-<%@include file="/iais/prefdate/PrefDatePeriodManagement.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/prefdate/PrefDatePeriodManagement.jsp"%>

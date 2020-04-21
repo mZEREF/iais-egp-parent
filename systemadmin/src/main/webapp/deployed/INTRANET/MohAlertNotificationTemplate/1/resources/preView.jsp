@@ -1,1 +1,1 @@
-<%@include file="/iais/templates/isPreview.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/templates/isPreview.jsp"%>

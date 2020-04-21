@@ -1,1 +1,1 @@
-<%@include file="/iais/config/addOrList.jsp" %>
+<%@include file="/WEB-INF/jsp/iais/config/addOrList.jsp" %>

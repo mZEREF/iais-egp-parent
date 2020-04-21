@@ -1,1 +1,1 @@
-<%@include file="/iais/resForChange/premisesEdit.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/resForChange/premisesEdit.jsp"%>

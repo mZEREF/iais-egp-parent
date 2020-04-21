@@ -1,1 +1,1 @@
-<%@include file="/iais/feadmin/directorDeclare/success.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/feadmin/directorDeclare/success.jsp"%>

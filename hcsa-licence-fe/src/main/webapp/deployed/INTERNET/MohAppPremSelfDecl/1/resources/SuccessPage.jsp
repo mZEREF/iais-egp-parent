@@ -1,1 +1,1 @@
-<%@include file="/iais/selfdesc/Success.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/selfdesc/Success.jsp"%>

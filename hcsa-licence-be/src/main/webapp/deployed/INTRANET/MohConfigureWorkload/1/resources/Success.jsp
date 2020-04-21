@@ -1,1 +1,1 @@
-<%@include file="/iais/configureWorkload/success.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/configureWorkload/success.jsp"%>

@@ -1,1 +1,1 @@
-<%@include file="/iais/withoutrenewal/payment.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/withoutrenewal/payment.jsp"%>

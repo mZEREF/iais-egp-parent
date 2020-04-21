@@ -1,1 +1,1 @@
-<%@include file="/iais/riskconfig/RiskIndividualConfig.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/riskconfig/RiskIndividualConfig.jsp"%>

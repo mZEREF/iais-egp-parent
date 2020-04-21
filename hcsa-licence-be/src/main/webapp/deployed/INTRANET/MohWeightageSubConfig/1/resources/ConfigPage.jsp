@@ -1,1 +1,1 @@
-<%@include file="/iais/riskconfig/RiskWeightageAdd.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/riskconfig/RiskWeightageAdd.jsp"%>

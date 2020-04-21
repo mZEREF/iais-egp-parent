@@ -1,1 +1,1 @@
-<%@include file="/iais/resForChange/amendAck.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/resForChange/amendAck.jsp"%>

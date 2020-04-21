@@ -1,1 +1,1 @@
-<%@include file="/iais/interInbox/msg/msgViewPage.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/interInbox/msg/msgViewPage.jsp"%>
