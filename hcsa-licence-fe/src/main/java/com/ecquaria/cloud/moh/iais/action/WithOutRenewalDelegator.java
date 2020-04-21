@@ -609,27 +609,6 @@ public class WithOutRenewalDelegator {
             map.put("nameApprovalOfficer",nameApprovalOfficer);
             subject="MOH IAIS – Internal Clarification for Renewal "+applicationNumber;
 
-        }else if("earlyGIROPayment".equals(type)){
-
-            msgTemplateDto = appSubmissionService.getMsgTemplateById("");
-            Double amount =(Double)request.getAttribute("amount");
-            map.put("paymentAmount",Formatter.formatNumber(amount));
-            map.put("serviceLicenceName", serviceNames);
-
-
-        }else if("earlyOnlinepayment".equals(type)){
-
-            msgTemplateDto = appSubmissionService.getMsgTemplateById("");
-            Double amount =(Double)request.getAttribute("amount");
-            map.put("paymentAmount",Formatter.formatNumber(amount));
-            map.put("serviceLicenceName", serviceNames);
-
-
-        }else if("pickedUpEarlyRenewal".equals(type)){
-
-            msgTemplateDto = appSubmissionService.getMsgTemplateById("");
-
-
         }else if("emailLink".equals(type)){
             msgTemplateDto = appSubmissionService.getMsgTemplateById("2C775ADE-6B7D-EA11-BE7A-000C29D29DB0");
             String GIROAccountNumber=(String)request.getAttribute("GIROAccountNumber");

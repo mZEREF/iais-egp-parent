@@ -1326,38 +1326,29 @@ public class NewApplicationDelegator {
 
     private void sendNewApplicationPaymentGIROEmail(AppSubmissionDto appSubmissionDto,BaseProcessClass bpc) {
         String GIROAccountNumber = "xxxxxxxx";
-        MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID);
-        if(msgTemplateDto != null) {
-            Double amount = appSubmissionDto.getAmount();
-            String licenseeId = appSubmissionDto.getLicenseeId();
-            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST);
-            List<String> serviceNames = new ArrayList<String>();
-            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
-                String svcName = hcsaServiceDto.getSvcName();
-                if(!StringUtil.isEmpty(svcName)){
-                    serviceNames.add(svcName);
-                }
+        Double amount = appSubmissionDto.getAmount();
+        String licenseeId = appSubmissionDto.getLicenseeId();
+        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST);
+        List<String> serviceNames = IaisCommonUtils.genNewArrayList();
+        String appGrpNo = appSubmissionDto.getAppGrpNo();
+        String clientQueryCode = appSubmissionDto.getAppGrpId();
+        for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
+            String svcName = hcsaServiceDto.getSvcName();
+            if(!StringUtil.isEmpty(svcName)){
+                serviceNames.add(svcName);
             }
-            String appGrpNo = appSubmissionDto.getAppGrpNo();
+        }
+        String appType = appSubmissionDto.getAppType();
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
             map.put("serviceNames", serviceNames);
-            map.put("paymentAmount",Formatter.formatNumber(amount));
-            map.put("GIROAccountNumber",GIROAccountNumber);
-            map.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-            String mesContext = null;
-            try {
-                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
-            } catch (IOException | TemplateException e) {
-                log.error(e.getMessage(),e);
-            }
-            EmailDto emailDto = new EmailDto();
-            emailDto.setContent(mesContext);
-            emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + appGrpNo);
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-            emailDto.setClientQueryCode(appSubmissionDto.getAppGrpId());
+            map.put("paymentAmount", Formatter.formatNumber(amount));
+            map.put("GIROAccountNumber", GIROAccountNumber);
+            map.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+
+            String subject = appGrpNo;
             //send email
-            appSubmissionService.feSendEmail(emailDto);
+            sendEmailHelper(map, MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID, subject, licenseeId, clientQueryCode);
         }
     }
 
