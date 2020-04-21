@@ -83,6 +83,12 @@
             </div>
         </div>
         <div class="row">
+            <div class="col-md-6">
+                <span class="col-xs-5 col-md-5"></span>
+                <div class="col-md-7">
+                    <span class="error-msg" style="width: 150%;position: absolute;">${ADEM}</span>
+                </div>
+            </div>
             <div class="text-right text-center-mobile" style="margin-right:3%">
                 <button type="button" class="btn btn-secondary" onclick="doAppClear()">Clear</button>
                 <button type="button" class="btn btn-primary" onclick="doSearchApp()">Search</button>

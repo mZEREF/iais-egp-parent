@@ -64,4 +64,5 @@ public class InboxConst {
 
 
     public static final String MESSAGE_ARCHIVE_RESULT     = "archiveResult";
+    public static final String APP_DATE_ERR_MSG           = "ADEM";
 }

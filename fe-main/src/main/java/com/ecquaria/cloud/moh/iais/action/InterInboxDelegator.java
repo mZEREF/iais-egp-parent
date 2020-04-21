@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -450,10 +451,10 @@ public class InterInboxDelegator {
         String serviceType = ParamUtil.getString(request,"appServiceType");
         String applicationStatus = ParamUtil.getString(request,"appStatusSelect");
         String applicationNo = ParamUtil.getString(request,"appNoPath");
-        String createDtStart = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "esd")),
-                SystemAdminBaseConstants.DATE_FORMAT);
-        String createDtEnd = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "eed")),
-                SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
+        Date startAppDate = Formatter.parseDate(ParamUtil.getString(request, "esd"));
+        Date endAppDate = Formatter.parseDate(ParamUtil.getString(request, "eed"));
+        String createDtStart = Formatter.formatDateTime(startAppDate, SystemAdminBaseConstants.DATE_FORMAT);
+        String createDtEnd = Formatter.formatDateTime(endAppDate, SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
         if(applicationType == null || applicationType.equals(InboxConst.SEARCH_ALL)){
             appSearchMap.remove("appType");
         }else{
@@ -479,15 +480,21 @@ public class InterInboxDelegator {
         }else{
             appSearchMap.put("serviceType",serviceType);
         }
-        if(!StringUtil.isEmpty(createDtStart)){
-            appSearchMap.put("createDtStart",createDtStart);
-        }else{
-            appSearchMap.remove("createDtStart");
-        }
-        if(!StringUtil.isEmpty(createDtEnd)){
-            appSearchMap.put("createDtEnd",createDtEnd);
-        }else{
-            appSearchMap.remove("createDtEnd");
+        if (startAppDate != null && endAppDate != null){
+            if(startAppDate.before(endAppDate)){
+                if(!StringUtil.isEmpty(createDtStart)){
+                    appSearchMap.put("createDtStart",createDtStart);
+                }else{
+                    appSearchMap.remove("createDtStart");
+                }
+                if(!StringUtil.isEmpty(createDtEnd)){
+                    appSearchMap.put("createDtEnd",createDtEnd);
+                }else{
+                    appSearchMap.remove("createDtEnd");
+                }
+            }else{
+                ParamUtil.setRequestAttr(request,InboxConst.APP_DATE_ERR_MSG, "Date Submitted From cannot be later than Date Submitted To");
+            }
         }
         appParameter.setFilters(appSearchMap);
         appParameter.setPageNo(1);
