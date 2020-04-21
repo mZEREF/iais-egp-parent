@@ -78,9 +78,10 @@
                         </iais:value>
                       </iais:row>
                       <iais:action >
-                        <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:userConfirmSpecificDateReject()">Reject</button>
+                        <button class="btn btn-primary" style="float:right" type="button" data-toggle= "modal" data-target= "#rejectDate">Reject</button>
+                        <iais:confirm yesBtnCls="btn btn-primary" msg="ACKAPPT_001" callBack="userConfirmSpecificDateReject()" popupOrder="rejectDate" title="Message from webpage" needCancel="false"></iais:confirm>
                         <span style="float:right">&nbsp;</span>
-                        <iais:confirm yesBtnCls="btn btn-primary" msg="ACKAPPT_002" callBack="userConfirmSpecificDateAccept()" popupOrder="saveDraft" title="Message from webpage" needCancel="false"></iais:confirm>
+                        <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:userConfirmSpecificDateAccept()">Accept</button>
                       </iais:action>
                     </iais:section>
                   </c:if>
@@ -103,7 +104,6 @@
     function userConfirmSpecificDateReject() {
         showWaiting();
         $("#actionValue").val('reject');
-        alert("We note that the date assigned for inspection is unsuitable. Please contact an MOH officer @ <Tel. No.>* to arrange a suitable appointment date.");
         userConfirmSpecificDateSubmit('reject');
     }
 
