@@ -176,19 +176,19 @@ public class PrefDateRangePeriodDelegator {
             if (StringUtils.isEmpty(periodAfterApp)){
                 period.setPeriodAfterApp(null);
             }else {
-                period.setPeriodAfterApp(Integer.parseInt(periodAfterApp));
+                period.setPeriodAfterApp(Integer.valueOf(periodAfterApp));
             }
 
             if (StringUtils.isEmpty(periodBeforeExp)) {
                 period.setPeriodBeforeExp(null);
             }else {
-                period.setPeriodBeforeExp(Integer.parseInt(periodBeforeExp));
+                period.setPeriodBeforeExp(Integer.valueOf(periodBeforeExp));
             }
 
             if (StringUtils.isEmpty(nonReplyWindow)) {
                 period.setNonReplyWindow(null);
             }else {
-                period.setNonReplyWindow(Integer.parseInt(nonReplyWindow));
+                period.setNonReplyWindow(Integer.valueOf(nonReplyWindow));
             }
 
         }catch (NumberFormatException e){

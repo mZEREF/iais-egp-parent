@@ -18,5 +18,4 @@ public interface AdhocChecklistService {
 
     void saveAdhocChecklist(AdhocCheckListConifgDto adhocConfig);
 
-    String getCurrentCorreId();
 }

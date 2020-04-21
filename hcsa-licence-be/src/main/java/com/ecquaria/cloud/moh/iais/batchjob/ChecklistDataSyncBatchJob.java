@@ -13,10 +13,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulati
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SyncDataBody;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -208,7 +210,8 @@ public class ChecklistDataSyncBatchJob {
         syncDataBody.setEntity(list);
 
         String toJson = JsonUtil.parseToJson(syncDataBody);
-        log.info("sync checklist data from be " + toJson);
+
+        log.info(StringUtil.changeForLog("sync checklist data from be " + toJson));
 
         try {
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -216,7 +219,7 @@ public class ChecklistDataSyncBatchJob {
             beEicGatewayClient.saveSyncData(syncDataBody, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization());
         }catch (Exception e){
-            log.info("sync checklist data from be failure" + e.getMessage());
+            log.info(StringUtil.changeForLog("sync checklist data from be failure" + e.getMessage()));
         }
     }
 }

@@ -54,11 +54,11 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     public Boolean deleteRecord(String configId) {
         int count = fillUpCheckListGetAppClient.countByChkLstConfId(configId).getEntity();
         if (count > 0){
-            return false;
+            return Boolean.FALSE;
         }
 
         chklClient.inActiveConfig(configId);
-        return true;
+        return Boolean.TRUE;
     }
 
     @Override

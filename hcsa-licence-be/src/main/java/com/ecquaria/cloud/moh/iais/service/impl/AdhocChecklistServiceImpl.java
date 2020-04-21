@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -44,8 +45,6 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
     @Autowired
     private HcsaChklClient hcsaChklClient;
-
-    private String relationCorreId;
 
     private String acquireModule(String appType, Function<String, String> t){
         return t.apply(appType);
@@ -83,7 +82,7 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
         List<ChecklistConfigDto> inspChecklist = IaisCommonUtils.genNewArrayList();
         ChecklistConfigDto commonConfig = hcsaChklClient.getMaxVersionCommonConfig().getEntity();
         if (commonConfig != null){
-            log.info("inspection checklist for common info: " + commonConfig.toString());
+            log.info(StringUtil.changeForLog("inspection checklist for common info: " + commonConfig.toString()));
             inspChecklist.add(commonConfig);
         }
 
@@ -94,7 +93,6 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
         correlation.forEach(corre -> {
             String correId = corre.getId();
-            setRelationCorreId(correId);
             List<AppSvcPremisesScopeDto> premScope = applicationClient.getAppSvcPremisesScopeListByCorreId(correId).getEntity();
 
             if(!IaisCommonUtils.isEmpty(premScope)){
@@ -117,18 +115,5 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
     @Override
     public void saveAdhocChecklist(AdhocCheckListConifgDto adhocConfig) {
         applicationClient.saveAdhocChecklist(adhocConfig);
-    }
-
-    public String getRelationCorreId() {
-        return relationCorreId;
-    }
-
-    public void setRelationCorreId(String relationCorreId) {
-        this.relationCorreId = relationCorreId;
-    }
-
-    @Override
-    public String getCurrentCorreId(){
-        return getRelationCorreId();
     }
 }

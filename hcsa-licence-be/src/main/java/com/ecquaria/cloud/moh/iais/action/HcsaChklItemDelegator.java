@@ -106,7 +106,6 @@ public class HcsaChklItemDelegator {
     public void prepareSwitch(BaseProcessClass bpc) {
         log.debug("The prepareSwitch start ...");
         String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        log.debug("*******************crudAction-->:" + crudAction);
         log.debug("The prepareSwitch end ...");
     }
 
@@ -222,7 +221,7 @@ public class HcsaChklItemDelegator {
         try {
             doSubmitOrUpdate(request);
         }catch (IaisRuntimeException e){
-            throw new IaisRuntimeException(e.getMessage());
+           log.error(e.getMessage());
         }
 
     }

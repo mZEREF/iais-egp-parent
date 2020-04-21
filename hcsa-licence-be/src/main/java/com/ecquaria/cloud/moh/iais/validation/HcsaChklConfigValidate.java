@@ -72,13 +72,13 @@ public class HcsaChklConfigValidate implements CustomizeValidator {
         //I don't want to use date.pare to have it throw an exception
         String[] startDateStr = eftStartDate.split("/");
         String[] eftEndDateStr = eftEndDate.split("/");
-        String nStr = "";
-        String eStr = "";
+        StringBuilder nStr = new StringBuilder();
+        StringBuilder eStr = new StringBuilder();
 
         int len = Math.min(startDateStr.length, eftEndDateStr.length);
         for (int i = len - 1; i >= 0; i--){
-            nStr += startDateStr[i];
-            eStr += eftEndDateStr[i];
+            nStr.append(startDateStr[i]) ;
+            eStr.append(eftEndDateStr[i]);
         }
 
         DateTimeFormatter formatter =  DateTimeFormatter.ofPattern("yyyyMMdd");

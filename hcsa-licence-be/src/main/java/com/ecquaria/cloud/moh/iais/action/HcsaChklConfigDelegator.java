@@ -430,7 +430,7 @@ public class HcsaChklConfigDelegator {
             }
 
         } catch (ParseException e) {
-            throw new IaisRuntimeException(e.getMessage());
+            log.error("when add section item of config has error " + e.getMessage());
         }
 
     }
@@ -684,7 +684,7 @@ public class HcsaChklConfigDelegator {
         for (ChecklistSectionDto sec : sectionDtos){
             String section = sec.getSection();
             String orderStr = ParamUtil.getString(request, section);
-            int order = Integer.valueOf(orderStr);
+            int order =Integer.parseInt(orderStr);
             sec.setOrder(order);
 
             List<ChecklistItemDto> checklistItemDtos = sec.getChecklistItemDtos();

@@ -369,7 +369,7 @@ public class RegulationDelegator {
                 default:
             }
 
-            if (apiResult.isHasError()){
+            if (apiResult != null && apiResult.isHasError()){
                 if (apiResult.getErrorCode().equals(IaisApiStatusCode.DUPLICATION_RECORD.getStatusCode())){
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("customErrorMessage", "CHKL_ERR007"));
                 }

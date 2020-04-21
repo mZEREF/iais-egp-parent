@@ -32,7 +32,7 @@ import java.util.Map;
 @Delegator(value = "singpassLandingDelegator")
 @Slf4j
 public class FESingpassLandingDelegator {
-    public static final String NRIC = "nric";
+    private static final String NRIC = "nric";
 
     @Value("${iais.singpass.login.callback.url}")
     private String singpassCallBackUrl;

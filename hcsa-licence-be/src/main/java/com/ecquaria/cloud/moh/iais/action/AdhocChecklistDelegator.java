@@ -107,7 +107,6 @@ public class AdhocChecklistDelegator {
                         "Adhoc Checklist", applicationDto.getApplicationNo());
                 if (inspectionChecklist == null) {
                     inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
-                    log.info("inspectionChecklist info =====>>>>>>>>>>> " + inspectionChecklist.toString());
                 }
             }
         }
@@ -161,7 +160,12 @@ public class AdhocChecklistDelegator {
 
         AdhocCheckListConifgDto adhocCheckListConifgDto = (AdhocCheckListConifgDto) ParamUtil.getSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
         if (adhocCheckListConifgDto != null){
-            adhocCheckListConifgDto.setPremCorreId(adhocChecklistService.getCurrentCorreId());
+            TaskDto task = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
+            if (task != null) {
+                String correId = task.getRefNo();
+                adhocCheckListConifgDto.setPremCorreId(correId);
+            }
+
             adhocCheckListConifgDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             adhocCheckListConifgDto.setVersion(1);
             adhocCheckListConifgDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

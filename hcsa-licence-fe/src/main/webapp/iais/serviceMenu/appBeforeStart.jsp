@@ -78,7 +78,7 @@
             </div>
             <div class="license-info-row">
               <div class="licnese-info">
-                <p>Authorised User 2: <b>Linda Tan MedAlert</b> </p>
+                <p>Authorised User 2: <b>Linda Tan</b> </p>
               </div>
               <div class="license-edit">
                 <p><a href="#">View</a></p>
@@ -86,7 +86,7 @@
             </div>
             <div class="license-info-row">
               <div class="licnese-info">
-                <p>Contact Person: <b>Shun Qiu</b></p>
+                <p>MedAlert Contact Person: <b>Shun Qiu</b></p>
               </div>
               <div class="license-edit">
                 <p><a href="#">View</a></p>
