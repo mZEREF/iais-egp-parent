@@ -1361,6 +1361,32 @@ public class NewApplicationDelegator {
         }
     }
 
+    //send email helper
+    private void sendEmailHelper(Map<String ,Object> tempMap,String msgTemplateId,String subject,String licenseeId,String clientQueryCode){
+        MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(msgTemplateId);
+        if(tempMap == null || tempMap.isEmpty() || msgTemplateDto == null
+                || StringUtil.isEmpty(msgTemplateId)
+                || StringUtil.isEmpty(subject)
+                || StringUtil.isEmpty(licenseeId)
+                || StringUtil.isEmpty(clientQueryCode)){
+            return;
+        }
+        String mesContext = null;
+        try {
+            mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+        } catch (IOException | TemplateException e) {
+            log.error(e.getMessage(),e);
+        }
+        EmailDto emailDto = new EmailDto();
+        emailDto.setContent(mesContext);
+        emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + subject);
+        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+        emailDto.setClientQueryCode(clientQueryCode);
+        //send
+        appSubmissionService.feSendEmail(emailDto);
+    }
+
     private void inspectionDateSendNewApplicationPaymentOnlineEmail(AppSubmissionDto appSubmissionDto,BaseProcessClass bpc) {
         MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ONLINE_ID);
         if(msgTemplateDto != null) {
