@@ -64,21 +64,18 @@
                 $("[name='licenceNo']:checked").each(function (k,v) {
                     var $currentTr = $(this).closest('tr');
                     statusOne.push($currentTr.find('td').eq(3).find('p').eq(1).html());
-                    if ($.inArray('Ceased',statusOne)){
-                        $("#lic-renew").removeClass('disabled');
-                        $("#lic-cease").removeClass('disabled');
-                        $("#lic-amend").removeClass('disabled');
-                    }else{
-                        $("#lic-renew").addClass('disabled');
-                        $("#lic-cease").addClass('disabled');
-                    }
                 });
+                if (!statusOne.includes('Ceased')){
+                    $("#lic-renew").removeClass('disabled');
+                    $("#lic-cease").removeClass('disabled');
+                }else{
+                    $("#lic-amend").removeClass('disabled');
+                }
             } else{
                 var statusDuo = [];
                 $("[name='licenceNo']:checked").each(function (k,v) {
                     var $currentTr = $(this).closest('tr');
                     statusDuo.push($currentTr.find('td').eq(3).find('p').eq(1).html());
-
                 });
                 if (!statusDuo.includes('Ceased')){
                     $("#lic-renew").removeClass('disabled');
@@ -94,8 +91,8 @@
         }else {
             $("#lic-amend").addClass('disabled');
             $("#lic-print").addClass('disabled');
-            $("#lic-renew").removeClass('disabled');
-            $("#lic-cease").removeClass('disabled');
+            $("#lic-renew").addClass('disabled');
+            $("#lic-cease").addClass('disabled');
         }
     }
 
@@ -127,31 +124,13 @@
     }
 
     function doLicRenew() {
-        if ($('.licenceCheck').is(':checked')){
-            showWaiting();
-            submit('licDoRenew');
-        }else{
-            window.setTimeout(function(){
-                $('#licSlectModal').modal('show');
-            },1000);
-            window.setTimeout(function(){
-                $('#licSlectModal').modal('hide');
-            },5000);
-        }
+        showWaiting();
+        submit('licDoRenew');
     }
 
     function doLicCease(){
-        if ($('.licenceCheck').is(':checked')){
-            showWaiting();
-            submit('licDoCease');
-        }else {
-            window.setTimeout(function () {
-                $('#licSlectModal').modal('show');
-            }, 1000);
-            window.setTimeout(function () {
-                $('#licSlectModal').modal('hide');
-            }, 5000);
-        }
+        showWaiting();
+        submit('licDoCease');
     }
 
     function doLicAction(licNo){
@@ -167,18 +146,9 @@
     }
     
     function doLicAppeal(licNo) {
-        if ($('.licenceCheck').is(':checked')){
-            showWaiting();
-            $("[name='crud_action_value']").val(licNo);
-            submit('licDoAppeal');
-        }else{
-            window.setTimeout(function(){
-                $('#licSlectModal').modal('show');
-            },1000);
-            window.setTimeout(function(){
-                $('#licSlectModal').modal('hide');
-            },5000);
-        }
+        showWaiting();
+        $("[name='crud_action_value']").val(licNo);
+        submit('licDoAppeal');
     }
     
     function scrollIntoLicView() {
