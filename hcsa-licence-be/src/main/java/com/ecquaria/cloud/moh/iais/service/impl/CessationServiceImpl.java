@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
@@ -17,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -29,12 +31,13 @@ import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 
 import com.ecquaria.cloudfeign.FeignException;
+import com.ecquaria.sz.commons.util.DateUtil;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import jdk.nashorn.internal.runtime.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +63,10 @@ public class CessationServiceImpl implements CessationService {
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private TaskService taskService;
-
+    @Autowired
+    private MsgTemplateClient msgTemplateClient;
+    @Autowired
+    private EmailClient emailClient;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -236,6 +242,24 @@ public class CessationServiceImpl implements CessationService {
     public List<String> listHciName() {
         List<String> hciNames = cessationClient.listHciNames().getEntity();
         return hciNames;
+    }
+
+    @Override
+    public void sendEmail(String msgId, Date date,String svcName,String appGrpId,String licenseeId) throws IOException, TemplateException {
+        Map<String,Object> map = new HashMap<>(34);
+        String dateStr = DateUtil.formatDateTime(date, "dd/MM/yyyy");
+        map.put("date",dateStr);
+        map.put("licenceA",svcName);
+        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate(msgId).getEntity();
+        String messageContent = entity.getMessageContent();
+        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+        EmailDto emailDto = new EmailDto();
+        emailDto.setContent(templateMessageByContent);
+        emailDto.setSubject("MOH IAIS – Cessation");
+        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+        emailDto.setClientQueryCode(appGrpId);
+        emailClient.sendNotification(emailDto).getEntity();
     }
 
     private AppCessMiscDto setMiscData(AppCessationDto appCessationDto, AppCessMiscDto appCessMiscDto, String appId) {

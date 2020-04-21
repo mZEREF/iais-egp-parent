@@ -14,10 +14,9 @@
                 <div class="center-content">
                     <div class="intranet-content">
                         <table>
-                            <c:forEach items="${errorMap}" var="error">
+                            <c:forEach items="${results}" var="result">
                                 <tr>
-                                    <td><c:out value="${error.key}"></c:out></td>
-                                    <td><c:out value="${error.value}"></c:out></td>
+                                    <td><c:out value="${result}"></c:out></td>
                                 </tr>
                             </c:forEach>
                         </table>

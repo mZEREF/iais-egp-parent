@@ -76,7 +76,7 @@
                                                                 <iais:row>
                                                                     <iais:field value="Current Status"/>
                                                                     <iais:value width="6">
-                                                                        <p><strong><iais:code code="${insRepDto.currentStatus}"/></strong></p>
+                                                                        <p><iais:code code="${insRepDto.currentStatus}"/></p>
                                                                     </iais:value>
                                                                 </iais:row>
 
@@ -134,7 +134,7 @@
                                                                 </div>
                                                             </iais:section>
                                                             <iais:action style="text-align:right;">
-                                                                <button id="submitButton" type="button" class="btn btn-primary" onclick="aoSubmit()">SUBMIT</button>
+                                                                <a id="submitButton" class="btn btn-primary" onclick="aoSubmit()">SUBMIT</a>
                                                             </iais:action>
                                                         </div>
                                                         <br/>
