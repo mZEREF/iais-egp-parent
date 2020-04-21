@@ -15,6 +15,6 @@ RUN chmod +x /usr/local/tomcat/bin/setenv.sh
 RUN chmod +x /run.sh
 
 RUN adduser - -D -u 1000 iais && \
-    chown -R egpcloud: iais /usr/local/ tomcat
+    chown -R iais: iais /usr/local/ tomcat
 
 USER iais
