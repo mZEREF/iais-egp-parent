@@ -436,7 +436,18 @@ public class LicenceApproveBatchjob {
                         }
                         premisesGroupDtos.addAll(premisesGroupDtos1);
                     }
-
+                    //create key_personnel key_personnel_ext lic_key_personnel
+                    List<AppGrpPersonnelDto> appGrpPersonnelDtos = applicationListDto.getAppGrpPersonnelDtos();
+                    List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos = applicationListDto.getAppGrpPersonnelExtDtos();
+                    List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationListDto.getAppSvcKeyPersonnelDtos();
+                    if(!IaisCommonUtils.isEmpty(appSvcKeyPersonnelDtos)){
+                        List<PersonnelsDto> personnelsDto1s = getPersonnelsDto(appGrpPersonnelDtos,appGrpPersonnelExtDtos,appSvcKeyPersonnelDtos,organizationId);
+                        if(personnelsDtos == null){
+                            errorMessage = "There is Error for AppGrpPersonnel -->: "+applicationListDto.getApplicationDto().getApplicationNo();
+                            break;
+                        }
+                        personnelsDtos.addAll(personnelsDto1s);
+                    }
                     ApplicationDto applicationDto = applicationListDto.getApplicationDto();
                     if(applicationDto != null){
                         String appType = applicationDto.getApplicationType();
@@ -473,18 +484,6 @@ public class LicenceApproveBatchjob {
                     //do not need create in the Dto
                     //todo:lic_base_specified_correlation
                     //
-                }
-                //create key_personnel key_personnel_ext lic_key_personnel
-                List<AppGrpPersonnelDto> appGrpPersonnelDtos = applicationListDtos.get(0).getAppGrpPersonnelDtos();
-                List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos = applicationListDtos.get(0).getAppGrpPersonnelExtDtos();
-                List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationListDtos.get(0).getAppSvcKeyPersonnelDtos();
-                if(!IaisCommonUtils.isEmpty(appSvcKeyPersonnelDtos)){
-                    List<PersonnelsDto> personnelsDto1s = getPersonnelsDto(appGrpPersonnelDtos,appGrpPersonnelExtDtos,appSvcKeyPersonnelDtos,organizationId);
-                    if(personnelsDtos == null){
-                        errorMessage = "There is Error for AppGrpPersonnel -->: "+applicationListDtos.get(0).getApplicationDto().getApplicationNo();
-                        break;
-                    }
-                    personnelsDtos.addAll(personnelsDto1s);
                 }
                 //create LicFeeGroupItemDto
                 List<LicFeeGroupItemDto> licFeeGroupItemDtos = IaisCommonUtils.genNewArrayList();
