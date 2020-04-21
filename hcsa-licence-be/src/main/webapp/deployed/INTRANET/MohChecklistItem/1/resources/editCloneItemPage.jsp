@@ -1,1 +1,1 @@
-<%@include file = "/iais/checklist/EditCloneItemPage.jsp"%>
+<%@include file = "/WEB-INF/jsp/iais/checklist/EditCloneItemPage.jsp"%>

@@ -9,6 +9,7 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import freemarker.template.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
@@ -108,7 +109,7 @@ public final class ExcelWriter {
                     ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
                     int rowIndx = annotation.index();
                     sheetRow.createCell(rowIndx).setCellValue(setValue(clz.getDeclaredMethod("get" +
-                            StringUtil.capitalize(field.getName())).invoke(t)));
+                            IaisEGPHelper.capitalized(field.getName())).invoke(t)));
                 }
             }
         }
