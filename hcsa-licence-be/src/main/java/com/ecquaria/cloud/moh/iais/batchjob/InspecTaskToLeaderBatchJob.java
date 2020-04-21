@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -18,13 +19,15 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Process: MohInspTaskToLeader
@@ -51,6 +54,9 @@ public class InspecTaskToLeaderBatchJob {
     @Autowired
     private ApplicationClient applicationClient;
 
+    @Autowired
+    private InspectionTaskClient inspectionTaskClient;
+
     /**
      * StartStep: inspTaskToLeaderStart
      *
@@ -69,16 +75,22 @@ public class InspecTaskToLeaderBatchJob {
      */
     public void inspTaskToLeaderJob(BaseProcessClass bpc){
         logAbout("inspTaskToLeaderJob");
-        List<TaskDto> taskDtoList = organizationClient.getTaskForCompLeader().getEntity();
-        if (IaisCommonUtils.isEmpty(taskDtoList)) {
+        List<AppInspectionStatusDto> appInspectionStatusDtos = appInspectionStatusClient.getAppInspectionStatusByStatus(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER).getEntity();
+        if (IaisCommonUtils.isEmpty(appInspectionStatusDtos)) {
             return;
-        }
-
-        Map<String, List<AppInspectionStatusDto>> map = appInspectionStatusClient.getPremisesAndApplicationCorr(taskDtoList).getEntity();
-        if(map != null){
-            createTaskByMap(map);
         } else {
-            return;
+            List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+            for(AppInspectionStatusDto appInspectionStatusDto : appInspectionStatusDtos){
+                TaskDto taskDto = new TaskDto();
+                taskDto.setRefNo(appInspectionStatusDto.getAppPremCorreId());
+                taskDtos.add(taskDto);
+            }
+            Map<String, List<AppInspectionStatusDto>> map = appInspectionStatusClient.getPremisesAndApplicationCorr(taskDtos).getEntity();
+            if(map != null){
+                createTaskByMap(map);
+            } else {
+                return;
+            }
         }
     }
 
@@ -88,19 +100,34 @@ public class InspecTaskToLeaderBatchJob {
             if(!IaisCommonUtils.isEmpty(appInspectionStatusDtos)){
                 int report = 0;
                 int leadTask = 0;
-                int allApp = appInspectionStatusDtos.size();
-                for(AppInspectionStatusDto appInsStatusDto : appInspectionStatusDtos){
-                    if (appInsStatusDto == null) {
+                for(int i = 0; i < appInspectionStatusDtos.size(); i++){
+
+                    if (appInspectionStatusDtos.get(i) == null) {
                         continue;
                     }
-                    if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(appInsStatusDto.getStatus())){
-                        leadTask = leadTask + 1;
-                    } else if(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT.equals(appInsStatusDto.getStatus()) ||
-                              InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT.equals(appInsStatusDto.getStatus()) ||
-                              InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(appInsStatusDto.getStatus())) {
-                        report = report + 1;
+                    String status = appInspectionStatusDtos.get(i).getStatus();
+                    String appPremCorrId = appInspectionStatusDtos.get(i).getAppPremCorreId();
+                    ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+                    //Fast Tracking
+                    if(applicationDto.isFastTracking()) {
+                        List<AppInspectionStatusDto> fastInspectionList = IaisCommonUtils.genNewArrayList();
+                        fastInspectionList.add(appInspectionStatusDtos.get(i));
+                        int allApp = fastInspectionList.size();
+                        createTask(0, 1, allApp, fastInspectionList);
+                        appInspectionStatusDtos.remove(i);
+                        i--;
+                    //Other Application
+                    } else {
+                        if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(status)){
+                            leadTask = leadTask + 1;
+                        } else if(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT.equals(status) ||
+                                InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT.equals(status) ||
+                                InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(status)) {
+                            report = report + 1;
+                        }
                     }
                 }
+                int allApp = appInspectionStatusDtos.size();
                 createTask(report, leadTask, allApp, appInspectionStatusDtos);
             }
         }
