@@ -70,4 +70,22 @@ public interface InspectionPreTaskService {
       * @Descripation: getLicenceDtoByLicenceId
       */
     LicenceDto getLicenceDtoByLicenceId(String originLicenceId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/4/22
+      * @Param: null
+      * @return: List<SelectOption>
+      * @Descripation: get Application checkbox and Self-Checklist checkbox
+      */
+    List<SelectOption> getRfiCheckOption();
+
+    /**
+      * @author: shicheng
+      * @Date 2020/4/22
+      * @Param: taskDto, reMarks
+      * @return: void
+      * @Descripation: route back to ASO/PSO
+      */
+    void routingAsoPsoBack(TaskDto taskDto, String reMarks);
 }

@@ -118,6 +118,8 @@ public class InspectionPreDelegator {
         setInboxUrlToSession(bpc);
         List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption();
         List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
+        List<SelectOption> rfiCheckOption = inspectionPreTaskService.getRfiCheckOption();
+        inspectionPreTaskDto.setPreInspRfiOption(rfiCheckOption);
 
         Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> mapInDto = inspectionPreTaskService.getSelfCheckListByCorrId(taskDto.getRefNo());
         InspectionFillCheckListDto inspectionFillCheckListDto = new InspectionFillCheckListDto();
@@ -168,11 +170,15 @@ public class InspectionPreDelegator {
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
         String preInspecRemarks = ParamUtil.getString(bpc.request,"preInspecRemarks");
         String processDec = ParamUtil.getRequestString(bpc.request,"selectValue");
+        String preInspecComments = ParamUtil.getRequestString(bpc.request,"preInspecComments");
         inspectionPreTaskDto.setReMarks(preInspecRemarks);
         if(InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY.equals(processDec)){
             inspectionPreTaskDto.setSelectValue(processDec);
         } else if(InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(processDec)){
             inspectionPreTaskDto.setSelectValue(processDec);
+        } else if(InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO.equals(processDec)){
+            inspectionPreTaskDto.setSelectValue(processDec);
+            inspectionPreTaskDto.setPreInspecComments(preInspecComments);
         } else {
             inspectionPreTaskDto.setSelectValue(null);
         }
@@ -198,7 +204,7 @@ public class InspectionPreDelegator {
                 ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
             }
         } else if(InspectionConstants.SWITCH_ACTION_ROUTE_BACK.equals(actionValue)){
-            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"back");
+            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"preback");
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -269,6 +275,15 @@ public class InspectionPreDelegator {
      */
     public void inspectionPreInspectorBack(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorBack start ...."));
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
+        AdhocCheckListConifgDto adhocCheckListConifgDto = (AdhocCheckListConifgDto) ParamUtil.getSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
+        if(adhocCheckListConifgDto != null){
+            adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);
+        }
+        inspectionPreTaskService.routingAsoPsoBack(taskDto, inspectionPreTaskDto.getReMarks());
+        ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
+        ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
     }
 
     /**

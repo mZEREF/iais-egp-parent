@@ -106,7 +106,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     @Override
     public List<SelectOption> getProcessDecOption() {
         String[] processDecArr = new String[]{InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION,
-
+                                              InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO,
                                               InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
         List<SelectOption> processDecOption = MasterCodeUtil.retrieveOptionsByCodes(processDecArr);
         return processDecOption;
@@ -222,6 +222,21 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             licenceDto = hcsaLicenceClient.getLicenceDtoById(originLicenceId).getEntity();
         }
         return licenceDto;
+    }
+
+    @Override
+    public List<SelectOption> getRfiCheckOption() {
+        List<SelectOption> rfiCheckOption = IaisCommonUtils.genNewArrayList();
+        SelectOption so1 = new SelectOption(InspectionConstants.SWITCH_ACTION_APPLICATION, "Application");
+        SelectOption so2 = new SelectOption(InspectionConstants.SWITCH_ACTION_SELF, "Self-Assessment Checklists");
+        rfiCheckOption.add(so1);
+        rfiCheckOption.add(so2);
+        return rfiCheckOption;
+    }
+
+    @Override
+    public void routingAsoPsoBack(TaskDto taskDto, String reMarks) {
+
     }
 
     private void updateInspectionStatus(String appPremCorrId, String status) {
