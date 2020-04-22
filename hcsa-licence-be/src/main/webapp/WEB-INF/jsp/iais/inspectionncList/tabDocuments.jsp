@@ -104,7 +104,7 @@
                                     <p>${interalFile.submitDtString}</p>
                                 </td>
                                 <td width="5%">
-                                    <button type="button" class="btn btn-danger btn-sm" onclick="javascript:deleteFile(this,'${interalFile.id}');"><i class="fa fa-times"></i></button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="javascript:deleteFile(this,'<iais:mask name="interalFileId" value="${interalFile.id}"/>');"><i class="fa fa-times"></i></button>
                                 </td>
                             </tr>
                         </c:forEach>

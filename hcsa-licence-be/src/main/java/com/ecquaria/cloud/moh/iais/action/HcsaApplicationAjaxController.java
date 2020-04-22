@@ -121,6 +121,9 @@ public class HcsaApplicationAjaxController{
             applicationViewDto.setAppIntranetDocDtoList(appIntranetDocDtos);
             ParamUtil.setSessionAttr(request,"applicationViewDto",(Serializable) applicationViewDto);
             //call back upload file succeeded
+            if( !StringUtil.isEmpty( appIntranetDocDto.getId())){
+                appIntranetDocDto.setMaskId(MaskUtil.maskValue("interalFileId", appIntranetDocDto.getId()));
+            }
             String appIntranetDocDtoJsonStr = JsonUtil.parseToJson(appIntranetDocDto);
             data = appIntranetDocDtoJsonStr;
             ParamUtil.setRequestAttr(request, "doDocument", "Y");
@@ -132,7 +135,7 @@ public class HcsaApplicationAjaxController{
     @RequestMapping(value = "/deleteInternalFile", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> deleteInternalFile(HttpServletRequest request){
-        String guid = MaskUtil.unMaskValue("appDocId", request.getParameter("appDocId"));
+        String guid = MaskUtil.unMaskValue("interalFileId", request.getParameter("appDocId"));
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
         if(applicationViewDto != null && applicationViewDto.getAppIntranetDocDtoList() != null){
