@@ -236,7 +236,10 @@ public class AppealServiceImpl implements AppealService {
             request.getSession().setAttribute("licenceNo",licenceNo);
         } else if (APPLICATION.equals(type)) {
             ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion(appealingFor).getEntity();
-
+            boolean maxCGOnumber = isMaxCGOnumber(applicationDto);
+            if(!maxCGOnumber){
+                request.getSession().setAttribute("maxCGOnumber",maxCGOnumber);
+            }
             String serviceId = applicationDto.getServiceId();
             String id = applicationDto.getId();
             if(id!=null){
@@ -898,7 +901,7 @@ public class AppealServiceImpl implements AppealService {
     }
 
 
-    private void isMaxCGOnumber(ApplicationDto applicationDto){
+    private boolean isMaxCGOnumber(ApplicationDto applicationDto){
         String serviceId = applicationDto.getServiceId();
 
         List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationClient.getAppSvcKeyPersonnel(applicationDto).getEntity();
@@ -907,11 +910,11 @@ public class AppealServiceImpl implements AppealService {
             int maximumCount = hcsaSvcPersonnelDto.getMaximumCount();
             int size = appSvcKeyPersonnelDtos.size();
             if(size<maximumCount){
-
+                return false;
             }
         }
 
-
+        return true;
     }
 
 }

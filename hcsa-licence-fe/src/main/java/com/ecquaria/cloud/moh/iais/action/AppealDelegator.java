@@ -105,12 +105,13 @@ public class AppealDelegator {
         bpc.getSession().removeAttribute("appPremisesSpecialDocDto");
         bpc.getSession().removeAttribute("appealingFor");
         bpc.getSession().removeAttribute("type");
+        bpc.getSession().removeAttribute("maxCGOnumber");
         log.info("end**************start************");
     }
 
     public void save(BaseProcessClass bpc){
         log.info("start**************save************");
-        String s = appealService.saveData(bpc.request);
+         appealService.saveData(bpc.request);
         log.info("end**************save************");
     }
 

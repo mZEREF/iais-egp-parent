@@ -91,7 +91,7 @@ public class AppealApproveBatchjob {
                           log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealType  is -->"+appealType));
                           switch(appealType){
                               case ApplicationConsts.APPEAL_TYPE_APPLICAITON :
-                                  appealApplicaiton(bpc.request,appealApplicaiton,rollBackApplication,appealPersonnel,rollBackPersonnel,
+                                  appealApplicaiton(appealApplicaiton,rollBackApplication,appealPersonnel,rollBackPersonnel,
                                           appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,
                                           appealAppPremisesRecommendationDtos,rollBackAppPremisesRecommendationDtos,appealApplicationGroupDtos,rollBackApplicationGroupDtos,
                                           appealApproveDto);
@@ -148,7 +148,7 @@ public class AppealApproveBatchjob {
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob is end ..."));
     }
-    private void appealApplicaiton(HttpServletRequest request, List<ApplicationDto> appealApplicaiton,
+    private void appealApplicaiton( List<ApplicationDto> appealApplicaiton,
                                    List<ApplicationDto> rollBackApplication,
                                    List<AppSvcKeyPersonnelDto> appealPersonnel,
                                    List<AppSvcKeyPersonnelDto> rollBackPersonnel,

@@ -296,7 +296,6 @@
       </div>
 
       <div class="form-group">
-
         <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service-Related Checklists<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
