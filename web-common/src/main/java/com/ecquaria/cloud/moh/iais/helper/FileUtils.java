@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +23,9 @@ import java.util.Objects;
  */
 @Slf4j
 public final class FileUtils {
+
+    @Value("iais.system.upload.file.limit")
+    private String maxFileSize;
 
     private FileUtils(){
         throw new IaisRuntimeException("FileUtils structure error.");

@@ -34,6 +34,9 @@ public class SystemParameterServiceImpl implements SystemParameterService {
     @Autowired
     private EicGatewayClient eicGatewayClient;
 
+    @Value("${iais.system.paging.size}")
+    private String val;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -52,6 +55,7 @@ public class SystemParameterServiceImpl implements SystemParameterService {
 
     @Override
     public void saveSystemParameter(SystemParameterDto dto) {
+        log.info("test val" + val);
         log.info("save system parameter start....");
         try {
             dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -61,7 +65,7 @@ public class SystemParameterServiceImpl implements SystemParameterService {
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             eicGatewayClient.saveSystemParameterFe(postUpdate, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getStatusCode();
+                    signature2.date(), signature2.authorization());
             configClient.refreshConfig();
 
         }catch (Exception e){

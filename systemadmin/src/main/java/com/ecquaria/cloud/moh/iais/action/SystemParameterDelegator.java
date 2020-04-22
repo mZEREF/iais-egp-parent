@@ -161,14 +161,8 @@ public class SystemParameterDelegator {
             return;
         }
 
-        /*String domainType = ParamUtil.getString(request, SystemParameterConstants.PARAM_DOMAIN_TYPE);
-        String module = ParamUtil.getString(request, SystemParameterConstants.PARAM_MODULE);*/
         String value = ParamUtil.getString(request, SystemParameterConstants.PARAM_VALUE);
-        /*String paramType = ParamUtil.getString(request, SystemParameterConstants.PARAM_VALUE_TYPE);*/
         String description = ParamUtil.getString(request, SystemParameterConstants.PARAM_DESCRIPTION);
-        /*String status = ParamUtil.getString(request, SystemParameterConstants.PARAM_STATUS);*/
-
-
 
         SystemParameterDto editDto = (SystemParameterDto) ParamUtil.getSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO);
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();

@@ -14,7 +14,7 @@ import org.springframework.http.HttpHeaders;
 
 public class EicGatewayClientFallBack implements EicGatewayClient {
 	@Override
-	public FeignResponseEntity<MessageDto> saveSystemParameterFe(SystemParameterDto systemParameterDto, String date, String authorization, String dateSec, String authorizationSec) {
+	public FeignResponseEntity<SystemParameterDto> saveSystemParameterFe(SystemParameterDto systemParameterDto, String date, String authorization, String dateSec, String authorizationSec) {
 		FeignResponseEntity entity = new FeignResponseEntity<>();
 		HttpHeaders headers = new HttpHeaders();
 		entity.setHeaders(headers);
