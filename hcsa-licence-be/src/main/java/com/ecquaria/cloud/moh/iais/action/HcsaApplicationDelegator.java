@@ -1108,6 +1108,8 @@ public class HcsaApplicationDelegator {
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
             period  = recomInNumber+" " + codeDesc;
             initRecommendationDto.setPeriod(period);
+            String remarks = initRecommendationDto.getRemarks();
+            initRecommendationDto.setRemarks(remarks);
         }
         if (engageRecommendationDto != null) {
             String remarks = engageRecommendationDto.getRemarks();

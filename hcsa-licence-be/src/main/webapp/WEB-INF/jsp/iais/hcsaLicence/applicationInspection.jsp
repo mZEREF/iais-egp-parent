@@ -279,7 +279,7 @@
                             <p>Risk Level</p>
                         </td>
                         <td class="col-xs-4">
-                            <p><c:out value="${appPremisesRecommendationDto.riskLevel}"/></p>
+                            <p><iais:code code="${appPremisesRecommendationDto.riskLevel}"></iais:code></p>
                         </td>
                         <td class="col-xs-4"></td>
                     </tr>
@@ -339,7 +339,7 @@
                         </td>
                         <div>
                             <td class="col-xs-4">
-                                <p><c:out value="${empty inspectorRemarks ? '-' : inspectorRemarks}"/></p>
+                                <p><c:out value="${empty appPremisesRecommendationDto.remarks ? '-' : appPremisesRecommendationDto.remarks}"/></p>
                             </td>
                         </div>
                         <td class="col-xs-4">
