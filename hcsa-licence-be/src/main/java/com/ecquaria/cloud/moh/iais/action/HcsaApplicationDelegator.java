@@ -893,12 +893,12 @@ public class HcsaApplicationDelegator {
         }
 
         try {
-            bpc.request.setAttribute("application",applicationViewDto.getApplicationDto());
-            bpc.request.setAttribute("licenseeId",licenseeId);
-            sendAppealReject(bpc.request);
+            if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+                sendAppealReject(licenseeId,applicationDto);
+            }
 
         }catch (Exception e){
-            log.error(e.getMessage(),e+"error");
+            log.error(e.getMessage()+"error",e);
         }
         log.debug(StringUtil.changeForLog("the do reject end ...."));
     }
@@ -1483,12 +1483,12 @@ public class HcsaApplicationDelegator {
     }
 
     /************************/
-    private void sendAppealApproved(HttpServletRequest request){
-        ApplicationDto applicationDto=(ApplicationDto)request.getAttribute("application");
+    private void sendAppealApproved(ApplicationDto applicationDto,String licenseeId){
+
         String applicationType = applicationDto.getApplicationType();
         if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
             Map<String,Object> map=new HashMap<>();
-            String licenseeId =(String)request.getAttribute("licenseeId");
+            List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
             MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate("5B9EADD2-F27D-EA11-BE82-000C29F371DC").getEntity();
             map.put("applicationNumber",applicationDto.getApplicationNo());
 
@@ -1496,13 +1496,12 @@ public class HcsaApplicationDelegator {
 
     }
 
-    private  void  sendAppealReject(HttpServletRequest request) throws IOException, TemplateException {
-        ApplicationDto applicationDto=(ApplicationDto)request.getAttribute("application");
+    private  void  sendAppealReject(String licenseeId, ApplicationDto applicationDto) throws IOException, TemplateException {
+
         String applicationType = applicationDto.getApplicationType();
         String applicationNo = applicationDto.getApplicationNo();
         if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
             Map<String,Object> map=new HashMap<>();
-            String licenseeId =(String)request.getAttribute("licenseeId");
             MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate("3BA1C87A-5F7D-EA11-BE82-000C29F371DC").getEntity();
             if(msgTemplateDto!=null){
                 map.put("applicationNumber",applicationNo);

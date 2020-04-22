@@ -53,7 +53,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
             try {
                 clearSession(request);
                 response.sendRedirect(tokenUrl);
-
+                return;
             } catch (IOException e) {
                log.info(e.getMessage(),e);
             }

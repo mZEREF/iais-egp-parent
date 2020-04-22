@@ -155,11 +155,11 @@ public class KpiAndReminderDelegator {
             }
             if(createDate==null){
                 Date date=new Date();
-                String  format = new SimpleDateFormat("dd/MM/yyyy hh:mm:ssa", Locale.ENGLISH).format(date);
+                String  format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(date);
                 map.put("remThr",format);
             }else {
-                String format = new SimpleDateFormat("dd/MM/yyyy hh:mm:ssa", Locale.ENGLISH).format(createDate);
-                Formatter.formatDateTime(createDate, "dd/MM/yyyy hh:mm:ssa");
+                String format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(createDate);
+                Formatter.formatDateTime(createDate, "dd/MM/yyyy");
                 map.put("remThr",format);
             }
 

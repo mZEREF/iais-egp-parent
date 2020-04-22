@@ -15,6 +15,7 @@
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
+    <input type="hidden" name="action_id_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <div class="col-lg-12 col-xs-10">
     <div class="bg-title" style="text-align: center">
@@ -44,8 +45,11 @@
           <c:if test="${hcsaServiceDto.status=='CMSTAT003'}">NonActive</c:if></td>
 
         <td  style="text-align: center">${hcsaServiceDto.effectiveDate}</td>
-        <td  style="text-align: center"><fmt:formatDate value="${hcsaServiceDto.endDate}" pattern="yyyy-MM-dd"/></td>
-        <td  style="text-align: center"><button onclick="edit(this)" value="${hcsaServiceDto.id}">update</button><button value="${hcsaServiceDto.id}" onclick="del(this)">delete</button></td>
+        <td  style="text-align: center"><fmt:formatDate value="${hcsaServiceDto.endDate}" pattern="dd/MM/yyyy"/></td>
+        <td  style="text-align: center">
+          <button onclick="edit(this)" value="<iais:mask name="crud_action_value"  value="${hcsaServiceDto.id}"/>">update</button>
+          <button value="<iais:mask name="crud_action_value"  value="${hcsaServiceDto.id}"/>" onclick="del(this)">delete</button>
+        </td>
 
       </tr>
         </c:forEach>
@@ -59,7 +63,6 @@
 
 <script type="text/javascript">
    function edit(obj) {
-
        SOP.Crud.cfxSubmit("mainForm","edit",$(obj).val(),"");
    }
    function del(obj) {

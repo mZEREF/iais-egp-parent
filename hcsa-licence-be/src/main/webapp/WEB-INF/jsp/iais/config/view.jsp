@@ -374,19 +374,19 @@
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px" >
           <table border="1px" style="text-align: center" >
             <tr>
-              <th style="width: 15% ;height: 40px;text-align: center"> application type<span class="mandatory" >*</span></th>
+              <th style="width: 10% ;height: 40px;text-align: center"> application type<span class="mandatory" >*</span></th>
               <th  style="width: 20% ;height: 40px;text-align: center"> Service Workflow Routing Stages<span class="mandatory" >*</span></th>
-              <th  style="width: 20% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
+              <th  style="width: 30% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
               <th  style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours<span class="mandatory">*</span></th>
-              <th  style="width: 30% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
+              <th  style="width: 25% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
             </tr>
             <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
               <tr>
                 <td >${routingStage.appTypeName}</td>
                 <td >${routingStage.stageName}</td>
                 <td>
-                  <div class="col-xs-12 col-md-12" style="margin-top: 1%;margin-bottom: 1%">
-                    <select  name="RoutingScheme${routingStage.stageCode}"  >
+                  <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%">
+                    <select  disabled name="RoutingScheme${routingStage.stageCode}"  >
                       <option value="">Select one</option>
                       <option value="common"
                               <c:if test="${routingStage.routingSchemeName=='common'}">selected="selected" </c:if>
@@ -405,13 +405,12 @@
                       <option value="mandatory" selected="selected">Mandatory</option>
                       <option value="optional">Optional</option>
                     </select>
-
                   </div>
                 </td>
 
                 <td>
                   <div class="col-xs-12 col-md-12">
-                    <input style="margin: 8px 0px 8px" type="text" maxlength="2" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
+                    <input style="margin: 8px 0px 8px" disabled type="text" maxlength="2" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
                     <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${status.index}"></span>
                   </div>
 
@@ -419,7 +418,7 @@
                 <td>
                   <div class="col-xs-12 col-md-12">
                     <div class="col-xs-12 col-md-12" style="margin-top: 1%;margin-bottom: 1%">
-                      <select  name="workingGroup${routingStage.stageCode}">
+                      <select  disabled name="workingGroup${routingStage.stageCode}">
                         <option value="">Select one</option><c:forEach items="${routingStage.workingGroup}" var="workingGroup">
                         <option <c:if test="${routingStage.workingGroupId==workingGroup.id}">selected="selected"</c:if> value="${workingGroup.id}">${workingGroup.groupName}</option>
                       </c:forEach>
@@ -544,7 +543,7 @@
         <div class="row">
           <div class="col-xs-10 col-md-8">
             <div class="components">
-              <button class="btn  btn-secondary" value="${hcsaServiceDto.id}" onclick="edit(this)">Update</button>
+              <button class="btn  btn-secondary" value="<iais:mask name="crud_action_value"  value="${hcsaServiceDto.id}"/>" onclick="edit(this)">Update</button>
             </div>
           </div>
           <div class="col-xs-10 col-md-3">

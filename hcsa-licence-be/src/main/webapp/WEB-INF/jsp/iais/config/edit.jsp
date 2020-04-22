@@ -610,7 +610,7 @@
               <select name="versionSelect" id="version">
                 <option value="">Select one</option>
                 <c:forEach items="${hcsaServiceDtosVersion}" var="hcsaServiceDtosVer">
-                  <option  value="${hcsaServiceDtosVer.id}">${hcsaServiceDtosVer.version}</option>
+                  <option  value="<iais:mask name="crud_action_additional"  value="${hcsaServiceDto.id}"/>">${hcsaServiceDtosVer.version}</option>
                 </c:forEach>
               </select>
             </div>

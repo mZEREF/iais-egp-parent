@@ -97,14 +97,14 @@ public class AppealApproveBatchjob {
                                           appealApproveDto);
                                   break;
                               case ApplicationConsts.APPEAL_TYPE_LICENCE :
-                                  appealLicence(bpc.request,appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),
+                                  appealLicence(applicationDto,appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),
                                           appealDto.getNewLicYears());
                                   break;
 //                        case ApplicationConsts.APPEAL_TYPE_OTHER :
 //                            appealOther(appealApplicaiton,rollBackApplication,applicationDto);
 //                            break;
                           }
-                          appealOther(bpc.request,appealApplicaiton,rollBackApplication,applicationDto);
+                          appealOther(appealApplicaiton,rollBackApplication,applicationDto);
                       }
                   }
                   rollBackApplicationGroupDtos.add(applicationGroupDto);
@@ -166,7 +166,7 @@ public class AppealApproveBatchjob {
             String appealReason = appealDto.getReason();
             switch(appealReason){
                 case ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION :
-                    applicationRejection(request,appealApplicaiton,rollBackApplication,
+                    applicationRejection(appealApplicaiton,rollBackApplication,
                             appealAppPremisesRecommendationDtos,rollBackAppPremisesRecommendationDtos,appealApplicationGroupDtos,rollBackApplicationGroupDtos,
                             appealApproveDto);
                     break;
@@ -174,16 +174,16 @@ public class AppealApproveBatchjob {
                     applicationLateRenewFee();
                     break;
                 case ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO :
-                    applicationAddCGO(request,appealPersonnel,rollBackPersonnel,appealApproveDto);
+                    applicationAddCGO(appealPersonnel,rollBackPersonnel,appealApproveDto);
                     break;
                 case ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME :
-                    applicationChangeHciName(request,appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,appealApproveDto);
+                    applicationChangeHciName(appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,appealApproveDto);
                     break;
             }
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealApplicaiton is end ..."));
     }
-    private void applicationRejection(HttpServletRequest request,List<ApplicationDto> appealApplicaiton,
+    private void applicationRejection(List<ApplicationDto> appealApplicaiton,
                                       List<ApplicationDto> rollBackApplication,
                                       List<AppPremisesRecommendationDto> appealAppPremisesRecommendationDtos,
                                       List<AppPremisesRecommendationDto> rollBackAppPremisesRecommendationDtos,
@@ -220,19 +220,12 @@ public class AppealApproveBatchjob {
            log.error(StringUtil.changeForLog("This Applicaiton  can not get the ApplicationGroupDto "+ appealApproveDto.getApplicationDto().getApplicationNo()));
         }
 
-        try {
-            sendEmailApproved(request);
-
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-        }
-
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationRejection is end ..."));
     }
     private void applicationLateRenewFee(){
      // do not need to do.
     }
-    private void applicationAddCGO(HttpServletRequest request,List<AppSvcKeyPersonnelDto> appealPersonnel,
+    private void applicationAddCGO(List<AppSvcKeyPersonnelDto> appealPersonnel,
                                    List<AppSvcKeyPersonnelDto> rollBackPersonnel,
                                    AppealApproveDto appealApproveDto) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationAddCGO is start ..."));
@@ -251,13 +244,13 @@ public class AppealApproveBatchjob {
             }
         }
         try {
-            request.setAttribute("reason",ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO);
+
             String relateRecId = appealDto.getRelateRecId();
             if(relateRecId!=null){
                 ApplicationDto applicationDto = applicationClient.getApplicationById(relateRecId).getEntity();
                 if(applicationDto!=null){
-                    request.setAttribute("application",applicationDto);
-                    sendEmailApproved(request);
+                    sendEmailApproved(applicationDto,ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO,"",
+                           "","" );
                 }
 
             }
@@ -269,7 +262,7 @@ public class AppealApproveBatchjob {
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationAddCGO is end ..."));
     }
-    private void applicationChangeHciName(HttpServletRequest request,List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
+    private void applicationChangeHciName(List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
                                           List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
                                           AppealApproveDto appealApproveDto) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is start ..."));
@@ -287,13 +280,13 @@ public class AppealApproveBatchjob {
         }
         try {
 
-            request.setAttribute("reason",ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME);
+
             String relateRecId = appealDto.getRelateRecId();
             if(!StringUtil.isEmpty(relateRecId)){
                 ApplicationDto applicationDto = applicationClient.getApplicationById(relateRecId).getEntity();
                 if(applicationDto!=null){
-                    request.setAttribute("application",applicationDto);
-                    sendEmailApproved(request);
+
+                    sendEmailApproved(applicationDto,ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME,"","",appealDto.getNewHciName());
                 }
             }
 
@@ -304,7 +297,7 @@ public class AppealApproveBatchjob {
 
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is end ..."));
     }
-    private void appealLicence(HttpServletRequest request,List<LicenceDto> appealLicence,
+    private void appealLicence(ApplicationDto applicationDto,List<LicenceDto> appealLicence,
                                List<LicenceDto> rollBackLicence,
                                LicenceDto licenceDto,int newLicYears) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence is start ..."));
@@ -319,20 +312,9 @@ public class AppealApproveBatchjob {
         }else{
             log.error(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence licenceDto is null or newLicYears <0"));
         }
-        try {
-
-            request.setAttribute("reason",ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME);
-
-            sendEmailApproved(request);
-
-        }catch (Exception e){
-
-            log.error(e.getMessage(),e);
-        }
-
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence is end ..."));
     }
-    private void appealOther(HttpServletRequest request,List<ApplicationDto> appealApplicaiton,
+    private void appealOther(List<ApplicationDto> appealApplicaiton,
                              List<ApplicationDto> rollBackApplication,
                              ApplicationDto applicationDto) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealOther is start ..."));
@@ -344,9 +326,8 @@ public class AppealApproveBatchjob {
         }
 
         try {
-            request.setAttribute("reason",ApplicationConsts.CESSATION_REASON_OTHER);
-            request.setAttribute("applicationDto",applicationDto);
-            sendEmailApproved(request);
+
+            sendEmailApproved(applicationDto,ApplicationConsts.CESSATION_REASON_OTHER,"","","");
 
         }catch (Exception e){
 
@@ -355,36 +336,11 @@ public class AppealApproveBatchjob {
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealOther is end ..."));
     }
-    //reject
-    public void  sendEmail(HttpServletRequest request) throws IOException, TemplateException {
-        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("3BA1C87A-5F7D-EA11-BE82-000C29F371DC").getEntity();
-        ApplicationDto applicationDto=(ApplicationDto)request.getAttribute("application");
-        if(entity!=null){
-            String messageContent = entity.getMessageContent();
-            Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-            map.put("applicationNumber",applicationDto.getApplicationNo());
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
-            EmailDto emailDto=new EmailDto();
-            emailDto.setClientQueryCode("Appeal rejected");
-            emailDto.setSender("Ministry of Health");
-            emailDto.setSubject("MOH IAIS – Appeal,"+applicationDto.getApplicationNo()+" , is Rejected");
-            emailDto.setContent(templateMessageByContent);
-            String grpId = applicationDto.getAppGrpId();
-            ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(grpId).getEntity();
-            if(applicationGroupDto!=null){
-                String licenseeId = applicationGroupDto.getLicenseeId();
-                List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
-                emailDto.setReceipts(licenseeEmailAddrs);
-                emailClient.sendNotification(emailDto);
-            }
-        }
-    }
 
-    public void  sendEmailApproved(HttpServletRequest request) throws IOException, TemplateException {
+
+    public void  sendEmailApproved(ApplicationDto application,String reason,String money,String date, String hciName) throws IOException, TemplateException {
         MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("5B9EADD2-F27D-EA11-BE82-000C29F371DC").getEntity();
         if(entity!=null){
-            ApplicationDto application=(ApplicationDto)request.getAttribute("application");
-            String reason=(String)request.getAttribute("reason");
             Map<String,Object> map=IaisCommonUtils.genNewHashMap();
             map.put("applicationNumber",application.getApplicationNo());
             StringBuilder stringBuilder=new StringBuilder();
@@ -392,21 +348,18 @@ public class AppealApproveBatchjob {
 
 
             }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE.equals(reason)){
-                String money=(String) request.getAttribute("money");
                 stringBuilder.append("For refund cases:  A refund of "+money+" has been credited back to your account.");
 
             }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)){
 
             }else if(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD.equals(reason)){
 
-                String date=(String)request.getAttribute("date");
                 stringBuilder.append("For licence period adjustment: The licence period is now "+ date);
 
             }else if(ApplicationConsts.APPEAL_REASON_OTHER.equals(reason)){
 
 
             }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME.equals(reason)){
-                String hciName=(String)request.getAttribute("hciName");
                 stringBuilder.append("For application change hci name : The hci name is now " +hciName);
 
             }
@@ -415,7 +368,7 @@ public class AppealApproveBatchjob {
             String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
             EmailDto emailDto=new EmailDto();
             emailDto.setClientQueryCode("Appeal approved");
-            emailDto.setSender("Ministry of Health");
+            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
             emailDto.setContent(templateMessageByContent);
             emailDto.setSubject("MOH IAIS – Appeal -"+application.getApplicationNo()+" is approved");
             String grpId = application.getAppGrpId();

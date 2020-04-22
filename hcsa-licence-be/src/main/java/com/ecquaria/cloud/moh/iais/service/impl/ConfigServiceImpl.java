@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCategoryDto;
@@ -22,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.HcsaConfigPageDto;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -71,6 +73,7 @@ public class ConfigServiceImpl implements ConfigService {
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     private EmailClient emailClient;
+    private static final String DATE_FORMAT="yyyy-MM-dd";
     @Override
     public List<HcsaServiceDto> getAllHcsaServices(HttpServletRequest request) {
         List<HcsaServiceDto> entity = hcsaConfigClient.allHcsaService().getEntity();
@@ -78,6 +81,15 @@ public class ConfigServiceImpl implements ConfigService {
             if("CMSTAT005".equals(entity.get(i).getStatus())){
                 entity.remove(entity.get(i));
                 i--;
+            }else {
+                String effectiveDate = entity.get(i).getEffectiveDate();
+                try {
+                Date pare=new SimpleDateFormat(DATE_FORMAT).parse(effectiveDate);
+                String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(pare);
+                entity.get(i).setEffectiveDate(format);
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
             }
         }
 
@@ -87,19 +99,20 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public void viewPageInfo(HttpServletRequest request) {
-
         String crud_action_value = request.getParameter("crud_action_value");
         String crud_action_type = request.getParameter("crud_action_type");
-        if (crud_action_value != null && !"".equals(crud_action_value) && "edit".equals(crud_action_type)) {
-            view(request, crud_action_value);
-        }else if("version".equals(crud_action_value)){
-            String crud_action_additional = request.getParameter("crud_action_additional");
+        if("version".equals(crud_action_value)){
+            String crud_action_additional = ParamUtil.getMaskedString(request,"crud_action_additional");
             log.info(crud_action_additional);
             HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(crud_action_additional).getEntity();
             List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getServiceVersions(hcsaServiceDto.getSvcCode()).getEntity();
             request.setAttribute("hcsaServiceDtosVersion",hcsaServiceDtos);
             setAttribute(request,hcsaServiceDto);
+        }else if(crud_action_value != null && !"".equals(crud_action_value) && "edit".equals(crud_action_type)){
+            String crud_action_value1 = ParamUtil.getMaskedString(request, "crud_action_value");
+            view(request, crud_action_value1);
         }
+
 
     }
 
@@ -110,14 +123,13 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public void saveOrUpdate(HttpServletRequest request, HttpServletResponse response) {
+    public void saveOrUpdate(HttpServletRequest request, HttpServletResponse response, HcsaServiceConfigDto hcsaServiceConfigDto) {
         String crud_action_value = request.getParameter("crud_action_value");
         if("cancel".equals(crud_action_value)){
             sendURL(request,response);
             return;
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        HcsaServiceConfigDto hcsaServiceConfigDto = getDateOfHcsaService(request);
         doValidate(hcsaServiceConfigDto, errorMap,request);
         HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
         Map<String, Boolean> entity = hcsaConfigClient.isExistHcsaService(hcsaServiceDto).getEntity();
@@ -183,14 +195,14 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public void update(HttpServletRequest request,HttpServletResponse response) {
+    public void update(HttpServletRequest request,HttpServletResponse response,  HcsaServiceConfigDto hcsaServiceConfigDto) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_value = request.getParameter("crud_action_value");
         if("cancel".equals(crud_action_value)){
             sendURL(request,response);
             return;
         }
-        HcsaServiceConfigDto hcsaServiceConfigDto = getDateOfHcsaService(request);
+
         doValidate(hcsaServiceConfigDto, errorMap,request);
         if (!errorMap.isEmpty()) {
             HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
@@ -276,7 +288,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public void delete(HttpServletRequest request) {
         String crud_action_type = request.getParameter("crud_action_type");
-        String crud_action_value = request.getParameter("crud_action_value");
+        String crud_action_value = ParamUtil.getMaskedString(request,"crud_action_value");
         if ("delete".equals(crud_action_type)) {
             if (crud_action_value != null && !"".equals(crud_action_value)) {
                 view(request, crud_action_value);
@@ -322,458 +334,6 @@ public class ConfigServiceImpl implements ConfigService {
 
     }
 
-    private HcsaServiceConfigDto getDateOfHcsaService(HttpServletRequest request) {
-        HcsaServiceConfigDto hcsaServiceConfigDto = new HcsaServiceConfigDto();
-        HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
-        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = getHcsaSvcRoutingStageDtos();
-        //if service type is sub must to chose
-        String[] subsumption = request.getParameterValues("Subsumption");
-        // if service type is pre must be Choice
-        String[] preRequisite = request.getParameterValues("Pre-requisite");
-        String serviceId = request.getParameter("serviceId");
-        String serviceName = request.getParameter("serviceName");
-        String description = request.getParameter("description");
-        String displayDescription = request.getParameter("displayDescription");
-        String serviceCode = request.getParameter("serviceCode");
-        String serviceType = request.getParameter("ServiceType");
-        String[] premisesTypes = request.getParameterValues("PremisesType");
-        String version = request.getParameter("version");
-        String[] subTypes = request.getParameterValues("subType");
-        String[] levels = request.getParameterValues("level");
-
-        List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos=IaisCommonUtils.genNewArrayList();
-        Map<Integer ,String> level1=IaisCommonUtils.genNewHashMap();
-        if(levels!=null){
-            for(int i=0;i<levels.length;i++ ){
-                level1.put(i,levels[i]);
-            }
-            for(int i=0;i<levels.length;i++){
-                String s = level1.get(i);
-                if("0".equals(s)){
-                    HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto1=new HcsaSvcSubtypeOrSubsumedDto();
-                    hcsaSvcSubtypeOrSubsumedDto1.setName(subTypes[i]);
-                    List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos2=IaisCommonUtils.genNewArrayList();
-                    hcsaSvcSubtypeOrSubsumedDtos.add(hcsaSvcSubtypeOrSubsumedDto1);
-                    for(int j=i+1;j<levels.length;j++){
-                        String s1 = level1.get(j);
-                        if("1".equals(s1)){
-                            HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto2=new HcsaSvcSubtypeOrSubsumedDto();
-                            hcsaSvcSubtypeOrSubsumedDto2.setName(subTypes[j]);
-                            List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos3=IaisCommonUtils.genNewArrayList();
-                            hcsaSvcSubtypeOrSubsumedDtos2.add(hcsaSvcSubtypeOrSubsumedDto2);
-                            hcsaSvcSubtypeOrSubsumedDto1.setList(hcsaSvcSubtypeOrSubsumedDtos2);
-                            for(int k=j+1;k<levels.length;k++){
-                                String s2 = level1.get(k);
-                                if("2".equals(s2)){
-                                    HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto3=new HcsaSvcSubtypeOrSubsumedDto();
-                                    hcsaSvcSubtypeOrSubsumedDto3.setName(subTypes[k]);
-                                    hcsaSvcSubtypeOrSubsumedDtos3.add(hcsaSvcSubtypeOrSubsumedDto3);
-                                    hcsaSvcSubtypeOrSubsumedDto2.setList(hcsaSvcSubtypeOrSubsumedDtos3);
-                                }else if(!"2".equals(s2)){
-
-                                    break;
-                                }
-                            }
-                        }else if(!"1".equals(s1)){
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-
-
-
-        List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = IaisCommonUtils.genNewArrayList();
-        List<HcsaServiceSubTypeDto> list=IaisCommonUtils.genNewArrayList();
-        if("SVTP002".equals(serviceType)){
-            if(subsumption!=null){
-                for(String str:subsumption){
-                    HcsaServiceSubTypeDto hcsaServiceSubTypeDto=new HcsaServiceSubTypeDto();
-                    if(!"".equals(str)){
-                        hcsaServiceSubTypeDto.setServiceId(str);
-                    }
-                    list.add(hcsaServiceSubTypeDto);
-                }
-            }
-
-
-        } else if ("SVTP003".equals(serviceType)) {
-
-            if (preRequisite != null){
-                for(String str : preRequisite){
-                    HcsaServiceSubTypeDto hcsaServiceSubTypeDto=new HcsaServiceSubTypeDto();
-                    if(!"".equals(str)){
-                        hcsaServiceSubTypeDto.setServiceId(str);
-                    }
-                    list.add(hcsaServiceSubTypeDto);
-                }
-            }
-
-        }
-        hcsaServiceDto.setServiceSubTypeDtos(list);
-        if (premisesTypes != null) {
-            for (String str : premisesTypes) {
-                HcsaSvcSpePremisesTypeDto hcsaSvcSpePremisesTypeDto = new HcsaSvcSpePremisesTypeDto();
-                hcsaSvcSpePremisesTypeDto.setPremisesType(str);
-                hcsaSvcSpePremisesTypeDto.setStatus("CMSTAT001");
-                hcsaSvcSpePremisesTypeDtos.add(hcsaSvcSpePremisesTypeDto);
-            }
-        }
-
-        String manprincipalOfficer = request.getParameter("man-principalOfficer");
-        String mixprincipalOfficer = request.getParameter("mix-principalOfficer");
-        String poId = request.getParameter("poId");
-        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
-        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = IaisCommonUtils.genNewArrayList();
-        HcsaSvcPersonnelDto poDto = new HcsaSvcPersonnelDto();
-        poDto.setPsnType("PO");
-        try {
-            if (!StringUtil.isEmpty(manprincipalOfficer)) {
-                poDto.setMandatoryCount(Integer.parseInt(manprincipalOfficer));
-            }
-        }catch (NumberFormatException e){
-            poDto.setMandatoryCount(-1);
-        }
-        try {
-            if (!StringUtil.isEmpty(mixprincipalOfficer)) {
-                poDto.setMaximumCount(Integer.parseInt(mixprincipalOfficer));
-            }
-        }catch (NumberFormatException e){
-            poDto.setMaximumCount(-1);
-        }
-
-        if (!StringUtil.isEmpty(poId)) {
-            poDto.setServiceId(poId);
-        }
-
-        poDto.setStatus("CMSTAT001");
-        hcsaSvcPersonnelDtos.add(poDto);
-        String dpoId = request.getParameter("dpoId");
-        String mandeputyPrincipalOfficer = request.getParameter("man-DeputyPrincipalOfficer");
-        String mixdeputyPrincipalOfficer = request.getParameter("mix-DeputyPrincipalOfficer");
-        HcsaSvcPersonnelDto dpoDto = new HcsaSvcPersonnelDto();
-        if (!StringUtil.isEmpty(dpoId)) {
-            dpoDto.setId(dpoId);
-        }
-        dpoDto.setPsnType("DPO");
-        try {
-            if (!StringUtil.isEmpty(mandeputyPrincipalOfficer)) {
-                dpoDto.setMandatoryCount(Integer.parseInt(mandeputyPrincipalOfficer));
-            }
-        }catch (NumberFormatException e){
-            dpoDto.setMandatoryCount(-1);
-        }
-        try {
-            if (!StringUtil.isEmpty(mixdeputyPrincipalOfficer)) {
-                dpoDto.setMaximumCount(Integer.parseInt(mixdeputyPrincipalOfficer));
-            }
-        }catch (NumberFormatException e){
-            dpoDto.setMaximumCount(-1);
-        }
-
-
-
-        dpoDto.setStatus("CMSTAT001");
-        hcsaSvcPersonnelDtos.add(dpoDto);
-        String cgoId = request.getParameter("cgoId");
-        String manclinicalGovernanceOfficer = request.getParameter("man-ClinicalGovernanceOfficer");
-        String mixclinicalGovernanceOfficer = request.getParameter("mix-ClinicalGovernanceOfficer");
-        HcsaSvcPersonnelDto cgoDto = new HcsaSvcPersonnelDto();
-        if (!StringUtil.isEmpty(cgoId)) {
-            cgoDto.setId(cgoId);
-        }
-        cgoDto.setPsnType("CGO");
-        try {
-            if (!StringUtil.isEmpty(manclinicalGovernanceOfficer)) {
-                cgoDto.setMandatoryCount(Integer.parseInt(manclinicalGovernanceOfficer));
-            }
-        }catch (NumberFormatException e){
-            cgoDto.setMandatoryCount(-1);
-        }
-        try {
-            if (!StringUtil.isEmpty(mixclinicalGovernanceOfficer)) {
-                cgoDto.setMaximumCount(Integer.parseInt(mixclinicalGovernanceOfficer));
-            }
-        }catch (NumberFormatException e){
-            cgoDto.setMaximumCount(-1);
-        }
-
-        //todo is mandatory ,cannot
-        String poMandatory = request.getParameter("POMandatory");
-        String dpoMandatory = request.getParameter("DPOMandatory");
-        String cgoMandatory = request.getParameter("CGOMandatory");
-
-        int count=1;
-
-        if(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
-            hcsaServiceStepSchemeDto.setStepCode("SVST001");
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
-        if(cgoMandatory!=null){
-
-        }
-        if(cgoDto.getMandatoryCount()>0&&cgoDto.getMaximumCount()>0){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
-            hcsaServiceStepSchemeDto.setStepCode("SVST002");
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
-        if(dpoMandatory!=null){
-
-        }
-        if(dpoDto.getMandatoryCount()>0&&dpoDto.getMaximumCount()>0){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
-            hcsaServiceStepSchemeDto.setStepCode("SVST003");
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
-        if(poMandatory!=null){
-
-        }
-        if(poDto.getMandatoryCount()>0&&poDto.getMaximumCount()>0){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
-            hcsaServiceStepSchemeDto.setStepCode("SVST004");
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
-
-        cgoDto.setStatus("CMSTAT001");
-        hcsaSvcPersonnelDtos.add(cgoDto);
-        String svcpsnId = request.getParameter("svcpsnId");
-        String manservicePersonnel = request.getParameter("man-ServicePersonnel");
-        String mixservicePersonnel = request.getParameter("mix-ServicePersonnel");
-        HcsaSvcPersonnelDto svcPersonnelDto = new HcsaSvcPersonnelDto();
-        if (!StringUtil.isEmpty(svcpsnId)) {
-            svcPersonnelDto.setId(svcpsnId);
-        }
-        svcPersonnelDto.setPsnType("SVCPSN");
-        try {
-            if (!StringUtil.isEmpty(manservicePersonnel)) {
-                svcPersonnelDto.setMandatoryCount(Integer.valueOf(manservicePersonnel));
-            }
-        } catch (Exception e) {
-
-            svcPersonnelDto.setMaximumCount(-1);
-        }
-        try {
-            if (!StringUtil.isEmpty(mixservicePersonnel)) {
-                svcPersonnelDto.setMaximumCount(Integer.valueOf(mixservicePersonnel));
-            }
-        }catch (NumberFormatException e){
-            svcPersonnelDto.setMandatoryCount(-1);
-        }
-
-
-        svcPersonnelDto.setStatus("CMSTAT001");
-        hcsaSvcPersonnelDtos.add(svcPersonnelDto);
-        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = IaisCommonUtils.genNewArrayList();
-        String numberDocument = request.getParameter("NumberDocument");
-        String descriptionDocument = request.getParameter("DescriptionDocument");
-        String numberfields = request.getParameter("Numberfields");
-        String descriptionGeneral = request.getParameter("DescriptionGeneral");
-        String numberfieldsMandatory = request.getParameter("NumberfieldsMandatory");
-        String numberDocumentMandatory = request.getParameter("NumberDocumentMandatory");
-        String descriptionDocumentMandatory = request.getParameter("DescriptionDocumentMandatory");
-        try {
-            request.setAttribute("numberDocument",numberDocument);
-            request.setAttribute("descriptionDocument",descriptionDocument);
-            Integer integer = Integer.valueOf(numberDocument);
-            List<String> split = split(descriptionDocument);
-
-            if(integer!=split.size()){
-
-
-
-            }else {
-                for(int i=0;i<integer;i++){
-
-                    HcsaSvcDocConfigDto hcsaSvcDocConfigDto=new HcsaSvcDocConfigDto();
-
-                    hcsaSvcDocConfigDto.setDocDesc(split.get(i));
-                    hcsaSvcDocConfigDto.setDocTitle(split.get(i));
-                    hcsaSvcDocConfigDto.setStatus("CMSTAT001");
-                    hcsaSvcDocConfigDto.setDispOrder(0);
-                    hcsaSvcDocConfigDto.setDupForPrem("0");
-                    hcsaSvcDocConfigDto.setIsMandatory(false);
-                    if(numberDocumentMandatory!=null&&descriptionDocumentMandatory!=null){
-                        hcsaSvcDocConfigDto.setIsMandatory(true);
-                    }
-                    hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);
-                }
-                HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-                hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
-                hcsaServiceStepSchemeDto.setStepCode("SVST005");
-                hcsaServiceStepSchemeDto.setSeqNum(count);
-                hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-                count++;
-            }
-        }catch (NumberFormatException e){
-
-        }
-        try {
-            request.setAttribute("numberfields",numberfields);
-            request.setAttribute("descriptionGeneral",descriptionGeneral);
-            Integer integer = Integer.valueOf(numberfields);
-            List<String> split = split(descriptionGeneral);
-            if(integer!=split.size()){
-
-            }else {
-                for(int i=0;i<integer;i++){
-                    HcsaSvcDocConfigDto hcsaSvcDocConfigDto=new HcsaSvcDocConfigDto();
-                    hcsaSvcDocConfigDto.setDocDesc(split.get(i));
-                    hcsaSvcDocConfigDto.setDocTitle(split.get(i));
-                    hcsaSvcDocConfigDto.setStatus("CMSTAT001");
-                    hcsaSvcDocConfigDto.setDispOrder(0);
-                    hcsaSvcDocConfigDto.setDupForPrem("0");
-                    hcsaSvcDocConfigDto.setIsMandatory(false);
-                    if(numberfieldsMandatory!=null){
-                        hcsaSvcDocConfigDto.setIsMandatory(true);
-                    }
-                    hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);
-                }
-
-            }
-        }catch (NumberFormatException e){
-
-
-        }
-
-        List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtoList = IaisCommonUtils.genNewArrayList();
-        List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtoList = IaisCommonUtils.genNewArrayList();
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
-        List<HcsaConfigPageDto> hcsaConfigPageDtos = IaisCommonUtils.genNewArrayList();
-        List<String> type = getType();
-        for(String every:type){
-            for (HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtos) {
-                HcsaConfigPageDto hcsaConfigPageDto = new HcsaConfigPageDto();
-                HcsaSvcSpecificStageWorkloadDto hcsaSvcSpecificStageWorkloadDto = new HcsaSvcSpecificStageWorkloadDto();
-                HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto = new HcsaSvcSpeRoutingSchemeDto();
-                HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-                String stageCode = hcsaSvcRoutingStageDto.getStageCode();
-                String id = hcsaSvcRoutingStageDto.getId();
-                String routingScheme = request.getParameter("RoutingScheme" + stageCode+every);
-                String workloadManhours = request.getParameter("WorkloadManhours" + stageCode+every);
-                String workloadId = request.getParameter("workloadId" + stageCode+every);
-                String workingGroupId = request.getParameter("workingGroup" + stageCode+every);
-                String stageId = request.getParameter("stageId" + stageCode+every);
-                String workstageId = request.getParameter("workstageId" + stageCode+every);
-                String isMandatory=  request.getParameter("isMandatory"+ stageCode+every);
-
-
-                if (!StringUtil.isEmpty(workloadManhours)) {
-                    try {
-                        hcsaSvcSpecificStageWorkloadDto.setManhourCount(Integer.parseInt(workloadManhours));
-                        hcsaConfigPageDto.setManhours(Integer.parseInt(workloadManhours));
-                    }catch (NumberFormatException e){
-                        hcsaSvcSpecificStageWorkloadDto.setManhourCount(-1);
-                        hcsaConfigPageDto.setManhours(-1);
-                    }
-
-                }
-
-                hcsaConfigPageDto.setWorkloadId(workloadId);
-                if (!StringUtil.isEmpty(stageId)) {
-                    //todo delete
-                 /*   hcsaSvcSpeRoutingSchemeDto.setId(stageId);*/
-                    hcsaConfigPageDto.setRoutingSchemeId(stageId);
-                }
-                hcsaSvcSpeRoutingSchemeDto.setStageId(id);
-                if (!StringUtil.isEmpty(workingGroupId)) {
-                    hcsaSvcStageWorkingGroupDto.setStageWorkGroupId(workingGroupId);
-                    hcsaSvcStageWorkingGroupDto.setStageId(id);
-                    hcsaConfigPageDto.setWorkingGroupId(workingGroupId);
-                }
-                if(!StringUtil.isEmpty(workstageId)){
-                    hcsaSvcStageWorkingGroupDto.setId(workstageId);
-                    //todo delete
-                  /*  hcsaSvcSpecificStageWorkloadDto.setId(workloadId);*/
-                }
-                if ("optional".equals(isMandatory)) {
-                    hcsaConfigPageDto.setIsMandatory(isMandatory);
-
-                }else if("mandatory".equals(isMandatory)){
-                    hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
-                    hcsaSvcSpeRoutingSchemeDto.setSchemeType(routingScheme);
-                    hcsaSvcSpeRoutingSchemeDto.setAppType(every);
-                    hcsaSvcSpeRoutingSchemeDto.setStatus("CMSTAT001");
-                    hcsaSvcSpecificStageWorkloadDto.setStageId(id);
-                    hcsaSvcSpecificStageWorkloadDto.setAppType(every);
-                    hcsaSvcSpecificStageWorkloadDto.setStatus("CMSTAT001");
-                    hcsaSvcSpecificStageWorkloadDtoList.add(hcsaSvcSpecificStageWorkloadDto);
-                    hcsaSvcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto);
-                }
-                hcsaConfigPageDto.setWorkStageId(workstageId);
-                hcsaConfigPageDto.setRoutingSchemeName(routingScheme);
-                hcsaConfigPageDto.setAppType(every);
-                hcsaConfigPageDtos.add(hcsaConfigPageDto);
-            }
-        }
-
-        String startDate = request.getParameter("StartDate");
-        String endDate = request.getParameter("EndDate");
-
-        //todo delete
-        if (!StringUtil.isEmpty(serviceId)) {
-       /*     hcsaServiceDto.setId(serviceId);*/
-        }
-        hcsaServiceDto.setSvcName(serviceName);
-        hcsaServiceDto.setSvcCode(serviceCode);
-
-        try {
-            Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(startDate);
-            String format = new SimpleDateFormat("yyyy-MM-dd").format(parse);
-            hcsaServiceDto.setEffectiveDate(format);
-            if(parse.after(new Date())){
-                hcsaServiceDto.setStatus("CMSTAT003");
-            }else {
-                hcsaServiceDto.setStatus("CMSTAT001");
-            }
-        } catch (Exception e) {
-            hcsaServiceDto.setEffectiveDate(startDate);
-        }
-
-
-        if (!StringUtil.isEmpty(endDate)) {
-            try {
-                hcsaServiceDto.setEndDate(new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(endDate));
-            } catch (ParseException e) {
-                hcsaServiceDto.setEndDate(new Date(99,1,1));
-            }
-        }
-
-        hcsaServiceDto.setSvcDisplayDesc(displayDescription);
-        hcsaServiceDto.setSvcDesc(description);
-        hcsaServiceDto.setSvcType(serviceType);
-        if (StringUtil.isEmpty(version)) {
-            hcsaServiceDto.setVersion("1");
-        } else {
-            hcsaServiceDto.setVersion(version);
-        }
-        hcsaServiceConfigDto.setHcsaSvcSubtypeOrSubsumedDtos(hcsaSvcSubtypeOrSubsumedDtos);
-        hcsaServiceConfigDto.setHcsaSvcSpePremisesTypeDtos(hcsaSvcSpePremisesTypeDtos);
-        hcsaServiceConfigDto.setHcsaSvcDocConfigDtos(hcsaSvcDocConfigDtos);
-        hcsaServiceConfigDto.setHcsaSvcPersonnelDtos(hcsaSvcPersonnelDtos);
-        hcsaServiceConfigDto.setHcsaServiceDto(hcsaServiceDto);
-        hcsaServiceConfigDto.setHcsaSvcSpeRoutingSchemeDtos(hcsaSvcSpeRoutingSchemeDtoList);
-        hcsaServiceConfigDto.setHcsaSvcSpecificStageWorkloadDtos(hcsaSvcSpecificStageWorkloadDtoList);
-        hcsaServiceConfigDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
-        hcsaServiceConfigDto.setHcsaSvcStageWorkingGroupDtos(hcsaSvcStageWorkingGroupDtos);
-        request.setAttribute("hcsaConfigPageDtos", hcsaConfigPageDtos);
-        request.setAttribute("hcsaServiceStepSchemeDtos", hcsaServiceStepSchemeDtos);
-        return hcsaServiceConfigDto;
-    }
 
 
     private void doValidate(HcsaServiceConfigDto hcsaServiceConfigDto, Map<String, String> errorMap,HttpServletRequest request) {
@@ -1029,21 +589,7 @@ public class ConfigServiceImpl implements ConfigService {
 
             }
             for (HcsaConfigPageDto hcsaConfigPageDto:hcsaConfigPageDtos){
-                if("APTY001".equals(type)){
-                    hcsaConfigPageDto.setAppTypeName("appeal");
-                } else if("APTY002".equals(type)){
-                    hcsaConfigPageDto.setAppTypeName("new application");
-                }else if("APTY005".equals(type)){
-                    hcsaConfigPageDto.setAppTypeName("request for change");
-                }else if("APTY004".equals(type)){
-                    hcsaConfigPageDto.setAppTypeName("renew");
-                }else if("APTY008".equals(type)){
-                    hcsaConfigPageDto.setAppTypeName("cessation");
-                }else  if("APTY007".equals(type)){
-                    hcsaConfigPageDto.setAppTypeName("suspension");
-                }else if("APTY006".equals(type)){
-                    hcsaConfigPageDto.setAppTypeName("withdrawal");
-                }
+                sendHcsaConfigPageDtoTypeName(hcsaConfigPageDto,type);
             }
 
             hcsaConfigPageDtoMap.put(type,hcsaConfigPageDtos);
@@ -1070,22 +616,7 @@ public class ConfigServiceImpl implements ConfigService {
                     String id1 = hcsaSvcRoutingStageDto.getId();
                     if (id1.equals(stageId)) {
                         hcsaConfigPageDto.setManhours(manhourCount);
-                        hcsaConfigPageDto.setAppType(type);
-                        if("APTY001".equals(type)){
-                            hcsaConfigPageDto.setAppTypeName("appeal");
-                        } else if("APTY002".equals(type)){
-                            hcsaConfigPageDto.setAppTypeName("new application");
-                        }else if("APTY005".equals(type)){
-                            hcsaConfigPageDto.setAppTypeName("request for change");
-                        }else if("APTY004".equals(type)){
-                            hcsaConfigPageDto.setAppTypeName("renew");
-                        }else if("APTY008".equals(type)){
-                            hcsaConfigPageDto.setAppTypeName("cessation");
-                        }else  if("APTY007".equals(type)){
-                            hcsaConfigPageDto.setAppTypeName("suspension");
-                        }else if("APTY006".equals(type)){
-                            hcsaConfigPageDto.setAppTypeName("withdrawal");
-                        }
+                        sendHcsaConfigPageDtoTypeName(hcsaConfigPageDto,type);
                         hcsaConfigPageDto.setWorkloadId(hcsaSvcStageWorkloadDtos.get(i).getId());
                         hcsaConfigPageDto.setRoutingSchemeId(hcsaSvcStageWorkloadDtos.get(i).getId());
 
@@ -1117,7 +648,8 @@ public class ConfigServiceImpl implements ConfigService {
         return hcsaConfigPageDtos;
     }
 
-    private List<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDtos() {
+    @Override
+    public List<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDtos() {
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = hcsaConfigClient.stagelist().getEntity();
         for (int i = 0; i < hcsaSvcRoutingStageDtos.size(); i++) {
             String stageOrder = hcsaSvcRoutingStageDtos.get(i).getStageOrder();
@@ -1170,23 +702,7 @@ public class ConfigServiceImpl implements ConfigService {
                 HcsaConfigPageDto hcsaConfigPageDto = new HcsaConfigPageDto();
                 hcsaConfigPageDto.setStageCode(hcsaSvcRoutingStageDto.getStageCode());
                 hcsaConfigPageDto.setStageName(hcsaSvcRoutingStageDto.getStageName());
-
-                hcsaConfigPageDto.setAppType(type);
-                if("APTY002".equals(type)){
-                    hcsaConfigPageDto.setAppTypeName("new Application");
-                }else if("APTY001".equals(type)){
-                    hcsaConfigPageDto.setAppTypeName("appeal");
-                } else if ("APTY005".equals(type)) {
-                    hcsaConfigPageDto.setAppTypeName("request for change");
-                }else if("APTY004".equals(type)){
-                    hcsaConfigPageDto.setAppTypeName("renew");
-                }else if("APTY008".equals(type)){
-                    hcsaConfigPageDto.setAppTypeName("cessation");
-                }else  if("APTY007".equals(type)){
-                    hcsaConfigPageDto.setAppTypeName("suspension");
-                }else if("APTY006".equals(type)){
-                    hcsaConfigPageDto.setAppTypeName("withdrawal");
-                }
+                sendHcsaConfigPageDtoTypeName(hcsaConfigPageDto,type);
                 getWorkingGroupDto(workingGroup,hcsaSvcRoutingStageDto,hcsaConfigPageDto);
                 hcsaConfigPageDtos.add(hcsaConfigPageDto);
             }
@@ -1222,7 +738,6 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private void view(HttpServletRequest request, String crud_action_value) {
-
         HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(crud_action_value).getEntity();
 
         setAttribute(request,hcsaServiceDto);
@@ -1296,16 +811,17 @@ public class ConfigServiceImpl implements ConfigService {
         return  hcsaConfigPageDtos;
     }
 
-    private List<String> getType(){
+    @Override
+    public List<String> getType(){
         List<String> list=IaisCommonUtils.genNewArrayList();
-        list.add("APTY002");
-       /* list.add("APTY003");
-        list.add("APTY004");
-        list.add("APTY006") ;
-        list.add("APTY008") ;
-        list.add("APTY007") ;*/
-        list.add("APTY005");
-        list.add("APTY001");
+        list.add(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        list.add(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT);
+        list.add(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+        list.add(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL) ;
+        list.add(ApplicationConsts.APPLICATION_TYPE_CESSATION) ;
+        list.add("APTY007") ;
+        list.add(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+        list.add(ApplicationConsts.APPLICATION_TYPE_APPEAL);
         return list;
     }
 
@@ -1324,7 +840,8 @@ public class ConfigServiceImpl implements ConfigService {
         }
     }
 
-    private  List<String>  split(String str){
+    @Override
+    public   List<String>  split(String str){
         String[] split = str.split(",");
         List<String> list=IaisCommonUtils.genNewArrayList();
         Collections.addAll(list,split);
@@ -1345,22 +862,22 @@ public class ConfigServiceImpl implements ConfigService {
         for(String type:types){
             List<HcsaConfigPageDto> hcsaConfigPageDto = hcsaConfigPageDtos.get(type);
             List<HcsaConfigPageDto> appeal=IaisCommonUtils.genNewArrayList();
-            if("APTY001".equals(type)){
+            if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(type)){
                 appeal= getWorkGrop(type,"appeal");
-            }else if("APTY002".equals(type)){
+            }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
                 appeal=  getWorkGrop(type,"new application");
-            }else if("APTY005".equals(type)){
+            }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)){
                appeal = getWorkGrop(type, "request for change");
-            }else if("APTY004".equals(type)){
+            }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
                 appeal=  getWorkGrop(type,"renew");
-            }else if("APTY008".equals(type)){
+            }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(type)){
                 appeal= getWorkGrop(type,"cessation");
             }else  if("APTY007".equals(type)){
                 appeal= getWorkGrop(type,"suspension");
-            }else if("APTY006".equals(type)){
+            }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(type)){
                 appeal= getWorkGrop(type,"withdrawal");
             }
-            else if("APTY003".equals(type)){
+            else if(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT.equals(type)){
                 appeal= getWorkGrop(type,"revocation");
             }
             setValueOfhcsaConfigPageDtos(hcsaConfigPageDto,appeal);
@@ -1388,7 +905,7 @@ public class ConfigServiceImpl implements ConfigService {
         EmailDto emailDto=new EmailDto();
         emailDto.setContent(templateMessageByContent);
         emailDto.setSubject("The following HCSA Service Template:"+serviceName+" has been "+option);
-        emailDto.setSender("MOH");
+        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
         List<String> address=new ArrayList<>();
         address.add(orgUserDto.getEmail());
         emailDto.setReceipts(address);
@@ -1397,14 +914,14 @@ public class ConfigServiceImpl implements ConfigService {
 
     private void setAttribute(HttpServletRequest request, HcsaServiceDto hcsaServiceDto){
         String effectiveDate = hcsaServiceDto.getEffectiveDate();
-        Date parse = null;
+        Date parse;
         try {
-            parse = new SimpleDateFormat("yyyy-MM-dd").parse(effectiveDate);
+            parse = new SimpleDateFormat(DATE_FORMAT).parse(effectiveDate);
+            String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(parse);
+            hcsaServiceDto.setEffectiveDate(format);
         } catch (ParseException e) {
           log.error(e.getMessage(),e);
         }
-        String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(parse);
-        hcsaServiceDto.setEffectiveDate(format);
         List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getServiceVersions(hcsaServiceDto.getSvcCode()).getEntity();
         request.setAttribute("hcsaServiceDtosVersion",hcsaServiceDtos);
         List<HcsaServiceCategoryDto> hcsaServiceCategoryDto = getHcsaServiceCategoryDto();
@@ -1481,5 +998,25 @@ public class ConfigServiceImpl implements ConfigService {
         } catch (IOException e) {
           log.error(e.getMessage(),e);
         }
+    }
+
+    private void sendHcsaConfigPageDtoTypeName(HcsaConfigPageDto hcsaConfigPageDto,String type){
+        hcsaConfigPageDto.setAppType(type);
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
+            hcsaConfigPageDto.setAppTypeName("new Application");
+        }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(type)){
+            hcsaConfigPageDto.setAppTypeName("appeal");
+        } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)) {
+            hcsaConfigPageDto.setAppTypeName("request for change");
+        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
+            hcsaConfigPageDto.setAppTypeName("renew");
+        }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(type)){
+            hcsaConfigPageDto.setAppTypeName("cessation");
+        }else  if("APTY007".equals(type)){
+            hcsaConfigPageDto.setAppTypeName("suspension");
+        }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(type)){
+            hcsaConfigPageDto.setAppTypeName("withdrawal");
+        }
+
     }
 }
