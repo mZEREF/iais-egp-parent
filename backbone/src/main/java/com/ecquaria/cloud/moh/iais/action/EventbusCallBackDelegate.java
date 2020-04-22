@@ -6,18 +6,18 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.RedisCacheHelper;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.kafka.GlobalConstants;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,12 @@ public class EventbusCallBackDelegate {
             NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         log.info("<=========== Eventbus Callback Start ===========>");
         HttpServletRequest request = bpc.request;
+        UUID uuid = UUID.randomUUID();
+        String someKey = uuid.toString();
         String submissionId = ParamUtil.getString(request,"submissionId");
+        String operation = ParamUtil.getString(request, "operation");
+        RedisCacheHelper.getInstance().set("IaisEventbusCbCount",
+                submissionId + "-" + operation, someKey, 60L * 60L * 24L);
         log.info(StringUtil.changeForLog("Submission Id ===========> " + submissionId));
         String token = ParamUtil.getString(request, "token");
         String serviceName = ParamUtil.getString(request, "service");
@@ -48,13 +53,10 @@ public class EventbusCallBackDelegate {
         boolean isLeagal = IaisEGPHelper.verifyCallBackToken(submissionId, serviceName, token);
         String eventRefNum = ParamUtil.getString(request, "eventRefNo");
         log.info("event Ref number ===========> {}", eventRefNum);
-        long curUpdateDt = ParamUtil.getLong(request, "updateDate");
-        log.info(StringUtil.changeForLog("Last update time ===========> {}" + Formatter.formatDateTime(new Date(curUpdateDt),
-                "yyyy-MM-dd HH:mm:ss,SSS")));
         if (!isLeagal) {
             throw new IaisRuntimeException("Visit without Token!!");
         }
-        String operation = ParamUtil.getString(request, "operation");
+
         log.info("Event bus operation ===========> {}", operation);
         Map<String, List<ServiceStatus>> map = submissionClient.getSubmissionStatus(
                 AppConsts.REST_PROTOCOL_TYPE
@@ -66,9 +68,6 @@ public class EventbusCallBackDelegate {
             for (Map.Entry<String, List<ServiceStatus>> ent : map.entrySet()) {
                 for (ServiceStatus status : ent.getValue()) {
                     log.info("Result status ===========> {}", status.getStatus());
-                    if (status.getUpdateDt().getTime() > curUpdateDt) {
-                        pending = true;
-                    }
                     if (status.getStatus().contains(GlobalConstants.STATE_PENDING)) {
                         pending = true;
                     } else if (!status.getServiceStatus().contains(GlobalConstants.STATUS_SUCCESS)) {
@@ -76,6 +75,8 @@ public class EventbusCallBackDelegate {
                     }
                 }
             }
+            String newKey = RedisCacheHelper.getInstance().get("IaisEventbusCbCount",
+                    submissionId + "-" + operation);
             if (!success && !pending) {
                 submissionClient.setCompensation(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS,
                         submissionId, operation, "");
@@ -86,7 +87,7 @@ public class EventbusCallBackDelegate {
                                 submissionId, status.getServiceName(), operation);
                     }
                 }
-            } else if (!pending) {
+            } else if (!pending && someKey.equals(newKey)) {
                 // Do something next step
                 if (EventBusConsts.OPERATION_DEMO_CREATE_ORG.equals(operation)) {
                     handleDemoNext(submissionId, eventRefNum, operation);

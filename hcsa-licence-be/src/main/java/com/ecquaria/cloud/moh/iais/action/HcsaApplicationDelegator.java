@@ -1007,7 +1007,8 @@ public class HcsaApplicationDelegator {
 //        uploadFileClient.saveAppIntranetDocByAppIntranetDoc();
 
         String doDocument = ParamUtil.getString(bpc.request,"uploadFile");
-        String interalFileId = ParamUtil.getString(bpc.request,"interalFileId");
+//        String interalFileId = ParamUtil.getString(bpc.request,"interalFileId");
+        String interalFileId = ParamUtil.getMaskedString(bpc.request,"interalFileId");
         if(!StringUtil.isEmpty(interalFileId)){
             uploadFileClient.deleteAppIntranetDocsById(interalFileId);
         }

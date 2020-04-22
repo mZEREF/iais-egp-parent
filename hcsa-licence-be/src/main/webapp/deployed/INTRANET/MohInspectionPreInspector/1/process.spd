@@ -64,6 +64,13 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionPreInspectorBack" x="1390" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionPreInspectorBack_OnStepProcess_0" name="inspectionPreInspectorBack_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectionPreInspectorPage" stageIndicator="" x="620" y="100">
@@ -141,6 +148,12 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionPreInspectorPre" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectionPreInspectorSwitch1" style="oblique">
    <position>{(1080,120)(842,-24)(450,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionPreInspectorBack" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/InspectionPreInspectorSwitch1" style="rectanular">
+   <position>{(1080,120)(1410,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectionPreInspectorSuccess" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectionPreInspectorBack" style="oblique">
+   <position>{(1410,120)(1470,430)(1090,430)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/InspectionPreInspectorPre" componentIfTrue="/Switches/Switch/InspectionPreInspectorSwitch1" defClass="" executor="" icon="" leftOperand="flag" name="InspectionPreInspectorCond1" operator="=" rightOperand="&quot;true&quot;" x="620" y="410">
@@ -155,6 +168,7 @@
    <SwitchCase component="/Steps/AutomaticStep/InspectionPreInspectorSelf" value="&quot;self&quot;"/>
    <SwitchCase component="/Steps/InvokeStep/InspectionPreInspectorEdit" value="&quot;edit&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectionPreInspectorPre" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectionPreInspectorBack" value="&quot;apso&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
