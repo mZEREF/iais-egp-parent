@@ -41,4 +41,19 @@ public class INTERNET___MohServiceFeMenu___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doBeforStart", this);
 	}
 
+	public void chooseBase_OnStepProcess_0() throws Exception {
+	// 		chooseBase->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "chooseBase", this);
+	}
+
+	public void baseValidation_OnStepProcess_0() throws Exception {
+	// 		baseValidation->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "baseValidation", this);
+	}
+
+	public void licenseValidation_OnStepProcess_0() throws Exception {
+	// 		licenseValidation->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "licenseValidation", this);
+	}
+
 }

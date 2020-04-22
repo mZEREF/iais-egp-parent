@@ -84,6 +84,38 @@
 
     </sql>
 
-
+    <sql key="getLicenceBySerName" remarks="getLicenceBySerName">
+        <![CDATA[
+        SELECT T1.ID,T1.SVC_NAME,T1.START_DATE,
+            CONCAT(T3.BLK_NO ,
+               case T3.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.STREET_NAME end
+               , case T3.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.BUILDING_NAME end
+               , case T3.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+T3.FLOOR_NO end
+               , case T3.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+T3.UNIT_NO end
+               , case T3.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+T3.POSTAL_CODE end
+              ) AS address
+              FROM LICENCE T1
+              JOIN LIC_PREMISES T2 on T2.LICENCE_ID = T1.id
+              JOIN PREMISES T3 on T2.PREMISES_ID = T3.id
+              where T1.status = 'LICEST001'
+              <#if serName??> and T1.SVC_NAME IN ${serName} </#if>
+              <#if licenseeId??> AND T1.LICENSEE_ID = :licenseeId</#if>
+        ]]>
+    </sql>
 </sqls>
 

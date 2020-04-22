@@ -1,14 +1,19 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * LicenceViewServiceImpl
@@ -41,5 +46,15 @@ public class LicenceViewServiceImpl implements LicenceViewService {
     @Override
     public LicenseeDto getLicenseeDtoBylicenseeId(String licenseeId) {
         return organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
+    }
+
+    @Override
+    public List<LicenceDto> getLicenceDtoByLicenseeId(String licenseeId){
+        return licenceClient.getLicenceDtoByLicenseeId(licenseeId).getEntity();
+    }
+
+    @Override
+    public SearchResult<MenuLicenceDto> getMenuLicence(SearchParam searchParam){
+        return licenceClient.getMenuLicence(searchParam).getEntity();
     }
 }

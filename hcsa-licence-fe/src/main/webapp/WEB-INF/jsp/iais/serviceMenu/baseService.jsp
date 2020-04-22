@@ -46,22 +46,18 @@
                     <div class="self-assessment-checkbox-gp gradient-light-grey">
                         <p class="assessment-title">Base Services</p>
                         <div class="form-check-gp">
-                            <c:forEach var="baselist" items="${baseInSpe}">
+                            <c:forEach var="base" items="${baseService}">
                                 <div class="form-check">
-                                    <p>Base Services for ${specifiedService.get(baselist.getKey()).getSvcName()}</p>
-                                <c:forEach var="base" items="${baselist.getValue()}">
-                                    <input class="form-check-input"
+                                    <input
                                     <c:if test="${baseServiceChecked != null}">
                                     <c:forEach var="checked" items="${baseServiceChecked}">
                                            <c:if test="${base.getId().equals(checked)}">checked="checked"</c:if>
                                     </c:forEach>
                                     </c:if>
-                                           name="basechk"  type="checkbox" aria-invalid="false"
+                                           name="basechk"  type="radio" aria-invalid="false"
                                            value="${base.getId()}">
 
-                                    <label class="form-check-label"><span
-                                            class="check-square"></span>${base.getSvcName()}</label>
-                                </c:forEach>
+                                    <label class="form-check-label" style="padding-left: 0px;">${base.getSvcName()}</label>
                                 </div>
                             </c:forEach>
                         </div>

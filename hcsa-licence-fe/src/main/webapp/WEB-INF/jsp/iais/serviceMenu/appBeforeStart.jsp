@@ -47,10 +47,10 @@
       <div class="instruction-content center-content">
         <h2>SERVICES SELECTED</h2>
         <ul class="service-list">
-          <c:forEach var="baseItem" items="${baseService}" varStatus="status">
+          <c:forEach var="baseItem" items="${baseServiceChecked}" varStatus="status">
             <li><span><iais:service value="${baseItem}"></iais:service></span> (Base Service)</li>
           </c:forEach>
-          <c:forEach var="specifiedItem" items="${specifiedService}" varStatus="status">
+          <c:forEach var="specifiedItem" items="${specifiedServiceChecked}" varStatus="status">
             <li><span><iais:service value="${specifiedItem}"></iais:service></span> (Specified Service)</li>
           </c:forEach>
         </ul>

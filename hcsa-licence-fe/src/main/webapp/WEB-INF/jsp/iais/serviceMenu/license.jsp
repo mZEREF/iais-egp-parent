@@ -44,23 +44,21 @@
                 </div>
                 <div class="col-xs-12 col-md-4">
                     <div class="self-assessment-checkbox-gp gradient-light-grey">
-                        <p class="assessment-title">Base Services</p>
                         <div class="form-check-gp">
-                            <c:forEach var="base" items="${baseService}">
+                            <input type="radio" name="licenceJudge" value="1">
+                            <label class="form-check-label">Existing ${baseName} licences</label>
+                            <c:forEach var="item" items="${licence.getRows()}">
                                 <div class="form-check">
                                     <input class="form-check-input"
-                                    <c:if test="${baseServiceChecked != null}">
-                                    <c:forEach var="checked" items="${baseServiceChecked}">
-                                           <c:if test="${base.getId().equals(checked)}">checked="checked"</c:if>
-                                    </c:forEach>
-                                    </c:if>
-                                           name="basechk"  type="checkbox" aria-invalid="false"
-                                           value="${base.getId()}">
-
+                                           name="licence"  type="checkbox" aria-invalid="false"
+                                           value="${item.getId()}" disabled="disabled">
                                     <label class="form-check-label"><span
-                                            class="check-square"></span>${base.getSvcName()}</label>
+                                            class="check-square"></span>${item.getAddress()}</label>
+
                                 </div>
                             </c:forEach>
+                            <input type="radio" name="licenceJudge" value="0">
+                            <label class="form-check-label">${baseName} at a different premises</label>
                         </div>
                     </div>
                 </div>
@@ -85,5 +83,15 @@
         $('#submitService').click(function () {
             SOP.Crud.cfxSubmit("mainForm");
         });
+    });
+
+    $('input:radio[name="licenceJudge"]').click(function(){
+        var checkValue = $('input:radio[name="licenceJudge"]:checked').val();
+        if(checkValue == 0){
+            $('input:checkbox[name="licence"]').attr("disabled",true);
+            $('input:checkbox[name="licence"]').removeAttr("checked");
+        }else{
+            $('input:checkbox[name="licence"]').removeAttr("disabled");
+        }
     });
 </script>
