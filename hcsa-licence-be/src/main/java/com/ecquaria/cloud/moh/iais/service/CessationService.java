@@ -29,7 +29,7 @@ public interface CessationService {
 
     void routingTaskToAo3(List<ApplicationDto> applicationDtos, LoginContext loginContext) throws FeignException;
 
-    List<String> listLicIdsCeased(List<String> licIds);
+    List<Boolean> listResultCeased(List<String> licIds);
 
     List<String> listHciName();
 

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -169,4 +170,7 @@ public interface HcsaLicenceClient {
 
     @PostMapping(value = "/hcsa-licence/licId-premises",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicPremisesDto>> getPremisesByLicIds(@RequestBody List<String> licenceIds);
+
+    @GetMapping(path= "/hcsa-licence/application-licence-correlation/{licId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getAppIdsByLicId(@PathVariable String licId);
 }

@@ -235,9 +235,27 @@ public class CessationServiceImpl implements CessationService {
     }
 
     @Override
-    public List<String> listLicIdsCeased(List<String> licIds) {
-        List<String> activeLicIds = cessationClient.getlicIdToCessation(licIds).getEntity();
-        return activeLicIds;
+    public List<Boolean> listResultCeased(List<String> licIds) {
+        List<Boolean> results = IaisCommonUtils.genNewArrayList();
+        for(String licId :licIds){
+            List<String> appIds = hcsaLicenceClient.getAppIdsByLicId(licId).getEntity();
+            List<String> appIdsTrue = IaisCommonUtils.genNewArrayList();
+            if(appIds!=null&&!appIds.isEmpty()){
+                for(String appId :appIds){
+                    ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+                    String status = applicationDto.getStatus();
+                    if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status) || ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(status) ||ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(status)) {
+                        appIdsTrue.add(appId);
+                    }
+                }
+            }
+            int size = appIds.size();
+            int size1 = appIdsTrue.size();
+            if(size==size1){
+                results.add(true);
+            }
+        }
+        return results;
     }
 
     @Override
