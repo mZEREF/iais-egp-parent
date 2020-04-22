@@ -52,6 +52,7 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationProcessUploadFileValidate;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
@@ -362,7 +363,6 @@ public class HcsaApplicationDelegator {
 
         //check inspection
         checkShowInspection(bpc,applicationViewDto,taskDto,correlationId);
-
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
 
@@ -890,6 +890,15 @@ public class HcsaApplicationDelegator {
         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
             //send email
             sendRejectEmail(applicationNo,licenseeId,appGrpId);
+        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
+            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT).getEntity();
+            if(msgTemplateDto != null){
+                Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
+                tempMap.put("APP_NO",StringUtil.viewHtml(applicationNo));
+                String subject = " " + applicationNo + "– Rejected ";
+                EmailDto emailDto = LicenceUtil.sendEmailHelper(tempMap,msgTemplateDto,subject,licenseeId,appGrpId);
+                emailClient.sendNotification(emailDto).getEntity();
+            }
         }
 
         try {
@@ -970,6 +979,22 @@ public class HcsaApplicationDelegator {
                 //send
                 emailClient.sendNotification(emailDto).getEntity();
             }
+        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
+            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_INSPECTION_IS_IDENTIFIED).getEntity();
+            Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
+            String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
+            String username = licenseeDto.getName();
+            String appGrpId = applicationViewDto.getApplicationDto().getAppGrpId();
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            String approvalOfficerName = loginContext.getUserName();
+            tempMap.put("userName",StringUtil.viewHtml(username));
+            tempMap.put("applicationNumber",StringUtil.viewHtml(applicationNo));
+            tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+            tempMap.put("approvalOfficerName",StringUtil.viewHtml(approvalOfficerName));
+            String subject = " " + applicationNo;
+            EmailDto emailDto = LicenceUtil.sendEmailHelper(tempMap,msgTemplateDto,subject,licenseeId,appGrpId);
+            emailClient.sendNotification(emailDto).getEntity();
+
         }
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
     }

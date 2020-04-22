@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
@@ -57,6 +58,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     private SimpleDateFormat simpleDateFormat =new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
 
     private static final String EMAIL_SUBJECT="MOH IAIS – REMINDER TO RENEW LICENCE";
+    private static final String EMAIL_TO_OFFICER_SUBJECT="MOH IAIS – Licence is due to expiry";
     @Override
     public void startRenwal(HttpServletRequest request) {
         List<Integer> dayList= IaisCommonUtils.genNewArrayList();
@@ -81,25 +83,31 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
                     try {
                         isAuto(v.get(i),request);
+
                     } catch (Exception e) {
 
-                     log.info(e.getMessage(),e);
+                        log.info(e.getMessage(),e);
 
                     }
 
                 }else {
 
                     try {
-
                         isNoAuto(v.get(i),request);
-
                     } catch (Exception e) {
                         log.error(e.getMessage(),e);
                     }
 
                 }
-
-
+                if ("30".equals(k)){
+                    try {
+                        sendEmailToOffice(v.get(i),request);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (TemplateException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
 
@@ -281,16 +289,44 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 if(!licenseeEmailAddrs.isEmpty()){
                     emailDto.setReceipts(licenseeEmailAddrs);
                     String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
-
                 }
-
             }
         }
-
-
-
     }
 
+
+    private void sendEmailToOffice(LicenceDto licenceDto ,HttpServletRequest request )throws IOException, TemplateException{
+        List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId());
+        Date expiryDate = licenceDto.getExpiryDate();
+        String id = licenceDto.getId();
+        List<String> useLicenceIdFindHciNameAndAddress = useLicenceIdFindHciNameAndAddress(id);
+        for (String every:useLicenceIdFindHciNameAndAddress
+             ) {
+            String svcName = licenceDto.getSvcName();
+            String hciName = every.substring(0, every.indexOf("/"));
+            String address = every.substring(every.indexOf("/") + 1);
+            Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
+            String format = simpleDateFormat.format(expiryDate);
+            map.put("HCIName",hciName);
+            map.put("HCI_Address",address);
+            map.put("serviceName",svcName);
+            map.put("licenceExpiryDate",format);
+            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SEND_TO_OFFICER_SEVENTH).getEntity();
+
+            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
+
+            EmailDto emailDto=new EmailDto();
+            emailDto.setContent(templateMessageByContent);
+            emailDto.setSubject(EMAIL_TO_OFFICER_SUBJECT);
+            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setClientQueryCode(licenceDto.getLicenseeId());
+
+            if(!licenseeEmailAddrs.isEmpty()){
+                emailDto.setReceipts(licenseeEmailAddrs);
+                emailClient.sendNotification(emailDto).getEntity();
+            }
+        }
+    }
     /*
     * remind sended email
     *
