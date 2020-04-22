@@ -206,7 +206,6 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
         for(HcsaRiskLicenceTenureDto temp:saveDtoList){
             temp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             temp.setId(null);
-            temp.setVersion(temp.getVersion() +1);
             temp.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         }
         hcsaConfigClient.savehcsaRiskLicenceTenure(saveDtoList);
@@ -241,8 +240,8 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
         try {
             ltDto.setEffectiveDate(Formatter.parseDate(temp.getDoEffectiveDate()));
             ltDto.setEndDate(Formatter.parseDate(temp.getDoEndDate()));
-            if(ltDto.getVersion()!=null){
-                ltDto.setVersion(ltDto.getVersion()+1);
+            if(temp.getVersion()!=null){
+                ltDto.setVersion(temp.getVersion()+1);
             }else{
                 ltDto.setVersion(1);
             }
