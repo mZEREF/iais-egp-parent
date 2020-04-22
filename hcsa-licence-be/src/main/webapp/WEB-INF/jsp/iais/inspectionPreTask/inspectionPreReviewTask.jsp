@@ -216,6 +216,14 @@
                                 </c:if>
                               </iais:value>
                             </iais:row>
+                            <div id="preInspRfiComments" class="hidden">
+                              <iais:row>
+                                <iais:field value="Comments" required="false"  width="12"/>
+                                <iais:value width="10">
+                                  <textarea maxlength="300" id="preInspecComments" name="preInspecComments" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.reMarks}"></c:out></textarea>
+                                </iais:value>
+                              </iais:row>
+                            </div>
                             <div class="row">
                               <div class="col-md-4">
                                 <label style="font-size: 16px">Licence Start Date</label>
@@ -330,6 +338,9 @@
         var check = $("#appPreInspRfiCheck").prop("checked");
         if(check){
             showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
+            $("#comments").remove('hidden');
+        } else {
+            $("#comments").addClass('hidden');
         }
     });
 
