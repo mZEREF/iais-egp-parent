@@ -122,9 +122,8 @@
                                     </tr>
                                 </table>
                             </td>
-                            <td style="text-align:center"><input type="checkbox" name="${num.count}whichTodo${uid.count}"
-                                                          value="${appCess.licenceId}"
-                                                          <c:if test="${appCessHci.whichTodo != null}">checked</c:if>>
+                            <td style="text-align:center"><input type="checkbox" name="${num.count}whichTodo${uid.count}" value="${appCessHci.premiseId}"
+                                                          <c:if test="${appCessHci.premiseIdChecked != null}">checked</c:if>>
                                 <span id="error_whichTodo" name="iaisErrorMsg" class="error-msg"></span></td>
                         </c:forEach>
                     </tr>
@@ -206,9 +205,8 @@
                                     </tr>
                                 </table>
                             </td>
-                            <td style="text-align:center"><input type="checkbox" name="${num.count}whichTodo${uid.count+1}"
-                                                          value="${appCess.licenceId}"
-                                                          <c:if test="${appCessHci.whichTodo != null}">checked</c:if>>
+                            <td style="text-align:center"><input type="checkbox" name="${num.count}whichTodo${uid.count+1}" value="${appCessHci.premiseId}"
+                                                          <c:if test="${appCessHci.premiseIdChecked != null}">checked</c:if>>
                         </tr>
                     </c:forEach>
                 </c:forEach>

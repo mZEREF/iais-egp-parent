@@ -7,11 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
@@ -33,28 +29,20 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
+
+import java.io.IOException;
+import java.util.*;
+
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import jdk.nashorn.internal.runtime.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author weilu
@@ -122,7 +110,7 @@ public class CessationServiceImpl implements CessationService {
                         AppCessHciDto appCessHciDto = new AppCessHciDto();
                         String hciName = premisesDto.getHciName();
                         appCessHciDto.setHciName(hciName);
-                        appCessHciDto.setLicId(premisesId);
+                        appCessHciDto.setPremiseId(premisesId);
                         appCessHciDto.setHciAddress(hciAddress);
                         appCessHciDtos.add(appCessHciDto);
                     }
@@ -146,7 +134,7 @@ public class CessationServiceImpl implements CessationService {
             AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
             AppCessationDto appCessationDto = appCessationDtos.get(0);
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
-            String licId = appCessationDto.getPremiseId();
+            String licId = appCessationDto.getLicId();
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.clear();
             licIds.add(licId);
@@ -164,7 +152,6 @@ public class CessationServiceImpl implements CessationService {
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             for(AppGrpPremisesDto appGrpPremisesDto :appGrpPremisesDtoList){
                 String premisesDtoId = appGrpPremisesDto.getId();
-
             }
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
             appSubmissionDto.setAmount(amount);
@@ -175,15 +162,15 @@ public class CessationServiceImpl implements CessationService {
             appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
             setRiskToDto(appSubmissionDto);
-            AppSubmissionDto entity = applicationClient.saveApps(appSubmissionDto).getEntity();
-            AppSubmissionDto appSubmissionDtoSave = applicationClient.saveSubmision(entity).getEntity();
-            List<ApplicationDto> applicationDtos = appSubmissionDtoSave.getApplicationDtos();
-            String appId = applicationDtos.get(0).getId();
-            setMiscData(appCessationDto, appCessMiscDto, appId);
-            appCessMiscDtos.add(appCessMiscDto);
+//            AppSubmissionDto entity = applicationClient.saveApps(appSubmissionDto).getEntity();
+//            AppSubmissionDto appSubmissionDtoSave = applicationClient.saveSubmision(entity).getEntity();
+//            List<ApplicationDto> applicationDtos = appSubmissionDtoSave.getApplicationDtos();
+//            String appId = applicationDtos.get(0).getId();
+//            setMiscData(appCessationDto, appCessMiscDto, appId);
+//            appCessMiscDtos.add(appCessMiscDto);
         }
-        List<String> appIds = cessationClient.saveCessation(appCessMiscDtos).getEntity();
-        return appIds;
+        //List<String> appIds = cessationClient.saveCessation(appCessMiscDtos).getEntity();
+        return null;
     }
 
     @Override
