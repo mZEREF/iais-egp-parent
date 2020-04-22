@@ -154,7 +154,7 @@
                                                                     <p><fmt:formatDate value='${interalFile.submitDt}' pattern='dd/MM/yyyy HH:mm:ss'/></p>
                                                                 </td>
                                                                 <td width="5%">
-                                                                    <a href="javascript:deleteFile('${interalFile.id}');"><label style="color: #D22727; font-size: 2rem; cursor:pointer;">X</label></a>
+                                                                    <a href="javascript:deleteFile('<iais:mask name="interalFileId" value="${interalFile.id}"/>');"><label style="color: #D22727; font-size: 2rem; cursor:pointer;">X</label></a>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>
