@@ -199,6 +199,23 @@
                                 <iais:select name="selectValue" options="processDecOption" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectionPreTaskChange(this.value)"></iais:select>
                               </iais:value>
                             </iais:row>
+                            <iais:row>
+                              <iais:field value="Request For Information" required="true"/>
+                              <iais:value width="7">
+                                <c:if test="${inspectionPreTaskDto.inspectorCheck == null}">
+                                  <c:forEach items="${inspectionPreTaskDto.inspectorOption}" var="name">
+                                    <p>
+                                      <input type="checkbox" name="preInspRfiCheck" id = "${name.value}PreInspRfiCheck"  value="<c:out value="${name.value}"/>"
+                                            <c:forEach items="${inspectionPreTaskDto.preInspRfiCheck}" var="checkName">
+                                              <c:if test="${name.value eq checkName.value}">checked="checked"</c:if>
+                                            </c:forEach>
+                                      />
+                                      <span><c:out value="${name.text}"/></span>
+                                    </p>
+                                  </c:forEach>
+                                </c:if>
+                              </iais:value>
+                            </iais:row>
                             <div class="row">
                               <div class="col-md-4">
                                 <label style="font-size: 16px">Licence Start Date</label>
@@ -221,7 +238,7 @@
                                 <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
                               </div>
                             </div>
-                            <iais:action style="text-align:center;">
+                            <iais:action>
                               <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
                             </iais:action>
                             <br><br><br>
@@ -309,6 +326,14 @@
 
     }
 
+    $("#appPreInspRfiCheck").change(function inspPreRfiAppCheck() {
+        var check = $("#appPreInspRfiCheck").prop("checked");
+        if(check){
+            showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
+        }
+    });
+
+
     function inspectionPreTaskSubmit(action){
         $("[name='inspectorPreType']").val(action);
         var mainPoolForm = document.getElementById('mainReviewForm');
@@ -343,8 +368,11 @@
             $("#actionValue").val('approve');
             inspectionPreTaskSubmit("approve");
         } else if ("REDECI001" == actionValue){
-            $("#actionValue").val('routeB');
+            $("#actionValue").val('request');
             inspectionPreTaskSubmit("routeB");
+        } else if("REDECI021" == actionValue){
+            $("#actionValue").val('routeB');
+            inspectionPreTaskSubmit("apso");
         } else {
             var errMsg = 'The field is mandatory.';
             $("#error_selectValue").text(errMsg);

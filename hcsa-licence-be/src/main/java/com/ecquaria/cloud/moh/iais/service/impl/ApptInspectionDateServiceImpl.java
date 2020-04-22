@@ -262,30 +262,32 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         TaskDto taskDto = apptInspectionDateDto.getTaskDto();
         List<TaskDto> taskDtos = apptInspectionDateDto.getTaskDtos();
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
-        String appPremCorrId = taskDto.getRefNo();
         Date saveDate = apptInspectionDateDto.getSpecificDate();
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
-        AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
-        appPremisesInspecApptDto.setAppCorrId(appPremCorrId);
-        appPremisesInspecApptDto.setApptRefNo(null);
-        appPremisesInspecApptDto.setSpecificInspDate(apptInspectionDateDto.getSpecificDate());
-        appPremisesInspecApptDto.setId(null);
-        appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
-        createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
-        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-        //save Inspection date
-        createOrUpdateRecommendation(appPremisesRecommendationDto, appPremCorrId, saveDate);
-        //update Inspection status
-        updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
-        //Application data
-        ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
-        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
+        for(TaskDto taskDto1 : taskDtos) {
+            String appPremCorrId = taskDto1.getRefNo();
+            AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
+            appPremisesInspecApptDto.setAppCorrId(appPremCorrId);
+            appPremisesInspecApptDto.setApptRefNo(null);
+            appPremisesInspecApptDto.setSpecificInspDate(apptInspectionDateDto.getSpecificDate());
+            appPremisesInspecApptDto.setId(null);
+            appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
+            createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
+            AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+            //save Inspection date
+            createOrUpdateRecommendation(appPremisesRecommendationDto, appPremCorrId, saveDate);
+            //update Inspection status
+            updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
+            //Application data
+            ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+            ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
 
-        if(taskDto != null) {
-            inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, apptInspectionDateDto.getProcessDec(), taskDto.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, taskDto.getWkGrpId());
-            inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, null, null, taskDto.getWkGrpId());
+            if (taskDto != null) {
+                inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, apptInspectionDateDto.getProcessDec(), taskDto.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, taskDto.getWkGrpId());
+                inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, null, null, taskDto.getWkGrpId());
+            }
         }
         updateTaskDtoList(taskDtoList);
         for (TaskDto taskDto2 : taskDtoList) {
@@ -746,16 +748,17 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     }
 
     private void updateStatusAndCreateHistory(List<TaskDto> taskDtos, String inspecStatus, String processDec) {
-        String refNo = taskDtos.get(0).getRefNo();
-        TaskDto taskDto = taskDtos.get(0);
-        ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(refNo);
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING);
-        applicationService.updateFEApplicaiton(applicationDto1);
-        updateInspectionStatus(refNo, inspecStatus);
+        for(TaskDto taskDto : taskDtos) {
+            String refNo = taskDto.getRefNo();
+            ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(refNo);
+            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+            ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING);
+            applicationService.updateFEApplicaiton(applicationDto1);
+            updateInspectionStatus(refNo, inspecStatus);
+            inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, processDec, taskDto.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, taskDto.getWkGrpId());
+            inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, null, null, taskDto.getWkGrpId());
+        }
         updateTaskDtoList(taskDtos);
-        inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, processDec, taskDto.getRoleId(), HcsaConsts.ROUTING_STAGE_PRE, taskDto.getWkGrpId());
-        inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, null, null, taskDto.getWkGrpId());
     }
 
     private void updateInspectionStatus(String appPremCorrId, String status) {

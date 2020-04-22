@@ -105,7 +105,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     @Override
     public List<SelectOption> getProcessDecOption() {
-        String[] processDecArr = new String[]{InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
+        String[] processDecArr = new String[]{InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION,
+
+                                              InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
         List<SelectOption> processDecOption = MasterCodeUtil.retrieveOptionsByCodes(processDecArr);
         return processDecOption;
     }

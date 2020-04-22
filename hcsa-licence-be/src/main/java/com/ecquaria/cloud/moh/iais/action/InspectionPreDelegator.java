@@ -187,6 +187,16 @@ public class InspectionPreDelegator {
             } else {
                 ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
             }
+        } else if(InspectionConstants.SWITCH_ACTION_REQUEST_INFORMATION.equals(actionValue)){
+            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"recrfi");
+            if (validationResult.isHasErrors()) {
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+            } else {
+                ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+            }
         } else if(InspectionConstants.SWITCH_ACTION_ROUTE_BACK.equals(actionValue)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"back");
             if (validationResult.isHasErrors()) {
@@ -197,7 +207,7 @@ public class InspectionPreDelegator {
             } else {
                 ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
             }
-        }else if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue) ||
+        } else if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue) ||
                 InspectionConstants.SWITCH_ACTION_EDIT.equals(actionValue) ||
                 InspectionConstants.SWITCH_ACTION_SELF.equals(actionValue)){
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
@@ -249,6 +259,16 @@ public class InspectionPreDelegator {
         inspectionPreTaskService.routingBack(taskDto, inspectionPreTaskDto.getReMarks());
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
+    }
+
+    /**
+     * StartStep: inspectionPreInspectorBack
+     *
+     * @param bpc
+     * @throws
+     */
+    public void inspectionPreInspectorBack(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the inspectionPreInspectorBack start ...."));
     }
 
     /**
