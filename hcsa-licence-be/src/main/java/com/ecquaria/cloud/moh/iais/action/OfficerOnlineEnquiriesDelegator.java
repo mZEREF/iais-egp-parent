@@ -806,7 +806,7 @@ public class OfficerOnlineEnquiriesDelegator {
         try{
             for(int i=0;i<appIds.length;i++){
                 String is=appIds[i].split("\\|")[1];
-                if(is.equals("1")){
+                if("1".equals(is)){
                     licIds.add(appIds[i].split("\\|")[2]);
                 }
             }

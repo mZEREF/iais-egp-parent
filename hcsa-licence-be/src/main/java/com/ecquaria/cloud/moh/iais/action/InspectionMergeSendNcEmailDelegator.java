@@ -105,7 +105,7 @@ public class InspectionMergeSendNcEmailDelegator {
     public void prepareData(BaseProcessClass bpc)  {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        String taskId = ParamUtil.getRequestString(request,"taskId");
+        String taskId = ParamUtil.getMaskedString(request,"taskId");
         TaskDto taskDto ;
         if(StringUtil.isEmpty(taskId)){
             taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);

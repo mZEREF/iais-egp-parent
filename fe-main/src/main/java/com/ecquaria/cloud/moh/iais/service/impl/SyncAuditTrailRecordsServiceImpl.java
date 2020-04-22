@@ -76,7 +76,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
     public String getData(List<AuditTrailEntityDto> auditTrailDtos) {
         fileName = "userRecFile";
         download = sharedPath +fileName;
-        backups = sharedPath + "backupsRec";
+        backups = sharedPath + "backupsAudit";
         //if path is not exists create path
         File fileRepPath=new File(download+File.separator+"files");
         if(!fileRepPath.exists()){
@@ -93,7 +93,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
     public void saveFile(String data)  {
         fileName = "userRecFile";
         download = sharedPath + fileName;
-        backups = sharedPath + "backupsRec";
+        backups = sharedPath + "backupsAudit";
 
         String s = FileUtil.genMd5FileChecksum(data.getBytes());
         File file=MiscUtil.generateFile(download+File.separator, s+fileFormat);
@@ -212,7 +212,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                     File curFile =new File(backups + File.separator + s + ".zip");
                     file.renameTo(curFile);
                     log.info("----------- new zip file name is"+backups+File.separator+fileNamesss+".zip");
-                    String s1 = saveFileName(fileNamesss+".zip","backupsRec" + File.separator+fileNamesss+".zip");
+                    String s1 = saveFileName(fileNamesss+".zip","backupsAudit" + File.separator+fileNamesss+".zip");
                     if(!s1.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
                         flag=false;

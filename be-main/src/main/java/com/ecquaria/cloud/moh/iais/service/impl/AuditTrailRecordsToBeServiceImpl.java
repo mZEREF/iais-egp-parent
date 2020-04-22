@@ -64,7 +64,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
     @Override
     public void info() {
         download= sharedPath+File.separator+File.separator+FOLDER;
-        backups=sharedPath+File.separator+"backupsRec"+File.separator;
+        backups=sharedPath+File.separator+"backupsAudit"+File.separator;
         compressPath=sharedPath+File.separator+"compress";
         downZip=sharedPath+File.separator+"compress";
         File file =new File(download);
@@ -91,7 +91,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                 if(fil.getName().endsWith(".zip")){
                     String name = fil.getName();
                     String path = fil.getPath();
-                    String relPath="backupsRec"+File.separator+name;
+                    String relPath="backupsAudit"+File.separator+name;
                     HashMap<String,String> map= IaisCommonUtils.genNewHashMap();
                     map.put("fileName",name);
                     map.put("filePath",relPath);
