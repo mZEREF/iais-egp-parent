@@ -189,7 +189,7 @@
                                     </strong>
                                 </div>
                                 <form method="post" action=<%=process.runtime.continueURL()%>>
-                                    <input type="hidden" name="taskId" value="${taskId}">
+                                    <input type="hidden" name="taskId" value="<iais:mask name="taskId" value="${taskId}"/>">
                                     <input type="hidden" name="sopEngineTabRef"
                                            value="<%=process.rtStatus.getTabRef()%>">
                                     <div class="row">

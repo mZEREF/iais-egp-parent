@@ -164,7 +164,7 @@ public class HcsaApplicationDelegator {
     public void prepareData(BaseProcessClass bpc) throws Exception{
         log.debug(StringUtil.changeForLog("the do prepareData start ..."));
         //get the task
-       String  taskId = ParamUtil.getString(bpc.request,"taskId");
+       String  taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
        if(taskId != null){
            ParamUtil.setRequestAttr(bpc.request,"taskId",taskId);
        }else{
