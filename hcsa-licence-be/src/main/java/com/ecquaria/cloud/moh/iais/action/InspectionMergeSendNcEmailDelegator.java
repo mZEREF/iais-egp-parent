@@ -263,10 +263,12 @@ public class InspectionMergeSendNcEmailDelegator {
                     AppPremisesRoutingHistoryDto appPremisesRoutingHisDto= appPremisesRoutingHistoryDtos.get(0);
                     String upDt=appPremisesRoutingHistoryDtos.get(0).getUpdatedDt();
                     for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1:appPremisesRoutingHistoryDtos){
-                        if(appPremisesRoutingHistoryDto1.getUpdatedDt().compareTo(upDt)>=0&&appPremisesRoutingHistoryDto1.getRoleId().equals(RoleConsts.USER_ROLE_INSPECTIOR)){
-                            appPremisesRoutingHisDto=appPremisesRoutingHistoryDto1;
+                        if(appPremisesRoutingHistoryDto1.getUpdatedDt()!=null&&appPremisesRoutingHistoryDto1.getRoleId()!=null) {
+                            if(appPremisesRoutingHistoryDto1.getUpdatedDt().compareTo(upDt)>=0&&appPremisesRoutingHistoryDto1.getRoleId().equals(RoleConsts.USER_ROLE_INSPECTIOR)){
+                                appPremisesRoutingHisDto=appPremisesRoutingHistoryDto1;
+                            }
+                            upDt=appPremisesRoutingHistoryDto1.getUpdatedDt();
                         }
-                        upDt=appPremisesRoutingHistoryDto1.getUpdatedDt();
                     }
 
                     applicationViewDto1.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER);
@@ -286,7 +288,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     taskDto2.setRefNo(appPremCorrIds.get(i));
                     taskDto2.setTaskType(taskDto.getTaskType());
                     taskDto2.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
-                    taskDto2.setUserId(userId);
+                    taskDto2.setUserId(appPremisesRoutingHisDto.getActionby());
                     taskDto2.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
                     taskDto2.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
                     taskDto2.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
@@ -359,10 +361,12 @@ public class InspectionMergeSendNcEmailDelegator {
                     AppPremisesRoutingHistoryDto appPremisesRoutingHisDto= appPremisesRoutingHistoryDtos.get(0);
                     String upDt=appPremisesRoutingHistoryDtos.get(0).getUpdatedDt();
                     for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:appPremisesRoutingHistoryDtos){
-                        if(appPremisesRoutingHistoryDto.getUpdatedDt().compareTo(upDt)>=0 &&appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_INSPECTIOR)){
-                            appPremisesRoutingHisDto=appPremisesRoutingHistoryDto;
+                        if(appPremisesRoutingHistoryDto.getUpdatedDt()!=null&&appPremisesRoutingHistoryDto.getRoleId()!=null){
+                            if(appPremisesRoutingHistoryDto.getUpdatedDt().compareTo(upDt)>=0 &&appPremisesRoutingHistoryDto.getRoleId().equals(RoleConsts.USER_ROLE_INSPECTIOR)){
+                                appPremisesRoutingHisDto=appPremisesRoutingHistoryDto;
+                            }
+                            upDt=appPremisesRoutingHistoryDto.getUpdatedDt();
                         }
-                        upDt=appPremisesRoutingHistoryDto.getUpdatedDt();
                     }
 
                     applicationViewDto1.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
