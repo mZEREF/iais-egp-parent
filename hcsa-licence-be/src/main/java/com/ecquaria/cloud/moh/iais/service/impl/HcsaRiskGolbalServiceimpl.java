@@ -229,7 +229,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
         newExt.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         newExt.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         HcsaRiskGolbalExtDto renewExt = new HcsaRiskGolbalExtDto();
-        renewExt.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        renewExt.setAppType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
         renewExt.setRsGolbalId(temp.getGalbalId());
         renewExt.setInspectType(temp.getDorenewInspectType());
         renewExt.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
