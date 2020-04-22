@@ -100,6 +100,7 @@ public class CessationServiceImpl implements CessationService {
                 if (premisesDtos != null && !premisesDtos.isEmpty()) {
                     for (PremisesDto premisesDto : premisesDtos) {
                         String blkNo = premisesDto.getBlkNo();
+                        String premisesId = premisesDto.getId();
                         String streetName = premisesDto.getStreetName();
                         String buildingName = premisesDto.getBuildingName();
                         String floorNo = premisesDto.getFloorNo();
@@ -109,6 +110,7 @@ public class CessationServiceImpl implements CessationService {
                         AppCessHciDto appCessHciDto = new AppCessHciDto();
                         String hciName = premisesDto.getHciName();
                         appCessHciDto.setHciName(hciName);
+                        appCessHciDto.setPremiseId(premisesId);
                         appCessHciDto.setHciAddress(hciAddress);
                         appCessHciDtos.add(appCessHciDto);
                     }
@@ -147,6 +149,11 @@ public class CessationServiceImpl implements CessationService {
             appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
             appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
             appSubmissionDto.setAppGrpNo(grpNo);
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+            for(AppGrpPremisesDto appGrpPremisesDto :appGrpPremisesDtoList){
+                String premisesDtoId = appGrpPremisesDto.getId();
+
+            }
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
             appSubmissionDto.setAmount(amount);
             appSubmissionDto.setAuditTrailDto(internet);
@@ -253,6 +260,8 @@ public class CessationServiceImpl implements CessationService {
             int size1 = appIdsTrue.size();
             if(size==size1){
                 results.add(true);
+            }else {
+                results.add(false);
             }
         }
         return results;
