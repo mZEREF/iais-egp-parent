@@ -31,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -115,11 +114,6 @@ public class LicenceServiceImpl implements LicenceService {
             yearLength = appPremisesRecommendationDto.getRecomInNumber();
         }
         log.info(StringUtil.changeForLog("The getLicenceNo yearLength -->:"+yearLength));
-        Map<String,Object> param = new HashMap();
-        param.put("hciCode",hciCode);
-        param.put("serviceCode",serviceCode);
-        param.put("yearLength",yearLength);
-        param.put("licenceSeq",licenceSeq);
         log.info(StringUtil.changeForLog("The getLicenceNo end ..."));
         return    systemClient.licence(hciCode,serviceCode,yearLength,licenceSeq).getEntity();
     }
@@ -135,7 +129,7 @@ public class LicenceServiceImpl implements LicenceService {
         }
         log.info(StringUtil.changeForLog("The getGroupLicenceNo yearLength -->:"+yearLength));
         log.info(StringUtil.changeForLog("The getGroupLicenceNo end ..."));
-        return   systemClient.groupLicence(hscaCode,yearLength +"",no).getEntity();
+        return   systemClient.groupLicence(hscaCode,String.valueOf(yearLength),no).getEntity();
     }
 
     @Override
