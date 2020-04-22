@@ -27,20 +27,16 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
-
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import com.ecquaria.sz.commons.util.MsgUtil;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * AppealApproveBatchjob
@@ -97,8 +93,7 @@ public class AppealApproveBatchjob {
                                           appealApproveDto);
                                   break;
                               case ApplicationConsts.APPEAL_TYPE_LICENCE :
-                                  appealLicence(applicationDto,appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),
-                                          appealDto.getNewLicYears());
+                                  appealLicence(appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),appealApproveDto.getAppPremisesRecommendationDto());
                                   break;
 //                        case ApplicationConsts.APPEAL_TYPE_OTHER :
 //                            appealOther(appealApplicaiton,rollBackApplication,applicationDto);
@@ -297,16 +292,15 @@ public class AppealApproveBatchjob {
 
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is end ..."));
     }
-    private void appealLicence(ApplicationDto applicationDto,List<LicenceDto> appealLicence,
+    private void appealLicence(List<LicenceDto> appealLicence,
                                List<LicenceDto> rollBackLicence,
-                               LicenceDto licenceDto,int newLicYears) throws Exception {
+                               LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence is start ..."));
-        log.info(StringUtil.changeForLog("The AppealApproveBatchjob newLicYears is -->:"+newLicYears));
-        if(licenceDto!=null && newLicYears >0){
+        if(licenceDto!=null && appPremisesRecommendationDto != null){
             rollBackLicence.add(licenceDto);
             LicenceDto appealLicenceDto = (LicenceDto) CopyUtil.copyMutableObject(licenceDto);
             Date startDate = appealLicenceDto.getStartDate();
-            Date expiryDate = LicenceUtil.getExpiryDate(startDate,newLicYears);
+            Date expiryDate = LicenceUtil.getExpiryDate(startDate,appPremisesRecommendationDto);
             appealLicenceDto.setExpiryDate(expiryDate);
             appealLicence.add(appealLicenceDto);
         }else{
