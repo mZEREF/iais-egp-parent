@@ -1308,7 +1308,7 @@ public class NewApplicationHelper {
      * @param clientQueryCode
      * @return
      */
-    private EmailDto sendEmailHelper(Map<String ,Object> tempMap,MsgTemplateDto msgTemplateDto,String msgTemplateId,String subject,String licenseeId,String clientQueryCode) {
+    public static EmailDto sendEmailHelper(Map<String ,Object> tempMap,MsgTemplateDto msgTemplateDto,String msgTemplateId,String subject,String licenseeId,String clientQueryCode) {
         if (tempMap == null || tempMap.isEmpty() || msgTemplateDto == null
                 || StringUtil.isEmpty(msgTemplateId)
                 || StringUtil.isEmpty(subject)
