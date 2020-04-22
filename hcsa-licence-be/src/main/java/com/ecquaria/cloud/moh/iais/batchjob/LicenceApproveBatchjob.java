@@ -78,8 +78,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * LicenceApproveBatchjob
  *
@@ -1331,28 +1329,9 @@ public class LicenceApproveBatchjob {
 
     @Setter
     @Getter
-    class GenerateResult{
+    static class GenerateResult{
         private boolean success;
         private String errorMessage;
         private LicenceGroupDto licenceGroupDto;
-    }
-
-    private void  sendEmail(HttpServletRequest request){
-        Map<String,Object> map=new HashMap<>();
-        String licenseeId =(String)request.getAttribute("licenseeId");
-        String userName=(String)request.getAttribute("userName");
-        String nameApprovalOfficer=(String)request.getAttribute("nameApprovalOfficer");
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate("D792F706-6D7D-EA11-BE7A-000C29D29DB0").getEntity();
-        map.put("userName",userName);
-        map.put("nameApprovalOfficer",nameApprovalOfficer);
-        if(msgTemplateDto!=null){
-            String messageContent = msgTemplateDto.getMessageContent();
-            EmailDto emailDto = new EmailDto();
-            emailDto.setContent(messageContent);
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-            emailClient.sendNotification(emailDto).getEntity();
-        }
-
     }
 }
