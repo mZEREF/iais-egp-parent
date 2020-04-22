@@ -1,1 +1,1 @@
-<%@include file = "/iais/intranetUser/doEdit.jsp"%>
+<%@include file = "/WEB-INF/jsp/iais/intranetUser/doEdit.jsp"%>

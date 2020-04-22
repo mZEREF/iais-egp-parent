@@ -61,7 +61,7 @@
                                                 <%@include file="/WEB-INF/jsp/iais/inspectionncList/tabDocuments.jsp"%>
                                             </div>
                                             <div class="${reportClassBelow}" id="tabInspectionReport" role="tabpanel">
-                                                <jsp:include page="/iais/report/ao1Report.jsp"></jsp:include>
+                                                <jsp:include page="/WEB-INF/jsp/iais/report/ao1Report.jsp"></jsp:include>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <div class="col-xs-12">
