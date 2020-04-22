@@ -206,6 +206,7 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
         for(HcsaRiskLicenceTenureDto temp:saveDtoList){
             temp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             temp.setId(null);
+            temp.setVersion(temp.getVersion() +1);
             temp.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         }
         hcsaConfigClient.savehcsaRiskLicenceTenure(saveDtoList);
