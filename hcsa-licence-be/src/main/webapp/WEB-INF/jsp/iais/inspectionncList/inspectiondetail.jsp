@@ -95,7 +95,7 @@
                                 &nbsp;&nbsp;<button type="button" onclick="javascript:doDeleteFile()">Delete</button>
                 </span>
                     <input id="litterFile" name="litterFile" type="hidden" value="<c:out value="${serListDto.appPremisesSpecialDocDto.docName}"></c:out>" />
-                    <input id="litterFileId" name="litterFileId" type="hidden" value="<c:out value="${serListDto.appPremisesSpecialDocDto.id}"></c:out>"/>
+                    <input id="litterFileId" name="litterFileId" type="hidden" value="<iais:mask name="litterFileId" value="${serListDto.appPremisesSpecialDocDto.id}"/>"/>
                     <span class="error-msg" id="error_litterFile" name="iaisErrorMsg"></span>
                 </div>
             </div>
