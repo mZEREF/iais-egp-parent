@@ -179,7 +179,7 @@ public class CessationApplicationDelegator {
         List<String> listAppIds = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < appCessationDtos.size(); i++) {
             AppCessationDto appCessationDto = appCessationDtos.get(i);
-            String licId = appCessationDto.getWhichTodo();
+            String licId = appCessationDto.getLicId();
 
             LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
             String licenseeId = licenceDto.getLicenseeId();
@@ -279,10 +279,10 @@ public class CessationApplicationDelegator {
                     appCessHciDto.setPatHciName(patHciName);
                     appCessHciDto.setPatRegNo(patRegNo);
                     appCessHciDto.setPatOthers(patOthers);
-                    appCessHciDto.setWhichTodo(whichTodo);
+                    appCessHciDto.setPremiseIdChecked(whichTodo);
                     appCessHciDto.setReadInfo(readInfo);
                 }else{
-                    appCessHciDto.setWhichTodo(null);
+                    appCessHciDto.setPremiseIdChecked(null);
                 }
                 appCessHciDtos.add(appCessHciDto);
             }
@@ -298,7 +298,7 @@ public class CessationApplicationDelegator {
             List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
             if(appCessHciDtos!=null&&!appCessHciDtos.isEmpty()){
                 for (AppCessHciDto appCessHciDto : appCessHciDtos) {
-                    String whichTodo = appCessHciDto.getWhichTodo();
+                    String whichTodo = appCessHciDto.getPremiseIdChecked();
                     if(!StringUtil.isEmpty(whichTodo)) {
                         Date effectiveDate = appCessHciDto.getEffectiveDate();
                         String reason = appCessHciDto.getReason();
@@ -321,7 +321,7 @@ public class CessationApplicationDelegator {
                         appCessationDto.setPatTransTo(patTransTo);
                         appCessationDto.setPatRegNo(patRegNo);
                         appCessationDto.setPatNoRemarks(patNoRemarks);
-                        appCessationDto.setWhichTodo(whichTodo);
+                        appCessationDto.setPremiseId(whichTodo);
                         appCessationDto.setReadInfo(readInfo);
                         appCessationDtos.add(appCessationDto);
                     }
@@ -337,7 +337,7 @@ public class CessationApplicationDelegator {
             if(appCessHciDtos!=null&&!appCessHciDtos.isEmpty()){
                 List<AppCessHciDto> list = IaisCommonUtils.genNewArrayList();
                 for (AppCessHciDto appCessHciDto :appCessHciDtos){
-                    String whichTodo = appCessHciDto.getWhichTodo();
+                    String whichTodo = appCessHciDto.getPremiseIdChecked();
                     if(StringUtil.isEmpty(whichTodo)){
                         list.add(appCessHciDto);
                     }
