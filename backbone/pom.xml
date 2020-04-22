@@ -25,6 +25,10 @@
             <version>${revision}</version>
         </dependency>
         <dependency>
+            <groupId>org.owasp.antisamy</groupId>
+            <artifactId>antisamy</artifactId>
+        </dependency>
+        <dependency>
             <groupId>sg.gov.moh.iais</groupId>
             <artifactId>iais-common</artifactId>
             <version>${revision}</version>
