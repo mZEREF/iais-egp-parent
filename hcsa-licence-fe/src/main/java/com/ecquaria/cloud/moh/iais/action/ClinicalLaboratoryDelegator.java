@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -1247,8 +1248,9 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
         }
-        if(serviceStepDto == null){
-            log.info(StringUtil.changeForLog("serviceStepDto is null"));
+        if(serviceStepDto == null || hcsaServiceDtoList == null){
+            log.info(StringUtil.changeForLog("serviceStepDto or hcsaServiceDtoList is null..."));
+            throw new IaisRuntimeException("serviceStepDto or hcsaServiceDtoList is null...");
         }
         serviceStepDto.setServiceNumber(serviceNum);
         boolean serviceFirst = false;
