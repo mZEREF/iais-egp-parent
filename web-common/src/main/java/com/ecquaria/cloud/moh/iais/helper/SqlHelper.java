@@ -89,7 +89,8 @@ public class SqlHelper {
 
     public static void builderInSql(SearchParam searchParam, String columnName, String paramName, List<String> values){
         if (searchParam == null || columnName == null|| paramName == null || IaisCommonUtils.isEmpty(values)){
-            throw new IllegalArgumentException("Null parameter not allowed");
+            log.info("builderInSql param is null!");
+            return;
         }
 
         //<#if paramName??> and ${paramName} </#if>
@@ -105,7 +106,8 @@ public class SqlHelper {
 
     public static void builderNotInSql(SearchParam searchParam, String columnName, String paramName, List<String> values){
         if (searchParam == null || columnName == null|| paramName == null || IaisCommonUtils.isEmpty(values)){
-            throw new IllegalArgumentException("Null parameter not allowed");
+            log.info("builderNotInSql param is null!");
+           return;
         }
 
         //<#if paramName??> and ${paramName} </#if>
