@@ -290,13 +290,13 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         }
         appPremisesInspecApptDtoList = applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList).getEntity();
         apptInspectionDateDto.setAppPremisesInspecApptCreateList(appPremisesInspecApptDtoList);
-        updateTaskDtoList(taskDtoList);
-        for (TaskDto taskDto2 : taskDtoList) {
+        updateTaskDtoList(taskDtos);
+        for (TaskDto taskDto2 : taskDtos) {
             int score = taskDto2.getScore();
             TaskDto tDto = createTaskDto(taskDto2, taskDto2.getUserId(), score);
-            taskDtos.add(tDto);
+            taskDtoList.add(tDto);
         }
-        taskService.createTasks(taskDtos);
+        taskService.createTasks(taskDtoList);
     }
 
     private String getActionButtonFlagByTasks(List<TaskDto> taskDtos) {
