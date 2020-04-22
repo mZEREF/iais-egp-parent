@@ -274,7 +274,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
-            createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
             //save Inspection date
             createOrUpdateRecommendation(appPremisesRecommendationDto, appPremCorrId, saveDate);
@@ -289,6 +288,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, null, null, taskDto.getWkGrpId());
             }
         }
+        appPremisesInspecApptDtoList = applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList).getEntity();
+        apptInspectionDateDto.setAppPremisesInspecApptCreateList(appPremisesInspecApptDtoList);
         updateTaskDtoList(taskDtoList);
         for (TaskDto taskDto2 : taskDtoList) {
             int score = taskDto2.getScore();
