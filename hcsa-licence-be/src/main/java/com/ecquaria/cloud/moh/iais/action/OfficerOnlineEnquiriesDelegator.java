@@ -31,13 +31,13 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -93,7 +93,7 @@ public class OfficerOnlineEnquiriesDelegator {
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
-    CessationClient cessationClient;
+    CessationService cessationService;
     @Autowired
     FillupChklistService fillupChklistService;
 
@@ -339,13 +339,15 @@ public class OfficerOnlineEnquiriesDelegator {
     private void setSearchResult(HttpServletRequest request,SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult,List<String> licenceIds,List<ReqForInfoSearchListDto> reqForInfoSearchListDtos){
 
 
-        List<String> licIds=cessationClient.getlicIdToCessation(licenceIds).getEntity();
+        List<Boolean> licIds=cessationService.listResultCeased(licenceIds);
+        int i=0;
         for(ReqForInfoSearchListDto rfi:reqForInfoSearchListDtos){
             if("Active".equals(rfi.getLicenceStatus())){
-                rfi.setIsCessation(licIds.contains(rfi.getLicenceId())?1:0);
+                rfi.setIsCessation(licIds.get(i)?1:0);
             }else {
                 rfi.setIsCessation(0);
             }
+            i++;
         }
         String uenNo = ParamUtil.getString(request, "uen_no");
         if(!StringUtil.isEmpty(uenNo)){
@@ -799,21 +801,19 @@ public class OfficerOnlineEnquiriesDelegator {
         }
 
         String [] appIds=ParamUtil.getStrings(request,"appIds");
-        List<String> applIds=IaisCommonUtils.genNewArrayList();
+        List<String> licIds=IaisCommonUtils.genNewArrayList();
 
         try{
             for(int i=0;i<appIds.length;i++){
                 String is=appIds[i].split("\\|")[1];
                 if(is.equals("1")){
-                    applIds.add(appIds[i].split("\\|")[0]);
+                    licIds.add(appIds[i].split("\\|")[2]);
                 }
             }
         }catch (Exception e){
             log.info(e.getMessage());
         }
-        List<String> licIds=onlineEnquiriesService.getLicIdsByappIds(applIds);
-        List<String> licenceIds=cessationClient.getlicIdToCessation(licIds).getEntity();
-        licIds.removeIf(licId -> !licenceIds.contains(licId));
+
         ParamUtil.setSessionAttr(request,"licIds", (Serializable) licIds);
         // 		doSearchLicenceAfter->OnStepProcess
     }

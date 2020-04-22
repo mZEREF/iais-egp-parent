@@ -486,7 +486,7 @@
                                             <td class="form-check">
                                                 <c:if test="${pool.licenceStatus!='Lapsed'&&pool.licenceStatus!='Ceased'&&pool.licenceStatus!='Expired'}">
                                                     <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
-                                                           name="appIds" value="${pool.appId}|${pool.isCessation}"   >
+                                                           name="appIds" value="${pool.appId}|${pool.isCessation}|${pool.licenceId}"   >
                                                     <label class="form-check-label" for="licence${status.index + 1}"><span
                                                             class="check-square"></span>
                                                     </label>
