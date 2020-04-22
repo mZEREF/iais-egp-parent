@@ -87,7 +87,7 @@ public class InsReportDelegator {
             insRepDto.setInspectors(inspectorUser.getInspectors());
         }
         String appStatus = applicationViewDto.getApplicationDto().getStatus();
-        if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION.equals(appStatus)){
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION.equals(appStatus)||ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(appStatus)){
             initRecommendation(correlationId,applicationViewDto,bpc);
         }
         AppPremisesRecommendationDto accRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPECTYPE).getEntity();
@@ -260,22 +260,19 @@ public class InsReportDelegator {
         if (appPremisesRecommendationDto != null) {
             String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
-            String period = recomInNumber + chronoUnit;
+            String period = recomInNumber+" " + chronoUnit;
             List<String> periods = insRepService.getPeriods(applicationViewDto);
             if(periods!=null&&!periods.isEmpty()){
-                for(String per :periods){
-                    if(per.equals(period)){
-                        initRecommendationDto.setPeriod(period);
-                    }else if(!StringUtil.isEmpty(chronoUnit)) {
-                        initRecommendationDto.setPeriod("Others");
-                        initRecommendationDto.setRecomInNumber(recomInNumber);
-                        initRecommendationDto.setChronoUnit(chronoUnit);
-                    }
+                if(periods.contains(period)){
+                    initRecommendationDto.setPeriod(period);
+                }else {
+                    initRecommendationDto.setPeriod("Others");
+                    initRecommendationDto.setRecomInNumber(recomInNumber);
+                    initRecommendationDto.setChronoUnit(chronoUnit);
                 }
             }
             String recomDecision = appPremisesRecommendationDto.getRecomDecision();
-            String codeDesc = MasterCodeUtil.getCodeDesc(recomDecision);
-            initRecommendationDto.setRecommendation(codeDesc);
+            initRecommendationDto.setRecommendation(recomDecision);
         }
 
         if (appPremisesRecommendationDto != null) {
@@ -323,8 +320,8 @@ public class InsReportDelegator {
 
     private List<SelectOption> getChronoOption() {
         List<SelectOption> ChronoResult = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption(RiskConsts.YEAR, "Year");
-        SelectOption so2 = new SelectOption(RiskConsts.MONTH, "Month");
+        SelectOption so1 = new SelectOption(RiskConsts.YEAR, "Year(s)");
+        SelectOption so2 = new SelectOption(RiskConsts.MONTH, "Month(s)");
         ChronoResult.add(so1);
         ChronoResult.add(so2);
         return ChronoResult;

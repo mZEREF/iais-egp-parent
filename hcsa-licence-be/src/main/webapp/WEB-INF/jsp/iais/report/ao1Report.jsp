@@ -22,7 +22,7 @@
                     <table class="table">
                         <tr>
                             <td class="col-xs-4">
-                                <p>Licence No</p>
+                                <p>Licence No.</p>
                             </td>
                             <td class="col-xs-4">
                                 <p><c:out value="${insRepDto.licenceNo}"/></p>
@@ -352,7 +352,7 @@
                             </td>
                             <div>
                                 <td class="col-xs-4">
-                                    <p><c:out value="${inspectorRemarks}"/></p>
+                                    <p><c:out value="${appPremisesRecommendationDto.remarks}"/></p>
                                 </td>
                             </div>
                             <td class="col-xs-4">

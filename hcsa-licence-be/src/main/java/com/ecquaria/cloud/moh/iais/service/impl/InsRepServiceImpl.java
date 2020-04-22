@@ -472,7 +472,7 @@ public class InsRepServiceImpl implements InsRepService {
                 String dateType = riskResultDto.getDateType();
                 String codeDesc = MasterCodeUtil.getCodeDesc(dateType);
                 String count = String.valueOf(riskResultDto.getTimeCount());
-                String recommTime = count + codeDesc;
+                String recommTime =count+" "+dateType;
                 riskResult.add(recommTime);
             }
         }

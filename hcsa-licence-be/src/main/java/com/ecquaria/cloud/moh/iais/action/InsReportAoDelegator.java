@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -120,6 +121,24 @@ public class InsReportAoDelegator {
         String historyRemarks = ParamUtil.getRequestString(bpc.request, "processingDecision");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        AppPremisesRecommendationDto appPremisesRecommendationDto = (AppPremisesRecommendationDto)ParamUtil.getSessionAttr(bpc.request, RECOMMENDATION_DTO);
+        AppPremisesRecommendationDto preapreRecommendationDto = prepareRecommendation(bpc,appPremisesRecommendationDto);
+        ParamUtil.setSessionAttr(bpc.request, "preapreRecommendationDto", preapreRecommendationDto);
+        ValidationResult validationResult = WebValidationHelper.validateProperty(preapreRecommendationDto, "edit");
+        if (validationResult.isHasErrors()) {
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.FALSE);
+            String reportClassTop = "active";
+            String infoClassBelow = "tab-pane";
+            String reportClassBelow = "tab-pane active";
+            ParamUtil.setSessionAttr(bpc.request, "infoClassTop", null);
+            ParamUtil.setSessionAttr(bpc.request, "reportClassTop", reportClassTop);
+            ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", infoClassBelow);
+            ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", reportClassBelow);
+            return;
+        }
+        saveAoRecommendation(appPremisesCorrelationId,preapreRecommendationDto);
         insRepService.routBackTaskToInspector(taskDto,applicationDto,appPremisesCorrelationId,historyRemarks);
     }
 
@@ -190,6 +209,8 @@ public class InsReportAoDelegator {
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
             period  = recomInNumber+" " + codeDesc;
             initRecommendationDto.setPeriod(period);
+            String remarks = appPremisesRecommendationDto.getRemarks();
+            initRecommendationDto.setRemarks(remarks);
         }
         if (engageRecommendationDto != null) {
             String remarks = engageRecommendationDto.getRemarks();
@@ -249,9 +270,9 @@ public class InsReportAoDelegator {
 
     private List<SelectOption> getriskLevel() {
         List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption("Low", "Low");
-        SelectOption so2 = new SelectOption("Moderate", "Moderate");
-        SelectOption so3 = new SelectOption("High", "High");
+        SelectOption so1 = new SelectOption(InspectionReportConstants.LOW, "Low");
+        SelectOption so2 = new SelectOption(InspectionReportConstants.MODERATE, "Moderate");
+        SelectOption so3 = new SelectOption(InspectionReportConstants.HIGH, "High");
         riskLevelResult.add(so1);
         riskLevelResult.add(so2);
         riskLevelResult.add(so3);
