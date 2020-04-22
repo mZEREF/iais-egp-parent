@@ -11,7 +11,7 @@
                 <form id="fileUploadForm" name="fileUploadForm" enctype="multipart/form-data"
                       action="<%=process.runtime.continueURL()%>" method="post">
                     <input type="hidden" id="uploadFile" name="uploadFile" value="">
-                    <input type="hidden" name="taskId" value="${taskId}">
+                    <input type="hidden" name="taskId" value="<iais:mask name="taskId" value="${taskId}"/>">
                     <input type="hidden" name="sopEngineTabRef"
                            value="<%=process.rtStatus.getTabRef()%>">
 <%--                    action="" method="post">--%>
