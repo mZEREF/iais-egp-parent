@@ -1,20 +1,26 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
+import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfDeclSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * EicGatewayClientFallback
@@ -22,90 +28,134 @@ import java.util.Map;
  * @author Jinhua
  * @date 2020/1/9 12:13
  */
-public class FeEicGatewayClientFallback {
-    public FeignResponseEntity<String> saveFile(ProcessFileTrackDto processFileTrackDto, String date,
-                                         String authorization, String dateSec, String authorizationSec) {
+public class FeEicGatewayClientFallback implements FeEicGatewayClient{
+
+
+    @Override
+    public FeignResponseEntity<String> saveFile(ProcessFileTrackDto processFileTrackDto, String date, String authorization, String dateSec, String authorizationSec) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<String> routeSelfDeclData(List<String> contentJsonList,
-                                                         String date,
-                                                         String authorization,
-                                                         String dateSec,
-                                                         String authorizationSec) {
+    @Override
+    public FeignResponseEntity<List<String>> getEmailByCorrelationIdAndStatusAndRole(String corrDataJson, String date, String authorization, String dateSec, String authorizationSec) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> getUserCalendarByUserId(AppointmentDto appointmentDto,
-                                                                                        String date,
-                                                                                        String authorization,
-                                                                                        String dateSec,
-                                                                                        String authorizationSec){
+    @Override
+    public FeignResponseEntity<String> saveFileApplication(ProcessFileTrackDto processFileTrackDto, String date, String authorization, String dateSec, String authorizationSec) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> getAppointmentByApptRefNo(List<String> apptRefNos,
-                                                                                                 String date,
-                                                                                                 String authorization,
-                                                                                                 String dateSec,
-                                                                                                 String authorizationSec){
+    @Override
+    public FeignResponseEntity<IaisApiResult<AppPremisesSelfDeclChklDto>> routeSelfDeclData(FeSelfDeclSyncDataDto selfDeclSyncDataDto, String date, String authorization, String dateSec, String authorizationSec) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<ApptInspectionDateDto> apptFeDataUpdateCreateBe(ApptInspectionDateDto apptInspectionDateDto,
-                                                                               String date,
-                                                                               String authorization,
-                                                                               String dateSec,
-                                                                               String authorizationSec){
+    @Override
+    public FeignResponseEntity<String> inactiveLastVersionRecord(List<String> lastVersionId, String date, String authorization, String dateSec, String authorizationSec) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<List<TaskDto>> createFeReplyTask(ApptFeConfirmDateDto apptFeConfirmDateDto,
-                                                                String date,
-                                                                String authorization,
-                                                                String dateSec,
-                                                                String authorizationSec) {
+    @Override
+    public FeignResponseEntity<List<LicenceDto>> routePaymentStatus(ApplicationGroupDto applicationGroupDto, String date, String authorization, String dateSec, String authorizationSec) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<InspRectificationSaveDto> feCreateAndUpdateItemDoc(InspRectificationSaveDto inspRectificationSaveDto,
-                                                                                  String date,
-                                                                                  String authorization,
-                                                                                  String dateSec,
-                                                                                  String authorizationSec){
+    @Override
+    public FeignResponseEntity<List<LicenceDto>> updateLicenceStatus(List<LicenceDto> licenceDtos, String date, String authorization, String dateSec, String authorizationSec) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<String> updateLicenceStatus(@RequestBody List<LicenceDto> licenceDtos,
-                                                    @RequestHeader("date") String date,
-                                                    @RequestHeader("authorization") String authorization,
-                                                    @RequestHeader("date-Secondary") String dateSec,
-                                                    @RequestHeader("authorization-Secondary") String authorizationSec){
+
+    @Override
+    public FeignResponseEntity<Set<String>> getInspectorByCorreIdAndStatusAndRole(String correId, String status, String role, String date, String authorization, String dateSec, String authorizationSec) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
-
     }
 
+    @Override
+    public FeignResponseEntity<LicPremisesReqForInfoDto> routeRfiData(LicPremisesReqForInfoDto licPremisesReqForInfoDto, String date, String authorization, String dateSec, String authorizationSec) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> getUserCalendarByUserId(AppointmentDto appointmentDto, String date, String authorization, String dateSec, String authorizationSec) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> getAppointmentByApptRefNo(List<String> apptRefNos, String date, String authorization, String dateSec, String authorizationSec) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<ApptInspectionDateDto> apptFeDataUpdateCreateBe(ApptInspectionDateDto apptInspectionDateDto, String date, String authorization, String dateSec, String authorizationSec) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<TaskDto>> createFeReplyTask(ApptFeConfirmDateDto apptFeConfirmDateDto, String date, String authorization, String dateSec, String authorizationSec) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<InspRectificationSaveDto> feCreateAndUpdateItemDoc(InspRectificationSaveDto inspRectificationSaveDto, String date, String authorization, String dateSec, String authorizationSec) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<String> feSendEmail(EmailDto email, String date, String authorization, String dateSec, String authorizationSec) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<PublicHolidayDto>> getpublicHoliday(String date, String authorization, String dateSec, String authorizationSec) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

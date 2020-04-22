@@ -2,11 +2,16 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 
 import com.ecquaria.cloud.moh.iais.annotation.TimerTrack;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfDeclSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
@@ -17,9 +22,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -27,13 +34,21 @@ import com.ecquaria.cloud.moh.iais.service.AppPremSelfDeclService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEmailClient;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -50,6 +65,9 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
     @Autowired
     private AppConfigClient appConfigClient;
+
+    @Autowired
+    private FeEmailClient feEmailClient;
 
     @Autowired
     private FeEicGatewayClient gatewayClient;
@@ -231,6 +249,12 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
         List<String> lastVersionIds = selfDeclSubmitDto.getLastVersionIds();
         List<AppPremisesSelfDeclChklDto> syncData = applicationClient.saveAllSelfDecl(selfDeclSubmitDto).getEntity();
 
+       /* try {
+            sendNotificationToInspector(syncData.stream().map(AppPremisesSelfDeclChklDto::getAppPremCorreId).collect(Collectors.toList()));
+        }catch (Exception e){
+            log.info(StringUtil.changeForLog("encounter failure when self decl send notification" + e.getMessage()));
+        }*/
+
         try {
             //route to be
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -246,6 +270,36 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
             log.info(StringUtil.changeForLog("encounter failure when sync self decl to be" + e.getMessage()));
         }
 
+    }
+
+    private void sendNotificationToInspector(List<String> correlationId) throws IOException, TemplateException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("corrData", correlationId);
+        jsonObject.put("status", Arrays.asList(TaskConsts.TASK_STATUS_PENDING, TaskConsts.TASK_STATUS_READ, TaskConsts.TASK_STATUS_COMPLETED));
+        jsonObject.put("roleId", RoleConsts.USER_ROLE_INSPECTIOR);
+
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        List<String> emailAddress = gatewayClient.getEmailByCorrelationIdAndStatusAndRole(jsonObject.toString(), signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
+
+            Map<String,Object> map = new HashMap(1);
+            map.put("APPLICANT_NAME", StringUtil.viewHtml("Yi chen"));
+            map.put("DETAILS", StringUtil.viewHtml("test"));
+            map.put("A_HREF", StringUtil.viewHtml(""));
+            map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
+            MsgTemplateDto entity = EmailHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SELF_DECL_ID);
+            String messageContent = entity.getMessageContent();
+            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+
+
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(templateMessageByContent);
+            emailDto.setSubject("Self-Assessment submission for Application Number");
+            emailDto.setSender("yichen_guo@ecquaria.com");
+            emailDto.setReceipts(emailAddress);
+
+            feEmailClient.sendNotification(emailDto);
     }
 
     @Override

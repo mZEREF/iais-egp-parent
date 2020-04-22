@@ -2,7 +2,11 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfDeclSyncDataDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.*;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -15,10 +19,17 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * EicGatewayClient
@@ -35,6 +46,14 @@ public interface FeEicGatewayClient {
                                          @RequestHeader("authorization") String authorization,
                                          @RequestHeader("date-Secondary") String dateSec,
                                          @RequestHeader("authorization-Secondary") String authorizationSec);
+
+    @GetMapping(value = "v1/hcsa-app-officer", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getEmailByCorrelationIdAndStatusAndRole(@RequestParam String corrDataJson,
+                                                                              @RequestHeader("date") String date,
+                                                                              @RequestHeader("authorization") String authorization,
+                                                                              @RequestHeader("date-Secondary") String dateSec,
+                                                                              @RequestHeader("authorization-Secondary") String authorizationSec);
+
     /**
     * @author: yichen
     * @description: route to BE db
@@ -96,7 +115,14 @@ public interface FeEicGatewayClient {
                                                    @RequestHeader("date-Secondary") String dateSec,
                                                    @RequestHeader("authorization-Secondary") String authorizationSec);
 
-
+    @GetMapping(value = "")
+    FeignResponseEntity<Set<String>> getInspectorByCorreIdAndStatusAndRole(@PathVariable("correId")String correId,
+                                                                           @PathVariable("status")String status,
+                                                                            @PathVariable("role") String role,
+                                                                           @RequestHeader("date") String date,
+                                                                           @RequestHeader("authorization") String authorization,
+                                                                           @RequestHeader("date-Secondary") String dateSec,
+                                                                           @RequestHeader("authorization-Secondary") String authorizationSec);
 
 
     @PostMapping(value = "/v1/rfi-reply-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
