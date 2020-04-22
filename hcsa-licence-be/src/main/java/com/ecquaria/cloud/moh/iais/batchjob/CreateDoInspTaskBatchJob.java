@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -102,15 +103,17 @@ public class CreateDoInspTaskBatchJob {
                 String todayStr = Formatter.formatDateTime(today, Formatter.DATE);
                 if(todayStr.equals(inspecDateStr)) {
                     ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(aRecoDto.getAppPremCorreId()).getEntity();
-                    List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
-                    applicationDtos.add(applicationDto);
-                    List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
-                    hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-                    List<TaskDto> taskDtos = getTaskByHistoryTasks(aRecoDto.getAppPremCorreId());
-                    createTasksByHistory(taskDtos, intranet, hcsaSvcStageWorkingGroupDtos.get(0).getCount(), aRecoDto.getAppPremCorreId());
-                    aRecoDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                    fillUpCheckListGetAppClient.updateAppRecom(aRecoDto);
-                    updateInspectionStatus(aRecoDto.getAppPremCorreId(), InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
+                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION.equals(applicationDto.getStatus())) {
+                        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+                        applicationDtos.add(applicationDto);
+                        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
+                        hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+                        List<TaskDto> taskDtos = getTaskByHistoryTasks(aRecoDto.getAppPremCorreId());
+                        createTasksByHistory(taskDtos, intranet, hcsaSvcStageWorkingGroupDtos.get(0).getCount(), aRecoDto.getAppPremCorreId());
+                        aRecoDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                        fillUpCheckListGetAppClient.updateAppRecom(aRecoDto);
+                        updateInspectionStatus(aRecoDto.getAppPremCorreId(), InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
+                    }
                 }
             }
         }
