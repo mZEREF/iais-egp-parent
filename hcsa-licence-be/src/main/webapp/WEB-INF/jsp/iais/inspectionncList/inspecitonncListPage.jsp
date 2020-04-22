@@ -46,7 +46,7 @@
                                                     complete
                                                 </c:otherwise>
                                             </c:choose>" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
-                                                                                data-toggle="tab">CheckList</a></li>
+                                                                                data-toggle="tab">Checklist</a></li>
                                 <li class="complete" role="presentation"><a href="#Processing" aria-controls="Processing" role="tab"
                                                                             data-toggle="tab">Processing</a></li>
                             </ul>
