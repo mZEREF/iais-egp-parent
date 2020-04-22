@@ -75,8 +75,8 @@ public class ServiceMenuDelegator {
 
     public void beforeJump(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the  before jump start 1...."));
-        List<String> baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseService");
-        List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "specifiedService");
+        List<String> baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED);
+        List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED);
         List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(baseServiceIds)){
             serviceConfigIds.addAll(baseServiceIds);
