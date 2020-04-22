@@ -176,6 +176,8 @@ public class HcsaApplicationDelegator {
         String correlationId = "";
        if(taskDto != null){
            correlationId = taskDto.getRefNo();
+       }else{
+           throw new IaisRuntimeException("The Task Id  is Error !!!");
        }
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
         appPremisesCorrelationDto.setOldCorrelationId(correlationId);
@@ -784,7 +786,7 @@ public class HcsaApplicationDelegator {
                     UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
                     userGroupCorrelationDto.setUserId(id);
                     userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                    userGroupCorrelationDto.setIsLeadForGroup(Integer.parseInt(AppConsts.NO));
+                    userGroupCorrelationDto.setIsLeadForGroup(Integer.valueOf(AppConsts.NO));
                     userGroupCorrelationDtoList.add(userGroupCorrelationDto);
                 }
             }
