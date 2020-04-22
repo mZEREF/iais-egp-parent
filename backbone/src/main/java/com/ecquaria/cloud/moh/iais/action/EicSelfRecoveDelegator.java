@@ -5,6 +5,7 @@ import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.client.AtEicClient;
 import com.ecquaria.cloud.moh.iais.client.LicEicClient;
+import com.ecquaria.cloud.moh.iais.client.LicmEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -35,6 +36,8 @@ public class EicSelfRecoveDelegator {
     private AppEicClient appEicClient;
     @Autowired
     private LicEicClient licEicClient;
+    @Autowired
+    private LicmEicClient licmEicClient;
     @Value("${spring.application.name}")
     private String currentApp;
     @Value("${iais.current.domain}")
@@ -46,6 +49,7 @@ public class EicSelfRecoveDelegator {
         List<EicRequestTrackingDto> atList = atEicClient.getPendingRecords(moduleName).getEntity();
         List<EicRequestTrackingDto> appList = appEicClient.getPendingRecords(moduleName).getEntity();
         List<EicRequestTrackingDto> licList = licEicClient.getPendingRecords(moduleName).getEntity();
+        List<EicRequestTrackingDto> licmList = licmEicClient.getPendingRecords(moduleName).getEntity();
         AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(currentDomain);
         if (!IaisCommonUtils.isEmpty(atList)) {
             atList.forEach(ert -> {
@@ -64,6 +68,12 @@ public class EicSelfRecoveDelegator {
                 reTrigger(ert, auditTrailDto);
             });
             licEicClient.updateStatus(licList);
+        }
+        if (!IaisCommonUtils.isEmpty(licmList)) {
+            licmList.forEach(ert -> {
+                reTrigger(ert, auditTrailDto);
+            });
+            licmEicClient.updateStatus(licmList);
         }
         log.info("<======== End EIC Self Recover Job =========>");
     }

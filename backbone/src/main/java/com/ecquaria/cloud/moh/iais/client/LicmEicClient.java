@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
- * LicEicClient
+ * LicmEicClient
  *
  * @author Jinhua
- * @date 2020/4/20 15:25
+ * @date 2020/4/20 17:00
  */
-@FeignClient(name = "hcsa-licence", configuration = FeignConfiguration.class,
+@FeignClient(name = "hcsa-config", configuration = FeignConfiguration.class,
         fallback = EicClientFallback.class)
-public interface LicEicClient {
+public interface LicmEicClient {
     @GetMapping(path = "/eicTracking/{moduleName}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<EicRequestTrackingDto>> getPendingRecords(@PathVariable("moduleName") String moduleName);
     @PutMapping(path = "/eicTracking", consumes = MediaType.APPLICATION_JSON_VALUE)
