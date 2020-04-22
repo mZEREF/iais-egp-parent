@@ -259,14 +259,14 @@ public class InterInboxDelegator {
         String licenceNo = ParamUtil.getString(request,"licNoPath");
         String serviceType = ParamUtil.getString(request,"licType");
         String licStatus = ParamUtil.getString(request,"licStatus");
-        String fStartDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "fStartDate")),
-                SystemAdminBaseConstants.DATE_FORMAT);
-        String eStartDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "eStartDate")),
-                SystemAdminBaseConstants.DATE_FORMAT);
-        String fExpiryDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "fExpiryDate")),
-                SystemAdminBaseConstants.DATE_FORMAT);
-        String eExpiryDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "eExpiryDate")),
-                SystemAdminBaseConstants.DATE_FORMAT);
+        Date licStartDate = Formatter.parseDate(ParamUtil.getString(request, "fStartDate"));
+        Date licEndDate = Formatter.parseDate(ParamUtil.getString(request, "eStartDate"));
+        Date licfExpiryDate = Formatter.parseDate(ParamUtil.getString(request, "fExpiryDate"));
+        Date liceExpiryDate = Formatter.parseDate(ParamUtil.getString(request, "eExpiryDate"));
+        String fStartDate = Formatter.formatDateTime(licStartDate, SystemAdminBaseConstants.DATE_FORMAT);
+        String eStartDate = Formatter.formatDateTime(licEndDate, SystemAdminBaseConstants.DATE_FORMAT);
+        String fExpiryDate = Formatter.formatDateTime(licfExpiryDate, SystemAdminBaseConstants.DATE_FORMAT);
+        String eExpiryDate = Formatter.formatDateTime(liceExpiryDate, SystemAdminBaseConstants.DATE_FORMAT);
         if(licenceNo != null){
             licSearchMap.put("licNo",'%'+licenceNo+'%');
         }else{
@@ -282,25 +282,37 @@ public class InterInboxDelegator {
         }else{
             licSearchMap.put("licStatus",licStatus);
         }
-        if(!StringUtil.isEmpty(fStartDate)){
-            licSearchMap.put("fStartDate",fStartDate);
-        }else{
-            licSearchMap.remove("fStartDate");
+        if (licStartDate != null && licEndDate != null){
+            if (licStartDate.before(licEndDate)){
+                if(!StringUtil.isEmpty(fStartDate)){
+                    licSearchMap.put("fStartDate",fStartDate);
+                }else{
+                    licSearchMap.remove("fStartDate");
+                }
+                if(!StringUtil.isEmpty(eStartDate)){
+                    licSearchMap.put("eStartDate",eStartDate);
+                }else{
+                    licSearchMap.remove("eStartDate");
+                }
+            }else{
+                ParamUtil.setRequestAttr(request,InboxConst.LIC_DATE_ERR_MSG, "Licence Start Date From cannot be later than Licence Start Date To");
+            }
         }
-        if(!StringUtil.isEmpty(eStartDate)){
-            licSearchMap.put("eStartDate",eStartDate);
-        }else{
-            licSearchMap.remove("eStartDate");
-        }
-        if(!StringUtil.isEmpty(fExpiryDate)){
-            licSearchMap.put("fExpiryDate",fExpiryDate);
-        }else{
-            licSearchMap.remove("fExpiryDate");
-        }
-        if(!StringUtil.isEmpty(eExpiryDate)){
-            licSearchMap.put("eExpiryDate",eExpiryDate);
-        }else{
-            licSearchMap.remove("eExpiryDate");
+        if (licfExpiryDate != null && liceExpiryDate != null){
+            if (licfExpiryDate.before(liceExpiryDate)){
+                if(!StringUtil.isEmpty(fExpiryDate)){
+                    licSearchMap.put("fExpiryDate",fExpiryDate);
+                }else{
+                    licSearchMap.remove("fExpiryDate");
+                }
+                if(!StringUtil.isEmpty(eExpiryDate)){
+                    licSearchMap.put("eExpiryDate",eExpiryDate);
+                }else{
+                    licSearchMap.remove("eExpiryDate");
+                }
+            }else{
+                ParamUtil.setRequestAttr(request,InboxConst.LIC_EXPIRY_ERR_MSG, "Licence Start Date From cannot be later than Licence Start Date To");
+            }
         }
         licenceParameter.setFilters(licSearchMap);
         licenceParameter.setPageNo(1);
