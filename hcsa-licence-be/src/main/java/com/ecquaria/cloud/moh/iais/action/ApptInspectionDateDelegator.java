@@ -90,7 +90,7 @@ public class ApptInspectionDateDelegator {
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
         ApplicationViewDto applicationViewDto;
         if(apptInspectionDateDto == null){
-            String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
+            String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
             TaskDto taskDto = taskService.getTaskById(taskId);
             applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
             apptInspectionDateDto = new ApptInspectionDateDto();

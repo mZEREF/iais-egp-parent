@@ -38,20 +38,21 @@ import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import freemarker.template.TemplateException;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -146,7 +147,7 @@ public class InspectionRectificationProDelegator {
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         if(inspectionPreTaskDto == null){
             inspectionPreTaskDto = new InspectionPreTaskDto();
-            String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
+            String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
             taskDto = taskService.getTaskById(taskId);
             applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();

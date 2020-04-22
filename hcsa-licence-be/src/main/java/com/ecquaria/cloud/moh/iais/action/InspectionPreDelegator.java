@@ -108,7 +108,7 @@ public class InspectionPreDelegator {
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         if(inspectionPreTaskDto == null){
             inspectionPreTaskDto = new InspectionPreTaskDto();
-            String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
+            String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
             taskDto = taskService.getTaskById(taskId);
         }
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());

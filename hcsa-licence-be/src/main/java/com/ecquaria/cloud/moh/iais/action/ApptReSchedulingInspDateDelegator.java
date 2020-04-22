@@ -88,7 +88,7 @@ public class ApptReSchedulingInspDateDelegator {
         log.debug(StringUtil.changeForLog("the apptReSchInspDatePre start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
         if(apptInspectionDateDto == null){
-            String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
+            String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
             TaskDto taskDto = taskService.getTaskById(taskId);
             ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
             apptInspectionDateDto = new ApptInspectionDateDto();
