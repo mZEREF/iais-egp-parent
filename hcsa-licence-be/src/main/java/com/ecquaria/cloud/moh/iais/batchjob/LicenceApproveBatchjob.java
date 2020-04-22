@@ -75,6 +75,7 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -1171,10 +1172,12 @@ public class LicenceApproveBatchjob {
                                      LicenceDto originLicenceDto,
                                      ApplicationDto applicationDto,
                                      List<ApplicationDto> applicationDtos){
+        log.info(StringUtil.changeForLog("The  getLicenceDto start ..."));
         LicenceDto licenceDto = new LicenceDto();
         licenceDto.setSvcName(svcName);
 
         if(applicationDto!=null && originLicenceDto!=null && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())){
+            log.info(StringUtil.changeForLog("The  getLicenceDto APPType is RFC ..."));
             licenceDto.setStartDate(originLicenceDto.getStartDate());
             licenceDto.setExpiryDate(originLicenceDto.getExpiryDate());
             //licenceDto.setEndDate(originLicenceDto.getEndDate());
@@ -1193,14 +1196,19 @@ public class LicenceApproveBatchjob {
                 licenceDto.setVersion(1);
             }
         }else {
-            //todo:The latest choose from Giro pay Date, Approved Date,Aso set Date,
             if(applicationGroupDto!=null){
                 Date startDate = applicationGroupDto.getModifiedAt();
-                if(appPremisesRecommendationDto != null){
-                    Date date= appPremisesRecommendationDto.getRecomInDate();
-                    if(date !=null){
-                        startDate = date;
-                    }
+                if(applicationDto!=null && originLicenceDto!=null && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
+                    log.info(StringUtil.changeForLog("The  getLicenceDto APPType is Renew ..."));
+                    startDate = originLicenceDto.getExpiryDate();
+                    log.info(StringUtil.changeForLog("The  getLicenceDto originLicenceDto expiryday is " + startDate));
+                    startDate = DateUtils.addDays(startDate,1);
+                    log.info(StringUtil.changeForLog("The  getLicenceDto startDate is " + startDate));
+                }else if(appPremisesRecommendationDto != null){
+                        Date date= appPremisesRecommendationDto.getRecomInDate();
+                        if(date !=null){
+                            startDate = date;
+                        }
                 }
                 log.debug(StringUtil.changeForLog("The startDate is -->:"+startDate));
                 if(startDate == null){
@@ -1212,9 +1220,6 @@ public class LicenceApproveBatchjob {
                 licenceDto.setGrpLic(applicationGroupDto.isGrpLic());
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
             }
-
-
-
             int version = 1;
             if(originLicenceDto!=null){
                 licenceDto.setOriginLicenceId(originLicenceDto.getId());
@@ -1236,7 +1241,7 @@ public class LicenceApproveBatchjob {
             applicationDtos1.addAll(applicationDtos);
         }
         licenceDto.setApplicationDtos(applicationDtos1);
-
+        log.info(StringUtil.changeForLog("The  getLicenceDto end ..."));
         return licenceDto;
     }
 
