@@ -101,6 +101,9 @@ public class LicenceApproveBatchjob {
     private EmailClient emailClient;
     @Autowired
     private MsgTemplateClient msgTemplateClient;
+    @Autowired
+    private InspEmailService inspEmailService;
+
     private Map<String,Integer> hciCodeVersion = new HashMap();
     private Map<String,Integer> keyPersonnelVersion = IaisCommonUtils.genNewHashMap();
 
@@ -969,9 +972,9 @@ public class LicenceApproveBatchjob {
         log.debug(StringUtil.changeForLog("The inspectionNeed is -->:"+inspectionNeed));
         int isPreInspection = applicationGroupDto.getIsPreInspection();
         log.debug(StringUtil.changeForLog("The isPreInspection is -->:"+isPreInspection));
-        Integer isPostInspNeeded = Integer.parseInt(AppConsts.NO);
+        Integer isPostInspNeeded = Integer.valueOf(AppConsts.NO);
         if(inspectionNeed == 1 && isPreInspection == 0){
-            isPostInspNeeded = Integer.parseInt(AppConsts.YES);
+            isPostInspNeeded = Integer.valueOf(AppConsts.YES);
         }
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is end ..."));
         return isPostInspNeeded;
@@ -1095,7 +1098,7 @@ public class LicenceApproveBatchjob {
 
                         LicDocumentDto licDocumentDto = new LicDocumentDto();
                         licDocumentDto.setSvcDocId(appGrpPrimaryDocDto.getSvcDocId());
-                        licDocumentDto.setDocType(Integer.parseInt(ApplicationConsts.APPLICATION_DOC_TYPE_PARIMARY));
+                        licDocumentDto.setDocType(Integer.valueOf(ApplicationConsts.APPLICATION_DOC_TYPE_PARIMARY));
                         //set the old premises Id ,get the releation when the save.
                         if(StringUtil.isEmpty(appGrpPrimaryDocDto.getAppGrpPremId())){
                             licDocumentDto.setLicPremId(premisesDto.getId());
@@ -1122,7 +1125,7 @@ public class LicenceApproveBatchjob {
                licDocumentRelationDto.setDocumentDto(documentDto);
                LicDocumentDto licDocumentDto = new LicDocumentDto();
                licDocumentDto.setSvcDocId(appSvcDocDto.getSvcDocId());
-               licDocumentDto.setDocType(Integer.parseInt(ApplicationConsts.APPLICATION_DOC_TYPE_SERVICE));
+               licDocumentDto.setDocType(Integer.valueOf(ApplicationConsts.APPLICATION_DOC_TYPE_SERVICE));
                //set the old premises Id ,get the releation when the save.
                String premisesId = getPremisesByAppPremCorreId(appPremisesCorrelationDtos,appSvcDocDto.getAppPremCorreId());
                if(StringUtil.isEmpty(premisesId)){
@@ -1173,7 +1176,7 @@ public class LicenceApproveBatchjob {
         LicenceDto licenceDto = new LicenceDto();
         licenceDto.setSvcName(svcName);
 
-        if(applicationDto!=null && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())&&originLicenceDto!=null){
+        if(applicationDto!=null && originLicenceDto!=null && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())){
             licenceDto.setStartDate(originLicenceDto.getStartDate());
             licenceDto.setExpiryDate(originLicenceDto.getExpiryDate());
             //licenceDto.setEndDate(originLicenceDto.getEndDate());
@@ -1238,8 +1241,7 @@ public class LicenceApproveBatchjob {
 
         return licenceDto;
     }
-    @Autowired
-    private InspEmailService inspEmailService;
+
     private LicenseeDto getOrganizationIdBylicenseeId(String licenseeId){
         log.info(StringUtil.changeForLog("The  getOrganizationIdBylicenseeId start ..."));
         //todo:get the organizationid , if do not exist need create the Organizaton.
