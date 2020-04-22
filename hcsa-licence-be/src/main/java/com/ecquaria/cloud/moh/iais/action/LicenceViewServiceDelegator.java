@@ -36,7 +36,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import java.io.Serializable;
 import java.sql.Time;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -514,27 +513,27 @@ public class LicenceViewServiceDelegator {
         String  parentMsg = "";
         if(selectsList.contains("premises")){
             appEditSelectDto.setPremisesEdit(true);
-            parentMsg = parentMsg + "<li>Premises</li>";
+            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Premises</li>";
         }
         if(selectsList.contains("doc")){
             appEditSelectDto.setDocEdit(true);
-            parentMsg = parentMsg + "<li>AuthoriseD Person</li>";
+            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">AuthoriseD Person</li>";
         }
         if(selectsList.contains("service")){
             appEditSelectDto.setServiceEdit(true);
-            parentMsg = parentMsg + "<li>Service</li>";
+            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Service</li>";
         }
         if(selectsList.contains("po")){
             appEditSelectDto.setPoEdit(true);
-            parentMsg = parentMsg + "<li>PO</li>";
+            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">PO</li>";
         }
         if(selectsList.contains("dpo")){
             appEditSelectDto.setDpoEdit(true);
-            parentMsg = parentMsg + "<li>DPO</li>";
+            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">DPO</li>";
         }
         if(selectsList.contains("medAlert")){
             appEditSelectDto.setMedAlertEdit(true);
-            parentMsg = parentMsg + "<li>medAlert</li>";
+            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">medAlert</li>";
         }
         appEditSelectDto.setParentMsg(parentMsg);
         appEditSelectDto.setEditType(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
