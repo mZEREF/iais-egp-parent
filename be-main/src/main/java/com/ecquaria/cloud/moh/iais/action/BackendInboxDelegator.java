@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
@@ -617,8 +618,7 @@ public class BackendInboxDelegator {
         } else {
             sb.append("?");
         }
-        sb.append("taskId=").append(dto.getId());
-
+        sb.append("taskId=").append(MaskUtil.maskValue("taskId", dto.getId()));
         return RedirectUtil.changeUrlToCsrfGuardUrlUrl(sb.toString(), request);
     }
 
