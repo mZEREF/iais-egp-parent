@@ -180,7 +180,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         List<ApplicationDto> requestForInfList=new ArrayList();
                         //need event bus
                         String submissionId = generateIdClient.getSeqId().getEntity();
-                        this.download(processFileTrackDto,listApplicationDto, requestForInfList,name,refId,submissionId);
+                        download(processFileTrackDto,listApplicationDto, requestForInfList,name,refId,submissionId);
 
                         log.info(listApplicationDto.size()+"******listApplicationDto*********");
                         log.info(requestForInfList.toString()+"***requestForInfList***");
@@ -462,6 +462,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         List<FileRepoDto> fileRepoDtos = IaisCommonUtils.genNewArrayList();
         if(file.isDirectory()){
             File[] files = file.listFiles();
+            FileRepoEventDto eventDto = new FileRepoEventDto();
             for(File f:files){
                 if(f.isFile()){
                     try {
@@ -480,12 +481,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         fileRepoDto.setRelativePath(AppServicesConsts.COMPRESS+File.separator+fileNames+
                                 File.separator+groupPath+File.separator+"folder"+File.separator+groupPath+File.separator+"files");
                         fileRepoDtos.add(fileRepoDto);
-                        FileRepoEventDto eventDto = new FileRepoEventDto();
                         eventDto.setFileRepoList(fileRepoDtos);
-                        eventDto.setEventRefNo(groupPath);
+
                         log.info(f.getPath()+"file path");
-                        eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
-                                EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION, l.toString(), null);
 
                     }catch (Exception e){
                         continue;
@@ -494,7 +492,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 }
 
             }
-
+            eventDto.setEventRefNo(groupPath);
+            eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
+                    EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION, l.toString(), null);
         }
 
     }

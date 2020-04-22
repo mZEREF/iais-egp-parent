@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -32,10 +33,12 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
+import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import java.io.Serializable;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -70,6 +73,8 @@ public class LicenceViewServiceDelegator {
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private AppointmentClient appointmentClient;
+    @Autowired
+    private CessationClient cessationClient;
     /**
      * StartStep: doStart
      *
@@ -102,7 +107,22 @@ public class LicenceViewServiceDelegator {
         String oldCorrelationId="";
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewDto.getNewAppPremisesCorrelationDto();
         if(appPremisesCorrelationDto!=null){
-             newCorrelationId = appPremisesCorrelationDto.getId();
+            ApplicationDto applicationDto1 = applicationViewDto.getApplicationDto();
+            String applicationType = applicationDto1.getApplicationType();
+            if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+                List<AppPremisesCorrelationDto> entity = applicationClient.getAppPremisesCorrelationsByAppId(applicationDto1.getId()).getEntity();
+                if(entity!=null&&!entity.isEmpty()){
+                    List<String> stringList=new ArrayList<>();
+                    for(AppPremisesCorrelationDto correlationDto :entity){
+                        stringList.add(correlationDto.getId());
+                    }
+                    List<AppCessMiscDto> appCessMiscDtos = cessationClient.getAppCessMiscDtosByCorrIds(stringList).getEntity();
+                    if(appCessMiscDtos!=null&&!appCessMiscDtos.isEmpty()){
+                        String relateRecId = appCessMiscDtos.get(0).getRelateRecId();
+                    }
+                }
+            }
+            newCorrelationId = appPremisesCorrelationDto.getId();
              oldCorrelationId = appPremisesCorrelationDto.getOldCorrelationId();
             String applicationId = appPremisesCorrelationDto.getApplicationId();
             appSubmissionDto = licenceViewService.getAppSubmissionByAppId(applicationId);
