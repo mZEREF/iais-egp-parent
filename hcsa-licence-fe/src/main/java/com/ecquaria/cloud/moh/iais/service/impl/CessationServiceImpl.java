@@ -174,7 +174,7 @@ public class CessationServiceImpl implements CessationService {
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         for(AppCessationDto appCessationDto : appCessationDtos){
             AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
-            String licId = appCessationDto.getWhichTodo();
+            String licId = appCessationDto.getLicId();
             Double amount = 0.0;
             AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
             String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_CESSATION).getEntity();
