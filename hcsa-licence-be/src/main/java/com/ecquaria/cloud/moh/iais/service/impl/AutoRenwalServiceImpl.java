@@ -94,7 +94,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                         isNoAuto(v.get(i),request);
 
                     } catch (Exception e) {
-                        log.error(e.getMessage(),e+"have error ");
+                        log.error(e.getMessage(),e);
                     }
 
                 }

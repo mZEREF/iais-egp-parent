@@ -247,7 +247,7 @@ public class WithOutRenewalDelegator {
 
                     sendEmail(bpc.request,groupId,"successfulOnlinePayment",licenseeId,amount,"xxxx-xxxx-xxxx");
                 }catch (Exception e){
-
+                    log.error(e.getMessage(),e);
                 }
                 ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE4);
             }else{
@@ -374,7 +374,7 @@ public class WithOutRenewalDelegator {
                 sendEmail(bpc.request,groupNo,"onlinePayment",licenseeId,totalAmount,"xxxx-xxxx-xxxx");
 
             }catch (Exception e){
-                log.error(e.getMessage(),e+" onlinePayment error");
+                log.error(e.getMessage(),e);
             }
 
         }else if("GIRO".equals(payMethod)){
@@ -382,7 +382,7 @@ public class WithOutRenewalDelegator {
                 sendEmail(bpc.request,groupNo,"GIRO",licenseeId,totalAmount,"xxxx-xxxx-xxxx");
 
             }catch (Exception e){
-                log.error(e.getMessage(),e+"GIRO error");
+                log.error(e.getMessage(),e);
             }
 
         }
