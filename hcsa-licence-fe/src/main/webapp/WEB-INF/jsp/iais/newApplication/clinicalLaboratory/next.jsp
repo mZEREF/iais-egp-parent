@@ -178,7 +178,7 @@
         var professionTypeVal = $CurrentPsnEle.find('option[value="' + professionType + '"]').html();
         $CurrentPsnEle.find('select[name="professionType"]').next().find('.current').html(professionTypeVal);
         <!-- professionRegoNo-->
-        var professionRegoNo = data.professionRegoNo;
+        var professionRegoNo = data.profRegNo;
         if(professionRegoNo != null && professionRegoNo != ''){
             $CurrentPsnEle.find('input[name="professionRegoNo"]').val(professionRegoNo);
         }else{

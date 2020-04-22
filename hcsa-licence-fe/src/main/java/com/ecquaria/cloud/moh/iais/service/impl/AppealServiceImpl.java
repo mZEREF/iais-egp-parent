@@ -37,20 +37,12 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeEmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.FileRepositoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,6 +50,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wenkang
@@ -321,7 +320,7 @@ public class AppealServiceImpl implements AppealService {
             appSvcCgoDto.setIdNo(idNo[i]);
             appSvcCgoDto.setDesignation(designation[i]);
             appSvcCgoDto.setProfessionType(professionType[i]);
-            appSvcCgoDto.setProfessionRegoNo(professionRegoNo[i]);
+            appSvcCgoDto.setProfRegNo(professionRegoNo[i]);
             String specialtyStr = specialty[i];
             appSvcCgoDto.setSpeciality(specialtyStr);
             if("other".equals(specialtyStr)){
@@ -432,7 +431,7 @@ public class AppealServiceImpl implements AppealService {
                         if(StringUtil.isEmpty(designation)){
                             map.put("designation"+i,"UC_CHKLMD001_ERR001");
                         }
-                        String professionRegoNo = appSvcCgoList.get(i).getProfessionRegoNo();
+                        String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
                         if(StringUtil.isEmpty(professionRegoNo)){
                             map.put("professionRegoNo"+i,"UC_CHKLMD001_ERR001");
                         }

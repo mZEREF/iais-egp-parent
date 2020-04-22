@@ -8,9 +8,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Wenkang
@@ -56,7 +57,7 @@ public class ClinicalOfficerValidate implements CustomizeValidator {
                 if(StringUtil.isEmpty(designation)){
                     map.put("designation"+i,"select one ");
                 }
-                String professionRegoNo = appSvcCgoList.get(i).getProfessionRegoNo();
+                String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
                 if(StringUtil.isEmpty(professionRegoNo)){
                     map.put("professionRegoNo"+i,"cannot be blank ");
                 }

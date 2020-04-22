@@ -290,7 +290,7 @@
                                     </div>
                                     <div class="col-sm-5">
                                       <div class="">
-                                        <iais:input maxLength="20" type="text" name="professionRegoNo" value="${currentCgo.professionRegoNo}"></iais:input>
+                                        <iais:input maxLength="20" type="text" name="professionRegoNo" value="${currentCgo.profRegNo}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_professionRegoNo${status.index}"></span>
                                       </div>
                                     </div>

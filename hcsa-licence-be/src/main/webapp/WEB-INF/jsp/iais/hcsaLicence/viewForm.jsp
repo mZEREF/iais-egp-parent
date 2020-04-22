@@ -191,11 +191,11 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn No.</p>
                   </td>
                   <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6">${cgo.professionRegoNo}</span>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6">${cgo.profRegNo}</span>
                       <span  class="col-xs-6 col-md-6">
                               <wrms:value width="7">
-                                <span class="newVal compareTdStyle" attr="${cgo.professionRegoNo }" style="display: none"><label><c:out value="${cgo.professionRegoNo}"/></label></span>
-                                <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionRegoNo}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionRegoNo}"/></label></span>
+                                <span class="newVal compareTdStyle" attr="${cgo.profRegNo }" style="display: none"><label><c:out value="${cgo.profRegNo}"/></label></span>
+                                <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/></label></span>
                               </wrms:value>
                         </span>
                     </p>

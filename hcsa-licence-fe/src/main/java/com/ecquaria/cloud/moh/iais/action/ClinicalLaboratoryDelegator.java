@@ -1491,7 +1491,7 @@ public class ClinicalLaboratoryDelegator {
             appSvcCgoDto.setIdNo(idNo[i]);
             appSvcCgoDto.setDesignation(designation[i]);
             appSvcCgoDto.setProfessionType(professionType[i]);
-            appSvcCgoDto.setProfessionRegoNo(professionRegoNo[i]);
+            appSvcCgoDto.setProfRegNo(professionRegoNo[i]);
             String specialtyStr = specialty[i];
             appSvcCgoDto.setSpeciality(specialtyStr);
             if("other".equals(specialtyStr)){

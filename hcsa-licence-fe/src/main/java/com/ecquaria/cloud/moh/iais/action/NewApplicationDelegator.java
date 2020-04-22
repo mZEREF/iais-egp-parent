@@ -51,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -2572,7 +2573,7 @@ public class NewApplicationDelegator {
                         appSvcPrincipalOfficersDto.setEmailAddr((String) v.get("emailAddr"));
                         appSvcPrincipalOfficersDto.setPreferredMode((String) v.get("preferredMode"));
                         appSvcPrincipalOfficersDto.setProfessionType((String) v.get("professionType"));
-                        appSvcPrincipalOfficersDto.setProfessionRegoNo((String) v.get("professionRegoNo"));
+                        appSvcPrincipalOfficersDto.setProfRegNo((String) v.get("profRegNo"));
                         appSvcPrincipalOfficersDto.setSpeciality((String) v.get("speciality"));
                         appSvcPrincipalOfficersDto.setSpecialityOther((String) v.get("specialityOther"));
                         appSvcPrincipalOfficersDto.setQualification((String) v.get("qualification"));

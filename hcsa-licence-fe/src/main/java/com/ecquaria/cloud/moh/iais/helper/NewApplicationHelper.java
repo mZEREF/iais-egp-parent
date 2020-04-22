@@ -139,7 +139,7 @@ public class NewApplicationHelper {
                 if(StringUtil.isEmpty(designation)){
                     errMap.put("designation"+i,"UC_CHKLMD001_ERR001");
                 }
-                String professionRegoNo = appSvcCgoList.get(i).getProfessionRegoNo();
+                String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
                 if(StringUtil.isEmpty(professionRegoNo)){
                     errMap.put("professionRegoNo"+i,"UC_CHKLMD001_ERR001");
                     String qualification = appSvcCgoList.get(i).getQualification();
@@ -1019,7 +1019,7 @@ public class NewApplicationHelper {
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnDto.getPsnType())){
                     person.setDesignation(psnDto.getDesignation());
                     person.setProfessionType(psnDto.getProfessionType());
-                    person.setProfessionRegoNo(psnDto.getProfessionRegoNo());
+                    person.setProfRegNo(psnDto.getProfRegNo());
                     person.setSpeciality(psnDto.getSpeciality());
                     person.setSpecialityOther(psnDto.getSpecialityOther());
                     person.setQualification(psnDto.getQualification());
@@ -1212,7 +1212,7 @@ public class NewApplicationHelper {
         psnDto.setEmailAddr(appSvcCgoDto.getEmailAddr());
         psnDto.setPreferredMode(appSvcCgoDto.getPreferredMode());
         psnDto.setProfessionType(appSvcCgoDto.getProfessionType());
-        psnDto.setProfessionRegoNo(appSvcCgoDto.getProfessionRegoNo());
+        psnDto.setProfRegNo(appSvcCgoDto.getProfRegNo());
         psnDto.setSpeciality(appSvcCgoDto.getSpeciality());
         psnDto.setSpecialityOther(appSvcCgoDto.getSpecialityOther());
         psnDto.setQualification(appSvcCgoDto.getQualification());
@@ -1233,7 +1233,7 @@ public class NewApplicationHelper {
                 appSvcCgoDto.setIdNo(selPerson.getIdNo());
                 appSvcCgoDto.setDesignation(selPerson.getDesignation());
                 appSvcCgoDto.setProfessionType(selPerson.getProfessionType());
-                appSvcCgoDto.setProfessionRegoNo(selPerson.getProfessionRegoNo());
+                appSvcCgoDto.setProfRegNo(selPerson.getProfRegNo());
                 appSvcCgoDto.setSpeciality(selPerson.getSpeciality());
                 appSvcCgoDto.setSpecialityOther(selPerson.getSpecialityOther());
                 appSvcCgoDto.setQualification(selPerson.getQualification());
