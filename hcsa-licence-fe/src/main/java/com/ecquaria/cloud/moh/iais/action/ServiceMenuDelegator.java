@@ -64,7 +64,10 @@ public class ServiceMenuDelegator {
     private ApplicationClient applicationClient;
     public void doStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the  doStart start 1...."));
-        ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR,null);
+
+        ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED, null);
+        ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, null);
+        ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, null);
         ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, null);
 
         log.debug(StringUtil.changeForLog("the  doStart end 1...."));
@@ -97,10 +100,6 @@ public class ServiceMenuDelegator {
     }
 
     public void serviceMenuSelection(BaseProcessClass bpc){
-        ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED, null);
-        ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, null);
-        ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, null);
-        ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, null);
 
         log.debug(StringUtil.changeForLog("the do Start start 1...."));
 
