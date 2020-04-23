@@ -88,7 +88,7 @@ public class EventbusCallBackDelegate {
                     log.info("<======= Do callback =======>");
                     RedisCacheHelper.getInstance().set("IaisEventbusCbCount",
                             submissionId + "_" + operation + "_CallbackFlag", "callback", 60L * 60L * 24L);
-                    callbackMethod(submissionId, eventRefNum, operation);
+                    callbackMethod(submissionId, operation, eventRefNum);
                 }
             }
         }
