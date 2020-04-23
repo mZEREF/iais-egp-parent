@@ -1,13 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -30,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
@@ -43,11 +40,9 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
-import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
@@ -60,7 +55,6 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -70,13 +64,20 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationProcessUploadFileValidate;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -86,13 +87,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * HcsaApplicationDelegator
@@ -122,12 +116,6 @@ public class HcsaApplicationDelegator {
     private BroadcastService broadcastService;
 
     @Autowired
-    private InboxMsgService inboxMsgService;
-
-    @Autowired
-    private SystemParamConfig systemParamConfig;
-
-    @Autowired
     private HcsaConfigClient hcsaConfigClient;
 
     @Autowired
@@ -154,8 +142,6 @@ public class HcsaApplicationDelegator {
     @Autowired
     FileRepoClient fileRepoClient;
 
-    @Autowired
-    private SystemBeLicClient systemBeLicClient;
     /**
      * StartStep: doStart
      *
@@ -928,80 +914,12 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do requestForInformation start ...."));
         routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION,null);
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        //send message to FE user.
-        String messageNo = inboxMsgService.getMessageNo();
-        String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+applicationDto.getApplicationNo();
-        //Request For Change
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())){
-            //judge premises amend or licence amend
-            AppEditSelectDto appEditSelectDto = applicationViewDto.getAppEditSelectDto();
-            if(appEditSelectDto != null){
-                if(appEditSelectDto.isPremisesListEdit()){
-                    url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_PREMISES_LIST+applicationDto.getApplicationNo();
-                }
-            }
-        }
-        MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
-        Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
         String externalRemarks = ParamUtil.getString(bpc.request,"comments");
-        map.put("APPLICANT_NAME",licenseeDto.getName());
-        map.put("DETAILS","");
-        map.put("COMMENTS",StringUtil.viewHtml(externalRemarks));
-        map.put("A_HREF",url);
-        map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
-        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
-
-        InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
-                messageNo,applicationDto.getServiceId(),templateMessageByContent, applicationViewDto.getApplicationGroupDto().getLicenseeId(),IaisEGPHelper.getCurrentAuditTrailDto());
-        inboxMsgService.saveInterMessage(interMessageDto);
-        //new application send email
-        String applicationType = applicationDto.getApplicationType();
-        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVAL_OFFICE_ROUTES_ID).getEntity();
-            if(msgTemplateDto != null){
-                String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
-                String username = licenseeDto.getName();
-                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                String approvalOfficerName = loginContext.getUserName();
-
-                Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
-                tempMap.put("userName",StringUtil.viewHtml(username));
-                tempMap.put("applicationNumber",StringUtil.viewHtml(applicationNo));
-                tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                tempMap.put("approvalOfficerName",StringUtil.viewHtml(approvalOfficerName));
-
-                String mesContext = null;
-                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
-
-                EmailDto emailDto = new EmailDto();
-                emailDto.setContent(mesContext);
-                emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + applicationNo);
-                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-                emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
-                //send
-                emailClient.sendNotification(emailDto).getEntity();
-            }
-        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_INSPECTION_IS_IDENTIFIED).getEntity();
-            Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
-            String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
-            String username = licenseeDto.getName();
-            String appGrpId = applicationViewDto.getApplicationDto().getAppGrpId();
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            String approvalOfficerName = loginContext.getUserName();
-            tempMap.put("userName",StringUtil.viewHtml(username));
-            tempMap.put("applicationNumber",StringUtil.viewHtml(applicationNo));
-            tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-            tempMap.put("approvalOfficerName",StringUtil.viewHtml(approvalOfficerName));
-            String subject = " " + applicationNo;
-            EmailDto emailDto = LicenceUtil.sendEmailHelper(tempMap,msgTemplateDto,subject,licenseeId,appGrpId);
-            emailClient.sendNotification(emailDto).getEntity();
-
-        }
+        applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId, licenseeDto, loginContext, externalRemarks);
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
     }
 
