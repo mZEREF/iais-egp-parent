@@ -3,9 +3,11 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import sop.webflow.rt.api.Process;
  * @date 12/24/2019
  */
 @Service
+@Slf4j
 public class EventBusHelper {
 
     @Value("${iais.eventbus.callbackUrl}")
@@ -41,6 +44,9 @@ public class EventBusHelper {
     private SubmitResp submitRequest(Object dto, String submissionId, String service, String operation,
                                      String eventRefNo, boolean wait, int waitTime, Process process) {
         SubmitReq req = new SubmitReq();
+        log.info(StringUtil.changeForLog("Submission ID ===> " + submissionId));
+        log.info(StringUtil.changeForLog("Operation ===> " + operation));
+        log.info(StringUtil.changeForLog("Service ===> " + service));
         req.setSubmissionId(submissionId);
         if (process != null) {
             req.setProject(process.getCurrentProject());
