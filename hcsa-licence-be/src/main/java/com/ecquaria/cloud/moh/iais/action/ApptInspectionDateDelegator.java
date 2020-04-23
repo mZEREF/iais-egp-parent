@@ -62,6 +62,9 @@ public class ApptInspectionDateDelegator {
      * @throws
      */
     public void apptInspectionDateStart(BaseProcessClass bpc){
+        String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
+        TaskDto taskDto = taskService.getTaskById(taskId);
+        ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         log.debug(StringUtil.changeForLog("the apptInspectionDateStart start ...."));
     }
 
@@ -88,15 +91,13 @@ public class ApptInspectionDateDelegator {
     public void apptInspectionDatePre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptInspectionDatePre start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         ApplicationViewDto applicationViewDto;
         if(apptInspectionDateDto == null){
-            String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
-            TaskDto taskDto = taskService.getTaskById(taskId);
             applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
             apptInspectionDateDto = new ApptInspectionDateDto();
             apptInspectionDateDto  = apptInspectionDateService.getInspectionDate(taskDto, apptInspectionDateDto, applicationViewDto);
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
-            ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
             AuditTrailHelper.auditFunctionWithAppNo("Appointment Inspection Date", "Appointment Inspection Date",
                     applicationViewDto.getApplicationDto().getApplicationNo());
         } else {
@@ -108,6 +109,7 @@ public class ApptInspectionDateDelegator {
         apptInspectionDateDto.setActionButtonFlag(actionButtonFlag);
 
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
+        ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
     }
 
     /**

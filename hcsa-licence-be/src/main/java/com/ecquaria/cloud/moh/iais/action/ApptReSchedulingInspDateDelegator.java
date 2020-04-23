@@ -73,6 +73,9 @@ public class ApptReSchedulingInspDateDelegator {
      */
     public void apptReSchInspDateInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptReSchInspDateInit start ...."));
+        String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
+        TaskDto taskDto = taskService.getTaskById(taskId);
+        ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", null);
         ParamUtil.setSessionAttr(bpc.request, "hours", null);
         ParamUtil.setSessionAttr(bpc.request, "amPm", null);
@@ -87,12 +90,11 @@ public class ApptReSchedulingInspDateDelegator {
     public void apptReSchInspDatePre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptReSchInspDatePre start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         if(apptInspectionDateDto == null){
-            String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
-            TaskDto taskDto = taskService.getTaskById(taskId);
             ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
             apptInspectionDateDto = new ApptInspectionDateDto();
-            apptInspectionDateDto  = apptInspectionDateService.getApptSpecificDate(taskId, apptInspectionDateDto);
+            apptInspectionDateDto = apptInspectionDateService.getApptSpecificDate(taskDto.getId(), apptInspectionDateDto);
             AuditTrailHelper.auditFunctionWithAppNo("Re-Scheduling Appointment Inspection Date", "Re-Scheduling Appointment Inspection Date",
                     applicationViewDto.getApplicationDto().getApplicationNo());
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
