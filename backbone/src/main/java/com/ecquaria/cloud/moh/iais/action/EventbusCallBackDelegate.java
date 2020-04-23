@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,12 +39,8 @@ public class EventbusCallBackDelegate {
             NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         log.info("<=========== Eventbus Callback Start ===========>");
         HttpServletRequest request = bpc.request;
-        UUID uuid = UUID.randomUUID();
-        String someKey = uuid.toString();
         String submissionId = ParamUtil.getString(request,"submissionId");
         String operation = ParamUtil.getString(request, "operation");
-        RedisCacheHelper.getInstance().set("IaisEventbusCbCount",
-                submissionId + "-" + operation, someKey, 60L * 60L * 24L);
         log.info(StringUtil.changeForLog("Submission Id ===========> " + submissionId));
         String token = ParamUtil.getString(request, "token");
         String serviceName = ParamUtil.getString(request, "service");
@@ -75,8 +70,6 @@ public class EventbusCallBackDelegate {
                     }
                 }
             }
-            String newKey = RedisCacheHelper.getInstance().get("IaisEventbusCbCount",
-                    submissionId + "-" + operation);
             if (!success && !pending) {
                 submissionClient.setCompensation(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS,
                         submissionId, operation, "");
@@ -87,43 +80,54 @@ public class EventbusCallBackDelegate {
                                 submissionId, status.getServiceName(), operation);
                     }
                 }
-            } else if (!pending && someKey.equals(newKey)) {
-                // Do something next step
-                if (EventBusConsts.OPERATION_DEMO_CREATE_ORG.equals(operation)) {
-                    handleDemoNext(submissionId, eventRefNum, operation);
-                } else if (EventBusConsts.OPERATION_APPLICATION_UPDATE_APPEAL.equals(operation)) {
-                    invokeMethod(submissionId, eventRefNum,
-                            "com.ecquaria.cloud.moh.iais.service.impl.AppealApplicaionServiceImpl",
-                            "updateFEAppealApplicationDto");
-                } else if(EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION.equals(operation)) {
-                    log.info("eventRefNum ****"+eventRefNum);
-                    log.info("send task callback *****");
-                    invokeMethod(submissionId,eventRefNum,
-                            "com.ecquaria.cloud.moh.iais.service.impl.LicenceFileDownloadServiceImpl",
-                            "sendTask");
-                    log.info("***send task callback end *****");
-                } else if(EventBusConsts.OPERATION_POST_INSPECTION_TASK.equals(operation)) {
-                    log.info("send post inspection task  *****");
-                    invokeMethod(submissionId,eventRefNum,
-                            "com.ecquaria.cloud.moh.iais.service.impl.InsRepServiceImpl",
-                            "sendPostInsTaskFeData");
-                } else if(  EventBusConsts.OPERATION_CREATE_AUDIT_TASK.equals(operation)) {
-                    log.info("send create audit inspection task  *****");
-                    invokeMethod(submissionId,eventRefNum,
-                            "com.ecquaria.cloud.moh.iais.service.impl.AuditSystemListServiceImpl",
-                            "createTaskCallBack");
-                } else if (EventBusConsts.OPERATION_LICENCE_SAVE.equals(operation)) {
-                    invokeMethod(submissionId, eventRefNum,
-                            "com.ecquaria.cloud.moh.iais.service.impl.LicenceServiceImpl",
-                            "createFESuperLicDto");
-                } else if (EventBusConsts.OPERATION_LICENCE_SAVE_APPEAL.equals(operation)) {
-                    invokeMethod(submissionId, eventRefNum,
-                            "com.ecquaria.cloud.moh.iais.service.impl.AppealServiceImpl",
-                            "updateFEAppealLicenceDto");
+            } else if (!pending) {
+                String flag = RedisCacheHelper.getInstance().get("IaisEventbusCbCount",
+                        submissionId + "-" + operation);
+                if (StringUtil.isEmpty(flag)) {
+                    RedisCacheHelper.getInstance().set("IaisEventbusCbCount",
+                            submissionId + "-" + operation, "callback", 60L * 60L * 24L);
+                    callbackMethod(submissionId, eventRefNum, operation);
                 }
             }
         }
         log.info("<=========== Eventbus Callback Finish ===========>");
+    }
+
+    private void callbackMethod(String submissionId, String operation, String eventRefNum)
+            throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        // Do something next step
+        if (EventBusConsts.OPERATION_DEMO_CREATE_ORG.equals(operation)) {
+            handleDemoNext(submissionId, eventRefNum, operation);
+        } else if (EventBusConsts.OPERATION_APPLICATION_UPDATE_APPEAL.equals(operation)) {
+            invokeMethod(submissionId, eventRefNum,
+                    "com.ecquaria.cloud.moh.iais.service.impl.AppealApplicaionServiceImpl",
+                    "updateFEAppealApplicationDto");
+        } else if(EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION.equals(operation)) {
+            log.info("eventRefNum ****"+eventRefNum);
+            log.info("send task callback *****");
+            invokeMethod(submissionId,eventRefNum,
+                    "com.ecquaria.cloud.moh.iais.service.impl.LicenceFileDownloadServiceImpl",
+                    "sendTask");
+            log.info("***send task callback end *****");
+        } else if(EventBusConsts.OPERATION_POST_INSPECTION_TASK.equals(operation)) {
+            log.info("send post inspection task  *****");
+            invokeMethod(submissionId,eventRefNum,
+                    "com.ecquaria.cloud.moh.iais.service.impl.InsRepServiceImpl",
+                    "sendPostInsTaskFeData");
+        } else if(  EventBusConsts.OPERATION_CREATE_AUDIT_TASK.equals(operation)) {
+            log.info("send create audit inspection task  *****");
+            invokeMethod(submissionId,eventRefNum,
+                    "com.ecquaria.cloud.moh.iais.service.impl.AuditSystemListServiceImpl",
+                    "createTaskCallBack");
+        } else if (EventBusConsts.OPERATION_LICENCE_SAVE.equals(operation)) {
+            invokeMethod(submissionId, eventRefNum,
+                    "com.ecquaria.cloud.moh.iais.service.impl.LicenceServiceImpl",
+                    "createFESuperLicDto");
+        } else if (EventBusConsts.OPERATION_LICENCE_SAVE_APPEAL.equals(operation)) {
+            invokeMethod(submissionId, eventRefNum,
+                    "com.ecquaria.cloud.moh.iais.service.impl.AppealServiceImpl",
+                    "updateFEAppealLicenceDto");
+        }
     }
 
     private void handleDemoNext(String submissionId, String eventRefNum, String operation)
