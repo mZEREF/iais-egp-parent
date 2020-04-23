@@ -48,7 +48,7 @@ public interface FeEicGatewayClient {
                                          @RequestHeader("authorization-Secondary") String authorizationSec);
 
     @GetMapping(value = "v1/hcsa-app-officer", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<String>> getEmailByCorrelationIdAndStatusAndRole(@RequestParam String corrDataJson,
+    FeignResponseEntity<List<String>> getEmailByCorrelationIdAndStatusAndRole(@RequestParam(value = "corrData") String corrDataJson,
                                                                               @RequestHeader("date") String date,
                                                                               @RequestHeader("authorization") String authorization,
                                                                               @RequestHeader("date-Secondary") String dateSec,
