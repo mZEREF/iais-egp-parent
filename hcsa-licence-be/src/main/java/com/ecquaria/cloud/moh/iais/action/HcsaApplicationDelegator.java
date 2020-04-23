@@ -767,7 +767,7 @@ public class HcsaApplicationDelegator {
           List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = appPremisesRoutingHistoryService.
                   getAppPremisesRoutingHistoryDtosByAppNo(applicationDto.getApplicationNo());
         List<String> userIds = getUserIds(appPremisesRoutingHistoryDtos);
-        if(userIds != null && userIds.size() > 0){
+        if(!IaisCommonUtils.isEmpty(userIds)){
             BroadcastOrganizationDto broadcastOrganizationDto = broadcastService.getBroadcastOrganizationDto(
                     applicationDto.getApplicationNo(),AppConsts.DOMAIN_TEMPORARY);
             BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
@@ -1507,11 +1507,10 @@ public class HcsaApplicationDelegator {
 
     private List<String> getUserIds(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos){
         Set<String> set = IaisCommonUtils.genNewHashSet();
-        if(appPremisesRoutingHistoryDtos == null || appPremisesRoutingHistoryDtos.size() ==0){
-            return  null;
-        }
-        for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto :appPremisesRoutingHistoryDtos ){
-            set.add(appPremisesRoutingHistoryDto.getActionby());
+        if(!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtos)){
+            for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto :appPremisesRoutingHistoryDtos ){
+                set.add(appPremisesRoutingHistoryDto.getActionby());
+            }
         }
         return  new ArrayList(set);
 
