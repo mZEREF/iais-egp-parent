@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
@@ -94,7 +95,10 @@ public class InspectionMergeSendNcEmailDelegator {
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request=bpc.request;
-        ParamUtil.setSessionAttr(bpc.request, TASK_DTO, null);
+        String taskId = ParamUtil.getMaskedString(request,"taskId");
+        AuditTrailHelper.auditFunction("Merge NcEmail Management", "Merge NcEmail Config");
+        TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
+        ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
         ParamUtil.setSessionAttr(request,"appPremCorrIds",null);
         ParamUtil.setSessionAttr(request,MSG_CON, null);
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,null);
@@ -106,13 +110,7 @@ public class InspectionMergeSendNcEmailDelegator {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getMaskedString(request,"taskId");
-        TaskDto taskDto ;
-        if(StringUtil.isEmpty(taskId)){
-            taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
-        }
-        else {
-            taskDto= taskService.getTaskById(taskId);
-        }
+        TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = fillupChklistService.getAppViewDto(taskDto.getId());
         applicationViewDto.setCurrentStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());

@@ -2,7 +2,7 @@
 <Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohRequestForInformation" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Start" x="100" y="110">
+  <StartStep defClass="" executor="" icon="" name="Start" x="110" y="290">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -114,14 +114,14 @@
     <JavaCode defClass="" executor="" methodName="preLicInfo_OnStepProcess_0" name="preLicInfo_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preSearch" x="250" y="110">
+  <AutomaticStep defClass="" executor="" icon="" name="preSearch" x="100" y="430">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preSearch_OnStepProcess_0" name="preSearch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preSearchLic" x="260" y="520">
+  <AutomaticStep defClass="" executor="" icon="" name="preSearchLic" x="430" y="250">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -204,13 +204,13 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="searchPage" stageIndicator="" x="120" y="260">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="searchPage" stageIndicator="" x="170" y="320">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="searchLicPage" stageIndicator="" x="140" y="520">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="searchLicPage" stageIndicator="" x="240" y="250">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -235,7 +235,7 @@
    <position>{(280,450)(390,510)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preSearch" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
-   <position>{(120,130)(270,130)}</position>
+   <position>{(130,310)(120,450)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/searchLicencePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preSearchLicence" style="oblique">
    <position>{(420,380)(560,380)}</position>
@@ -325,7 +325,7 @@
    <position>{(1830,260)(1700,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/SuccessPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
-   <position>{(1865,510)(1700,480)}</position>
+   <position>{(1840,480)(1700,480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ViewRFI" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preViewRfi" style="oblique">
    <position>{(1920,480)(1930,630)}</position>
@@ -348,8 +348,8 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Direct" name="" sourceName="/Pages/WebPage/appInfoPage" style="oblique">
    <position>{(1100,190)(850,130)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preSearch" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge3" style="rectanular">
-   <position>{(850,130)(270,130)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preSearchLic" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge3" style="oblique">
+   <position>{(850,130)(450,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch6" style="rectanular">
    <position>{(1930,130)(850,130)}</position>
@@ -367,25 +367,25 @@
    <position>{(1150,610)(910,610)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preSearchLic" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch8" style="oblique">
-   <position>{(760,610)(280,540)}</position>
+   <position>{(760,610)(450,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(280,450)(270,130)}</position>
+   <position>{(280,450)(120,450)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/searchPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preSearch" style="oblique">
-   <position>{(270,130)(140,280)}</position>
+   <position>{(120,450)(190,340)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/searchPage" style="rectanular">
-   <position>{(140,280)(280,450)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/searchPage" style="oblique">
+   <position>{(190,340)(280,450)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preSearchLic" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(280,450)(280,540)}</position>
+   <position>{(280,450)(450,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/searchLicPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preSearchLic" style="oblique">
-   <position>{(280,540)(160,540)}</position>
+   <position>{(450,270)(260,270)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/searchLicPage" style="rectanular">
-   <position>{(160,540)(280,450)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/searchLicPage" style="oblique">
+   <position>{(260,270)(280,450)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicenceAfter" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(280,450)(1050,380)}</position>
@@ -421,10 +421,10 @@
    <position>{(280,450)(430,450)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCreateRequest" style="oblique">
-   <position>{(1770,380)(1865,510)}</position>
+   <position>{(1770,380)(1840,480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preNewRfi" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
-   <position>{(1865,510)(1830,260)}</position>
+   <position>{(1840,480)(1830,260)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

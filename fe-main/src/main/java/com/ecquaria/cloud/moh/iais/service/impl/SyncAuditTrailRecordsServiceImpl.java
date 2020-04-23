@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityEventDto;
@@ -139,11 +140,11 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         if(!c.exists()){
             c.mkdirs();
         }
-        try (OutputStream is=new FileOutputStream(backups+File.separator+ l+".zip");
+        try (OutputStream is=new FileOutputStream(backups+File.separator+ l+ AppServicesConsts.ZIP_NAME);
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
 
-            log.info("------------zip file name is"+backups+File.separator+ l+".zip"+"--------------------");
+            log.info("------------zip file name is"+backups+File.separator+ l+AppServicesConsts.ZIP_NAME+"--------------------");
             File file = new File(download+File.separator);
 
             MiscUtil.checkDirs(file);
@@ -190,7 +191,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
             File[] files = zipFile.listFiles((dir, name) -> {
-                if (name.endsWith(fileNamesss+".zip")) {
+                if (name.endsWith(fileNamesss+AppServicesConsts.ZIP_NAME)) {
                     return true;
                 }
                 return false;
@@ -209,10 +210,10 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
                     byte[] bytes = by.toByteArray();
                     String s = FileUtil.genMd5FileChecksum(bytes);
-                    File curFile =new File(backups + File.separator + s + ".zip");
+                    File curFile =new File(backups + File.separator + s + AppServicesConsts.ZIP_NAME);
                     file.renameTo(curFile);
-                    log.info("----------- new zip file name is"+backups+File.separator+fileNamesss+".zip");
-                    String s1 = saveFileName(fileNamesss+".zip","backupsAudit" + File.separator+fileNamesss+".zip");
+                    log.info("----------- new zip file name is"+backups+File.separator+s+AppServicesConsts.ZIP_NAME);
+                    String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,"backupsAudit" + File.separator+s+AppServicesConsts.ZIP_NAME);
                     if(!s1.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
                         flag=false;

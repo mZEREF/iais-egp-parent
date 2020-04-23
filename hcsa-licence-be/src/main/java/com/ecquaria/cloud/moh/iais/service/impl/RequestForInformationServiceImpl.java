@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -34,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
@@ -286,6 +288,27 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
                     ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
                     if(processFileTrackDto!=null){
+                        //check file is changed
+                        try (FileInputStream is=new FileInputStream(fil);
+                             ByteArrayOutputStream by=new ByteArrayOutputStream();) {
+                            int count;
+                            byte [] size=new byte[1024];
+                            count=is.read(size);
+                            while(count!=-1){
+                                by.write(size,0,count);
+                                count= is.read(size);
+                            }
+
+                            byte[] bytes = by.toByteArray();
+                            String s = FileUtil.genMd5FileChecksum(bytes);
+                            s = s + AppServicesConsts.ZIP_NAME;
+                            if( !s.equals(name)){
+                                continue;
+                            }
+                        }catch (Exception e){
+                            log.error(e.getMessage(),e);
+                            continue;
+                        }
                         CheckedInputStream cos=null;
                         BufferedInputStream bis=null;
                         BufferedOutputStream bos=null;
