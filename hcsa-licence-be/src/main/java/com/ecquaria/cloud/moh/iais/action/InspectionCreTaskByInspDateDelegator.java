@@ -30,7 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -119,7 +118,7 @@ public class InspectionCreTaskByInspDateDelegator {
     }
 
     private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList();
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
         for(ApplicationDto applicationDto : applicationDtos){
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);
