@@ -68,20 +68,28 @@
             <div class="row">
                 <div class="col-xs-12 col-md-4">
                 </div>
-                <div class="col-xs-12 col-md-4">
-                    <div class="text-right text-center-mobile">
+                <div class="col-md-4">
+                    <div class="text-left text-center-mobile col-md-6">
+                        <a class="back" href="#" id="back" ><em class="fa fa-angle-left"></em>Back</a>
+                    </div>
+                    <div class="text-right text-center-mobile col-md-6">
                         <a class="btn btn-primary next" id="submitService">Continue</a>
                     </div>
                 </div>
             </div>
+            <input hidden id="action" name="action" value="">
         </form>
     </div>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
-
     $(document).ready(function () {
+        $('#back').click(function () {
+            $("#action").val("back");
+            SOP.Crud.cfxSubmit("mainForm");
+        })
         $('#submitService').click(function () {
+            $("#action").val("submit");
             SOP.Crud.cfxSubmit("mainForm");
         });
     });

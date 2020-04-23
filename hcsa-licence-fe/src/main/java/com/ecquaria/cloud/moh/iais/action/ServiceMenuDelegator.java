@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -11,8 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -51,8 +48,8 @@ public class ServiceMenuDelegator {
 
     private static final String CHOOSE_BASE = "chooseBase";
     private static final String ERROR_ATTR = "err";
+    private static final String BACK_ATTR = "back";
     private static final String NEXT = "next";
-    private static final String CHOOSE_LICENSE = "chooseLicense";
 
     List<HcsaServiceDto> allbaseService;
     List<HcsaServiceDto> allspecifiedService;
@@ -125,19 +122,18 @@ public class ServiceMenuDelegator {
         log.debug(StringUtil.changeForLog("the do validation start ...."));
         String[] basechks = ParamUtil.getStrings(bpc.request, BASE_SERVICE_CHECK_BOX_ATTR);
         String[] sepcifiedchk = ParamUtil.getStrings(bpc.request, SPECIFIED_SERVICE_CHECK_BOX_ATTR);
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String err = "";
         String nextstep = "";
-        List<String> basechkslist = IaisCommonUtils.genNewArrayList();
-        List<String> sepcifiedchkslist = IaisCommonUtils.genNewArrayList();
+        List<String> basecheckedlist = IaisCommonUtils.genNewArrayList();
+        List<String> sepcifiedcheckedlist = IaisCommonUtils.genNewArrayList();
         if(basechks == null){
-            for (String item:sepcifiedchk) {
-                sepcifiedchkslist.add(item);
-            }
             //no base service
             if(sepcifiedchk != null){
                 //spe choose base
-                List<HcsaServiceDto> hcsaServiceDtosMap = getBaseInSpe(sepcifiedchkslist);
+                for (String item:sepcifiedchk) {
+                    sepcifiedcheckedlist.add(item);
+                }
+                List<HcsaServiceDto> hcsaServiceDtosMap = getBaseInSpe(sepcifiedcheckedlist);
                 if (hcsaServiceDtosMap.size() == 0){
                     nextstep = ERROR_ATTR;
                     err = "There is no base service in specified services.";
@@ -153,7 +149,7 @@ public class ServiceMenuDelegator {
             }
         }else{
             for (String item:basechks) {
-                basechkslist.add(item);
+                basecheckedlist.add(item);
             }
             //base
             Map<String ,String> specifiedName = new HashMap<>();
@@ -170,27 +166,42 @@ public class ServiceMenuDelegator {
 
             if(sepcifiedchk != null){
                 for (String item:sepcifiedchk) {
-                    sepcifiedchkslist.add(item);
+                    sepcifiedcheckedlist.add(item);
                 }
                 //spe
-                List<String> removeBaseList = new ArrayList<>();
-                Map<String ,String> necessaryBaseServiceList = necessaryBase(basechkslist,sepcifiedchkslist);
-                List<String> surplusbaselist = basechkslist.stream().filter(item -> !removeBaseList.contains(item)).collect(Collectors.toList());
+                Map<String ,String> necessaryBaseServiceList = necessaryBase(basecheckedlist,sepcifiedcheckedlist);
+                List<String> extrabaselist = IaisCommonUtils.genNewArrayList();
+                extrabaselist.addAll(basecheckedlist);
+                List<HcsaServiceDto> hcsaServiceDtosMap = getBaseInSpe(sepcifiedcheckedlist);
+                List<String> removeNecessary = IaisCommonUtils.genNewArrayList();
+                for (String extra: extrabaselist
+                     ) {
+                    for (HcsaServiceDto hc:hcsaServiceDtosMap
+                         ) {
+                        if(extra.equals(hc.getId())){
+                            removeNecessary.add(extra);
+                        }
+                    }
+                }
+                extrabaselist.removeAll(removeNecessary);
                if(necessaryBaseServiceList.size() > 0){
                     //no match
                     nextstep = ERROR_ATTR;
-                    if(surplusbaselist.size() == 0){
+                    if(extrabaselist.size() == 0){
                         err = baseName.get(getKeyOrNull(necessaryBaseServiceList)) + " should be selected.";
                     }else{
-                        err = "The chosen base service ";
-                        err = err + baseName.get(surplusbaselist.get(0));
-                        err = err + " is not the prerequisite of ";
-                        err = err + specifiedName.get(getValueOrNull(necessaryBaseServiceList)) + ".";
+                        for(Map.Entry<String, String> entry : necessaryBaseServiceList.entrySet()){
+                            err = "The chosen base service ";
+                            err = err + baseName.get(extrabaselist.get(0));
+                            err = err + " is not the prerequisite of ";
+                            err = err + specifiedName.get(entry.getValue()) + ".";
+                            break;
+                        }
                     }
                     ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
                 }else{
                     //match
-                    nextstep = NEXT;
+                    nextstep = CHOOSE_BASE;
                 }
             }else{
                 //new app
@@ -199,8 +210,8 @@ public class ServiceMenuDelegator {
 
         }
         ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, nextstep);
-        ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED, (Serializable) sepcifiedchkslist);
-        ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, (Serializable) basechkslist);
+        ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED, (Serializable) sepcifiedcheckedlist);
+        ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, (Serializable) basecheckedlist);
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, (Serializable) allbaseService);
         ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, (Serializable) allspecifiedService);
     }
@@ -221,51 +232,63 @@ public class ServiceMenuDelegator {
     }
 
     public void baseValidation(BaseProcessClass bpc){
+        String action = ParamUtil.getString(bpc.request, "action");
         String[] basechks = ParamUtil.getStrings(bpc.request, BASE_SERVICE_CHECK_BOX_ATTR);
-        if(basechks == null){
-            //no choose all
-            String err = "Base service should be selected.";
-            ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, AppConsts.FALSE);
+        if(BACK_ATTR.equals(action)){
+            ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, BACK_ATTR);
         }else{
-            List<String> basechkslist = IaisCommonUtils.genNewArrayList();
-            for (String item:basechks
-            ) {
-                basechkslist.add(item);
-            }
-            if(basechkslist.size() == 1){
-                List<String> basechksNamelist = IaisCommonUtils.genNewArrayList();
-                basechksNamelist = BaseIdToName(basechkslist);
-                SearchResult searchResult = getLicense(basechksNamelist);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, AppConsts.TRUE);
-                ParamUtil.setRequestAttr(bpc.request, "licence", searchResult);
-                ParamUtil.setSessionAttr(bpc.request, "baseName", basechksNamelist.get(0));
-            }else{
-                String err = "Base service can choose one only.";
+            if(basechks == null){
+                //no choose all
+                String err = "Base service should be selected.";
                 ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, AppConsts.FALSE);
+                ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, ERROR_ATTR);
+            }else{
+                List<String> basechkslist = IaisCommonUtils.genNewArrayList();
+                for (String item:basechks
+                ) {
+                    basechkslist.add(item);
+                }
+                if(basechkslist.size() == 1){
+                    List<String> basechksNamelist = IaisCommonUtils.genNewArrayList();
+                    basechksNamelist = BaseIdToName(basechkslist);
+                    SearchResult searchResult = getLicense(basechksNamelist);
+                    ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, "licence");
+                    ParamUtil.setRequestAttr(bpc.request, "licence", searchResult);
+                    ParamUtil.setSessionAttr(bpc.request, "baseName", basechksNamelist.get(0));
+                }else{
+                    String err = "Base service can choose one only.";
+                    ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                    ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR,ERROR_ATTR);
+                }
+
+
+                ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, (Serializable) basechkslist);
             }
-
-
-            ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, (Serializable) basechkslist);
         }
+
 
     }
 
+
     public void licenseValidation(BaseProcessClass bpc){
+        String action = ParamUtil.getString(bpc.request, "action");
         String licenceJudge = ParamUtil.getString(bpc.request, "licenceJudge");
-        if("1".equals(licenceJudge)){
-            String[] licence = ParamUtil.getStrings(bpc.request, "licence");
-            List<String> licenceList = IaisCommonUtils.genNewArrayList();
-            for (String item:licence
-                 ) {
-                licenceList.add(item);
+        if(BACK_ATTR.equals(action)){
+            ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, BACK_ATTR);
+        }else {
+            if ("1".equals(licenceJudge)) {
+                String[] licence = ParamUtil.getStrings(bpc.request, "licence");
+                List<String> licenceList = IaisCommonUtils.genNewArrayList();
+                for (String item : licence
+                ) {
+                    licenceList.add(item);
+                }
+                ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, NEXT);
+                ParamUtil.setSessionAttr(bpc.request, "licence", (Serializable) licenceList);
+            } else {
+                ParamUtil.setSessionAttr(bpc.request, "licence", null);
+                ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, NEXT);
             }
-            ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, NEXT);
-            ParamUtil.setSessionAttr(bpc.request, "licence", (Serializable) licenceList);
-        }else{
-            ParamUtil.setSessionAttr(bpc.request, "licence",null);
-            ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, NEXT);
         }
     }
 
@@ -316,7 +339,8 @@ public class ServiceMenuDelegator {
     }
 
     private Map<String ,String> necessaryBase(List<String> basechkslist, List<String> sepcifiedchkslist){
-
+        List<String> chkslistcopy = IaisCommonUtils.genNewArrayList();
+        chkslistcopy.addAll(basechkslist);
         List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getCorrelation();
         Map<String ,String> necessaryBaseServiceList = new HashMap<>();
         for (String item: sepcifiedchkslist) {
@@ -330,7 +354,7 @@ public class ServiceMenuDelegator {
         Iterator<String> iter = necessaryBaseServiceList.keySet().iterator();
         while(iter.hasNext()){
             String key = iter.next();
-            for (String basechk:basechkslist) {
+            for (String basechk:chkslistcopy) {
                 if (basechk.equals(key)) {
                     iter.remove();
                 }

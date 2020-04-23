@@ -43,7 +43,7 @@
     <JavaCode defClass="" executor="" methodName="doBeforStart_OnStepProcess_0" name="doBeforStart_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="chooseBase" x="60" y="230">
+  <AutomaticStep defClass="" executor="" icon="" name="chooseBase" x="60" y="250">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -57,7 +57,7 @@
     <JavaCode defClass="" executor="" methodName="baseValidation_OnStepProcess_0" name="baseValidation_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="licenseValidation" x="590" y="250">
+  <AutomaticStep defClass="" executor="" icon="" name="licenseValidation" x="550" y="350">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -84,7 +84,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="license" stageIndicator="" x="500" y="250">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="license" stageIndicator="" x="580" y="250">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -124,47 +124,49 @@
    <position>{(720,260)(690,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/chooseBase" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(550,120)(80,250)}</position>
+   <position>{(550,120)(80,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(550,120)(276,21)(210,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/baseService" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/chooseBase" style="rectanular">
-   <position>{(80,250)(200,270)}</position>
+   <position>{(80,270)(200,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/baseValidation" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/baseService" style="rectanular">
    <position>{(200,270)(320,270)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/baseValidation" style="rectanular">
-   <position>{(320,270)(430,270)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/appBeforeStart" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(550,120)(690,120)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/chooseBase" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(430,270)(206,418)(92,419)(80,250)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/license" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(430,270)(520,270)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/licenseValidation" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/license" style="rectanular">
-   <position>{(520,270)(610,270)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/licenseValidation" style="oblique">
-   <position>{(610,270)(550,120)}</position>
+   <position>{(600,270)(570,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/validation" style="rectanular">
    <position>{(420,120)(550,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/license" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(550,120)(520,270)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/baseValidation" style="rectanular">
+   <position>{(320,270)(440,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/chooseBase" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(440,270)(93,393)(80,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(440,270)(221,199)(210,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch4" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/licenseValidation" style="rectanular">
+   <position>{(570,370)(670,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/chooseBase" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch4" style="rectanular">
+   <position>{(670,370)(46,451)(80,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/appBeforeStart" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch4" style="rectanular">
+   <position>{(670,370)(690,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/license" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(440,270)(600,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/appBeforeStart" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(550,120)(690,120)}</position>
   </SynchronousLink>
  </Links>
- <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/chooseBase" componentIfTrue="/Pages/WebPage/license" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="410" y="250">
-   <Description/>
-  </Condition>
- </Conditions>
+ <Conditions/>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="switch_action_type" name="Switch2" x="820" y="100">
    <Description/>
@@ -176,7 +178,17 @@
    <SwitchCase component="/Steps/AutomaticStep/chooseBase" value="&quot;chooseBase&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareData" value="&quot;err&quot;"/>
    <SwitchCase component="/Pages/WebPage/appBeforeStart" value="&quot;next&quot;"/>
-   <SwitchCase component="/Pages/WebPage/license" value="&quot;chooseLicense&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="switch_action_type" name="Switch3" x="420" y="250">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/chooseBase" value="&quot;err&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareData" value="&quot;back&quot;"/>
+   <SwitchCase component="/Pages/WebPage/license" value="&quot;licence&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="switch_action_type" name="Switch4" x="650" y="350">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/chooseBase" value="&quot;back&quot;"/>
+   <SwitchCase component="/Pages/WebPage/appBeforeStart" value="&quot;next&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
