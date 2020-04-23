@@ -76,7 +76,6 @@ public class InspectionPreDelegator {
      */
     public void inspectionPreInspectorStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorStart start ...."));
-        AuditTrailHelper.auditFunction("Inspector Pre Task", "Pre Inspection Task");
     }
 
     /**
@@ -87,9 +86,12 @@ public class InspectionPreDelegator {
      */
     public void inspectionPreInspectorInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorInit start ...."));
+        String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
+        TaskDto taskDto = taskService.getTaskById(taskId);
+        AuditTrailHelper.auditFunction("Inspector Pre Task", "Pre Inspection Task");
+        ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", null);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", null);
-        ParamUtil.setSessionAttr(bpc.request, "taskDto", null);
         ParamUtil.setSessionAttr(bpc.request, "inboxUrl", null);
         ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO, null);
@@ -111,8 +113,6 @@ public class InspectionPreDelegator {
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         if(inspectionPreTaskDto == null){
             inspectionPreTaskDto = new InspectionPreTaskDto();
-            String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
-            taskDto = taskService.getTaskById(taskId);
         }
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
