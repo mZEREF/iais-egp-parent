@@ -63,8 +63,6 @@
                                 </li>
                             </c:otherwise>
                         </c:choose>
-                        <li class="divider" role="separator"></li>
-                        <li><a href="#">Step-by-step guide to eServices</a></li>
                         </ol>
                     </c:if>
                 </c:when>
