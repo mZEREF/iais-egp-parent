@@ -20,7 +20,7 @@
     <br><br>
 
         <br>
-        <div class="bg-title"><h2>ErrorMessage management</h2></div>
+        <div class="bg-title"><h2>ErrorMessage Management</h2></div>
             <div class="form-horizontal">
                 <div class="form-group">
                     <iais:field value="Type" required="true"/>

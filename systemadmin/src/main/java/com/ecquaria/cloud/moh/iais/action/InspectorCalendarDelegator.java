@@ -16,7 +16,12 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +30,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author: yichen
@@ -143,33 +150,37 @@ public class InspectorCalendarDelegator {
 
 		String isNew = (String) ParamUtil.getSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA);
 
+		Map<String, String> groupNameToIdMap = IaisCommonUtils.genNewHashMap();
 		List<SelectOption> wrlGrpNameOpt = IaisCommonUtils.genNewArrayList();
 		workingGroupQueryList.forEach(wkr -> {
-			String groupId = wkr.getId();
+			//String groupId = wkr.getId();
 			String groupName = wkr.getGroupName();
-			wrlGrpNameOpt.add(new SelectOption(groupId, groupName));
+			groupNameToIdMap.put(groupName, wkr.getId());
+			wrlGrpNameOpt.add(new SelectOption(groupName, groupName));
 		});
 
 		SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
 
-		String defaultId = workingGroupQueryList.get(0).getId();
+		String groupName = workingGroupQueryList.get(0).getGroupName();
 		String afterSelectWrkGroup = ParamUtil.getRequestString(request, AppointmentConstants.SHORT_NAME_ATTR);
-
+		String groupId = groupNameToIdMap.containsKey(groupName) == true ? groupNameToIdMap.get(groupName) : "";
 		boolean isGroupLead = false;
 		switch (isNew){
 			case AppConsts.TRUE:
-				if (leadGroupList.contains(defaultId)){
+				if (leadGroupList.contains(groupId)){
 					isGroupLead = true;
 					ParamUtil.setRequestAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, IaisEGPConstant.YES);
 				}else {
 					ParamUtil.setRequestAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, IaisEGPConstant.NO);
 				}
 
-				searchParam.addFilter(AppointmentConstants.WRK_GROUP_ATTR, defaultId, true);
-				ParamUtil.setRequestAttr(request, AppointmentConstants.SHORT_NAME_ATTR, defaultId);
+				searchParam.addFilter(AppointmentConstants.WRK_GROUP_ATTR, groupName, true);
+				ParamUtil.setRequestAttr(request, AppointmentConstants.SHORT_NAME_ATTR, groupName);
 				ParamUtil.setSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA, "false");
 			break;
 			default:
+				afterSelectWrkGroup = groupNameToIdMap.containsKey(afterSelectWrkGroup) == true
+						? groupNameToIdMap.get(afterSelectWrkGroup) : afterSelectWrkGroup;
 				if (leadGroupList.contains(afterSelectWrkGroup)){
 					isGroupLead = true;
 					ParamUtil.setRequestAttr(request, AppointmentConstants.IS_GROUP_LEAD_ATTR, IaisEGPConstant.YES);
@@ -206,8 +217,8 @@ public class InspectorCalendarDelegator {
 		String userBlockDateStart = ParamUtil.getString(request, AppointmentConstants.USER_BLOCK_DATE_START_ATTR);
 		String userBlockDateEnd = ParamUtil.getString(request, AppointmentConstants.USER_BLOCK_DATE_END_ATTR);
 		String userBlockDateDescription = ParamUtil.getString(request, AppointmentConstants.USER_BLOCK_DATE_DESCRIPTION_ATTR);
-/*		String recurrence = ParamUtil.getString(request, AppointmentConstants.RECURRENCE_OPTION);
-		String recurrenceEndDate = ParamUtil.getString(request, AppointmentConstants.RECURRENCE_END_DATE_ATTR);*/
+		String recurrence = ParamUtil.getString(request, AppointmentConstants.RECURRENCE_ATTR);
+		String recurrenceEndDate = ParamUtil.getString(request, AppointmentConstants.RECURRENCE_END_DATE_ATTR);
 
 		ParamUtil.setRequestAttr(request, AppointmentConstants.SHORT_NAME_ATTR, groupName);
 		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_NAME_ATTR, userName);
@@ -215,6 +226,8 @@ public class InspectorCalendarDelegator {
 		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_BLOCK_DATE_START_ATTR, userBlockDateStart);
 		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_BLOCK_DATE_END_ATTR, userBlockDateEnd);
 		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_BLOCK_DATE_DESCRIPTION_ATTR, userBlockDateDescription);
+		ParamUtil.setRequestAttr(request, AppointmentConstants.RECURRENCE_ATTR, recurrence);
+		ParamUtil.setRequestAttr(request, AppointmentConstants.RECURRENCE_END_DATE_ATTR, recurrenceEndDate);
 
 		InspectorCalendarQueryDto queryDto = new InspectorCalendarQueryDto();
 		queryDto.setGroupName(groupName);
@@ -251,6 +264,14 @@ public class InspectorCalendarDelegator {
 
 			if(!StringUtil.isEmpty(userBlockDateDescription)){
 				searchParam.addFilter(AppointmentConstants.USER_BLOCK_DATE_DESCRIPTION_ATTR, userBlockDateDescription, true);
+			}
+
+			if(!StringUtil.isEmpty(recurrence)){
+				searchParam.addFilter(AppointmentConstants.RECURRENCE_ATTR, recurrence, true);
+			}
+
+			if(!StringUtil.isEmpty(recurrenceEndDate)){
+				searchParam.addFilter(AppointmentConstants.RECURRENCE_END_DATE_ATTR, recurrenceEndDate, true);
 			}
 
 		}

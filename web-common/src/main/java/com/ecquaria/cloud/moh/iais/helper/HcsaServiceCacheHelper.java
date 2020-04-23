@@ -4,9 +4,11 @@ import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.client.HcsaServiceClient;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import java.util.List;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
+
+import java.util.List;
 
 /**
  * @author: yichen
@@ -71,9 +73,11 @@ public final class HcsaServiceCacheHelper {
 	}
 
 	public static HcsaServiceDto getServiceByServiceName(String svcName) {
+		log.info(StringUtil.changeForLog("The service name param ==>> " + svcName));
 		List<HcsaServiceDto> serviceDtos = receiveAllHcsaService();
 		if (!IaisCommonUtils.isEmpty(serviceDtos)) {
 			for (HcsaServiceDto s : serviceDtos) {
+				log.info(StringUtil.changeForLog("service name " + s.getSvcName()));
 				if (s.getSvcName().equals(svcName)) {
 					return s;
 				}

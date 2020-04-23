@@ -97,6 +97,7 @@ public class BlackedOutDateDelegator {
 
         String userId = loginContext.getUserId();
 
+        Map<String, String> groupNameToIdMap = IaisCommonUtils.genNewHashMap();
         SearchParam workingGroupQuery = new SearchParam(WorkingGroupQueryDto.class.getName());
         workingGroupQuery.addParam("userId", userId);
         QueryHelp.setMainSql("systemAdmin", "getWorkingGroupByUserId", workingGroupQuery);
@@ -109,12 +110,13 @@ public class BlackedOutDateDelegator {
         }
 
         List<WorkingGroupQueryDto> workingGroupQueryList = searchResult.getRows();
-        String defualtId = workingGroupQueryList.stream().findFirst().orElse(new WorkingGroupQueryDto()).getId();
+        String defaultName = workingGroupQueryList.stream().findFirst().orElse(new WorkingGroupQueryDto()).getGroupName();
         List<SelectOption> wrlGrpNameOpt = IaisCommonUtils.genNewArrayList();
         workingGroupQueryList.forEach(wkr -> {
-            String groupId = wkr.getId();
+            //String groupId = wkr.getId();
             String groupName = wkr.getGroupName();
-            wrlGrpNameOpt.add(new SelectOption(groupId, groupName));
+            groupNameToIdMap.put(groupName, wkr.getId());
+            wrlGrpNameOpt.add(new SelectOption(groupName, groupName));
         });
 
         List<SelectOption> dropYear = IaisCommonUtils.genNewArrayList();
@@ -130,19 +132,19 @@ public class BlackedOutDateDelegator {
 
         String isNew = (String) ParamUtil.getSessionAttr(request, "isNewViewData");
         if (isNew.equals("true")){
-            blackQuery.addParam("shortName", defualtId);
-            blackQuery.addFilter("shortName", defualtId, true);
+            blackQuery.addParam("shortName", defaultName);
+            blackQuery.addFilter("shortName", defaultName, true);
             ParamUtil.setSessionAttr(request, "isNewViewData", "false");
         }
 
-        ParamUtil.setRequestAttr(request, "shortName", defualtId);
+        ParamUtil.setRequestAttr(request, "shortName", defaultName);
         QueryHelp.setMainSql("systemAdmin", "getBlackedOutDateList", blackQuery);
-
 
         SearchResult<ApptBlackoutDateQueryDto> blackoutDateQueryList  = appointmentService.doQuery(blackQuery);
 
         ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, (Serializable) wrlGrpNameOpt);
         ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_QUERY, blackQuery);
+        ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.APPOINTMENT_GROUP_NAME_TO_ID_MAP, (Serializable) groupNameToIdMap);
         ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_RESULT, blackoutDateQueryList);
     }
 
@@ -209,9 +211,7 @@ public class BlackedOutDateDelegator {
         String endDate = ParamUtil.getString(request, "endDate");
         String status = ParamUtil.getString(request, "status");
 
-
         SearchParam blackQuery = IaisEGPHelper.getSearchParam(request, true, filterParameter);
-
 
         if (!StringUtils.isEmpty(groupName)){
             blackQuery.addFilter("shortName", groupName, true);
@@ -320,9 +320,11 @@ public class BlackedOutDateDelegator {
             return ;
         }
 
+        Map<String, String> groupNameToIdMap = (Map<String, String>) ParamUtil.getSessionAttr(request, AppointmentConstants.APPOINTMENT_GROUP_NAME_TO_ID_MAP);
+        String groupId = groupNameToIdMap != null && groupNameToIdMap.containsKey(groupName) ? groupNameToIdMap.get(groupName) : "";
 
         //ERR004	There is an inspection scheduled on that date. This appointment must be rescheduled before this action may be performed.
-       boolean canBloack = canBlock(blackoutDateDto.getShortName(), blackoutDateDto.getStartDate(), blackoutDateDto.getEndDate());
+       boolean canBloack = canBlock(groupId, blackoutDateDto.getStartDate(), blackoutDateDto.getEndDate());
         if (!canBloack){
             errorMap.put(CUSTOM_VALIDATEION_ATTR, "There is an inspection scheduled on that date. This appointment must be rescheduled before this action may be performed.");
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -330,11 +332,9 @@ public class BlackedOutDateDelegator {
             return ;
         }
 
-        errorMap = null;
-
         switch (ans){
             case 0:
-                boolean isCreate = appointmentService.createBlackedOutCalendar(blackoutDateDto);
+                appointmentService.createBlackedOutCalendar(blackoutDateDto);
                 ParamUtil.setRequestAttr(request,"ackMsg", "You have successfully create a block-out date.");
                 break;
             case 1:
@@ -360,8 +360,8 @@ public class BlackedOutDateDelegator {
         doCreateOrUpdate(request, UPDATE_ACTION);
     }
 
-    private Boolean canBlock(String groupName, Date startDate, Date endDate){
-        List<Date> currentInspDate = appointmentService.getCurrentWorkingGroupInspectionDate(groupName);
+    private Boolean canBlock(String groupId, Date startDate, Date endDate){
+        List<Date> currentInspDate = appointmentService.getCurrentWorkingGroupInspectionDate(groupId);
         if (IaisCommonUtils.isEmpty(currentInspDate)){
             return Boolean.TRUE;
         }

@@ -38,9 +38,9 @@
 
               <c:if test="${isGroupLead == 'Y'}">
               <iais:row>
-                <iais:field value="Inspector ID:"/>
+                <iais:field value="Inspector ID:" required="true"/>
                 <iais:value width="18">
-                  <input type="text" name="userName" value="${userName}" maxlength="255" />
+                  <input type="text" id="userName" name="userName" value="${userName}" maxlength="255" />
                   <span id="error_userName" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
               </iais:row>
@@ -83,17 +83,26 @@
               <iais:field value="Recurrence:"/>
               <iais:value width="18">
                 <iais:select name="recurrence" id="recurrence"
-                             options = "recurrenceOpt" firstOption="Please Select" value="${recurrence}" ></iais:select>
-                <%--<span id="error_year" name="iaisErrorMsg" class="error-msg"></span>--%>
+                             options = "recurrenceOpt" value="${recurrence}" ></iais:select>
               </iais:value>
             </iais:row>
 
-            <iais:action style="text-align:center;">
-              <div class="text-right">
-                <a class="btn btn-secondary" onclick="javascript:doClear()" href="#">Clear</a>
-                <a class="btn btn-primary" id="crud_search_button" value="doQuery" href="#">Search</a>
-              </div>
-            </iais:action>
+              <iais:row>
+                <iais:field value="Recurrence End Date:"/>
+                <iais:value width="18">
+                  <iais:datePicker id = "recurrenceEndDate" name = "recurrenceEndDate"  value="${recurrenceEndDate}"></iais:datePicker>
+                  <span id="error_year" name="iaisErrorMsg" class="error-msg"></span>
+                </iais:value>
+              </iais:row>
+
+                <iais:action style="text-align:center;">
+                  <div class="text-right">
+                    <a class="btn btn-secondary <c:if test="${isGroupLead != 'Y'}">disabled</c:if>"  onclick="javascript:doClear()" href="#">Clear</a>
+                    <a class="btn btn-primary <c:if test="${isGroupLead != 'Y'}">disabled</c:if>" id="crud_search_button" value="doQuery" href="#">Search</a>
+                  </div>
+                </iais:action>
+
+
 
             </div>
           </iais:section>
@@ -116,9 +125,11 @@
                       <iais:sortableHeader needSort="false"   field="index" value="No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="NAME" value="Inspector ID"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="YEAR" value="Year"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   field="BLOCK_OUT_START" value="User Block Date Start"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   field="BLOCK_OUT_END" value="User Block Date End"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   field="REMARKS" value="User Block Date Description"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="BLOCK_OUT_START" value="Non-Available Date Start"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="BLOCK_OUT_END" value="Non-Available Date End"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="REMARKS" value="Non-Available Date Description"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="RECURRENCE" value="Recurrence"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="RECURRENCE_END_DATE" value="Recurrence End Date"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
                     </tr>
                     </thead>
@@ -135,16 +146,15 @@
                         <c:forEach var="calendar" items="${inspectorCalenDarResultAttr.rows}" varStatus="status">
                           <tr>
                             <td>${status.index + 1}</td>
-                              <%--<td>
-                                 2020&lt;%&ndash;<fmt:formatDate value="${nonwkrDay.startDate}" pattern="yyyy"></fmt:formatDate>&ndash;%&gt;
-                              </td>--%>
-                            <td>${calendar.userName}</td>
-                            <td>${calendar.year}</td>
+                            <td><c:out value="${calendar.userName}"></c:out></td>
+                            <td><c:out value="${calendar.year}"></c:out></td>
 
                             <td><fmt:formatDate value="${calendar.userBlockDateStart}" pattern="MM/dd/yyyy"/></td>
                             <td><fmt:formatDate value="${calendar.userBlockDateEnd}" pattern="MM/dd/yyyy"/></td>
 
-                            <td>${calendar.description}</td>
+                            <td><c:out value="${calendar.description}"></c:out></td>
+                            <td><iais:code code="${calendar.recurrence}"></iais:code></td>
+                            <td><fmt:formatDate value="${calendar.recurrenceEndate}" pattern="MM/dd/yyyy"/></td>
                             <td>
                               <input type="hidden" id="nonAvailId" name="nonAvailId" value="">
                                 <button type="button"   onclick="doDelete('<iais:mask name="calendarId" value="${calendar.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
@@ -176,12 +186,13 @@
         </div>
       </div>
 
-
     </div>
 
-    <div class="text-right text-center-mobile">
+    <c:if test="${isGroupLead == 'Y'}">
+      <div class="text-right text-center-mobile">
         <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doAdd();">Create</a>
-    </div>
+      </div>
+    </c:if>
 
   </form>
 </div>
@@ -207,6 +218,7 @@
       $("#userName").val("");
       $("#userBlockDateStart").val("");
       $("#userBlockDateEnd").val("");
+      $("#recurrenceEndDate").val("");
       $("#userBlockDateDescription").val("");
 
       $("#recurrence option[text = 'N/A']").val("selected", "selected");

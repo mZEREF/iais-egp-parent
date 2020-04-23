@@ -31,7 +31,7 @@
       <iais:row>
         <iais:field value="Working Group" required="true"/>
         <iais:value width="18">
-          <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  onchange="doSearch()" options = "wrlGrpNameOpt" firstOption="Please Select" value="${shortName}" ></iais:select>
+          <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  onchange="doSearch()" options = "wrlGrpNameOpt" value="${shortName}" ></iais:select>
         </iais:value>
       </iais:row>
       <div class="clearRow">
