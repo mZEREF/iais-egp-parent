@@ -45,6 +45,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <span class="error-msg" id="error_All" name="iaisErrorMsg"></span>
                                     <c:forEach var="leg" items="${wightageDto.weightageDtoList}" varStatus="status">
                                         <tr>
                                             <td>

@@ -90,7 +90,7 @@ public class AuditManualListDelegator {
         log.debug(StringUtil.changeForLog("the confirm start ...."));
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
-        //auditSystemListService.doSubmit(auditTaskDataDtos);
+        auditSystemListService.doSubmit(auditTaskDataDtos);
         ParamUtil.setRequestAttr(request,SUBMIT_MESSAGE_SUCCESS,HcsaLicenceBeConstant .AUDIT_INSPECTION_CONFIRM_SUCCESS_MESSAGE);
         ParamUtil.setRequestAttr(request,MAIN_URL,"MohAuditManualList");
     }

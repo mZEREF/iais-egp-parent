@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskWeightageService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -184,8 +185,8 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
             List<HcsaRiskWeightageDto> weightageLeastVersionList = hcsaConfigClient.getWeightageRiskBySvcCode(temp.getServiceCode()).getEntity();
             if(temp.isEdit()){
                 weightageLeastVersionList = updateLastVersion(weightageLeastVersionList,temp);
+                hcsaConfigClient.updateWeightageMatrixList(weightageLeastVersionList);
             }
-            hcsaConfigClient.updateWeightageMatrixList(weightageLeastVersionList);
         }
         for(HcsaRiskWeightageDto temp:updateList){
             if(StringUtil.isEmpty(temp.getId())){
@@ -213,6 +214,7 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
             for(HcsaRiskWeightageDto weightage :weightageLeastVersionList){
                 weightage.setEndDate(doeffDate);
                 weightage.setStatus(status);
+                weightage.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             }
         }catch (Exception e){
             e.printStackTrace();

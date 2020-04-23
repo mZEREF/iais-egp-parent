@@ -195,7 +195,6 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
     public void saveDto(RiskLeaderShipShowDto dto) {
         List<HcsaRiskLeadershipMatrixDto> dtoList = dto.getLeaderShipDtoList();
         List<HcsaRiskLeadershipMatrixDto> saveList = IaisCommonUtils.genNewArrayList();
-        List<HcsaRiskLeadershipMatrixDto> updateList = IaisCommonUtils.genNewArrayList();
         for(HcsaRiskLeadershipMatrixDto temp : dtoList){
             if(temp.isAdIsEdit()||temp.isDpIsEdit()){
                 saveList.add(getFinDto(temp,true,true));
@@ -210,8 +209,8 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
         HcsaRiskFeSupportDto supportDto = new HcsaRiskFeSupportDto();
         supportDto.setRiskLeaderShipShowDto(dto);
         supportDto.setLeaderhsipFlag(true);
-        beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+     /*   beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());*/
     }
 
 

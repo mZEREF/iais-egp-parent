@@ -34,6 +34,8 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
                 doWeightageVad(temp,errMap);
                 dateVad(errMap, temp);
             }
+        }else {
+            errMap.put("All","Please do some change");
         }
         return errMap;
     }

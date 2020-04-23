@@ -176,7 +176,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         taskDto.setWkGrpId(temp.getWorkGroupId());
         taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
         taskDto.setSlaAlertInDays(2);
-        taskDto.setSlaRemainInDays(3);
+        //taskDto.setSlaRemainInDays(3);
         taskDto.setSlaInDays(5);
         taskDto.setPriority(0);
         taskDto.setDateAssigned(new Date());
