@@ -74,6 +74,7 @@ public class InspectorCalendarDelegator {
 		request.getSession().removeAttribute(AppointmentConstants.ACTION_VALUE);
 
 		ParamUtil.setSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA, AppConsts.TRUE);
+		ParamUtil.setSessionAttr(request, AppointmentConstants.SHORT_NAME_ATTR, null);
 		AuditTrailHelper.auditFunction("InspectorCalendar", "View function");
 	}
 
@@ -98,7 +99,6 @@ public class InspectorCalendarDelegator {
 
 	private void preSelectOpt(HttpServletRequest request){
 		List<SelectOption> dropYear = IaisCommonUtils.genNewArrayList();
-		List<SelectOption> recurrenceOption = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DATE_TYPE);
 
 
 		Calendar date = Calendar.getInstance();
@@ -108,8 +108,6 @@ public class InspectorCalendarDelegator {
 		}
 
 		ParamUtil.setRequestAttr(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT, dropYear);
-		ParamUtil.setRequestAttr(request, AppointmentConstants.RECURRENCE_ATTR, AppointmentConstants.RECURRENCE_NA);
-		ParamUtil.setRequestAttr(request, AppointmentConstants.RECURRENCE_OPTION, recurrenceOption);
 	}
 
 	/**
@@ -162,7 +160,7 @@ public class InspectorCalendarDelegator {
 		SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
 
 		String groupName = workingGroupQueryList.get(0).getGroupName();
-		String afterSelectWrkGroup = ParamUtil.getRequestString(request, AppointmentConstants.SHORT_NAME_ATTR);
+		String afterSelectWrkGroup = (String) ParamUtil.getScopeAttr(request, AppointmentConstants.SHORT_NAME_ATTR);
 		String groupId = groupNameToIdMap.containsKey(groupName) == true ? groupNameToIdMap.get(groupName) : "";
 		boolean isGroupLead = false;
 		switch (isNew){
@@ -175,7 +173,7 @@ public class InspectorCalendarDelegator {
 				}
 
 				searchParam.addFilter(AppointmentConstants.WRK_GROUP_ATTR, groupName, true);
-				ParamUtil.setRequestAttr(request, AppointmentConstants.SHORT_NAME_ATTR, groupName);
+				ParamUtil.setSessionAttr(request, AppointmentConstants.SHORT_NAME_ATTR, groupName);
 				ParamUtil.setSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA, "false");
 			break;
 			default:
@@ -220,7 +218,7 @@ public class InspectorCalendarDelegator {
 		String recurrence = ParamUtil.getString(request, AppointmentConstants.RECURRENCE_ATTR);
 		String recurrenceEndDate = ParamUtil.getString(request, AppointmentConstants.RECURRENCE_END_DATE_ATTR);
 
-		ParamUtil.setRequestAttr(request, AppointmentConstants.SHORT_NAME_ATTR, groupName);
+		ParamUtil.setSessionAttr(request, AppointmentConstants.SHORT_NAME_ATTR, groupName);
 		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_NAME_ATTR, userName);
 		ParamUtil.setRequestAttr(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_ATTR, yearVal);
 		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_BLOCK_DATE_START_ATTR, userBlockDateStart);

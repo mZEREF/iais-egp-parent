@@ -83,7 +83,7 @@
               <iais:field value="Recurrence:"/>
               <iais:value width="18">
                 <iais:select name="recurrence" id="recurrence"
-                             options = "recurrenceOpt" value="${recurrence}" ></iais:select>
+                             codeCategory="CATE_ID_DATE_TYPE" value="${recurrence}" ></iais:select>
               </iais:value>
             </iais:row>
 
