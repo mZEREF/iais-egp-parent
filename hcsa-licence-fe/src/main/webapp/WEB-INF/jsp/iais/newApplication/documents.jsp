@@ -74,10 +74,6 @@
                       </c:if>
                     </c:if>
 
-
-
-
-
                     <c:set value="${reloadAppGrpPrimaryDocMap}" var="docMap"/>
                     <!--common -->
                     <c:forEach var="commonDoc" items="${commonHcsaSvcDocConfigDto}" varStatus="v">
@@ -88,16 +84,16 @@
                         <h3>${commonDoc.docTitle}</h3>
                         <div class="file-upload-gp">
                           <input class="hidden delFlag" type="hidden" name="${commDelFlag}" value="N"/>
-                          <span  >${file.docName}</span>
+                          <span><a class="<c:if test="${!isClickEdit}">disabled</c:if>" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${v.index}&fileRo${v.index}=<iais:mask name="fileRo${v.index}" value="${file.fileRepoId}"/>&fileRepoName=${file.docName}"  >${file.docName}</a></span>
                           <c:choose>
                             <c:when test="${file.docName == '' || file.docName == null }">
                               <span class="hidden delBtn">
-                                &nbsp;&nbsp;<button type="button" class="">Delete</button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
                               </span>
                             </c:when>
                             <c:otherwise>
                               <span class="existFile delBtn <c:if test="${!isClickEdit || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if>">
-                                &nbsp;&nbsp;<button type="button" class="">Delete</button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
                               </span>
                             </c:otherwise>
                           </c:choose>

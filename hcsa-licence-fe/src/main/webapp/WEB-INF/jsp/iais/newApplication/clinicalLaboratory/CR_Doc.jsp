@@ -39,7 +39,7 @@
 
   <c:set var="svcDoc" value="${ReloadSvcDoc[docConfig.id]}" />
   <c:set var="svcDelFlag" value="${docConfig.id}flag"/>
-  <div class="row">
+  <div class="row" style="margin-bottom:2%;">
     <div class="col-xs-12">
       <h3>${docConfig.docTitle}</h3>
     </div>
@@ -47,36 +47,31 @@
       <p>${docConfig.docDesc}</p>
     </div>
     <div class="col-xs-12">
-      <div class="text-center col-xs-12">
+      <div class="">
         <div class="document-upload-list">
           <div class="file-upload-gp">
-            <div class="fileContent col-xs-12">
+            <div class="fileContent" style="margin-bottom:1%;">
               <input class="hidden delFlag" type="hidden" name="${svcDelFlag}" value="N"/>
               <input type="hidden" name="docConfig" value=""/>
               <span class="fileName"><a class="<c:if test="${!isClickEdit}">disabled</c:if>" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}"  >${svcDoc.docName}</a></span>&nbsp;&nbsp;
               <c:choose>
                 <c:when test="${svcDoc.docName == '' || svcDoc.docName == null }">
                                                     <span class="hidden delBtn">
-                                                      &nbsp;&nbsp;<button type="button" class="">Delete</button>
+                                                      &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
                                                     </span>
                 </c:when>
                 <c:otherwise>
                                                       <span class="existFile delBtn <c:if test="${!isClickEdit}">hidden</c:if>">
-                                                        &nbsp;&nbsp;<button type="button" class="">Delete</button>
+                                                        &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
                                                     </span>
                 </c:otherwise>
               </c:choose>
-                <%--(<span class="fileSize"></span>MB)--%>
             </div>
             <input class="selectedFile" id="selectedFile" name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
 
             <c:if test="${svcDoc.docName!=null}">
               <span name="iaisErrorMsg" class="error-msg" id="error_file${status.index}"></span>
             </c:if>
-
-
-
-
           </div>
         </div>
       </div>
