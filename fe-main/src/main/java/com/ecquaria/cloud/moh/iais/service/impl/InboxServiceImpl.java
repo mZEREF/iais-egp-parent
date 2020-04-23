@@ -149,6 +149,7 @@ public class InboxServiceImpl implements InboxService {
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
         for(ApplicationDto app : apps){
             if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType())
+                    && !(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(app.getStatus()))
                     && !(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(app.getStatus()))){
                 flag = false;
             }
