@@ -157,11 +157,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "nextStageReply", null);
         log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
 
-        //get the task
-        String  taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
-        AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
-        TaskDto taskDto = taskService.getTaskById(taskId);
-        ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
+        initData(bpc);
     }
 
     /**
@@ -174,18 +170,7 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData start ..."));
 
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request,"taskDto");
-        String correlationId = "";
-       if(taskDto != null){
-           correlationId = taskDto.getRefNo();
-       }else{
-           throw new IaisRuntimeException("The Task Id  is Error !!!");
-       }
-        log.debug(StringUtil.changeForLog("the do prepareData get the NewAppPremisesCorrelationDto"));
-        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
-        appPremisesCorrelationDto.setOldCorrelationId(correlationId);
-        String newCorrelationId = appPremisesCorrelationDto.getId();
-        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
-        applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
 
         //get routing stage dropdown send to page.
         log.debug(StringUtil.changeForLog("the do prepareData get the hcsaSvcRoutingStageDtoList"));
@@ -344,7 +329,7 @@ public class HcsaApplicationDelegator {
         nextStageReplyList.add(new SelectOption("PROCREP", "Give Clarification"));
         ParamUtil.setSessionAttr(bpc.request, "nextStageReply", (Serializable)nextStageReplyList);
 
-        ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
+
 
 
         List<SelectOption> decisionValues = IaisCommonUtils.genNewArrayList();
@@ -354,7 +339,8 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "decisionValues", (Serializable)decisionValues);
 
         //check inspection
-        checkShowInspection(bpc,applicationViewDto,taskDto,correlationId);
+        checkShowInspection(bpc,applicationViewDto,taskDto,applicationViewDto.getNewAppPremisesCorrelationDto().getOldCorrelationId());
+
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
 
@@ -1465,5 +1451,39 @@ public class HcsaApplicationDelegator {
                 emailClient.sendNotification(emailDto).getEntity();
             }
         }
+    }
+
+    private void initData(BaseProcessClass bpc){
+        //get the task
+        String  taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
+        AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
+        TaskDto taskDto = taskService.getTaskById(taskId);
+        ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
+
+        //set internal marks fill back
+        String correlationId = "";
+        if(taskDto != null){
+            correlationId = taskDto.getRefNo();
+        }else{
+            throw new IaisRuntimeException("The Task Id  is Error !!!");
+        }
+        log.debug(StringUtil.changeForLog("the do prepareData get the NewAppPremisesCorrelationDto"));
+        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
+        appPremisesCorrelationDto.setOldCorrelationId(correlationId);
+        String newCorrelationId = appPremisesCorrelationDto.getId();
+        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
+        applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
+
+        String appStatus = applicationViewDto.getApplicationDto().getStatus();
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = null;
+        try{
+            appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(
+                    applicationViewDto.getApplicationDto().getApplicationNo(),appStatus);
+            String internalRemarks = appPremisesRoutingHistoryDto.getInternalRemarks();
+            ParamUtil.setRequestAttr(bpc.request,"internalRemarks",internalRemarks);
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog("first do main flow ,have no two history"));
+        }
+        ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
     }
 }
