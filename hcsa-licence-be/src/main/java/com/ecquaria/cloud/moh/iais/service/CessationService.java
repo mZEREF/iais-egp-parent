@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloudfeign.FeignException;
 import freemarker.template.TemplateException;
@@ -21,17 +22,15 @@ public interface CessationService {
 
     List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds);
 
-    List<String> saveCessations(List<AppCessationDto> appCessationDtos);
+    List<String> saveCessations(List<AppCessationDto> appCessationDtos,String licenseeId);
 
     void updateCesation(List<AppCessationDto> appCessationDtos);
 
     void updateLicence(List<String> licNos);
 
-    void routingTaskToAo3(List<ApplicationDto> applicationDtos, LoginContext loginContext) throws FeignException;
-
     List<Boolean> listResultCeased(List<String> licIds);
 
     List<String> listHciName();
-
     void sendEmail(String msgId, Date date,String svcName,String appGrpId,String licenseeId) throws IOException, TemplateException;
+    List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, List<String> appIds, LoginContext loginContext) throws Exception;
 }

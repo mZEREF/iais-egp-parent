@@ -130,9 +130,11 @@ public class InsRepServiceImpl implements InsRepService {
         String appTypeCode = insRepClient.getAppType(appId).getEntity();
         ApplicationGroupDto applicationGroupDto = insRepClient.getApplicationGroupDto(appGrpId).getEntity();
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(appInsRepDto.getLicenseeId()).getEntity();
-        String licenceId = appInsRepDto.getLicenceId();
-        if(StringUtil.isEmpty(licenceId)){
+        String licNo = appInsRepDto.getLicNo();
+        if(!StringUtil.isEmpty(licNo)){
             inspectionReportDto.setLicenceNo("-");
+        }else {
+            inspectionReportDto.setLicenceNo(licNo);
         }
         if(licenseeDto!=null){
             String name = licenseeDto.getName();

@@ -67,8 +67,8 @@ public class InsReportAoDelegator {
         ParamUtil.setSessionAttr(bpc.request, APPLICATIONVIEWDTO, null);
 
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-//        String taskId = ParamUtil.getString(bpc.request,"taskId");
         String taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
+        AuditTrailHelper.auditFunction("InspectionAO Report", "InspectionAO Report");
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto  applicationViewDto = insRepService.getApplicationViewDto(correlationId);

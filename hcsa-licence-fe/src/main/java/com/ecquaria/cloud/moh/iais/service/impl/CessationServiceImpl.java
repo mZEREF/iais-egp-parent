@@ -173,38 +173,18 @@ public class CessationServiceImpl implements CessationService {
     public List<String> saveCessations(List<AppCessationDto> appCessationDtos) {
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         for(AppCessationDto appCessationDto : appCessationDtos){
-            AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
             String licId = appCessationDto.getLicId();
-            Double amount = 0.0;
-            AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
-            String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_CESSATION).getEntity();
             AppSubmissionDto appSubmissionDto = licenceClient.getAppSubmissionDto(licId).getEntity();
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
-            String svcId = hcsaServiceDto.getId();
-            String svcCode = hcsaServiceDto.getSvcCode();
-            appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
-            appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
-            appSubmissionDto.setAppGrpNo(grpNo);
-            appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
-            appSubmissionDto.setAmount(amount);
-            appSubmissionDto.setAuditTrailDto(internet);
-            appSubmissionDto.setPreInspection(true);
-            appSubmissionDto.setRequirement(true);
-            appSubmissionDto.setLicenseeId("9ED45E34-B4E9-E911-BE76-000C29C8FBE4");
-            appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-            appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
-            setRiskToDto(appSubmissionDto);
+            transform(appSubmissionDto);
             AppSubmissionDto entity = applicationClient.saveSubmision(appSubmissionDto).getEntity();
             AppSubmissionDto appSubmissionDtoSave = applicationClient.saveApps(entity).getEntity();
             List<ApplicationDto> applicationDtos = appSubmissionDtoSave.getApplicationDtos();
             String appId = applicationDtos.get(0).getId();
-            setMiscData(appCessationDto, appCessMiscDto, appId);
+            AppCessMiscDto appCessMiscDto = setMiscData(appCessationDto, appId);
             appCessMiscDtos.add(appCessMiscDto);
         }
-        List<String> listAppIds = cessationClient.saveCessation(appCessMiscDtos).getEntity();
-        return listAppIds;
+        //List<String> listAppIds = cessationClient.saveCessation(appCessMiscDtos).getEntity();
+        return null;
     }
 
 
@@ -282,7 +262,30 @@ public class CessationServiceImpl implements CessationService {
     /*
     utils
      */
-    private AppCessMiscDto setMiscData(AppCessationDto appCessationDto, AppCessMiscDto appCessMiscDto,String appId) {
+    private void transform(AppSubmissionDto appSubmissionDto){
+        Double amount = 0.0;
+        AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
+        String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_CESSATION).getEntity();
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+        String svcId = hcsaServiceDto.getId();
+        String svcCode = hcsaServiceDto.getSvcCode();
+        appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
+        appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+        appSubmissionDto.setAppGrpNo(grpNo);
+        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
+        appSubmissionDto.setAmount(amount);
+        appSubmissionDto.setAuditTrailDto(internet);
+        appSubmissionDto.setPreInspection(true);
+        appSubmissionDto.setRequirement(true);
+        appSubmissionDto.setLicenseeId("9ED45E34-B4E9-E911-BE76-000C29C8FBE4");
+        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        setRiskToDto(appSubmissionDto);
+    }
+
+    private AppCessMiscDto setMiscData(AppCessationDto appCessationDto,String appId) {
         Date effectiveDate = appCessationDto.getEffectiveDate();
         String reason = appCessationDto.getReason();
         String otherReason = appCessationDto.getOtherReason();
@@ -292,7 +295,7 @@ public class CessationServiceImpl implements CessationService {
         String patRegNo = appCessationDto.getPatRegNo();
         String patOthers = appCessationDto.getPatOthers();
         String patNoRemarks = appCessationDto.getPatNoRemarks();
-
+        AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
         appCessMiscDto.setAppealType(ApplicationConsts.CESSATION_TYPE_APPLICATION);
         appCessMiscDto.setEffectiveDate(effectiveDate);
         appCessMiscDto.setReason(reason);
@@ -300,7 +303,7 @@ public class CessationServiceImpl implements CessationService {
         appCessMiscDto.setPatNeedTrans(patNeedTrans);
         appCessMiscDto.setPatNoReason(patNoRemarks);
         appCessMiscDto.setPatTransType(patientSelect);
-        appCessMiscDto.setAppPremCorreId(appId);
+        appCessMiscDto.setAppId(appId);
         if (!StringUtil.isEmpty(patHciName)) {
             appCessMiscDto.setPatTransTo(patHciName);
         }
