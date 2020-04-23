@@ -538,7 +538,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         List<TaskDto> taskDtoList = getAllTaskFromSamePremises(premCorrIds);
         String specificDateStr = "-";
         String apptFeReason = "-";
-        if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtos)) {
+        if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtos) && appPremisesInspecApptDtos.get(0) != null) {
             specificDateStr = getApptDateToShow(appPremisesInspecApptDtos.get(0).getSpecificInspDate());
             apptFeReason = appPremisesInspecApptDtos.get(0).getReason();
             apptInspectionDateDto.setAppPremisesInspecApptDtos(appPremisesInspecApptDtos);
