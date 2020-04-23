@@ -13,8 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -28,9 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckList
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -54,7 +50,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -188,6 +183,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
         String licenseeId = applicationGroupDto.getLicenseeId();
+        LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
         String applicationNo = applicationDto.getApplicationNo();
         createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskDto.getTaskKey(), reMarks, InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION, RoleConsts.USER_ROLE_INSPECTIOR, taskDto.getWkGrpId(), null);
         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
@@ -221,73 +217,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         //app rfi
         if(!StringUtil.isEmpty(appRfiDecision)){
             String preInspecComments = inspectionPreTaskDto.getPreInspecComments();
-            //send message to FE user.
-            String messageNo = inboxMsgService.getMessageNo();
-            String url = HmacConstants.HTTPS  + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+applicationNo;
-            //Request For Change
-            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())){
-                //judge premises amend or licence amend
-                AppEditSelectDto appEditSelectDto = applicationViewDto.getAppEditSelectDto();
-                if(appEditSelectDto != null){
-                    if(appEditSelectDto.isPremisesListEdit()){
-                        url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_PREMISES_LIST+applicationNo;
-                    }
-                }
-            }
-            MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
-            Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
-            LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
-            map.put("APPLICANT_NAME",licenseeDto.getName());
-            map.put("DETAILS","");
-            map.put("COMMENTS",StringUtil.viewHtml(preInspecComments));
-            map.put("A_HREF",url);
-            map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
-            InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
-                    messageNo,applicationDto.getServiceId(),templateMessageByContent, applicationViewDto.getApplicationGroupDto().getLicenseeId(),IaisEGPHelper.getCurrentAuditTrailDto());
-            inboxMsgService.saveInterMessage(interMessageDto);
-            //new application send email
-            String applicationType = applicationDto.getApplicationType();
-            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-                MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVAL_OFFICE_ROUTES_ID).getEntity();
-                if(msgTemplateDto != null){
-                    String username = licenseeDto.getName();
-                    String approvalOfficerName = loginContext.getUserName();
-                    Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
-                    tempMap.put("userName",StringUtil.viewHtml(username));
-                    tempMap.put("applicationNumber",StringUtil.viewHtml(applicationNo));
-                    tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                    tempMap.put("approvalOfficerName",StringUtil.viewHtml(approvalOfficerName));
-                    String mesContext;
-                    try {
-                        mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
-                    } catch (IOException | TemplateException e) {
-                        log.error(e.getMessage(), e);
-                        throw new IaisRuntimeException(e);
-                    }
-                    EmailDto emailDto = new EmailDto();
-                    emailDto.setContent(mesContext);
-                    emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + applicationNo);
-                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-                    emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-                    emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
-                    //send
-                    emailClient.sendNotification(emailDto).getEntity();
-                }
-            }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-                MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_INSPECTION_IS_IDENTIFIED).getEntity();
-                Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
-                String username = licenseeDto.getName();
-                String appGrpId = applicationViewDto.getApplicationDto().getAppGrpId();
-                String approvalOfficerName = loginContext.getUserName();
-                tempMap.put("userName",StringUtil.viewHtml(username));
-                tempMap.put("applicationNumber",StringUtil.viewHtml(applicationNo));
-                tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                tempMap.put("approvalOfficerName",StringUtil.viewHtml(approvalOfficerName));
-                String subject = " " + applicationNo;
-                EmailDto emailDto = LicenceUtil.sendEmailHelper(tempMap,msgTemplateDto,subject,licenseeId,appGrpId);
-                emailClient.sendNotification(emailDto).getEntity();
-            }
+            applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId,
+                    licenseeDto, loginContext, preInspecComments);
         }
         //self rfi
         if(!StringUtil.isEmpty(selfRfiDecision)){
@@ -303,7 +234,6 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                     "&selfDeclAction=rfi";
             MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
             Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
-            LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
             map.put("APPLICANT_NAME",licenseeDto.getName());
             map.put("DETAILS","");
             map.put("COMMENTS",StringUtil.viewHtml(""));
