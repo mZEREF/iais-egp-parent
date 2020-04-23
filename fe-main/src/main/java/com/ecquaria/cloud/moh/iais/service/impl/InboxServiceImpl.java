@@ -161,4 +161,10 @@ public class InboxServiceImpl implements InboxService {
     public void updateMsgStatusToRead(String msgId) {
         inboxClient.updateMsgStatusToRead(msgId);
     }
+
+    @Override
+    public Boolean checkAppEligibility(String appId) {
+        Boolean resule = appInboxClient.isAppealEligibility(appId).getEntity();
+        return resule;
+    }
 }

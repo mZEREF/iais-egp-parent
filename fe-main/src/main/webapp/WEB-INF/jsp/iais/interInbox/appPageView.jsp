@@ -127,6 +127,15 @@
         }
     }
 
+    $(function () {
+        if ('${appIsAppealed}') {
+            $('#isAppealModal').modal('show');
+            window.setTimeout(function(){
+                $('#isAppealModal').modal('hide');
+            },5000);
+        }
+    });
+
     function LimitDeadline(startDate) {
         $("#eed").attr("startDate",startDate);
         $("#eed").attr("data-date-start-date",startDate);

@@ -50,7 +50,6 @@ public interface AppInboxClient {
     @GetMapping(value = "/iais-submission/application-status-draft",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Integer> getAppDraftNum(@RequestParam(value = "licenseeId") String licenseeId);
 
-
     @RequestMapping(path = "/iais-application/application-licenceId",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicaitonByLicenceId(@RequestParam(name = "licenceId")String licenceId);
 
@@ -61,5 +60,10 @@ public interface AppInboxClient {
     FeignResponseEntity<List<AppPremisesCorrelationDto>> listAppPremisesCorrelation(@PathVariable(name = "appid") String appId);
 
     @GetMapping(path = "/iais-application/application-licenceId", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity< List<ApplicationDto>> getAppByLicIdAndExcludeNew(@RequestParam(name = "licenceId")String licenceId);
+    FeignResponseEntity<List<ApplicationDto>> getAppByLicIdAndExcludeNew(@RequestParam(name = "licenceId")String licenceId);
+
+    @GetMapping(path = "/appeal/appeal-eligibility", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Boolean> isAppealEligibility(@RequestParam("id") String id);
+
+
 }

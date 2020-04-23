@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
@@ -14,15 +15,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.InboxConst;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
+import com.ecquaria.cloud.submission.client.App;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -332,10 +331,10 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         String licNo = ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_VALUE);
         StringBuilder url = new StringBuilder();
-        url.append("https://").append(bpc.request.getServerName())
-                .append("/hcsa-licence-web/eservice/INTERNET/MohAppealApplication")
+        url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
                 .append("?appealingFor=")
-                .append(licNo)
+                .append(MaskUtil.maskValue("appealingFor",licNo))
                 .append("&type=licence");
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
@@ -346,9 +345,9 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         String licId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         StringBuilder url = new StringBuilder();
-        url.append("https://").append(bpc.request.getServerName())
-                .append("/hcsa-licence-web/eservice/INTERNET/MohLicenceView")
-                .append("?licenceId=").append(licId);
+        url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohLicenceView")
+                .append("?licenceId=").append(MaskUtil.maskValue("licenceId",licId));
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
@@ -362,9 +361,9 @@ public class InterInboxDelegator {
         String licId = ParamUtil.getString(bpc.request, "licenceNo");
         String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
         StringBuilder url = new StringBuilder();
-        url.append("https://").append(bpc.request.getServerName())
-                .append("/hcsa-licence-web/eservice/INTERNET/MohRequestForChange")
-                .append("?licenceId=").append(licIdValue);
+        url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
+                .append("?licenceId=").append(MaskUtil.maskValue("licenceId",licIdValue));
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
@@ -391,13 +390,11 @@ public class InterInboxDelegator {
             ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",result);
             if (result){
                 StringBuilder url = new StringBuilder();
-                url.append("https://").append(bpc.request.getServerName())
-                        .append("/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal");
+                url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                        .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohWithOutRenewal");
                 ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
                 String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
                 bpc.response.sendRedirect(tokenUrl);
-            }else {
-                log.debug(StringUtil.changeForLog("FUNNY MAD PEE"));
             }
         }
     }
@@ -411,8 +408,8 @@ public class InterInboxDelegator {
             }
             ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
             StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohCessationApplication");
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohCessationApplication");
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }
@@ -525,14 +522,21 @@ public class InterInboxDelegator {
     public void appDoAppeal(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
         String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
-        StringBuilder url = new StringBuilder();
-        url.append("https://").append(bpc.request.getServerName())
-                .append("/hcsa-licence-web/eservice/INTERNET/MohAppealApplication")
-                .append("?appealingFor=")
-                .append(appNo)
-                .append("&type=application");
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
+        MaskUtil.maskValue("appealingFor",appNo);
+        String appId = ParamUtil.getString(request, InboxConst.ACTION_ID_VALUE);
+        Boolean result = inboxService.checkAppEligibility(appId);
+        if (result){
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
+                    .append("?appealingFor=")
+                    .append(appNo)
+                    .append("&type=application");
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }else{
+            ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",result);
+        }
     }
 
     public void appDoWithDraw(BaseProcessClass bpc) throws IOException {
@@ -540,12 +544,12 @@ public class InterInboxDelegator {
         String appId = ParamUtil.getString(request, InboxConst.ACTION_ID_VALUE);
         String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
         StringBuilder url = new StringBuilder();
-        url.append("https://").append(bpc.request.getServerName())
-                .append("/hcsa-licence-web/eservice/INTERNET/MohWithdrawalApplication")
+        url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohWithdrawalApplication")
                 .append("?appId=")
-                .append(appId)
+                .append(MaskUtil.maskValue("appId",appId))
                 .append("&appNo=")
-                .append(appNo);
+                .append(MaskUtil.maskValue("appNo",appNo));
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
@@ -554,30 +558,30 @@ public class InterInboxDelegator {
         log.debug("The prepareEdit start ...");
         HttpServletRequest request = bpc.request;
         String appNo = ParamUtil.getMaskedString(request, InboxConst.ACTION_NO_VALUE);
-        if("APTY005".equals(ParamUtil.getMaskedString(request, InboxConst.ACTION_TYPE_VALUE))){
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(ParamUtil.getMaskedString(request, InboxConst.ACTION_TYPE_VALUE))){
             StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohRequestForChange/prepareDraft")
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange/prepareDraft")
                     .append("?DraftNumber=")
-                    .append(appNo);
+                    .append(MaskUtil.maskValue("DraftNumber",appNo));
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
-        }else if("APTY004".equals(ParamUtil.getMaskedString(request, InboxConst.ACTION_TYPE_VALUE))){
+        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(ParamUtil.getMaskedString(request, InboxConst.ACTION_TYPE_VALUE))){
             StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal")
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohWithOutRenewal")
                     .append("?DraftNumber=")
-                    .append(appNo);
+                    .append(MaskUtil.maskValue("DraftNumber",appNo));
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
 
         }
         else {
             StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication")
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohNewApplication")
                     .append("?DraftNumber=")
-                    .append(appNo);
+                    .append(MaskUtil.maskValue("DraftNumber",appNo));
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);}
     }
@@ -632,45 +636,45 @@ public class InterInboxDelegator {
 
         List<SelectOption> inboxTypSelectList = IaisCommonUtils.genNewArrayList();
         inboxTypSelectList.add(new SelectOption("All", "All"));
-        inboxTypSelectList.add(new SelectOption("MESTYPE001", "Notification"));
-        inboxTypSelectList.add(new SelectOption("MESTYPE002", "Announcement"));
-        inboxTypSelectList.add(new SelectOption("MESTYPE003", "Action Required"));
+        inboxTypSelectList.add(new SelectOption(MessageConstants.MESSAGE_TYPE_NOTIFICATION, "Notification"));
+        inboxTypSelectList.add(new SelectOption(MessageConstants.MESSAGE_TYPE_ANNONUCEMENT, "Announcement"));
+        inboxTypSelectList.add(new SelectOption(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED, "Action Required"));
         ParamUtil.setRequestAttr(request, "inboxTypeSelect", inboxTypSelectList);
     }
 
     private void prepareAppSelectOption(HttpServletRequest request){
         List<SelectOption> applicationTypeSelectList = IaisCommonUtils.genNewArrayList();
         applicationTypeSelectList.add(new SelectOption("All", "All"));
-        applicationTypeSelectList.add(new SelectOption("APTY001", "Renewal"));
-        applicationTypeSelectList.add(new SelectOption("APTY006", "Withdrawal "));
-        applicationTypeSelectList.add(new SelectOption("APTY008", "Cessation "));
-        applicationTypeSelectList.add(new SelectOption("APTY005", "Request For Change"));
-        applicationTypeSelectList.add(new SelectOption("APTY002", "New Licence Application"));
+        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_APPEAL, "Renewal"));
+        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL, "Withdrawal "));
+        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_CESSATION, "Cessation "));
+        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, "Request For Change"));
+        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, "New Licence Application"));
         ParamUtil.setRequestAttr(request, "appTypeSelect", applicationTypeSelectList);
 
         List<SelectOption> applicationStatusSelectList = IaisCommonUtils.genNewArrayList();
         applicationStatusSelectList.add(new SelectOption("All", "All"));
-        applicationStatusSelectList.add(new SelectOption("APST008", "Draft"));
-        applicationStatusSelectList.add(new SelectOption("APST057", "Rollback"));
-        applicationStatusSelectList.add(new SelectOption("APST005", "Approved"));
-        applicationStatusSelectList.add(new SelectOption("APST007", "Pending"));
+        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_DRAFT, "Draft"));
+        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK, "Rollback"));
+        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_APPROVED, "Approved"));
+        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING, "Pending"));
         ParamUtil.setRequestAttr(request, "appStatusSelect", applicationStatusSelectList);
 
         List<SelectOption> appServiceStatusSelectList = IaisCommonUtils.genNewArrayList();
         appServiceStatusSelectList.add(new SelectOption("All", "All"));
-        appServiceStatusSelectList.add(new SelectOption("APST008", "Draft"));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_DRAFT, "Draft"));
         appServiceStatusSelectList.add(new SelectOption("APST050", "Recalled"));
-        appServiceStatusSelectList.add(new SelectOption("APST051", "Pending Payment"));
-        appServiceStatusSelectList.add(new SelectOption("APST023", "Pending Clarification"));
-        appServiceStatusSelectList.add(new SelectOption("APST007", "Pending Screening"));
-        appServiceStatusSelectList.add(new SelectOption("APST001", "Pending Inspection"));
-        appServiceStatusSelectList.add(new SelectOption("APST039", "Pending Appointment Scheduling"));
-        appServiceStatusSelectList.add(new SelectOption("APST040", "Pending Appointment Re-Scheduling"));
-        appServiceStatusSelectList.add(new SelectOption("APST027", "Pending NC Rectification"));
-        appServiceStatusSelectList.add(new SelectOption("APST002", "Pending Approval"));
-        appServiceStatusSelectList.add(new SelectOption("APST005", "Approved"));
-        appServiceStatusSelectList.add(new SelectOption("APST006", "Rejected"));
-        appServiceStatusSelectList.add(new SelectOption("APST045", "Withdrawn"));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT, "Pending Payment"));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION, "Pending Clarification"));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING, "Pending Screening"));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION, "Pending Inspection"));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING, "Pending Appointment Scheduling"));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING, "Pending Appointment Re-Scheduling"));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION, "Pending NC Rectification"));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01, "Pending Approval"));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_APPROVED, "Approved"));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_REJECTED, "Rejected"));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN, "Withdrawn"));
         ParamUtil.setRequestAttr(request, "appStatusSelect", appServiceStatusSelectList);
 
         List<SelectOption> appServiceTypeSelectList = IaisCommonUtils.genNewArrayList();
@@ -684,41 +688,41 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request, "appServiceType", appServiceTypeSelectList);
 
         List<SelectOption> selectDraftApplicationSelectList = IaisCommonUtils.genNewArrayList();
-        selectDraftApplicationSelectList.add(new SelectOption("Edit", "Edit"));
-        selectDraftApplicationSelectList.add(new SelectOption("Delete", "Delete"));
+        selectDraftApplicationSelectList.add(new SelectOption(InboxConst.DRAFT_APP_ACTION_EDIT, InboxConst.DRAFT_APP_ACTION_EDIT));
+        selectDraftApplicationSelectList.add(new SelectOption(InboxConst.DRAFT_APP_ACTION_DELETE, InboxConst.DRAFT_APP_ACTION_DELETE));
         ParamUtil.setRequestAttr(request, "selectDraftApplication", selectDraftApplicationSelectList);
 
         List<SelectOption> selectApplicationSelectList = IaisCommonUtils.genNewArrayList();
-        selectApplicationSelectList.add(new SelectOption("Recall", "Recall"));
-        selectApplicationSelectList.add(new SelectOption("Appeal", "Appeal"));
-        selectApplicationSelectList.add(new SelectOption("Withdraw", "Withdraw"));
+        selectApplicationSelectList.add(new SelectOption(InboxConst.APP_ACTION_RECALL, InboxConst.APP_ACTION_RECALL));
+        selectApplicationSelectList.add(new SelectOption(InboxConst.APP_ACTION_APPEAL, InboxConst.APP_ACTION_APPEAL));
+        selectApplicationSelectList.add(new SelectOption(InboxConst.APP_ACTION_WITHDRAW, InboxConst.APP_ACTION_WITHDRAW));
         ParamUtil.setRequestAttr(request, "selectApplication", selectApplicationSelectList);
 
         List<SelectOption> selectWithdrawalSelectList = IaisCommonUtils.genNewArrayList();
-        selectWithdrawalSelectList.add(new SelectOption("Recall", "Recall"));
+        selectWithdrawalSelectList.add(new SelectOption(InboxConst.APP_ACTION_RECALL, InboxConst.APP_ACTION_RECALL));
         ParamUtil.setRequestAttr(request, "selectWithdrawApplication", selectWithdrawalSelectList);
 
         List<SelectOption> selectAppealSelectList = IaisCommonUtils.genNewArrayList();
-        selectWithdrawalSelectList.add(new SelectOption("Recall", "Recall"));
-        selectWithdrawalSelectList.add(new SelectOption("Withdraw", "Withdraw"));
+        selectWithdrawalSelectList.add(new SelectOption(InboxConst.APP_ACTION_RECALL, InboxConst.APP_ACTION_RECALL));
+        selectWithdrawalSelectList.add(new SelectOption(InboxConst.APP_ACTION_WITHDRAW, InboxConst.APP_ACTION_WITHDRAW));
         ParamUtil.setRequestAttr(request, "selectWithdrawApplication", selectAppealSelectList);
 
         List<SelectOption> selectApproveOrRejectSelectList = IaisCommonUtils.genNewArrayList();
-        selectApproveOrRejectSelectList.add(new SelectOption("Recall", "Recall"));
-        selectApproveOrRejectSelectList.add(new SelectOption("Appeal", "Appeal"));
+        selectApproveOrRejectSelectList.add(new SelectOption(InboxConst.APP_ACTION_RECALL, InboxConst.APP_ACTION_RECALL));
+        selectApproveOrRejectSelectList.add(new SelectOption(InboxConst.APP_ACTION_APPEAL, InboxConst.APP_ACTION_APPEAL));
         ParamUtil.setRequestAttr(request, "selectApproveOrRejectSelectList", selectApproveOrRejectSelectList);
     }
 
     private void prepareLicSelectOption(HttpServletRequest request){
         List<SelectOption> LicenceStatusList = IaisCommonUtils.genNewArrayList();
         LicenceStatusList.add(new SelectOption("All", "All"));
-        LicenceStatusList.add(new SelectOption("LICEST001", "Active"));
-        LicenceStatusList.add(new SelectOption("LICEST003", "Expired"));
-        LicenceStatusList.add(new SelectOption("LICEST005", "Ceased"));
-        LicenceStatusList.add(new SelectOption("LICEST006", "Lapsed"));
-        LicenceStatusList.add(new SelectOption("LICEST007", "Approved"));
-        LicenceStatusList.add(new SelectOption("LICEST008", "Suspended"));
-        LicenceStatusList.add(new SelectOption("LICEST009", "Revoked"));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_ACTIVE, "Active"));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_EXPIRY, "Expired"));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_CEASED, "Ceased"));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_LAPSED, "Lapsed"));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_APPROVED, "Approved"));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_SUSPENDED, "Suspended"));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_REVOKED, "Revoked"));
         ParamUtil.setRequestAttr(request, "licStatus", LicenceStatusList);
 
         List<SelectOption> LicenceTypeList = IaisCommonUtils.genNewArrayList();

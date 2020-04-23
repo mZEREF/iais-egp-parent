@@ -67,4 +67,21 @@ public class InboxConst {
     public static final String APP_DATE_ERR_MSG           = "ADEM";
     public static final String LIC_DATE_ERR_MSG           = "LDEM";
     public static final String LIC_EXPIRY_ERR_MSG         = "LEEM";
+
+    /**
+     * Application Action
+     */
+    public static final String APP_ACTION_RECALL            = "Recall";
+    public static final String APP_ACTION_APPEAL            = "Appeal";
+    public static final String APP_ACTION_WITHDRAW          = "Withdraw";
+    public static final String DRAFT_APP_ACTION_EDIT        = "Edit";
+    public static final String DRAFT_APP_ACTION_DELETE      = "Delete";
+
+    /**
+     * URL
+     */
+    public static final String URL_HTTPS                      = "https://";
+    public static final String URL_LICENCE_WEB_MODULE         = "/hcsa-licence-web/eservice/INTERNET/";
+
+
 }
