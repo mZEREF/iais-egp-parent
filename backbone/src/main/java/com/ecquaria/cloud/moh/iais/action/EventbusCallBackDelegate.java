@@ -83,7 +83,7 @@ public class EventbusCallBackDelegate {
             } else if (!pending) {
                 String flag = RedisCacheHelper.getInstance().get("IaisEventbusCbCount",
                         submissionId + "_" + operation + "_CallbackFlag");
-                log.info("Callback Flag ===>" + flag);
+                log.info("Callback Flag ===>" + StringUtil.viewHtml(flag));
                 if (StringUtil.isEmpty(flag)) {
                     RedisCacheHelper.getInstance().set("IaisEventbusCbCount",
                             submissionId + "_" + operation + "_CallbackFlag", "callback", 60L * 60L * 24L);
