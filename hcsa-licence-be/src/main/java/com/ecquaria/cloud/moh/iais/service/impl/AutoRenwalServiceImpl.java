@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
@@ -296,7 +297,11 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
 
     private void sendEmailToOffice(LicenceDto licenceDto ,HttpServletRequest request )throws IOException, TemplateException{
-        List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId());
+        List<String> ASOEmailAddrs = IaisCommonUtils.genNewArrayList();
+        organizationClient.retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_ASO).getEntity().stream().forEach(v ->{
+            ASOEmailAddrs.add(v.getEmail());
+        });
+
         Date expiryDate = licenceDto.getExpiryDate();
         String id = licenceDto.getId();
         List<String> useLicenceIdFindHciNameAndAddress = useLicenceIdFindHciNameAndAddress(id);
@@ -321,8 +326,9 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
             emailDto.setClientQueryCode(licenceDto.getLicenseeId());
 
-            if(!licenseeEmailAddrs.isEmpty()){
-                emailDto.setReceipts(licenseeEmailAddrs);
+
+            if(!ASOEmailAddrs.isEmpty()){
+                emailDto.setReceipts(ASOEmailAddrs);
                 emailClient.sendNotification(emailDto).getEntity();
             }
         }

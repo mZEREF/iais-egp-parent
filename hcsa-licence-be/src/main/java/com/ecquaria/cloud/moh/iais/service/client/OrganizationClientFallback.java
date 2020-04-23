@@ -108,6 +108,14 @@ public class OrganizationClientFallback implements OrganizationClient {
     }
 
     @Override
+    public FeignResponseEntity<OrgUserDto> retrieveUserRoleByRoleId(String roleId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<BroadcastOrganizationDto> getBroadcastOrganizationDto(String groupName,String groupDomain){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
