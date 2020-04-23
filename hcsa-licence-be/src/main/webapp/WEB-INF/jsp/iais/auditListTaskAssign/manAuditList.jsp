@@ -56,18 +56,29 @@
                                             <td><c:out value="${item.hclName}"/></td>
                                             <td><c:out value="${item.address}"/></td>
                                             <td><c:out value="${item.svcName}"/></td>
-                                            <td><iais:select name="${id}auditType" options="aduitTypeOp" firstOption="Please Select" value=""></iais:select>
-                                                <c:set value = "error_${id}adtype" var = "erradtype"/>
-                                                <span class="error-msg" id="<c:out value="${erradtype}"/>" name="iaisErrorMsg"></span>
+                                            <td><c:if test="${ !item.audited}">
+                                                <iais:select name="${id}auditType" options="aduitTypeOp"
+                                                             firstOption="Please Select" value="${item.auditType}"></iais:select>
+                                                <c:set value="error_${id}adtype" var="erradtype"/>
+                                                <span class="error-msg" id="<c:out value="${erradtype}"/>"
+                                                      name="iaisErrorMsg"></span>
+                                            </c:if>
+                                                <c:if test="${item.audited}">
+                                                    <iais:code code= "${item.auditType}"/>
+                                                    <input name="${id}auditType" id="${id}auditType" type="hidden" value="${item.auditType}">
+                                                </c:if>
                                             </td>
                                             <td>
-                                                <select name="<c:out value="${id}insOp"/>">
-                                                    <c:forEach var="inspOp" items="${item.inspectors}">
-                                                        <option  value="<c:out value="${inspOp.value}"/>"><c:out value="${inspOp.text}"/></option>
-                                                    </c:forEach>
-                                                </select>
-                                                <c:set value = "error_${id}insp" var = "errboth"/>
-                                                <span class="error-msg" id="<c:out value="${errboth}"/>" name="iaisErrorMsg"></span>
+                                                <c:if test="${!item.audited}">
+                                                    <iais:select  name="${id}insOp" options="inspectors${item.workGroupId}" value="${item.inspectorId}"   firstOption="Please Select"></iais:select>
+                                                    <c:set value="error_${id}insp" var="errboth"/>
+                                                    <span class="error-msg" id="<c:out value="${errboth}"/>"
+                                                          name="iaisErrorMsg"></span>
+                                                </c:if>
+                                                <c:if test="${item.audited}">
+                                                    <label>${item.inspector}</label>
+                                                    <input name="${id}insOp" id="${id}insOp" type="hidden" value="<iais:mask name="${id}insOp" value="${item.inspectorId}"/>">
+                                                </c:if>
                                             </td>
                                             <td>
                                                 <input name="<c:out value="${id}"/>selectForAd" id="<c:out value="${id}"/>selectForAd" type="checkbox" value="ad" <c:if test="${item.selectedForAudit}">checked</c:if>/>

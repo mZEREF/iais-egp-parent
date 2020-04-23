@@ -61,7 +61,6 @@
                                             </td>
                                             <td>
                                                 <label>${item.inspector}</label>
-                                                <input name="${id}insOp" id="${id}insOp" type="hidden" value="${item.inspectorId}">
                                             </td>
                                             <td>
                                                 <textarea cols="30" disabled rows="5" name="${id}reason"  maxlength="2000"><c:out value="${item.cancelReason}"></c:out></textarea>

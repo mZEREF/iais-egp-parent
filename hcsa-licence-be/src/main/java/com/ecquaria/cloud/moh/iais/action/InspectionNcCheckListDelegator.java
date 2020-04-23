@@ -91,11 +91,7 @@ public class InspectionNcCheckListDelegator {
         Log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
-        String taskId = ParamUtil.getRequestString(request,"taskId");
-        if (StringUtil.isEmpty(taskId)) {
-            taskId = "B3A5C76D-9C3A-EA11-BE7E-000C29F371DC";
-        }
-         String serviceType = "Inspection";
+        String taskId = ParamUtil.getMaskedString(request,"taskId");
         TaskDto taskDto = taskService.getTaskById(taskId);
         if( taskDto == null) return;
         String appPremCorrId = taskDto.getRefNo();

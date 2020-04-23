@@ -137,7 +137,7 @@ public class AuditTcuListDelegator {
         if (!IaisCommonUtils.isEmpty(auditTaskDataDtos)) {
             for (int i = 0; i < auditTaskDataDtos.size(); i++) {
                 String auditType = ParamUtil.getString(request, i + "auditType");
-                String inspectorId = ParamUtil.getString(request, i + "insOp");
+                String inspectorId = ParamUtil.getMaskedString(request, i + "insOp");
                 String inspectorName =  LicenceUtil.getSelectOptionTextFromSelectOptions(auditTaskDataDtos.get(i).getInspectors(),inspectorId);
                 String forad = ParamUtil.getString(request, i + "selectForAd");
                 String number = ParamUtil.getString(request, i + "number");

@@ -88,7 +88,7 @@
                                                 </c:if>
                                                 <c:if test="${item.audited}">
                                                     <label>${item.inspector}</label>
-                                                    <input name="${id}insOp" id="${id}insOp" type="hidden" value="${item.inspectorId}">
+                                                    <input name="${id}insOp" id="${id}insOp" type="hidden" value="<iais:mask name="${id}insOp" value="${item.inspectorId}"/>">
                                                 </c:if>
 
                                             </td>
