@@ -164,13 +164,18 @@ public class HcsaApplicationDelegator {
      */
     public void doStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do cleanSession start ...."));
-        AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
         ParamUtil.setSessionAttr(bpc.request,"taskDto",null);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto",null);
         ParamUtil.setSessionAttr(bpc.request,"isSaveRfiSelect",null);
         ParamUtil.setSessionAttr(bpc.request, "nextStages", null);
         ParamUtil.setSessionAttr(bpc.request, "nextStageReply", null);
         log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
+
+        //get the task
+        String  taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
+        AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
+        TaskDto taskDto = taskService.getTaskById(taskId);
+        ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
     }
 
     /**
@@ -181,16 +186,8 @@ public class HcsaApplicationDelegator {
      */
     public void prepareData(BaseProcessClass bpc) throws Exception{
         log.debug(StringUtil.changeForLog("the do prepareData start ..."));
-        //get the task
-       String  taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
-       if(taskId != null){
-           ParamUtil.setRequestAttr(bpc.request,"taskId",taskId);
-       }else{
-           taskId = (String)ParamUtil.getRequestAttr(bpc.request,"taskId");
-           ParamUtil.setRequestAttr(bpc.request,"taskId",taskId);
-       }
 
-       TaskDto taskDto = taskService.getTaskById(taskId);
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request,"taskDto");
         String correlationId = "";
        if(taskDto != null){
            correlationId = taskDto.getRefNo();
@@ -362,7 +359,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "nextStageReply", (Serializable)nextStageReplyList);
 
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
-        ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
+
 
         List<SelectOption> decisionValues = IaisCommonUtils.genNewArrayList();
         decisionValues.add(new SelectOption("", "Please Select"));
