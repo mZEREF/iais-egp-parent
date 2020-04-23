@@ -5,7 +5,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.List;
 import java.util.Map;
@@ -46,11 +48,11 @@ public interface InspectionPreTaskService {
     /**
       * @author: shicheng
       * @Date 2020/1/7
-      * @Param: taskDto, reMarks
+      * @Param: taskDto, inspectionPreTaskDto
       * @return: void
       * @Descripation: routing back
       */
-    void routingBack(TaskDto taskDto, String reMarks);
+    void routingBack(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, LoginContext loginContext);
 
 
     /**
@@ -83,9 +85,9 @@ public interface InspectionPreTaskService {
     /**
       * @author: shicheng
       * @Date 2020/4/22
-      * @Param: taskDto, reMarks
+      * @Param: taskDto, inspectionPreTaskDto, loginContext
       * @return: void
       * @Descripation: route back to ASO/PSO
       */
-    void routingAsoPsoBack(TaskDto taskDto, String reMarks);
+    void routingAsoPsoBack(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, LoginContext loginContext);
 }

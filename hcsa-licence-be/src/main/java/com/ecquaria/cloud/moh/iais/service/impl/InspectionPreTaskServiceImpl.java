@@ -3,23 +3,36 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -28,18 +41,25 @@ import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
+import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +69,7 @@ import java.util.Map;
  * @date 2019/12/9 9:58
  **/
 @Service
+@Slf4j
 public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     @Autowired
@@ -56,6 +77,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     @Autowired
     private OrganizationClient organizationClient;
+
+    @Autowired
+    private EmailClient emailClient;
 
     @Autowired
     private TaskService taskService;
@@ -96,6 +120,12 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
 
+    @Autowired
+    private MsgTemplateClient msgTemplateClient;
+
+    @Autowired
+    private LicenseeService licenseeService;
+
     @Override
     public ApplicationDto getAppStatusByTaskId(TaskDto taskDto) {
         ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(taskDto.getRefNo()).getEntity();
@@ -119,6 +149,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), preInspecRemarks, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY, RoleConsts.USER_ROLE_INSPECTIOR, taskDto.getWkGrpId(), null);
         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
+        applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         applicationService.updateFEApplicaiton(applicationDto1);
         applicationViewDto.setApplicationDto(applicationDto1);
         List<TaskDto> taskDtoList = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
@@ -149,12 +180,14 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     @Override
-    public void routingBack(TaskDto taskDto, String reMarks) {
+    public void routingBack(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, LoginContext loginContext) {
+        String reMarks = inspectionPreTaskDto.getReMarks();
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
-        taskDto.setSlaDateCompleted(new Date());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), reMarks, InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION, RoleConsts.USER_ROLE_INSPECTIOR, taskDto.getWkGrpId(), null);
+        String applicationNo = applicationDto.getApplicationNo();
+        createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskDto.getTaskKey(), reMarks, InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION, RoleConsts.USER_ROLE_INSPECTIOR, taskDto.getWkGrpId(), null);
         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
+        applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         applicationService.updateFEApplicaiton(applicationDto1);
         applicationViewDto.setApplicationDto(applicationDto1);
         List<TaskDto> taskDtoList = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
@@ -168,20 +201,88 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             }
         }
         updateInspectionStatus(taskDto.getRefNo(), InspectionConstants.INSPECTION_STATUS_PENDING_REQUEST_FOR_INFORMATION);
-        InterMessageDto interMessageDto = new InterMessageDto();
-        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-        interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION);
-        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
-        String mesNO = inboxMsgService.getMessageNo();
-        interMessageDto.setRefNo(mesNO);
-        interMessageDto.setService_id(applicationDto1.getServiceId());
-        String url = systemParamConfig.getInterServerName() +
-                MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION +
-                applicationDto1.getApplicationNo();
-        //interMessageDto.setProcessUrl(url);
-        interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        inboxMsgService.saveInterMessage(interMessageDto);
+        //RFI Do
+        String appRfiDecision = null;
+        String selfRfiDecision = null;
+        List<String> preInspRfiCheck = inspectionPreTaskDto.getPreInspRfiCheck();
+        if(!IaisCommonUtils.isEmpty(preInspRfiCheck)){
+            for(String decision : preInspRfiCheck){
+                if(InspectionConstants.SWITCH_ACTION_APPLICATION.equals(decision)){
+                    appRfiDecision = decision;
+                } else if (InspectionConstants.SWITCH_ACTION_SELF.equals(decision)){
+                    selfRfiDecision = decision;
+                }
+            }
+        }
+        //app rfi
+        if(!StringUtil.isEmpty(appRfiDecision)){
+            String preInspecComments = inspectionPreTaskDto.getPreInspecComments();
+            //send message to FE user.
+            String messageNo = inboxMsgService.getMessageNo();
+            String url = HmacConstants.HTTPS  + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+applicationNo;
+            //Request For Change
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())){
+                //judge premises amend or licence amend
+                AppEditSelectDto appEditSelectDto = applicationViewDto.getAppEditSelectDto();
+                if(appEditSelectDto != null){
+                    if(appEditSelectDto.isPremisesListEdit()){
+                        url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_PREMISES_LIST+applicationNo;
+                    }
+                }
+            }
+            MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
+            Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
+            String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+            LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
+            map.put("APPLICANT_NAME",licenseeDto.getName());
+            map.put("DETAILS","");
+            map.put("COMMENTS",StringUtil.viewHtml(preInspecComments));
+            map.put("A_HREF",url);
+            map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
+            String templateMessageByContent;
+            try {
+                templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
+            } catch (IOException | TemplateException e) {
+                log.error(e.getMessage(), e);
+                throw new IaisRuntimeException(e);
+            }
+
+            InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
+                    messageNo,applicationDto.getServiceId(),templateMessageByContent, applicationViewDto.getApplicationGroupDto().getLicenseeId(),IaisEGPHelper.getCurrentAuditTrailDto());
+            inboxMsgService.saveInterMessage(interMessageDto);
+            //new application send email
+            String applicationType = applicationDto.getApplicationType();
+            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
+                MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVAL_OFFICE_ROUTES_ID).getEntity();
+                if(msgTemplateDto != null){
+                    String username = licenseeDto.getName();
+                    String approvalOfficerName = loginContext.getUserName();
+                    Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
+                    tempMap.put("userName",StringUtil.viewHtml(username));
+                    tempMap.put("applicationNumber",StringUtil.viewHtml(applicationNo));
+                    tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+                    tempMap.put("approvalOfficerName",StringUtil.viewHtml(approvalOfficerName));
+                    String mesContext;
+                    try {
+                        mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+                    } catch (IOException | TemplateException e) {
+                        log.error(e.getMessage(), e);
+                        throw new IaisRuntimeException(e);
+                    }
+                    EmailDto emailDto = new EmailDto();
+                    emailDto.setContent(mesContext);
+                    emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + applicationNo);
+                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                    emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                    emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
+                    //send
+                    emailClient.sendNotification(emailDto).getEntity();
+                }
+            }
+        }
+        //self rfi
+        if(!StringUtil.isEmpty(selfRfiDecision)){
+        }
     }
 
     @Override
@@ -235,8 +336,77 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     @Override
-    public void routingAsoPsoBack(TaskDto taskDto, String reMarks) {
+    public void routingAsoPsoBack(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, LoginContext loginContext) {
+        ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+        applicationDtos.add(applicationDto);
+        String applicationNo = applicationDto.getApplicationNo();
+        String userId = loginContext.getUserId();
+        //routing
+        //get history
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto;
+        String subStage;
+        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNoAndStageId(applicationNo, HcsaConsts.ROUTING_STAGE_PSO).getEntity();
+        if(appPremisesRoutingHistoryDto == null){
+            appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNoAndStageId(applicationNo, HcsaConsts.ROUTING_STAGE_ASO).getEntity();
+        }
+        //update task
+        taskDto.setSlaDateCompleted(new Date());
+        taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+        taskDto.setAuditTrailDto(auditTrailDto);
+        taskService.updateTask(taskDto);
+        //create task
+        TaskDto compTask = getCompletedTaskByHistory(taskDto, appPremisesRoutingHistoryDto.getActionby());
+        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
+        if(compTask != null){
+            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
+            hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+            TaskDto createTask = new TaskDto();
+            createTask.setId(null);
+            createTask.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+            createTask.setPriority(compTask.getPriority());
+            createTask.setRefNo(compTask.getRefNo());
+            createTask.setSlaAlertInDays(compTask.getSlaAlertInDays());
+            createTask.setSlaDateCompleted(null);
+            createTask.setSlaInDays(compTask.getSlaInDays());
+            createTask.setSlaRemainInDays(null);
+            createTask.setTaskKey(compTask.getTaskKey());
+            createTask.setTaskType(compTask.getTaskType());
+            createTask.setWkGrpId(compTask.getWkGrpId());
+            createTask.setUserId(userId);
+            createTask.setDateAssigned(new Date());
+            createTask.setRoleId(appPremisesRoutingHistoryDto.getActionby());
+            createTask.setAuditTrailDto(auditTrailDto);
+            createTask.setProcessUrl(TaskConsts.TASK_PROCESS_URL_MAIN_FLOW);
+            taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
+            taskDtoList.add(createTask);
 
+        }
+        String appPremCorrId = taskDto.getRefNo();
+        //update inspection status
+        updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PENDING_REQUEST_FOR_INFORMATION);
+        //update App
+        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE);
+        applicationDto1.setAuditTrailDto(auditTrailDto);
+        applicationService.updateFEApplicaiton(applicationDto1);
+        //create history
+        createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, inspectionPreTaskDto.getReMarks(),
+                InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO, taskDto.getRoleId(), taskDto.getWkGrpId(), HcsaConsts.ROUTING_STAGE_PRE);
+    }
+
+    private TaskDto getCompletedTaskByHistory(TaskDto taskDto, String userId) {
+        List<TaskDto> taskDtos = organizationClient.getTaskByRefNoStatus(taskDto.getRefNo(), TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_MAIN_FLOW).getEntity();
+        if(!IaisCommonUtils.isEmpty(taskDtos)){
+            for(TaskDto tDto : taskDtos){
+                if(tDto.getUserId().equals(userId)){
+                    return tDto;
+                }
+            }
+        }
+        return new TaskDto();
     }
 
     private void updateInspectionStatus(String appPremCorrId, String status) {
@@ -267,5 +437,17 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         appPremisesRoutingHistoryDto.setSubStage(subStage);
         appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto).getEntity();
         return appPremisesRoutingHistoryDto;
+    }
+
+    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
+        for(ApplicationDto applicationDto : applicationDtos){
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+            hcsaSvcStageWorkingGroupDto.setStageId(stageId);
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
+            hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
+        }
+        return hcsaSvcStageWorkingGroupDtos;
     }
 }
