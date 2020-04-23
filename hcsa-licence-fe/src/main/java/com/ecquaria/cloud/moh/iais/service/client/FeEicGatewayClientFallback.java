@@ -88,14 +88,6 @@ public class FeEicGatewayClientFallback implements FeEicGatewayClient{
     }
 
     @Override
-    public FeignResponseEntity<Set<String>> getInspectorByCorreIdAndStatusAndRole(String correId, String status, String role, String date, String authorization, String dateSec, String authorizationSec) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
     public FeignResponseEntity<LicPremisesReqForInfoDto> routeRfiData(LicPremisesReqForInfoDto licPremisesReqForInfoDto, String date, String authorization, String dateSec, String authorizationSec) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
