@@ -2702,16 +2702,18 @@ public class NewApplicationDelegator {
                 }
             }
         }else {
-            List<String> baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseService");
-            List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "specifiedService");
-            if(!IaisCommonUtils.isEmpty(baseServiceIds)){
-                serviceConfigIds.addAll(baseServiceIds);
-            }
-            if(!IaisCommonUtils.isEmpty(specifiedServiceIds)){
-                serviceConfigIds.addAll(specifiedServiceIds);
+            List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licence");
+            List<String> baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseServiceChecked");
+            List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "specifiedServiceChecked");
+            if(IaisCommonUtils.isEmpty(licenceIds)){
+                if(!IaisCommonUtils.isEmpty(baseServiceIds)){
+                    serviceConfigIds.addAll(baseServiceIds);
+                }
+                if(!IaisCommonUtils.isEmpty(specifiedServiceIds)){
+                    serviceConfigIds.addAll(specifiedServiceIds);
+                }
             }
         }
-
 
         if(IaisCommonUtils.isEmpty(serviceConfigIds) && IaisCommonUtils.isEmpty(names)){
             log.info(StringUtil.changeForLog("service id is empty"));
