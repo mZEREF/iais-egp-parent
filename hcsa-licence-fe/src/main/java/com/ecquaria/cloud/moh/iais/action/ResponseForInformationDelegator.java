@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ResponseForInformationService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -38,6 +39,8 @@ public class ResponseForInformationDelegator {
     FeEicGatewayClient feEicGatewayClient;
     @Autowired
     private ServiceConfigService serviceConfigService;
+    @Autowired
+    OrganizationLienceseeClient organizationLienceseeClient;
 
     public void Start(BaseProcessClass bpc)  {
         log.debug(StringUtil.changeForLog("the do Start start ...."));
@@ -56,6 +59,19 @@ public class ResponseForInformationDelegator {
         HttpServletRequest request=bpc.request;
         String licenseeId = (String) ParamUtil.getSessionAttr(request,"licenseeId");
         List<LicPremisesReqForInfoDto> reqForInfoSearchListDtos=responseForInformationService.searchLicPreRfiBylicenseeId(licenseeId);
+        //fe没有be的user
+//        List<String> userIds= IaisCommonUtils.genNewArrayList();
+//        for (LicPremisesReqForInfoDto lpr:reqForInfoSearchListDtos
+//             ) {
+//            userIds.add(lpr.getRequestUser());
+//        }
+//        List<OrgUserDto> orgUserDtos=organizationLienceseeClient.retrieveOrgUserAccount(userIds).getEntity();
+//        int i=0;
+//        for (LicPremisesReqForInfoDto lpr:reqForInfoSearchListDtos
+//        ) {
+//            lpr.setRequestUser(orgUserDtos.get(i).getDisplayName());
+//            i++;
+//        }
         ParamUtil.setRequestAttr(request,"reqForInfoSearchList",reqForInfoSearchListDtos);
         // 		preRFI->OnStepProcess
     }

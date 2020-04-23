@@ -72,7 +72,7 @@
     <JavaCode defClass="" executor="" methodName="doReqForInfo_OnStepProcess_0" name="doReqForInfo_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doCreateRequest" x="1790" y="460">
+  <AutomaticStep defClass="" executor="" icon="" name="doCreateRequest" x="1750" y="360">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -86,7 +86,7 @@
     <JavaCode defClass="" executor="" methodName="doCancel_OnStepProcess_0" name="doCancel_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preNewRfi" x="1790" y="240">
+  <AutomaticStep defClass="" executor="" icon="" name="preNewRfi" x="1810" y="240">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -301,7 +301,7 @@
    <position>{(1930,630)(1930,750)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doCreateRequest" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch7" style="oblique">
-   <position>{(1700,380)(1810,480)}</position>
+   <position>{(1700,380)(1770,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Pages/WebPage/SuccessPage" style="oblique">
    <position>{(1700,480)(1560,520)}</position>
@@ -316,16 +316,16 @@
    <position>{(1570,190)(1930,130)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preNewRfi" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
-   <position>{(1930,130)(1810,260)}</position>
+   <position>{(1930,130)(1830,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preViewRfi" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
    <position>{(1930,130)(1920,480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/NewRFI" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preNewRfi" style="oblique">
-   <position>{(1810,260)(1700,260)}</position>
+   <position>{(1830,260)(1700,260)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/SuccessPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCreateRequest" style="oblique">
-   <position>{(1810,480)(1700,480)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/SuccessPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(1865,510)(1700,480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ViewRFI" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preViewRfi" style="oblique">
    <position>{(1920,480)(1930,630)}</position>
@@ -397,7 +397,7 @@
    <position>{(1050,380)(1220,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preReqForInfo" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preRfi" style="rectanular">
-   <position>{(455,480)(1450,440)}</position>
+   <position>{(430,450)(1450,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preReqForInfo" style="oblique">
    <position>{(1450,440)(1470,300)}</position>
@@ -418,11 +418,20 @@
    <position>{(1070,720)(1150,610)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preRfi" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(280,450)(455,480)}</position>
+   <position>{(280,450)(430,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCreateRequest" style="oblique">
+   <position>{(1770,380)(1865,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preNewRfi" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(1865,510)(1830,260)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/doSearchLicence" componentIfTrue="/Pages/WebPage/RFIPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="1450" y="280">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/preNewRfi" componentIfTrue="/Pages/WebPage/SuccessPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="1820" y="460">
    <Description/>
   </Condition>
  </Conditions>

@@ -789,6 +789,7 @@ public class RequestForInformationDelegator {
         }catch (Exception e){
             requestForInformationService.deleteLicPremisesReqForInfo(licPremisesReqForInfoDto1.getReqInfoId());
         }
+        ParamUtil.setRequestAttr(request, "isValid", "Y");
         // 		doCreateRequest->OnStepProcess
     }
 
@@ -850,6 +851,12 @@ public class RequestForInformationDelegator {
         gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();        // 		doUpdate->OnStepProcess
     }
 
+    private Map<String, String> validate(HttpServletRequest request) {
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+
+
+        return errMap;
+    }
 
     @GetMapping(value = "/file-repo")
     public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {

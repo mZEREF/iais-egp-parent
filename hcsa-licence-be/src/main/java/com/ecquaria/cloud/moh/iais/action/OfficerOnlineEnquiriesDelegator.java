@@ -775,7 +775,6 @@ public class OfficerOnlineEnquiriesDelegator {
             reqForInfoSearchListDto.setLastComplianceHistory("-");
             reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
         }
-        reqForInfoSearchListDto.setCurrentRiskTagging(rfiApplicationQueryDto.getRiskLevel());
         log.debug(StringUtil.changeForLog("licenseeId start ...."+rfiApplicationQueryDto.getLicenseeId()));
         if(rfiApplicationQueryDto.getLicenseeId()!=null){
             reqForInfoSearchListDto.setLicenseeId(rfiApplicationQueryDto.getLicenseeId());
