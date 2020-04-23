@@ -402,7 +402,7 @@ public class LicenceApproveBatchjob {
                 String originLicenceId = applicationDtos.get(0).getOriginLicenceId();
                 LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
                 superLicDto.setOriginLicenceDto(originLicenceDto);
-                LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,appPremisesRecommendationDto,
+                LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),null,applicationGroupDto,appPremisesRecommendationDto,
                         originLicenceDto,null,applicationDtos);
                 superLicDto.setLicenceDto(licenceDto);
                 //if PostInspNeeded send email
@@ -692,7 +692,7 @@ public class LicenceApproveBatchjob {
                 String originLicenceId = applicationDto.getOriginLicenceId();
                 LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
                 superLicDto.setOriginLicenceDto(originLicenceDto);
-                LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,appPremisesRecommendationDto,
+                LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),hcsaServiceDto.getSvcType(),applicationGroupDto,appPremisesRecommendationDto,
                         originLicenceDto,applicationDto,null);
                 superLicDto.setLicenceDto(licenceDto);
                 //if PostInspNeeded send email
@@ -1173,7 +1173,7 @@ public class LicenceApproveBatchjob {
           return result;
     }
 
-    private LicenceDto getLicenceDto(String licenceNo,String svcName,ApplicationGroupDto applicationGroupDto,
+    private LicenceDto getLicenceDto(String licenceNo,String svcName,String svcType,ApplicationGroupDto applicationGroupDto,
                                      AppPremisesRecommendationDto appPremisesRecommendationDto,
                                      LicenceDto originLicenceDto,
                                      ApplicationDto applicationDto,
@@ -1181,7 +1181,9 @@ public class LicenceApproveBatchjob {
         log.info(StringUtil.changeForLog("The  getLicenceDto start ..."));
         LicenceDto licenceDto = new LicenceDto();
         licenceDto.setSvcName(svcName);
-
+        if(!StringUtil.isEmpty(svcType)){
+            licenceDto.setSvcType(svcType);
+        }
         if(applicationDto!=null && originLicenceDto!=null && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())){
             log.info(StringUtil.changeForLog("The  getLicenceDto APPType is RFC ..."));
             licenceDto.setStartDate(originLicenceDto.getStartDate());

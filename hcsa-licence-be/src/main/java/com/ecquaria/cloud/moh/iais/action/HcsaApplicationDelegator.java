@@ -1385,13 +1385,13 @@ public class HcsaApplicationDelegator {
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return appPremisesRoutingHistoryDto;
     }
-    private int remainDays(TaskDto taskDto){
-       int result = 0;
-       //todo: wait count kpi
-      // String  resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(),taskDto.getSlaDateCompleted().getTime(), "d");
-     // log.debug(StringUtil.changeForLog("The resultStr is -->:")+resultStr);
-      return  result;
-    }
+//    private int remainDays(TaskDto taskDto){
+//       int result = 0;
+//       //todo: wait count kpi
+//      // String  resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(),taskDto.getSlaDateCompleted().getTime(), "d");
+//     // log.debug(StringUtil.changeForLog("The resultStr is -->:")+resultStr);
+//      return  result;
+//    }
 
 
     private TaskDto completedTask(TaskDto taskDto){
