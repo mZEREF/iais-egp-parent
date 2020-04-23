@@ -41,6 +41,7 @@
                                         <th>Maximum Number of NCs</th>
                                         <th>Compliance Risk</th>
                                         <th></th>
+
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -74,31 +75,33 @@
                                             <td>
                                                 <div><div style="width: 100px;">
                                                 </div><div style="width: 100px;float: left">
-                                                    <input type="text" disabled readonly maxlength="5" value="0">
+                                                    <input type="text" disabled readonly maxlength="2" value="0">
                                                 </div>
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doCaLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>caleftmod" name = "<c:out value="${fin.svcCode}"/>caleftmod" maxlength="5"value="${fin.doCaLeftModCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doCaLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>caleftmod" name = "<c:out value="${fin.svcCode}"/>caleftmod" maxlength="2"value="${fin.doCaLeftModCounth}">
                                                 </div>
+                                                    <c:set value = "error_${fin.svcCode}caLeftModCaseCounth" var = "caleftmod"/>
+                                                    <span class="error-msg" id="<c:out value="${caleftmod}"/>" name="iaisErrorMsg"></span>
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doCaLeftHighCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>calefthigh" name = "<c:out value="${fin.svcCode}"/>calefthigh" maxlength="5"value="${fin.doCaLeftHighCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doCaLeftHighCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>calefthigh" name = "<c:out value="${fin.svcCode}"/>calefthigh" maxlength="2"value="${fin.doCaLeftHighCounth}">
                                                 </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text"  style="color: <c:if test="${fin.doCaRightLowCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>carightlow" name = "<c:out value="${fin.svcCode}"/>carightlow"  maxlength="5" value="${fin.doCaRightLowCounth}">
+                                                    <input type="text"  style="color: <c:if test="${fin.doCaRightLowCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>carightlow" name = "<c:out value="${fin.svcCode}"/>carightlow"  maxlength="3" value="${fin.doCaRightLowCounth}">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doCaRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>carightmod" name = "<c:out value="${fin.svcCode}"/>carightmod"  maxlength="5"value="${fin.doCaRightModCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doCaRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>carightmod" name = "<c:out value="${fin.svcCode}"/>carightmod"  maxlength="3"value="${fin.doCaRightModCounth}">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" disabled readonly  maxlength="5" value="999">
+                                                    <input type="text" disabled readonly  maxlength="3" value="999">
                                                 </div></div>
                                             </td>
                                             <td>
@@ -107,8 +110,7 @@
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
                                             <td>
-                                                <c:set value = "error_${fin.svcCode}caLeftModCaseCounth" var = "caleftmod"/>
-                                                <span class="error-msg" id="<c:out value="${caleftmod}"/>" name="iaisErrorMsg"></span>
+
                                                 <c:set value = "error_${fin.svcCode}caLeftHighCaseCounth" var = "calefthigh"/>
                                                 <span class="error-msg" id="<c:out value="${calefthigh}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${fin.svcCode}caRightLowCaseCounth" var = "carightlow"/>
@@ -143,32 +145,32 @@
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" disabled readonly maxlength="5" value="0">
+                                                    <input type="text" disabled readonly maxlength="2" value="0">
                                                 </div></div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMjLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjleftmod" name = "<c:out value="${fin.svcCode}"/>mjleftmod"  maxlength="5"value="${fin.doMjLeftModCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doMjLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjleftmod" name = "<c:out value="${fin.svcCode}"/>mjleftmod"  maxlength="2"value="${fin.doMjLeftModCounth}">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMjLeftHighCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjlefthigh" name = "<c:out value="${fin.svcCode}"/>mjlefthigh"  maxlength="5"value="${fin.doMjLeftHighCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doMjLeftHighCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjlefthigh" name = "<c:out value="${fin.svcCode}"/>mjlefthigh"  maxlength="2"value="${fin.doMjLeftHighCounth}">
                                                 </div>
 
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMjRightLowCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjrightlow" name = "<c:out value="${fin.svcCode}"/>mjrightlow" maxlength="5" value="${fin.doMjRightLowCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doMjRightLowCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjrightlow" name = "<c:out value="${fin.svcCode}"/>mjrightlow" maxlength="3" value="${fin.doMjRightLowCounth}">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMjRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjrightlmod" name = "<c:out value="${fin.svcCode}"/>mjrightmod" maxlength="5"value="${fin.doMjRightModCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doMjRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjrightlmod" name = "<c:out value="${fin.svcCode}"/>mjrightmod" maxlength="3"value="${fin.doMjRightModCounth}">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" disabled readonly value="999">
+                                                    <input type="text" disabled readonly maxlength="3" value="999">
                                                 </div></div>
                                             </td>
                                             <td>
@@ -213,27 +215,27 @@
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" disabled readonly maxlength="5" value="0">
+                                                    <input type="text" disabled readonly maxlength="2" value="0">
                                                 </div></div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMiLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mileftmod" name = "<c:out value="${fin.svcCode}"/>mileftmod"  maxlength="5"value="${fin.doMiLeftModCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doMiLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mileftmod" name = "<c:out value="${fin.svcCode}"/>mileftmod"  maxlength="2"value="${fin.doMiLeftModCounth}">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMiLeftHighCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>milefthigh" name = "<c:out value="${fin.svcCode}"/>milefthigh"  maxlength="5"value="${fin.doMiLeftHighCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doMiLeftHighCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>milefthigh" name = "<c:out value="${fin.svcCode}"/>milefthigh"  maxlength="2"value="${fin.doMiLeftHighCounth}">
                                                 </div>
 
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMiRightLowCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mirightlow" name = "<c:out value="${fin.svcCode}"/>mirightlow" maxlength="5" value="${fin.doMiRightLowCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doMiRightLowCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mirightlow" name = "<c:out value="${fin.svcCode}"/>mirightlow" maxlength="3" value="${fin.doMiRightLowCounth}">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMiRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mirightlmod" name = "<c:out value="${fin.svcCode}"/>mirightmod" maxlength="5"value="${fin.doMiRightModCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doMiRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mirightlmod" name = "<c:out value="${fin.svcCode}"/>mirightmod" maxlength="3"value="${fin.doMiRightModCounth}">
                                                 </div>
 
                                                 </div>

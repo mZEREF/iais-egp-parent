@@ -209,7 +209,6 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<HcsaRiskInspectionMatrixDto> dtoList = showDto.getInspectionDtoList();
         List<HcsaRiskInspectionMatrixDto> saveList = IaisCommonUtils.genNewArrayList();
-        List<HcsaRiskInspectionMatrixDto> updateList = IaisCommonUtils.genNewArrayList();
         for(HcsaRiskInspectionMatrixDto temp : dtoList){
             if(temp.isCaEdit()||temp.isMjEdit()||temp.isMiEdit()){
                 saveList.add(getFinDto(temp,true,"RSKL0001"));

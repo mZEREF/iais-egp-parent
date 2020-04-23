@@ -18,6 +18,11 @@ import javax.servlet.http.HttpServletRequest;
  * @Date: 2020/1/2 18:22
  */
 public class HcsaInspectionValidate implements CustomizeValidator {
+
+    private static  Integer MAX_VALUE_LENGTH = 3;
+    private static  Integer MIN_VALUE_LENGTH = 2;
+    private static  String  MANDATORY        = "CaseCounth is mandatory";
+    private static  String  LENGTH_MORE_MES  = "CaseCounth length max is ";
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         InspectionShowDto showDto = (InspectionShowDto) ParamUtil.getSessionAttr(request,"inShowDto");
@@ -34,7 +39,10 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 caseCounthVad(errMap,temp);
                 dateVad(errMap,temp);
             }
+        }else{
+            errMap.put("All","Please do some change");
         }
+
         mergeList(editList,iDtoList);
         return errMap;
     }
@@ -460,55 +468,104 @@ public class HcsaInspectionValidate implements CustomizeValidator {
     public void mandatoryCaseCounthVad(Map<String, String> errMap, HcsaRiskInspectionMatrixDto fdto){
         //ca
         if(StringUtil.isEmpty(fdto.getDoCaLeftModCounth())){
-            errMap.put(fdto.getSvcCode()+"caLeftModCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"caLeftModCaseCounth",MANDATORY);
+            fdto.setDoCaLeftModCountherr(true);
+        }else if(fdto.getDoCaLeftModCounth().length()> MIN_VALUE_LENGTH){
+            errMap.put(fdto.getSvcCode()+"caLeftModCaseCounth",LENGTH_MORE_MES +MIN_VALUE_LENGTH);
             fdto.setDoCaLeftModCountherr(true);
         }
-        if(StringUtil.isEmpty(fdto.getDoCaRightModCounth())){
-            errMap.put(fdto.getSvcCode()+"caRightModCaseCounth()","CaseCounth is mandatory");
-            fdto.setDoCaRightModCountherr(true);
-        }
-        if(StringUtil.isEmpty(fdto.getDoCaRightLowCounth())){
-            errMap.put(fdto.getSvcCode()+"caRightLowCaseCounth","CaseCounth is mandatory");
-            fdto.setDoCaRightLowCountherr(true);
-        }
+
         if(StringUtil.isEmpty(fdto.getDoCaLeftHighCounth())){
-            errMap.put(fdto.getSvcCode()+"caLeftHighCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"caLeftHighCaseCounth",MANDATORY);
+            fdto.setDoCaLeftHighCountherr(true);
+        }else if(fdto.getDoCaLeftHighCounth().length() > MIN_VALUE_LENGTH){
+            errMap.put(fdto.getSvcCode()+"caLeftHighCaseCounth",LENGTH_MORE_MES  +MIN_VALUE_LENGTH);
             fdto.setDoCaLeftHighCountherr(true);
         }
-        //mi
-        if(StringUtil.isEmpty(fdto.getDoMiLeftModCounth())){
-            errMap.put(fdto.getSvcCode()+"miLeftModCaseCounth","CaseCounth is mandatory");
-            fdto.setDoMiLeftModCountherr(true);
+
+        if(StringUtil.isEmpty(fdto.getDoCaRightLowCounth())){
+            errMap.put(fdto.getSvcCode()+"caRightLowCaseCounth",MANDATORY);
+            fdto.setDoCaRightLowCountherr(true);
+        }else if (fdto.getDoCaRightLowCounth().length() > MAX_VALUE_LENGTH ){
+            errMap.put(fdto.getSvcCode()+"caRightLowCaseCounth",LENGTH_MORE_MES +MAX_VALUE_LENGTH );
+            fdto.setDoCaRightLowCountherr(true);
         }
+
+        if(StringUtil.isEmpty(fdto.getDoCaRightModCounth())){
+            errMap.put(fdto.getSvcCode()+"caRightModCaseCounth()",MANDATORY);
+            fdto.setDoCaRightModCountherr(true);
+        }else if (fdto.getDoCaRightModCounth().length() >  MAX_VALUE_LENGTH ){
+            errMap.put(fdto.getSvcCode()+"caRightModCaseCounth()",LENGTH_MORE_MES + MAX_VALUE_LENGTH );
+            fdto.setDoCaRightModCountherr(true);
+        }
+
+        //mi
+
         if(StringUtil.isEmpty(fdto.getDoMiRightModCounth())){
-            errMap.put(fdto.getSvcCode()+"miRightModCaseCounth()","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"miRightModCaseCounth()",MANDATORY);
+            fdto.setDoMiRightModCountherr(true);
+        }else if(fdto.getDoMiRightModCounth().length() > MIN_VALUE_LENGTH){
+            errMap.put(fdto.getSvcCode()+"miRightModCaseCounth()",LENGTH_MORE_MES + MIN_VALUE_LENGTH);
             fdto.setDoMiRightModCountherr(true);
         }
+
         if(StringUtil.isEmpty(fdto.getDoMiRightLowCounth())){
-            errMap.put(fdto.getSvcCode()+"miRightLowCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"miRightLowCaseCounth",MANDATORY);
+            fdto.setDoMiRightLowCountherr(true);
+        }else if(fdto.getDoMiRightLowCounth().length() >  MIN_VALUE_LENGTH){
+            errMap.put(fdto.getSvcCode()+"miRightLowCaseCounth",LENGTH_MORE_MES + MIN_VALUE_LENGTH);
             fdto.setDoMiRightLowCountherr(true);
         }
+
         if(StringUtil.isEmpty(fdto.getDoMiLeftHighCounth())){
-            errMap.put(fdto.getSvcCode()+"miLeftHighCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"miLeftHighCaseCounth",MANDATORY);
+            fdto.setDoMiLeftHighCountherr(true);
+        }else if(fdto.getDoMiLeftHighCounth().length() > MAX_VALUE_LENGTH){
+            errMap.put(fdto.getSvcCode()+"miLeftHighCaseCounth",LENGTH_MORE_MES + MAX_VALUE_LENGTH);
             fdto.setDoMiLeftHighCountherr(true);
         }
-        //mj
-        if(StringUtil.isEmpty(fdto.getDoMjLeftModCounth())){
-            errMap.put(fdto.getSvcCode()+"mjLeftModCaseCounth","CaseCounth is mandatory");
-            fdto.setDoMjLeftModCountherr(true);
+
+        if(StringUtil.isEmpty(fdto.getDoMiLeftModCounth())){
+            errMap.put(fdto.getSvcCode()+"miLeftModCaseCounth",MANDATORY);
+            fdto.setDoMiLeftModCountherr(true);
+        }else if(fdto.getDoMiLeftModCounth().length()> MAX_VALUE_LENGTH){
+            errMap.put(fdto.getSvcCode()+"miLeftModCaseCounth",LENGTH_MORE_MES + MAX_VALUE_LENGTH);
+            fdto.setDoMiLeftModCountherr(true);
         }
+
+        //mj
         if(StringUtil.isEmpty(fdto.getDoMjRightModCounth())){
-            errMap.put(fdto.getSvcCode()+"mjRightModCaseCounth()","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"mjRightModCaseCounth()",MANDATORY);
+            fdto.setDoMjRightModCountherr(true);
+        }else if(fdto.getDoMjRightModCounth().length() >MIN_VALUE_LENGTH){
+            errMap.put(fdto.getSvcCode()+"mjRightModCaseCounth()",LENGTH_MORE_MES + MIN_VALUE_LENGTH);
             fdto.setDoMjRightModCountherr(true);
         }
+
         if(StringUtil.isEmpty(fdto.getDoMjRightLowCounth())){
-            errMap.put(fdto.getSvcCode()+"mjRightLowCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"mjRightLowCaseCounth",MANDATORY);
+            fdto.setDoMjRightLowCountherr(true);
+        }else if(fdto.getDoMjRightLowCounth().length() > MIN_VALUE_LENGTH){
+            errMap.put(fdto.getSvcCode()+"mjRightLowCaseCounth",LENGTH_MORE_MES + MIN_VALUE_LENGTH);
             fdto.setDoMjRightLowCountherr(true);
         }
+
         if(StringUtil.isEmpty(fdto.getDoMjLeftHighCounth())){
-            errMap.put(fdto.getSvcCode()+"mjLeftHighCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"mjLeftHighCaseCounth",MANDATORY);
+            fdto.setDoMjLeftHighCountherr(true);
+        }else if(fdto.getDoMjLeftHighCounth().length()>MAX_VALUE_LENGTH){
+            errMap.put(fdto.getSvcCode()+"mjLeftHighCaseCounth",LENGTH_MORE_MES + MAX_VALUE_LENGTH);
             fdto.setDoMjLeftHighCountherr(true);
         }
+
+        if(StringUtil.isEmpty(fdto.getDoMjLeftModCounth())){
+            errMap.put(fdto.getSvcCode()+"mjLeftModCaseCounth",MANDATORY);
+            fdto.setDoMjLeftModCountherr(true);
+        }else if(fdto.getDoMjLeftModCounth().length() >MAX_VALUE_LENGTH ){
+            errMap.put(fdto.getSvcCode()+"mjLeftModCaseCounth",LENGTH_MORE_MES + MAX_VALUE_LENGTH);
+            fdto.setDoMjLeftModCountherr(true);
+        }
+
     }
     public void mergeList(List<HcsaRiskInspectionMatrixDto> editList, List<HcsaRiskInspectionMatrixDto> financeList){
         if(editList!=null &&financeList!=null){

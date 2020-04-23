@@ -85,7 +85,6 @@ public class HcsaRiskIndividualConfigDelegator {
     public InspectionShowDto getDataFrompage(HttpServletRequest request, InspectionShowDto financialShowDto) {
         List<HcsaRiskInspectionMatrixDto> finList = financialShowDto.getInspectionDtoList();
         for (HcsaRiskInspectionMatrixDto fin : finList) {
-            HcsaRiskFinanceMatrixDto newFinDto = new HcsaRiskFinanceMatrixDto();
             String mjleftmod = ParamUtil.getString(request, fin.getSvcCode() + "mjleftmod");
             String mjlefthigh = ParamUtil.getString(request, fin.getSvcCode() + "mjlefthigh");
             String mjrightlow = ParamUtil.getString(request, fin.getSvcCode() + "mjrightlow");
