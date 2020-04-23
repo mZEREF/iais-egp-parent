@@ -107,23 +107,9 @@ public class LicenceViewServiceDelegator {
         String oldCorrelationId="";
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewDto.getNewAppPremisesCorrelationDto();
         if(appPremisesCorrelationDto!=null){
-            ApplicationDto applicationDto1 = applicationViewDto.getApplicationDto();
-            String applicationType = applicationDto1.getApplicationType();
-            if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
-                List<AppPremisesCorrelationDto> entity = applicationClient.getAppPremisesCorrelationsByAppId(applicationDto1.getId()).getEntity();
-                if(entity!=null&&!entity.isEmpty()){
-                    List<String> stringList=new ArrayList<>();
-                    for(AppPremisesCorrelationDto correlationDto :entity){
-                        stringList.add(correlationDto.getId());
-                    }
-                    List<AppCessMiscDto> appCessMiscDtos = cessationClient.getAppCessMiscDtosByCorrIds(stringList).getEntity();
-                    if(appCessMiscDtos!=null&&!appCessMiscDtos.isEmpty()){
-                        String relateRecId = appCessMiscDtos.get(0).getRelateRecId();
-                    }
-                }
-            }
+
             newCorrelationId = appPremisesCorrelationDto.getId();
-             oldCorrelationId = appPremisesCorrelationDto.getOldCorrelationId();
+            oldCorrelationId = appPremisesCorrelationDto.getOldCorrelationId();
             String applicationId = appPremisesCorrelationDto.getApplicationId();
             appSubmissionDto = licenceViewService.getAppSubmissionByAppId(applicationId);
 

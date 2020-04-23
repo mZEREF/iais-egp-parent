@@ -270,6 +270,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
             if(file.isDirectory()){
                 File[] files = file.listFiles();
+                log.info(files.length+"FILE_FORMAT --files.length______");
                 for(File  filzz:files){
                     if(filzz.isFile() &&filzz.getName().endsWith(AppServicesConsts.FILE_FORMAT)){
                         try (  FileInputStream  fileInputStream =new FileInputStream(filzz);
@@ -462,6 +463,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         List<FileRepoDto> fileRepoDtos = IaisCommonUtils.genNewArrayList();
         if(file.isDirectory()){
             File[] files = file.listFiles();
+            log.info(files.length+"files.length------");
             FileRepoEventDto eventDto = new FileRepoEventDto();
             for(File f:files){
                 if(f.isFile()){
