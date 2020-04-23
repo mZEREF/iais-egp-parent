@@ -17,7 +17,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
@@ -33,7 +40,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -51,7 +64,13 @@ import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationProcessUploadFileValidate;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
@@ -74,8 +93,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * HcsaApplicationDelegator
@@ -180,60 +197,50 @@ public class HcsaApplicationDelegator {
        }else{
            throw new IaisRuntimeException("The Task Id  is Error !!!");
        }
+        log.debug(StringUtil.changeForLog("the do prepareData get the NewAppPremisesCorrelationDto"));
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
         appPremisesCorrelationDto.setOldCorrelationId(correlationId);
         String newCorrelationId = appPremisesCorrelationDto.getId();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
-        //get routing stage dropdown send to page.
-        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
 
-//        Map<String,String> routingStage=IaisCommonUtils.genNewHashMap();
+        //get routing stage dropdown send to page.
+        log.debug(StringUtil.changeForLog("the do prepareData get the hcsaSvcRoutingStageDtoList"));
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
         List<SelectOption> routingStage = IaisCommonUtils.genNewArrayList();
         if(hcsaSvcRoutingStageDtoList!=null){
             if(hcsaSvcRoutingStageDtoList.size()>0){
                 for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList) {
                     routingStage.add(new SelectOption(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName()));
-//                    routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
                 }
             }else{
+                log.debug(StringUtil.changeForLog("the do prepareData add the Approve"));
                 //if  this is the last stage
                 routingStage.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
                         "Approve"));
-//                routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
-//                        "Approve");
             }
         }
 
         //   rollback
+        log.debug(StringUtil.changeForLog("the do prepareData get the rollBackMap"));
         Map<String,String> rollBackMap = IaisCommonUtils.genNewHashMap();
-        if(applicationViewDto.getRollBackHistroyList()!=null){
-        for (AppPremisesRoutingHistoryDto e:applicationViewDto.getRollBackHistroyList()) {
-            String stageName=applicationViewService.getStageById(e.getStageId()).getStageName();
-            String userId=e.getActionby();
-            String wrkGrpId=e.getWrkGrpId();
-            OrgUserDto user=applicationViewService.getUserById(userId);
-            String actionBy=user.getDisplayName();
-
-            rollBackMap.put(actionBy+"("+e.getRoleId()+")",e.getStageId()+","+wrkGrpId+","+userId+","+e.getRoleId());
-          }
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList = applicationViewDto.getRollBackHistroyList();
+        if(!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtoList)){
+            for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:appPremisesRoutingHistoryDtoList) {
+                //String stageName=applicationViewService.getStageById(appPremisesRoutingHistoryDto.getStageId()).getStageName();
+                String userId=appPremisesRoutingHistoryDto.getActionby();
+                String wrkGrpId=appPremisesRoutingHistoryDto.getWrkGrpId();
+                OrgUserDto user=applicationViewService.getUserById(userId);
+                String actionBy=user.getDisplayName();
+                rollBackMap.put(actionBy+"("+appPremisesRoutingHistoryDto.getRoleId()+")",appPremisesRoutingHistoryDto.getStageId()+","+wrkGrpId+","+userId+","+appPremisesRoutingHistoryDto.getRoleId());
+              }
+        }else{
+            log.debug(StringUtil.changeForLog("the do prepareData do not have the rollback history"));
         }
         applicationViewDto.setRollBack(rollBackMap);
 
-        if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
-//            routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast");
-//            routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS");
-        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationViewDto.getApplicationDto().getStatus())){
-//            routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY,"Broadcast Reply For Internal");
-        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
-                || ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
-                || ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(applicationViewDto.getApplicationDto().getStatus())){
-//            if(rfiCount==0){
-//                routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
-//            }
-        }else if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
+      if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY,"Broadcast Reply For Internal"));
-//            routingStage.put(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY,"Broadcast Reply For Internal");
         }
         //set verified values
         applicationViewDto.setVerified(routingStage);
@@ -243,7 +250,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "recommendationDropdown", (Serializable)getRecommendationDropdown(applicationViewDto));
         //set recommendation other dropdown
         ParamUtil.setSessionAttr(bpc.request, "recommendationOtherDropdown", (Serializable)getRecommendationOtherDropdown());
-
+        log.debug(StringUtil.changeForLog("the do prepareData get the appEditSelectDto"));
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         if(applicationDto != null){
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()) ){
@@ -266,10 +273,12 @@ public class HcsaApplicationDelegator {
             }
         }
         List<AppSupDocDto> appSupDocDtoList = applicationViewDto.getAppSupDocDtoList();
-        if(appSupDocDtoList == null || (appSupDocDtoList.size() == 0)){
+        if(IaisCommonUtils.isEmpty(appSupDocDtoList)){
             ParamUtil.setRequestAttr(bpc.request, "appSupDocDtoListNull","Y");
         }
         String roleId = taskDto.getRoleId();
+        log.debug(StringUtil.changeForLog("the do prepareData get the appPremisesRecommendationDto"));
+        log.debug(StringUtil.changeForLog("the do prepareData roleId -->:"+roleId));
         AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
         if(appPremisesRecommendationDto != null){
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
