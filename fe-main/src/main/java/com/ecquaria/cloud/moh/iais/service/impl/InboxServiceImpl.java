@@ -163,8 +163,7 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
-    public Boolean checkAppEligibility(String appId) {
-        Boolean resule = appInboxClient.isAppealEligibility(appId).getEntity();
-        return resule;
+    public Boolean checkEligibility(String appId) {
+        return appInboxClient.isAppealEligibility(appId).getEntity();
     }
 }

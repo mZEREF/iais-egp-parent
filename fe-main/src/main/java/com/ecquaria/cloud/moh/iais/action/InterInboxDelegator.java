@@ -329,16 +329,21 @@ public class InterInboxDelegator {
 
     public void licDoAppeal(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
-        String licNo = ParamUtil.getString(bpc.request, InboxConst.CRUD_ACTION_VALUE);
-        StringBuilder url = new StringBuilder();
-        url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
-                .append("?appealingFor=")
-                .append(MaskUtil.maskValue("appealingFor",licNo))
-                .append("&type=licence");
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
-
+        String licId = ParamUtil.getString(bpc.request, InboxConst.ACTION_ID_VALUE);
+        Boolean result = inboxService.checkEligibility(licId);
+        if (result){
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
+                    .append("?appealingFor=")
+                    .append(MaskUtil.maskValue("appealingFor",licId))
+                    .append("&type=licence");
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }else{
+            ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",result);
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"The licence is appealed");
+        }
     }
 
     public void licToView(BaseProcessClass bpc) throws IOException {
@@ -387,7 +392,6 @@ public class InterInboxDelegator {
                     result = false;
                 }
             }
-            ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",result);
             if (result){
                 StringBuilder url = new StringBuilder();
                 url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
@@ -395,6 +399,9 @@ public class InterInboxDelegator {
                 ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
                 String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
                 bpc.response.sendRedirect(tokenUrl);
+            }else{
+                ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",result);
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"This application is performing the renew process");
             }
         }
     }
@@ -522,15 +529,14 @@ public class InterInboxDelegator {
     public void appDoAppeal(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
         String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
-        MaskUtil.maskValue("appealingFor",appNo);
         String appId = ParamUtil.getString(request, InboxConst.ACTION_ID_VALUE);
-        Boolean result = inboxService.checkAppEligibility(appId);
+        Boolean result = inboxService.checkEligibility(appId);
         if (result){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
                     .append("?appealingFor=")
-                    .append(appNo)
+                    .append(MaskUtil.maskValue("appealingFor",appNo))
                     .append("&type=application");
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
@@ -734,6 +740,9 @@ public class InterInboxDelegator {
         List<SelectOption> LicenceActionsList = IaisCommonUtils.genNewArrayList();
         LicenceActionsList.add(new SelectOption("Appeal", "Appeal"));
         ParamUtil.setRequestAttr(request, "licActions", LicenceActionsList);
+
+        List<SelectOption> LicenceNoActionsList = IaisCommonUtils.genNewArrayList();
+        ParamUtil.setRequestAttr(request, "licNoActions", LicenceNoActionsList);
     }
 
     private void clearParameter(String tabName){

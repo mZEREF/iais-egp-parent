@@ -24,7 +24,7 @@
                             Type:</label>
                         <div class="col-xs-8 col-md-8">
                             <%String licType = request.getParameter("licType");%>
-                            <iais:select name="licType" id="licType" options="licType" value="<%=licType%>"></iais:select>
+                            <iais:select name="licType" id="licType" options="licType" value="<%=licType%>"/>
                         </div>
                     </iais:value>
                 </div>
@@ -36,7 +36,7 @@
                             Status:</label>
                         <div class="col-xs-8 col-md-8">
                             <%String licStatus = request.getParameter("licStatus");%>
-                            <iais:select name="licStatus" id="licStatus" options="licStatus" value="<%=licStatus%>"></iais:select>
+                            <iais:select name="licStatus" id="licStatus" options="licStatus" value="<%=licStatus%>"/>
                         </div>
                     </iais:value>
                 </div>
@@ -110,16 +110,16 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <iais:sortableHeader needSort="false" field="" value=" " ></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false" field="" value=" " />
                         <iais:sortableHeader needSort="true" field="LICENCE_NO"
-                                             value="Licence No."></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true" field="SVC_NAME" value="Type"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true" field="STATUS" value="Status" style="width:9%;"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true" field="PREMISE" value="Premises"></iais:sortableHeader>
+                                             value="Licence No."/>
+                        <iais:sortableHeader needSort="true" field="SVC_NAME" value="Type"/>
+                        <iais:sortableHeader needSort="true" field="STATUS" value="Status" style="width:9%;"/>
+                        <iais:sortableHeader needSort="true" field="PREMISE" value="Premises"/>
                         <iais:sortableHeader needSort="true" field="START_DATE"
-                                             value="Start Date"></iais:sortableHeader>
+                                             value="Start Date"/>
                         <iais:sortableHeader needSort="true" field="EXPIRY_DATE"
-                                             value="Expiry Date"></iais:sortableHeader>
+                                             value="Expiry Date"/>
                         <th style="width:15%">Actions</th>
                     </tr>
                     </thead>
@@ -128,7 +128,7 @@
                         <c:when test="${empty licResult.rows}">
                             <tr>
                                 <td colspan="6">
-                                    <iais:message key="ACK018" escape="true"></iais:message>
+                                    <iais:message key="ACK018" escape="true"/>
                                 </td>
                             </tr>
                         </c:when>
@@ -157,7 +157,7 @@
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Status</p>
-                                        <p style="margin-right: 26px;"><iais:code code="${licenceQuery.status}"></iais:code></p>
+                                        <p style="margin-right: 26px;"><iais:code code="${licenceQuery.status}"/></p>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Premises</p>
@@ -175,9 +175,15 @@
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Actions</p>
-                                        <iais:select name="licActions" id="licActions" options="licActions"
-                                                     firstOption="Select"
-                                                     onchange="doLicAppeal('${licenceQuery.licenceNo}')"></iais:select>
+                                        <c:if test="${licenceQuery.status == 'LICEST001'}">
+                                            <iais:select name="licActions" id="licActions" options="licActions"
+                                                         firstOption="Select"
+                                                         onchange="doLicAppeal('${licenceQuery.licenceNo}','${licenceQuery.id}')"/>
+                                        </c:if>
+                                        <c:if test="${licenceQuery.status != 'LICEST001'}">
+                                            <iais:select name="licNoActions"  options="licNoActions" id="licNoActions"
+                                                         firstOption="Select"/>
+                                        </c:if>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -186,15 +192,15 @@
                     </tbody>
                 </table>
                 <!-- Modal -->
-                <div class="modal fade" id="isRenewedModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:90%; overflow: visible;bottom: inherit;right: inherit;">
+                <div class="modal fade" id="isRenewedModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:60%; overflow: visible;bottom: inherit;right: inherit;">
                     <div class="modal-dialog" role="document" style="width: 760px;">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body" style="text-align: center">
                                 <div class="row">
-                                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">This application is performing the renew process</span></div>
+                                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;">${LAEM}</span></div>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -208,9 +214,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col-md-12 text-right">
-                            <a class="btn btn-primary disabled" href="javascript:;" id="lic-renew">Renew</a>
-                            <a class="btn btn-primary disabled" href="javascript:;" id="lic-cease">Cease</a>
-                            <a class="btn btn-primary disabled" href="javascript:;" id="lic-amend">Amend</a>
+                            <a class="btn btn-primary disabled" href="#" id="lic-renew">Renew</a>
+                            <a class="btn btn-primary disabled" href="#" id="lic-cease">Cease</a>
+                            <a class="btn btn-primary disabled" href="#" id="lic-amend">Amend</a>
                             <a class="btn btn-primary disabled" id="lic-print" onclick="doPrint()">Print</a>
                         </div>
                     </div>

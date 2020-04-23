@@ -47,11 +47,11 @@
 <script type="text/javascript">
 
     $(function () {
-        if ('${licIsRenewed}') {
+        if ('${licIsRenewed}' || '${licIsAppealed}') {
             $('#isRenewedModal').modal('show');
-            window.setTimeout(function(){
-                $('#isRenewedModal').modal('hide');
-            },3000);
+            // window.setTimeout(function(){
+            //     $('#isRenewedModal').modal('hide');
+            // },3000);
         }
     });
 
@@ -138,9 +138,10 @@
         submit('licToView');
     }
     
-    function doLicAppeal(licNo) {
+    function doLicAppeal(licNo,licId) {
         showWaiting();
         $("[name='crud_action_value']").val(licNo);
+        $("[name='action_id_value']").val(licId);
         submit('licDoAppeal');
     }
     

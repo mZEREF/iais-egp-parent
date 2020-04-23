@@ -29,5 +29,5 @@ public interface InboxService {
     Boolean recallApplication(RecallApplicationDto recallApplicationDto);
     public boolean checkRenewalStatus(String licenceId);
     void updateMsgStatusToRead(String msgId);
-    Boolean checkAppEligibility(String appId);
+    Boolean checkEligibility(String appId);
 }
