@@ -86,10 +86,10 @@ public class InspectionRectificationProDelegator {
     @Autowired
     private InsRepService insRepService;
 
-    private static final String SERLISTDTO="serListDto";
-    private static final String COMMONDTO="commonDto";
-    private static final String ADHOCLDTO="adchklDto";
-    private static final String TASKDTO="taskDto";
+    private static final String SERLISTDTO ="serListDto";
+    private static final String COMMONDTO ="commonDto";
+    private static final String ADHOCLDTO ="adchklDto";
+    private static final String TASKDTO ="taskDto";
     private static final String APPLICATIONVIEWDTO = "applicationViewDto";
     private static final String CHECKLISTFILEDTO = "checkListFileDto";
 
@@ -108,7 +108,10 @@ public class InspectionRectificationProDelegator {
      */
     public void inspectorProRectificationStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectorProRectificationStart start ...."));
+        String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
+        TaskDto taskDto = taskService.getTaskById(taskId);
         AuditTrailHelper.auditFunction("Inspection Rectification Process", "Inspector Processing Rectification");
+        ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
     }
 
     /**
@@ -119,7 +122,6 @@ public class InspectionRectificationProDelegator {
      */
     public void inspectorProRectificationInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectorProRectificationInit start ...."));
-        ParamUtil.setSessionAttr(bpc.request, "taskDto", null);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", null);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", null);
         ParamUtil.setSessionAttr(bpc.request, "inboxUrl", null);
@@ -147,8 +149,7 @@ public class InspectionRectificationProDelegator {
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         if(inspectionPreTaskDto == null){
             inspectionPreTaskDto = new InspectionPreTaskDto();
-            String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
-            taskDto = taskService.getTaskById(taskId);
+            taskDto = taskService.getTaskById(taskDto.getId());
             applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             inspectionPreTaskDto.setAppStatus(applicationDto.getStatus());
