@@ -2819,7 +2819,7 @@ public class NewApplicationDelegator {
                 }
                 if (StringUtil.isEmpty(premisesSelect) || "-1".equals(premisesSelect)) {
                     errorMap.put("premisesSelect"+i, "UC_CHKLMD001_ERR001");
-                } else if ("newPremise".equals(premisesSelect) || needValidate) {
+                } else if ("newPremise".equals(premisesSelect) || needValidate||!StringUtil.isEmpty(premisesSelect)) {
                     StringBuilder stringBuilder=new StringBuilder();
                     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
                         String onsiteStartHH = appGrpPremisesDtoList.get(i).getOnsiteStartHH();

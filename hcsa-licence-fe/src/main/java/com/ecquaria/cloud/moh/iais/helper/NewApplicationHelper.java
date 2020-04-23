@@ -915,6 +915,11 @@ public class NewApplicationHelper {
                             errMap.put("idNo"+i,"CHKLMD001_ERR005");
                         }
                         stringBuilder1.append(idTyp).append(idNo);
+                        if(!StringUtil.isEmpty(stringBuilder1.toString())){
+                            if(stringList.contains(stringBuilder1.toString())){
+                                errMap.put("idNo"+i,"UC_CHKLMD001_ERR002");
+                            }
+                        }
                     }
                     if("NRIC".equals(idTyp)){
                         boolean b1 = SgNoValidator.validateNric(idNo);
@@ -922,6 +927,11 @@ public class NewApplicationHelper {
                             errMap.put("idNo"+i,"CHKLMD001_ERR005");
                         }
                         stringBuilder1.append(idTyp).append(idNo);
+                        if(!StringUtil.isEmpty(stringBuilder1.toString())){
+                            if(stringList.contains(stringBuilder1.toString())){
+                                errMap.put("idNo"+i,"UC_CHKLMD001_ERR002");
+                            }
+                        }
                     }
                 }
 
@@ -955,9 +965,7 @@ public class NewApplicationHelper {
                 }
 
                 if(!StringUtil.isEmpty(stringBuilder1.toString())){
-                    if(stringList.contains(stringBuilder1.toString())){
-                        errMap.put("idNo","UC_CHKLMD001_ERR002");
-                    }else {
+                    if(!stringList.contains(stringBuilder1.toString())){
                         stringList.add( stringBuilder1.toString());
                     }
                 }

@@ -205,15 +205,13 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public void getMessage(HttpServletRequest request) {
-
-        String appealingFor =  request.getParameter(APPEALING_FOR);
-        String type = request.getParameter(TYPE);
+        String appealingFor = ParamUtil.getMaskedString(request, APPEALING_FOR);
+        String type  = ParamUtil.getMaskedString(request,TYPE);
         if (LICENCE.equals(type)) {
-            LicenceDto licenceDto = licenceClient.getLicBylicNo(appealingFor).getEntity();
-
+            LicenceDto licenceDto = licenceClient.getLicenceDtoById(appealingFor).getEntity();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
-            List<PremisesListQueryDto> premisesListQueryDtos = licenceClient.getPremisesByLicneceId(licenceDto.getId()).getEntity();
+            List<PremisesListQueryDto> premisesListQueryDtos = licenceClient.getPremisesByLicneceId(appealingFor).getEntity();
             List<PremisesListQueryDto> listQueryDtos= IaisCommonUtils.genNewArrayList();
             if(premisesListQueryDtos!=null){
                 for(int i=0;i<premisesListQueryDtos.size();i++){
@@ -534,10 +532,10 @@ public class AppealServiceImpl implements AppealService {
     }
 
 
-    private String licencePresmises(HttpServletRequest request,String  licenceNo){
+    private String licencePresmises(HttpServletRequest request,String  licenceId){
 
-        LicenceDto licenceDto = licenceClient.getLicBylicNo(licenceNo).getEntity();
-        ApplicationDto entity1 = applicationClient.getApplicationsByLicenceId(licenceDto.getId()).getEntity();
+        LicenceDto licenceDto = licenceClient.getLicenceDtoById(licenceId).getEntity();
+        ApplicationDto entity1 = applicationClient.getApplicationsByLicenceId(licenceId).getEntity();
         String licenseeId = licenceDto.getLicenseeId();
 
         List<ApplicationDto> applicationDtoListlist=IaisCommonUtils.genNewArrayList();
@@ -656,9 +654,9 @@ public class AppealServiceImpl implements AppealService {
 
     }
 
-    private String applicationPresmies(HttpServletRequest request, String applicationNo){
+    private String applicationPresmies(HttpServletRequest request, String applicationId){
 
-        ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion(applicationNo).getEntity();
+        ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
         String grpId = applicationDto.getAppGrpId();
 
         ApplicationGroupDto entity = applicationClient.getApplicationGroup(grpId).getEntity();
