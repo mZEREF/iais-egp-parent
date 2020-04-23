@@ -30,6 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.validation.constraints.Null;
+
 /**
  * @author weilu
  * @date 2019/12/5 13:16
@@ -65,7 +67,8 @@ public class InsReportAoDelegator {
         ParamUtil.setSessionAttr(bpc.request, APPLICATIONVIEWDTO, null);
 
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String taskId = ParamUtil.getString(bpc.request,"taskId");
+//        String taskId = ParamUtil.getString(bpc.request,"taskId");
+        String taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto  applicationViewDto = insRepService.getApplicationViewDto(correlationId);
@@ -240,6 +243,11 @@ public class InsReportAoDelegator {
             recommendationDtoEngage.setRemarks(engageEnforcementRemarks);
             recommendationDtoEngage.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE);
             insRepService.updateengageRecommendation(recommendationDtoEngage);
+        }else {
+            AppPremisesRecommendationDto recommendationDtoEngage = new AppPremisesRecommendationDto();
+            recommendationDtoEngage.setAppPremCorreId(appPremisesCorrelationId);
+            recommendationDtoEngage.setRemarks(null);
+            insRepService.updateengageRecommendation(recommendationDtoEngage);
         }
         if(!StringUtil.isEmpty(riskLevel)){
             AppPremisesRecommendationDto recommendationDtoRisk = new AppPremisesRecommendationDto();
@@ -253,6 +261,11 @@ public class InsReportAoDelegator {
             followRecommendationDtoFollow.setAppPremCorreId(appPremisesCorrelationId);
             followRecommendationDtoFollow.setRemarks(followUpAction);
             followRecommendationDtoFollow.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION);
+            insRepService.updateFollowRecommendation(followRecommendationDtoFollow);
+        }else {
+            AppPremisesRecommendationDto followRecommendationDtoFollow = new AppPremisesRecommendationDto();
+            followRecommendationDtoFollow.setAppPremCorreId(appPremisesCorrelationId);
+            followRecommendationDtoFollow.setRemarks(null);
             insRepService.updateFollowRecommendation(followRecommendationDtoFollow);
         }
     }

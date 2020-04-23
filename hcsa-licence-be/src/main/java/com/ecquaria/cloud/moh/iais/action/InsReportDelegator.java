@@ -69,7 +69,7 @@ public class InsReportDelegator {
         log.debug(StringUtil.changeForLog("the inspectionReportInit start ...."));
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", null);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
-        String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
+        String taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId);
@@ -203,6 +203,7 @@ public class InsReportDelegator {
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String periods = ParamUtil.getRequestString(bpc.request, "periods");
+        String enforcement = ParamUtil.getRequestString(bpc.request, "engageEnforcement");
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
         String number = ParamUtil.getRequestString(bpc.request, NUMBER);
         String followUpAction = ParamUtil.getRequestString(bpc.request, "followUpAction");
@@ -230,7 +231,11 @@ public class InsReportDelegator {
         }
         AppPremisesRecommendationDto engageEnforcementAppPremisesRecommendationDto = new AppPremisesRecommendationDto();
         engageEnforcementAppPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE);
-        engageEnforcementAppPremisesRecommendationDto.setRemarks(enforcementRemarks);
+        if(StringUtil.isEmpty(enforcement)){
+            engageEnforcementAppPremisesRecommendationDto.setRemarks(null);
+        }else {
+            engageEnforcementAppPremisesRecommendationDto.setRemarks(enforcementRemarks);
+        }
         engageEnforcementAppPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
 
         AppPremisesRecommendationDto riskLevelAppPremisesRecommendationDto = new AppPremisesRecommendationDto();
@@ -303,9 +308,12 @@ public class InsReportDelegator {
         AppPremisesRecommendationDto appPremisesRecommendationDto5 = appPremisesRecommendationDtoList.get(3);
 
         insRepService.updateRecommendation(appPremisesRecommendationDto1);
-        String remarks = appPremisesRecommendationDto3.getRemarks();
-        if (!StringUtil.isEmpty(remarks)) {
-            appPremisesRecommendationDto3.setRemarks(remarks);
+        String engageEnforcementRemarks = appPremisesRecommendationDto3.getRemarks();
+        if (!StringUtil.isEmpty(engageEnforcementRemarks)) {
+            appPremisesRecommendationDto3.setRemarks(engageEnforcementRemarks);
+            insRepService.updateengageRecommendation(appPremisesRecommendationDto3);
+        }else {
+            appPremisesRecommendationDto3.setRemarks(null);
             insRepService.updateengageRecommendation(appPremisesRecommendationDto3);
         }
         String riskLevel = appPremisesRecommendationDto4.getRecomDecision();
@@ -314,6 +322,9 @@ public class InsReportDelegator {
         }
         String followRemarks = appPremisesRecommendationDto5.getRemarks();
         if (!StringUtil.isEmpty(followRemarks)) {
+            insRepService.updateFollowRecommendation(appPremisesRecommendationDto5);
+        }else {
+            appPremisesRecommendationDto5.setRemarks(null);
             insRepService.updateFollowRecommendation(appPremisesRecommendationDto5);
         }
     }

@@ -122,7 +122,6 @@ public class InsRepServiceImpl implements InsRepService {
         InspectionReportDto inspectionReportDto = new InspectionReportDto();
         //inspection report application dto
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
-        String taskId = taskDto.getId();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appId = applicationDto.getId();
         String appGrpId = applicationDto.getAppGrpId();
@@ -309,6 +308,7 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public void updateengageRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
         String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
+        String remarks = appPremisesRecommendationDto.getRemarks();
         Integer version = 1;
         AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
         if (oldAppPremisesRecommendationDto == null) {
@@ -316,15 +316,19 @@ public class InsRepServiceImpl implements InsRepService {
             appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             insRepClient.saveRecommendationData(appPremisesRecommendationDto);
             return;
-        } else {
+        } else if(oldAppPremisesRecommendationDto!=null&&!StringUtil.isEmpty(remarks)) {
             oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
 
             version = oldAppPremisesRecommendationDto.getVersion() + 1;
             oldAppPremisesRecommendationDto.setVersion(version);
             oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            oldAppPremisesRecommendationDto.setRemarks(appPremisesRecommendationDto.getRemarks());
+            oldAppPremisesRecommendationDto.setRemarks(remarks);
             oldAppPremisesRecommendationDto.setId(null);
+            insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
+            return;
+        }else if(oldAppPremisesRecommendationDto!=null&&StringUtil.isEmpty(remarks)) {
+            oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
             return;
         }
@@ -358,13 +362,14 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public void updateFollowRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
         String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
+        String remarks = appPremisesRecommendationDto.getRemarks();
         Integer version = 1;
         AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
         if (oldAppPremisesRecommendationDto == null) {
             appPremisesRecommendationDto.setVersion(version);
             appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             insRepClient.saveRecommendationData(appPremisesRecommendationDto);
-        } else {
+        } else if(oldAppPremisesRecommendationDto!=null&&!StringUtil.isEmpty(remarks)) {
             oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
             version = oldAppPremisesRecommendationDto.getVersion() + 1;
@@ -373,8 +378,11 @@ public class InsRepServiceImpl implements InsRepService {
             oldAppPremisesRecommendationDto.setRemarks(appPremisesRecommendationDto.getRemarks());
             oldAppPremisesRecommendationDto.setId(null);
             insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
+        }else if(oldAppPremisesRecommendationDto!=null&&StringUtil.isEmpty(remarks)) {
+            oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
+            return;
         }
-
     }
 
     @Override
