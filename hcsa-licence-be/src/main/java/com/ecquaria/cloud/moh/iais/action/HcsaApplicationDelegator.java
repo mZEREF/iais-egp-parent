@@ -1411,7 +1411,7 @@ public class HcsaApplicationDelegator {
     private TaskDto completedTask(TaskDto taskDto){
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
         taskDto.setSlaDateCompleted(new Date());
-        taskDto.setSlaRemainInDays(remainDays(taskDto));
+        //taskDto.setSlaRemainInDays(remainDays(taskDto));
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return taskDto;
     }
