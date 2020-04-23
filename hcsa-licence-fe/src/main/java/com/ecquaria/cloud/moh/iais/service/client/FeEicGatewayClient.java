@@ -115,16 +115,6 @@ public interface FeEicGatewayClient {
                                                    @RequestHeader("date-Secondary") String dateSec,
                                                    @RequestHeader("authorization-Secondary") String authorizationSec);
 
-    @GetMapping(value = "")
-    FeignResponseEntity<Set<String>> getInspectorByCorreIdAndStatusAndRole(@PathVariable("correId")String correId,
-                                                                           @PathVariable("status")String status,
-                                                                            @PathVariable("role") String role,
-                                                                           @RequestHeader("date") String date,
-                                                                           @RequestHeader("authorization") String authorization,
-                                                                           @RequestHeader("date-Secondary") String dateSec,
-                                                                           @RequestHeader("authorization-Secondary") String authorizationSec);
-
-
     @PostMapping(value = "/v1/rfi-reply-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicPremisesReqForInfoDto> routeRfiData(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto,
                                                                @RequestHeader("date") String date,
