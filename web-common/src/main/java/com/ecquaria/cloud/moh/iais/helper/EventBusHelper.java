@@ -43,10 +43,11 @@ public class EventBusHelper {
 
     private SubmitResp submitRequest(Object dto, String submissionId, String service, String operation,
                                      String eventRefNo, boolean wait, int waitTime, Process process) {
+        log.info("<=== Start to call Event bus ===>");
+        log.info(StringUtil.changeForLog("Call Submission Id ==>" + submissionId));
+        log.info(StringUtil.changeForLog("Call Service ==>" + service));
+        log.info(StringUtil.changeForLog("Call Operation ==>" + operation));
         SubmitReq req = new SubmitReq();
-        log.info(StringUtil.changeForLog("Submission ID ===> " + submissionId));
-        log.info(StringUtil.changeForLog("Operation ===> " + operation));
-        log.info(StringUtil.changeForLog("Service ===> " + service));
         req.setSubmissionId(submissionId);
         if (process != null) {
             req.setProject(process.getCurrentProject());
