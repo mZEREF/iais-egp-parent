@@ -8,7 +8,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckList
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import freemarker.template.TemplateException;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +54,7 @@ public interface InspectionPreTaskService {
       * @return: void
       * @Descripation: routing back
       */
-    void routingBack(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, LoginContext loginContext);
+    void routingBack(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, LoginContext loginContext) throws IOException, TemplateException;
 
 
     /**
