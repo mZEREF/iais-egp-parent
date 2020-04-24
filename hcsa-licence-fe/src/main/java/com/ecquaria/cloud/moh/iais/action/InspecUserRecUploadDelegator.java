@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -97,7 +96,6 @@ public class InspecUserRecUploadDelegator {
                     inspecUserRecUploadDto.setRectifyFlag(AppConsts.FAIL);
                 }
             }
-
         }
         String submitButtonFlag = ncIsAllRectified(inspecUserRecUploadDtos);
 
@@ -110,11 +108,7 @@ public class InspecUserRecUploadDelegator {
         String submitButtonFlag = InspectionConstants.SWITCH_ACTION_SUBMIT;
         if(!IaisCommonUtils.isEmpty(inspecUserRecUploadDtos)){
             for(InspecUserRecUploadDto inspecUserRecUploadDto : inspecUserRecUploadDtos){
-                String rectifyFlag = inspecUserRecUploadDto.getRectifyFlag();
                 String buttonFlag = inspecUserRecUploadDto.getButtonFlag();
-                if(StringUtil.isEmpty(rectifyFlag) || AppConsts.FAIL.equals(rectifyFlag)){
-                    return InspectionConstants.SWITCH_ACTION_REJECT;
-                }
                 if(!StringUtil.isEmpty(buttonFlag) && AppConsts.SUCCESS.equals(buttonFlag)){
                     return InspectionConstants.SWITCH_ACTION_REJECT;
                 }
@@ -305,25 +299,13 @@ public class InspecUserRecUploadDelegator {
         InspecUserRecUploadDto inspecUserRecUploadDto = (InspecUserRecUploadDto)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDto");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         inspecUserRecUploadService.submitRecByUser(loginContext, inspecUserRecUploadDto);
-        int recSuccessCount = 0;
         List<InspecUserRecUploadDto> inspecUserRecUploadDtoList = IaisCommonUtils.genNewArrayList();
         for(InspecUserRecUploadDto iDto : inspecUserRecUploadDtos){
             if(iDto.getId().equals(inspecUserRecUploadDto.getId())){
-                if(!IaisCommonUtils.isEmpty(inspecUserRecUploadDto.getAppPremPreInspectionNcDocDtos())){
-                    recSuccessCount = recSuccessCount + 1;
-                }
                 inspecUserRecUploadDtoList.add(inspecUserRecUploadDto);
             } else {
-                if(!IaisCommonUtils.isEmpty(iDto.getAppPremPreInspectionNcDocDtos())){
-                    recSuccessCount = recSuccessCount + 1;
-                }
                 inspecUserRecUploadDtoList.add(iDto);
             }
-        }
-        if(recSuccessCount == inspecUserRecUploadDtos.size()){
-            ParamUtil.setSessionAttr(bpc.request, "submitButtonFlag", InspectionConstants.SWITCH_ACTION_SUBMIT);
-        } else {
-            ParamUtil.setSessionAttr(bpc.request, "submitButtonFlag", InspectionConstants.SWITCH_ACTION_REJECT);
         }
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtoList);
         log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
@@ -340,7 +322,21 @@ public class InspecUserRecUploadDelegator {
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadSubmit start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        inspecUserRecUploadService.submitAllRecNc(inspecUserRecUploadDtos, loginContext);
+        if(!IaisCommonUtils.isEmpty(inspecUserRecUploadDtos)) {
+            //do validate
+            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+            for (InspecUserRecUploadDto inspecUserRecUploadDto : inspecUserRecUploadDtos) {
+                if(IaisCommonUtils.isEmpty(inspecUserRecUploadDto.getAppPremPreInspectionNcDocDtos())){
+                    errorMap.put("subFlag", "UC_INSP_ERR0008");
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                    ParamUtil.setRequestAttr(bpc.request, "subflag", AppConsts.FALSE);
+                } else {
+                    ParamUtil.setRequestAttr(bpc.request, "subflag", AppConsts.TRUE);
+                    inspecUserRecUploadService.submitAllRecNc(inspecUserRecUploadDtos, loginContext);
+                }
+            }
+        }
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
         ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"Acknowledgement");
     }
