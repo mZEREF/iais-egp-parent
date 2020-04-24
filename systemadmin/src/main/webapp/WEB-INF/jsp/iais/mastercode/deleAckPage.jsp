@@ -17,7 +17,7 @@
                 <div class="center-content">
                     <div class="intranet-content">
                         <div class="bg-title">
-                            <h2>You have Removed/Deactivated Master code on <fmt:formatDate value="${DELETE_DATE}" pattern="dd/MM/yyyy"/> at <fmt:formatDate value="${DELETE_DATE}" pattern="HH:mm:ss"/></h2>
+                            <h2>You have Removed/Deactivated Master code on <fmt:formatDate value="${DELETE_DATE}" pattern="dd/MM/yyyy"/> at <fmt:formatDate value="${DELETE_DATE}" pattern="HH:mm"/></h2>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12">
