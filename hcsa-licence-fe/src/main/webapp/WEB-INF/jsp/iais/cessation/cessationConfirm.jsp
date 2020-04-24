@@ -43,7 +43,7 @@
                         <td style="text-align:center" rowspan="${hciDtoNum}">
                             <p><c:out value="${num.count}"/></p>
                         </td>
-                        <td style="text-align:center;padding: 0" rowspan="${hciDtoNum}">
+                        <td style="text-align:center; padding: 0" rowspan="${hciDtoNum}">
                             <p><c:out value="${appCess.licenceNo}"/></p>
                         </td>
                         <td style="text-align:center" rowspan="${hciDtoNum}">
@@ -86,7 +86,7 @@
                                     </tr>
                                 </table>
                             </td>
-                            <td style="text-align:center"><input type="checkbox" name="${num.count}whichTodo${uid.count}" value="${appCess.licenceId}" <c:if test="${appCessHci.whichTodo != null}">checked</c:if>></td>
+                            <td style="text-align:center"><input type="checkbox" name="${num.count}whichTodo${uid.count}" value="${appCess.licenceId}" <c:if test="${appCessHci.premiseIdChecked != null}">checked</c:if>></td>
                         </c:forEach>
                     </tr>
 
@@ -128,7 +128,7 @@
                                     </tr>
                                 </table>
                             </td>
-                            <td style="text-align:center"><input type="checkbox" name="${num.count}whichTodo${uid.count+1}" value="${appCess.licenceId}" <c:if test="${appCessHci.whichTodo != null}">checked</c:if>></td>
+                            <td style="text-align:center"><input type="checkbox" name="${num.count}whichTodo${uid.count+1}" value="${appCess.licenceId}" <c:if test="${appCessHci.premiseIdChecked != null}">checked</c:if>></td>
                         </tr>
                     </c:forEach>
                 </c:forEach>

@@ -45,7 +45,7 @@
                         <td style="text-align:center" rowspan="${hciDtoNum}">
                             <p><c:out value="${num.count}"/></p>
                         </td>
-                        <td style="text-align:center;padding: 0" rowspan="${hciDtoNum}">
+                        <td style="text-align:center;" rowspan="${hciDtoNum}">
                             <p><c:out value="${appCess.licenceNo}"/></p>
                         </td>
                         <td style="text-align:center" rowspan="${hciDtoNum}">
@@ -71,7 +71,7 @@
                                                    id="${num.count}radioYes${uid.count}"
                                                    <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if>
                                                    onchange="javascirpt:changePatSelect(this.value);"> Yes
-                                            <span style="position: absolute;top: 70%;left: 20% ;width: 210%"
+                                            <span style="position: absolute;top: 70%;left: 20% ;width: 200%"
                                                   id="error_${num.count}patRadio${uid.count}" name="iaisErrorMsg"
                                                   class="error-msg"></span>
                                         </td>
@@ -121,9 +121,8 @@
                                     </tr>
                                 </table>
                             </td>
-                            <td style="text-align:center"><input type="checkbox" name="${num.count}whichTodo${uid.count}"
-                                                                 value="${appCess.licenceId}"
-                                                                 <c:if test="${appCessHci.whichTodo != null}">checked</c:if>>
+                            <td style="text-align:center"><input type="checkbox" name="${num.count}whichTodo${uid.count}" value="${appCessHci.premiseId}"
+                                                                 <c:if test="${appCessHci.premiseIdChecked != null}">checked</c:if>>
                                 <span id="error_whichTodo" name="iaisErrorMsg" class="error-msg"></span></td>
                         </c:forEach>
                     </tr>
@@ -153,7 +152,7 @@
                                                    id="${num.count}radioYes${uid.count+1}"
                                                    <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if>
                                                    onchange="javascirpt:changePatSelect(this.value);"> Yes
-                                            <span style="position: absolute;top: 70%;left: 20% ;width: 210%"
+                                            <span style="position: absolute;top: 70%;left: 20% ;width: 200%"
                                                   id="error_${num.count}patRadio${uid.count+1}" name="iaisErrorMsg"
                                                   class="error-msg"></span>
                                         </td>
@@ -205,9 +204,8 @@
                                     </tr>
                                 </table>
                             </td>
-                            <td style="text-align:center"><input type="checkbox" name="${num.count}whichTodo${uid.count+1}"
-                                                                 value="${appCess.licenceId}"
-                                                                 <c:if test="${appCessHci.whichTodo != null}">checked</c:if>>
+                            <td style="text-align:center"><input type="checkbox" name="${num.count}whichTodo${uid.count+1}" value="${appCessHci.premiseId}"
+                                                                 <c:if test="${appCessHci.premiseIdChecked != null}">checked</c:if>>
                         </tr>
                     </c:forEach>
                 </c:forEach>

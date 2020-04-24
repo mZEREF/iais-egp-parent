@@ -31,6 +31,8 @@ public interface CessationService {
     List<Boolean> listResultCeased(List<String> licIds);
 
     List<String> listHciName();
-    void sendEmail(String msgId, Date date,String svcName,String appGrpId,String licenseeId) throws IOException, TemplateException;
+
+    void sendEmail(String msgId, Date date,String svcName,String appGrpId,String licenseeId,String licNo) throws IOException, TemplateException;
+
     List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, List<String> appIds, LoginContext loginContext) throws Exception;
 }

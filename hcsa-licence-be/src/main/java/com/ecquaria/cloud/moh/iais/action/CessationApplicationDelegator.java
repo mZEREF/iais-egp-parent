@@ -79,7 +79,6 @@ public class CessationApplicationDelegator {
         if (licIds == null || licIds.size() == 0) {
             licIds = IaisCommonUtils.genNewArrayList();
             licIds.add("1D83B3AD-B04D-EA11-BE7F-000C29F371DC");
-            licIds.add("52570F86-834D-EA11-BE7F-000C29F371DC");
         }
         List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
         int size = appCessDtosByLicIds.size();

@@ -48,9 +48,9 @@
                         </table>
                     </c:forEach>
                 </div>
-                <div align="right">
-                    <button id="ackBack" type="button" class="btn btn-primary" onclick="back('back')"> Back</button>
-                </div>
+                <iais:action>
+                    <a onclick="back('back')"><em class="fa fa-angle-left" style="margin-bottom: 1%;margin-left: 1%"></em> Back</a>
+                </iais:action>
             </div>
         </div>
     </div>

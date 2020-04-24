@@ -256,9 +256,9 @@ public class CessationServiceImpl implements CessationService {
             String applicationNo = applicationDto.getApplicationNo();
             Date effectiveDate = appCessationDto.getEffectiveDate();
             if (effectiveDate.after(new Date())) {
-                sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId);
+                sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId,licenceNo);
             } else {
-                sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId);
+                sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId,licenceNo);
             }
             AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
             appCessatonConfirmDto.setAppNo(applicationNo);
@@ -278,18 +278,18 @@ public class CessationServiceImpl implements CessationService {
                 licNos.add(licenceNo);
             }
         }
-        if (!licNos.isEmpty()) {
-            updateLicence(licNos);
-        }
+//        if (!licNos.isEmpty()) {
+//            updateLicence(licNos);
+//        }
         return appCessationDtosConfirms;
     }
 
     @Override
-    public void sendEmail(String msgId, Date date, String svcName, String appGrpId, String licenseeId) throws IOException, TemplateException {
+    public void sendEmail(String msgId, Date date, String svcName, String appGrpId, String licenseeId,String licNo) throws IOException, TemplateException {
         Map<String, Object> map = new HashMap<>(34);
         String dateStr = DateUtil.formatDateTime(date, "dd/MM/yyyy");
         map.put("date", dateStr);
-        map.put("licenceA", svcName);
+        map.put("licenceA", svcName+": "+licNo);
         MsgTemplateDto entity = msgTemplateClient.getMsgTemplate(msgId).getEntity();
         String messageContent = entity.getMessageContent();
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
@@ -307,10 +307,14 @@ public class CessationServiceImpl implements CessationService {
         log.info("=============>>>roleId" + curRoleId);
         TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtos, HcsaConsts.ROUTING_STAGE_AO3, RoleConsts.USER_ROLE_AO3, IaisEGPHelper.getCurrentAuditTrailDto());
         List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
-        List<TaskDto> tasks = taskService.createTasks(taskDtos);
+        taskService.createTasks(taskDtos);
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
-        appPremisesRoutingHistoryDtos.get(0).setRoleId(curRoleId);
-        appPremisesRoutingHistoryDtos.get(0).setProcessDecision(ApplicationConsts.APPLICATION_STATUS_VERIFIED);
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryDtos.get(0);
+        appPremisesRoutingHistoryDto.setRoleId(curRoleId);
+        appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
+        taskService.createHistorys(appPremisesRoutingHistoryDtos);
+        appPremisesRoutingHistoryDto.setRoleId(RoleConsts.USER_ROLE_AO3);
+        appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_AO3);
         taskService.createHistorys(appPremisesRoutingHistoryDtos);
     }
 
@@ -324,6 +328,7 @@ public class CessationServiceImpl implements CessationService {
         AppSubmissionDto appSubmissionDto = appSubmissionDtoList.get(0);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
+        log.info("============================serviceName"+serviceName);
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
         String svcId = hcsaServiceDto.getId();
         String svcCode = hcsaServiceDto.getSvcCode();
@@ -337,6 +342,7 @@ public class CessationServiceImpl implements CessationService {
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
         appSubmissionDto.setAmount(amount);
         appSubmissionDto.setAuditTrailDto(internet);
+        appSubmissionDto.setFromBe(true);
         appSubmissionDto.setPreInspection(true);
         appSubmissionDto.setRequirement(true);
         appSubmissionDto.setLicenseeId("9ED45E34-B4E9-E911-BE76-000C29C8FBE4");

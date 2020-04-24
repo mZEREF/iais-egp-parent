@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -492,6 +493,7 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public ApplicationViewDto getApplicationViewDto(String correlationId) {
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(correlationId);
+
         return applicationViewDto;
     }
 
@@ -659,7 +661,15 @@ public class InsRepServiceImpl implements InsRepService {
             String reportBy = userList.get(0).getDisplayName();
             listUserId.clear();
             //get inspection lead
-            List<String> leadId = organizationClient.getInspectionLead(wkGrpIds.get(0)).getEntity();
+            String workId = null;
+            for(String id :wkGrpIds){
+                WorkingGroupDto entity = organizationClient.getWrkGrpById(id).getEntity();
+                String groupDomain = entity.getGroupDomain();
+                if("hcsa".equals(groupDomain)){
+                    workId = entity.getId();
+                }
+            }
+            List<String> leadId = organizationClient.getInspectionLead(workId).getEntity();
             for (String lead : leadId) {
                 listUserId.add(lead);
             }

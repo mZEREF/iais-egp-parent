@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloudfeign.FeignException;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -127,6 +128,7 @@ public class InsReportDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
+        Date recomLiceStartDate = applicationViewDto.getRecomLiceStartDate();
         AppPremisesRecommendationDto appPremisesRecommendationDto = prepareRecommendation(bpc);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, appPremisesRecommendationDto);
         Map<String, String> errorMap;
@@ -144,7 +146,7 @@ public class InsReportDelegator {
             ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", reportClassBelow);
             return;
         }
-        List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = prepareForSave(bpc, appPremisesCorrelationId);
+        List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = prepareForSave(bpc, appPremisesCorrelationId,recomLiceStartDate);
         saveRecommendations(appPremisesRecommendationDtoList);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String status = applicationDto.getStatus();
@@ -196,7 +198,7 @@ public class InsReportDelegator {
         return appPremisesRecommendationDto;
     }
 
-    private List<AppPremisesRecommendationDto> prepareForSave(BaseProcessClass bpc, String appPremisesCorrelationId) {
+    private List<AppPremisesRecommendationDto> prepareForSave(BaseProcessClass bpc, String appPremisesCorrelationId,Date licDate) {
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
         String riskLevel = ParamUtil.getRequestString(bpc.request, "riskLevel");
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
@@ -211,6 +213,7 @@ public class InsReportDelegator {
         appPremisesRecommendationDto.setRemarks(remarks);
         appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
         appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.APPROVED);
+        appPremisesRecommendationDto.setRecomInDate(licDate);
         if (OTHERS.equals(periods) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setChronoUnit(chrono);

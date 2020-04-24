@@ -61,6 +61,7 @@ public class CessationEffectiveDateBatchjob {
                 ids.clear();
                 ids.add(id);
                 String svcName = licenceDto.getSvcName();
+                String licenceNo = licenceDto.getLicenceNo();
                 String licenseeId = licenceDto.getLicenseeId();
                 List<Boolean> booleans = cessationService.listResultCeased(ids);
                 if(booleans!=null&&!booleans.isEmpty()){
@@ -70,7 +71,7 @@ public class CessationEffectiveDateBatchjob {
                         }
                     }
                 }
-                cessationService.sendEmail(LICENCEENDDATE,date,svcName,id,licenseeId);
+                cessationService.sendEmail(LICENCEENDDATE,date,svcName,id,licenseeId,licenceNo);
             }
         }
         List<LicenceDto> licenceDtos2 = updateLicenceStatus(licenceDtosForSave,date);
@@ -110,8 +111,9 @@ public class CessationEffectiveDateBatchjob {
         for(LicenceDto licenceDto :licenceDtoApps){
             String svcName = licenceDto.getSvcName();
             String licenseeId = licenceDto.getLicenseeId();
+            String licenceNo = licenceDto.getLicenceNo();
             String id = licenceDto.getId();
-            cessationService.sendEmail(EFFECTIVEDATAEQUALDATA,date,svcName,id,licenseeId);
+            cessationService.sendEmail(EFFECTIVEDATAEQUALDATA,date,svcName,id,licenseeId,licenceNo);
         }
     }
 

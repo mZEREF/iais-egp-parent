@@ -43,7 +43,7 @@
                         <td style="text-align:center" rowspan="${hciDtoNum}">
                             <p><c:out value="${num.count}"/></p>
                         </td>
-                        <td style="text-align:center;padding: 0" rowspan="${hciDtoNum}">
+                        <td style="text-align:center;" rowspan="${hciDtoNum}">
                             <p><c:out value="${appCess.licenceNo}"/></p>
                         </td>
                         <td style="text-align:center" rowspan="${hciDtoNum}">

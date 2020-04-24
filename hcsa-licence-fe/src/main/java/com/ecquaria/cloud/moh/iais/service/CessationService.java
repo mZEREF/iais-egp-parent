@@ -4,8 +4,10 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import freemarker.template.TemplateException;
 
 import java.io.IOException;
@@ -27,7 +29,7 @@ public interface CessationService {
 
     void updateLicenceFe(List<String> licNos);
 
-    List<String> saveCessations(List<AppCessationDto> appCessationDtos);
+    List<String> saveCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext);
 
     void updateCesation(List<AppCessationDto> appCessationDtos);
 
@@ -37,6 +39,7 @@ public interface CessationService {
 
     Boolean getlicIdToCessation(List<String> licIds);
 
-    void sendEmail(String msgId, Date date, String svcName, String appGrpId, String licenseeId) throws IOException, TemplateException;
+    void sendEmail(String msgId, Date date, String svcName, String appGrpId, String licenseeId,String licNo) throws IOException, TemplateException;
 
+    List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, List<String> appIds, LoginContext loginContext) throws Exception;
 }
