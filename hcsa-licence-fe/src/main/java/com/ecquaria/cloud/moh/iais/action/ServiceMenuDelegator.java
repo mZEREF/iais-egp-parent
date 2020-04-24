@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -10,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -251,7 +253,7 @@ public class ServiceMenuDelegator {
                 if(basechkslist.size() == 1){
                     List<String> basechksNamelist = IaisCommonUtils.genNewArrayList();
                     basechksNamelist = BaseIdToName(basechkslist);
-                    SearchResult searchResult = getLicense(basechksNamelist);
+                    SearchResult searchResult = getLicense(bpc,basechksNamelist);
                     ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, "licence");
                     ParamUtil.setRequestAttr(bpc.request, "licence", searchResult);
                     ParamUtil.setSessionAttr(bpc.request, "baseName", basechksNamelist.get(0));
@@ -313,7 +315,7 @@ public class ServiceMenuDelegator {
         log.debug(StringUtil.changeForLog("the doBeforStart end ...."));
     }
 
-    private SearchResult getLicense(List<String> baselist){
+    private SearchResult getLicense(BaseProcessClass bpc,List<String> baselist){
         SearchParam searchParamGroup;
         searchParamGroup = new SearchParam(MenuLicenceDto.class.getName());
         searchParamGroup.setPageSize(10);
@@ -333,6 +335,8 @@ public class ServiceMenuDelegator {
                     item);
             i ++;
         }
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        searchParamGroup.addFilter("licenseeId",loginContext.getLicenseeId(),true);
         QueryHelp.setMainSql("applicationQuery", "getLicenceBySerName",searchParamGroup);
         SearchResult<MenuLicenceDto> searchResult = licenceViewService.getMenuLicence(searchParamGroup);
         return  searchResult;
