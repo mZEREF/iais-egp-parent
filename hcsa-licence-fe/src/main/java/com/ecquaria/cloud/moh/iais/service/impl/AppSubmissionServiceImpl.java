@@ -162,7 +162,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }else{
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(appSvcRelatedInfoDto.getServiceType())){
+                if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
                     baseServiceIds.add(appSvcRelatedInfoDto.getServiceId());
                 }
             }
