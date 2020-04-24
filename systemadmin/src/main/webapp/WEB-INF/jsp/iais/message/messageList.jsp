@@ -1,18 +1,13 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
-<webui:setLayout name="iais-intranet"/>
+
 <%@ page contentType="text/html; charset=UTF-8"  %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
-
-
-
 <webui:setLayout name="iais-intranet"/>
-
-
 <div class="main-content">
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
@@ -64,7 +59,7 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
+                            <iais:sortableHeader needSort="false"  field="" value="S/N"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true"  field="domain_type" value="Type"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true"   field="msg_type" value="Message Type"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
@@ -88,14 +83,13 @@
                                 <c:forEach var = "msgQuery" items = "${msgSearchResult.rows}" varStatus="status">
                                     <tr>
                                         <td class="row_no">${(status.index + 1) + (msgSearchParam.pageNo - 1) * msgSearchParam.pageSize}</td>
-                                        <td>${msgQuery.domainType}</td>
-                                        <td>${msgQuery.msgType}</td>
-                                        <td>${msgQuery.module}</td>
+                                        <td align="left">${msgQuery.domainType}</td>
+                                        <td align="left">${msgQuery.msgType}</td>
+                                        <td align="left">${msgQuery.module}</td>
                                         <td align="left">${msgQuery.description}</td>
                                         <td align="left">${msgQuery.message}</td>
-                                        <td><iais:code code="${msgQuery.status}"></iais:code></td>
-                                        <td>
-                                            <button type="button"   onclick="disable('<iais:mask name="msgQueryId" value="${msgQuery.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
+                                        <td align="left" ><iais:code code="${msgQuery.status}"></iais:code></td>
+                                        <td align="left">
                                             <button type="button"   onclick="prepareEdit('<iais:mask name="msgQueryId" value="${msgQuery.id}"/>')"  class="btn btn-default btn-sm" >Edit</button>
                                             <%--<iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${msgQuery.id}');"/>
                                             <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${msgQuery.id}');"/>--%>
