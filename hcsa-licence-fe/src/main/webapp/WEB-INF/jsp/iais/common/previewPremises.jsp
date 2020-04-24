@@ -119,7 +119,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Are you co-locating with anothe licensee?</span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Are you co-locating with another licensee?</span></p>
                                 </div>
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>
@@ -260,6 +260,14 @@
                         </c:if>
 
                         <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Vehicle No.</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.conveyanceVehicleNo}</span></p>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>Postal Code</span></p>
