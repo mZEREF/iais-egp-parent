@@ -693,17 +693,16 @@ public class NewApplicationAjaxController {
         int hasNumber = ParamUtil.getInt(request,"HasNumber");
         String errMsg = "You are allowed to add up till only "+hasNumber+" SP";
         Map<String,List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(request,SERVICEALLPSNCONFIGMAP);
-        for (Map.Entry<String, List<HcsaSvcPersonnelDto>> stringListEntry : svcConfigInfo.entrySet()){
-            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = stringListEntry.getValue();
-            for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto:hcsaSvcPersonnelDtoList
-                    ) {
-                if ("SVCPSN".equalsIgnoreCase(hcsaSvcPersonnelDto.getPsnType())){
-                    spMaxNumber = hcsaSvcPersonnelDto.getMaximumCount();
-                    break;
-                }
+
+        String svcId = (String) ParamUtil.getSessionAttr(request,NewApplicationDelegator.CURRENTSERVICEID);
+        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = svcConfigInfo.get(svcId);
+        for(HcsaSvcPersonnelDto hcsaSvcPersonnelDto:hcsaSvcPersonnelDtos){
+            if ("SVCPSN".equalsIgnoreCase(hcsaSvcPersonnelDto.getPsnType())){
+                spMaxNumber = hcsaSvcPersonnelDto.getMaximumCount();
+                break;
             }
-            break;
         }
+
         if (spMaxNumber - hasNumber > 0){
             String sql = SqlMap.INSTANCE.getSql("servicePersonnel", "NuclearMedicineImaging").getSqlStr();
             String currentSvcCod = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
@@ -743,7 +742,14 @@ public class NewApplicationAjaxController {
         String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generatePrincipalOfficersHtml").getSqlStr();
         int hasNumber = ParamUtil.getInt(request, "HasNumber");
         Map<String,List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(request,SERVICEALLPSNCONFIGMAP);
-        for (Map.Entry<String, List<HcsaSvcPersonnelDto>> stringListEntry : svcConfigInfo.entrySet()){
+        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = svcConfigInfo.get(svcId);
+        for(HcsaSvcPersonnelDto hcsaSvcPersonnelDto:hcsaSvcPersonnelDtos){
+            if ("PO".equalsIgnoreCase(hcsaSvcPersonnelDto.getPsnType())){
+                poMmaximumCount = hcsaSvcPersonnelDto.getMaximumCount();
+                break;
+            }
+        }
+        /*for (Map.Entry<String, List<HcsaSvcPersonnelDto>> stringListEntry : svcConfigInfo.entrySet()){
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = stringListEntry.getValue();
             for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto:hcsaSvcPersonnelDtoList
                     ) {
@@ -753,7 +759,7 @@ public class NewApplicationAjaxController {
                 }
             }
             break;
-        }
+        }*/
         String errMsg = "You are allowed to add up till only "+hasNumber+" PO";
         if (poMmaximumCount - hasNumber > 0){
             //assign select
@@ -810,20 +816,18 @@ public class NewApplicationAjaxController {
         int hasNumber = ParamUtil.getInt(request, "HasNumber");
         Map<String,String> resp = IaisCommonUtils.genNewHashMap();
         Map<String,List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(request,SERVICEALLPSNCONFIGMAP);
-        for (Map.Entry<String, List<HcsaSvcPersonnelDto>> stringListEntry : svcConfigInfo.entrySet()){
-            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = stringListEntry.getValue();
-            for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto:hcsaSvcPersonnelDtoList
-                    ) {
-                if ("DPO".equalsIgnoreCase(hcsaSvcPersonnelDto.getPsnType())){
-                    dpoMmaximumCount = hcsaSvcPersonnelDto.getMaximumCount();
-                    break;
-                }
+
+        String svcId = (String) ParamUtil.getSessionAttr(request,NewApplicationDelegator.CURRENTSERVICEID);
+        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = svcConfigInfo.get(svcId);
+        for(HcsaSvcPersonnelDto hcsaSvcPersonnelDto:hcsaSvcPersonnelDtos){
+            if ("DPO".equalsIgnoreCase(hcsaSvcPersonnelDto.getPsnType())){
+                dpoMmaximumCount = hcsaSvcPersonnelDto.getMaximumCount();
+                break;
             }
-            break;
         }
+
         String errMsg = "You are allowed to add up till only "+dpoMmaximumCount+" DPO";
         if (dpoMmaximumCount - hasNumber > 0){
-            String svcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
             //assign select
             List<SelectOption> assignPrincipalOfficerSel = NewApplicationHelper.genAssignPersonSel(request, false);
             Map<String,String> assignPrincipalOfficerAttr = IaisCommonUtils.genNewHashMap();
