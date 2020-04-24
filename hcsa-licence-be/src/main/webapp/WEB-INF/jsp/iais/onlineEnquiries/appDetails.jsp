@@ -140,14 +140,14 @@
                                                         <td class="col-xs-6" align="right">Licensee Name (Company)</td>
                                                         <td class="col-xs-6"> ${licenseeDto.name}</td>
                                                     </tr>
-                                                    <c:forEach var="person" items="${licenseeKeyApptPersonDtos}">--%>
+                                                    <c:forEach var="person" items="${licenseeKeyApptPersonDtos}">
                                                         <tr>
                                                             <td align="right">Authorised Person Name</td>
                                                             <td> ${person.name}</td>
                                                         </tr>
                                                         <tr>
                                                             <td align="right">Authorised Person ID</td>
-                                                            <td> ${person.idNo} (${personPo.idType})</td>
+                                                            <td> ${person.idNo} (${person.idType})</td>
                                                         </tr>
 
                                                     </c:forEach>
