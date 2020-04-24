@@ -56,7 +56,7 @@ public class InboxConst {
     public static final String INTER_INBOX_LICENSE_TAB           = "IILT";
 
 
-    public static final String APP_RECALL_RESULT           = "recall_result";
+    public static final String APP_RECALL_RESULT           = "ARR";
     public static final String SEARCH_ALL                  = "All";
 
     public static final String ASCENDING                   = "ASC";

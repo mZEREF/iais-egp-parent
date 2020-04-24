@@ -128,7 +128,7 @@
     }
 
     $(function () {
-        if ('${appIsAppealed}') {
+        if ('${appIsAppealed}' || '${appCannotRecall}') {
             $('#isAppealModal').modal('show');
             window.setTimeout(function(){
                 $('#isAppealModal').modal('hide');

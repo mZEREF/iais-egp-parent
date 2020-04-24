@@ -536,12 +536,13 @@ public class InterInboxDelegator {
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
                     .append("?appealingFor=")
-                    .append(MaskUtil.maskValue("appealingFor",appNo))
+                    .append(MaskUtil.maskValue("appealingFor",appId))
                     .append("&type=application");
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }else{
             ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",result);
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"The application is appealed");
         }
     }
 
@@ -615,7 +616,8 @@ public class InterInboxDelegator {
         recallApplicationDto.setAppId(appId);
         recallApplicationDto.setAppNo(appNo);
         Boolean recallResult = inboxService.recallApplication(recallApplicationDto);
-        ParamUtil.setRequestAttr(request,InboxConst.APP_RECALL_RESULT, recallResult);
+        ParamUtil.setRequestAttr(request,"appCannotRecall", recallResult);
+        ParamUtil.setRequestAttr(request,InboxConst.APP_RECALL_RESULT, "The application can not recall");
     }
 
     private void setNumInfoToRequest(HttpServletRequest request,InterInboxUserDto interInboxUserDto){
