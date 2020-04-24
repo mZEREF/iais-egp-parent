@@ -48,55 +48,58 @@
                       </table>
                     </div>
                     <div class="bg-title">
-                      <h3 style="border-bottom: 0px solid">Attachments</h3>
+                      <h3 style="margin-bottom: 0px;border-bottom: 0px solid;padding-bottom: 0px;">Attachments</h3>
                     </div>
-                    <div style="padding:10px">
-                      <c:if test="${inspecUserRecUploadDto != null}">
-                        <div style="padding:10px">
-                          <iais:row>
-                            <label class="col-xs-0 col-md-6 control-label">Choose a file to attach (Maximum file size is 4mb)<span style="color: red"> *</span></label>
-                          </iais:row>
-                          <iais:row>
-                            <iais:value width="7">
-                              <input class="selectedFile premDoc" id="recFileUpload" name = "selectedFile" type="file" onchange="javascript:doUserRecUploadConfirmFile(this.value)" style="display: none;" aria-label="selectedFile1"/>
-                              <button type="button" class="btn btn-file-upload btn-secondary" onclick="javascript:doUserRecUploadConfirmUpload()">Upload</button>
-                              <c:if test="${empty inspecUserRecUploadDto.fileRepoDtos}">
-                                &nbsp;<label>No files selected.</label>
-                              </c:if>
-                              <br><span class="error-msg" name="iaisErrorMsg" id="error_recFile"></span>
-                            </iais:value>
-                          </iais:row>
+                    <c:if test="${inspecUserRecUploadDto != null}">
+                      <div>
+                        <div class="row">
+                          <label class="col-xs-0 col-md-6 control-label">Choose a file to attach<span style="color: red"> *</span></label>
                         </div>
+                        <ul>
+                          <li><label>The maximum file size for each upload is 4MB.</label></li>
+                          <li><label>Acceptable file formats are PDF, JPG and PNG.</label></li>
+                        </ul>
                         <iais:row>
-                          <iais:field value="Current File Attachments"/>
-                        </iais:row>
-                        <iais:row>
-                          <iais:value width="300">
-                            <c:if test="${inspecUserRecUploadDto.fileRepoDtos != null}">
-                              <c:forEach items="${inspecUserRecUploadDto.fileRepoDtos}" var="recFile" varStatus="status">
-                                <a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${recFile.id}"/>&fileRepoName=${recFile.fileName}" title="Download" class="downloadFile">
-                                    ${recFile.fileName}
-                                </a>
-                                &nbsp;<button type="button" class="btn btn-danger btn-sm" onclick="javascript:doUserRecUploadConfirmDel('<iais:mask name="fileId" value="${recFile.id}"/>')"><i class="fa fa-times"></i></button>
-                                <br><br>
-                              </c:forEach>
+                          <iais:value width="7">
+                            <input class="selectedFile premDoc" id="recFileUpload" name = "selectedFile" type="file" onchange="javascript:doUserRecUploadConfirmFile(this.value)" style="display: none;" aria-label="selectedFile1"/>
+                            <button type="button" class="btn btn-file-upload btn-secondary" onclick="javascript:doUserRecUploadConfirmUpload()">Upload</button>
+                            <c:if test="${empty inspecUserRecUploadDto.fileRepoDtos}">
+                              &nbsp;<label>No files selected.</label>
                             </c:if>
-                            <label id="recFileName"></label>
-                          </iais:value>
-                        </iais:row>
-                      </c:if>
-                      <div class="bg-title">
-                        <iais:row>
-                          <h3 style="border-bottom: 0px solid">Remarks</h3>
-                        </iais:row>
-                        <iais:row>
-                          <iais:value width="300" style="padding-left:0px">
-                            <textarea id="uploadRemarks" name="uploadRemarks" cols="70" rows="7" maxlength="300"><c:out value="${inspecUserRecUploadDto.uploadRemarks}"></c:out></textarea>
-                            <br><span class="error-msg" name="iaisErrorMsg" id="error_remarks"></span>
+                            <br><span class="error-msg" name="iaisErrorMsg" id="error_recFile"></span>
                           </iais:value>
                         </iais:row>
                       </div>
+                      <div class="row">
+                        <div class="col-md-4">
+                          <label style="margin-bottom: 0px;border-bottom: 0px solid;font-size: 1.6rem;padding-bottom: 10px;">Current File Attachments</label>
+                        </div>
+                      </div>
+                      <iais:row>
+                        <iais:value width="300">
+                          <c:if test="${inspecUserRecUploadDto.fileRepoDtos != null}">
+                            <c:forEach items="${inspecUserRecUploadDto.fileRepoDtos}" var="recFile" varStatus="status">
+                              <a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${recFile.id}"/>&fileRepoName=${recFile.fileName}" title="Download" class="downloadFile">
+                                  ${recFile.fileName}
+                              </a>
+                              &nbsp;<button type="button" class="btn btn-danger btn-sm" onclick="javascript:doUserRecUploadConfirmDel('<iais:mask name="fileId" value="${recFile.id}"/>')"><i class="fa fa-times"></i></button>
+                              <br><br>
+                            </c:forEach>
+                          </c:if>
+                        </iais:value>
+                      </iais:row>
+                    </c:if>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <h3 style="margin-bottom: 0px;border-bottom: 0px solid;">Remarks</h3>
+                      </div>
                     </div>
+                    <iais:row>
+                      <div class="col-sm-7 col-md-6 col-xs-10" style="">
+                        <textarea id="uploadRemarks" name="uploadRemarks" cols="70" rows="7" maxlength="300"><c:out value="${inspecUserRecUploadDto.uploadRemarks}"></c:out></textarea>
+                        <br><span class="error-msg" name="iaisErrorMsg" id="error_remarks"></span>
+                      </div>
+                    </iais:row>
                     <iais:action >
                       <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doUserRecUploadConfirmSave()">Save</button>
                       <span style="float:right">&nbsp;</span>
@@ -142,6 +145,7 @@
     function doUserRecUploadConfirmUpload() {
         showWaiting();
         $("#recFileUpload").trigger('click');
+        dismissWaiting();
     }
 
     function doUserRecUploadConfirmFile(value) {
