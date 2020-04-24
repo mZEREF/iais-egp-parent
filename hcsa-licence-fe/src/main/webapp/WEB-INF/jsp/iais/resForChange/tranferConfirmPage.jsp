@@ -66,12 +66,12 @@
               <c:choose>
                 <c:when test="${fileName == '' || fileName == null }">
                               <span class="hidden delBtn">
-                                &nbsp;&nbsp;<button type="button" class="">Delete</button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
                               </span>
                 </c:when>
                 <c:otherwise>
                               <span class="existFile delBtn">
-                                &nbsp;&nbsp;<button type="button" class="">Delete</button>
+                                &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
                               </span>
                 </c:otherwise>
               </c:choose>
