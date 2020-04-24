@@ -22,14 +22,14 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="category">Master Code Key</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="MC_Key" type="text" value="${MasterCodeDto.masterCodeKey}" name="codeKey">
+                                <input id="MC_Key" type="text" value="${MasterCodeDto.masterCodeKey}" name="codeKey" maxlength="50">
                                 <span id="error_masterCodeKey" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="category">Code Value</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="codeValue" type="text" value="${MasterCodeDto.codeValue}" name="codeValue">
+                                <input id="codeValue" type="text" value="${MasterCodeDto.codeValue}" name="codeValue" maxlength="25">
                             </div>
                         </div>
                         <div class="form-group">
@@ -42,7 +42,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="description">Code Description.</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="description" type="text" value="${MasterCodeDto.codeDescription}" name="codeDescription">
+                                <input id="description" type="text" value="${MasterCodeDto.codeDescription}" name="codeDescription"  maxlength="255">
                             </div>
                         </div>
                         <div class="form-group">
@@ -54,14 +54,14 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="description">Sequence</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="sequence" type="text" value="${MasterCodeDto.sequence}" name="codeSequence">
+                                <input id="sequence" type="text" value="${MasterCodeDto.sequence}" name="codeSequence" maxlength="3">
                                 <span id="error_sequence" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="description">Remark.</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="remark" type="text" value="${MasterCodeDto.remarks}" name="codeRemarks">
+                                 <form><textarea cols="53" rows="6" id="codeRemarks"  name="codeRemarks" value="${MasterCodeDto.remarks}" maxlength="255"></textarea></form>
                             </div>
                         </div>
                         <div class="form-group">

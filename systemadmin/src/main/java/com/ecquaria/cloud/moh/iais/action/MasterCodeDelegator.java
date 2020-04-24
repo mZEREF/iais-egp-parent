@@ -60,6 +60,8 @@ public class MasterCodeDelegator {
 
     private final MasterCodeService masterCodeService;
 
+    private static final String CODE_CATEGORY_UNUSER = "D1181678-0A86-EA11-BE82-000C29F371DC";
+
     @Autowired
     private MasterCodeDelegator(MasterCodeService masterCodeService){
         this.masterCodeService = masterCodeService;
@@ -134,9 +136,6 @@ public class MasterCodeDelegator {
         logAboutStart("prepareCreate");
         HttpServletRequest request = bpc.request;
     }
-
-
-
     /**
      * AutoStep: doSearch
      *
@@ -158,6 +157,8 @@ public class MasterCodeDelegator {
             String codeCategory = masterCodeService.findCodeCategoryByDescription(categoryDescription);
             if (!StringUtil.isEmpty(codeCategory)){
                 masterCodeMap.put(MasterCodeConstants.MASTER_CODE_CATEGORY,codeCategory);
+            }else{
+                masterCodeMap.put(MasterCodeConstants.MASTER_CODE_CATEGORY,CODE_CATEGORY_UNUSER);
             }
         }else{
             masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_CATEGORY);
@@ -395,7 +396,7 @@ public class MasterCodeDelegator {
         masterCodeDto.setStatus(ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_STATUS));
         masterCodeDto.setRemarks(ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_REMRAKS));
         masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_SEQUENCE))? null : ParamUtil.getInt(request,MasterCodeConstants.MASTER_CODE_SEQUENCE));
-        masterCodeDto.setVersion(StringUtil.isEmpty(ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_VERSION)) ? null : ParamUtil.getInt(request,MasterCodeConstants.MASTER_CODE_VERSION));
+        masterCodeDto.setVersion(StringUtil.isEmpty(ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_VERSION)) ? null : Float.parseFloat(ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_VERSION)));
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM)));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO)));
         masterCodeDto.setIsEditable(0);
