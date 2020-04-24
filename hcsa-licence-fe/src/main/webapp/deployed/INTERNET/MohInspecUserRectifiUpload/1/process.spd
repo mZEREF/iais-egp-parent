@@ -86,7 +86,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspecUserRectifiUploadAckPage" stageIndicator="" x="1500" y="370">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspecUserRectifiUploadAckPage" stageIndicator="" x="1500" y="380">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -159,7 +159,7 @@
    <position>{(1300,0)(1590,0)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/InspecUserRectifiUploadAckPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(1590,0)(1520,390)}</position>
+   <position>{(1590,0)(1520,400)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadPre" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
    <position>{(1590,0)(1590,-112)(561,-112)(500,120)}</position>
@@ -169,7 +169,7 @@
   <Condition componentIfFalse="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="flag" name="InspecUserRectifiUploadCond1" operator="=" rightOperand="&quot;true&quot;" x="1300" y="520">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/InspecUserRectifiUploadPre" componentIfTrue="/Pages/WebPage/InspecUserRectifiUploadAckPage" defClass="" executor="" icon="" leftOperand="flag" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="1570" y="-20">
+  <Condition componentIfFalse="/Steps/AutomaticStep/InspecUserRectifiUploadPre" componentIfTrue="/Pages/WebPage/InspecUserRectifiUploadAckPage" defClass="" executor="" icon="" leftOperand="subflag" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="1570" y="-20">
    <Description/>
   </Condition>
  </Conditions>
