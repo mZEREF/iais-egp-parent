@@ -212,7 +212,7 @@ public class HcsaApplicationDelegator {
                 String wrkGrpId=appPremisesRoutingHistoryDto.getWrkGrpId();
                 OrgUserDto user=applicationViewService.getUserById(userId);
                 String actionBy=user.getDisplayName();
-                rollBackMap.put(actionBy+"("+appPremisesRoutingHistoryDto.getRoleId()+")",appPremisesRoutingHistoryDto.getStageId()+","+wrkGrpId+","+userId+","+appPremisesRoutingHistoryDto.getRoleId());
+                rollBackMap.put(actionBy+" ("+appPremisesRoutingHistoryDto.getRoleId()+")",appPremisesRoutingHistoryDto.getStageId()+","+wrkGrpId+","+userId+","+appPremisesRoutingHistoryDto.getRoleId());
               }
         }else{
             log.debug(StringUtil.changeForLog("the do prepareData do not have the rollback history"));
