@@ -5,7 +5,13 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
@@ -14,14 +20,23 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionRes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,22 +142,62 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
         List<LicenceFeeDto> linenceFeeQuaryDtos = new ArrayList();
         List<String> premisessTypes =  new ArrayList();
-        //todo when multiple base service
+
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
             premisessTypes.add(appGrpPremisesDto.getPremisesType());
         }
-        String baseServiceCode = "";
-        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-            if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
-                baseServiceCode = appSvcRelatedInfoDto.getServiceCode();
+        List<String> baseServiceIds = IaisCommonUtils.genNewArrayList();
+
+        if(appSubmissionDto.isOnlySpecifiedSvc() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
+            baseServiceIds = appSubmissionDto.getExistBaseServiceList();
+            for(String baseSvcId:baseServiceIds){
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(baseSvcId);
+                LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                licenceFeeDto.setBaseService(hcsaServiceDto.getSvcCode());
+                licenceFeeDto.setIncludeBase(false);
+                licenceFeeDto.setServiceCode(hcsaServiceDto.getSvcCode());
+                licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
+                licenceFeeDto.setPremises(premisessTypes);
+                linenceFeeQuaryDtos.add(licenceFeeDto);
+            }
+        }else{
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(appSvcRelatedInfoDto.getServiceType())){
+                    baseServiceIds.add(appSvcRelatedInfoDto.getServiceId());
+                }
             }
         }
-
+        log.info("base service size:"+baseServiceIds.size());
+        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtos = appConfigClient.serviceCorrelation().getEntity();
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
             LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
-            licenceFeeDto.setBaseService(baseServiceCode);
-            licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
-            licenceFeeDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
+            if(hcsaServiceDto == null){
+                log.info(StringUtil.changeForLog("hcsaServiceDto is empty "));
+                continue;
+            }
+            if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
+                licenceFeeDto.setBaseService(hcsaServiceDto.getSvcCode());
+                licenceFeeDto.setIncludeBase(true);
+            }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(hcsaServiceDto.getSvcType())){
+                for(HcsaServiceCorrelationDto hcsaServiceCorrelationDto:hcsaServiceCorrelationDtos){
+                    if(hcsaServiceDto.getId().equals(hcsaServiceCorrelationDto.getSpecifiedSvcId())){
+                        String baseSvcId = hcsaServiceCorrelationDto.getBaseSvcId();
+                        if(baseServiceIds.contains(baseSvcId)){
+                            log.info("can match base service ...");
+                            HcsaServiceDto baseService = HcsaServiceCacheHelper.getServiceById(baseSvcId);
+                            licenceFeeDto.setBaseService(baseService.getSvcCode());
+                        }
+                    }
+                }
+                if(appSubmissionDto.isOnlySpecifiedSvc()){
+                    licenceFeeDto.setIncludeBase(false);
+                }else{
+                    licenceFeeDto.setIncludeBase(true);
+                }
+            }
+            licenceFeeDto.setServiceCode(hcsaServiceDto.getSvcCode());
+            licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
             licenceFeeDto.setPremises(premisessTypes);
 
             if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
@@ -163,7 +218,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         licenceFeeDto.setRenewCount(0);
                     }
                 }
-               // licenceFeeDto.setCharity();
+                // licenceFeeDto.setCharity();
             }
             linenceFeeQuaryDtos.add(licenceFeeDto);
         }
@@ -227,37 +282,37 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList,String serviceCode){
-       RiskResultDto result = null;
-       if(riskResultDtoList == null || StringUtil.isEmpty(serviceCode)){
+        RiskResultDto result = null;
+        if(riskResultDtoList == null || StringUtil.isEmpty(serviceCode)){
+            return result;
+        }
+        for(RiskResultDto riskResultDto : riskResultDtoList){
+            if(serviceCode.equals(riskResultDto.getSvcCode())){
+                result = riskResultDto ;
+                break;
+            }
+        }
         return result;
-       }
-       for(RiskResultDto riskResultDto : riskResultDtoList){
-           if(serviceCode.equals(riskResultDto.getSvcCode())){
-               result = riskResultDto ;
-               break;
-           }
-       }
-       return result;
-   }
+    }
 
-   private void  informationEventBus(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process){
-       //prepare request parameters
-       appSubmissionRequestInformationDto.setEventRefNo(appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpNo());
-       SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
-               generateIdClient.getSeqId().getEntity(),
-               EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_REQUEST_INFORMATION,
-               appSubmissionRequestInformationDto.getEventRefNo(), process);
-   }
-
-   private void premisesListInformationEventBus(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
-                                                Process process){
+    private void  informationEventBus(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process){
+        //prepare request parameters
         appSubmissionRequestInformationDto.setEventRefNo(appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpNo());
         SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
-               generateIdClient.getSeqId().getEntity(),
-               EventBusConsts.SERVICE_NAME_APPSUBMIT,
-               EventBusConsts.OPERATION_REQUEST_INFORMATION,
-               appSubmissionRequestInformationDto.getEventRefNo(), process);
-   }
+                generateIdClient.getSeqId().getEntity(),
+                EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_REQUEST_INFORMATION,
+                appSubmissionRequestInformationDto.getEventRefNo(), process);
+    }
+
+    private void premisesListInformationEventBus(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
+                                                 Process process){
+        appSubmissionRequestInformationDto.setEventRefNo(appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpNo());
+        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
+                generateIdClient.getSeqId().getEntity(),
+                EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                EventBusConsts.OPERATION_REQUEST_INFORMATION,
+                appSubmissionRequestInformationDto.getEventRefNo(), process);
+    }
 
     private  void eventBus(AppSubmissionDto appSubmissionDto, Process process){
         //prepare request parameters
@@ -342,5 +397,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
         return flag;
+    }
+
+    @Override
+    public AppSubmissionDto getExistBaseSvcInfo(List<String> licenceIds) {
+        return licenceClient.getExistBaseSvcInfo(licenceIds).getEntity();
     }
 }

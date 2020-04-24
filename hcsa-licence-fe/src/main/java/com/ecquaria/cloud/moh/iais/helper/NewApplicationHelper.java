@@ -994,12 +994,11 @@ public class NewApplicationHelper {
         return psnDtos;
     }
 
-    public static void setPsnIntoSelMap(HttpServletRequest request, List<AppSvcPrincipalOfficersDto> psnDtos){
+    public static void setPsnIntoSelMap(HttpServletRequest request, List<AppSvcPrincipalOfficersDto> psnDtos, String svcCode){
         if(IaisCommonUtils.isEmpty(psnDtos)){
             return;
         }
         Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
-        String svcCode = (String) ParamUtil.getSessionAttr(request,NewApplicationDelegator.CURRENTSVCCODE);
         for(AppSvcPrincipalOfficersDto psnDto:psnDtos){
             String personMapKey = psnDto.getIdType()+","+psnDto.getIdNo();
             AppSvcPrincipalOfficersDto person = personMap.get(personMapKey);

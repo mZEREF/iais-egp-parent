@@ -299,7 +299,6 @@ public class ClinicalLaboratoryDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         List<HcsaSvcPersonnelDto> principalOfficerConfig  =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
         List<HcsaSvcPersonnelDto> deputyPrincipalOfficerConfig   =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         int mandatory = 0;
         int deputyMandatory = 0;
         if(principalOfficerConfig != null && !principalOfficerConfig.isEmpty()){
@@ -340,6 +339,11 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request, "DeputyPrincipalOfficersMandatory", deputyMandatory);
         ParamUtil.setRequestAttr(bpc.request, "ReloadPrincipalOfficers", principalOfficersDtos);
         ParamUtil.setRequestAttr(bpc.request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
+        if(StringUtil.isEmpty(appSvcRelatedInfoDto.getDeputyPoFlag())){
+            ParamUtil.setRequestAttr(bpc.request,"DeputyPoFlag","0");
+        }else{
+            ParamUtil.setRequestAttr(bpc.request,"DeputyPoFlag",appSvcRelatedInfoDto.getDeputyPoFlag());
+        }
 
         List<SelectOption> IdTypeSelect = NewApplicationHelper.getIdTypeSelOp();
         ParamUtil.setRequestAttr(bpc.request, "IdTypeSelect", IdTypeSelect);
@@ -466,22 +470,15 @@ public class ClinicalLaboratoryDelegator {
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = IaisCommonUtils.genNewArrayList();
             int i=0;
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                String premiseName = appGrpPremisesDto.getPremisesIndexNo();
-               /* if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-                    premiseName = appGrpPremisesDto.getHciName();
-                } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-                    premiseName = appGrpPremisesDto.getConveyanceVehicleNo();
-                }*/
                 String name = appGrpPremisesDto.getPremisesIndexNo()+ "control--runtime--1";
                 String[] checkList = ParamUtil.getStrings(bpc.request, name);
                 List<AppSvcChckListDto> appSvcChckListDtoList = IaisCommonUtils.genNewArrayList();
-                AppSvcChckListDto appSvcChckListDto = new AppSvcChckListDto();
                 if (!StringUtil.isEmpty(checkList)) {
                     for (String maskName : checkList) {
                         String checkBoxId = ParamUtil.getMaskedString(bpc.request, maskName);
                         HcsaSvcSubtypeOrSubsumedDto checkInfo = map.get(checkBoxId);
 
-                        appSvcChckListDto = new AppSvcChckListDto();
+                        AppSvcChckListDto appSvcChckListDto = new AppSvcChckListDto();
                         appSvcChckListDto.setChkLstConfId(checkInfo.getId());
                         if("27D8EB5B-1123-EA11-BE78-000C29D29DB0".equals(checkInfo.getId())){
                             String subName = ParamUtil.getString(bpc.request, "pleaseIndicate"+i);
@@ -499,12 +496,6 @@ public class ClinicalLaboratoryDelegator {
                     }
                     String premisesType = appGrpPremisesDto.getPremisesType();
                     String premisesValue = appGrpPremisesDto.getPremisesIndexNo();
-                    /*if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)) {
-                        premisesValue = appGrpPremisesDto.getHciName();
-                    } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)) {
-                        premisesValue = appGrpPremisesDto.getConveyanceVehicleNo();
-                    }*/
-                    //else his .....
                     appSvcLaboratoryDisciplinesDto = new AppSvcLaboratoryDisciplinesDto();
                     appSvcLaboratoryDisciplinesDto.setPremiseType(premisesType);
                     appSvcLaboratoryDisciplinesDto.setPremiseVal(premisesValue);
@@ -637,7 +628,8 @@ public class ClinicalLaboratoryDelegator {
                 if(errList.isEmpty()){
                     //set person into dropdown
                     List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
-                    NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcCgoDtos);
+                    String svcCode = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSVCCODE);
+                    NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcCgoDtos,svcCode);
                     //sync data
                     NewApplicationHelper.syncPsnData(bpc.request, appSubmissionDto, appSvcCgoDtos);
                     if(allChecked.isEmpty()){
@@ -789,10 +781,12 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto", (Serializable) appSvcPrincipalOfficersDtoList);
             Map<String, String> map = IaisCommonUtils.genNewHashMap();
             String crud_action_additional = ParamUtil.getRequestString(bpc.request, "nextStep");
-
-
+            String deputyPoFlag = ParamUtil.getString(bpc.request,"deputyPrincipalOfficer");
             String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
+            if(!StringUtil.isEmpty(deputyPoFlag)){
+                appSvcRelatedInfoDto.setDeputyPoFlag(deputyPoFlag);
+            }
             appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
 
@@ -817,7 +811,8 @@ public class ClinicalLaboratoryDelegator {
                 Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
                 if(map.isEmpty()){
                     //set person into dropdown
-                    NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcPrincipalOfficersDtoList);
+                    String svcCode = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSVCCODE);
+                    NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcPrincipalOfficersDtoList,svcCode);
                     //sync data
                     NewApplicationHelper.syncPsnData(bpc.request, appSubmissionDto, appSvcPrincipalOfficersDtoList);
                     if(allChecked.isEmpty()){
@@ -1161,15 +1156,12 @@ public class ClinicalLaboratoryDelegator {
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request,currentSvcId);
         List<AppSvcPrincipalOfficersDto> medAlertPsnDtos = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
         int mandatoryCount = 0;
-        for (Map.Entry<String, List<HcsaSvcPersonnelDto>> stringListEntry : svcConfigInfo.entrySet()){
-            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = stringListEntry.getValue();
-            for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto:hcsaSvcPersonnelDtoList) {
-                if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equalsIgnoreCase(hcsaSvcPersonnelDto.getPsnType())){
-                    mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
-                    break;
-                }
+        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = svcConfigInfo.get(currentSvcId);
+        for(HcsaSvcPersonnelDto hcsaSvcPersonnelDto:hcsaSvcPersonnelDtoList){
+            if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equalsIgnoreCase(hcsaSvcPersonnelDto.getPsnType())){
+                mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
+                break;
             }
-            break;
         }
         ParamUtil.setRequestAttr(bpc.request,"mandatoryCount",mandatoryCount);
         List<SelectOption> idTypeSelectList = NewApplicationHelper.getIdTypeSelOp();
@@ -1222,7 +1214,8 @@ public class ClinicalLaboratoryDelegator {
                     return;
                 }else{
                     //set person into dropdown
-                    NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcMedAlertPersonList);
+                    String svcCode = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSVCCODE);
+                    NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcMedAlertPersonList,svcCode);
                     //sync data
                     NewApplicationHelper.syncPsnData(bpc.request, appSubmissionDto, appSvcMedAlertPersonList);
                 }

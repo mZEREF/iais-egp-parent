@@ -242,7 +242,7 @@
                   </div>
                   <c:if test="${DeputyPrincipalOfficersMandatory> 0}">
                   <div class="col-sm-5 col-md-8" >
-                    <c:if test="${ReloadPrincipalOfficers ==null ||ReloadPrincipalOfficers.size()==0}">
+                    <%--<c:if test="${ReloadPrincipalOfficers ==null ||ReloadPrincipalOfficers.size()==0}">
                       <c:set var="flag" value="-1"/>
                     </c:if>
                     <c:if test="${ReloadPrincipalOfficers !=null && ReloadPrincipalOfficers.size()>0}">
@@ -250,8 +250,8 @@
                     </c:if>
                     <c:if test="${ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0}" >
                       <c:set var="flag" value="1"/>
-                    </c:if>
-                    <iais:select cssClass="deputySelect"  name="deputyPrincipalOfficer" options="DeputyFlagSelect"  value="${flag}" ></iais:select>
+                    </c:if>--%>
+                    <iais:select cssClass="deputySelect"  name="deputyPrincipalOfficer" options="DeputyFlagSelect"  value="${DeputyPoFlag}" ></iais:select>
                     <br/>
                     <br/>
                     <br/>

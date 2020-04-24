@@ -177,7 +177,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        if(${(AppSubmissionDto.needEditController && !isClickEdit) || doSpecifiedServiceConfig != null }){
+        if(${(AppSubmissionDto.needEditController && !isClickEdit) || AppSubmissionDto.onlySpecifiedSvc }){
             disabledPage();
         }
         

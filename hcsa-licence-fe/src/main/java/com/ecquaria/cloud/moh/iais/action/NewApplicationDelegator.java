@@ -177,6 +177,8 @@ public class NewApplicationDelegator {
      */
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do Start start ...."));
+
+        String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         //clear Session
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
@@ -200,8 +202,9 @@ public class NewApplicationDelegator {
         //renewLicence(bpc);
         requestForInformationLoading(bpc);
         //for loading the draft by appId
-
-        loadingDraft(bpc);
+        loadingDraft(bpc,draftNo);
+        //load Specified info
+        loadingSpecifiedInfo(bpc);
         //for loading Service Config
         boolean flag = loadingServiceConfig(bpc);
         log.info(StringUtil.changeForLog("The loadingServiceConfig -->:"+flag));
@@ -283,7 +286,13 @@ public class NewApplicationDelegator {
         //get premises type
         if (!IaisCommonUtils.isEmpty(svcIds)) {
             log.info(StringUtil.changeForLog("svcId not null"));
-            Set<String> premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
+            Set<String> premisesType  = IaisCommonUtils.genNewHashSet();
+            if(appSubmissionDto.isOnlySpecifiedSvc()){
+                List<String> baseSvcIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseServiceChecked");
+                premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(baseSvcIds);
+            }else{
+                premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
+            }
             ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
         }else{
             log.error(StringUtil.changeForLog("do not have select the services"));
@@ -296,7 +305,7 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
             }
         }
-
+        appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
         //
         int baseSvcCount = 0;
         for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtoList){
@@ -464,7 +473,7 @@ public class NewApplicationDelegator {
         }
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit, isRfi);
         log.info("isGetDataFromPage:"+isGetDataFromPage);
-        if(isGetDataFromPage ){
+        if(isGetDataFromPage && !appSubmissionDto.isOnlySpecifiedSvc() ){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
             if(appSubmissionDto.isNeedEditController()){
@@ -554,7 +563,7 @@ public class NewApplicationDelegator {
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT, isEdit, isRfi);
 
 
-        if(isGetDataFromPage){
+        if(isGetDataFromPage && !appSubmissionDto.isOnlySpecifiedSvc()){
             List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO);
             List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO);
             List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -2515,9 +2524,8 @@ public class NewApplicationDelegator {
         }
     }
 
-    private void loadingDraft(BaseProcessClass bpc) {
+    private void loadingDraft(BaseProcessClass bpc, String draftNo) {
         log.info(StringUtil.changeForLog("the do loadingDraft start ...."));
-        String draftNo = (String) ParamUtil.getString(bpc.request, "DraftNumber");
         Object draftNumber = bpc.request.getAttribute("DraftNumber");
         if(draftNumber!=null){
             draftNo=(String)draftNumber;
@@ -2662,8 +2670,8 @@ public class NewApplicationDelegator {
                 String appType =  appSubmissionDto.getAppType();
                 boolean isRenewalOrRfc = ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);
                 appSubmissionDto.setNeedEditController(true);
-                //appSubmissionDto.getAppEditSelectDto().setDocEdit(true);
-                //appSubmissionDto.getAppEditSelectDto().setServiceEdit(true);
+                    //appSubmissionDto.getAppEditSelectDto().setDocEdit(true);
+                    //appSubmissionDto.getAppEditSelectDto().setServiceEdit(true);
                     if (isRenewalOrRfc){
                     // set the required information
                     String licenceId = appSubmissionDto.getLicenceId();
@@ -2720,7 +2728,6 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "errorAck");
             ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "you have encountered some problems, please contact the administrator !!!");
-
             return false;
         }
 
@@ -3551,20 +3558,28 @@ public class NewApplicationDelegator {
                     if(!StringUtil.isEmpty(currentSvcId)){
                         hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(currentSvcId);
                     }
-                    //todo:set AppSvcLaboratoryDisciplinesDto
+                    //set AppSvcLaboratoryDisciplinesDto
                     if(!IaisCommonUtils.isEmpty(hcsaSvcSubtypeOrSubsumedDtos)){
                         NewApplicationHelper.setLaboratoryDisciplinesInfo(appSvcRelatedInfoDto,hcsaSvcSubtypeOrSubsumedDtos);
                     }
-                    //todo:set AppSvcDisciplineAllocationDto
+                    //set AppSvcDisciplineAllocationDto
                     //NewApplicationHelper.setDisciplineAllocationDtoInfo(appSvcRelatedInfoDto);
-
+                    if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
+                            ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
+                            || rfi != null){
+                        //gen dropdown map
+                        String svcCode = appSvcRelatedInfoDto.getServiceCode();
+                        List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcRelatedInfoDto.getAppSvcCgoDtoList());
+                        NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcCgoDtos,svcCode);
+                        NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(),svcCode);
+                        NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(),svcCode);
+                    }
                 }
             }
-
-            //set oldAppSubmission when rfi,rfc,renew
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
                     ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
                     || rfi != null){
+                //set oldAppSubmission when rfi,rfc,renew
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
             }
@@ -3699,6 +3714,53 @@ public class NewApplicationDelegator {
         selectOptionList.add(cps1);
         selectOptionList.add(cps2);
         return selectOptionList;
+    }
+
+    private void loadingSpecifiedInfo(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
+        //todo:existing base service
+        List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licence");
+        List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "specifiedServiceChecked");
+        List<String> baseSvcIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseServiceChecked");
+        /*List<String> licenceIds = IaisCommonUtils.genNewArrayList();
+        licenceIds.add("5F621E18-227E-EA11-BE82-000C29F371DC");
+        List<String> specifiedServiceIds = IaisCommonUtils.genNewArrayList();
+        specifiedServiceIds.add("A21ADD49-820B-EA11-BE7D-000C29F371DC");
+        List<String> baseSvcIds = IaisCommonUtils.genNewArrayList();
+        baseSvcIds.add("35F99D15-820B-EA11-BE7D-000C29F371DC");*/
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,APPSUBMISSIONDTO);
+        if(!IaisCommonUtils.isEmpty(licenceIds) && !IaisCommonUtils.isEmpty(specifiedServiceIds) && !IaisCommonUtils.isEmpty(licenceIds) && appSubmissionDto == null){
+            appSubmissionDto = appSubmissionService.getExistBaseSvcInfo(licenceIds);
+            if(appSubmissionDto != null){
+                //deal with premises page load
+                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+                if(IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                    for(AppGrpPremisesDto appGrpPremisesDtos1:appGrpPremisesDtos){
+                        appGrpPremisesDtos1.setPremisesSelect(NewApplicationConstant.NEW_PREMISES);
+                    }
+                }
+                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
+                for(String specifiedServiceId:specifiedServiceIds){
+                    HcsaServiceDto baseService = HcsaServiceCacheHelper.getServiceById(specifiedServiceId);
+                    AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
+                    appSvcRelatedInfoDto.setServiceId(specifiedServiceId);
+                    appSvcRelatedInfoDto.setServiceName(baseService.getSvcName());
+                    appSvcRelatedInfoDto.setServiceCode(baseService.getSvcCode());
+                    appSvcRelatedInfoDto.setServiceType(baseService.getSvcType());
+                    appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
+                }
+                appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
+                appSubmissionDto.setOnlySpecifiedSvc(true);
+                appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+                appSubmissionDto.setExistBaseServiceList(baseSvcIds);
+               /* appSubmissionDto.setNeedEditController(true);
+                AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+                appEditSelectDto.setServiceEdit(true);
+                appSubmissionDto.setAppEditSelectDto(appEditSelectDto);*/
+            }
+            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        }
+        log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
     }
 
 }

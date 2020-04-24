@@ -48,11 +48,17 @@
 <%--<img src="<%=webroot1%>img/payments.png" width="36" height="30" alt="GIRO">--%>
 
 <div class="row">
-    <c:if test="${'APTY004' == AppSubmissionDto.appType}">
-        <div class="col-xs-12 col-sm-6" style="margin-top: 17px;">
-            <p><a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a></p>
-        </div>
-    </c:if>
+    <c:choose>
+        <c:when test="${'APTY004' == AppSubmissionDto.appType}">
+            <div class="col-xs-12 col-sm-6" style="margin-top: 17px;">
+                <p><a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a></p>
+            </div>
+        </c:when>
+        <c:otherwise>
+            <div class="col-xs-12 col-sm-6">
+            </div>
+        </c:otherwise>
+    </c:choose>
     <div class="col-xs-12 col-sm-6">
         <p class="text-right text-center-mobile"><iais:input type="button" id="proceed" cssClass="proceed btn btn-primary" value="Proceed"></iais:input></p>
     </div>

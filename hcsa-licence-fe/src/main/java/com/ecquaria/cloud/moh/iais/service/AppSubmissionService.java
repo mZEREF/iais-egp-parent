@@ -37,9 +37,8 @@ public interface AppSubmissionService {
     public AppSubmissionDto submitRenew(AppSubmissionDto appSubmissionDto);
     public MsgTemplateDto getMsgTemplateById(String id);
     public void feSendEmail(EmailDto emailDto);
-
     public ApplicationGroupDto createApplicationDataByWithOutRenewal(RenewDto renewDto);
     public void updateApplicationsStatus(String appGroupId,String stuts);
-
     public boolean checkRenewalStatus(String licenceId);
+    public AppSubmissionDto getExistBaseSvcInfo(List<String> licenceIds);
 }
