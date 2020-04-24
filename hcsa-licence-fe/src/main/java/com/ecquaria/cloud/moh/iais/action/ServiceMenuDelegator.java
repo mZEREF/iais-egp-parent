@@ -202,8 +202,13 @@ public class ServiceMenuDelegator {
                     }
                     ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
                 }else{
-                    //match
-                    nextstep = CHOOSE_BASE;
+                   if (hcsaServiceDtosMap.size() == 0){
+                       nextstep = ERROR_ATTR;
+                       err = "There is no base service in specified services.";
+                       ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                   }else{
+                       nextstep = CHOOSE_BASE;
+                   }
                 }
             }else{
                 //new app
