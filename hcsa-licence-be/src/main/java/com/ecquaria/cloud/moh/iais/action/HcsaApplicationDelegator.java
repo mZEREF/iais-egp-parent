@@ -849,6 +849,7 @@ public class HcsaApplicationDelegator {
           }else if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(getHistoryStatus)){
               nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
           }
+        log.info(StringUtil.changeForLog("----------- route back historyStatus : " + getHistoryStatus + "----------"));
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(
                 applicationViewDto.getApplicationDto().getApplicationNo(),getHistoryStatus);
         String wrkGrpId=appPremisesRoutingHistoryDto.getWrkGrpId();
@@ -1487,7 +1488,7 @@ public class HcsaApplicationDelegator {
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
 
-        String appStatus = applicationViewDto.getApplicationDto().getStatus();
+        String appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = null;
         try{
             appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(
