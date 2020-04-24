@@ -31,7 +31,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /*
     @author yichen_guo@ecquaria.com
@@ -41,6 +40,7 @@ import java.util.Optional;
 @Delegator(value = "systemParameterDelegator")
 @Slf4j
 public class SystemParameterDelegator {
+    private final static String PRE_SAVE_USER_ID = "preSaveUserId";
 
     private final FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(SystemParameterQueryDto.class)
@@ -169,6 +169,7 @@ public class SystemParameterDelegator {
         editDto.setAuditTrailDto(auditTrailDto);
         editDto.setValue(value);
         editDto.setDescription(description);
+
         ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
@@ -214,7 +215,7 @@ public class SystemParameterDelegator {
      */
     public void prepareEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
+        ParamUtil.setSessionAttr(request, PRE_SAVE_USER_ID, null);
         String pid = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_VALUE);
         if (!StringUtils.isEmpty(pid)){
             SearchResult<SystemParameterQueryDto> result = (SearchResult<SystemParameterQueryDto>) ParamUtil.getSessionAttr(request, SystemParameterConstants.PARAM_SEARCHRESULT);
@@ -238,9 +239,10 @@ public class SystemParameterDelegator {
                         systemParameterDto.setModifiedAt(query.getModifiedAt());
                         systemParameterDto.setPropertiesKey(query.getPropertiesKey());
 
-                        Optional<OrgUserDto> user =  Optional.ofNullable(parameterService.retrieveOrgUserAccountById(query.getModifiedBy()));
-                        if (user.isPresent()){
-                            systemParameterDto.setModifiedBy(user.get().getDisplayName());
+                        OrgUserDto orgUserDto = parameterService.retrieveOrgUserAccountById(query.getModifiedBy());
+                        if (orgUserDto != null){
+                            systemParameterDto.setModifiedByName(orgUserDto.getDisplayName());
+                            systemParameterDto.setModifiedBy(orgUserDto.getId());
                         }else {
                             systemParameterDto.setModifiedBy("system");
                         }

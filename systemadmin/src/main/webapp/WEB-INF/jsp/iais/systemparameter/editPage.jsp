@@ -106,7 +106,7 @@
             <div class="form-group">
                 <iais:field value="Update By:"  />
                 <div class="col-md-3">
-                    <p><input name="modifiedAt" type="text" id="modifiedBy" title="modifiedBy"  readonly value="${parameterRequestDto.modifiedBy}"></p>
+                    <p><input name="modifiedAt" type="text" id="modifiedBy" title="modifiedBy"  readonly value="${parameterRequestDto.modifiedByName}"></p>
                 </div>
             </div>
 
@@ -135,7 +135,7 @@
 
         <div class="row">
             <div class="col-xs-12 col-sm-6">
-                <a class="back" href="#" id="crud_cancel_link" value="doCancel"><em class="fa fa-angle-left"></em>Back</a>
+                <a class="back" href="#" id="crud_cancel_link" value="doCancel" ><em class="fa fa-angle-left"></em> Back</a>
             </div>
             <div class="col-xs-3 col-sm-3 col-md-offset-3">
                 <div class="button-group">
