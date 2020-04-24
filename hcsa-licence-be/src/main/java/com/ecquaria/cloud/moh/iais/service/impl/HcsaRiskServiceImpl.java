@@ -74,6 +74,7 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
         HcsaRiskFeSupportDto supportDto = new HcsaRiskFeSupportDto();
         supportDto.setFinancialShowDto(dto);
         supportDto.setFinFlag(true);
+        supportDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
 

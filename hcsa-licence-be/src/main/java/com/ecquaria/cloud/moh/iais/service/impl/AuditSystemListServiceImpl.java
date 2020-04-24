@@ -282,7 +282,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private void createAudit(AuditTaskDataFillterDto temp,String submitId,AuditCombinationDto auditCombinationDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+        String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
         auditCombinationDto.setEventRefNo(grpNo);
         LicPremisesAuditDto licPremisesAuditDto = new LicPremisesAuditDto();
         licPremisesAuditDto.setId(generateIdClient.getSeqId().getEntity());

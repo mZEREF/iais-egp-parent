@@ -209,8 +209,9 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
         HcsaRiskFeSupportDto supportDto = new HcsaRiskFeSupportDto();
         supportDto.setRiskLeaderShipShowDto(dto);
         supportDto.setLeaderhsipFlag(true);
-     /*   beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());*/
+        supportDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
     }
 
 

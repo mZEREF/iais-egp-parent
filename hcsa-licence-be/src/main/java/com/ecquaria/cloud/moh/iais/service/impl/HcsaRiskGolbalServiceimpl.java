@@ -156,6 +156,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
         HcsaRiskFeSupportDto supportDto = new HcsaRiskFeSupportDto();
         supportDto.setGolbalRiskShowDto(golbalShowDto);
         supportDto.setGolbalFlag(true);
+        supportDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
     }

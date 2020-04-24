@@ -223,6 +223,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
         HcsaRiskFeSupportDto supportDto = new HcsaRiskFeSupportDto();
         supportDto.setInspectionShowDto(showDto);
         supportDto.setInspectionRiskFlag(true);
+        supportDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
     }

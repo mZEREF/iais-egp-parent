@@ -187,6 +187,7 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
         HcsaRiskFeSupportDto supportDto = new HcsaRiskFeSupportDto();
         supportDto.setLicenceTenShowDto(showDto);
         supportDto.setLictenureFLag(true);
+        supportDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
 

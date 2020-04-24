@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFeSupportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskWeightageDto;
@@ -142,6 +143,7 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
         HcsaRiskFeSupportDto supportDto = new HcsaRiskFeSupportDto();
         supportDto.setHcsaRiskWeightageShowDto(wShowDto);
         supportDto.setWeightageFlag(true);
+        supportDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
     }
@@ -185,6 +187,7 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
             List<HcsaRiskWeightageDto> weightageLeastVersionList = hcsaConfigClient.getWeightageRiskBySvcCode(temp.getServiceCode()).getEntity();
             if(temp.isEdit()){
                 weightageLeastVersionList = updateLastVersion(weightageLeastVersionList,temp);
+                if( weightageLeastVersionList != null &&  weightageLeastVersionList.size() > 0)
                 hcsaConfigClient.updateWeightageMatrixList(weightageLeastVersionList);
             }
         }
@@ -194,14 +197,15 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
             }else{
                 temp.setVersion(temp.getVersion()+1);
             }
+            temp.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             temp.setId(null);
         }
         hcsaConfigClient.saveWeightageMatrixList(updateList);
     }
 
     private List<HcsaRiskWeightageDto> updateLastVersion(List<HcsaRiskWeightageDto> weightageLeastVersionList, HcsaRiskWeightageDto temp) {
+       if( weightageLeastVersionList == null || weightageLeastVersionList .size() == 0) return  weightageLeastVersionList;
         HcsaRiskWeightageDto wei = weightageLeastVersionList.get(0);
-        Date lastversionEndDate = null;
         String status = null;
         try {
             Date doeffDate = Formatter.parseDate(temp.getDoEffectiveDate());

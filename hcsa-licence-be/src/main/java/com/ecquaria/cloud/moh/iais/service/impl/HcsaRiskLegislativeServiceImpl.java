@@ -144,6 +144,7 @@ public class HcsaRiskLegislativeServiceImpl implements HcsaRiskLegislativeServic
         HcsaRiskFeSupportDto supportDto = new HcsaRiskFeSupportDto();
         supportDto.setRiskLegislativeShowDto(dto);
         supportDto.setLegFlag(true);
+        supportDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
     }
