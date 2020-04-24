@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -73,13 +74,14 @@ public class RequestForChangeDelegator {
      */
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
+        String licenceId = ParamUtil.getMaskedString(bpc.request, "licenceId");
+        AuditTrailHelper.auditFunction("amend application", "amend application");
         ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, null);
         ParamUtil.setSessionAttr(bpc.request,"SvcName",null);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
         ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,null);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.DODRAFTCONFIG,null);
-
-        init(bpc);
+        init(bpc,licenceId);
 
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
     }
@@ -487,8 +489,7 @@ public class RequestForChangeDelegator {
         return true;
     }
 
-    private void init(BaseProcessClass bpc) throws CloneNotSupportedException {
-        String licenceId = ParamUtil.getString(bpc.request, "licenceId");
+    private void init(BaseProcessClass bpc, String licenceId) throws CloneNotSupportedException {
         ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, licenceId);
 
         //load data
@@ -498,6 +499,7 @@ public class RequestForChangeDelegator {
                     IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
                 log.info("appSubmissionDto incomplete , licenceId:"+licenceId);
             }else{
+                AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                 String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
                 List<String> svcNames = IaisCommonUtils.genNewArrayList();
