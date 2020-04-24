@@ -41,7 +41,6 @@ import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -109,7 +108,6 @@ public class InspectionMergeSendNcEmailDelegator {
     public void prepareData(BaseProcessClass bpc)  {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        String taskId = ParamUtil.getMaskedString(request,"taskId");
         TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = fillupChklistService.getAppViewDto(taskDto.getId());
@@ -470,16 +468,10 @@ public class InspectionMergeSendNcEmailDelegator {
     private TaskDto completedTask(TaskDto taskDto) {
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
         taskDto.setSlaDateCompleted(new Date());
-        taskDto.setSlaRemainInDays(remainDays(taskDto));
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return taskService.updateTask(taskDto);
     }
-    private int remainDays(TaskDto taskDto) {
-        int result = 0;
-        String resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(), taskDto.getSlaDateCompleted().getTime(), "d");
-        log.debug(StringUtil.changeForLog("The resultStr is -->:") + resultStr);
-        return result;
-    }
+
 
     public void doRecallEmail() {
         log.info("=======>>>>>doRecallEmail>>>>>>>>>>>>>>>>emailRequest");

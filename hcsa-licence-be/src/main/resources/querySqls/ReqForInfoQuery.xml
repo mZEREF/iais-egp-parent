@@ -54,6 +54,10 @@
     <sql key = "licenceQuery" remarks = "Query Licence Data by condition">
         <![CDATA[
             SELECT distinct
+                lic.id as entity_id,
+                licApp.APPLICATION_ID as entity_app_id,
+                licPrem.ID as entity_lic_prem_id,
+
                 lic.id as id,
                 lic.licence_no as licence_no,
                 lic.svc_name as svc_name,
@@ -66,9 +70,9 @@
                 Prem.BLK_NO, Prem.FLOOR_NO, Prem.UNIT_NO, Prem.STREET_NAME, Prem.BUILDING_NAME,
                 licPrem.ID as lic_prem_id
             FROM LICENCE AS lic
+            LEFT JOIN LIC_APP_CORRELATION licApp ON licApp.LICENCE_ID = lic.ID
             LEFT JOIN LIC_PREMISES licPrem ON licPrem.LICENCE_ID = lic.ID
             LEFT JOIN PREMISES Prem ON Prem.ID = licPrem.PREMISES_ID
-            LEFT JOIN LIC_APP_CORRELATION licApp ON licApp.LICENCE_ID = lic.ID
             LEFT JOIN LIC_KEY_PERSONNEL licKeyPsn ON licKeyPsn.LICENCE_ID = lic.ID
             LEFT JOIN KEY_PERSONNEL_EXT keyPsnExt ON keyPsnExt.ID = licKeyPsn.PSN_EXT_ID
 

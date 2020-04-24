@@ -140,39 +140,50 @@
                                                         <td class="col-xs-6" align="right">Licensee Name (Company)</td>
                                                         <td class="col-xs-6"> ${licenseeDto.name}</td>
                                                     </tr>
-                                                    <c:forEach var="personPo" items="${appSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList}">
+                                                    <c:forEach var="person" items="${licenseeKeyApptPersonDtos}">--%>
                                                         <tr>
                                                             <td align="right">Authorised Person Name</td>
-                                                            <td> ${personPo.name}</td>
+                                                            <td> ${person.name}</td>
                                                         </tr>
                                                         <tr>
                                                             <td align="right">Authorised Person ID</td>
-                                                            <td> ${personPo.idNo} (${personPo.idType})</td>
+                                                            <td> ${person.idNo} (${personPo.idType})</td>
                                                         </tr>
 
                                                     </c:forEach>
-                                                    <c:forEach var="personCgo" items="${appSvcRelatedInfoDto.appSvcCgoDtoList}">
-                                                        <tr>
-                                                            <td align="right">Authorised Person Name</td>
-                                                            <td> ${personCgo.name}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td align="right">Authorised Person ID</td>
-                                                            <td> ${personCgo.idNo} (${personCgo.idType})</td>
-                                                        </tr>
+<%--                                                    <c:forEach var="personPo" items="${appSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList}">--%>
+<%--                                                        <tr>--%>
+<%--                                                            <td align="right">Authorised Person Name</td>--%>
+<%--                                                            <td> ${personPo.name}</td>--%>
+<%--                                                        </tr>--%>
+<%--                                                        <tr>--%>
+<%--                                                            <td align="right">Authorised Person ID</td>--%>
+<%--                                                            <td> ${personPo.idNo} (${personPo.idType})</td>--%>
+<%--                                                        </tr>--%>
 
-                                                    </c:forEach>
-                                                    <c:forEach var="personMap" items="${appSvcRelatedInfoDto.appSvcMedAlertPersonList}">
-                                                        <tr>
-                                                            <td align="right">MedAlert Contact Person</td>
-                                                            <td> ${personMap.name}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td align="right">MedAlert Contact Person ID</td>
-                                                            <td> ${personMap.idNo} (${personMap.idType})</td>
-                                                        </tr>
+<%--                                                    </c:forEach>--%>
+<%--                                                    <c:forEach var="personCgo" items="${appSvcRelatedInfoDto.appSvcCgoDtoList}">--%>
+<%--                                                        <tr>--%>
+<%--                                                            <td align="right">Authorised Person Name</td>--%>
+<%--                                                            <td> ${personCgo.name}</td>--%>
+<%--                                                        </tr>--%>
+<%--                                                        <tr>--%>
+<%--                                                            <td align="right">Authorised Person ID</td>--%>
+<%--                                                            <td> ${personCgo.idNo} (${personCgo.idType})</td>--%>
+<%--                                                        </tr>--%>
 
-                                                    </c:forEach>
+<%--                                                    </c:forEach>--%>
+<%--                                                    <c:forEach var="personMap" items="${appSvcRelatedInfoDto.appSvcMedAlertPersonList}">--%>
+<%--                                                        <tr>--%>
+<%--                                                            <td align="right">MedAlert Contact Person</td>--%>
+<%--                                                            <td> ${personMap.name}</td>--%>
+<%--                                                        </tr>--%>
+<%--                                                        <tr>--%>
+<%--                                                            <td align="right">MedAlert Contact Person ID</td>--%>
+<%--                                                            <td> ${personMap.idNo} (${personMap.idType})</td>--%>
+<%--                                                        </tr>--%>
+
+<%--                                                    </c:forEach>--%>
 
                                                     </tbody>
                                                 </table>

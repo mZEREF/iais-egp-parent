@@ -323,11 +323,26 @@ public class OfficerOnlineEnquiriesDelegator {
                             for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
                             ) {
                                 rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
+                                reqForInfoSearchListDto.setHciCode(lic.getHciCode());
+                                reqForInfoSearchListDto.setHciName(lic.getHciName());
+                                reqForInfoSearchListDto.setBlkNo(lic.getBlkNo());
+                                reqForInfoSearchListDto.setBuildingName(lic.getBuildingName());
+                                reqForInfoSearchListDto.setUnitNo(lic.getUnitNo());
+                                reqForInfoSearchListDto.setStreetName(lic.getStreetName());
+                                reqForInfoSearchListDto.setFloorNo(lic.getFloorNo());
+                                reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                             }
+                        }else {
+                            reqForInfoSearchListDto.setHciCode(lic.getHciCode());
+                            reqForInfoSearchListDto.setHciName(lic.getHciName());
+                            reqForInfoSearchListDto.setBlkNo(lic.getBlkNo());
+                            reqForInfoSearchListDto.setBuildingName(lic.getBuildingName());
+                            reqForInfoSearchListDto.setUnitNo(lic.getUnitNo());
+                            reqForInfoSearchListDto.setStreetName(lic.getStreetName());
+                            reqForInfoSearchListDto.setFloorNo(lic.getFloorNo());
+                            reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
-
-                    reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                 }
                 setSearchResult( request, searchListDtoSearchResult, licenceIds, reqForInfoSearchListDtos);
             }
@@ -690,11 +705,26 @@ public class OfficerOnlineEnquiriesDelegator {
                             for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
                             ) {
                                 rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
+                                reqForInfoSearchListDto.setHciCode(lic.getHciCode());
+                                reqForInfoSearchListDto.setHciName(lic.getHciName());
+                                reqForInfoSearchListDto.setBlkNo(lic.getBlkNo());
+                                reqForInfoSearchListDto.setBuildingName(lic.getBuildingName());
+                                reqForInfoSearchListDto.setUnitNo(lic.getUnitNo());
+                                reqForInfoSearchListDto.setStreetName(lic.getStreetName());
+                                reqForInfoSearchListDto.setFloorNo(lic.getFloorNo());
+                                reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                             }
+                        }else {
+                            reqForInfoSearchListDto.setHciCode(lic.getHciCode());
+                            reqForInfoSearchListDto.setHciName(lic.getHciName());
+                            reqForInfoSearchListDto.setBlkNo(lic.getBlkNo());
+                            reqForInfoSearchListDto.setBuildingName(lic.getBuildingName());
+                            reqForInfoSearchListDto.setUnitNo(lic.getUnitNo());
+                            reqForInfoSearchListDto.setStreetName(lic.getStreetName());
+                            reqForInfoSearchListDto.setFloorNo(lic.getFloorNo());
+                            reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
-
-                    reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                 }
                 setSearchResult( request, searchListDtoSearchResult, licenceIds, reqForInfoSearchListDtos);
             }

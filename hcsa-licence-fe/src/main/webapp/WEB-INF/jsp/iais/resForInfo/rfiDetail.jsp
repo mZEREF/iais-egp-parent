@@ -2,6 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="egov-cloud" uri="ecquaria/sop/egov-cloud" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -43,7 +45,7 @@
                                         <iais:row>
                                             <iais:field value="Due Date :"/>
                                             <iais:value width="18" >
-                                                <span>${licPreReqForInfoDto.dueDateSubmission}</span>
+                                                <span><fmt:formatDate value="${licPreReqForInfoDto.dueDateSubmission}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></span>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
