@@ -454,7 +454,12 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
                         if (isStartDate) {
                             appPremCorrDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appprem.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
                         } else {
+                            try {
                                 appPremCorrDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appprem.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+                            }catch (Exception e){
+                                log.info("------- data error appcId : " + appprem.getId()+ "-------------------------");
+                            }
+
                         }
                         if (appPremCorrDto != null) {
                             appPremisesRecommendationDtoList.add(appPremCorrDto);
