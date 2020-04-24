@@ -74,7 +74,7 @@
 
         <div class="row">
           <div class="col-xs-12 col-sm-12">
-            <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#">Update</a></div>
+            <div class="text-right text-center-mobile"><a id="submitPrefDate" class="btn btn-primary" href="#">Update</a></div>
           </div>
         </div>
 
@@ -86,7 +86,7 @@
         SOP.Crud.cfxSubmit("mainForm", "doBack");
     })
 
-    $(".text-center-mobile").click(function () {
+    $("#submitPrefDate").click(function () {
         SOP.Crud.cfxSubmit("mainForm", "submitPrefDate");
     })
 
