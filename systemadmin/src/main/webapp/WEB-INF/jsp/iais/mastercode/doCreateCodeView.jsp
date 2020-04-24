@@ -67,7 +67,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <iais:field value="Sequence" required="true"/>
+                            <iais:field value="Sequence"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <%String codeSequence = request.getParameter("codeSequence")==null?"":request.getParameter("codeSequence");%>
