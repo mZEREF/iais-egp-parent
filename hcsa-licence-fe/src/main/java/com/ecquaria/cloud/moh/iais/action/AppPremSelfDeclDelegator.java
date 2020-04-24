@@ -183,7 +183,7 @@ public class AppPremSelfDeclDelegator {
             boolean hasWriteAnswer = hasWriteAnswer(selfDeclList).booleanValue();
             if (!hasWriteAnswer){
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("premItemAnswer", "Please fill in the necessary answers."));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("premItemAnswer", "SELF_CHECKLIST_ERROR0001"));
                 return;
             }
 
