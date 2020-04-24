@@ -83,7 +83,6 @@ public class KpiColourByWorkDaysBatchJob {
     }
 
     private TaskDto getTimeLimitWarningColourByTask(String appPremCorrId, HcsaServiceDto hcsaServiceDto, TaskDto taskDto) {
-        String colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
         int days = 0;
         List<Date> workAndNonWorkDays = IaisCommonUtils.genNewArrayList();
         if(taskDto.getTaskKey().equals(HcsaConsts.ROUTING_STAGE_INS)) {
@@ -125,6 +124,7 @@ public class KpiColourByWorkDaysBatchJob {
                 }
             }
         }
+        taskDto.setSlaRemainInDays(days);
         return taskDto;
     }
 
