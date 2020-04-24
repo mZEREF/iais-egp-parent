@@ -125,10 +125,13 @@
                     <c:otherwise>
                         <c:forEach items="${appResult.rows}" var="app" varStatus="status">
                             <tr>
+                                <td hidden>
+                                    <p class="appId">${app.id}</p>
+                                </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
                                     <p><a href="#"
-                                          onclick="doDraft('<iais:mask name="action_no_value" value="${app.applicationNo}"/>','<iais:mask name="action_type_value" value="${app.applicationType}"/>','${app.status}')">${app.applicationNo}</a>
+                                          class="appNo" onclick="doDraft('<iais:mask name="action_no_value" value="${app.applicationNo}"/>','<iais:mask name="action_type_value" value="${app.applicationType}"/>','${app.status}')">${app.applicationNo}</a>
                                     </p>
                                 </td>
                                 <td>
@@ -152,16 +155,16 @@
                                     <p class="visible-xs visible-sm table-row-title" for="appAction">Actions</p>
                                     <c:choose>
                                         <c:when test="${app.status == 'APST008'}">
-                                            <iais:select name="draftAction" id="draftAction" options="selectDraftApplication" firstOption="Select" onchange="doDraftAction('${app.applicationNo}',this.value)"/>
+                                            <iais:select name="draftAction" cssClass="draftAction" id="draftAction" options="selectDraftApplication" firstOption="Select"/>
                                         </c:when>
                                         <c:when test="${app.status == 'APST038' || (app.status == 'APST007' && app.applicationType == 'APTY006') || (app.status == 'APST007' && app.applicationType == 'APTY001')}">
-                                            <iais:select options="noAction" name="noAction" firstOption="Select"/>
+                                            <iais:select options="noAction" name="noAction" cssClass="noAction" firstOption="Select"/>
                                         </c:when>
                                         <c:when test="${app.status == 'APST006' || app.status == 'APST005'}">
-                                            <iais:select name="appAction" id="appAction" options="selectApproveOrRejectSelectList" firstOption="Select" onchange="doAppAction('${app.id}','${app.applicationNo}',this.value)"/>
+                                            <iais:select name="appAoRAction" cssClass="appAoRAction" id="appAoRAction" options="selectApproveOrRejectSelectList" firstOption="Select"/>
                                         </c:when>
                                         <c:otherwise>
-                                            <iais:select name="appAction" id="appAction" options="selectApplication" firstOption="Select" onchange="doAppAction('${app.id}','${app.applicationNo}',this.value)"/>
+                                            <iais:select name="appAction" id="appAction" cssClass="appAction" options="selectApplication" firstOption="Select" onchange="doAppAction('${app.id}','${app.applicationNo}',this.value)"/>
                                         </c:otherwise>
                                     </c:choose>
                                 </td>

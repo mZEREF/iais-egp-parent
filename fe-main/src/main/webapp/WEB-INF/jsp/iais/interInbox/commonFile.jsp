@@ -41,4 +41,41 @@
             }
         }
     }
+
+    $(".draftAction").change(function () {
+        var appNo = $(this).closest("tr").find(".appNo").html();
+        var action = $(this).val();
+        if ("Reload" == action) {
+            $("[name='action_no_value']").val(appNo);
+            submit('appDoReload');
+        }
+
+        if ("Delete" == action) {
+            showWaiting();
+            $("[name='action_no_value']").val(appNo);
+            submit('appDoDelete');
+        }
+    });
+
+    $(".appAoRAction").change(function () {
+        var appNo = $(this).closest("tr").find(".appNo").html();
+        var appId = $(this).closest("tr").find(".appId").html();
+        var action = $(this).val();
+        if ("Withdraw" == action) {
+            showWaiting();
+            $("[name='action_no_value']").val(appNo);
+            $("[name='action_id_value']").val(appId);
+            submit("appRenew");
+        }if ("Appeal" == action) {
+            showWaiting();
+            $("[name='action_no_value']").val(appNo);
+            $("[name='action_id_value']").val(appId);
+            submit("appDoAppeal");
+        }if ("Recall" == action) {
+            showWaiting();
+            $("[name='action_no_value']").val(appNo);
+            $("[name='action_id_value']").val(appId);
+            submit("appDoRecall");
+        }
+    })
 </script>

@@ -123,7 +123,6 @@ public class InboxServiceImpl implements InboxService {
         try {
             recallApplicationDto = eicGatewayFeMainClient.recallAppChangeTask(recallApplicationDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
-            appInboxClient.updateFeAppStatus(recallApplicationDto.getAppId(),ApplicationConsts.APPLICATION_STATUS_RECALLED);
         }catch (Exception e){
             log.error(e.getMessage(),e);
             return result;
@@ -136,9 +135,9 @@ public class InboxServiceImpl implements InboxService {
                 log.error(e.getMessage(),e);
                 return result;
             }
-
         }
         if(result){
+            appInboxClient.updateFeAppStatus(recallApplicationDto.getAppId(),ApplicationConsts.APPLICATION_STATUS_RECALLED);
             String draftNo = appInboxClient.getDraftNumber(recallApplicationDto.getAppNo()).getEntity();
             appInboxClient.updateDraftStatus(draftNo,ACTIVE).getEntity();
         }
