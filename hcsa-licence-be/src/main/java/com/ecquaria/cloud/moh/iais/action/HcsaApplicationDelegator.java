@@ -1488,6 +1488,11 @@ public class HcsaApplicationDelegator {
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
 
+        //Licence Start Date back fill
+        Date recomInDate = applicationViewDto.getAppPremisesRecommendationDto().getRecomInDate();
+        String date = Formatter.formatDateTime(recomInDate,Formatter.DATE);
+        ParamUtil.setRequestAttr(bpc.request,"date",date);
+
         String appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = null;
         try{
