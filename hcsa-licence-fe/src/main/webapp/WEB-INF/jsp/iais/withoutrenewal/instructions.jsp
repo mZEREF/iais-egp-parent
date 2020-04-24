@@ -58,7 +58,7 @@
                                         <p><a class="back" href="/main-web"><em class="fa fa-angle-left"></em> Back</a></p>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
-                                        <div id="proceed" class="text-right text-center-mobile"><a class="btn btn-primary">PROCEED</a></div>
+                                        <div class="text-right text-center-mobile"><a id="proceed" class="btn btn-primary">PROCEED</a></div>
                                     </div>
                                 </div>
                             </div>
