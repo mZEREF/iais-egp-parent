@@ -22,27 +22,28 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="category">Master Code Key</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="MC_Key" type="text" value="${MasterCodeDto.masterCodeKey}" name="codeKey" maxlength="50">
+                                <input id="MC_Key" type="text" value="<iais:code code="${MasterCodeDto.masterCodeKey}"/>" name="codeKey" maxlength="50">
                                 <span id="error_masterCodeKey" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="category">Code Value</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="codeValue" type="text" value="${MasterCodeDto.codeValue}" name="codeValue" maxlength="25">
+                                <input id="codeValue" type="text" value="${MasterCodeDto.codeValue}" name="codeValue" maxlength="25" >
+                                <span id="error_codeValue" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="category">Code Category.</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <input id="category" type="text" value="${MasterCodeDto.codeCategory}" name="codeCategory">
-                                <span id="error_codeValue" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="description">Code Description.</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <input id="description" type="text" value="${MasterCodeDto.codeDescription}" name="codeDescription"  maxlength="255">
+                                <span id="error_codeDescription" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -67,26 +68,29 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="description">Version.</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="version" type="text" value="${MasterCodeDto.version}" name="codeVersion">
+                                <input id="version" type="text" value="${MasterCodeDto.version}" name="codeVersion" onkeyup= "this.value=this.value.replace(/^\D*(\d{0,1}(?:\.\d{0,2})?).*$/g, '$1')">
+                                <span id="error_version" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="codeStatus">Status.</label>
                             <div class="col-xs-6 col-sm-4 col-md-3">
                                 <iais:select name="codeStatus" id="codeStatus" options="mcStatusSelectList"></iais:select>
+                                <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="esd">Effective Start Date.</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <iais:datePicker id="esd" name="esd" dateVal="${MasterCodeDto.effectiveFrom}" />
+                                <span id="error_effectiveFrom" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="eed">Effective End Date.</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <iais:datePicker id="eed" name="eed" dateVal="${MasterCodeDto.effectiveTo}" ></iais:datePicker>
-                                <span id="error_effectiveFrom" name="iaisErrorMsg" class="error-msg"></span>
+                                <span id="error_effectiveTo" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                     </div>
