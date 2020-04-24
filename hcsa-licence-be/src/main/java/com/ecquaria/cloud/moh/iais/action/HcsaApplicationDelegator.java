@@ -170,7 +170,19 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData start ..."));
 
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request,"taskDto");
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        String correlationId = "";
+        if(taskDto != null){
+            correlationId = taskDto.getRefNo();
+        }else{
+            throw new IaisRuntimeException("The Task Id  is Error !!!");
+        }
+        log.debug(StringUtil.changeForLog("the do prepareData get the NewAppPremisesCorrelationDto"));
+        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
+        appPremisesCorrelationDto.setOldCorrelationId(correlationId);
+        String newCorrelationId = appPremisesCorrelationDto.getId();
+        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
+        applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
+
 
         //get routing stage dropdown send to page.
         log.debug(StringUtil.changeForLog("the do prepareData get the hcsaSvcRoutingStageDtoList"));
@@ -337,7 +349,7 @@ public class HcsaApplicationDelegator {
         decisionValues.add(new SelectOption("decisionApproval", "Approval"));
         decisionValues.add(new SelectOption("decisionReject", "Reject"));
         ParamUtil.setSessionAttr(bpc.request, "decisionValues", (Serializable)decisionValues);
-
+        ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         //check inspection
         checkShowInspection(bpc,applicationViewDto,taskDto,applicationViewDto.getNewAppPremisesCorrelationDto().getOldCorrelationId());
 
@@ -1473,6 +1485,7 @@ public class HcsaApplicationDelegator {
         String newCorrelationId = appPremisesCorrelationDto.getId();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
+        ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
 
         String appStatus = applicationViewDto.getApplicationDto().getStatus();
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = null;
@@ -1484,6 +1497,5 @@ public class HcsaApplicationDelegator {
         }catch (Exception e){
             log.error(StringUtil.changeForLog("first do main flow ,have no two history"));
         }
-        ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
     }
 }
