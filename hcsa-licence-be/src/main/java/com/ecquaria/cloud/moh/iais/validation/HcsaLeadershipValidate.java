@@ -387,12 +387,12 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             flag = false;
             if(isIn){
                 if(inEdit == 1){
-                    errMap.put(serviceCode + "inEffDate", "EffectiveDate should be furture time");
+                    errMap.put(serviceCode + "inEffDate", "EffectiveDate should be future date");
                     fdto.setAdEffectiveStartDateerr(true);
                 }
             }else {
                 if(prEdit == 1){
-                    errMap.put(serviceCode + "prEffDate", "EffectiveDate should be furture time");
+                    errMap.put(serviceCode + "prEffDate", "EffectiveDate should be future date");
                     fdto.setDpEffectiveEndDateerr(true);
                 }
             }

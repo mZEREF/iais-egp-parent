@@ -409,12 +409,12 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             flag = false;
             if(isIn){
                 if(inEdit == 1){
-                    errMap.put(serviceCode + "inEffDate", "EffectiveDate should be furture time");
+                    errMap.put(serviceCode + "inEffDate", "EffectiveDate should be future date");
                     fdto.setInEffectiveStartDateerr(true);
                 }
             }else {
                 if(prEdit == 1){
-                    errMap.put(serviceCode + "prEffDate", "EffectiveDate should be furture time");
+                    errMap.put(serviceCode + "prEffDate", "EffectiveDate should be future date");
                     fdto.setPrEffectiveStartDateerr(true);
                 }
             }

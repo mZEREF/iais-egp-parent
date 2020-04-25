@@ -86,7 +86,7 @@ public class HcsaGolbalValidate implements CustomizeValidator {
         if (effDate.getTime() < System.currentTimeMillis()) {
             flag = false;
             if (inEdit == 1) {
-                errMap.put(serviceCode + "inEffDate", "EffectiveDate should be furture time");
+                errMap.put(serviceCode + "inEffDate", "EffectiveDate should be future date");
             }
         } else if (endDate.getTime() < effDate.getTime()) {
             flag = false;

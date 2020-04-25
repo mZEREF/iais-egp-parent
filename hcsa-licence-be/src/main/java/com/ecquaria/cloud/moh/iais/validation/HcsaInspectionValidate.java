@@ -154,15 +154,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
             flag = false;
             if("C".equals(level)){
                 if(caEditNumFlag == 1){
-                    errMap.put(serviceCode + "caEffDate", "EffectiveDate should be furture time");
+                    errMap.put(serviceCode + "caEffDate", "EffectiveDate should be future date");
                 }
             }else if("I".equals(level)){
                 if(miEditNumFlag == 1){
-                    errMap.put(serviceCode + "miEffDate", "EffectiveDate should be furture time");
+                    errMap.put(serviceCode + "miEffDate", "EffectiveDate should be future date");
                 }
             }else if("A".equals(level)){
                 if(mjEditNumFlag == 1){
-                    errMap.put(serviceCode + "mjEffDate", "EffectiveDate should be furture time");
+                    errMap.put(serviceCode + "mjEffDate", "EffectiveDate should be future date");
                 }
             }
         } else if (endDate.getTime() < effDate.getTime()) {
@@ -177,7 +177,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 }
             }else if("A".equals(level)){
                 if(mjEditNumFlag == 1){
-                    errMap.put(serviceCode + "mjEndDate", "EffectiveDate should be furture time");
+                    errMap.put(serviceCode + "mjEndDate", "EffectiveDate should be future date");
                 }
             }
         }
