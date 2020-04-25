@@ -290,7 +290,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         licPremisesAuditDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         licPremisesAuditDto.setRemarks(null);
         licPremisesAuditDto.setInRiskSocre(1);
-        licPremisesAuditDto.setIncludeRiskType(temp.getRiskType());//todo
         licPremisesAuditDto.setLicPremId(temp.getId());
         licPremisesAuditDto.setAuditType(temp.getAuditType());
         licPremisesAuditDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

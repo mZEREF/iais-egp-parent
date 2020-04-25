@@ -16,14 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -45,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.FileUtil;
@@ -154,6 +148,7 @@ public class InspectReviseNcEmailDelegator {
         //get selections dd hh
         ParamUtil.setSessionAttr(request,"hhSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(true));
         ParamUtil.setSessionAttr(request,"ddSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(false));
+        ParamUtil.setSessionAttr(request,"frameworknOption",(Serializable) LicenceUtil.getIncludeRiskTypes());
     }
 
 
@@ -300,6 +295,8 @@ public class InspectReviseNcEmailDelegator {
         }else{
             ParamUtil.setRequestAttr(request, "isValid", "Y");
             insepctionNcCheckListService.submit(commonDto,adchklDto,serListDto,taskDto.getRefNo());
+            ApplicationViewDto appViewDto =(ApplicationViewDto) ParamUtil.getSessionAttr(request,APP_VIEW_DTO);
+            insepctionNcCheckListService.saveLicPremisesAuditDtoByApplicationViewDto(appViewDto);
         }
 
     }
@@ -631,9 +628,36 @@ public class InspectReviseNcEmailDelegator {
         }
 
         ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
+        getAuditData(request);
         return serListDto;
     }
-
+    private void  getAuditData(MultipartHttpServletRequest request)throws IOException {
+        ApplicationViewDto appViewDto =(ApplicationViewDto) ParamUtil.getSessionAttr(request,APP_VIEW_DTO);
+        if (appViewDto != null && appViewDto.getLicPremisesAuditDto() != null){
+            LicPremisesAuditDto licPremisesAuditDto =  appViewDto.getLicPremisesAuditDto();
+            String framework = ParamUtil.getString(request,"framework");
+            String periods = ParamUtil.getString(request,"periods");
+            String frameworkRemarks = ParamUtil.getString(request,"frameworkRemarks");
+            if( !StringUtil.isEmpty(framework) && framework.equalsIgnoreCase("2")){
+                licPremisesAuditDto.setInRiskSocre(2);
+                if(!StringUtil.isEmpty(periods)){
+                    licPremisesAuditDto.setIncludeRiskType(periods);
+                    if(periods.equalsIgnoreCase(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY))
+                        licPremisesAuditDto.setLgrRemarks(frameworkRemarks );
+                    else
+                        licPremisesAuditDto.setLgrRemarks(null);
+                } else {
+                    licPremisesAuditDto.setIncludeRiskType(null);
+                    licPremisesAuditDto.setLgrRemarks(null);
+                }
+            }else {
+                licPremisesAuditDto.setInRiskSocre(1);
+                licPremisesAuditDto.setIncludeRiskType(null);
+                licPremisesAuditDto.setLgrRemarks(null);
+            }
+            ParamUtil.setSessionAttr(request,APP_VIEW_DTO,appViewDto);
+        }
+    }
     public void preViewCheckList(BaseProcessClass bpc) throws IOException{
         Log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);

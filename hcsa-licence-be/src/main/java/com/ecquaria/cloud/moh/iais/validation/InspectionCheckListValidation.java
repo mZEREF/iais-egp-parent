@@ -1,10 +1,8 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -43,7 +41,26 @@ public class InspectionCheckListValidation implements CustomizeValidator {
                 errMap.put("litterFile",UC_CHKLMD001_ERR007);
 
         }
+        auditVad( request,errMap);
         return errMap;
+    }
+
+    private void auditVad(HttpServletRequest request, Map<String, String> errMap){
+        ApplicationViewDto appViewDto =(ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
+        if(appViewDto != null && appViewDto.getLicPremisesAuditDto() != null ){
+            LicPremisesAuditDto licPremisesAuditDto =  appViewDto.getLicPremisesAuditDto();
+            if(licPremisesAuditDto.getInRiskSocre().equals(2)){
+                if(StringUtil.isEmpty(licPremisesAuditDto.getIncludeRiskType())){
+                    errMap.put("periods","UC_CHKLMD001_ERR001");
+                }else if(licPremisesAuditDto.getIncludeRiskType().equalsIgnoreCase(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY)) {
+                    if(StringUtil.isEmpty(licPremisesAuditDto.getLgrRemarks())){
+                        errMap.put("frameworkRemarks","UC_CHKLMD001_ERR001");
+                    }else if(licPremisesAuditDto.getIncludeRiskType().length() > 2000){
+                        errMap.put("frameworkRemarks","The field should not be more than 2000 characters.");
+                    }
+                }
+            }
+        }
     }
 
     private void fillUpVad(HttpServletRequest request, Map<String, String> errMap) {

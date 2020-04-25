@@ -119,8 +119,56 @@
         </div>
     </div>
 
+    <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK == applicationViewDto.applicationDto.applicationType && ApplicationConsts.AUDIT_TYPE_THEMATIC != applicationViewDto.licPremisesAuditDto.auditType}">
+    <div class="form-group">
+        <label class="col-xs-12 col-md-4 control-label">To include findings in risk score framework?</label>
+        <div class="col-xs-8 col-sm-6 col-md-5">
+            <p><input type="checkbox" id="framework" name="framework" onchange="javascirpt:changeframework();"
+               value="2"    <c:if test="${applicationViewDto.licPremisesAuditDto.inRiskSocre == '2'}">checked</c:if>  >
+                <label class="form-check-label" for="framework" ><span class="check-square"></span></label>
+            </p>
+        </div>
+    </div>
+    <div class="form-group" id="frameworkOp" hidden>
+        <label class="col-xs-12 col-md-4 control-label">Which form of risk should it be recorded in risk score framework?<span style="color: red"> *</span></label>
+        <div class="col-xs-8 col-sm-6 col-md-5">
+            <iais:select name="periods" options="frameworknOption" firstOption="Please Select" onchange="javascirpt:changeFramewordOption(this.value);"
+            value="${applicationViewDto.licPremisesAuditDto.includeRiskType}"/>
+            <span id="error_periods" name="iaisErrorMsg" class="error-msg"></span>
+        </div>
+    </div>
+    <div class="form-group" id="frameworkRe" hidden>
+        <label class="col-xs-12 col-md-4 control-label">Enforcement Remarks<span style="color: red"> *</span></label>
+        <div class="col-xs-8 col-sm-6 col-md-5">
+            <textarea name="frameworkRemarks" id="frameworkRemarks" cols="43" rows="5" title="content" MAXLENGTH="2000">
+                <c:out value="${applicationViewDto.licPremisesAuditDto.lgrRemarks}"></c:out>
+            </textarea>
+            <span id="error_frameworkRemarks" name="iaisErrorMsg" class="error-msg"></span>
+        </div>
+    </div>
+    </c:if>
+
 </div>
 <script type="text/javascript">
+    function changeframework() {
+        if ($('#framework').is(':checked')) {
+            $("#frameworkOp").show();
+        } else {
+            $("#frameworkOp").hide();
+            $("#frameworkRe").hide();
+        }
+    }
+
+
+    function changeFramewordOption(obj) {
+        if (obj == "INRT001") {
+            $("#frameworkRe").show();
+        } else {
+            $("#frameworkRe").hide();
+            $("#frameworkRemarks").val("");
+        }
+    }
+
     $(document).ready(function (){
         if($("#tcuType").is(":checked")){
             $("#tcuLabel").show()
@@ -132,6 +180,8 @@
             $("#tcuType").attr('checked',true)
             $("#tcuLabel").show();
         }
+        changeframework();
+        changeFramewordOption();
     });
     function showTcuLabel(checkbox){
         if(checkbox.checked == true){

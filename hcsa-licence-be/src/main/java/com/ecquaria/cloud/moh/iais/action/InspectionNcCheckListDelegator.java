@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
@@ -19,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.esotericsoftware.minlog.Log;
@@ -154,6 +156,7 @@ public class InspectionNcCheckListDelegator {
         //get selections dd hh
         ParamUtil.setSessionAttr(request,"hhSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(true));
         ParamUtil.setSessionAttr(request,"ddSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(false));
+        ParamUtil.setSessionAttr(request,"frameworknOption",(Serializable) LicenceUtil.getIncludeRiskTypes());
     }
 
     public void pre(BaseProcessClass bpc){
@@ -211,6 +214,8 @@ public class InspectionNcCheckListDelegator {
                 ParamUtil.setRequestAttr(request, "isValid", "Y");
                 boolean flag = insepctionNcCheckListService.isHaveNcOrBestPractice(serListDto,comDto,showDto);
                 insepctionNcCheckListService.submit(comDto,showDto,serListDto,taskDto.getRefNo());
+                ApplicationViewDto appViewDto =(ApplicationViewDto) ParamUtil.getSessionAttr(request,APPLICATIONVIEWDTO);
+                insepctionNcCheckListService.saveLicPremisesAuditDtoByApplicationViewDto(appViewDto);
                 AdCheckListShowDto showPageDto = new AdCheckListShowDto();
                 serListDto.setCheckListTab(null);
                 ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
@@ -300,10 +305,37 @@ public class InspectionNcCheckListDelegator {
         }
 
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+        getAuditData(request);
         return serListDto;
     }
 
-
+   private void  getAuditData(MultipartHttpServletRequest request)throws IOException {
+       ApplicationViewDto appViewDto =(ApplicationViewDto) ParamUtil.getSessionAttr(request,APPLICATIONVIEWDTO);
+       if (appViewDto != null && appViewDto.getLicPremisesAuditDto() != null){
+           LicPremisesAuditDto licPremisesAuditDto =  appViewDto.getLicPremisesAuditDto();
+           String framework = ParamUtil.getString(request,"framework");
+           String periods = ParamUtil.getString(request,"periods");
+           String frameworkRemarks = ParamUtil.getString(request,"frameworkRemarks");
+           if( !StringUtil.isEmpty(framework) && framework.equalsIgnoreCase("2")){
+               licPremisesAuditDto.setInRiskSocre(2);
+               if(!StringUtil.isEmpty(periods)){
+                   licPremisesAuditDto.setIncludeRiskType(periods);
+                   if(periods.equalsIgnoreCase(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY))
+                       licPremisesAuditDto.setLgrRemarks(frameworkRemarks );
+                   else
+                       licPremisesAuditDto.setLgrRemarks(null);
+               }else {
+                   licPremisesAuditDto.setIncludeRiskType(null);
+                   licPremisesAuditDto.setLgrRemarks(null);
+               }
+           }else {
+               licPremisesAuditDto.setInRiskSocre(1);
+               licPremisesAuditDto.setIncludeRiskType(null);
+               licPremisesAuditDto.setLgrRemarks(null);
+           }
+         ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,appViewDto);
+       }
+   }
 
 
     public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) throws IOException {

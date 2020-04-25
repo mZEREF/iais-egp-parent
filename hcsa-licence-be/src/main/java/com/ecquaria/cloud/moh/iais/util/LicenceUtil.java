@@ -61,6 +61,13 @@ public class LicenceUtil {
         return  selectOptions;
     }
 
+    public static List<SelectOption> getIncludeRiskTypes(){
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+        selectOptions.add(new SelectOption(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY,HcsaLicenceBeConstant.INCLUDE_RISK_TYPE_LEADERSHIP_KEY_TEXT));
+        selectOptions.add(new SelectOption(ApplicationConsts.INCLUDE_RISK_TYPE_INSPECTION_KEY,HcsaLicenceBeConstant.INCLUDE_RISK_TYPE_INSPECTION_KEY_TEXT));
+        return  selectOptions;
+    }
+
     public static List<SelectOption> getPremisesType(){
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         selectOptions.add(new SelectOption( ApplicationConsts.PREMISES_TYPE_ON_SITE,ApplicationConsts.PREMISES_TYPE_ON_SITE_SHOW));

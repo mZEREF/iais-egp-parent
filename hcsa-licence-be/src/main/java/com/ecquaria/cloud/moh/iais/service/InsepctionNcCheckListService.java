@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
@@ -32,4 +33,5 @@ public interface InsepctionNcCheckListService {
     String saveFiles( MultipartFile multipartFile);
     void removeFiles(String id);
     void deleteInvalidFile( InspectionFDtosDto serListDto);
+    void saveLicPremisesAuditDtoByApplicationViewDto(ApplicationViewDto applicationViewDto);
 }
