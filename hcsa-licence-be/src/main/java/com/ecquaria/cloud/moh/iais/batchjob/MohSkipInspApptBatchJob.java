@@ -83,19 +83,23 @@ public class MohSkipInspApptBatchJob {
             for(TaskDto taskDto : taskDtos){
                 taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
                 taskDto.setAuditTrailDto(intranet);
-                taskService.updateTask(taskDto);
-                String appPremCorrId = taskDto.getRefNo();
-                //update be Application
-                ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
-                applicationDto.setAuditTrailDto(intranet);
-                ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
-                //update fe Application
-                applicationDto1.setAuditTrailDto(intranet);
-                applicationService.updateFEApplicaiton(applicationDto1);
-                //update inspection status
-                updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
-                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-                createOrUpdateRecommendation(appPremisesRecommendationDto, appPremCorrId, new Date());
+                try{
+                    taskService.updateTask(taskDto);
+                    String appPremCorrId = taskDto.getRefNo();
+                    //update be Application
+                    ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+                    applicationDto.setAuditTrailDto(intranet);
+                    ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
+                    //update fe Application
+                    applicationDto1.setAuditTrailDto(intranet);
+                    applicationService.updateFEApplicaiton(applicationDto1);
+                    //update inspection status
+                    updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
+                    AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                    createOrUpdateRecommendation(appPremisesRecommendationDto, appPremCorrId, new Date());
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
             }
         }
     }
