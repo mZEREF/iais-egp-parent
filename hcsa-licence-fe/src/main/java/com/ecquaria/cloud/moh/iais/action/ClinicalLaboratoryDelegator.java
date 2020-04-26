@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -951,11 +952,9 @@ public class ClinicalLaboratoryDelegator {
             bpc.request.getSession().setAttribute("coMap",coMap);
 
             if(!errorMap.isEmpty()){
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"serviceForms");
-                String crud_action_type_form_page = mulReq.getParameter( "crud_action_type_form_page");
-                ParamUtil.setRequestAttr(bpc.request,"crud_action_type_form_page",crud_action_type_form_page);
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.DOCUMENTS);
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.NUCLEARMEDICINEIMAGING);
+                mulReq.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.DOCUMENTS);
                 return;
             }
 
@@ -1590,7 +1589,10 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
         List<AppSvcCgoDto> appSvcCgoDtos=IaisCommonUtils.genNewArrayList();
         if(appSvcCgoList!=null){
-            if(appSvcCgoList.size()!=cgoMap.size()){
+            if(daList.size()<appSvcCgoList.size()){
+                return;
+            }
+            if(appSvcCgoList.size()<=daList.size()){
                 cgoMap.forEach((k,v)->{
                 for(AppSvcCgoDto appSvcCgoDto : appSvcCgoList){
                     String idNo = appSvcCgoDto.getIdNo();
@@ -1607,9 +1609,15 @@ public class ClinicalLaboratoryDelegator {
             }
             if(!StringUtil.isEmpty(stringBuilder.toString())){
                 String string = stringBuilder.toString();
-
-                map.put("CGO", string.substring(0,string.lastIndexOf(","))+" is not assigned to any of the selections");
+                String substring = string.substring(0, string.lastIndexOf(","));
+                String uc_chklmd001_err005 = MessageUtil.getMessageDesc("UC_CHKLMD001_ERR005");
+                if(substring.contains(",")){
+                    uc_chklmd001_err005.replaceFirst("is","are");
+                }
+                String replace = uc_chklmd001_err005.replace("<CGO Name>",substring);
+                map.put("CGO",replace);
             }
+
         }
 
     }
