@@ -84,4 +84,7 @@ public interface OrganizationMainClient {
     @GetMapping(value = "/organization/organization-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrganizationDto> getOrganizationById(@RequestParam("id") String id);
 
+    @GetMapping(value = "/iais-task/task-read",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> taskRead(@RequestParam("id") String id);
+
 }

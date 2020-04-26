@@ -17,9 +17,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
-import com.ecquaria.cloud.moh.iais.service.client.BelicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import lombok.extern.slf4j.Slf4j;
@@ -52,12 +50,6 @@ public class BackendAjaxController {
 
     @Autowired
     private AppPremisesRoutingHistoryMainClient appPremisesRoutingHistoryMainClient;
-
-    @Autowired
-    private AppInspectionStatusMainClient appInspectionStatusClient;
-
-    @Autowired
-    private BelicationClient belicationClient;
 
     @Autowired
     private HcsaConfigMainClient hcsaConfigClient;
@@ -165,4 +157,15 @@ public class BackendAjaxController {
         res.put("role",curRole);
         return res;
     }
+
+    @RequestMapping(value = "changeTaskStatus.do", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> changeTaskStatus(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> map = new HashMap<>();
+        String taskId = ParamUtil.getMaskedString(request, "taskId");
+        String res = inspectionAssignTaskService.taskRead(taskId);
+        map.put("res",res);
+        return map;
+    }
+
 }

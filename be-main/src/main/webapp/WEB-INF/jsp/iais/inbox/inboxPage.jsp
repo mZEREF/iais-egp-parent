@@ -304,7 +304,7 @@
                         if (hastaskList == "true") {
                             html += '<td><input type="checkbox" name="taskcheckbox" value="' + taskList[res.rows[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
                         }
-                        html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a class="applicationNoAHref" data-href=' + url[res.rows[i].refNo] + '>' + res.rows[i].applicationNo + '</a></p></td>' +
+                        html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a class="applicationNoAHref" data-href=' + url[res.rows[i].refNo] +' data-task=' + taskList[res.rows[i].refNo] +  '>' + res.rows[i].applicationNo + '</a></p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res.rows[i].serviceId] + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">License Expiry Date</p><p>N/A</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].status + '</p></td>' +
@@ -396,5 +396,26 @@
         }
         return false;
     }
+
+
+    $(document).on("click",".applicationNoAHref",function(){
+        console.log('111')
+        var href = this.getAttribute("data-href");
+        var task = this.getAttribute("data-task");
+        $.ajax({
+            data:{
+                taskId: task,
+            },
+            type:"POST",
+            dataType: 'json',
+            url: '/main-web/backend/changeTaskStatus.do',
+            error:function(data){
+
+            },
+            success:function(data){
+                window.location.href = href;
+            }
+        });
+    })
 
 </script>

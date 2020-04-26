@@ -260,4 +260,9 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
     public ApplicationGroupDto getApplicationGroupDtoByAppGroId(String appGroupId){
         return inspectionTaskClient.getApplicationGroupDtoByAppGroId(appGroupId).getEntity();
     }
+
+    @Override
+    public String taskRead(String taskId){
+        return organizationClient.taskRead(taskId).getEntity();
+    }
 }

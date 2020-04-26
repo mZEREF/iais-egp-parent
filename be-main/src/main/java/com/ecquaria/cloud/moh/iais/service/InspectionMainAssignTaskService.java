@@ -82,4 +82,6 @@ public interface InspectionMainAssignTaskService {
     void routingTaskByCommonPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks);
 
     HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId);
+
+    String taskRead(String taskId);
 }
