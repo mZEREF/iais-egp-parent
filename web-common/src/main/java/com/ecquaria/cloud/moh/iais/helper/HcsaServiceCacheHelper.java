@@ -97,6 +97,7 @@ public final class HcsaServiceCacheHelper {
 
 		int status = serviceClient.getActiveServices().getStatusCode();
 
+		log.info(StringUtil.changeForLog("HcsaServiceCacheHelper status  =====>" + status));
 
 		if (status == HttpStatus.SC_OK){
 			List<HcsaServiceDto> serviceList = serviceClient.getActiveServices().getEntity();
@@ -117,8 +118,8 @@ public final class HcsaServiceCacheHelper {
 			redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST, serviceList);
 			serviceList.forEach(i -> redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, i.getId(),
 					i, RedisCacheHelper.NOT_EXPIRE));
+			return serviceList;
 		}
-
 
 		return list;
 	}
