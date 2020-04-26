@@ -2,37 +2,59 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.client.rbac.UserClient;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
+import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
 public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Autowired
-    FeAdminClient feAdminClient;
+    private FeAdminClient feAdminClient;
 
     @Autowired
-    FeUserClient feUserClient;
+    private FeUserClient feUserClient;
 
     @Autowired
-    UserClient userClient;
+    private UserClient userClient;
+
+    @Autowired
+    private EicGatewayFeMainClient eicGatewayFeMainClient;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     @Override
     public SearchResult<FeUserQueryDto> getFeUserList(SearchParam searchParam){
@@ -88,13 +110,58 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-	public FeUserDto createSingpassAccount(OrganizationDto organizationDto) {
-		return feUserClient.createSingpassAccount(organizationDto).getEntity();
+	public OrganizationDto createSingpassAccount(OrganizationDto organizationDto) {
+        FeignResponseEntity<OrganizationDto> result = feUserClient.createSingpassAccount(organizationDto);
+        int status = result.getStatusCode();
+        if (status == HttpStatus.SC_OK){
+            OrganizationDto postCreate = result.getEntity();
+
+            String json = JsonUtil.parseToJson(postCreate);
+
+            //create egp user
+            FeUserDto feUserDto = postCreate.getFeUserDto();
+            createClientUser(feUserDto);
+
+            try {
+                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                eicGatewayFeMainClient.syncAccountDataFormFe(postCreate, signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization());
+            }catch (Exception e){
+                log.error(StringUtil.changeForLog("encounter failure when sync account data to be"));
+                log.error(e.getMessage(), e);
+            }
+            return postCreate;
+        }else {
+            return null;
+        }
 	}
 
     @Override
     public FeUserDto createCropUser(OrganizationDto organizationDto) {
-        return feUserClient.createCropUser(organizationDto).getEntity();
+        FeignResponseEntity<OrganizationDto> result = feUserClient.createCropUser(organizationDto);
+        int status = result.getStatusCode();
+
+        if (status != HttpStatus.SC_OK){
+            return null;
+        }else {
+            OrganizationDto postCreate = result.getEntity();
+
+            //create egp user
+            FeUserDto postCreateUser = postCreate.getFeUserDto();
+            createClientUser(postCreateUser);
+            try {
+                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                eicGatewayFeMainClient.syncAccountDataFormFe(postCreate, signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization());
+            }catch (Exception e){
+                log.error(StringUtil.changeForLog("encounter failure when sync account data to be"));
+                log.error(e.getMessage(), e);
+            }
+
+            return postCreateUser;
+        }
     }
 
     @Override
@@ -112,7 +179,14 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     public void createClientUser(FeUserDto userDto) {
 
         //TODO : simple create
-        ClientUser clientUser = userClient.findUser("internet", userDto.getUserId()).getEntity();
+        FeignResponseEntity<ClientUser> result = userClient.findUser(AppConsts.USER_DOMAIN_INTERNET, userDto.getUserId());
+        int status = result.getStatusCode();
+
+        if (status != HttpStatus.SC_OK){
+            return;
+        }
+
+        ClientUser clientUser = result.getEntity();
         if (clientUser != null){
             return;
         }
@@ -142,37 +216,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public OrganizationDto findOrganizationByUen(String uen) {
         return feUserClient.findOrganizationByUen(uen).getEntity();
-    }
-
-    @Override
-    public void saveEgpUser(FeUserDto feUserDto) {
-
-        ClientUser clientUser = userClient.findUser("internet", feUserDto.getUserId()).getEntity();
-        if (clientUser != null){
-            return;
-        }
-
-        clientUser = MiscUtil.transferEntityDto(feUserDto, ClientUser.class);
-        clientUser.setUserDomain(feUserDto.getUserDomain());
-        clientUser.setId(feUserDto.getUserId());
-        clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
-        String email = feUserDto.getEmail();
-        String salutation = feUserDto.getSalutation();
-        clientUser.setSalutation(salutation);
-        clientUser.setEmail(email);
-        clientUser.setDisplayName(feUserDto.getFirstName()+feUserDto.getLastName());
-        clientUser.setPassword("password$2");
-        clientUser.setPasswordChallengeQuestion("A");
-        clientUser.setPasswordChallengeAnswer("A");
-
-        Date activeDate = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(activeDate);
-        calendar.add(Calendar.DAY_OF_MONTH, 12);
-        clientUser.setAccountActivateDatetime(activeDate);
-        clientUser.setAccountDeactivateDatetime(calendar.getTime());
-
-        userClient.createClientUser(clientUser);
     }
 
     @Override

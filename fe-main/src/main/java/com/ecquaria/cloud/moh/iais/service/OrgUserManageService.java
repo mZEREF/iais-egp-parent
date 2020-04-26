@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 
 import java.util.List;
-import java.util.Map;
 
 public interface OrgUserManageService {
 
@@ -26,7 +25,7 @@ public interface OrgUserManageService {
 
     List<String> getUenListByNric(String nric);
 
-    FeUserDto createSingpassAccount(OrganizationDto organizationDto);
+    OrganizationDto createSingpassAccount(OrganizationDto organizationDto);
 
     FeUserDto createCropUser(OrganizationDto organizationDto);
 
@@ -35,7 +34,6 @@ public interface OrgUserManageService {
     FeUserDto getFeUserAccountByNric(String nric);
 
     void createClientUser(FeUserDto userDto);
-    void saveEgpUser(FeUserDto feUserDto);
     void updateEgpUser(FeUserDto feUserDto);
 
     OrganizationDto findOrganizationByUen(String uen);

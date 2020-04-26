@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Map;
 
 @FeignClient(name = "iais-organization",configuration = FeignConfiguration.class,fallback = FeUserClientFallback.class)
 public interface FeUserClient {
@@ -48,13 +47,13 @@ public interface FeUserClient {
     FeignResponseEntity<OrgUserRoleDto> addUserRole(@RequestBody OrgUserRoleDto orgUserRoleDto);
 
     @PostMapping(path = "/iais-internet-user/user-account/", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-	FeignResponseEntity<FeUserDto> createSingpassAccount(@RequestBody OrganizationDto organizationDto);
+	FeignResponseEntity<OrganizationDto> createSingpassAccount(@RequestBody OrganizationDto organizationDto);
 
     @GetMapping(value = "/iais-internet-user/organization/{uen}/user/{nric}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeUserDto> getUserByNricAndUen(@PathVariable(value = "uen") String uen, @PathVariable(value = "nric") String nric);
 
     @PostMapping(path = "/iais-internet-user/organization/user-account/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<FeUserDto> createCropUser(@RequestBody OrganizationDto organizationDto);
+    FeignResponseEntity<OrganizationDto> createCropUser(@RequestBody OrganizationDto organizationDto);
 
     @GetMapping(value = "/iais-internet-user/user-info/{userId}")
     FeignResponseEntity<InterInboxUserDto> findUserInfoByUserId(@PathVariable("userId")String UserId);

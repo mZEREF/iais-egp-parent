@@ -183,7 +183,6 @@ public class FECorppassLandingDelegator {
                 organizationDto.setFeUserDto(feUserDto);
 
                 FeUserDto postUpdate = orgUserManageService.createCropUser(organizationDto);
-                orgUserManageService.createClientUser(postUpdate);
 
                 User user = new User();
                 user.setDisplayName(postUpdate.getDisplayName());

@@ -54,8 +54,6 @@ public class FESingpassLandingDelegator {
         IaisEGPHelper.sendRedirect(bpc.request, bpc.response, LoginHelper.MAIN_WEB_URL);
     }
 
-
-
     public void initLoginInfo(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
@@ -162,13 +160,13 @@ public class FESingpassLandingDelegator {
                 feUserDto.setIdType(MasterCodeUtil.getCodeDesc(OrganizationConstants.ID_TYPE_NRIC));
                 organizationDto.setFeUserDto(feUserDto);
 
-                FeUserDto postUpdate = orgUserManageService.createSingpassAccount(organizationDto);
-                orgUserManageService.createClientUser(postUpdate);
+                OrganizationDto postCreateOrg = orgUserManageService.createSingpassAccount(organizationDto);
+                FeUserDto postCreateUser = postCreateOrg.getFeUserDto();
 
                 User user = new User();
-                user.setDisplayName(postUpdate.getDisplayName());
-                user.setUserDomain(postUpdate.getUserDomain());
-                user.setId(postUpdate.getUserId());
+                user.setDisplayName(postCreateUser.getDisplayName());
+                user.setUserDomain(postCreateUser.getUserDomain());
+                user.setId(postCreateUser.getUserId());
                 LoginHelper.initUserInfo(request, response, user);
 
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);

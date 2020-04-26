@@ -11,7 +11,6 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
-import java.util.Map;
 
 public class FeUserClientFallback implements FeUserClient{
     @Override
@@ -71,7 +70,7 @@ public class FeUserClientFallback implements FeUserClient{
     }
 
     @Override
-    public FeignResponseEntity<FeUserDto> createSingpassAccount(OrganizationDto organizationDto) {
+    public FeignResponseEntity<OrganizationDto> createSingpassAccount(OrganizationDto organizationDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -87,7 +86,7 @@ public class FeUserClientFallback implements FeUserClient{
     }
 
     @Override
-    public FeignResponseEntity<FeUserDto> createCropUser(OrganizationDto organizationDto) {
+    public FeignResponseEntity<OrganizationDto> createCropUser(OrganizationDto organizationDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

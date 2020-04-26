@@ -267,7 +267,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
             gatewayClient.routeSelfDeclData(selfDeclSyncDataDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getStatusCode();
         }catch (Exception e){
-            log.info(StringUtil.changeForLog("encounter failure when sync self decl to be" + e.getMessage()));
+            log.error(StringUtil.changeForLog("encounter failure when sync self decl to be" + e.getMessage()));
         }
 
     }
