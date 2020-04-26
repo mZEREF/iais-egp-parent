@@ -1,5 +1,5 @@
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
-  <div id="wizard-page-title">Service Personnel</div>
+  <div id="wizard-page-title"></div>
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
     <div id="control--runtime--0" class="page control control-area  container-p-1">
       <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
@@ -19,16 +19,16 @@
               <div class="control-set-font control-font-header control-font-header section-header">
                 <c:choose>
                   <c:when test="${'BLB' ==currentSvcCode}">
-                    <label>The blood donation centre and/or mobile donation drive is/are under the supervision of</label>
+                    <h4>The blood donation centre and/or mobile donation drive is/are under the supervision of</h4>
                   </c:when>
                   <c:when test="${'TCB' ==currentSvcCode}">
-                    <label>There is an appointed Laboratory Director who has the appropriate qualifications</label>
+                    <h4>There is an appointed Laboratory Director who has the appropriate qualifications</h4>
                   </c:when>
                   <c:when test="${'NMI' ==currentSvcCode}">
-                    <label>The Nuclear Medicine Imagine Service have the following personnel that satisfy the minimum requirements at all times</label>
+                    <h4>The Nuclear Medicine Imagine Service have the following personnel that satisfy the minimum requirements at all times</h4>
                   </c:when>
                   <c:when test="${'NMA' ==currentSvcCode}">
-                    <label>The Nuclear Medicine Assay Service have the following personnel that satisfy the minimum requirements at all times</label>
+                    <h4>The Nuclear Medicine Assay Service have the following personnel that satisfy the minimum requirements at all times</h4>
                   </c:when>
                 </c:choose>
               </div>

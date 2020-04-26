@@ -49,7 +49,7 @@
                                                                     </p>
                                                                 </c:if>
                                                                 <input type="hidden" value="0" name="svcCount" />
-                                                                <iframe id="svcIframe${status.index}"  class="svc-iframe" title="" src=""  width="100%" ></iframe>
+                                                                <iframe id="svcIframe${status.index}"  class="svc-iframe" title="" src=""  width="100%" frameborder ="0" ></iframe>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -62,7 +62,7 @@
                                                 </div>
                                             </c:if>
                                             <div class="form-check">
-                                                <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" aria-invalid="false">
+                                                <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" aria-invalid="false" <c:if test="${AppSubmissionDto.userAgreement}">checked="checked"</c:if> >
                                                 <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span>I hereby certify that the information I provided is all correct and accurate</label>
                                             </div>
                                             <div>
