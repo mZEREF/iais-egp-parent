@@ -70,7 +70,7 @@
             <input class="selectedFile" id="selectedFile" name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
 
             <c:if test="${svcDoc.docName!=null}">
-              <span name="iaisErrorMsg" class="error-msg" id="error_file${status.index}"></span>
+              <span name="iaisErrorMsg" class="error-msg" id="error_${docConfig.id}selectedFile"></span>
             </c:if>
           </div>
         </div>

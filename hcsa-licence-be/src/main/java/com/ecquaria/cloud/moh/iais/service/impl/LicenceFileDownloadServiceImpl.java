@@ -465,6 +465,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             File[] files = file.listFiles();
             log.info(files.length+"files.length------");
             FileRepoEventDto eventDto = new FileRepoEventDto();
+            Boolean flag=Boolean.FALSE;
             for(File f:files){
                 if(f.isFile()){
                     try {
@@ -484,7 +485,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                 File.separator+groupPath+File.separator+"folder"+File.separator+groupPath+File.separator+"files");
                         fileRepoDtos.add(fileRepoDto);
                         eventDto.setFileRepoList(fileRepoDtos);
-
+                        flag=Boolean.TRUE;
                         log.info(f.getPath()+"file path");
 
                     }catch (Exception e){
@@ -494,9 +495,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 }
 
             }
-            eventDto.setEventRefNo(groupPath);
-            eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
-                    EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION, l.toString(), null);
+            if(flag){
+                eventDto.setEventRefNo(groupPath);
+                eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
+                        EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION, l.toString(), null);
+            }
         }
 
     }

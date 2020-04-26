@@ -953,7 +953,8 @@ public class ClinicalLaboratoryDelegator {
 
             if(!errorMap.isEmpty()){
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.NUCLEARMEDICINEIMAGING);
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,AppServicesConsts.NAVTABS_SERVICEFORMS);
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.DOCUMENTS);
                 mulReq.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.DOCUMENTS);
                 return;
             }
@@ -1635,8 +1636,9 @@ public class ClinicalLaboratoryDelegator {
                         for(int i=0;i<appSvcDocDtoLit.size();i++){
                             Integer docSize = appSvcDocDtoLit.get(i).getDocSize();
                             String docName = appSvcDocDtoLit.get(i).getDocName();
+                            String id = appSvcDocDtoLit.get(i).getSvcDocId();
                             if(docSize>4*1024*1024){
-                                errorMap.put("file"+i,"UC_CHKLMD001_ERR007");
+                                errorMap.put(id+"selectedFile","UC_CHKLMD001_ERR007");
                             }
 
                             Boolean flag=false;
@@ -1649,7 +1651,7 @@ public class ClinicalLaboratoryDelegator {
                             }
 
                             if(!flag){
-                                errorMap.put("file"+i,"Wrong file type");
+                                errorMap.put(id+"selectedFile","Wrong file type");
                             }
                         }
                     }
