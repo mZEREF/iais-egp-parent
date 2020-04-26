@@ -550,7 +550,7 @@
 
     function check(){
         var selectValue = $("[name='nextStage']").val();
-        if (selectValue == "APST016") {
+        if (selectValue == "PROCVER") {
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#comments').addClass('hidden');
@@ -593,7 +593,7 @@
 
     $("[name='nextStage']").change(function selectChange() {
         var selectValue = $("[name='nextStage']").val();
-        if (selectValue == "APST016") {
+        if (selectValue == "PROCVER") {
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#comments').addClass('hidden');
