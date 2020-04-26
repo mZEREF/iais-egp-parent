@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloudfeign.FeignException;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -66,8 +67,7 @@ public class InsReportAoDelegator {
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
         ParamUtil.setSessionAttr(bpc.request, APPLICATIONVIEWDTO, null);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        //String taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
-        String taskId = "5C9D479C-3247-EA11-BE7F-000C29F371DC";
+        String taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
         AuditTrailHelper.auditFunction("InspectionAO Report", "InspectionAO Report");
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
