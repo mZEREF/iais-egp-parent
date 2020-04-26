@@ -856,6 +856,25 @@ public class HcsaApplicationDelegator {
         String roleId=appPremisesRoutingHistoryDto.getRoleId();
         String stageId=appPremisesRoutingHistoryDto.getStageId();
         String userId=appPremisesRoutingHistoryDto.getActionby();
+
+        if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)){
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING;
+        }else if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)){
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING;
+        }else if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
+            if(RoleConsts.USER_ROLE_AO1.equals(roleId)){
+                nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION;
+            }else{
+                nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW;
+            }
+        }else if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)){
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01;
+        }else if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_AO2.equals(stageId)){
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
+        }else if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)){
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+        }
+
         rollBack(bpc,stageId,nextStatus,roleId,wrkGrpId,userId);
         log.debug(StringUtil.changeForLog("the do replay end ...."));
     }
@@ -1489,9 +1508,12 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
 
         //Licence Start Date back fill
-        Date recomInDate = applicationViewDto.getAppPremisesRecommendationDto().getRecomInDate();
-        String date = Formatter.formatDateTime(recomInDate,Formatter.DATE);
-        ParamUtil.setRequestAttr(bpc.request,"date",date);
+        AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
+        if(appPremisesRecommendationDto != null && appPremisesRecommendationDto.getRecomInDate() != null){
+            Date recomInDate = appPremisesRecommendationDto.getRecomInDate();
+            String date = Formatter.formatDateTime(recomInDate,Formatter.DATE);
+            ParamUtil.setRequestAttr(bpc.request,"date",date);
+        }
 
         String appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = null;
