@@ -57,19 +57,21 @@
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
     <input type="hidden" name="pageCon" value="checkBox">
 </form>
-<c:if test="${ not empty selectDraftNo }">
+<%--<c:if test="${ not empty selectDraftNo }">
     <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
-</c:if>
+</c:if>--%>
+<iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
 <script type="text/javascript">
     $(document).ready(function() {
         //Binding method
+        if($('#saveDraftSuccess').val()=='success'){
+             $('#saveDraft').modal('show');
+        }
         $('#laboratoryDisciplinesBack').click(function(){
             submit('documents',null,null);
         });
         $('#laboratoryDisciplinesSaveDraft').click(function(){
-            if($('#selectDraftNo').val()==''||$('#selectDraftNo').val()==null){
-                submitForms('laboratoryDisciplines','saveDraft',null,'clinical');
-            }
+            submitForms('laboratoryDisciplines','saveDraft',null,'clinical');
         });
         $('#laboratoryDisciplinesNext').click(function(){
           /*  var controlFormLi = $('#controlFormLi').val();
@@ -88,6 +90,7 @@
         $('#disciplineHr').css('margin-bottom','5px');
 
     });
+
 
 </script>
 

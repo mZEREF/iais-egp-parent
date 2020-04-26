@@ -206,9 +206,9 @@ public class AppealServiceImpl implements AppealService {
     @Override
     public void getMessage(HttpServletRequest request) {
         String appealingFor = ParamUtil.getMaskedString(request, APPEALING_FOR);
-        String type  = ParamUtil.getMaskedString(request,TYPE);
+        String type  = request.getParameter(TYPE);
         if (LICENCE.equals(type)) {
-            LicenceDto licenceDto = licenceClient.getLicenceDtoById(appealingFor).getEntity();
+            LicenceDto licenceDto = licenceClient.getLicBylicId(appealingFor).getEntity();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
             List<PremisesListQueryDto> premisesListQueryDtos = licenceClient.getPremisesByLicneceId(appealingFor).getEntity();
@@ -231,8 +231,9 @@ public class AppealServiceImpl implements AppealService {
             request.getSession().setAttribute("hciNames",hciNames);
             request.getSession().setAttribute("serviceName",svcName);
             request.getSession().setAttribute("licenceNo",licenceNo);
+            appealingFor=licenceDto.getLicenceNo();
         } else if (APPLICATION.equals(type)) {
-            ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion(appealingFor).getEntity();
+            ApplicationDto applicationDto = applicationClient.getApplicationById(appealingFor).getEntity();
             boolean maxCGOnumber = isMaxCGOnumber(applicationDto);
             if(!maxCGOnumber){
                 request.getSession().setAttribute("maxCGOnumber",maxCGOnumber);
@@ -271,6 +272,7 @@ public class AppealServiceImpl implements AppealService {
             }
 
             request.getSession().setAttribute("serviceId",applicationDto.getServiceId());
+            appealingFor=applicationDto.getApplicationNo();
         }
         request.getSession().setAttribute(APPEALING_FOR,appealingFor);
         request.getSession().setAttribute(TYPE,type);

@@ -846,6 +846,10 @@ public class NewApplicationDelegator {
         }else {
             crud_action_additional = bpc.request.getParameter("crud_action_additional");
         }
+        if("jumpPage".equals(crud_action_additional)){
+            jumpYeMian(bpc.request,bpc.response);
+            return;
+        }
         HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
         List<String> strList=new ArrayList<>(5);
         coMap.forEach((k,v)->{
@@ -863,11 +867,14 @@ public class NewApplicationDelegator {
         }else {
             appSubmissionDto.setOldDraftNo(null);
         }
-        if(!StringUtil.isEmpty(crud_action_additional)){
+        String oldDraftNo=(String)bpc.request.getSession().getAttribute(SELECT_DRAFT_NO);
+        appSubmissionDto.setOldDraftNo(oldDraftNo);
+
+        /*if(!StringUtil.isEmpty(crud_action_additional)){
             if("cancelSaveDraft".equals(crud_action_additional)){
                 String oldDraftNo=(String)bpc.request.getSession().getAttribute(SELECT_DRAFT_NO);
                 bpc.request.setAttribute("DraftNumber",oldDraftNo);
-              /*  jumpYeMian(bpc.request,bpc.response);*/
+              *//*  jumpYeMian(bpc.request,bpc.response);*//*
 
                 try {
                     doStart(bpc);
@@ -881,19 +888,20 @@ public class NewApplicationDelegator {
                 bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
             }
 
-        }
+        }*/
         appSubmissionDto.setStepColor(strList);
         Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
         String personMapStr = JsonUtil.parseToJson(personMap);
         appSubmissionDto.setDropDownPsnMapStr(personMapStr);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        bpc.request.setAttribute("saveDraftSuccess","success");
         log.info(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
 
     public void jumpYeMian(HttpServletRequest request , HttpServletResponse response) throws IOException {
         StringBuilder url = new StringBuilder();
-        url.append("https://").append(request.getServerName()).append("/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu");
+        url.append("https://").append(request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), request);
         response.sendRedirect(tokenUrl);
     }

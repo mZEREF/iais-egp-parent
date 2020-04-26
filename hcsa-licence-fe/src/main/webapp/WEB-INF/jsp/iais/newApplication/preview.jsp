@@ -78,7 +78,8 @@
                                             <div class="button-group">
                                                 <c:if test="${requestInformationConfig==null}">
                                                     <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
-                                                    <a class="btn btn-secondary" id = "SaveDraft" data-toggle="modal" data-target= "#saveDraft" >Save as Draft</a>
+                                                    <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
+                                                    <a class="btn btn-secondary" id = "SaveDraft"  >Save as Draft</a>
                                                 </c:if>
                                                 <a class="next btn btn-primary" id = "Next">SUBMIT & PAY </a></div>
                                         </div>
@@ -92,13 +93,19 @@
         </div>
     </div>
 </form>
-<c:if test="${ not empty selectDraftNo}">
+<%--<c:if test="${ not empty selectDraftNo}">
     <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
-</c:if>
+</c:if>--%>
+<iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
+
+
 <script type="text/javascript">
 
     $(document).ready(function() {
         //Binding method
+        if($('#saveDraftSuccess').val()=='success'){
+            $('#saveDraft').modal('show');
+        }
         $('#premisesEdit').click(function(){
             submit('premises',null,null);
         });
@@ -109,9 +116,7 @@
             submit('serviceForms',null,null);
         });
         $('#SaveDraft').click(function(){
-            if($('#selectDraftNo').val()==''||$('#selectDraftNo').val()==null){
-                submit('preview','saveDraft',null);
-            }
+            submit('preview','saveDraft',null);
         });
         $('#Next').click(function(){
             let jQuery = $('#verifyInfoCheckbox').prop("checked");
@@ -168,6 +173,14 @@
         submit('preview','saveDraft','cancelSaveDraft');
     }
 
+    function cancel() {
+        $('#saveDraft').modal('hide');
+
+    }
+
+    function jumpPage() {
+        submit('premises','saveDraft','jumpPage');
+    }
     function setIframeUrl(maskId,maskName,svcDOM,iframeId) {
         var $svcContenEle = svcDOM.closest('div.svc-content');
         var svcCount = $svcContenEle.find('input[name="svcCount"]').val();

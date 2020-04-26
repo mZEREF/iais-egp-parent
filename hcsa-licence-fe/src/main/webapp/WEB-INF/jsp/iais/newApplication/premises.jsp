@@ -1,5 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib prefix="ias" uri="http://www.ecq.com/iais" %>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -123,7 +124,8 @@
                                     <div class="button-group">
                                         <c:if test="${requestInformationConfig==null}">
                                           <input type="text" style="display: none; " id="selectDraftNo" value="${selectDraftNo}">
-                                            <a class="btn btn-secondary premiseSaveDraft" id="SaveDraft"  data-toggle="modal" data-target= "#saveDraft" >Save as Draft</a>
+                                          <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
+                                          <a class="btn btn-secondary premiseSaveDraft" id="SaveDraft"    >Save as Draft</a>
                                         </c:if>
                                         <a class="btn btn-primary next premiseId" id="Next" >Next</a></div>
                                 </div>
@@ -142,9 +144,13 @@
   <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
   <%@include file="../common/premFun.jsp"%>
   <input type="hidden" name="pageCon" value="valPremiseList" >
-  <c:if test="${ not empty selectDraftNo }">
+  <%--<c:if test="${ not empty selectDraftNo }">
     <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
-  </c:if>
+  </c:if>--%>
+
+    <ias:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></ias:confirm>
+
+
 
 </form>
 <script type="text/javascript">
@@ -156,6 +162,9 @@
         <!-- init start-->
         init = 0;
 
+        if($('#saveDraftSuccess').val()=='success'){
+            $('#saveDraft').modal('show');
+        }
         var checkedType = "";
 
         $('.prem-summary').addClass('hidden');
@@ -255,10 +264,8 @@
             submit('documents',null,null);
         });
         $('#SaveDraft').click(function(){
-            if($('#selectDraftNo').val()==''||$('#selectDraftNo').val()==null){
                 $('input[type="radio"]').prop('disabled',false);
                 submit('premises','saveDraft',$('#selectDraftNo').val());
-            }
         });
 
         <c:if test="${(AppSubmissionDto.appEditSelectDto!=null && !AppSubmissionDto.appEditSelectDto.premisesEdit) || AppSubmissionDto.onlySpecifiedSvc}">
@@ -303,7 +310,13 @@
       submit('premises','saveDraft','cancelSaveDraft');
   }
 
+  function cancel() {
+      $('#saveDraft').modal('hide');
+  }
 
+  function jumpPage() {
+      submit('premises','saveDraft','jumpPage');
+  }
 
 </script>
 

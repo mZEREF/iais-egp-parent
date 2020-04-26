@@ -74,28 +74,7 @@ public class ServiceMenuDelegator {
 
     public void beforeJump(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the  before jump start 1...."));
-        List<String> baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED);
-        List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED);
-        List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(baseServiceIds)){
-            serviceConfigIds.addAll(baseServiceIds);
-        }
-        if(!IaisCommonUtils.isEmpty(specifiedServiceIds)){
-            serviceConfigIds.addAll(specifiedServiceIds);
-        }
 
-        List<HcsaServiceDto> hcsaServiceDtosById = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
-        List<String> serviceCodeList=new ArrayList<>(hcsaServiceDtosById.size());
-
-        for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtosById){
-            serviceCodeList.add(hcsaServiceDto.getSvcCode());
-        }
-        serviceCodeList.sort(String::compareTo);
-        Map<String,Object> map=new HashMap<>();
-        map.put("serviceCodesList",serviceCodeList);
-        map.put("appType", ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-        String entity = applicationClient.selectDarft(map).getEntity();
-        bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);
     }
 
     public void serviceMenuSelection(BaseProcessClass bpc){
@@ -221,6 +200,28 @@ public class ServiceMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, (Serializable) basecheckedlist);
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, (Serializable) allbaseService);
         ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, (Serializable) allspecifiedService);
+        List<String> baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED);
+        List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED);
+        List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(baseServiceIds)){
+            serviceConfigIds.addAll(baseServiceIds);
+        }
+        if(!IaisCommonUtils.isEmpty(specifiedServiceIds)){
+            serviceConfigIds.addAll(specifiedServiceIds);
+        }
+
+        List<HcsaServiceDto> hcsaServiceDtosById = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
+        List<String> serviceCodeList=new ArrayList<>(hcsaServiceDtosById.size());
+
+        for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtosById){
+            serviceCodeList.add(hcsaServiceDto.getSvcCode());
+        }
+        serviceCodeList.sort(String::compareTo);
+        Map<String,Object> map=new HashMap<>();
+        map.put("serviceCodesList",serviceCodeList);
+        map.put("appType", ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        String entity = applicationClient.selectDarft(map).getEntity();
+        bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);
     }
 
     public void chooseBase(BaseProcessClass bpc){

@@ -1588,9 +1588,27 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
+        List<AppSvcCgoDto> appSvcCgoDtos=IaisCommonUtils.genNewArrayList();
         if(appSvcCgoList!=null){
             if(appSvcCgoList.size()!=cgoMap.size()){
+                cgoMap.forEach((k,v)->{
+                for(AppSvcCgoDto appSvcCgoDto : appSvcCgoList){
+                    String idNo = appSvcCgoDto.getIdNo();
+                    if(k.equals(idNo)){
+                        appSvcCgoDtos.add(appSvcCgoDto);
+                    }
+                }
+                });
+            }
+            appSvcCgoList.removeAll(appSvcCgoDtos);
+            StringBuilder stringBuilder=new StringBuilder();
+            for(AppSvcCgoDto appSvcCgoDto : appSvcCgoList){
+                stringBuilder.append(appSvcCgoDto.getName()).append(",");
+            }
+            if(!StringUtil.isEmpty(stringBuilder.toString())){
+                String string = stringBuilder.toString();
 
+                map.put("CGO", string.substring(0,string.lastIndexOf(","))+" is not assigned to any of the selections");
             }
         }
 

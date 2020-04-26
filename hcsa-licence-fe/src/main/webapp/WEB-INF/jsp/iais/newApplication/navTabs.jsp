@@ -39,6 +39,26 @@
     $(document).ready(function() {
         var controlLi = $('#controlLi').val();
         $('#'+controlLi+'li').addClass('active');
+        var premisesli= $('#premisesli').attr("class");
+        if(premisesli.match("active")){
+            $('#premisesli').removeClass("incomplete");
+            $('#premisesli').removeClass("complete");
+        }
+        var documentsli=  $('#documentsli').attr("class");
+        if(documentsli.match("active")){
+            $('#documentsli').removeClass("incomplete");
+            $('#documentsli').removeClass("complete");
+        }
+        var serviceFormsli= $('#serviceFormsli').attr("class");
+        if(serviceFormsli.match("active")){
+            $('#serviceFormsli').removeClass("incomplete");
+            $('#serviceFormsli').removeClass("complete");
+        }
+        var previewli= $('#previewli').attr("class");
+        if(previewli.match("active")){
+            $('#previewli').removeClass("incomplete");
+            $('#previewli').removeClass("complete");
+        }
         $('#premises').click(function(){
             submit('premises',null,null);
         });
@@ -54,26 +74,7 @@
         /*$('#payment').click(function(){
             submit('payment',null,null);
         });*/
-      var premisesli= $('#premisesli').attr("class");
-      if(premisesli.match("active")){
-          $('#premisesli').removeClass("incomplete");
-          $('#premisesli').removeClass("complete");
-      }
-      var documentsli=  $('#documentsli').attr("class");
-      if(documentsli.match("active")){
-          $('#documentsli').removeClass("incomplete");
-          $('#documentsli').removeClass("complete");
-      }
-       var serviceFormsli= $('#serviceFormsli').attr("class");
-      if(serviceFormsli.match("active")){
-          $('#serviceFormsli').removeClass("incomplete");
-          $('#serviceFormsli').removeClass("complete");
-      }
-      var previewli= $('#previewli').attr("class");
-      if(previewli.match("active")){
-          $('#previewli').removeClass("incomplete");
-          $('#previewli').removeClass("complete");
-      }
+
 
         <c:if test="${requestInformationConfig==null && ('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
             <c:choose>

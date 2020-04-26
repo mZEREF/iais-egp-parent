@@ -153,8 +153,9 @@
                       <div class="row">
                         <div class="col-xs-12 col-sm-6"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
                         <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
+                        <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
                         <div class="col-xs-12 col-sm-6">
-                          <div class="button-group"><a class="btn btn-secondary" id = "SaveDraft" data-toggle="modal" data-target= "#saveDraft">Save as Draft</a><a class="btn btn-primary next" id="Next">Next</a></div>
+                          <div class="button-group"><a class="btn btn-secondary" id = "SaveDraft" >Save as Draft</a><a class="btn btn-primary next" id="Next">Next</a></div>
                         </div>
                       </div>
                     </c:otherwise>
@@ -167,16 +168,22 @@
         </div>
       </div>
     </div>
-  <c:if test="${ not empty selectDraftNo }">
+  <%--<c:if test="${ not empty selectDraftNo }">
     <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
-  </c:if>
+  </c:if>--%>
+
   <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
     <input type="hidden" name="pageCon" value="valPremiseList" >
+  <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
+
 </form>
 
 
 <script type="text/javascript">
     $(document).ready(function() {
+        if($('#saveDraftSuccess').val()=='success'){
+            $('#saveDraft').modal('show');
+        }
         if(${(AppSubmissionDto.needEditController && !isClickEdit) || AppSubmissionDto.onlySpecifiedSvc }){
             disabledPage();
         }
@@ -186,9 +193,7 @@
             submit('premises',null,null);
         });
         $('#SaveDraft').click(function(){
-            if($('#selectDraftNo').val()==''||$('#selectDraftNo').val()==null){
-                submit('documents','saveDraft',$('#selectDraftNo').val());
-            }
+            submit('documents','saveDraft',$('#selectDraftNo').val());
         });
         $('#Next').click(function(){
             submit('serviceForms',"next",null);
@@ -234,6 +239,14 @@
 
     function cancelSaveDraft() {
         submit('documents','saveDraft','cancelSaveDraft');
+    }
+
+    function cancel() {
+        $('#saveDraft').modal('hide');
+    }
+
+    function jumpPage() {
+        submit('premises', 'saveDraft', 'jumpPage');
     }
 
 </script>

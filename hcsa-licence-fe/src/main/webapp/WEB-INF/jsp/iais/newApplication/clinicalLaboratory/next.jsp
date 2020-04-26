@@ -1,6 +1,7 @@
 
 <div class="application-tab-footer">
   <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
+  <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
 <c:choose>
   <c:when test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
     <div class="row">
@@ -16,7 +17,7 @@
             </c:otherwise>
           </c:choose>
           <c:if test="${requestInformationConfig==null}">
-            <a class="btn btn-secondary" id = "SaveDraft" data-toggle="modal" data-target= "#saveDraft" >Save as Draft</a>
+            <a class="btn btn-secondary" id = "SaveDraft" >Save as Draft</a>
           </c:if>
           <a id="RfcUndo" class="" href="#" >Undo All Changes</a>
         <input name="nextStep" value="" type="hidden">
@@ -29,7 +30,7 @@
       <div class="col-xs-12 col-sm-6">
         <div class="button-group">
           <c:if test="${requestInformationConfig==null}">
-            <a class="btn btn-secondary" id = "SaveDraft" data-toggle="modal" data-target= "#saveDraft" >Save as Draft</a>
+            <a class="btn btn-secondary" id = "SaveDraft"  >Save as Draft</a>
           </c:if>
           <c:choose>
             <c:when test="${serviceStepDto.isStepEnd() && serviceStepDto.isServiceEnd()}">
@@ -48,12 +49,18 @@
   </c:otherwise>
 </c:choose>
 </div>
-      <c:if test="${ not empty selectDraftNo}">
+      <%--<c:if test="${ not empty selectDraftNo}">
         <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
-      </c:if>
-<script type="text/javascript">
+      </c:if>--%>
+
+      <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
+
+      <script type="text/javascript">
     var  v;
     $(document).ready(function() {
+        if($('#saveDraftSuccess').val()=='success'){
+            $('#saveDraft').modal('show');
+        }
         var controlFormLi = $('#controlFormLi').val();
         v=controlFormLi;
         //Binding method
@@ -76,9 +83,7 @@
             }
         });
         $('#SaveDraft').click(function(){
-            if($('#selectDraftNo').val()==''||$('#selectDraftNo').val()==null){
-                submitForms('${serviceStepDto.currentStep.stepCode}','saveDraft',null,controlFormLi);
-            }
+            submitForms('${serviceStepDto.currentStep.stepCode}','saveDraft',null,controlFormLi);
         });
         $('#Next').click(function(){
             $("[name='nextStep']").val('next');
@@ -116,6 +121,17 @@
     function cancelSaveDraft() {
         submit('premises','saveDraft','cancelSaveDraft');
     }
+
+
+    function cancel() {
+        $('#saveDraft').modal('hide');
+
+    }
+
+    function jumpPage() {
+        submit('premises','saveDraft','jumpPage');
+    }
+
 
     var changePsnItem = function () {
         $('.assign-psn-item').each(function (k,v) {

@@ -109,12 +109,15 @@
               <a class="back" href="#" onclick="doBack()"><i class="fa fa-angle-left"></i> Back</a>
             </div>
             <div class="col-xs-12 col-sm-6">
-              <div class="text-right text-center-mobile"><a class="btn btn-primary next" onclick="doNext()" >Start Application</a></div>
+              <input type="text" style="display: none; " id="selectDraftNo" value="${selectDraftNo}">
+              <div class="text-right text-center-mobile"><a class="btn btn-primary next" onclick="doNext()" data-toggle="modal" data-target= "#saveDraft"  >Start Application</a></div>
             </div>
           </div>
         </div>
       </div>
-
+      <c:if test="${ not empty selectDraftNo }">
+          <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
+      </c:if>
     </form>
   </div>
 </div>
@@ -129,5 +132,12 @@
       $("input[name='switch_action_type']").val("doBack");
       $("#mainForm").submit();
   }
-  
+
+  function saveDraft() {
+
+  }
+
+  function cancelSaveDraft() {
+
+  }
 </script>

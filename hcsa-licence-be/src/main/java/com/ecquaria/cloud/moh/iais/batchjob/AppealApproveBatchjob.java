@@ -93,7 +93,7 @@ public class AppealApproveBatchjob {
                                           appealApproveDto);
                                   break;
                               case ApplicationConsts.APPEAL_TYPE_LICENCE :
-                                  appealLicence(appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),appealApproveDto.getAppPremisesRecommendationDto());
+                                  appealLicence(applicationDto,appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),appealApproveDto.getAppPremisesRecommendationDto());
                                   break;
 //                        case ApplicationConsts.APPEAL_TYPE_OTHER :
 //                            appealOther(appealApplicaiton,rollBackApplication,applicationDto);
@@ -292,7 +292,7 @@ public class AppealApproveBatchjob {
 
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is end ..."));
     }
-    private void appealLicence(List<LicenceDto> appealLicence,
+    private void appealLicence(ApplicationDto applicationDto,List<LicenceDto> appealLicence,
                                List<LicenceDto> rollBackLicence,
                                LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence is start ..."));
@@ -303,6 +303,13 @@ public class AppealApproveBatchjob {
             Date expiryDate = LicenceUtil.getExpiryDate(startDate,appPremisesRecommendationDto);
             appealLicenceDto.setExpiryDate(expiryDate);
             appealLicence.add(appealLicenceDto);
+            try {
+                sendEmailApproved(applicationDto,ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD,"",expiryDate.toString(),"");
+            }catch (Exception e){
+
+            log.error(e.getMessage(),e);
+
+            }
         }else{
             log.error(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence licenceDto is null or newLicYears <0"));
         }
