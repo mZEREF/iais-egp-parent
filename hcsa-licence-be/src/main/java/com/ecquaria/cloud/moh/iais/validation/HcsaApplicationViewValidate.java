@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 public class HcsaApplicationViewValidate implements CustomizeValidator {
-    private final String VERIFIED = ApplicationConsts.APPLICATION_STATUS_VERIFIED;
+    private final String VERIFIED = ApplicationConsts.PROCESSING_DECISION_VERIFIED;
     private final String ROLLBACK = ApplicationConsts.PROCESSING_DECISION_ROLLBACK;
     private final String DECISION_APPROVAL = "decisionApproval";
     private final String DECISION_REJECT = "decisionReject";

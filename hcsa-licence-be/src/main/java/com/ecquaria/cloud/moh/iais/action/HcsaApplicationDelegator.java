@@ -286,13 +286,13 @@ public class HcsaApplicationDelegator {
         nextStageList.add(new SelectOption("", "Please Select"));
         if(RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId)){
 //            nextStageList.add(new SelectOption("VERIFIED", "Support"));
-            nextStageList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_VERIFIED, "Support"));
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Support"));
         }else{
             //62875
             //role is ao3 && status is 'Pending AO3 Approval'  have no verified
             if(!(RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus()))){
                 if (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType())) {
-                    nextStageList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_VERIFIED, "Verified"));
+                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
                 }
             }
         }
@@ -447,7 +447,7 @@ public class HcsaApplicationDelegator {
 
             if(!StringUtil.isEmpty(rollBack) && ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(stage)){
                 nextStage = "PROCRB";
-            }else if(!StringUtil.isEmpty(verified) && ApplicationConsts.APPLICATION_STATUS_VERIFIED.equals(stage)){
+            }else if(!StringUtil.isEmpty(verified) && ApplicationConsts.PROCESSING_DECISION_VERIFIED.equals(stage)){
                 nextStage = verified;
             }
 
@@ -487,7 +487,7 @@ public class HcsaApplicationDelegator {
         String nextStage = ParamUtil.getString(bpc.request,"nextStage");
         String verified = "";
         String rollBack = "";
-        if(ApplicationConsts.APPLICATION_STATUS_VERIFIED.equals(nextStage)){
+        if(ApplicationConsts.PROCESSING_DECISION_VERIFIED.equals(nextStage)){
             verified = ParamUtil.getString(bpc.request,"verified");
         }else if(ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(nextStage)){
             rollBack = ParamUtil.getString(bpc.request,"rollBack");
