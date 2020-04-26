@@ -198,52 +198,37 @@ public class CessationServiceImpl implements CessationService {
     }
 
     @Override
-    public void updateCesation(List<AppCessationDto> appCessationDtos) {
-        List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
-//        for (AppCessationDto appCessationDto : appCessationDtos) {
-//            AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
-//            String licId = appCessationDto.getWhichTodo();
-//            ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
-//            ApplicationDto applicationDto = applicationClient.getApplicationByLicId(licId).getEntity();
-//            String appGrpId = applicationDto.getAppGrpId();
-//            applicationGroupDto.setId(appGrpId);
-//            List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
-//            String applicationNo = applicationDto.getApplicationNo();
-//            applicationDto.setStatus("APST009");
-//            applicationDtoList.add(applicationDto);
-//            ApplicationDto applicationDto1 = new ApplicationDto();
-//            applicationDto1.setApplicationType("APTY001");
-//            applicationDto1.setApplicationNo(applicationNo);
-//            applicationDto1.setStatus("APST007");
-//            applicationDto1.setAppGrpId(appGrpId);
-//            applicationDto1.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
-//            applicationDto1.setVersion(1);
-//            applicationDto1.setOriginLicenceId(licId);
-//            applicationDtoList.add(applicationDto1);
-//            appCessMiscDto.setApplicationDto(applicationDtoList);
-//            List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
-//            appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
-//            appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
-//            appCessMiscDtos.add(appCessMiscDto);
-//        }
-        cessationClient.updateCessation(appCessMiscDtos).getEntity();
-    }
-
-    @Override
     public List<String> listHciName() {
         List<String> hciNames = cessationClient.listHciNames().getEntity();
         return hciNames;
     }
 
     @Override
-    public Boolean getlicIdToCessation(List<String> licIds) {
-        List<String> entity = cessationClient.getlicIdToCessation(licIds).getEntity();
-        if(entity!=null&&!entity.isEmpty()){
-            return true;
-        }else{
-            return false;
+    public List<Boolean> listResultCeased(List<String> licIds) {
+        List<Boolean> results = IaisCommonUtils.genNewArrayList();
+        for (String licId : licIds) {
+            List<String> appIds = licenceClient.getAppIdsByLicId(licId).getEntity();
+            List<String> appIdsTrue = IaisCommonUtils.genNewArrayList();
+            if (appIds != null && !appIds.isEmpty()) {
+                for (String appId : appIds) {
+                    ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+                    String status = applicationDto.getStatus();
+                    if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status) || ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(status) || ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(status)) {
+                        appIdsTrue.add(appId);
+                    }
+                }
+            }
+            int size = appIds.size();
+            int size1 = appIdsTrue.size();
+            if (size == size1) {
+                results.add(true);
+            } else {
+                results.add(false);
+            }
         }
+        return results;
     }
+
 
     @Override
     public void sendEmail(String msgId, Date date,String svcName,String appGrpId,String licenseeId,String licNo) throws IOException, TemplateException {

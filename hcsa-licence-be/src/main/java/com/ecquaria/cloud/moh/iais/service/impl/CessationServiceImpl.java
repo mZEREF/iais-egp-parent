@@ -77,12 +77,6 @@ public class CessationServiceImpl implements CessationService {
     private final String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
     @Override
-    public List<String> getActiveLicence(List<String> licIds) {
-
-        return null;
-    }
-
-    @Override
     public List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds) {
         List<AppCessLicDto> appCessDtos = IaisCommonUtils.genNewArrayList();
         if (licIds != null && !licIds.isEmpty()) {
@@ -140,60 +134,6 @@ public class CessationServiceImpl implements CessationService {
         }
         cessationClient.saveCessation(appCessMiscDtos).getEntity();
         return appIds;
-    }
-
-    @Override
-    public void updateCesation(List<AppCessationDto> appCessationDtos) {
-        List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
-//        for (AppCessationDto appCessationDto : appCessationDtos) {
-//            AppCessMiscDto appCessMiscDto = new AppCessMiscDto();
-//            String licId = appCessationDto.getWhichTodo();
-//            ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
-//            ApplicationDto applicationDto = applicationClient.getApplicationByLicId(licId).getEntity();
-//            String appGrpId = applicationDto.getAppGrpId();
-//            applicationGroupDto.setId(appGrpId);
-//            List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
-//            List<ApplicationDto> applicationDtos = applicationClient.getApplicationByLicId(licId).getEntity();
-//            ApplicationDto applicationDto = applicationDtos.get(0);
-//            String applicationNo = applicationDto.getApplicationNo();
-//            applicationDto.setStatus("APST009");
-//            applicationDtoList.add(applicationDto);
-//            ApplicationDto applicationDto1 = new ApplicationDto();
-//            applicationDto1.setApplicationType("APTY001");
-//            applicationDto1.setApplicationNo(applicationNo);
-//            applicationDto1.setStatus("APST007");
-//            applicationDto1.setAppGrpId(appGrpId);
-//            applicationDto1.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
-//            applicationDto1.setVersion(1);
-//            applicationDto1.setLicenceId(licId);
-//            applicationDtoList.add(applicationDto1);
-//            appCessMiscDto.setApplicationDto(applicationDtoList);
-//            List<AppGrpPremisesDto> appGrpPremisesDto = getAppGrpPremisesDto();
-//            appCessMiscDto.setAppGrpPremisesDtos(appGrpPremisesDto);
-//            appCessMiscDto.setApplicationGroupDto(applicationGroupDto);
-//            appCessMiscDtos.add(appCessMiscDto);
-//        }
-        cessationClient.updateCessation(appCessMiscDtos).getEntity();
-
-    }
-
-    @Override
-    public void updateLicence(List<String> licNos) {
-        AppealLicenceDto appealLicenceDto = new AppealLicenceDto();
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        List<LicenceDto> licenceDtos = hcsaLicenceClient.getLicDtosByLicNos(licNos).getEntity();
-        List<LicenceDto> licenceDtoNew = IaisCommonUtils.genNewArrayList();
-        if (licenceDtos != null && !licenceDtos.isEmpty()) {
-            for (LicenceDto licenceDto : licenceDtos) {
-                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
-                licenceDtoNew.add(licenceDto);
-            }
-        }
-        appealLicenceDto.setAppealLicence(licenceDtoNew);
-        beEicGatewayClient.updateAppealLicence(appealLicenceDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
-        hcsaLicenceClient.updateLicences(licenceDtoNew);
     }
 
     @Override

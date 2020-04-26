@@ -31,13 +31,11 @@ public interface CessationService {
 
     List<String> saveCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext);
 
-    void updateCesation(List<AppCessationDto> appCessationDtos);
-
     AppPremisesCorrelationDto getAppPreCorDto(String appId);
 
     List<String> listHciName();
 
-    Boolean getlicIdToCessation(List<String> licIds);
+    List<Boolean> listResultCeased(List<String> licIds);
 
     void sendEmail(String msgId, Date date, String svcName, String appGrpId, String licenseeId,String licNo) throws IOException, TemplateException;
 
