@@ -83,7 +83,7 @@
             </iais:value>
           </iais:row>
           <iais:row>
-           <iais:message key="<%=MessageCodeKey.TRANSFER_REASION001%>%>"></iais:message>
+           <iais:message key="<%=MessageCodeKey.TRANSFER_REASION001%>"></iais:message>
           </iais:row>
           <div class="form-check">
             <input class="form-check-input" id="confirm" type="checkbox" name="confirm" aria-invalid="false" value="1">
