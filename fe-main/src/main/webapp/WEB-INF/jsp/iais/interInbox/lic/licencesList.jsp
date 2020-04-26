@@ -149,8 +149,7 @@
                                         <p class="licId"><iais:mask name="action_id_value" value="${licenceQuery.id}"/></p>
                                     </td>
                                     <td>
-                                        <a href="#" class="licNo" onclick="toLicView('<iais:mask name="action_id_value"
-                                                                                   value="${licenceQuery.id}"/>')">${licenceQuery.licenceNo}</a>
+                                        <a href="#" class="licToView">${licenceQuery.licenceNo}</a>
                                         <input type="hidden" name="licenId${status.index}"
                                                value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
                                     </td>
