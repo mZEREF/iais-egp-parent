@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.client.HcsaServiceClient;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 
@@ -95,12 +96,13 @@ public final class HcsaServiceCacheHelper {
 			return;
 		}
 
-		int status = serviceClient.getActiveServices().getStatusCode();
+		FeignResponseEntity<List<HcsaServiceDto>> result = serviceClient.getActiveServices();
+		int status = result.getStatusCode();
 
 		log.info(StringUtil.changeForLog("HcsaServiceCacheHelper status  =====>" + status));
 
 		if (status == HttpStatus.SC_OK){
-			List<HcsaServiceDto> serviceList = serviceClient.getActiveServices().getEntity();
+			List<HcsaServiceDto> serviceList = result.getEntity();
 			RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
 			redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST, serviceList);
 			serviceList.forEach(i -> redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, i.getId(),
@@ -111,17 +113,12 @@ public final class HcsaServiceCacheHelper {
 	public static List<HcsaServiceDto> receiveAllHcsaService(){
 		RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
 		List<HcsaServiceDto> list  = redisCacheHelper.get(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST);
-
-		if(IaisCommonUtils.isEmpty(list)){
-			HcsaServiceClient serviceClient = SpringContextHelper.getContext().getBean(HcsaServiceClient.class);
-			List<HcsaServiceDto> serviceList = serviceClient.getActiveServices().getEntity();
-			redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST, serviceList);
-			serviceList.forEach(i -> redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, i.getId(),
-					i, RedisCacheHelper.NOT_EXPIRE));
-			return serviceList;
+		if(!IaisCommonUtils.isEmpty(list)){
+			return list;
+		}else {
+			receiveServiceMapping();
+			return redisCacheHelper.get(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST);
 		}
-
-		return list;
 	}
 
 }
