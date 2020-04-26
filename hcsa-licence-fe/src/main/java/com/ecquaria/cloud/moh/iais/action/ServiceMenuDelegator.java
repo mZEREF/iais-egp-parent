@@ -323,7 +323,7 @@ public class ServiceMenuDelegator {
     private SearchResult getLicense(BaseProcessClass bpc,List<String> baselist){
         SearchParam searchParamGroup;
         searchParamGroup = new SearchParam(MenuLicenceDto.class.getName());
-        searchParamGroup.setPageSize(10);
+        searchParamGroup.setPageSize(200);
         searchParamGroup.setPageNo(1);
         searchParamGroup.setSort("START_DATE", SearchParam.ASCENDING);
         StringBuilder sb = new StringBuilder("(");
