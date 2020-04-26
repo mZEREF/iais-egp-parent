@@ -179,11 +179,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
     }
     public void numberOrderVad(Map<String, String> errMap,Integer lm,Integer rm,String serviceCode,boolean isIn,HcsaRiskFinanceMatrixDto fdto){
         if(lm>rm&&isIn){
-            errMap.put(serviceCode+"inRightModCaseCounth","Minimum cases should be smaller than Maximum cases");
+            errMap.put(serviceCode+"inRightModCaseCounth","ERR0011");
             fdto.setInRightModCaseCountherr(true);
             fdto.setInLeftModCaseCountherr(true);
         }else if(lm>rm&&!isIn){
-            errMap.put(serviceCode+"prRightModCaseCounth","Minimum cases should be smaller than Maximum cases");
+            errMap.put(serviceCode+"prRightModCaseCounth","ERR0011");
             fdto.setPrRightModCaseCountherr(true);
             fdto.setPrLeftModCaseCountherr(true);
         }
@@ -409,12 +409,12 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             flag = false;
             if(isIn){
                 if(inEdit == 1){
-                    errMap.put(serviceCode + "inEffDate", "Effective Date should be future date");
+                    errMap.put(serviceCode + "inEffDate", "ERR0012");
                     fdto.setInEffectiveStartDateerr(true);
                 }
             }else {
                 if(prEdit == 1){
-                    errMap.put(serviceCode + "prEffDate", "Effective Date should be future date");
+                    errMap.put(serviceCode + "prEffDate", "ERR0012");
                     fdto.setPrEffectiveStartDateerr(true);
                 }
             }

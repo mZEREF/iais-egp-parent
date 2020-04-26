@@ -162,10 +162,10 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
     }
     public void numberOrderVad(Map<String, String> errMap,Integer lm,Integer rm,String serviceCode,boolean isIn,HcsaRiskLeadershipMatrixDto fdto){
         if(lm>rm&&isIn){
-            errMap.put(serviceCode+"inRightModCaseCounth","Minimum cases should be smaller than Maximum cases");
+            errMap.put(serviceCode+"inRightModCaseCounth","ERR0011");
             fdto.setAdRightModCaseCountherr(true);
         }else if(lm>rm&&!isIn){
-            errMap.put(serviceCode+"prRightModCaseCounth","Minimum cases should be smaller than Maximum cases");
+            errMap.put(serviceCode+"prRightModCaseCounth","ERR0011");
             fdto.setDpRightModCaseCountherr(true);
         }
     }
@@ -387,12 +387,12 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             flag = false;
             if(isIn){
                 if(inEdit == 1){
-                    errMap.put(serviceCode + "inEffDate", "Effective Date should be future date");
+                    errMap.put(serviceCode + "inEffDate", "ERR0012");
                     fdto.setAdEffectiveStartDateerr(true);
                 }
             }else {
                 if(prEdit == 1){
-                    errMap.put(serviceCode + "prEffDate", "Effective Date should be future date");
+                    errMap.put(serviceCode + "prEffDate", "ERR0012");
                     fdto.setDpEffectiveEndDateerr(true);
                 }
             }

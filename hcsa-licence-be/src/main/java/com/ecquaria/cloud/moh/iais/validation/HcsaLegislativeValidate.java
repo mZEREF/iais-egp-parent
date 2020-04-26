@@ -109,7 +109,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         if (effDate.getTime() < System.currentTimeMillis()) {
             flag = false;
             if (inEdit == 1) {
-                errMap.put(serviceCode + "inEffDate", "Effective Date should be future date");
+                errMap.put(serviceCode + "inEffDate", "ERR0012");
             }
         } else if (endDate.getTime() < effDate.getTime()) {
             flag = false;
@@ -276,7 +276,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
     }
     public void numberOrderVad(Map<String, String> errMap,Integer lm,Integer rm,String serviceCode,HcsaRiskLegislativeMatrixDto fdto){
         if(lm>rm){
-            errMap.put(serviceCode+"inRightModCaseCounth","Minimum cases should be smaller than Maximum cases");
+            errMap.put(serviceCode+"inRightModCaseCounth","ERR0011");
             fdto.setDoLeftModCaseCountherr(true);
             fdto.setDoRightModCaseCountherr(true);
         }

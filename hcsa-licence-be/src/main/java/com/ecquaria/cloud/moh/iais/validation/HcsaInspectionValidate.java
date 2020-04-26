@@ -154,15 +154,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
             flag = false;
             if("C".equals(level)){
                 if(caEditNumFlag == 1){
-                    errMap.put(serviceCode + "caEffDate", "Effective Date should be future date");
+                    errMap.put(serviceCode + "caEffDate", "ERR0012");
                 }
             }else if("I".equals(level)){
                 if(miEditNumFlag == 1){
-                    errMap.put(serviceCode + "miEffDate", "Effective Date should be future date");
+                    errMap.put(serviceCode + "miEffDate", "ERR0012");
                 }
             }else if("A".equals(level)){
                 if(mjEditNumFlag == 1){
-                    errMap.put(serviceCode + "mjEffDate", "Effective Date should be future date");
+                    errMap.put(serviceCode + "mjEffDate", "ERR0012");
                 }
             }
         } else if (endDate.getTime() < effDate.getTime()) {
@@ -177,7 +177,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 }
             }else if("A".equals(level)){
                 if(mjEditNumFlag == 1){
-                    errMap.put(serviceCode + "mjEndDate", "Effective Date should be future date");
+                    errMap.put(serviceCode + "mjEndDate", "ERR0012");
                 }
             }
         }
@@ -452,15 +452,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
     }
     public void numberOrderVad(Map<String, String> errMap,Integer lm,Integer rm,String serviceCode,String level,HcsaRiskInspectionMatrixDto fdto){
         if(lm>rm&&"C".equals(level)){
-            errMap.put(serviceCode+"caRightModCaseCounth","Minimum cases should be smaller than Maximum cases");
+            errMap.put(serviceCode+"caRightModCaseCounth","ERR0011");
             fdto.setDoCaRightModCountherr(true);
             fdto.setDoCaLeftModCountherr(true);
         }else if(lm>rm&&"I".equals(level)){
-            errMap.put(serviceCode+"miRightModCaseCounth","Minimum cases should be smaller than Maximum cases");
+            errMap.put(serviceCode+"miRightModCaseCounth","ERR0011");
             fdto.setDoMiRightModCountherr(true);
             fdto.setDoMiLeftModCountherr(true);
         }else if(lm>rm&&"A".equals(level)){
-            errMap.put(serviceCode+"miRightModCaseCounth","Minimum cases should be smaller than Maximum cases");
+            errMap.put(serviceCode+"miRightModCaseCounth","ERR0011");
             fdto.setDoMjRightModCountherr(true);
             fdto.setDoMjLeftModCountherr(true);
         }
