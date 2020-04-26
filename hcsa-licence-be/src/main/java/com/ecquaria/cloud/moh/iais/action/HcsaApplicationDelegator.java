@@ -432,7 +432,7 @@ public class HcsaApplicationDelegator {
                 insRepService.updateRecommendation(appPremisesRecommendationDto);
             }
             String verified = ParamUtil.getString(bpc.request,"verified");
-            String rollBack = ParamUtil.getString(bpc.request,"rollBack");
+            String rollBack = ParamUtil.getMaskedString(bpc.request,"rollBack");
             String nextStage=null;
 
             //62875
@@ -490,7 +490,7 @@ public class HcsaApplicationDelegator {
         if(ApplicationConsts.PROCESSING_DECISION_VERIFIED.equals(nextStage)){
             verified = ParamUtil.getString(bpc.request,"verified");
         }else if(ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(nextStage)){
-            rollBack = ParamUtil.getString(bpc.request,"rollBack");
+            rollBack = ParamUtil.getMaskedString(bpc.request,"rollBack");
         }
         String decisionValue = ParamUtil.getString(bpc.request,"decisionValues");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
@@ -681,7 +681,7 @@ public class HcsaApplicationDelegator {
      */
     public void routeBack(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do routeBack start ...."));
-        String str=ParamUtil.getString(bpc.request,"rollBack");
+        String str=ParamUtil.getMaskedString(bpc.request,"rollBack");
         String[] result=str.split(",");
         String satageId=result[0];
         String wrkGpId=result[1];

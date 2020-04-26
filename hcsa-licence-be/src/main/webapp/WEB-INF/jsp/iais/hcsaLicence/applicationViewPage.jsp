@@ -260,7 +260,7 @@
                                                                     <option value="">Please Select</option>
                                                                     <c:forEach items="${applicationViewDto.rollBack}"
                                                                                var="rollBack">
-                                                                        <option value="${rollBack.value}" <c:if test="${rollBack.value == selectRollBack}">selected</c:if>>${rollBack.key}</option>
+                                                                        <option value="<iais:mask name="rollBack" value="${rollBack.value}"/>" <c:if test="${rollBack.value == selectRollBack}">selected</c:if>>${rollBack.key}</option>
                                                                     </c:forEach>
                                                                 </select>
                                                                 <span id="error_rollBack" name="iaisErrorMsg" class="error-msg"></span>
