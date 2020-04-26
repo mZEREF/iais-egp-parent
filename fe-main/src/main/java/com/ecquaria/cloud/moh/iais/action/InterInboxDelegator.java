@@ -329,7 +329,7 @@ public class InterInboxDelegator {
 
     public void licDoAppeal(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
-        String licId = ParamUtil.getString(bpc.request, InboxConst.ACTION_ID_VALUE);
+        String licId = ParamUtil.getMaskedString(bpc.request, InboxConst.ACTION_ID_VALUE);
         Boolean result = inboxService.checkEligibility(licId);
         if (result){
             StringBuilder url = new StringBuilder();
@@ -352,7 +352,8 @@ public class InterInboxDelegator {
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                 .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohLicenceView")
-                .append("?licenceId=").append(MaskUtil.maskValue("licenceId",licId));
+                .append("?licenceId=")
+                .append(MaskUtil.maskValue("licenceId",licId));
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
@@ -366,9 +367,11 @@ public class InterInboxDelegator {
         String licId = ParamUtil.getString(bpc.request, "licenceNo");
         String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
         StringBuilder url = new StringBuilder();
-        url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+        url.append(InboxConst.URL_HTTPS)
+           .append(bpc.request.getServerName())
                 .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
-                .append("?licenceId=").append(MaskUtil.maskValue("licenceId",licIdValue));
+                .append("?licenceId=")
+                .append(MaskUtil.maskValue("licenceId",licIdValue));
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
