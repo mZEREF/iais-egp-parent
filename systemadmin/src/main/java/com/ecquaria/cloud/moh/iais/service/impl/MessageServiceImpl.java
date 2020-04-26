@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.MessageService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,16 +56,17 @@ public class MessageServiceImpl implements MessageService {
     public void saveMessage(MessageDto messageDto) {
         messageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
-        int statusCode = systemClient.saveMessage(messageDto).getStatusCode();
+        FeignResponseEntity<MessageDto> result = systemClient.saveMessage(messageDto);
+        int statusCode = result.getStatusCode();
         if (statusCode == HttpStatus.SC_OK){
             try {
-                MessageDto retMsg = systemClient.saveMessage(messageDto).getEntity();
                 HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
                 HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                eicGatewayClient.syncMessageToFe(retMsg, signature.date(), signature.authorization(),
+                MessageDto postSaveMsg = result.getEntity();
+                eicGatewayClient.syncMessageToFe(postSaveMsg, signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization()).getEntity();
             }catch (IaisRuntimeException e){
-                log.error(StringUtil.changeForLog("encounter failure when sync message to fe " + e.getMessage()));
+                log.error("encounter failure when sync message to fe " + e.getMessage());
 
                 //set message to eic event
             }
