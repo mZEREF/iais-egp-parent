@@ -1610,11 +1610,11 @@ public class ClinicalLaboratoryDelegator {
             if(!StringUtil.isEmpty(stringBuilder.toString())){
                 String string = stringBuilder.toString();
                 String substring = string.substring(0, string.lastIndexOf(","));
-                String uc_chklmd001_err005 = MessageUtil.getMessageDesc("UC_CHKLMD001_ERR005");
+                String error = MessageUtil.getMessageDesc("UC_CHKLMD001_ERR005");
                 if(substring.contains(",")){
-                    uc_chklmd001_err005.replaceFirst("is","are");
+                    error = error.replaceFirst("is","are");
                 }
-                String replace = uc_chklmd001_err005.replace("<CGO Name>",substring);
+                String replace = error.replace("<CGO Name>",substring);
                 map.put("CGO",replace);
             }
 
