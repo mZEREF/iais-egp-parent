@@ -133,13 +133,13 @@ public class HcsaInspectionValidate implements CustomizeValidator {
             Date basemjEffDate = Formatter.parseDate(fdto.getBaseMjEffectiveDate());
             Date basemjEndDate = Formatter.parseDate(fdto.getBaseMjEndDate());
             if(caEffDate.getTime()<basecaEffDate.getTime()&&"C".equals(level)){
-                errMap.put(fdto.getSvcCode() + "caEffDate", "EffectiveDate should later than Previous version");
+                errMap.put(fdto.getSvcCode() + "caEffDate", "Effective Date should later than Previous version");
             }
             if(miEffDate.getTime()<basemiEffDate.getTime()&&"I".equals(level)){
-                errMap.put(fdto.getSvcCode() + "miEffDate", "EffectiveDate should later than Previous version");
+                errMap.put(fdto.getSvcCode() + "miEffDate", "Effective Date should later than Previous version");
             }
             if(mjEffDate.getTime()<basemjEffDate.getTime()&&"A".equals(level)){
-                errMap.put(fdto.getSvcCode() + "mjEffDate", "EffectiveDate should later than Previous version");
+                errMap.put(fdto.getSvcCode() + "mjEffDate", "Effective Date should later than Previous version");
             }
 
         }catch (Exception e){
@@ -154,30 +154,30 @@ public class HcsaInspectionValidate implements CustomizeValidator {
             flag = false;
             if("C".equals(level)){
                 if(caEditNumFlag == 1){
-                    errMap.put(serviceCode + "caEffDate", "EffectiveDate should be future date");
+                    errMap.put(serviceCode + "caEffDate", "Effective Date should be future date");
                 }
             }else if("I".equals(level)){
                 if(miEditNumFlag == 1){
-                    errMap.put(serviceCode + "miEffDate", "EffectiveDate should be future date");
+                    errMap.put(serviceCode + "miEffDate", "Effective Date should be future date");
                 }
             }else if("A".equals(level)){
                 if(mjEditNumFlag == 1){
-                    errMap.put(serviceCode + "mjEffDate", "EffectiveDate should be future date");
+                    errMap.put(serviceCode + "mjEffDate", "Effective Date should be future date");
                 }
             }
         } else if (endDate.getTime() < effDate.getTime()) {
             flag = false;
             if("C".equals(level)){
                 if(caEditNumFlag == 1){
-                    errMap.put(serviceCode + "caEndDate", "EffectiveDate should be ealier than EndDate");
+                    errMap.put(serviceCode + "caEndDate", "Effective Date should be ealier than EndDate");
                 }
             }else if("I".equals(level)){
                 if(miEditNumFlag == 1){
-                    errMap.put(serviceCode + "miEndDate", "EffectiveDate should be ealier than EndDate");
+                    errMap.put(serviceCode + "miEndDate", "Effective Date should be ealier than EndDate");
                 }
             }else if("A".equals(level)){
                 if(mjEditNumFlag == 1){
-                    errMap.put(serviceCode + "mjEndDate", "EffectiveDate should be future date");
+                    errMap.put(serviceCode + "mjEndDate", "Effective Date should be future date");
                 }
             }
         }
@@ -188,11 +188,11 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         if(StringUtil.isEmpty(strEffDate)){
             vadFlag = false;
             if("C".equals(level)){
-                errMap.put(serviceCode+"caEffDate","EffectiveDate is mandatory");
+                errMap.put(serviceCode+"caEffDate","Effective Date is mandatory");
             }else if("I".equals(level)){
-                errMap.put(serviceCode+"caEffDate","EffectiveDate is mandatory");
+                errMap.put(serviceCode+"caEffDate","Effective Date is mandatory");
             }else if("A".equals(level)){
-                errMap.put(serviceCode+"miEffDate","EffectiveDate is mandatory");
+                errMap.put(serviceCode+"miEffDate","Effective Date is mandatory");
             }
         }else{
             try {

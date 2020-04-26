@@ -391,11 +391,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             Date basePrEffDate = Formatter.parseDate(fdto.getBasePrEffectiveStartDate());
             Date basePrEndDate = Formatter.parseDate(fdto.getBasePrEffectiveEndDate());
             if(inEffDate.getTime()<baseInEffDate.getTime()&&isIn){
-                errMap.put(fdto.getServiceCode() + "inEffDate", "EffectiveDate should later than Previous version");
+                errMap.put(fdto.getServiceCode() + "inEffDate", "Effective Date should later than Previous version");
                 fdto.setInEffectiveStartDateerr(true);
             }
             if(prEffDate.getTime()<basePrEffDate.getTime()&&!isIn){
-                errMap.put(fdto.getServiceCode() + "prEffDate", "EffectiveDate should later than Previous version");
+                errMap.put(fdto.getServiceCode() + "prEffDate", "Effective Date should later than Previous version");
                 fdto.setPrEffectiveStartDateerr(true);
             }
         }catch (Exception e){
@@ -409,12 +409,12 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             flag = false;
             if(isIn){
                 if(inEdit == 1){
-                    errMap.put(serviceCode + "inEffDate", "EffectiveDate should be future date");
+                    errMap.put(serviceCode + "inEffDate", "Effective Date should be future date");
                     fdto.setInEffectiveStartDateerr(true);
                 }
             }else {
                 if(prEdit == 1){
-                    errMap.put(serviceCode + "prEffDate", "EffectiveDate should be future date");
+                    errMap.put(serviceCode + "prEffDate", "Effective Date should be future date");
                     fdto.setPrEffectiveStartDateerr(true);
                 }
             }
@@ -422,12 +422,12 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             flag = false;
             if(isIn){
                 if(inEdit == 1){
-                    errMap.put(serviceCode + "inEndDate", "EffectiveDate should be ealier than EndDate");
+                    errMap.put(serviceCode + "inEndDate", "Effective Date should be ealier than EndDate");
                     fdto.setInEffectiveEndDateerr(true);
                 }
             }else{
                 if(prEdit == 1){
-                    errMap.put(serviceCode + "prEndDate", "EffectiveDate should be ealier than EndDate");
+                    errMap.put(serviceCode + "prEndDate", "Effective Date should be ealier than EndDate");
                     fdto.setPrEffectiveEndDateerr(true);
                 }
             }

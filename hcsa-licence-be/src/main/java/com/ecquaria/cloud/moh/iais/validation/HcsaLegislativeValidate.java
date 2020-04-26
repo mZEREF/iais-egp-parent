@@ -97,7 +97,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             Date baseInEffDate = Formatter.parseDate(fdto.getBaseEffectiveDate());
             Date baseInEndDate = Formatter.parseDate(fdto.getBaseEndDate());
             if(inEffDate.getTime()<baseInEffDate.getTime()){
-                errMap.put(fdto.getSvcCode() + "inEffDate", "EffectiveDate should later than Previous version");
+                errMap.put(fdto.getSvcCode() + "inEffDate", "Effective Date should later than Previous version");
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -109,12 +109,12 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         if (effDate.getTime() < System.currentTimeMillis()) {
             flag = false;
             if (inEdit == 1) {
-                errMap.put(serviceCode + "inEffDate", "EffectiveDate should be future date");
+                errMap.put(serviceCode + "inEffDate", "Effective Date should be future date");
             }
         } else if (endDate.getTime() < effDate.getTime()) {
             flag = false;
             if (inEdit == 1) {
-                errMap.put(serviceCode + "inEndDate", "EffectiveDate should be ealier than EndDate");
+                errMap.put(serviceCode + "inEndDate", "Effective Date should be ealier than EndDate");
             }
         }
         return flag;
@@ -124,7 +124,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         boolean vadFlag = true;
         if(StringUtil.isEmpty(strEffDate)){
             vadFlag = false;
-            errMap.put(serviceCode+"inEffDate","EffectiveDate is mandatory");
+            errMap.put(serviceCode+"inEffDate","Effective Date is mandatory");
         }else{
             try {
                 Formatter.parseDate(strEffDate);
