@@ -4,6 +4,7 @@ import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.client.IaisSystemClient;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 
@@ -38,12 +39,13 @@ public final class SystemParamCacheHelper {
 	public static void flush(){
 		IaisSystemClient iaisSystemClient = SpringContextHelper.getContext().getBean(IaisSystemClient.class);
 
-		int status = iaisSystemClient.receiveAllSystemParam().getStatusCode();
+		FeignResponseEntity<List<SystemParameterDto>> result =  iaisSystemClient.receiveAllSystemParam();
+		int status = result.getStatusCode();
 		if (status != HttpStatus.SC_OK){
 			return;
 		}
 
-		List<SystemParameterDto> list =  iaisSystemClient.receiveAllSystemParam().getEntity();
+		List<SystemParameterDto> list =  result.getEntity();
 		if (IaisCommonUtils.isEmpty(list)){
 			return ;
 		}
