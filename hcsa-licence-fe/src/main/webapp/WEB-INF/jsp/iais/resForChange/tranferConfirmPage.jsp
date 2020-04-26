@@ -30,7 +30,7 @@
               <p>
               <c:forEach items="${prepareTranfer.appGrpPremisesDtoList}" var="premises">
                 <div class="form-check">
-                  <input class="form-check-input" id="premisesInput" type="checkbox" name="premisesInput" aria-invalid="false" value="${premises.tranferSelect}" disabled>
+                  <input class="form-check-input" id="premisesInput" type="checkbox" name="premisesInput" aria-invalid="false" value="${premises.premisesIndexNo}" disabled>
                   <label class="form-check-label" for="premisesInput"><span class="check-square"></span>${premises.tranferSelect} </label>
                 </div>
               </c:forEach>
@@ -97,7 +97,7 @@
   <div class="row">
     <div class="container">
       <div class="col-xs-12 col-md-6 text-left">
-        <a class="back" href="/hcsa-licence-web/eservice/INTERNET/MohRequestForChange?licenceId=${prepareTranfer.licenceId}"><em class="fa fa-angle-left"></em> Back</a>
+        <a class="back" href="/hcsa-licence-web/eservice/INTERNET/MohRequestForChange?licenceId=<iais:mask name="licenceId" value="${prepareTranfer.licenceId}"/>"><em class="fa fa-angle-left"></em> Back</a>
       </div>
       <div class="col-xs-12 col-md-6 text-right">
         <a class="btn btn-primary next premiseId" id="Next">Next</a>

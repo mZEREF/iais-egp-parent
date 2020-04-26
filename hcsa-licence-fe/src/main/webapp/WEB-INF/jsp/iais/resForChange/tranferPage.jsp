@@ -29,7 +29,7 @@
                                          <p>
                                          <c:forEach items="${prepareTranfer.appGrpPremisesDtoList}" var="premises">
                                            <div class="form-check">
-                                             <input class="form-check-input" id="premisesInput" type="checkbox" name="premisesInput" aria-invalid="false" value="${premises.tranferSelect}">
+                                             <input class="form-check-input" id="premisesInput" type="checkbox" name="premisesInput" aria-invalid="false" value="${premises.premisesIndexNo}">
                                              <label class="form-check-label" for="premisesInput"><span class="check-square"></span>${premises.tranferSelect} </label>
                                            </div>
                                          </c:forEach>
