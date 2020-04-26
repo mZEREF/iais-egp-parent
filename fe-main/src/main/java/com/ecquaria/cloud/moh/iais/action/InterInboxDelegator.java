@@ -528,8 +528,7 @@ public class InterInboxDelegator {
 
     public void appDoAppeal(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
-        String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
-        String appId = ParamUtil.getString(request, InboxConst.ACTION_ID_VALUE);
+        String appId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         Boolean result = inboxService.checkEligibility(appId);
         if (result){
             StringBuilder url = new StringBuilder();
@@ -548,7 +547,7 @@ public class InterInboxDelegator {
 
     public void appDoWithDraw(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
-        String appId = ParamUtil.getString(request, InboxConst.ACTION_ID_VALUE);
+        String appId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
@@ -564,8 +563,8 @@ public class InterInboxDelegator {
     public void appDoDraft(BaseProcessClass bpc) throws IOException {
         log.debug("The prepareEdit start ...");
         HttpServletRequest request = bpc.request;
-        String appNo = ParamUtil.getMaskedString(request, InboxConst.ACTION_NO_VALUE);
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(ParamUtil.getMaskedString(request, InboxConst.ACTION_TYPE_VALUE))){
+        String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
+        if(InboxConst.APP_DO_DRAFT_TYPE_RFC.equals(ParamUtil.getString(request, InboxConst.ACTION_TYPE_VALUE))){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange/prepareDraft")
@@ -573,7 +572,7 @@ public class InterInboxDelegator {
                     .append(MaskUtil.maskValue("DraftNumber",appNo));
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
-        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(ParamUtil.getMaskedString(request, InboxConst.ACTION_TYPE_VALUE))){
+        }else if(InboxConst.APP_DO_DRAFT_TYPE_RENEW.equals(ParamUtil.getString(request, InboxConst.ACTION_TYPE_VALUE))){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohWithOutRenewal")
@@ -581,7 +580,6 @@ public class InterInboxDelegator {
                     .append(MaskUtil.maskValue("DraftNumber",appNo));
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
-
         }
         else {
             StringBuilder url = new StringBuilder();
@@ -595,7 +593,7 @@ public class InterInboxDelegator {
 
     public void appDoDelete(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("Step ---> appDoDelete start..."));
-        String draft = ParamUtil.getString(bpc.request,"action_no_value");
+        String draft = ParamUtil.getString(bpc.request,InboxConst.ACTION_NO_VALUE);
         if(!StringUtil.isEmpty(draft)){
             inboxService.updateDraftStatus(draft,AppConsts.COMMON_STATUS_DELETED);
         }
@@ -610,7 +608,7 @@ public class InterInboxDelegator {
     public void appDoRecall(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("Step ---> appDoRecall"));
         HttpServletRequest request = bpc.request;
-        String appId = ParamUtil.getString(request, InboxConst.ACTION_ID_VALUE);
+        String appId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
         RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
         recallApplicationDto.setAppId(appId);

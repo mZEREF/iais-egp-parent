@@ -78,6 +78,8 @@ public class InboxConst {
     public static final String DRAFT_APP_ACTION_EDIT        = "Edit";
     public static final String DRAFT_APP_ACTION_DELETE      = "Delete";
 
+    public static final String APP_DO_DRAFT_TYPE_RFC            = "Request For Change";
+    public static final String APP_DO_DRAFT_TYPE_RENEW            = "Renewal ";
     /**
      * URL
      */

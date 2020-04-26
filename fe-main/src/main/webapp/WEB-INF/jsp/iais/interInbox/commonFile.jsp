@@ -43,13 +43,13 @@
     }
 
     $(".draftAction").change(function () {
-        var appNo = $(this).closest("tr").find(".appNo").html();
+        var appNo = $(this).closest("tr").find(".appdraftNo").html();
         var action = $(this).val();
+        alert("appNo"+appNo+"---"+action);
         if ("Reload" == action) {
             $("[name='action_no_value']").val(appNo);
             submit('appDoReload');
         }
-
         if ("Delete" == action) {
             showWaiting();
             $("[name='action_no_value']").val(appNo);
@@ -58,6 +58,23 @@
     });
 
     $(".appAoRAction").change(function () {
+        var appNo = $(this).closest("tr").find(".appNo").html();
+        var appId = $(this).closest("tr").find(".appId").html();
+        var action = $(this).val();
+        if ("Appeal" == action) {
+            showWaiting();
+            $("[name='action_no_value']").val(appNo);
+            $("[name='action_id_value']").val(appId);
+            submit("appDoAppeal");
+        }if ("Recall" == action) {
+            showWaiting();
+            $("[name='action_no_value']").val(appNo);
+            $("[name='action_id_value']").val(appId);
+            submit("appDoRecall");
+        }
+    });
+
+    $(".appAction").change(function () {
         var appNo = $(this).closest("tr").find(".appNo").html();
         var appId = $(this).closest("tr").find(".appId").html();
         var action = $(this).val();
@@ -77,5 +94,14 @@
             $("[name='action_id_value']").val(appId);
             submit("appDoRecall");
         }
+    });
+
+    $(".appdraftNo").click(function () {
+        var appNo = $(this).closest("tr").find(".appdraftNo").html();
+        var appType = $(this).closest("tr").find(".apptype").html();
+        showWaiting();
+        $("[name='action_no_value']").val(appNo);
+        $("[name='action_type_value']").val(appType);
+        submit('appDraft');
     })
 </script>

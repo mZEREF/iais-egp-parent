@@ -63,7 +63,6 @@
 
     function doSearchApp() {
         submit("appSearch");
-
     }
 
     function doAppClear(){
@@ -85,48 +84,6 @@
         $("[name='crud_action_additional']").val(sortType);
         submit('appSort');
     }
-
-    function doDraft(appNo,appType,appStatus) {
-        if ('APST008' == appStatus) {
-            showWaiting();
-            $("[name='action_no_value']").val(appNo);
-            $("[name='action_type_value']").val(appType);
-            submit('appDraft');
-        }
-    }
-
-    function doAppAction(appId,appNo,actionName) {
-        if ("Withdraw" == actionName) {
-            showWaiting();
-            $("[name='action_no_value']").val(appNo);
-            $("[name='action_id_value']").val(appId);
-            submit("appRenew");
-        }if ("Appeal" == actionName) {
-            showWaiting();
-            $("[name='action_no_value']").val(appNo);
-            $("[name='action_id_value']").val(appId);
-            submit("appDoAppeal");
-        }if ("Recall" == actionName) {
-            showWaiting();
-            $("[name='action_no_value']").val(appNo);
-            $("[name='action_id_value']").val(appId);
-            submit("appDoRecall");
-        }
-    };
-
-    function doDraftAction(appNo, action) {
-        if ("Reload" == action) {
-            $("[name='action_no_value']").val(appNo);
-            submit('appDoReload');
-        }
-
-        if ("Delete" == action) {
-            showWaiting();
-            $("[name='action_no_value']").val(appNo);
-            submit('appDoDelete');
-        }
-    }
-
     $(function () {
         if ('${appIsAppealed}' || '${appCannotRecall}') {
             $('#isAppealModal').modal('show');

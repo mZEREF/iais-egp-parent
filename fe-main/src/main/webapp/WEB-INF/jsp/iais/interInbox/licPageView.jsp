@@ -133,11 +133,24 @@
     }
 
     function toLicView(licId){
+
+    }
+    
+    $(".licNo").click(function () {
         showWaiting();
         $("[name='action_id_value']").val(licId);
         submit('licToView');
-    }
+    });
     
+    $(".licActions").change(function () {
+        var licNo = $(this).closest("tr").find(".licNo").html();
+        var licId = $(this).closest("tr").find(".licId").html();
+        showWaiting();
+        $("[name='crud_action_value']").val(licNo);
+        $("[name='action_id_value']").val(licId);
+        submit('licDoAppeal');
+    });
+
     function doLicAppeal(licNo,licId) {
         showWaiting();
         $("[name='crud_action_value']").val(licNo);
