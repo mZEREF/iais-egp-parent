@@ -161,7 +161,6 @@ public class InsRepServiceImpl implements InsRepService {
             nameList.add(s);
             inspectionReportDto.setInspectOffices(nameList);
         }
-
         //get application type (pre/post)
         Integer isPre = applicationGroupDto.getIsPreInspection();
         String appType = MasterCodeUtil.getCodeDesc(appTypeCode);
@@ -280,13 +279,13 @@ public class InsRepServiceImpl implements InsRepService {
         if(appPreRecommentdationDtoEnd!=null){
             inspectionEndTime = appPreRecommentdationDtoEnd.getRecomDecision();
         }
-        //String applicationNo = applicationDto.getApplicationNo();
-//        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNo(applicationNo).getEntity();
-//        AdCheckListShowDto adhocCheckListDto = insepctionNcCheckListService.getAdhocCheckListDto(appPremisesCorrelationId);
-//        if(adhocCheckListDto!=null){
-//            inspectionReportDto.setOtherCheckList(adhocCheckListDto);
-//        }
-
+        AppPremisesRecommendationDto rectiDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSPECTYPE).getEntity();
+        if(rectiDto!=null){
+            String inspectypeRemarks = rectiDto.getRemarks();
+            inspectionReportDto.setInspectypeRemarks(inspectypeRemarks);
+        }else {
+            inspectionReportDto.setInspectypeRemarks("-");
+        }
         inspectionReportDto.setServiceName(svcName);
         inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
         inspectionReportDto.setHciName(appInsRepDto.getHciName());

@@ -52,7 +52,7 @@ public class CessationEffectiveDateBatchjob {
         Date date = new Date();
         String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
         String status = ApplicationConsts.LICENCE_STATUS_ACTIVE;
-        List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(status, dateStr).getEntity();
+        List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(status,dateStr).getEntity();
         List<LicenceDto> licenceDtosForSave = IaisCommonUtils.genNewArrayList();
         List<String> ids = IaisCommonUtils.genNewArrayList();
         if(licenceDtos!=null&&!licenceDtos.isEmpty()){
@@ -96,14 +96,14 @@ public class CessationEffectiveDateBatchjob {
         if(applicationDtos!=null&&!applicationDtos.isEmpty()){
             for(ApplicationDto applicationDto :applicationDtos){
                 String licenceId = applicationDto.getOriginLicenceId();
-                licIds.add(licenceId);
+                    licIds.add(licenceId);
             }
         }
         //List<String> entity = cessationClient.getlicIdToCessation(licIds).getEntity();
 
         //update application
-        List<ApplicationDto> updateStatusApplicationDtos = updateApplicationStatus(applicationDtos);
-        applicationClient.updateCessationApplications(updateStatusApplicationDtos).getEntity();
+        //List<ApplicationDto> updateStatusApplicationDtos = updateApplicationStatus(applicationDtos);
+        //applicationClient.updateCessationApplications(updateStatusApplicationDtos).getEntity();
         //update licence
         List<LicenceDto> licenceDtoApps = hcsaLicenceClient.retrieveLicenceDtos(licIds).getEntity();
         List<LicenceDto> licenceDtos1 = updateLicenceStatus(licenceDtoApps,date);

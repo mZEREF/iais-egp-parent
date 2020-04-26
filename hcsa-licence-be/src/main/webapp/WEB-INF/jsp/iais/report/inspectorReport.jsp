@@ -354,12 +354,11 @@
                     </tr>
                     <tr>
                         <td class="col-xs-4">
-                            <p>Remarks <strong style="color:#ff0000;"> *</strong></p>
+                            <p>Remarks</p>
                         </td>
                         <div>
                             <td class="col-xs-4">
-                                <p><textarea style="resize:none" name="remarks" cols="50" rows="6" title="content" maxlength="8000"><c:if test="${appPremisesRecommendationDto.remarks ==null}">${reportRemarks}</c:if><c:if test="${appPremisesRecommendationDto.remarks !=null}"><c:out value="${appPremisesRecommendationDto.remarks}"/></c:if></textarea></p>
-                                <span id="error_remarks" name="iaisErrorMsg" class="error-msg"></span>
+                                <p><c:out value="${insRepDto.inspectypeRemarks}"></c:out></p>
                             </td>
                         </div>
                         <td class="col-xs-4">

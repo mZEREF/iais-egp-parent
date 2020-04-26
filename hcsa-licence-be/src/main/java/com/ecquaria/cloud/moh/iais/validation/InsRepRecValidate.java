@@ -20,7 +20,6 @@ public class InsRepRecValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errorMap = new HashMap<>(34);
-        String remarks = ParamUtil.getRequestString(httpServletRequest, "remarks");
         String chrono = ParamUtil.getRequestString(httpServletRequest, CHRONO);
         String number = ParamUtil.getRequestString(httpServletRequest, NUMBER);
         String enforcement = ParamUtil.getRequestString(httpServletRequest, "engageEnforcement");
@@ -43,12 +42,6 @@ public class InsRepRecValidate implements CustomizeValidator {
                 } catch (NumberFormatException e) {
                     errorMap.put("recomInNumber", "GENERAL_ERR0002");
                 }
-            }
-        }
-        if (!StringUtil.isEmpty(remarks)) {
-            int length = remarks.length();
-            if (length > 4000) {
-                errorMap.put("remarks", "remarks must be less than 4000");
             }
         }
         if(!StringUtil.isEmpty(enforcement)&&StringUtil.isEmpty(enforcementRemarks)){

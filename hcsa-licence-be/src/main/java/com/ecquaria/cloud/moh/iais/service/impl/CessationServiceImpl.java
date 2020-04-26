@@ -252,10 +252,12 @@ public class CessationServiceImpl implements CessationService {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryDtos.get(0);
         appPremisesRoutingHistoryDto.setRoleId(curRoleId);
         appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
+        appPremisesRoutingHistoryDto.setProcessDecision(ApplicationConsts.PROCESSING_DECISION_VERIFIED);
         taskService.createHistorys(appPremisesRoutingHistoryDtos);
-        appPremisesRoutingHistoryDto.setRoleId(RoleConsts.USER_ROLE_AO3);
-        appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_AO3);
-        taskService.createHistorys(appPremisesRoutingHistoryDtos);
+//        appPremisesRoutingHistoryDto.setRoleId(RoleConsts.USER_ROLE_AO3);
+//        appPremisesRoutingHistoryDto.setProcessDecision(null);
+//        appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_AO3);
+//        taskService.createHistorys(appPremisesRoutingHistoryDtos);
     }
 
     private String transform(List<String> licIds) {

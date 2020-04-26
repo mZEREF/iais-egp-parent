@@ -212,8 +212,6 @@ public class InsReportAoDelegator {
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
             period  = recomInNumber+" " + codeDesc;
             initRecommendationDto.setPeriod(period);
-            String remarks = appPremisesRecommendationDto.getRemarks();
-            initRecommendationDto.setRemarks(remarks);
         }
         if (engageRecommendationDto != null) {
             String remarks = engageRecommendationDto.getRemarks();

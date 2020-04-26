@@ -166,7 +166,6 @@ public class InsReportDelegator {
 
     private AppPremisesRecommendationDto prepareRecommendation(BaseProcessClass bpc) {
         String riskLevel = ParamUtil.getRequestString(bpc.request, "riskLevel");
-        String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String periods = ParamUtil.getRequestString(bpc.request, "periods");
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
@@ -178,7 +177,6 @@ public class InsReportDelegator {
         String processingDecision = ParamUtil.getRequestString(bpc.request, "processingDecision");
 
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-        appPremisesRecommendationDto.setRemarks(remarks);
         appPremisesRecommendationDto.setRecommendation(recommendation);
         appPremisesRecommendationDto.setPeriod(periods);
         if(!StringUtil.isEmpty(number)){
