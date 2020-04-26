@@ -141,6 +141,10 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             errMap.put("sTime","UC_INSTA004_ERR005");
             return 1;
         }else{
+            if("13".equalsIgnoreCase(startHour) ||"18".equalsIgnoreCase(startHour)){
+                errMap.put("sTime","UC_INSTA004_ERR009");
+                return 1;
+            }
             return 2;
         }
 
@@ -158,6 +162,10 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             errMap.put("eTime","UC_INSTA004_ERR005");
             return 1;
         }else{
+            if(("13".equalsIgnoreCase(startHour) && !"00".equalsIgnoreCase(startMin)) ||("18".equalsIgnoreCase(startHour) && !"00".equalsIgnoreCase(startMin))){
+                errMap.put("eTime","UC_INSTA004_ERR009");
+                return 1;
+            }
             return 2;
         }
 
