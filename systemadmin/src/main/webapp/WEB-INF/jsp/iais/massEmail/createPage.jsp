@@ -75,7 +75,7 @@
                                     </div>
                                 </c:otherwise>
                             </c:choose>
-                        </div>MohFeAdminUserManagement
+                        </div>
 
                     </div>
                     <div class="application-tab-footer">
