@@ -441,7 +441,7 @@
 
         dpoSelect();
 
-        retrieveData();
+        //retrieveData();
 
         addPo();
 
@@ -613,7 +613,7 @@
                         $('.po-content:last').after(data.sucInfo);
                         poSelect();
                         removePo();
-                        retrieveData();
+                        //retrieveData();
                         removePo();
                         <!--set Scrollbar -->
                         $("div.poSelect->ul").mCustomScrollbar({
@@ -671,7 +671,7 @@
         });
     }
 
-    var retrieveData = function () {
+   /* var retrieveData = function () {
         $('.idNoVal').blur(function () {
             var $poContentEle = $(this).closest('div.po-content');
             var data = {
@@ -694,7 +694,7 @@
                 }
             });
         });
-    }
+    }*/
 
     var doEdit = function () {
         $('#edit').click(function () {

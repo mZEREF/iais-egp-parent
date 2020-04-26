@@ -211,12 +211,14 @@
     $('.selectedFile').change(function () {
         var file = $(this).val();
         $(this).parent().children('span:eq(0)').html(getFileName(file));
+        $(this).parent().children('span:eq(0)').next().html('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>');
         $(this).parent().children('span:eq(0)').next().removeClass("hidden");
         $(this).parent().children('input delFlag').val('N');
     });
 
     $('.delBtn').click(function () {
         $(this).parent().children('span:eq(0)').html('');
+        $(this).parent().children('span:eq(0)').next().html();
         $(this).parent().children('span:eq(0)').next().addClass("hidden");
         $(this).parent().children('input.selectedFile').val('');
         $(this).parent().children('input.delFlag').val('Y');
