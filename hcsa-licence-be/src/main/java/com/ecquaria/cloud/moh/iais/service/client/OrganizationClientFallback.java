@@ -314,4 +314,12 @@ public class OrganizationClientFallback implements OrganizationClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<TaskDto>> getActiveTaskByUrl(String processUrl) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

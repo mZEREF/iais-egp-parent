@@ -156,4 +156,7 @@ public interface OrganizationClient {
 
     @PostMapping(value = "/iais-task/other-kpi-task", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getOtherKpiTask(@RequestBody TaskDto taskDto);
+
+    @GetMapping(value = "/iais-task/effective-task-url",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>> getActiveTaskByUrl(@RequestParam("processUrl") String processUrl);
 }
