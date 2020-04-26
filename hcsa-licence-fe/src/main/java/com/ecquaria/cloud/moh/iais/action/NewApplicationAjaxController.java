@@ -917,11 +917,13 @@ public class NewApplicationAjaxController {
             List<SelectOption> selectOptionList = psn.getSpcOptList();
             if(!IaisCommonUtils.isEmpty(selectOptionList)){
                 for(SelectOption sp:selectOptionList){
-                    if(!specialityOpts.contains(sp)){
+                    if(!specialityOpts.contains(sp) && !sp.getValue().equals("other")){
                         specialityOpts.add(sp);
                     }
                 }
             }
+            //set other
+            specialityOpts.add(new SelectOption("other", "Others"));
             psn.setSpcOptList(specialityOpts);
             Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
             specialtyAttr.put("name", "specialty");
