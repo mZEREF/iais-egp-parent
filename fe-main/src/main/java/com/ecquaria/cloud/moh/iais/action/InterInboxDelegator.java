@@ -556,9 +556,9 @@ public class InterInboxDelegator {
         url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                 .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohWithdrawalApplication")
                 .append("?appId=")
-                .append(MaskUtil.maskValue("appId",appId))
+                .append(MaskUtil.maskValue("withdrawAppId",appId))
                 .append("&appNo=")
-                .append(MaskUtil.maskValue("appNo",appNo));
+                .append(MaskUtil.maskValue("withdrawAppNo",appNo));
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
