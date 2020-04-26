@@ -124,7 +124,7 @@
         <label class="col-xs-12 col-md-4 control-label">To include findings in risk score framework?</label>
         <div class="col-xs-8 col-sm-6 col-md-5">
             <p><input type="checkbox" id="framework" name="framework" onchange="javascirpt:changeframework();"
-               value="2"    <c:if test="${applicationViewDto.licPremisesAuditDto.inRiskSocre == '2'}">checked</c:if>  >
+               value="0"    <c:if test="${applicationViewDto.licPremisesAuditDto.inRiskSocre == 0}">checked</c:if>  >
                 <label class="form-check-label" for="framework" ><span class="check-square"></span></label>
             </p>
         </div>
@@ -140,9 +140,8 @@
     <div class="form-group" id="frameworkRe" hidden>
         <label class="col-xs-12 col-md-4 control-label">Enforcement Remarks<span style="color: red"> *</span></label>
         <div class="col-xs-8 col-sm-6 col-md-5">
-            <textarea name="frameworkRemarks" id="frameworkRemarks" cols="43" rows="5" title="content" MAXLENGTH="2000">
-                <c:out value="${applicationViewDto.licPremisesAuditDto.lgrRemarks}"></c:out>
-            </textarea>
+            <textarea name="frameworkRemarks" id="frameworkRemarks" cols="43" rows="5" maxlength=="2000"><c:out value="${applicationViewDto.licPremisesAuditDto.lgrRemarks}"></c:out></textarea>
+            <br/>
             <span id="error_frameworkRemarks" name="iaisErrorMsg" class="error-msg"></span>
         </div>
     </div>
@@ -181,7 +180,7 @@
             $("#tcuLabel").show();
         }
         changeframework();
-        changeFramewordOption();
+        changeFramewordOption('${applicationViewDto.licPremisesAuditDto.includeRiskType}');
     });
     function showTcuLabel(checkbox){
         if(checkbox.checked == true){

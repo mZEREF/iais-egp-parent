@@ -638,8 +638,8 @@ public class InspectReviseNcEmailDelegator {
             String framework = ParamUtil.getString(request,"framework");
             String periods = ParamUtil.getString(request,"periods");
             String frameworkRemarks = ParamUtil.getString(request,"frameworkRemarks");
-            if( !StringUtil.isEmpty(framework) && framework.equalsIgnoreCase("2")){
-                licPremisesAuditDto.setInRiskSocre(2);
+            if( !StringUtil.isEmpty(framework) && framework.equalsIgnoreCase("0")){
+                licPremisesAuditDto.setInRiskSocre(0);
                 if(!StringUtil.isEmpty(periods)){
                     licPremisesAuditDto.setIncludeRiskType(periods);
                     if(periods.equalsIgnoreCase(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY))

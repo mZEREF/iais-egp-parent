@@ -49,7 +49,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         ApplicationViewDto appViewDto =(ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
         if(appViewDto != null && appViewDto.getLicPremisesAuditDto() != null ){
             LicPremisesAuditDto licPremisesAuditDto =  appViewDto.getLicPremisesAuditDto();
-            if(licPremisesAuditDto.getInRiskSocre().equals(2)){
+            if(licPremisesAuditDto.getInRiskSocre().equals(0)){
                 if(StringUtil.isEmpty(licPremisesAuditDto.getIncludeRiskType())){
                     errMap.put("periods","UC_CHKLMD001_ERR001");
                 }else if(licPremisesAuditDto.getIncludeRiskType().equalsIgnoreCase(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY)) {
