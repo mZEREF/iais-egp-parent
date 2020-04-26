@@ -23,7 +23,7 @@
                     <div class="intranet-content">
                         <div class="bg-title">
                             <h2>
-                                <span>Success</span>
+                                <span><iais:message key="${successInfo}" escape="true"></iais:message></span>
                             </h2>
                         </div>
                         <div class="row">

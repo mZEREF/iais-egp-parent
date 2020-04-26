@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -260,8 +261,10 @@ public class BackendInboxDelegator {
      */
     public void doApprove(BaseProcessClass bpc)  throws FeignException, CloneNotSupportedException {
         applicationDtoIds = IaisCommonUtils.genNewArrayList();
-        String[] taskList =  ParamUtil.getStrings(bpc.request, "taskcheckbox");
+        String[] taskList =  ParamUtil.getMaskedStrings(bpc.request, "taskcheckbox");
         String action =  ParamUtil.getString(bpc.request, "action");
+        String successStatus = "";
+        String successInfo = "Success";
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(!StringUtil.isEmpty(taskList)){
             for (String item:taskList
@@ -280,22 +283,44 @@ public class BackendInboxDelegator {
                 applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
                 if(("trigger").equals(action)){
                     routeToDMS(bpc,applicationViewDto,taskDto);
+                    successStatus = ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS;
+
                 }else if(RoleConsts.USER_ROLE_AO1.equals(loginContext.getCurRoleId())){
                     log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
                     routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO2, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, RoleConsts.USER_ROLE_AO2,applicationViewDto,taskDto);
+                    successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
                     log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
                 }else if(RoleConsts.USER_ROLE_AO2.equals(loginContext.getCurRoleId())){
                     log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
                     routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3,applicationViewDto,taskDto);
                     log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
+                    successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
                 }else if(RoleConsts.USER_ROLE_AO3.equals(loginContext.getCurRoleId())){
                     log.debug(StringUtil.changeForLog("the do approve start ...."));
                     routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_APPROVED,null,applicationViewDto,taskDto);
                     log.debug(StringUtil.changeForLog("the do approve end ...."));
+                    successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
                 }
             }
             //update commPools
             commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
+
+            if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(successStatus)){
+                successInfo = MessageCodeKey.ACK005;
+            }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(successStatus)){
+                //AO2 -> AO3
+                successInfo = MessageCodeKey.ACK007;
+            }else if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(successStatus)){
+                //AO3 APPROVAL
+                successInfo = MessageCodeKey.ACK009;
+            }else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(successStatus)){
+                //AO3 REJECT
+                successInfo = MessageCodeKey.ACK010;
+            }else if(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS.equals(successStatus)){
+                //AO3 DMS
+                successInfo = MessageCodeKey.ACK011;
+            }
+            ParamUtil.setRequestAttr(bpc.request,"successInfo",successInfo);
         }
 
     }
@@ -588,17 +613,16 @@ public class BackendInboxDelegator {
                 for (TaskDto item:commPools
                 ) {
                     appNoUrl.put(item.getRefNo(), generateProcessUrl(item, bpc.request));
-                    taskList.put(item.getRefNo(), item.getId());
+                    taskList.put(item.getRefNo(), MaskUtil.maskValue("taskId", item.getId()));
                     taskMap.put(item.getRefNo(), item);
                 }
             }
         if(RoleConsts.USER_ROLE_AO1.equals(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_AO2.equals(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_AO3.equals(loginContext.getCurRoleId())){
-            ParamUtil.setSessionAttr(bpc.request, "taskList",(Serializable) taskList);
             ParamUtil.setSessionAttr(bpc.request, "hastaskList",AppConsts.TRUE);
         }else{
             ParamUtil.setSessionAttr(bpc.request, "hastaskList",AppConsts.FALSE);
         }
-
+        ParamUtil.setSessionAttr(bpc.request, "taskList",(Serializable) taskList);
         ParamUtil.setSessionAttr(bpc.request, "appNoUrl",(Serializable) appNoUrl);
         ParamUtil.setSessionAttr(bpc.request, "taskMap",(Serializable) taskMap);
         ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
