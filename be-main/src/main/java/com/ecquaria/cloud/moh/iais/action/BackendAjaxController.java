@@ -3,7 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -11,15 +11,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQue
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusMainClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.BelicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,7 +51,7 @@ public class BackendAjaxController {
     private InspectionMainAssignTaskService inspectionAssignTaskService;
 
     @Autowired
-    private ApplicationMainClient applicationMainClient;
+    private AppPremisesRoutingHistoryMainClient appPremisesRoutingHistoryMainClient;
 
     @Autowired
     private AppInspectionStatusMainClient appInspectionStatusClient;
@@ -59,6 +61,9 @@ public class BackendAjaxController {
 
     @Autowired
     private HcsaConfigMainClient hcsaConfigClient;
+
+    @Autowired
+    private InspectionTaskMainClient inspectionTaskMainClient;
 
 
 
@@ -88,24 +93,36 @@ public class BackendAjaxController {
                 }
 
                 //show kpi colour
-                ApplicationViewDto applicationViewDto = belicationClient.getAppViewByCorrelationId(item.getRefNo()).getEntity();
-                ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-                TaskDto taskDto = taskMap.get(item.getRefNo());
-                HcsaSvcKpiDto hcsaSvcKpiDto = hcsaConfigClient.searchKpiResult(hcsaServiceDto.getSvcCode(), applicationDto.getApplicationType()).getEntity();
-                Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
-
-                int kpi = kpiMap.get(taskDto.getTaskKey()) == null ? 999 : kpiMap.get(taskDto.getTaskKey());
-                int days = 0;
-                if(taskDto.getSlaRemainInDays() != null){
-                    days = taskDto.getSlaRemainInDays();
-                }
                 String colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
-                if (days < hcsaSvcKpiDto.getRemThreshold()) {
-                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
-                } else if (hcsaSvcKpiDto.getRemThreshold() <= days && days <= kpi) {
-                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_AMBER;
-                } else if (days > kpi) {
-                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_RED;
+                ApplicationDto applicationDto = inspectionTaskMainClient.getApplicationByCorreId(item.getRefNo() ).getEntity();
+                TaskDto taskDto = taskMap.get(item.getRefNo());
+                String stage;
+                if(HcsaConsts.ROUTING_STAGE_INS.equals(taskDto.getTaskKey())){
+                    AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
+                            appPremisesRoutingHistoryMainClient.getAppPremisesRoutingHistorySubStage(taskDto.getRefNo(), taskDto.getTaskKey()).getEntity();
+                    stage = appPremisesRoutingHistoryDto.getSubStage();
+                } else {
+                    stage = taskDto.getTaskKey();
+                }
+                HcsaSvcKpiDto hcsaSvcKpiDto = hcsaConfigClient.searchKpiResult(hcsaServiceDto.getSvcCode(), applicationDto.getApplicationType()).getEntity();
+                if(hcsaSvcKpiDto != null) {
+                    Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
+                    int kpi = 0;
+                    if(!StringUtil.isEmpty(stage)) {
+                        if (kpiMap != null && kpiMap.get(stage) != null) {
+                            kpi = kpiMap.get(stage);
+                        }
+                    }
+                    int days = 0;
+                    if (taskDto.getSlaRemainInDays() != null) {
+                        days = taskDto.getSlaRemainInDays();
+                    }
+                    int remThreshold = 0;
+                    if (hcsaSvcKpiDto.getRemThreshold() != null) {
+                        remThreshold = hcsaSvcKpiDto.getRemThreshold();
+                    }
+                    //get color
+                    colour = getColorByWorkAndKpiDay(kpi, days, remThreshold);
                 }
                 item.setTimeLimitWarning(colour);
             }
@@ -119,6 +136,23 @@ public class BackendAjaxController {
             map.put("result", "Fail");
         }
         return map;
+    }
+
+    private String getColorByWorkAndKpiDay(int kpi, int days, int remThreshold) {
+        String colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
+        if(remThreshold != 0) {
+            if (days < remThreshold) {
+                colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
+            }
+            if (kpi != 0) {
+                if (remThreshold <= days && days <= kpi) {
+                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_AMBER;
+                } else if (days > kpi) {
+                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_RED;
+                }
+            }
+        }
+        return colour;
     }
 
     @RequestMapping(value = "setCurrentRole.do", method = RequestMethod.POST)
