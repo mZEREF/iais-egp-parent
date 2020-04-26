@@ -16,7 +16,10 @@
 
 <webui:setLayout name="iais-intranet"/>
 
-
+<style>
+  table{text-align: center;}
+  table th{text-align: center;}
+</style>
 <div class="main-content">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
@@ -52,9 +55,8 @@
                       <%--<iais:sortableHeader needSort="false"   field="year" value="Year"></iais:sortableHeader>--%>
                       <iais:sortableHeader needSort="false"   field="day" value="Day"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false"   field="wrkingDay" value="Working Day"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false"   field="amTime" value="Time Form"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false"   field="pmTime" value="Time To"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"   field="amTime" value="AM Non-availability"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"   field="pmTime" value="PM Non-availability"></iais:sortableHeader>
                     </tr>
                     </thead>
                     <tbody>
@@ -70,23 +72,34 @@
                         <c:forEach var="nonwkrDay" items="${nonWkrinDayListAttr}" varStatus="status">
                           <tr>
                             <td>${status.index + 1}</td>
-                            <%--<td>
+                            <%--<td>+
                                2020&lt;%&ndash;<fmt:formatDate value="${nonwkrDay.startDate}" pattern="yyyy"></fmt:formatDate>&ndash;%&gt;
                             </td>--%>
                             <td>${nonwkrDay.recursivceDate}</td>
-                            <c:choose>
-                                <c:when test="${nonwkrDay.nonWkrDay == true}">
-                                  <td>No</td>
-                              </c:when>
-                              <c:otherwise>
-                                <td>Yes</td>
-                              </c:otherwise>
-                              </c:choose>
-                            <td>${nonwkrDay.startAt}</td>
-                            <td>${nonwkrDay.endAt}</td>
                             <td>
-                              <input type="hidden" id="nonWkrDayId" name="nonWkrDayId" value="">
-                              <button type="button" name="nonWkrDayId"  onclick="doUpdate('<iais:mask name="nonWkrDayId" value="${nonwkrDay.id}"/>')" class="btn btn-default btn-sm" >Update</button>
+                              <c:if test="${nonwkrDay.nonWkrDay == false}">
+                                <input type="radio" name="nonWkrDay${status.index + 1}" id="yradio${status.index + 1}" value="Y" checked>&nbsp;Yes
+                                <input type="radio" name="nonWkrDay${status.index + 1}" id="nradio${status.index + 1}" value="N" >&nbsp;No
+                              </c:if>
+                              <c:if test="${nonwkrDay.nonWkrDay == true}">
+                                <input type="radio" name="nonWkrDay${status.index + 1}" id="yradio${status.index + 1}" value="Y" >&nbsp;Yes
+                                <input type="radio" name="nonWkrDay${status.index + 1}" id="nradio${status.index + 1}" value="N" checked>&nbsp;No
+                              </c:if>
+                            </td>
+                            <td>
+                              <input class="form-check-input" type="checkbox"  aria-invalid="false"
+                              <c:if test="${nonwkrDay.am == true}">
+                              checked="checked"
+                              </c:if>
+                                     id="am${status.index + 1}"
+                                      value="<iais:mask name="nonWkrDayId" value="${nonwkrDay.id}"/>">
+                            </td>
+                            <td>
+                              <input class="form-check-input" type="checkbox"  aria-invalid="false"
+                              <c:if test="${nonwkrDay.pm == true}">
+                                      checked="checked"
+                              </c:if>
+                                      id="pm${status.index + 1}" />
                             </td>
                           </tr>
                         </c:forEach>
@@ -134,4 +147,67 @@
         SOP.Crud.cfxSubmit("mainForm", "preUpdate");
     }
 
+    $("input[type=radio]").click(function(){
+      var action = $(this).val();
+      var id = $(this).attr('id').substring(6);
+      console.log(action == 'N')
+      if(action == 'N'){
+        $('#am'+id).prop('checked',true);
+        $('#pm'+id).prop('checked',true);
+      }else{
+        $('#am'+id).prop("checked",false);
+        $('#pm'+id).prop("checked",false);
+      }
+      change(id);
+    });
+
+    $("input[type=checkbox]").click(function(){
+      var action = $(this).val();
+      var id = $(this).attr('id').substring(2);
+      if($('#am'+id).attr('checked') && $('#pm'+id).attr('checked')){
+        $('#nradio'+id).prop('checked',true);
+      }else{
+        $('#yradio'+id).prop('checked',true);
+      }
+      change(id);
+    });
+
+    function change(id) {
+      console.log('change')
+      showWaiting();
+      var dayid = $('#am' + id).val();
+      console.log(dayid)
+      var pm ;
+      var am ;
+      if($('#am'+id).attr('checked')){
+        am = 'Y';
+      }else{
+        am = 'N';
+      }
+      if($('#pm'+id).attr('checked')){
+        pm = 'Y';
+      }else{
+        pm = 'N';
+      }
+      $.ajax({
+        data:{
+          amAvailability: am,
+          pmAvailability: pm,
+          nonWkrDayId: dayid,
+        },
+        async: false,
+        type:"POST",
+        dataType: 'json',
+        url:'/system-admin-web/nonWorkingDayAjax/change.do',
+        error:function(data){
+
+        },
+        success:function(data){
+          var nonWorkingDateId = data.nonWorkingDateId;
+          console.log(nonWorkingDateId)
+          $('#am' + id).val(nonWorkingDateId);
+          dismissWaiting();
+        }
+      });
+    }
 </script>

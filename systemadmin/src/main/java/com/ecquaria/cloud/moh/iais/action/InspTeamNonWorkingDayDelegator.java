@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -11,17 +10,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -201,96 +195,6 @@ public class InspTeamNonWorkingDayDelegator {
 	public void switchAction(BaseProcessClass bpc) {
 		HttpServletRequest request = bpc.request;
 
-	}
-
-	/**
-	 * StartStep: preUpdate
-	 * @param bpc
-	 * @throws IllegalAccessException
-	 */
-	public void preUpdate(BaseProcessClass bpc) {
-		HttpServletRequest request = bpc.request;
-
-		String nonWkrDayId = ParamUtil.getMaskedString(request, NON_WKR_DAY_ID_ATTR);
-
-		if (!StringUtils.isEmpty(nonWkrDayId)){
-			List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId = (List<ApptNonWorkingDateDto>) ParamUtil.getSessionAttr(request, NON_WKR_DAY_LIST_ATTR);
-			ApptNonWorkingDateDto nonWorkingDateDto = nonWorkingDateListByWorkGroupId.stream()
-					.filter(apptNonWorkingDateDto ->  !StringUtils.isEmpty(apptNonWorkingDateDto.getId()))
-					.filter(apptNonWorkingDateDto -> apptNonWorkingDateDto.getId().equals(nonWkrDayId)).findFirst().orElse(null);
-			ParamUtil.setSessionAttr(request, NON_WKR_DAY_ATTR, nonWorkingDateDto);
-		}
-	}
-
-
-	/**
-	 * StartStep: updateNonWorkingDay
-	 * @param bpc
-	 * @throws IllegalAccessException
-	 */
-	public void updateNonWorkingDay(BaseProcessClass bpc) {
-		HttpServletRequest request = bpc.request;
-		String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-		if ("doBack".equals(currentAction)){
-			ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
-			return;
-		}
-
-		String shortName = (String) ParamUtil.getSessionAttr(request, CURRENT_SHORT_NAME);
-		String amAvailability = ParamUtil.getString(request, AM_AVAILABILITY__ATTR);
-		String pmAvailability = ParamUtil.getString(request, PM_AVAILABILITY__ATTR);
-		String status = ParamUtil.getString(request, "status");
-
-		ApptNonWorkingDateDto nonWorkingDateDto = (ApptNonWorkingDateDto) ParamUtil.getSessionAttr(request, NON_WKR_DAY_ATTR);
-
-		nonWorkingDateDto.setShortName(shortName);
-		nonWorkingDateDto.setStatus(status);
-
-		int am = "Y".equals(amAvailability) ?  0x1 : 0x0;
-		int pm = "Y".equals(pmAvailability) ?  0x1 : 0x0;
-
-		if((am & 0x1) == 1 && (pm & 0x1) == 1){
-			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
-			nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
-			nonWorkingDateDto.setAm(true);
-			nonWorkingDateDto.setPm(true);
-			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_DELETED);
-		}
-
-		if ((am & 0x1) == 0 && (pm & 0x1) == 0){
-			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
-			nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
-			nonWorkingDateDto.setAm(false);
-			nonWorkingDateDto.setPm(false);
-			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-		}
-
-		if ((am & 0x1) == 1 && (pm & 0x1) == 0){
-			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
-			nonWorkingDateDto.setEndAt(Time.valueOf(AM_END));
-			nonWorkingDateDto.setAm(true);
-			nonWorkingDateDto.setPm(false);
-			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-		}
-
-		if((am & 0x1) == 0 && (pm & 0x1) == 1){
-			nonWorkingDateDto.setStartAt(Time.valueOf(PM_START));
-			nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
-			nonWorkingDateDto.setAm(false);
-			nonWorkingDateDto.setPm(true);
-			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-		}
-
-		ValidationResult validationResult = WebValidationHelper.validateProperty(nonWorkingDateDto, "update");
-		if(validationResult != null && validationResult.isHasErrors()) {
-			Map<String, String> errorMap = validationResult.retrieveAll();
-			ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
-			ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
-			return;
-		}else {
-			appointmentService.updateNonWorkingDate(nonWorkingDateDto);
-		}
-		ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
 	}
 
 

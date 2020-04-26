@@ -23,21 +23,6 @@ public class INTRANET___MohInspTeamNonWorkingDay___1 extends BaseProcessClass {
 	}
 
 
-	public void switchAction_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "switchAction", this);
-	}
-
-
-	public void preUpdate_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preUpdate", this);
-	}
-
-
-	public void updateNonWorkingDay_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "updateNonWorkingDay", this);
-	}
-
-
 	public void step1_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "startStep", this);
 	}

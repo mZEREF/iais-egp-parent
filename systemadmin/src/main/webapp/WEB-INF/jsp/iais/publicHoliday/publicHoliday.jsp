@@ -63,16 +63,27 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <c:forEach var="item" items="${holidayList}" varStatus="status">
-                                <tr>
-                                    <td><c:out value="${item.date}"/></td>
-                                    <td><c:out value="${item.week}"/></td>
-                                    <td><c:out value="${item.description}"/></td>
-                                    <td>
-                                        <a onclick="edit('${item.id}','${item.sub_date}','${item.to_date}','${item.description}')">edit</a>
-                                        <a onclick="deleteItem('${item.id}')">delete</a></td>
-                                </tr>
-                            </c:forEach>
+                                <c:choose>
+                                    <c:when test="${empty holidayList}">
+                                        <tr>
+                                            <td colspan="6">
+                                                <iais:message key="ACK018" escape="true"></iais:message>
+                                            </td>
+                                        </tr>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="item" items="${holidayList}" varStatus="status">
+                                            <tr>
+                                                <td><c:out value="${item.date}"/></td>
+                                                <td><c:out value="${item.week}"/></td>
+                                                <td><c:out value="${item.description}"/></td>
+                                                <td>
+                                                    <a onclick="edit('${item.id}','${item.sub_date}','${item.to_date}','${item.description}')">edit</a>
+                                                    <a onclick="deleteItem('${item.id}')">delete</a></td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
                             </tbody>
                         </table>
                     </div>
