@@ -150,7 +150,6 @@ public interface OrganizationClient {
     @GetMapping(value = "/iais-licensee-be/licenseeKeyApptPersonByLicId/{licenseeId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getLicenseeKeyApptPersonDtoListByLicenseeId(@PathVariable("licenseeId") String licenseeId);
 
-
     @PostMapping(value = "/iais-task/ins-kpi-task", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getInsKpiTask(@RequestBody InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
 
@@ -159,4 +158,7 @@ public interface OrganizationClient {
 
     @GetMapping(value = "/iais-task/effective-task-url",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getActiveTaskByUrl(@RequestParam("processUrl") String processUrl);
+
+    @GetMapping(value = "/iais-task/kpi-task-col")
+    FeignResponseEntity<List<TaskDto>> getKpiTaskByStatus();
 }
