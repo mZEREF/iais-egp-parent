@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
@@ -431,8 +432,17 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
         String taskId = apptInspectionDateDto.getTaskDto().getId();
         List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
-        String serviceId = apptInspectionDateDto.getAppointmentDto().getServiceId();
-        Date submitDt = apptInspectionDateDto.getAppointmentDto().getSubmitDt();
+        String serviceId;
+        Date submitDt;
+        if(apptInspectionDateDto.getAppointmentDto() != null){
+            serviceId = apptInspectionDateDto.getAppointmentDto().getServiceId();
+            submitDt = apptInspectionDateDto.getAppointmentDto().getSubmitDt();
+        } else {
+            ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+            serviceId = applicationDto.getServiceId();
+            submitDt = applicationGroupDto.getSubmitDt();
+        }
         String apptRefNo = appointmentClient.saveManualUserCalendar(apptInspectionDateDto.getSpecificApptDto()).getEntity();
         for(String appPremCorrId : appPremCorrIds) {
             AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
