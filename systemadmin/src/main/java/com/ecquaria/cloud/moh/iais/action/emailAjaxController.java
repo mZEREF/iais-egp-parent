@@ -41,9 +41,9 @@ public class emailAjaxController {
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(serviceCode);
         Map<String, String> result = new HashMap<>();
         Map<String,String> roleAttr = IaisCommonUtils.genNewHashMap();
-        roleAttr.put("class", "roleSelect");
-        roleAttr.put("id", "roleSel");
-        roleAttr.put("name", "roleSelect");
+        roleAttr.put("class", "role");
+        roleAttr.put("id", "role");
+        roleAttr.put("name", "role");
         roleAttr.put("style", "display: none;");
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = distributionListService.roleByServiceId(hcsaServiceDto.getId(),AppConsts.COMMON_STATUS_ACTIVE);
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
