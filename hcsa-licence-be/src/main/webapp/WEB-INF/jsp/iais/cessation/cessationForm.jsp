@@ -25,12 +25,12 @@
             <table border="1">
                 <thead>
                 <tr>
-                    <th style="text-align:center;width: 3%;padding: 0">S/N</th>
-                    <th style="text-align:center;width: 7%">Licence No.</th>
+                    <th style="text-align:center;width: 3%">S/N</th>
+                    <th style="text-align:center;width: 10%">Licence No.</th>
                     <th style="text-align:center;width: 10%">Service Name</th>
                     <th style="text-align:center;width: 7%">HCI Name</th>
                     <th style="text-align:center;width: 10%">HCI Address</th>
-                    <th style="text-align:center;width: 13%">Effective Date <a
+                    <th style="text-align:center;width: 10%">Effective Date <a
                             class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true"
                             data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">i</a>
                     </th>
@@ -229,7 +229,8 @@
 </form>
 <style>
     td {
-        padding: 1%
+        word-wrap: break-word;
+        padding: 1%;
     }
     th {
         padding: 1%

@@ -176,4 +176,8 @@ public interface HcsaLicenceClient {
 
     @GetMapping(value = "/hcsa-licence/licId-premises-hcicode-audit",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicPremisesAuditDto> getLicPremisesAuditDtoByLicIdAndHCICode(@RequestParam("licId") String licId,@RequestParam("HCICode") String HCICode);
+
+    @GetMapping(value = "/hcsa-licence/baseLicId-list-specLicId",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getSpecIdsByBaseId(@RequestParam("licId") String licId);
+
 }

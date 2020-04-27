@@ -169,7 +169,6 @@ public class CessationApplicationDelegator {
         } else if ("back".equals(actionType)) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         }
-
     }
 
     public void saveData(BaseProcessClass bpc) throws Exception {

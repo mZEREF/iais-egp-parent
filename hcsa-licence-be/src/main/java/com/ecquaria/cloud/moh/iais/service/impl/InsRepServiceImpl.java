@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
@@ -131,11 +132,15 @@ public class InsRepServiceImpl implements InsRepService {
         String appTypeCode = insRepClient.getAppType(appId).getEntity();
         ApplicationGroupDto applicationGroupDto = insRepClient.getApplicationGroupDto(appGrpId).getEntity();
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(appInsRepDto.getLicenseeId()).getEntity();
-        String licNo = appInsRepDto.getLicNo();
-        if(!StringUtil.isEmpty(licNo)){
+        String licId = appInsRepDto.getLicenceId();
+        if(!StringUtil.isEmpty(licId)){
             inspectionReportDto.setLicenceNo("-");
         }else {
-            inspectionReportDto.setLicenceNo(licNo);
+            LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
+            if(licenceDto!=null){
+                String licenceNo = licenceDto.getLicenceNo();
+                inspectionReportDto.setLicenceNo(licenceNo);
+            }
         }
         if(licenseeDto!=null){
             String name = licenseeDto.getName();
