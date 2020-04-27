@@ -244,7 +244,8 @@ public class SystemParameterDelegator {
                             systemParameterDto.setModifiedByName(orgUserDto.getDisplayName());
                             systemParameterDto.setModifiedBy(orgUserDto.getId());
                         }else {
-                            systemParameterDto.setModifiedBy("system");
+                            systemParameterDto.setModifiedByName("System");
+                            systemParameterDto.setModifiedBy(AppConsts.USER_ID_SYSTEM);
                         }
 
                         ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO, systemParameterDto);

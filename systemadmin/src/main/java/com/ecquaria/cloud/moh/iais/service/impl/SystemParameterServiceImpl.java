@@ -82,6 +82,6 @@ public class SystemParameterServiceImpl implements SystemParameterService {
 
     @Override
     public OrgUserDto retrieveOrgUserAccountById(String userId) {
-        return userClient.getOrgUserAccountByUserId(userId).getEntity();
+        return userClient.findIntranetUserById(userId).getEntity();
     }
 }
