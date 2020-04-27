@@ -209,7 +209,7 @@
         var s = $("#processingDecision").val();
         if(s=="" || s==null){
             $("#error_submit").show();
-        }else if("Approval"== s) {
+        }else if("Approval"== s || "submit" ==s) {
             $("[name='action_type']").val('approval');
             $("#mainForm").submit();
             $("#error_submit").hide();

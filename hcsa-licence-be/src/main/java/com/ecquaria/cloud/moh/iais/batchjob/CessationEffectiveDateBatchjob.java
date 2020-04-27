@@ -35,12 +35,9 @@ public class CessationEffectiveDateBatchjob {
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
-    private CessationClient cessationClient;
-    @Autowired
     private CessationService cessationService;
 
     private final String EFFECTIVEDATAEQUALDATA = "51AD8B3B-E652-EA11-BE7F-000C29F371DC";
-    private final String LICENCEENDDATE = "52AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
     public void start(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("The CessationEffectiveDateBatchjob is start ..."));
@@ -51,37 +48,9 @@ public class CessationEffectiveDateBatchjob {
         log.debug(StringUtil.changeForLog("The CessationLicenceBatchJob is doBatchJob ..."));
         Date date = new Date();
         String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
-        String status = ApplicationConsts.LICENCE_STATUS_ACTIVE;
-        List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(status,dateStr).getEntity();
-        List<LicenceDto> licenceDtosForSave = IaisCommonUtils.genNewArrayList();
-        List<String> ids = IaisCommonUtils.genNewArrayList();
-        if(licenceDtos!=null&&!licenceDtos.isEmpty()){
-            for(LicenceDto licenceDto :licenceDtos){
-                String id = licenceDto.getId();
-                ids.clear();
-                ids.add(id);
-                String svcName = licenceDto.getSvcName();
-                String licenceNo = licenceDto.getLicenceNo();
-                String licenseeId = licenceDto.getLicenseeId();
-                List<Boolean> booleans = cessationService.listResultCeased(ids);
-                if(booleans!=null&&!booleans.isEmpty()){
-                    for(Boolean b :booleans){
-                        if(b){
-                            licenceDtosForSave.add(licenceDto);
-                        }
-                    }
-                }
-                cessationService.sendEmail(LICENCEENDDATE,date,svcName,id,licenseeId,licenceNo);
-            }
-        }
-        List<LicenceDto> licenceDtos2 = updateLicenceStatus(licenceDtosForSave,date);
-        hcsaLicenceClient.updateLicences(licenceDtos2).getEntity();
-
-
-        //cessation application and licence
         String type = ApplicationConsts.CESSATION_TYPE_APPLICATION;
         //get misc corrId
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getAppPreCorrDtos(type, dateStr).getEntity();
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getAppPreCorrDtos(type,dateStr).getEntity();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         //get applicationIds
@@ -99,11 +68,6 @@ public class CessationEffectiveDateBatchjob {
                     licIds.add(licenceId);
             }
         }
-        //List<String> entity = cessationClient.getlicIdToCessation(licIds).getEntity();
-
-        //update application
-        //List<ApplicationDto> updateStatusApplicationDtos = updateApplicationStatus(applicationDtos);
-        //applicationClient.updateCessationApplications(updateStatusApplicationDtos).getEntity();
         //update licence
         List<LicenceDto> licenceDtoApps = hcsaLicenceClient.retrieveLicenceDtos(licIds).getEntity();
         List<LicenceDto> licenceDtos1 = updateLicenceStatus(licenceDtoApps,date);
@@ -115,16 +79,6 @@ public class CessationEffectiveDateBatchjob {
             String id = licenceDto.getId();
             cessationService.sendEmail(EFFECTIVEDATAEQUALDATA,date,svcName,id,licenseeId,licenceNo);
         }
-    }
-
-
-    private List<ApplicationDto> updateApplicationStatus(List<ApplicationDto> applicationDtos){
-        List<ApplicationDto> updateApplications = IaisCommonUtils.genNewArrayList();
-        for(ApplicationDto applicationDto :applicationDtos){
-            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-            updateApplications.add(applicationDto);
-        }
-        return updateApplications;
     }
 
     private List<LicenceDto> updateLicenceStatus(List<LicenceDto> licenceDtos,Date date){

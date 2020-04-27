@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
@@ -92,7 +93,7 @@ public class InsReportAoDelegator {
         List<SelectOption> recommendationOption = getRecommendationOption();
         List<SelectOption> chronoOption = getChronoOption();
         List<SelectOption> riskLevelOptions = getriskLevel();
-        List<SelectOption> processingDe = getProcessingDecision();
+        List<SelectOption> processingDe = getProcessingDecision(applicationViewDto.getApplicationDto().getStatus());
         ParamUtil.setSessionAttr(bpc.request, "recommendationOption", (Serializable) recommendationOption);
         ParamUtil.setSessionAttr(bpc.request, "processingDe", (Serializable) processingDe);
         ParamUtil.setSessionAttr(bpc.request, "riskLevelOptions", (Serializable) riskLevelOptions);
@@ -173,6 +174,12 @@ public class InsReportAoDelegator {
         if(fastTracking!=null){
             applicationDto.setFastTracking(true);
         }
+        if(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(applicationDto.getStatus())){
+            insRepService.routTastToRoutBack(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto.getProcessRemarks());
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            return;
+        }
+
         saveAoRecommendation(appPremisesCorrelationId,preapreRecommendationDto);
         insRepService.routingTaskToAo2(taskDto,applicationDto,appPremisesCorrelationId);
         ParamUtil.setSessionAttr(bpc.request, INSREPDTO, insRepDto);
@@ -290,7 +297,14 @@ public class InsReportAoDelegator {
         return riskLevelResult;
     }
 
-    private List<SelectOption> getProcessingDecision() {
+    private List<SelectOption> getProcessingDecision(String status) {
+        if(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(status)){
+            List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
+            SelectOption so1 = new SelectOption("submit", "Give Clarification");
+            riskLevelResult.add(so1);
+            return riskLevelResult;
+        }
+
         List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption(APPROVAL, "Acknowledge Inspection Report");
         SelectOption so2 = new SelectOption(REJECT, "Revise Inspection Report");
