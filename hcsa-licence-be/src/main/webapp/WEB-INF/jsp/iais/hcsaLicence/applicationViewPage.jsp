@@ -293,8 +293,8 @@
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
-                                                    <%--application type != appeal --%>
-                                                    <c:if test="${applicationViewDto.applicationDto.applicationType != 'APTY001'}">
+                                                    <%--application type == new application --%>
+                                                    <c:if test="${applicationViewDto.applicationDto.applicationType == 'APTY002'}">
                                                         <div id="licenceStartDate">
                                                             <iais:row>
                                                                 <iais:field value="Licence Start Date" required="false"/>
@@ -315,8 +315,8 @@
 
                                                     <div id="recommendationDropdown">
                                                         <iais:row>
-                                                            <div id="recommendationFieldTrue" class="hidden"><iais:field value="Recommendation" required="true"/></div>
-                                                            <div id="recommendationFieldFalse"><iais:field value="Recommendation" required="false"/></div>
+                                                            <div id="recommendationFieldTrue" class="hidden"><iais:field value="${applicationViewDto.applicationDto.applicationType == 'APTY001' ? 'Recommended Licence Period' : 'Recommendation'}" required="true"/></div>
+                                                            <div id="recommendationFieldFalse"><iais:field value="${applicationViewDto.applicationDto.applicationType == 'APTY001' ? 'Recommended Licence Period' : 'Recommendation'}" required="false"/></div>
                                                             <iais:value width="10">
                                                                 <c:choose>
                                                                     <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || applicationViewDto.applicationDto.status=='APST014'}">
