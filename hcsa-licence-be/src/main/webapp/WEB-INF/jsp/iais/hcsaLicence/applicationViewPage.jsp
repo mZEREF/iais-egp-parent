@@ -271,13 +271,6 @@
                                                         <iais:row>
                                                             <iais:field value="Verified" required="true"/>
                                                             <iais:value width="10">
-                                                                <%--                                                                <select name="verified" class="nice-select input-large">--%>
-                                                                <%--                                                                    <option value="">Please Select</option>--%>
-                                                                <%--                                                                    <c:forEach items="${applicationViewDto.verified}"--%>
-                                                                <%--                                                                               var="verified">--%>
-                                                                <%--                                                                        <option value="${verified.key}" <c:if test="${verified.key == selectVerified}">selected</c:if>>${verified.value}</option>--%>
-                                                                <%--                                                                    </c:forEach>--%>
-                                                                <%--                                                                </select>--%>
                                                                 <iais:select name="verified"
                                                                              options="verifiedValues"
                                                                              value="${selectVerified}"></iais:select>
