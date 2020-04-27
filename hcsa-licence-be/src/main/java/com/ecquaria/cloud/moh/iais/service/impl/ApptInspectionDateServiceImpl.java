@@ -809,7 +809,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     private void inspectionDateSendEmail(Date submitDt, String url, String licenseeId, String taskId) {
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST);
         if(inspectionEmailTemplateDto != null) {
-            String strSubmitDt = Formatter.formatDateTime(submitDt, "dd MMM yyyy");
+            String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy");
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
             map.put("submitDt", StringUtil.viewHtml(strSubmitDt));
             map.put("process_url", StringUtil.viewHtml(url));
