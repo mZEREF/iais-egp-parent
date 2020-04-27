@@ -293,23 +293,26 @@
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
+                                                    <%--application type != appeal --%>
+                                                    <c:if test="${applicationViewDto.applicationDto.applicationType != 'APTY001'}">
+                                                        <div id="licenceStartDate">
+                                                            <iais:row>
+                                                                <iais:field value="Licence Start Date" required="false"/>
+                                                                <iais:value width="10">
+                                                                    <c:choose>
+                                                                        <c:when test="${applicationViewDto.applicationDto.status=='APST007'}">
+                                                                            <iais:datePicker id="licenceStartDate" name="tuc"
+                                                                                             value="${date}"></iais:datePicker>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <p>${(recomInDateOnlyShow == "" || recomInDateOnlyShow == null) ? "-" : recomInDateOnlyShow}</p>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </iais:value>
+                                                            </iais:row>
+                                                        </div>
+                                                    </c:if>
 
-                                                    <div id="licenceStartDate">
-                                                        <iais:row>
-                                                            <iais:field value="Licence Start Date" required="false"/>
-                                                            <iais:value width="10">
-                                                                <c:choose>
-                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007'}">
-                                                                        <iais:datePicker id="licenceStartDate" name="tuc"
-                                                                                         value="${date}"></iais:datePicker>
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        <p>${(recomInDateOnlyShow == "" || recomInDateOnlyShow == null) ? "-" : recomInDateOnlyShow}</p>
-                                                                    </c:otherwise>
-                                                                </c:choose>
-                                                            </iais:value>
-                                                        </iais:row>
-                                                    </div>
                                                     <div id="recommendationDropdown">
                                                         <iais:row>
                                                             <div id="recommendationFieldTrue" class="hidden"><iais:field value="Recommendation" required="true"/></div>
