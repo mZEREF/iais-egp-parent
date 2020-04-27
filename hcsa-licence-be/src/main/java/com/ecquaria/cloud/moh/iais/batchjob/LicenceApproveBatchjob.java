@@ -388,20 +388,21 @@ public class LicenceApproveBatchjob {
                     errorMessage = "This ServiceId can not get the HcsaServiceDto -->:"+serviceId;
                     break;
                 }
+                List<ApplicationDto> applicationDtos =  getApplicationDtos(applicationListDtos);
+                String originLicenceId = applicationDtos.get(0).getOriginLicenceId();
+                LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
+                superLicDto.setOriginLicenceDto(originLicenceDto);
                 //create licence
                 String licenceNo = null;
                 if(applicationListDtos.get(0).getApplicationDto().isNeedNewLicNo()) {
-                    licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(), appPremisesRecommendationDto);
+                    licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(), appPremisesRecommendationDto,originLicenceId);
                 }
                 log.debug(StringUtil.changeForLog("The licenceNo is -->;"+licenceNo));
                 if(StringUtil.isEmpty(licenceNo)&& applicationListDtos.get(0).getApplicationDto().isNeedNewLicNo()){
                     errorMessage = "The licenceNo is null .-->:" + hcsaServiceDto.getSvcCode() + ":" + applicationListDtos.size() ;
                     break;
                 }
-                List<ApplicationDto> applicationDtos =  getApplicationDtos(applicationListDtos);
-                String originLicenceId = applicationDtos.get(0).getOriginLicenceId();
-                LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
-                superLicDto.setOriginLicenceDto(originLicenceDto);
+
                 LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),null,applicationGroupDto,appPremisesRecommendationDto,
                         originLicenceDto,null,applicationDtos);
                 superLicDto.setLicenceDto(licenceDto);

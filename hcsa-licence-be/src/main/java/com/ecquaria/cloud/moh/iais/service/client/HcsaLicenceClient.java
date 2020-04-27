@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,8 +46,8 @@ public interface HcsaLicenceClient {
     @RequestMapping(path = "/hcsa-licence/hci-code-licence-number/{hciCode}",method = RequestMethod.GET)
     FeignResponseEntity<Integer> licenceNumber(@PathVariable("hciCode") String hciCode);
 
-    @RequestMapping(path = "/hcsa-licence/service-group-licence-number/{serivceCode}",method = RequestMethod.GET)
-    FeignResponseEntity<String > groupLicenceNumber(@PathVariable("serivceCode") String groupLicence);
+    @RequestMapping(path = "/hcsa-licence/service-group-licence-number",method = RequestMethod.GET)
+    FeignResponseEntity<String > groupLicenceNumber(@RequestParam("serivceCode") String groupLicence,@RequestParam("orgLicecnceId")String orgLicecnceId);
 
     @RequestMapping(path = "/hcsa-licence-transport/licences",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceGroupDto>> createLicence(@RequestBody List<LicenceGroupDto> licenceGroupDtoList);
