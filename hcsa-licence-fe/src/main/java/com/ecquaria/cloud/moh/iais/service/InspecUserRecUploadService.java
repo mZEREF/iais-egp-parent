@@ -57,7 +57,7 @@ public interface InspecUserRecUploadService {
      * @return: List<InspecUserRecUploadDto>
      * @Descripation: getNcItemData
      */
-    List<InspecUserRecUploadDto> getNcItemData(int version, String appPremCorrId, List<ChecklistItemDto> checklistItemDtos, String appNo);
+    List<InspecUserRecUploadDto> getNcItemData(int version, String appPremCorrId, List<ChecklistItemDto> checklistItemDtos);
 
     /**
      * @author: shicheng

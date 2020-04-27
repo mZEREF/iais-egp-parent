@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -85,8 +84,7 @@ public class InspecUserRecUploadDelegator {
                 version = Integer.parseInt(versionStr);
             }
             List<ChecklistItemDto> checklistItemDtos = inspecUserRecUploadService.getQuesAndClause(appPremCorrId);
-            ApplicationDto applicationDto = inspecUserRecUploadService.getApplicationByCorrId(appPremCorrId);
-            inspecUserRecUploadDtos = inspecUserRecUploadService.getNcItemData(version, appPremCorrId, checklistItemDtos, applicationDto.getApplicationNo());
+            inspecUserRecUploadDtos = inspecUserRecUploadService.getNcItemData(version, appPremCorrId, checklistItemDtos);
         } else {
             for(InspecUserRecUploadDto inspecUserRecUploadDto : inspecUserRecUploadDtos){
                 List<FileRepoDto> fileRepoDtos = inspecUserRecUploadDto.getFileRepoDtos();

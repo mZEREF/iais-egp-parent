@@ -197,7 +197,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
     }
 
     @Override
-    public List<InspecUserRecUploadDto> getNcItemData(int version, String appPremCorrId, List<ChecklistItemDto> checklistItemDtos, String appNo) {
+    public List<InspecUserRecUploadDto> getNcItemData(int version, String appPremCorrId, List<ChecklistItemDto> checklistItemDtos) {
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = IaisCommonUtils.genNewArrayList();
         AppPremPreInspectionNcDto appPremPreInspectionNcDto = applicationClient.getAppPremPreInsNcDtoByAppCorrId(appPremCorrId).getEntity();
         String oldNcId = appPremPreInspectionNcDto.getId();
@@ -247,7 +247,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                             inspecUserRecUploadDto.setButtonFlag(AppConsts.FAIL);
                         }
                         //set item Clause and Question
-                        inspecUserRecUploadDto = setItemClauseQues(checklistItemDtos, inspecUserRecUploadDto, appNo);
+                        inspecUserRecUploadDto = setItemClauseQues(checklistItemDtos, inspecUserRecUploadDto);
 
                         inspecUserRecUploadDto.setAppPremPreInspectionNcDto(appPremPreInspectionNcDto);
                         inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDtos(appPremisesPreInspectionNcItemDtoList);
@@ -275,7 +275,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                             inspecUserRecUploadDto.setButtonFlag(AppConsts.FAIL);
                         }
                         //set item Clause and Question
-                        inspecUserRecUploadDto = setItemClauseQues(checklistItemDtos, inspecUserRecUploadDto, appNo);
+                        inspecUserRecUploadDto = setItemClauseQues(checklistItemDtos, inspecUserRecUploadDto);
 
                         inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDtos(appPremisesPreInspectionNcItemDtos);
                         inspecUserRecUploadDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
@@ -305,7 +305,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         return inspecUserRecUploadDtos;
     }
 
-    private InspecUserRecUploadDto setItemClauseQues(List<ChecklistItemDto> checklistItemDtos, InspecUserRecUploadDto inspecUserRecUploadDto, String appNo) {
+    private InspecUserRecUploadDto setItemClauseQues(List<ChecklistItemDto> checklistItemDtos, InspecUserRecUploadDto inspecUserRecUploadDto) {
         int index = -1;
         if(!IaisCommonUtils.isEmpty(checklistItemDtos)) {
             for (ChecklistItemDto cDto : checklistItemDtos) {
@@ -313,7 +313,6 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                     inspecUserRecUploadDto.setCheckClause(cDto.getRegulationClause());
                     inspecUserRecUploadDto.setCheckQuestion(cDto.getChecklistItem());
                     inspecUserRecUploadDto.setIndex(index++);
-                    inspecUserRecUploadDto.setAppNo(appNo);
                     return inspecUserRecUploadDto;
                 }
             }
