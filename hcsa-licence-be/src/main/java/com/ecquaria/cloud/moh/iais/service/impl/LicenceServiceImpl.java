@@ -122,6 +122,9 @@ public class LicenceServiceImpl implements LicenceService {
     @Override
     public String getGroupLicenceNo(String serviceCode, AppPremisesRecommendationDto appPremisesRecommendationDto,String orgLicecnceId,Integer premisesNumber) {
         log.info(StringUtil.changeForLog("The getGroupLicenceNo start ..."));
+        log.info(StringUtil.changeForLog("The getGroupLicenceNo serviceCode is -->:"+serviceCode));
+        log.info(StringUtil.changeForLog("The getGroupLicenceNo orgLicecnceId is -->:"+orgLicecnceId));
+        log.info(StringUtil.changeForLog("The getGroupLicenceNo premisesNumber is -->:"+premisesNumber));
         LicenceGrpDto licenceGrpDto = new LicenceGrpDto();
         licenceGrpDto.setSerivceCode(serviceCode);
         licenceGrpDto.setOrgLicecnceId(orgLicecnceId);
