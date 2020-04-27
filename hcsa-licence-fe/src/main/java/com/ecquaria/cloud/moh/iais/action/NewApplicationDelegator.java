@@ -748,12 +748,18 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doPreview start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String isGroupLic = ParamUtil.getString(bpc.request,"isGroupLic");
-        if(!StringUtil.isEmpty(isGroupLic) && AppConsts.YES.equals(isGroupLic)){
-            appSubmissionDto.setGroupLic(true);
+        if(!appSubmissionDto.isOnlySpecifiedSvc() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
+            if(!StringUtil.isEmpty(isGroupLic) && AppConsts.YES.equals(isGroupLic)){
+                appSubmissionDto.setGroupLic(true);
+            }else{
+                appSubmissionDto.setGroupLic(false);
+            }
         }
         String userAgreement = ParamUtil.getString(bpc.request,"verifyInfoCheckbox");
         if(!StringUtil.isEmpty(userAgreement) && AppConsts.YES.equals(userAgreement)){
             appSubmissionDto.setUserAgreement(true);
+        }else{
+            appSubmissionDto.setUserAgreement(false);
         }
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
