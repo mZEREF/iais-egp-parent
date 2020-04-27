@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -37,9 +38,12 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import java.io.Serializable;
 import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -114,7 +118,7 @@ public class LicenceViewServiceDelegator {
             ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
             ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
             String licenseeId = applicationGroupDto.getLicenseeId();
-            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
             bpc.request.setAttribute("newLicenceDto",licenseeDto);
         }else {
             String appId = ParamUtil.getString(bpc.request,"appId");
@@ -195,9 +199,40 @@ public class LicenceViewServiceDelegator {
         }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         List<PublicHolidayDto> publicHolidayDtos = appointmentClient.getActiveHoliday().getEntity();
+        formatDate(appGrpPremisesDtoList,publicHolidayDtos);
+        AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+        if(oldAppSubmissionDto!=null){
+            List<AppGrpPremisesDto> appGrpPremisesDtoList1 = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+            formatDate(appGrpPremisesDtoList1,publicHolidayDtos);
+        }
+
+        String serviceId = applicationViewDto.getApplicationDto().getServiceId();
+        List<String> list=IaisCommonUtils.genNewArrayList();
+        list.add(serviceId);
+        List<HcsaServiceStepSchemeDto> entity = hcsaConfigClient.getServiceStepsByServiceIds(list).getEntity();
+        List<String> stringList=IaisCommonUtils.genNewArrayList();
+        for(HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto : entity){
+            stringList.add(hcsaServiceStepSchemeDto.getStepCode());
+        }
+        bpc.request.getSession().setAttribute("hcsaServiceStepSchemeDtoList",stringList);
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+        if(appGrpPrimaryDocDtos!=null){
+            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto: appGrpPrimaryDocDtos) {
+                String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
+                HcsaSvcDocConfigDto hcsaSvcDocConfigDto = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
+                if(hcsaSvcDocConfigDto!=null){
+                    appGrpPrimaryDocDto.setSvcComDocName( hcsaSvcDocConfigDto.getDocTitle());
+                }
+            }
+        }
+
+        ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
+        log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData end ..."));
+        prepareViewServiceForm(bpc);
+    }
+
+    private void formatDate( List<AppGrpPremisesDto> appGrpPremisesDtoList, List<PublicHolidayDto> publicHolidayDtos) throws ParseException {
         for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
-            Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
-            Time wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
             for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList){
                 Time startFrom = appPremPhOpenPeriodDto.getStartFrom();
@@ -217,6 +252,8 @@ public class LicenceViewServiceDelegator {
                     appPremPhOpenPeriodDto.setConvEndToHH(string1.split(":")[0]);
                 }
             }
+            Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
+            Time wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
             if(wrkTimeFrom!=null&&wrkTimeTo!=null){
                 String s = wrkTimeFrom.toString();
                 String s1 = wrkTimeTo.toString();
@@ -226,56 +263,7 @@ public class LicenceViewServiceDelegator {
                 appGrpPremisesDto.setOnsiteEndHH(s1.split(":")[0]);
             }
         }
-        AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
-        if(oldAppSubmissionDto!=null){
-            List<AppGrpPremisesDto> appGrpPremisesDtoList1 = oldAppSubmissionDto.getAppGrpPremisesDtoList();
-            for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
-                List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-                for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList){
-                    Time startFrom = appPremPhOpenPeriodDto.getStartFrom();
-                    Time endTo = appPremPhOpenPeriodDto.getEndTo();
-                    Date phDate = appPremPhOpenPeriodDto.getPhDate();
-                    for(PublicHolidayDto publicHolidayDto : publicHolidayDtos){
-                        if(publicHolidayDto.getFromDate().compareTo(phDate)==0){
-                            appPremPhOpenPeriodDto.setDayName(publicHolidayDto.getDescription());
-                        }
-                    }
-                    if(startFrom!=null&&endTo!=null){
-                        String string = startFrom.toString();
-                        String string1 = endTo.toString();
-                        appPremPhOpenPeriodDto.setConvEndToMM(string1.split(":")[1]);
-                        appPremPhOpenPeriodDto.setConvStartFromMM(string.split(":")[1]);
-                        appPremPhOpenPeriodDto.setConvStartFromHH(string.split(":")[0]);
-                        appPremPhOpenPeriodDto.setConvEndToHH(string1.split(":")[0]);
-                    }
-                }
-                Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
-                Time wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
-                if(wrkTimeFrom!=null&&wrkTimeTo!=null){
-                    String s = wrkTimeFrom.toString();
-                    String s1 = wrkTimeTo.toString();
-                    appGrpPremisesDto.setOnsiteEndMM(s1.split(":")[1]);
-                    appGrpPremisesDto.setOnsiteStartMM(s.split(":")[1]);
-                    appGrpPremisesDto.setOnsiteStartHH(s.split(":")[0]);
-                    appGrpPremisesDto.setOnsiteEndHH(s1.split(":")[0]);
-                }
-            }
-        }
-
-        String serviceId = applicationViewDto.getApplicationDto().getServiceId();
-        List<String> list=IaisCommonUtils.genNewArrayList();
-        list.add(serviceId);
-        List<HcsaServiceStepSchemeDto> entity = hcsaConfigClient.getServiceStepsByServiceIds(list).getEntity();
-        List<String> stringList=IaisCommonUtils.genNewArrayList();
-        for(HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto : entity){
-            stringList.add(hcsaServiceStepSchemeDto.getStepCode());
-        }
-        bpc.request.getSession().setAttribute("hcsaServiceStepSchemeDtoList",stringList);
-        ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
-        log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData end ..."));
-        prepareViewServiceForm(bpc);
     }
-
     /**
      * StartStep: doSaveSelect
      *

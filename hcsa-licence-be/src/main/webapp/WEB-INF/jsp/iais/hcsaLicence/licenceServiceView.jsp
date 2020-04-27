@@ -1,6 +1,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -107,7 +108,7 @@
                                          Fire Safety Certificate Issued Date
                                         </div>
                                         <div class="col-md-6">
-                                            ${appGrpPremDto.certIssuedDt}
+                                          <fmt:formatDate value="${appGrpPremDto.certIssuedDt}" pattern="dd/MM/yyyy"/>
                                         </div>
                                         <wrms:value width="7">
                                           <span class="newVal " attr="${appGrpPremDto.certIssuedDt}"
@@ -404,6 +405,51 @@
                             </div>
                           </div>
                         </div>
+
+                        <div class="panel panel-default">
+                          <div class="panel-heading"  role="tab">
+                            <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Primary Documents</a></h4>
+                          </div>
+                          <div class="panel-collapse collapse"  role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                              <p class="text-right">
+                                <input class="form-check-input" id="primaryCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="primary">
+                              </p>
+                              <div class="elemClass-1561088919456">
+                                <div  class="page section control  container-s-1" style="margin: 10px 0px">
+                                  <div class="control-set-font control-font-header section-header">
+                                    <h2 class="summary-header">Uploaded Documents
+                                    </h2>
+                                  </div>
+                                  <div class="pop-up">
+                                    <div class="pop-up-body">
+                                      <c:forEach var="appGrpPrimaryDocDto" items="${appSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
+                                        <div class="content-body fileUploadContainer">
+                                          <div class="field col-sm-4 control-label formtext"><label>${appGrpPrimaryDocDto.svcComDocName}:</label></div>
+                                          <div class="control col-sm-6">
+                                            <div class="fileList">
+                                              <span class="filename server-site col-xs-6 col-md-12" id="130">
+                                               ${appGrpPrimaryDocDto.docName} (${appGrpPrimaryDocDto.docSize} KB)
+                                              </span>
+                                              <span class="col-xs-6 col-md-6">
+                                                <wrms:value width="7">
+                                                  <span class="newVal compareTdStyle" attr="${appGrpPrimaryDocDto.docSize}${appGrpPrimaryDocDto.docName}"  style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/></label></span>
+                                                  <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/></label></span>
+                                                </wrms:value></span>
+
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </c:forEach>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+
                         <div class="panel panel-default">
                           <div class="panel-heading" id="headingOne" role="tab">
                             <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne"
