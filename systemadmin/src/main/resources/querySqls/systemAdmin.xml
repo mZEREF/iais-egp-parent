@@ -225,22 +225,25 @@
 
     <sql key="templatesQuery"  remarks="QUERY MESSAGE TEMPLATE">
         <![CDATA[
-            SELECT
-                id,
-                message_type,
-                template_name,
-                message_content,
-                delivery_mode,
-                effective_from,
-                effective_to
-            FROM message_template
+              SELECT *  FROM (SELECT
+                mt.id,
+                mt.message_type,
+                mt.template_name,
+                mt.message_content,
+                mt.delivery_mode,
+                mt.effective_from,
+                mt.effective_to,
+                (SELECT mtp.process_type FROM message_template_process AS mtp WHERE mtp.message_template_id = mt.ID ) as process,
+                (SELECT mtr.recipient FROM message_template_recipient  AS mtr WHERE mtr.message_template_id = mt.ID ) as recipient
+            FROM message_template AS mt) AS T1
             WHERE 1=1
             <#if id??> and charindex(:id, id) >0</#if>
-            <#if msgType??> AND message_type = :msgType</#if>
-            <#if templateName??> AND template_name like :templateName</#if>
-            <#if deliveryMode??> AND delivery_mode = :deliveryMode</#if>
-            <#if esd??> AND effective_from > :esd</#if>
-            <#if eed??> AND effective_to < :eed</#if>
+            <#if msgType??> AND T1.message_type = :msgType</#if>
+            <#if templateName??> AND T1.template_name like :templateName</#if>
+            <#if deliveryMode??> AND T1.delivery_mode = :deliveryMode</#if>
+            <#if tepProcess??> AND T1.process = :tepProcess</#if>
+            <#if esd??> AND T1.effective_from >= :esd</#if>
+            <#if eed??> AND T1.effective_to <= :eed</#if>
         ]]>
     </sql >
 

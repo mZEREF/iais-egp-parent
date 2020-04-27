@@ -1,5 +1,14 @@
 <div class="row">
-    <div class="filter-box form-horizontal">
+    <div class="filter-box form-horizontal clearTep">
+        <div class="form-group">
+            <iais:value>
+                <label class="col-xs-12 col-md-4 control-label" for="msgType">Process</label>
+                <div class="col-xs-8 col-sm-6 col-md-5">
+                    <%String tepProcess = request.getParameter("tepProcess");%>
+                    <iais:select name="tepProcess" id="tepProcess" options="tepProcess" value="<%=tepProcess%>"></iais:select>
+                </div>
+            </iais:value>
+        </div>
         <div class="form-group">
             <iais:value>
                 <label class="col-xs-12 col-md-4 control-label" for="msgType">Message Type</label>
@@ -44,10 +53,22 @@
                     <iais:datePicker id="eed" name="eed" value="<%=eed%>"/>
                 </div>
             </iais:value>
+
+        </div>
+        <div class="form-group">
+            <iais:value>
+                <label class="col-xs-12 col-md-4 control-label"></label>
+                <div class="col-xs-8 col-sm-6 col-md-5">
+                    <span class="error-msg" style="width: 150%;position: absolute;">${TDEM}</span>
+                </div>
+            </iais:value>
         </div>
         <div class="row">
             <div class="col-xs-12 col-md-12">
-                <div class="text-right"><a class="btn btn-primary" id="ANT_Search">Search</a></div>
+                <div class="text-right">
+                    <a class="btn btn-secondary" id="ANT_Clearn">Clear</a>
+                    <a class="btn btn-primary" id="ANT_Search">Search</a>
+                </div>
             </div>
         </div>
     </div>

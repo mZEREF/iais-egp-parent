@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -23,6 +24,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -88,6 +90,17 @@ public class TemplatesDelegator {
         deliveryModeSelectList.add(new SelectOption("DEMD002", "SMS"));
         deliveryModeSelectList.add(new SelectOption("DEMD003", "System Inbox"));
         ParamUtil.setRequestAttr(bpc.request, "deliveryMode", deliveryModeSelectList);
+
+        List<SelectOption> msgProcessList = IaisCommonUtils.genNewArrayList();
+        msgProcessList.add(new SelectOption("", "Please Select"));
+        msgProcessList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, "New"));
+        msgProcessList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_APPEAL, "Renewal"));
+        msgProcessList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, "Request For Change"));
+        msgProcessList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL, "Withdrawal"));
+        msgProcessList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_CESSATION, "Cessation"));
+        msgProcessList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_APPEAL, "Appeal"));
+        msgProcessList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION, "Inspection"));
+        ParamUtil.setRequestAttr(bpc.request, "tepProcess", msgProcessList);
     }
 
     public void prepareSwitch(BaseProcessClass bpc){
@@ -149,20 +162,26 @@ public class TemplatesDelegator {
 
     public void searchTemplate(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
+        String process = ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_MESSAGE_PROCESS);
         String msgType = ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE);
         String deliveryMode = ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE);
         String templateName = ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME);
-        String templateStartDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM)),
-                SystemAdminBaseConstants.DATE_FORMAT);
-        String templateEndDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO)),
-                SystemAdminBaseConstants.DATE_FORMAT);
+        Date startDate = Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM));
+        Date endDate = Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO));
+        String templateStartDate = Formatter.formatDateTime(startDate,SystemAdminBaseConstants.DATE_FORMAT);
+        String templateEndDate = Formatter.formatDateTime(endDate,SystemAdminBaseConstants.DATE_FORMAT);
         Map<String,Object> templateMap = IaisCommonUtils.genNewHashMap();
-        if (!StringUtil.isEmpty(msgType)){
+        if (!StringUtil.isEmpty(process) && !"Please Select".equals(msgType)){
+            templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_MESSAGE_PROCESS,process);
+        }else{
+            templateMap.remove(MsgTemplateConstants.MSG_TEMPLATE_MESSAGE_PROCESS);
+        }
+        if (!StringUtil.isEmpty(msgType) && !"Please Select".equals(msgType)){
             templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE,msgType);
         }else{
             templateMap.remove(MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE);
         }
-        if(!StringUtil.isEmpty(deliveryMode)){
+        if(!StringUtil.isEmpty(deliveryMode) && !"Please Select".equals(msgType)){
             templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE,deliveryMode);
         }else{
             templateMap.remove(MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE);
@@ -172,15 +191,26 @@ public class TemplatesDelegator {
         }else{
             templateMap.remove(MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME);
         }
-        if (!StringUtil.isEmpty(templateStartDate)){
-            templateMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,templateStartDate);
+        if (startDate != null && endDate != null){
+            if(startDate.before(endDate)){
+                templateMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,templateStartDate);
+                templateMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,templateEndDate);
+            }else{
+                templateMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
+                templateMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
+                ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.TEMPLATE_DATE_ERR_MSG, "Date Submitted From cannot be later than Date Submitted To");
+            }
         }else{
-            templateMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
-        }
-        if (!StringUtil.isEmpty(templateEndDate)){
-            templateMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,templateEndDate);
-        }else{
-            templateMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
+            if (!StringUtil.isEmpty(templateStartDate)){
+                templateMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,templateStartDate);
+            }else{
+                templateMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
+            }
+            if (!StringUtil.isEmpty(templateEndDate)){
+                templateMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,templateEndDate);
+            }else{
+                templateMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
+            }
         }
         filterParameter.setFilters(templateMap);
     }

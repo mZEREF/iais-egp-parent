@@ -41,6 +41,16 @@
         submit('sort');
     }
 
+    $("#ANT_Clearn").click(function () {
+        $("[name='templateName']").val("");
+        $("[name='esd']").val("");
+        $("[name='eed']").val("");
+        $("#tepProcess option:first").prop("selected", 'selected').val("Please Select");
+        $("#msgType option:first").prop("selected", 'selected').val("Please Select");
+        $("#deliveryMode option:first").prop("selected", 'selected').val("Please Select");
+        $(".clearTep .current").text("Please Select");
+    });
+
 </script>
 
 
