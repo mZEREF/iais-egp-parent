@@ -1,7 +1,13 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,18 +33,131 @@ import java.util.Map;
 public class emailAjaxController {
 
     @Autowired
-    DistributionListService distributionListService;
+    private DistributionListService distributionListService;
     @RequestMapping(value = "recipientsRoles.do", method = RequestMethod.POST)
     public @ResponseBody
-    Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
-        String serviceId = request.getParameter("serviceId");
+    Map<String, String> appGroup(HttpServletRequest request, HttpServletResponse response) {
+        String serviceCode = request.getParameter("serviceCode");
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(serviceCode);
+        Map<String, String> result = new HashMap<>();
+        Map<String,String> roleAttr = IaisCommonUtils.genNewHashMap();
+        roleAttr.put("class", "roleSelect");
+        roleAttr.put("id", "roleSel");
+        roleAttr.put("name", "roleSelect");
+        roleAttr.put("style", "display: none;");
+        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = distributionListService.roleByServiceId(hcsaServiceDto.getId(),AppConsts.COMMON_STATUS_ACTIVE);
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+        for (HcsaSvcPersonnelDto item:hcsaSvcPersonnelDtoList
+             ) {
 
-        String status = AppConsts.COMMON_STATUS_ACTIVE;
-        Map<String, Object> map = new HashMap();
-        Map<String ,String> selection = new HashMap<>();
-        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = distributionListService.roleByServiceId(serviceId,status);
-        map.put("roles", hcsaSvcPersonnelDtoList);
-        return map;
+            selectOptions.add(new SelectOption(item.getPsnType(),roleName(item.getPsnType())));
+        }
+        String roleSelectStr = generateDropDownHtml(roleAttr, selectOptions, "Please Select", null);
+
+        result.put("roleSelect",roleSelectStr);
+        return result;
     }
 
+    private String roleName(String roleAbbreviation){
+        String roleName = "";
+        switch (roleAbbreviation){
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_CGO:
+                roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_CLINICAL_GOVERNANCE_OFFICER;
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_PO:
+                roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_PRINCIPAL_OFFICER;
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_DPO:
+                roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_DEPUTY_PRINCIPAL_OFFICER;
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_MAP:
+                roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT;
+                break;
+            default:
+                roleName = roleAbbreviation;
+                break;
+        }
+        return roleName;
+    }
+
+    private String generateDropDownHtml(Map<String, String> premisesOnSiteAttr, List<SelectOption> selectOptionList, String firestOption, String checkedVal){
+        StringBuffer sBuffer = new StringBuffer();
+        sBuffer.append("<select ");
+        for(Map.Entry<String, String> entry : premisesOnSiteAttr.entrySet()){
+            sBuffer.append(entry.getKey()+"=\""+entry.getValue()+"\" ");
+        }
+        sBuffer.append(" >");
+        if(!StringUtil.isEmpty(firestOption)){
+            sBuffer.append("<option value=\"\">"+ firestOption +"</option>");
+        }
+        for(SelectOption sp:selectOptionList){
+            if(!StringUtil.isEmpty(checkedVal)){
+                if(checkedVal.equals(sp.getValue())){
+                    sBuffer.append("<option selected=\"selected\" value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+                }else{
+                    sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+                }
+            }else{
+                sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+            }
+        }
+        sBuffer.append("</select>");
+        String classNameValue = premisesOnSiteAttr.get("class");
+        String className = "premSelect";
+        if(!StringUtil.isEmpty(classNameValue)){
+            className =  classNameValue;
+        }
+        sBuffer.append("<div class=\"nice-select "+className+"\" tabindex=\"0\">");
+        if(!StringUtil.isEmpty(checkedVal)){
+            sBuffer.append("<span selected=\"selected\" class=\"current\">"+ checkedVal +"</span>");
+        }else{
+            if(!StringUtil.isEmpty(firestOption)){
+                sBuffer.append("<span class=\"current\">"+firestOption+"</span>");
+            }else{
+                sBuffer.append("<span class=\"current\">"+selectOptionList.get(0).getText()+"</span>");
+            }
+        }
+        sBuffer.append("<ul class=\"list mCustomScrollbar _mCS_2 mCS_no_scrollbar\">")
+                .append("<div id=\"mCSB_2\" class=\"mCustomScrollBox mCS-light mCSB_vertical mCSB_inside\" tabindex=\"0\" style=\"max-height: none;\">")
+                .append("<div id=\"mCSB_2_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">");
+
+        if(!StringUtil.isEmpty(checkedVal)){
+            for(SelectOption kv:selectOptionList){
+                if(checkedVal.equals(kv.getValue())){
+                    sBuffer.append("<li selected=\"selected\" data-value=\""+kv.getValue()+"\" class=\"option selected\">"+kv.getText()+"</li>");
+                }else{
+                    sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+                }
+            }
+        }else if(!StringUtil.isEmpty(firestOption)){
+            sBuffer.append("<li data-value=\"\" class=\"option selected\">"+firestOption+"</li>");
+            for(SelectOption kv:selectOptionList){
+                sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+            }
+        }else{
+            for(int i = 0;i<selectOptionList.size();i++){
+                SelectOption kv = selectOptionList.get(i);
+                if(i == 0){
+                    sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option selected\">"+kv.getText()+"</li>");
+                }else{
+                    sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+                }
+            }
+        }
+
+        sBuffer.append("</div>")
+                .append("<div id=\"mCSB_2_scrollbar_vertical\" class=\"mCSB_scrollTools mCSB_2_scrollbar mCS-light mCSB_scrollTools_vertical\" style=\"display: none;\">")
+                .append("<div class=\"mCSB_draggerContainer\">")
+                .append("<div id=\"mCSB_2_dragger_vertical\" class=\"mCSB_dragger\" style=\"position: absolute; min-height: 30px; top: 0px; height: 0px;\">")
+                .append("<div class=\"mCSB_dragger_bar\" style=\"line-height: 30px;\">")
+                .append("</div>")
+                .append("</div>")
+                .append("<div class=\"mCSB_draggerRail\"></div>")
+                .append("</div>")
+                .append("</div>")
+                .append("</div>")
+                .append("</ul>")
+                .append("</div>");
+        return sBuffer.toString();
+    }
 }

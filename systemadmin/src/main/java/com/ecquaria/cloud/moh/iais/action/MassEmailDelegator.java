@@ -8,14 +8,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
@@ -67,7 +70,7 @@ public class MassEmailDelegator {
         QueryHelp.setMainSql("systemAdmin", "queryMassDistributionList",searchParam);
         SearchResult<DistributionListDto> searchResult = distributionListService.distributionList(searchParam);
         setServiceSelect(bpc);
-        setRoleSelection(bpc);
+        searchRole(bpc);
         ParamUtil.setRequestAttr(bpc.request,"distributionSearchResult",searchResult);
         ParamUtil.setRequestAttr(bpc.request,"distributionSearchParam",searchParam);
 
@@ -81,7 +84,7 @@ public class MassEmailDelegator {
         setServiceSelect(bpc);
         ParamUtil.setSessionAttr(bpc.request,"distribution",null);
         setModeSelection(bpc);
-        setRoleSelection(bpc);
+        setRoleSelection(bpc,"");
     }
 
     /**
@@ -90,7 +93,7 @@ public class MassEmailDelegator {
      */
     public void save(BaseProcessClass bpc){
         String mode = ParamUtil.getString(bpc.request, "mode");
-        String id =  ParamUtil.getString(bpc.request, "distributionId");
+        String id =  ParamUtil.getMaskedString(bpc.request, "distributionId");
         String name =  ParamUtil.getString(bpc.request, "name");
         String service =  ParamUtil.getString(bpc.request, "service");
         String role =  ParamUtil.getString(bpc.request, "role");
@@ -130,7 +133,7 @@ public class MassEmailDelegator {
      * @param bpc
      */
     public void delete(BaseProcessClass bpc){
-        String[] checkboxlist =  ParamUtil.getStrings(bpc.request, "checkboxlist");
+        String[] checkboxlist =  ParamUtil.getMaskedStrings(bpc.request, "checkboxlist");
         if(checkboxlist != null && checkboxlist.length > 0){
             List<String> list = Arrays.asList(checkboxlist);
             distributionListService.deleteDistributionList(list);
@@ -178,11 +181,12 @@ public class MassEmailDelegator {
      * @param bpc
      */
     public void edit(BaseProcessClass bpc){
-        String id =  ParamUtil.getString(bpc.request, "editDistribution");
+        String id =  ParamUtil.getMaskedString(bpc.request, "editDistribution");
         DistributionListWebDto distributionListDto = distributionListService.getDistributionListById(id);
         setServiceSelect(bpc);
         setModeSelection(bpc);
-        setRoleSelection(bpc);
+        setRoleSelection(bpc, HcsaServiceCacheHelper.getServiceByCode(distributionListDto.getService()).getId());
+        distributionListDto.setId(MaskUtil.maskValue("distributionId",distributionListDto.getId()));
         String emailAddress = StringUtils.join(distributionListDto.getEmailAddress(),"\n");
         ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
         ParamUtil.setRequestAttr(bpc.request,"distribution",distributionListDto);
@@ -217,7 +221,19 @@ public class MassEmailDelegator {
         ParamUtil.setRequestAttr(bpc.request, "modeSelection",  (Serializable) selectOptions);
     }
 
-    private void setRoleSelection(BaseProcessClass bpc){
+    private void setRoleSelection(BaseProcessClass bpc, String service){
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+        if(!StringUtils.isEmpty(service)){
+            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = distributionListService.roleByServiceId(service,AppConsts.COMMON_STATUS_ACTIVE);
+            for (HcsaSvcPersonnelDto item:hcsaSvcPersonnelDtoList
+            ) {
+                selectOptions.add(new SelectOption(item.getPsnType(),roleName(item.getPsnType())));
+            }
+        }
+        ParamUtil.setRequestAttr(bpc.request, "roleSelection",  (Serializable) selectOptions);
+    }
+
+    private void searchRole(BaseProcessClass bpc){
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,"CGO"));
         selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_PO,"Principal Officer"));
@@ -226,5 +242,27 @@ public class MassEmailDelegator {
         selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_AP,"Authorised Person"));
         selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT,"MedAlert"));
         ParamUtil.setRequestAttr(bpc.request, "roleSelection",  (Serializable) selectOptions);
+    }
+
+    private String roleName(String roleAbbreviation){
+        String roleName = "";
+        switch (roleAbbreviation){
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_CGO:
+                roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_CLINICAL_GOVERNANCE_OFFICER;
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_PO:
+                roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_PRINCIPAL_OFFICER;
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_DPO:
+                roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_DEPUTY_PRINCIPAL_OFFICER;
+                break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_MAP:
+                roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT;
+                break;
+                default:
+                    roleName = roleAbbreviation;
+                    break;
+        }
+        return roleName;
     }
 }

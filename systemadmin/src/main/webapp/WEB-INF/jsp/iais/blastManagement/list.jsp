@@ -89,7 +89,7 @@
                                     <c:forEach var="item" items="${blastSearchResult.rows}" varStatus="status">
                                         <tr style="display: table-row;">
                                             <td>
-                                                <p><input type="checkbox" name="checkboxlist" value="${item.id}"></p>
+                                                <p><input type="checkbox" name="checkboxlist" value="<iais:mask name="checkboxlist" value="${item.id}"/>"></p>
                                             </td>
                                             <td>
                                                 <p><c:out

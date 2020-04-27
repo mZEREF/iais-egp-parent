@@ -24,7 +24,7 @@ public interface HcsaConfigClient {
     @GetMapping(value = "/iais-hcsa-service/active-service",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceDto>> getActiveServices();
 
-    @RequestMapping(path = "/iais-hcsa-service/personnel-service",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/iais-hcsa-service/personnel-service",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcPersonnelDto>> getServiceType(@RequestParam("serviceId") String serviceId, @RequestParam("status") String status);
 
 

@@ -88,7 +88,7 @@
                                         <c:forEach var="item" items="${distributionSearchResult.rows}" varStatus="status">
                                             <tr style="display: table-row;">
                                                 <td>
-                                                    <p><input type="checkbox" name="checkboxlist" value="${item.id}"></p>
+                                                    <p><input type="checkbox" name="checkboxlist" value='<iais:mask name="checkboxlist" value="${item.id}"/>'></p>
                                                 </td>
                                                 <td>
                                                     <p><c:out
@@ -113,7 +113,7 @@
                                                     <p><c:out value="${item.createBy}"/></p>
                                                 </td>
                                                 <td>
-                                                    <p><a onclick="edit('${item.id}')">Edit</a></p>
+                                                    <p><a onclick="edit('<iais:mask name="editDistribution" value="${item.id}}"/>')">Edit</a></p>
                                                 </td>
                                             </tr>
                                         </c:forEach>

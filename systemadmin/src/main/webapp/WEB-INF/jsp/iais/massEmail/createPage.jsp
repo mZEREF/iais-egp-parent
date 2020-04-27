@@ -30,11 +30,23 @@
                             </iais:value>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" >
+                            <iais:field value="Service" required="true"/>
+
+                            <iais:value>
+                                <iais:value width="10">
+                                    <iais:select name="service" id="service" options="serviceSelection"
+                                                 firstOption="Please Select"  value="${distribution.getService()}"></iais:select>
+                                </iais:value>
+                            </iais:value>
+                            <span id="error_service" name="iaisErrorMsg" class="error-msg"></span>
+                        </div>
+
+                        <div class="form-group" id="serviceDivByrole">
                             <iais:field value="Recipients Roles" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:select name="role" options="roleSelection" value="${distribution.getRole()}" firstOption="Please Select"></iais:select>
+                                    <iais:select name="role" options="roleSelection" value="${distribution.getRole()}" firstOption="Please Select" disabled=""></iais:select>
                                     <span id="error_role" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -48,17 +60,6 @@
                                     <span id="error_addr" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
-                        </div>
-
-                        <div class="form-group">
-                            <iais:field value="Service" required="true"/>
-                            <iais:value>
-                                <iais:value width="10">
-                                            <iais:select name="service" options="serviceSelection"
-                                                         firstOption="Please Select"  value="${distribution.getService()}"></iais:select>
-                                </iais:value>
-                            </iais:value>
-                            <span id="error_service" name="iaisErrorMsg" class="error-msg"></span>
                         </div>
 
                         <div class="form-group">
@@ -100,4 +101,23 @@
         SOP.Crud.cfxSubmit("mainForm");
     });
 
+    $("#service").change(function () {
+        $.ajax({
+            data:{
+                serviceCode:$(this).children('option:selected').val()
+            },
+            type:"POST",
+            dataType: 'json',
+            url:'/system-admin-web/emailAjax/recipientsRoles.do',
+            error:function(data){
+
+            },
+            success:function(data){
+                var html = '<label class="col-xs-4 col-md-4 control-label" >Recipients Roles<span style="color: red"> *</span></label><div class="col-xs-8 col-sm-6 col-md-5">';
+                html += data.roleSelect;
+                html += ' <span id="error_role" name="iaisErrorMsg" class="error-msg"></span></div>';
+                $("#serviceDivByrole").html(html);
+            }
+        });
+    })
 </script>

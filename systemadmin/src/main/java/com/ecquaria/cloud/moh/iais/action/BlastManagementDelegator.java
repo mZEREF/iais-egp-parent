@@ -150,7 +150,7 @@ public class BlastManagementDelegator {
      * @param bpc
      */
     public void delete(BaseProcessClass bpc){
-        String[] checkboxlist =  ParamUtil.getStrings(bpc.request, "checkboxlist");
+        String[] checkboxlist =  ParamUtil.getMaskedStrings(bpc.request, "checkboxlist");
         if(checkboxlist != null && checkboxlist.length > 0){
             List<String> list = Arrays.asList(checkboxlist);
             blastManagementListService.deleteBlastList(list);
