@@ -33,9 +33,6 @@
                       <li>
                         <p>Acceptable file formats are PDF, JPG and PNG. </p>
                       </li>
-                      <li>
-                        <p>All files are mandatory.</p>
-                      </li>
                     </ul>
                   </div>
                   <div class="document-upload-gp">
@@ -146,7 +143,7 @@
                   </div>
                   <div class="application-tab-footer">
                     <c:choose>
-                    <c:when test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
+                    <c:when test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
                       <%@include file="../common/rfcFooter.jsp"%>
                     </c:when>
                     <c:otherwise>

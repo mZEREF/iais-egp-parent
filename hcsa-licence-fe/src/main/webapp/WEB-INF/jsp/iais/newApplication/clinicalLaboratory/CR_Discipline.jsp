@@ -14,7 +14,7 @@
       <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
     </c:otherwise>
   </c:choose>
-  <c:if test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
+  <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
     <p class="text-right"><a class="back" id="RfcSkip">Skip<em class="fa fa-angle-right"></em></a></p>
   </c:if>
   <c:if test="${'true' != isClickEdit}">
@@ -44,7 +44,7 @@
     Generate unique key  --%>
   <c:set value="${appGrpPremisesDto.premisesIndexNo}" var="premIndexNo"/>
 
-  <fieldset id="fieldset-content" <c:if test="${AppSubmissionDto.needEditController && !isClickEdit}">disabled</c:if> >
+  <fieldset class="fieldset-content" id="fieldset-content" <c:if test="${AppSubmissionDto.needEditController && !isClickEdit}">disabled</c:if> >
     <p><strong class="cgo-header">Premises ${status.index+1}</strong></p>
     <p>
       <strong class="cgo-header">
@@ -191,7 +191,7 @@
   var doEdit = function () {
     $('#edit').click(function () {
       $('#edit-content').addClass('hidden');
-      $('#fieldset-content').prop('disabled',false);
+      $('.fieldset-content').prop('disabled',false);
       $('#isEditHiddenVal').val('1');
     });
   };

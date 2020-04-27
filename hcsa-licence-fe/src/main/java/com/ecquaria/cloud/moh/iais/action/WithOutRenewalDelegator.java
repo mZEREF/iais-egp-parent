@@ -70,6 +70,7 @@ public class WithOutRenewalDelegator {
     private static final String ACKNOWLEDGEMENT = "doAcknowledgement";
     private static final String PAGE_SWITCH = "page_value";
     private static final String CONTROL_SWITCH = "controlSwitch";
+    private static final String EDIT = "doEdit";
     @Autowired
     WithOutRenewalService outRenewalService;
 
@@ -150,6 +151,11 @@ public class WithOutRenewalDelegator {
                     serviceNameList.add(serviceName);
                 }
                 appSubmissionDto.setServiceName(serviceName);
+                if(licenceIDList.size() == 1){
+                    appEditSelectDto.setPremisesEdit(true);
+                    appEditSelectDto.setDocEdit(true);
+                    appEditSelectDto.setServiceEdit(true);
+                }
                 appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             }
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
@@ -418,6 +424,9 @@ public class WithOutRenewalDelegator {
         }else if(PAGE2.equals(switch_value)){
             ParamUtil.setRequestAttr(bpc.request,CONTROL_SWITCH,BACK);
             ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,switch_value);
+        }else if(EDIT.equals(switch_value)){
+            ParamUtil.setRequestAttr(bpc.request,CONTROL_SWITCH,EDIT);
+            ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE2);
         }
     }
 
@@ -479,7 +488,7 @@ public class WithOutRenewalDelegator {
      */
     public void prepareJump(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do prepareJump start ...."));
-        String editValue = (String) ParamUtil.getRequestAttr(bpc.request,"EditValue");
+        String editValue = (String) ParamUtil.getString(bpc.request,"EditValue");
         RenewDto renewDto  = (RenewDto) ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         AppSubmissionDto appSubmissionDto = appSubmissionDtos.get(0);
@@ -515,12 +524,59 @@ public class WithOutRenewalDelegator {
     public void toPrepareData(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do toPrepareData start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO);
+        if(appSubmissionDto != null){
+            AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+            appEditSelectDto.setPremisesEdit(true);
+            appEditSelectDto.setDocEdit(true);
+            appEditSelectDto.setServiceEdit(true);
+            appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = IaisCommonUtils.genNewArrayList();
+            List<Map<String,List<AppSvcDisciplineAllocationDto>>> reloadDisciplineAllocationMapList = IaisCommonUtils.genNewArrayList();
+            List<List<AppSvcPrincipalOfficersDto>> principalOfficersDtosList = IaisCommonUtils.genNewArrayList();
+            List<List<AppSvcPrincipalOfficersDto>> deputyPrincipalOfficersDtosList = IaisCommonUtils.genNewArrayList();
+            List<String> serviceNames = IaisCommonUtils.genNewArrayList();
+            if(!appSubmissionDto.getAppSvcRelatedInfoDtoList().isEmpty()) {
+                String serviceName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+                //add to service name list
+                serviceNames.add(serviceName);
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+                String svcId = hcsaServiceDto.getId();
+                Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
+                reloadDisciplineAllocationMapList.add(reloadDisciplineAllocationMap);
+
+                //set AppSvcRelatedInfoDtoList chkName
+                List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.loadLaboratoryDisciplines(svcId);
+                NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto, hcsaSvcSubtypeOrSubsumedDtos);
+                AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+                appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
+
+                List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+                List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
+                List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
+                if (appSvcPrincipalOfficersDtos != null && !appSvcPrincipalOfficersDtos.isEmpty()) {
+                    for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
+                        if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(appSvcPrincipalOfficersDto.getPsnType())) {
+                            principalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(appSvcPrincipalOfficersDto.getPsnType())) {
+                            deputyPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                        }
+                    }
+                }
+                principalOfficersDtosList.add(principalOfficersDtos);
+                deputyPrincipalOfficersDtosList.add(deputyPrincipalOfficersDtos);
+            }
+
+            ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfoList", (Serializable)appSvcRelatedInfoDtoList);
+            ParamUtil.setSessionAttr(bpc.request, "reloadDisciplineAllocationMapList", (Serializable)reloadDisciplineAllocationMapList);
+            ParamUtil.setSessionAttr(bpc.request, "ReloadPrincipalOfficersList", (Serializable)principalOfficersDtosList);
+            ParamUtil.setSessionAttr(bpc.request, "deputyPrincipalOfficersDtosList", (Serializable)deputyPrincipalOfficersDtosList);
+        }
         RenewDto renewDto = new RenewDto();
         List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
         appSubmissionDtos.add(appSubmissionDto);
         renewDto.setAppSubmissionDtos(appSubmissionDtos);
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
-        ParamUtil.setRequestAttr(bpc.request,"jumpEdit","Y");
+        ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE2);
         log.info(StringUtil.changeForLog("the do toPrepareData end ...."));
     }
 

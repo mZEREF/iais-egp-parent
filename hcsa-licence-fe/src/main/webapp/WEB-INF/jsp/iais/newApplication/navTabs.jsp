@@ -77,6 +77,10 @@
 
 
         <c:if test="${requestInformationConfig==null && ('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
+            <c:if test="${'APTY004' ==AppSubmissionDto.appType}">
+                $('#preview').unbind();
+                $('#previewli').unbind();
+            </c:if>
             <c:choose>
                 <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
                     $('#documents').unbind();
@@ -139,7 +143,7 @@
         var mainForm = document.getElementById('mainForm');
         mainForm.submit();
     }
-    
+
     function backFormsBtn(action,value,additional,tab, bak) {
         $("[name='crud_action_type']").val('serviceForms');
         $("[name='crud_action_type_tab']").val(tab);

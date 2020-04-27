@@ -842,13 +842,7 @@
 
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST005')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">SERVICE-RELATED DOCUMENTS
-        <c:if test="${applicationViewDto.appEditSelectDto.docEdit}">
-          <c:if test="${rfi=='rfi'}">
-            <input class="form-check-input" id="serviceCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="doc">
-          </c:if>
-        </c:if>
-      </label>
+      <label style="font-size: 2.2rem">SERVICE-RELATED DOCUMENTS</label>
       <div class="amend-preview-info">
         <p></p>
         <div class="form-check-gp">

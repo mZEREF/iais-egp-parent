@@ -48,7 +48,7 @@
                       <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
                     </c:otherwise>
                   </c:choose>
-                  <c:if test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
+                  <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
                     <p class="text-right"><a class="back" id="RfcSkip">Skip<em class="fa fa-angle-right"></em></a></p>
                   </c:if>
                   <c:if test="${'true' != isClickEdit}">
@@ -194,7 +194,7 @@
                   </table>
               </c:forEach>
               </c:if>
-              <c:if test="${'APTY005' !=AppSubmissionDto.appType && requestInformationConfig==null}">
+              <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig==null}">
               <div class="row">
                 <div class="col-sm-5">
                   <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Service Personnel</span>
@@ -217,7 +217,7 @@
   $(document).ready(function () {
       pageController('');
 
-      if('APTY005' == '${AppSubmissionDto.appType}' && 'true' != '${isClickEdit}'){
+      if(${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)} && 'true' != '${isClickEdit}'){
           $('input[type="text"]').prop('disabled',true);
           //nice-select
           $('div.nice-select').addClass('disabled');

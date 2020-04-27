@@ -13,6 +13,7 @@
 <%@include file="../common/dashboard.jsp" %>
 <form class="" method="post" id="LicenceReviewForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="switch_value" value=""/>
+    <input id="EditValue" type="hidden" name="EditValue" value="" />
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -64,6 +65,9 @@
                                                                         </div>
                                                                         <div class=" panel-collapse collapse" id="collapseServiceInfo${documentIndex}" role="tabpanel" aria-labelledby="headingServiceInfo">
                                                                             <div class="panel-body">
+                                                                                <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.serviceEdit}">
+                                                                                    <p class="text-right"><a href="#" id="doSvcEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                                                                                </c:if>
                                                                                 <div class="panel-main-content">
                                                                                     <c:set var="appGrpPremisesDtoList" value="${AppSubmissionDto.appGrpPremisesDtoList}"></c:set>
                                                                                     <c:set var="currentPreviewSvcInfo" value="${currentPreviewSvcInfoList.get(documentIndex)}"></c:set>
@@ -124,5 +128,24 @@
         $('[name="switch_value"]').val('doLicenceReview');
         $('#LicenceReviewForm').submit();
     });
+
+
+    $('#premisesEdit').click(function () {
+        $('#EditValue').val('premises');
+        $('[name="switch_value"]').val('doEdit');
+        $('#LicenceReviewForm').submit();
+    });
+    $('#docEdit').click(function () {
+        $('#EditValue').val('doc');
+        $('[name="switch_value"]').val('doEdit');
+        $('#LicenceReviewForm').submit();
+    });
+    $('#doSvcEdit').click(function () {
+        $('#EditValue').val('service');
+        $('[name="switch_value"]').val('doEdit');
+        $('#LicenceReviewForm').submit();
+    });
+
+
 
 </script>

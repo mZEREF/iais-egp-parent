@@ -183,7 +183,7 @@
                     <iais:row>
                         <iais:field value="Block / House No." width="12"/>
                         <iais:value cssClass="col-md-5">
-                            <iais:input cssClass="siteBlockNo" maxLength="10"  type="text" name="onSiteBlkNo" id="siteBlockNo" value="${appGrpPremisesDto.blkNo}"></iais:input>
+                            <iais:input cssClass="siteBlkNo" maxLength="10"  type="text" name="onSiteBlkNo" id="siteBlkNo" value="${appGrpPremisesDto.blkNo}"></iais:input>
                             <span class="error-msg" name="iaisErrorMsg" id="error_blkNo${status.index}"></span>
                         </iais:value>
                     </iais:row>
@@ -426,7 +426,7 @@
                     <iais:row>
                         <iais:field value="Block / House No." width="12"/>
                         <iais:value width="11" cssClass="col-md-5">
-                            <iais:input maxLength="10" cssClass="conveyanceBlockNo" type="text" name="conveyanceBlockNo" id="conveyanceBlockNo" value="${appGrpPremisesDto.conveyanceBlockNo}"></iais:input>
+                            <iais:input maxLength="10" cssClass="conveyanceBlkNo" type="text" name="conveyanceBlkNo" id="conveyanceBlkNo" value="${appGrpPremisesDto.conveyanceBlockNo}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceBlockNos${status.index}"></span>
                         </iais:value>
                     </iais:row>
@@ -639,7 +639,7 @@
                     <iais:row>
                         <iais:field value="Block / House No." width="12"/>
                         <iais:value width="11" cssClass="col-md-5">
-                            <iais:input maxLength="10" cssClass="offSiteBlockNo" type="text" name="offSiteBlockNo" id="offSiteBlockNo" value="${appGrpPremisesDto.offSiteBlockNo}"></iais:input>
+                            <iais:input maxLength="10" cssClass="offSiteBlkNo" type="text" name="offSiteBlkNo" id="offSiteBlkNo" value="${appGrpPremisesDto.offSiteBlockNo}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteBlockNo${status.index}"></span>
                         </iais:value>
                     </iais:row>

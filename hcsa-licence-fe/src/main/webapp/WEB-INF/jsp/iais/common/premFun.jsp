@@ -203,11 +203,11 @@
                     }else if("offSite" == thisId){
                         prefixName = 'offSite';
                     }
-                    $premContent.find('.'+prefixName+'BlockNo').val(data.blkHseNo);
+                    $premContent.find('.'+prefixName+'BlkNo').val(data.blkHseNo);
                     $premContent.find('.'+prefixName+'StreetName').val(data.streetName);
                     $premContent.find('.'+prefixName+'BuildingName').val(data.buildingName);
 
-                    $premContent.find('.'+prefixName+'BlockNo').prop('readonly',true);
+                    $premContent.find('.'+prefixName+'BlkNo').prop('readonly',true);
                     $premContent.find('.'+prefixName+'StreetName').prop('readonly',true);
                     $premContent.find('.'+prefixName+'BuildingName').prop('readonly',true);
                 },
@@ -450,7 +450,7 @@
             $premSelect.find('select[name="'+premisesType+'EndMM"]').next().find('.current').html(endMM);
         }else if('conveyance' == premisesType){
             $premSelect.find('input[name="'+premisesType+'VehicleNo"]').val(data.conveyanceVehicleNo);
-            $premSelect.find('input[name="'+premisesType+'BlockNo"]').val(data.conveyanceBlockNo);
+            $premSelect.find('input[name="'+premisesType+'BlkNo"]').val(data.conveyanceBlockNo);
             $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.conveyancePostalCode);
             $premSelect.find('input[name="'+premisesType+'FloorNo"]').val(data.conveyanceFloorNo);
             $premSelect.find('input[name="'+premisesType+'UnitNo"]').val(data.conveyanceUnitNo);
@@ -470,7 +470,7 @@
             var endMM = $premSelect.find('option[value="' + data.conEndMM + '"]').html();
             $premSelect.find('select[name="'+premisesType+'EndMM"]').next().find('.current').html(endMM);
         }else if('offSite' == premisesType){
-            $premSelect.find('input[name="'+premisesType+'BlockNo"]').val(data.offSiteBlockNo);
+            $premSelect.find('input[name="'+premisesType+'BlkNo"]').val(data.offSiteBlockNo);
             $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.offSitePostalCode);
             $premSelect.find('input[name="'+premisesType+'FloorNo"]').val(data.offSiteFloorNo);
             $premSelect.find('input[name="'+premisesType+'UnitNo"]').val(data.offSiteUnitNo);

@@ -460,12 +460,6 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "jump");
             return;
         }
-       /* if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-            if(RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)) {
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "jump");
-                return;
-            }
-        }*/
 
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
@@ -752,12 +746,16 @@ public class NewApplicationDelegator {
      */
     public void doPreview(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doPreview start ...."));
-        StringBuffer requestURL = bpc.request.getRequestURL();
-        String queryString = bpc.request.getQueryString();
-        String reUrl=requestURL.append("?").append(queryString).toString();
-
-
-
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String isGroupLic = ParamUtil.getString(bpc.request,"isGroupLic");
+        if(!StringUtil.isEmpty(isGroupLic) && AppConsts.YES.equals(isGroupLic)){
+            appSubmissionDto.setGroupLic(true);
+        }
+        String userAgreement = ParamUtil.getString(bpc.request,"verifyInfoCheckbox");
+        if(!StringUtil.isEmpty(userAgreement) && AppConsts.YES.equals(userAgreement)){
+            appSubmissionDto.setUserAgreement(true);
+        }
+        ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
 
@@ -970,12 +968,12 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doRenewSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(appSubmissionDto.getLicenceId());
-       /* if(!IaisCommonUtils.isEmpty(applicationDtos)){
+        if(!IaisCommonUtils.isEmpty(applicationDtos)){
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "error");
-            ParamUtil.setRequestAttr(bpc.request,"content","There is  ongoing application for the licence");
+            ParamUtil.setRequestAttr(bpc.request,"content",MessageUtil.getMessageDesc("ERRRFC001"));
             return ;
-        }*/
+        }
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
 
         boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
@@ -1059,8 +1057,8 @@ public class NewApplicationDelegator {
         boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
         if(!IaisCommonUtils.isEmpty(applicationDtos)){
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
-            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "error");
-            ParamUtil.setRequestAttr(bpc.request,"content",MessageUtil.getMessageDesc("ERRRFC001"));
+            ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
+            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, MessageUtil.getMessageDesc("ERRRFC001"));
             return ;
         }
         appSubmissionDto.setAutoRfc(isAutoRfc);
@@ -1142,10 +1140,7 @@ public class NewApplicationDelegator {
         }
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
 
-        String isGroupLic = ParamUtil.getString(bpc.request,"isGroupLic");
-        if(!StringUtil.isEmpty(isGroupLic) && AppConsts.YES.equals(isGroupLic)){
-            appSubmissionDto.setGroupLic(true);
-        }
+
 
         String draftNo = appSubmissionDto.getDraftNo();
         if(StringUtil.isEmpty(draftNo)){
@@ -1738,7 +1733,7 @@ public class NewApplicationDelegator {
         String [] conPremisesSelect = ParamUtil.getStrings(request, "conveyanceSelect");
         String [] conVehicleNo = ParamUtil.getStrings(request, "conveyanceVehicleNo");
         String [] conPostalCode = ParamUtil.getStrings(request,  "conveyancePostalCode");
-        String [] conBlkNo = ParamUtil.getStrings(request, "conveyanceBlockNo");
+        String [] conBlkNo = ParamUtil.getStrings(request, "conveyanceBlkNo");
         String [] conStreetName = ParamUtil.getStrings(request, "conveyanceStreetName");
         String [] conFloorNo = ParamUtil.getStrings(request, "conveyanceFloorNo");
         String [] conUnitNo = ParamUtil.getStrings(request, "conveyanceUnitNo");
@@ -1751,7 +1746,7 @@ public class NewApplicationDelegator {
         //offSite
         String [] offSitePremisesSelect = ParamUtil.getStrings(request, "offSiteSelect");
         String [] offSitePostalCode = ParamUtil.getStrings(request,  "offSitePostalCode");
-        String [] offSiteBlkNo = ParamUtil.getStrings(request, "offSiteBlockNo");
+        String [] offSiteBlkNo = ParamUtil.getStrings(request, "offSiteBlkNo");
         String [] offSiteStreetName = ParamUtil.getStrings(request, "offSiteStreetName");
         String [] offSiteFloorNo = ParamUtil.getStrings(request, "offSiteFloorNo");
         String [] offSiteUnitNo = ParamUtil.getStrings(request, "offSiteUnitNo");

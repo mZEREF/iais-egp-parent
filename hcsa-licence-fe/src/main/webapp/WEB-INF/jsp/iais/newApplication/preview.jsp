@@ -55,14 +55,14 @@
                                                     </div>
                                                 </c:forEach>
                                             </div>
-                                            <c:if test="${GroupLicenceConfig != null && AppSubmissionDto.appType == 'APTY002'}">
+                                            <c:if test="${GroupLicenceConfig != null && AppSubmissionDto.appType == 'APTY002' && !AppSubmissionDto.onlySpecifiedSvc}">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" id="groupLicence" type="checkbox" name="isGroupLic" aria-invalid="false" value="1">
+                                                    <input class="form-check-input" id="groupLicence" type="checkbox" <c:if test="${AppSubmissionDto.groupLic}">checked="checked"</c:if> name="isGroupLic" aria-invalid="false" value="1">
                                                     <label class="form-check-label" for="groupLicence"><span class="check-square"></span>Would you like to apply as a group licence? </label>
                                                 </div>
                                             </c:if>
                                             <div class="form-check">
-                                                <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" aria-invalid="false" <c:if test="${AppSubmissionDto.userAgreement}">checked="checked"</c:if> >
+                                                <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" value="1" aria-invalid="false" <c:if test="${AppSubmissionDto.userAgreement}">checked="checked"</c:if> >
                                                 <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span>I hereby certify that the information I provided is all correct and accurate</label>
                                             </div>
                                             <div>

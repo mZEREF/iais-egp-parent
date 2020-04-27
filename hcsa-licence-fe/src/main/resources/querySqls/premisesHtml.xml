@@ -93,7 +93,7 @@
               <div class="form-group">
                 <label class="col-xs-12 col-md-4 control-label">Block / House No.</label>
                 <div class="col-sm-4 col-md-5 col-xs-5">
-                  <input type="text" id="siteBlockNo" name="onSiteBlkNo" class="siteBlockNo" maxlength="10" autocomplete="off">
+                  <input type="text" id="siteBlkNo" name="onSiteBlkNo" class="siteBlkNo" maxlength="10" autocomplete="off">
                   <span class="error-msg"></span>
                 </div>
               <div class="clear"></div></div>
@@ -260,7 +260,7 @@
               <div class="form-group">
                 <label class="col-xs-12 col-md-4 control-label">Block / House No.</label>
                 <div class="col-sm-4 col-md-5 col-xs-5">
-                  <input type="text" id="conveyanceBlockNo" name="conveyanceBlockNo" class="conveyanceBlockNo" maxlength="10" autocomplete="off">
+                  <input type="text" id="conveyanceBlkNo" name="conveyanceBlkNo" class="conveyanceBlkNo" maxlength="10" autocomplete="off">
                 </div>
               <div class="clear"></div></div>
               <div class="form-group">
@@ -395,7 +395,7 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-md-4 control-label">Block / House No.</label>
                         <div class="col-sm-4 col-md-5 col-xs-5">
-                            <input type="text" id="offSiteBlockNo" name="offSiteBlockNo" class="offSiteBlockNo"
+                            <input type="text" id="offSiteBlkNo" name="offSiteBlkNo" class="offSiteBlkNo"
                                    maxlength="10" autocomplete="off">
                         </div>
                         <div class="clear"></div>

@@ -2,9 +2,18 @@
     <div class="col-xs-12 col-sm-3 ">
         <a id="RfcBack" class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
     </div>
-    <div class="col-xs-12 col-sm-3  text-right">
-        <a class="btn btn-primary next premiseId" id="RfcSave" >Save and Preview</a>
-    </div>
+    <c:choose>
+        <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
+            <div class="col-xs-12 col-sm-3  text-right">
+                <a class="btn btn-primary next premiseId" id="RenewSave" >Save and Preview</a>
+            </div>
+        </c:when>
+        <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
+            <div class="col-xs-12 col-sm-3  text-right">
+                <a class="btn btn-primary next premiseId" id="RfcSave" >Save and Preview</a>
+            </div>
+        </c:when>
+    </c:choose>
     <div class="col-xs-12 col-sm-6">
         <div class="button-group">
             <a class="btn btn-secondary premiseSaveDraft" id="RfcSaveDraft" >Save as Draft</a>
@@ -21,6 +30,10 @@
 
         $('#RfcSave').click(function () {
            submit('preview','next',null);
+        });
+
+        $('#RenewSave').click(function () {
+            submit('jump','next',null);
         });
 
         $('#RfcSaveDraft').click(function () {

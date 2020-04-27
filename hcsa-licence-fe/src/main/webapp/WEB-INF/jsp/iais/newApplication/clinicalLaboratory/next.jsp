@@ -3,14 +3,21 @@
   <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
   <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
 <c:choose>
-  <c:when test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
+  <c:when test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
     <div class="row">
       <div class="col-xs-12 col-sm-3"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
       <div class="col-xs-12 col-sm-9">
         <div class="button-group">
           <c:choose>
             <c:when test="${serviceStepDto.isStepEnd() && serviceStepDto.isServiceEnd()}">
-              <a class="btn btn-primary next premiseId" id="RfcSave" >Save and Preview</a>
+              <c:choose>
+                <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
+                  <a class="btn btn-primary next premiseId" id="RenewSave" >Save and Preview</a>
+                </c:when>
+                <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
+                  <a class="btn btn-primary next premiseId" id="RfcSave" >Save and Preview</a>
+                </c:when>
+              </c:choose>
             </c:when>
             <c:otherwise>
               <a class="btn btn-primary" id="Next" >Next</a>
@@ -68,7 +75,7 @@
             if(${serviceStepDto.isStepFirst()}){
                 if(${serviceStepDto.isServiceFirst()}){
                   <c:choose>
-                    <c:when test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
+                    <c:when test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
                       submit('jump',null,null);
                     </c:when>
                     <c:otherwise>
@@ -98,6 +105,16 @@
         $('#RfcSkip').click(function () {
             $("[name='nextStep']").val('skip');
             nextFun();
+        });
+
+        $('#RfcSave').click(function () {
+            $("[name='nextStep']").val('next');
+            submit('preview',null,null);
+        });
+
+        $('#RenewSave').click(function () {
+            $("[name='nextStep']").val('next');
+            submit('jump',null,null);
         });
 
     });

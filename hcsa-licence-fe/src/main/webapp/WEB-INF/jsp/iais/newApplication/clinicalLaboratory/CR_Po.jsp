@@ -38,7 +38,7 @@
                       <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
                     </c:otherwise>
                   </c:choose>
-                  <c:if test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
+                  <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
                     <p class="text-right"><a class="back" id="RfcSkip">Skip<em class="fa fa-angle-right"></em></a></p>
                   </c:if>
                   <c:if test="${!isClickEdit}">
@@ -413,7 +413,7 @@
                   </c:if>
                 </div>
             <c:if test="${requestInformationConfig==null}">
-              <div class="row <c:if test="${'APTY005' ==AppSubmissionDto.appType  &&'1' == canEditDpo}">disabled</c:if>">
+              <div class="row <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)  &&'1' == canEditDpo}">disabled</c:if>">
                 <div class="col-sm-5">
                   <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Deputy Principal Officer</span>
                 </div>

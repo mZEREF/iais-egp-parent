@@ -55,7 +55,7 @@
                                             </c:forEach>
                                         </c:when>
 
-                                        <c:when test="${AppSubmissionDto.groupLic && 'APTY002' == AppSubmissionDto.appType}">
+                                        <c:when test="${AppSubmissionDto.groupLic && 'APTY002' == AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">
                                             <c:forEach items="${AppSubmissionDto.feeInfoDtos}" var="feeInfoDto">
                                                 <c:set var="baseSvcFeeExt" value="${feeInfoDto.baseSvcFeeExt}"/>
                                                 <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
@@ -100,6 +100,7 @@
                                                     <c:set var="simpleSpecifiedFeeExt" value="${feeInfoDto.simpleSpecifiedFeeExt}"/>
                                                     <!--todo:includedSvcFeeExtList -->
                                                     <!--base -->
+                                                    <c:if test="${!AppSubmissionDto.onlySpecifiedSvc}">
                                                     <tr>
                                                         <td>
                                                             <c:forEach var="svcName" items="${baseSvcFeeExt.svcNames}">
@@ -127,6 +128,7 @@
                                                             </p>
                                                         </td>
                                                     </tr>
+                                                    </c:if>
 
                                                     <!--simpleSpecifiedFeeExt -->
                                                     <c:if test="${simpleSpecifiedFeeExt.svcNames.size()>0 }">
@@ -194,6 +196,9 @@
 </form>
 <script src=""></script>
 <script type="text/javascript">
+    $(document).ready(function () {
+        unbindAllTabs();
+    });
 
     $('.proceed').click(function () {
         var flag=false;

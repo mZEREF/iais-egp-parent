@@ -29,6 +29,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -1149,6 +1150,43 @@ public class NewApplicationHelper {
         });
         return psnSelectList;
     }
+
+    /**
+     * only rfc
+     */
+    public static void setPreviewDta(AppSubmissionDto appSubmissionDto,BaseProcessClass bpc){
+        if(appSubmissionDto != null){
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                String svcId = (String) ParamUtil.getSessionAttr(bpc.request,"SvcId");
+                ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDtos.get(0));
+                Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto,svcId);
+                ParamUtil.setRequestAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
+                //PO/DPO
+                List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
+                List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
+                if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos.get(0).getAppSvcPrincipalOfficersDtoList())){
+                    for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto:appSvcRelatedInfoDtos.get(0).getAppSvcPrincipalOfficersDtoList()){
+                        if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(appSvcPrincipalOfficersDto.getPsnType())){
+                            principalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                        }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(appSvcPrincipalOfficersDto.getPsnType())){
+                            deputyPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                        }
+                    }
+                }
+                ParamUtil.setRequestAttr(bpc.request, "ReloadPrincipalOfficers", principalOfficersDtos);
+                ParamUtil.setRequestAttr(bpc.request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
+
+            }
+            AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+            appEditSelectDto.setPremisesEdit(true);
+            appEditSelectDto.setDocEdit(true);
+            appEditSelectDto.setServiceEdit(true);
+            appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
+        }
+
+    }
+
 
     //=============================================================================
     //private method
