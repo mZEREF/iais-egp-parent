@@ -258,7 +258,7 @@ public class ApptInspectionDateDelegator {
             apptInspectionDateService.saveAuditInspectionDate(apptInspectionDateDto, applicationViewDto);
         } else {
             if(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE.equals(apptInspectionDateDto.getProcessDec())){
-                apptInspectionDateService.saveLeadSpecificDate(apptInspectionDateDto, applicationViewDto);
+                //apptInspectionDateService.saveLeadSpecificDate(apptInspectionDateDto, applicationViewDto);
             } else if(InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE.equals(apptInspectionDateDto.getProcessDec())) {
                 apptInspectionDateService.saveSystemInspectionDate(apptInspectionDateDto, applicationViewDto);
             }
