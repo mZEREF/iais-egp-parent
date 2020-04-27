@@ -395,7 +395,7 @@ public class LicenceApproveBatchjob {
                 //create licence
                 String licenceNo = null;
                 if(applicationListDtos.get(0).getApplicationDto().isNeedNewLicNo()) {
-                    licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(), appPremisesRecommendationDto,originLicenceId);
+                    licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(), appPremisesRecommendationDto,originLicenceId,applicationDtos.size());
                 }
                 log.debug(StringUtil.changeForLog("The licenceNo is -->;"+licenceNo));
                 if(StringUtil.isEmpty(licenceNo)&& applicationListDtos.get(0).getApplicationDto().isNeedNewLicNo()){

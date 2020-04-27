@@ -119,9 +119,9 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     @Override
-    public String getGroupLicenceNo(String hscaCode, AppPremisesRecommendationDto appPremisesRecommendationDto,String orgLicecnceId) {
+    public String getGroupLicenceNo(String hscaCode, AppPremisesRecommendationDto appPremisesRecommendationDto,String orgLicecnceId,Integer premisesNumber) {
         log.info(StringUtil.changeForLog("The getGroupLicenceNo start ..."));
-        String no = hcsaLicenceClient.groupLicenceNumber(hscaCode,orgLicecnceId).getEntity();
+        String no = hcsaLicenceClient.groupLicenceNumber(hscaCode,orgLicecnceId,premisesNumber).getEntity();
         log.info(StringUtil.changeForLog("The getGroupLicenceNo no -->:"+no));
         int yearLength = 0;
         if(appPremisesRecommendationDto != null && RiskConsts.YEAR.equals(appPremisesRecommendationDto.getChronoUnit())){

@@ -49,7 +49,7 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<String> groupLicenceNumber(String groupLicence,String orgLicecnceId) {
+    public FeignResponseEntity<String> groupLicenceNumber(String groupLicence,String orgLicecnceId,Integer premisesNumber) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
