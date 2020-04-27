@@ -406,7 +406,7 @@
                           </div>
                         </div>
 
-                        <div class="panel panel-default">
+                       <%-- <div class="panel panel-default">
                           <div class="panel-heading"  role="tab">
                             <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Primary Documents</a></h4>
                           </div>
@@ -448,7 +448,7 @@
                             </div>
                           </div>
                         </div>
-
+--%>
 
                         <div class="panel panel-default">
                           <div class="panel-heading" id="headingOne" role="tab">
