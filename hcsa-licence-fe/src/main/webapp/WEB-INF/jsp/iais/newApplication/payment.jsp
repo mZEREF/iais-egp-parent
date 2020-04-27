@@ -75,7 +75,6 @@
                                                     <td>
                                                         <p>
                                                             <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
-                                                            AN200418002988S
                                                         </p>
                                                     </td>
                                                     <td>
@@ -120,7 +119,6 @@
                                                         <td>
                                                             <p>
                                                                 <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
-                                                                AN200418002988S
                                                             </p>
                                                         </td>
                                                         <td>
