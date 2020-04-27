@@ -202,7 +202,7 @@
                             <iais:row id="rfiCheckBox">
                               <iais:field value="Request For Information" required="true"/>
                               <iais:value width="7">
-                                <c:if test="${inspectionPreTaskDto.preInspRfiOption == null}">
+                                <c:if test="${inspectionPreTaskDto.preInspRfiOption != null}">
                                   <c:forEach items="${inspectionPreTaskDto.preInspRfiOption}" var="name">
                                     <p>
                                       <input type="checkbox" name="preInspRfiCheck" id = "${name.value}PreInspRfiCheck"  value="<c:out value="${name.value}"/>"
