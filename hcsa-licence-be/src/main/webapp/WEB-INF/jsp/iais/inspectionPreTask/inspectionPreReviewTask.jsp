@@ -25,7 +25,7 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="inspectorPreType" value="">
     <input type="hidden" id="actionValue" name="actionValue" value="<c:out value="${actionValue}"/>">
-    <input type="hidden" id="processDec" name="processDec" value="">
+    <input type="hidden" id="processDec" name="processDec" value="<c:out value="${inspectionPreTaskDto.selectValue}"/>">
     <div class="main-content">
       <div class="row">
         <div class="col-lg-12 col-xs-12">
@@ -199,7 +199,7 @@
                                 <iais:select name="selectValue" options="processDecOption" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectionPreTaskChange(this.value)"></iais:select>
                               </iais:value>
                             </iais:row>
-                            <iais:row>
+                            <iais:row id="rfiCheckBox">
                               <iais:field value="Request For Information" required="true"/>
                               <iais:value width="7">
                                 <c:if test="${inspectionPreTaskDto.preInspRfiOption == null}">
@@ -324,6 +324,12 @@
         if(actionValue == "edit"){
             inspectionPreTaskJump();
         }
+        var selectValue = $("#processDec").val();
+        if("REDECI001" == selectValue){
+            $("#rfiCheckBox").show();
+        } else {
+            $("#rfiCheckBox").hide();
+        }
     });
 
     function inspectionPreTaskJump(){
@@ -372,6 +378,11 @@
 
     function doInspectionPreTaskChange(value) {
         $("#processDec").val(value);
+        if("REDECI001" == value){
+            $("#rfiCheckBox").show();
+        } else {
+            $("#rfiCheckBox").hide();
+        }
     }
 
     function doInspectionPreTaskSubmit() {
