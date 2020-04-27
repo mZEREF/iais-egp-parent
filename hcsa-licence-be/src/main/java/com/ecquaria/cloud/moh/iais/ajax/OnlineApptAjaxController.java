@@ -74,6 +74,8 @@ public class OnlineApptAjaxController {
                     TaskDto taskDto = apptInspectionDateDto.getTaskDto();
                     //get Applicant set start date and end date from appGroup
                     AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(taskDto.getRefNo()).getEntity();
+                    //specific date dto
+                    AppointmentDto specificApptDto = new AppointmentDto();
                     appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
                     List<String> premCorrIds = apptInspectionDateDto.getRefNo();
                     Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
@@ -100,7 +102,12 @@ public class OnlineApptAjaxController {
                         String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
                         //get manHours by service and stage
                         int manHours = hcsaConfigClient.getManHour(serviceId, HcsaConsts.ROUTING_STAGE_INS).getEntity();
-                        appointmentUserDto.setWorkHours(manHours);
+                        //Divide the time according to the number of people
+                        List<TaskDto> sizeTask = organizationClient.getCurrTaskByRefNo(tDto.getRefNo()).getEntity();
+                        double hours = manHours;
+                        double peopleCount = sizeTask.size();
+                        int peopleHours = (int) Math.ceil(hours/peopleCount);
+                        appointmentUserDto.setWorkHours(peopleHours);
                         appointmentUserDtos.add(appointmentUserDto);
                     }
                     appointmentDto.setUsers(appointmentUserDtos);
@@ -114,6 +121,12 @@ public class OnlineApptAjaxController {
                         map.put("inspDateList", apptInspectionDateDto.getInspectionDate());
                         apptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
                     }
+                    specificApptDto.setSubmitDt(appointmentDto.getSubmitDt());
+                    specificApptDto.setUsers(appointmentDto.getUsers());
+                    specificApptDto.setSysClientKey(appointmentDto.getSysClientKey());
+                    specificApptDto.setServiceIds(appointmentDto.getServiceIds());
+                    specificApptDto.setServiceId(appointmentDto.getServiceId());
+                    apptInspectionDateDto.setSpecificApptDto(specificApptDto);
                     ParamUtil.setSessionAttr(request, "apptInspectionDateDto", apptInspectionDateDto);
                 }
             }
@@ -126,7 +139,11 @@ public class OnlineApptAjaxController {
         if(inspectionDateMap != null){
             for(Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()){
                 List<ApptUserCalendarDto> apptUserCalendarDtos = inspDateMap.getValue();
-                String inspectionDate = apptDateToStringShow(apptUserCalendarDtos.get(0).getTimeSlot().get(0));
+                int daySize = apptUserCalendarDtos.size();
+                int timeSize = apptUserCalendarDtos.get(daySize - 1).getTimeSlot().size();
+                String inspStartDate = apptDateToStringShow(apptUserCalendarDtos.get(0).getTimeSlot().get(0));
+                String inspEndDate = apptDateToStringShow(apptUserCalendarDtos.get(daySize - 1).getTimeSlot().get(timeSize - 1));
+                String inspectionDate = inspStartDate + " - " + inspEndDate;
                 inspectionDates.add(inspectionDate);
             }
             apptInspectionDateDto.setInspectionDate(inspectionDates);
@@ -138,7 +155,7 @@ public class OnlineApptAjaxController {
     }
 
     private String apptDateToStringShow(Date date) {
-        String specificDate = Formatter.formatDateTime(date, "dd MMM");
+        String specificDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int curHour24 = cal.get(Calendar.HOUR_OF_DAY);
@@ -148,13 +165,13 @@ public class OnlineApptAjaxController {
             if(hours < 10){
                 hoursShow = "0";
             }
-            specificDate = specificDate + " " + hoursShow + hours + ":00" + " PM";
+            specificDate = specificDate + " " + hoursShow + hours + ":00";
         } else {
             String hoursShow = "";
             if(curHour24 < 10){
                 hoursShow = "0";
             }
-            specificDate = specificDate + " " + hoursShow + curHour24 + ":00" + " AM";
+            specificDate = specificDate + " " + hoursShow + curHour24 + ":00";
         }
         return specificDate;
     }
