@@ -26,7 +26,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
-                        <h2>${modulenam}</h2>
+                        <h2>${modulename}</h2>
                         <div class="gray-content-box">
                             <div class="table-gp">
                                 <table class="table">
@@ -45,7 +45,14 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-
+                                    <span class="error-msg" id="error_selectedOne" name="iaisErrorMsg"></span>
+                                    <c:if test="${empty auditTaskDataDtos}">
+                                        <tr>
+                                            <td colspan="10" align="center">
+                                                <iais:message key="ACK018" escape="true"/>
+                                            </td>
+                                        </tr>
+                                    </c:if>
                                     <c:forEach var = "item" items = "${auditTaskDataDtos}" varStatus="status">
                                         <tr>
                                             <c:set var="id" value="${status.index}"></c:set>
@@ -82,6 +89,7 @@
         </div>
     </div>
 </form>
+<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     function addToAudit() {
         SOP.Crud.cfxSubmit("mainForm","donext");

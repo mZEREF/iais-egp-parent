@@ -86,11 +86,11 @@
                     </div>
 
                     <iais:action style="text-align:right;">
-                        <button type="button" class="btn btn-primary next" onclick="javascript:cancelAudit('1');">
-                          Confirm
-                        </button>
                         <button type="button" class="btn btn-primary next" onclick="javascript:cancelAudit('0');">
                             Reject
+                        </button>
+                        <button type="button" class="btn btn-primary next" onclick="javascript:cancelAudit('1');">
+                            Confirm
                         </button>
                     </iais:action>
                 </div>

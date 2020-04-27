@@ -16,7 +16,7 @@
                         <iais:field value="Current Status" required="false"/>
                         <iais:value width="10"><p><iais:code code="${applicationViewDto.applicationDto.status}"/></p></iais:value>
                     </iais:row>
-
+                    <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION == applicationViewDto.applicationDto.applicationType}">
                         <iais:row>
                             <iais:field value="Licence Start Date" required="false"/>
                             <iais:value width="10">
@@ -28,7 +28,7 @@
                                 </c:if>
                             </iais:value>
                         </iais:row>
-
+                     </c:if>
                     <div class="fastTrack">
                         <iais:row>
                             <iais:field value="Fast Tracking?" required="false"/>

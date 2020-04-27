@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.AuditAssginListValidate;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -183,12 +184,22 @@ public class AuditManualListDelegator {
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos  = (List<AuditTaskDataFillterDto>)ParamUtil.getSessionAttr(request,"auditTaskDataDtos");
         String dochange =  (String)  ParamUtil.getSessionAttr(request,"dochange");
-        if(StringUtil.isEmpty(dochange))
-        getSelectedList(request,auditTaskDataDtos);
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+        if(StringUtil.isEmpty(dochange)){
+            if(getSelectedList(request,auditTaskDataDtos)){
+                Map<String, String> errMap = new HashMap<>(1);
+                errMap.put("selectedOne","AUDIT_UC_ERR0006");
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+            }else {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            }
+        }else {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+        }
+
     }
 
-    private void getSelectedList(HttpServletRequest request, List<AuditTaskDataFillterDto> auditTaskDataDtos) {
+    private boolean getSelectedList(HttpServletRequest request, List<AuditTaskDataFillterDto> auditTaskDataDtos) {
         if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
             boolean noSelectedAudit = true;
             for(int i=0; i<auditTaskDataDtos.size();i++){
@@ -202,7 +213,9 @@ public class AuditManualListDelegator {
             }
             ParamUtil.setSessionAttr(request,"auditTaskDataDtos",(Serializable) auditTaskDataDtos);
             ParamUtil.setSessionAttr(request,"isSelectedAudit",noSelectedAudit);
+            return  noSelectedAudit;
         }
+        return false;
     }
     public AuditAssginListValidateDto getValueFromPage(HttpServletRequest request) {
         AuditAssginListValidateDto dto = new AuditAssginListValidateDto();
