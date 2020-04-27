@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
@@ -456,6 +457,22 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         }
         appPremisesInspecApptDtoList = applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList).getEntity();
         createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
+        //cancel or confirm appointment date
+        ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
+        Map<String, List<ApptUserCalendarDto>> inspectionDateMap = apptInspectionDateDto.getInspectionDateMap();
+        List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
+        List<String> confirmRefNo = IaisCommonUtils.genNewArrayList();
+        confirmRefNo.add(apptRefNo);
+        if(inspectionDateMap != null) {
+            for (Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()) {
+                String refNo = inspDateMap.getKey();
+                cancelRefNo.add(refNo);
+            }
+        }
+        apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
+        apptCalendarStatusDto.setConfirmRefNums(confirmRefNo);
+        cancelOrConfirmApptDate(apptCalendarStatusDto);
+        //
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
                 MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE + urlId;
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName();
@@ -463,6 +480,10 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         inspectionDateSendEmail(submitDt, loginUrl, licenseeId, taskId);
         createMessage(url, serviceId, submitDt, licenseeId);
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_SPECIFIC_INSP_DATE, InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
+    }
+
+    private void cancelOrConfirmApptDate(ApptCalendarStatusDto apptCalendarStatusDto) {
+        appointmentClient.updateUserCalendarStatus(apptCalendarStatusDto);
     }
 
     @Override
@@ -504,6 +525,18 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
         appPremisesInspecApptDtoList = applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList).getEntity();
         createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
+        //cancel or confirm appointment date
+        ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
+        List<String> confirmRefNo = IaisCommonUtils.genNewArrayList();
+        if(inspectionDateMap != null) {
+            for (Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()) {
+                String refNo = inspDateMap.getKey();
+                confirmRefNo.add(refNo);
+            }
+        }
+        apptCalendarStatusDto.setConfirmRefNums(confirmRefNo);
+        cancelOrConfirmApptDate(apptCalendarStatusDto);
+        //
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
         String taskId = apptInspectionDateDto.getTaskDto().getId();
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
