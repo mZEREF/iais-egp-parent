@@ -48,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
@@ -64,7 +65,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -117,6 +117,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     @Autowired
     private ApplicationService applicationService;
+
+    @Autowired
+    private AppointmentClient appointmentClient;
 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
@@ -379,15 +382,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     }
 
     private String getApptDateToShow(Date date) {
-        String specificDate = Formatter.formatDateTime(date, "dd MMM");
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        int curHour24 = cal.get(Calendar.HOUR_OF_DAY);
-        if(curHour24 > 12){
-            specificDate = specificDate + " " +  Formatter.DAY_PM;
-        } else {
-            specificDate = specificDate + " " + Formatter.DAY_AM;
-        }
+        String specificDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
         return specificDate;
     }
 
@@ -438,11 +433,12 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
         String serviceId = apptInspectionDateDto.getAppointmentDto().getServiceId();
         Date submitDt = apptInspectionDateDto.getAppointmentDto().getSubmitDt();
+        String apptRefNo = appointmentClient.saveManualUserCalendar(apptInspectionDateDto.getSpecificApptDto()).getEntity();
         for(String appPremCorrId : appPremCorrIds) {
             AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
             appPremisesInspecApptDto.setAppCorrId(appPremCorrId);
-            appPremisesInspecApptDto.setApptRefNo(null);
-            appPremisesInspecApptDto.setSpecificInspDate(apptInspectionDateDto.getSpecificDate());
+            appPremisesInspecApptDto.setApptRefNo(apptRefNo);
+            appPremisesInspecApptDto.setSpecificInspDate(null);
             appPremisesInspecApptDto.setId(null);
             appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -796,7 +792,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     private void createMessage(String url, String serviceId, Date submitDt, String licenseeId) {
         MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST).getEntity();
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        String strSubmitDt = Formatter.formatDateTime(submitDt, "dd MMM yyyy");
+        String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy");
         map.put("submitDt", StringUtil.viewHtml(strSubmitDt));
         map.put("process_url", StringUtil.viewHtml(url));
         String templateMessageByContent;

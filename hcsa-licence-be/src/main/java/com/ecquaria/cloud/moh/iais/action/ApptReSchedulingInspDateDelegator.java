@@ -137,27 +137,36 @@ public class ApptReSchedulingInspDateDelegator {
     }
 
     private ApptInspectionDateDto getValidateValue(ApptInspectionDateDto apptInspectionDateDto, BaseProcessClass bpc) {
-        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
-        apptInspectionDateDto.setActionValue(actionValue);
-        String specificDate1 = ParamUtil.getDate(bpc.request, "specificDate");
-        String strHours = ParamUtil.getRequestString(bpc.request, "hours");
+        String specificStartDate = ParamUtil.getDate(bpc.request, "specificStartDate");
+        String specificEndDate = ParamUtil.getDate(bpc.request, "specificEndDate");
+        String startHours = ParamUtil.getRequestString(bpc.request, "startHours");
+        String endHours = ParamUtil.getRequestString(bpc.request, "endHours");
         List<SelectOption> hoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "hoursOption");
-        if(containValueInList(strHours, hoursOption)){
-            apptInspectionDateDto.setHours(strHours);
+        if(containValueInList(startHours, hoursOption)){
+            apptInspectionDateDto.setStartHours(startHours);
         } else {
-            apptInspectionDateDto.setHours(null);
+            apptInspectionDateDto.setStartHours(null);
         }
-        Date specificDate = getSpecificDate(specificDate1, apptInspectionDateDto, hoursOption);
-        if(specificDate != null){
-            apptInspectionDateDto.setSpecificDate(specificDate);
+        if(containValueInList(endHours, hoursOption)){
+            apptInspectionDateDto.setEndHours(endHours);
+        } else {
+            apptInspectionDateDto.setEndHours(null);
+        }
+        Date startDate = getSpecificDate(specificStartDate, hoursOption, startHours);
+        Date endDate = getSpecificDate(specificEndDate, hoursOption, endHours);
+        if(startDate != null){
+            apptInspectionDateDto.setSpecificStartDate(startDate);
+        }
+        if(endDate != null){
+            apptInspectionDateDto.setSpecificEndDate(endDate);
         }
         return apptInspectionDateDto;
     }
 
-    private Date getSpecificDate(String specificDate1, ApptInspectionDateDto apptInspectionDateDto, List<SelectOption> hoursOption) {
+    private Date getSpecificDate(String specificDate1, List<SelectOption> hoursOption, String hours) {
         if(specificDate1 != null) {
             Date specificDate = null;
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
             Date sub_date1 = null;
             try {
                 sub_date1 = sdf.parse(specificDate1);
@@ -167,9 +176,9 @@ public class ApptReSchedulingInspDateDelegator {
             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String sub_date = sdf2.format(sub_date1);
-            if(!StringUtil.isEmpty(apptInspectionDateDto.getHours())) {
+            if(!StringUtil.isEmpty(hours)) {
                 for(SelectOption so : hoursOption){
-                    if(apptInspectionDateDto.getHours().equals(so.getValue())){
+                    if(hours.equals(so.getValue())){
                         sub_date = sub_date + " " + so.getText() + ":00";
                     }
                 }
