@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author: Hc
@@ -102,6 +103,14 @@ public class AppointmentClientFallback implements AppointmentClient{
 
     @Override
     public FeignResponseEntity<Map<Integer, Integer>> getWorkAndNonMap(List<Date> dates) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Map<String, Set<Date>>> saveUserSchedule(AppointmentDto appointmentDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

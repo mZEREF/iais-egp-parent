@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @FeignClient(name = "iais-appointment", configuration = FeignConfiguration.class,
         fallback = AppointmentClientFallback.class)
@@ -58,4 +59,7 @@ public interface AppointmentClient {
 
     @PostMapping(value = "/iais-appointment/appt-nonava/daylist", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<Integer, Integer>> getWorkAndNonMap(@RequestBody List<Date> dates);
+
+    @PostMapping(value = "/iais-appointment/reverse-user-calendar",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String, Set<Date>>> saveUserSchedule(@RequestBody AppointmentDto appointmentDto);
 }
