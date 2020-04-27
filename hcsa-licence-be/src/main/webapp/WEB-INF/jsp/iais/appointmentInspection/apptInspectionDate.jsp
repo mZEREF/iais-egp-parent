@@ -116,19 +116,21 @@
                                 </tbody>
                               </table>
                             </div>
-                            <div class="row">
-                              <div class="col-md-2">
-                                <label style="font-size: 16px">Licence Start Date</label>
+                            <c:if test="${'APTY002' eq applicationViewDto.applicationDto.applicationType}">
+                              <div class="row">
+                                <div class="col-md-2">
+                                  <label style="font-size: 16px">Licence Start Date</label>
+                                </div>
+                                <div class="col-md-6">
+                                  <c:if test="${applicationViewDto.recomLiceStartDate != null}">
+                                    <span style="font-size: 16px"><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></span>
+                                  </c:if>
+                                  <c:if test="${applicationViewDto.recomLiceStartDate == null}">
+                                    <span style="font-size: 16px">-</span>
+                                  </c:if>
+                                </div>
                               </div>
-                              <div class="col-md-6">
-                                <c:if test="${applicationViewDto.recomLiceStartDate != null}">
-                                  <span style="font-size: 16px"><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></span>
-                                </c:if>
-                                <c:if test="${applicationViewDto.recomLiceStartDate == null}">
-                                  <span style="font-size: 16px">-</span>
-                                </c:if>
-                              </div>
-                            </div>
+                            </c:if>
                             <div class="row">
                               <div class="col-md-2">
                                 <label style="font-size: 16px">Fast Tracking?</label>
