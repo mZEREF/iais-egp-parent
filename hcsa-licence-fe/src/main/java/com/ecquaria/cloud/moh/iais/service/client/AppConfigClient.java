@@ -28,7 +28,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import java.util.List;
+import java.util.Set;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,9 +39,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * AppConfigClient
@@ -93,7 +91,7 @@ public interface AppConfigClient {
     FeignResponseEntity<List<RiskResultDto>> getRiskResult(@RequestBody List<RiskAcceptiionDto> riskAcceptiionDtoList);
 
     @RequestMapping(path = "/iais-hcsa-fee/calculate-fee",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<FeeDto> newFee(@RequestBody @Required List<LicenceFeeDto> dto);
+    FeignResponseEntity<FeeDto> newFee(@RequestBody List<LicenceFeeDto> dto);
 
     @GetMapping(path = "/iais-hcsa-checklist/config/{id}")
     FeignResponseEntity<ChecklistConfigDto> getChecklistConfigById(@PathVariable(value = "id") String configId);
@@ -169,7 +167,7 @@ public interface AppConfigClient {
     FeignResponseEntity<List<HcsaRiskGolbalExtDto>> getRiskGolbalextDtoById(@PathVariable("id")String id);
 
     @PostMapping(value = "/iais-hcsa-fee/fee-amendment", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<FeeDto> amendmentFee(@RequestBody @Required AmendmentFeeDto amendmentFeeDto);
+    FeignResponseEntity<FeeDto> amendmentFee(@RequestBody AmendmentFeeDto amendmentFeeDto);
 
     @GetMapping(path = "/iais-hcsa-risk/lastandaecriskScore",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaLastInspectionDto> getLastAndSecRiskScore(@RequestBody HcsaLastInspectionDto inspDto);
@@ -184,7 +182,7 @@ public interface AppConfigClient {
     FeignResponseEntity<String> getServiceNameById(@PathVariable("serviceId")String serviceId);
 
     @PostMapping  (value = "/iais-hcsa-fee/fee-renew", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<FeeDto> renewFee(@RequestBody @Required List<LicenceFeeDto> dtos);
+    FeignResponseEntity<FeeDto> renewFee(@RequestBody List<LicenceFeeDto> dtos);
 
     @GetMapping(value = "/hcsa-config/hcsa-svc-perosnnel-by-service-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaSvcPersonnelDto> getHcsaSvcPersonnelDtoByServiceId(@RequestParam("serviceId") String serviceId);
