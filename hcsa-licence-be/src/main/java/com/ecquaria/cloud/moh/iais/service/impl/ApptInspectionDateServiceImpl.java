@@ -563,11 +563,10 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             taskDtos.add(tDto);
         }
         taskService.createTasks(taskDtos);
-        Date saveDate = null;
         if (apptInspectionDateDto.getProcessDec().equals(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE)) {
             List<AppPremisesInspecApptDto> appPremisesInspecApptDtoCreateList = IaisCommonUtils.genNewArrayList();
             List<AppPremisesInspecApptDto> appPremisesInspecApptDtoUpdateList = IaisCommonUtils.genNewArrayList();
-            saveDate = apptInspectionDateDto.getSpecificDate();
+            String apptRefNo = appointmentClient.saveManualUserCalendar(apptInspectionDateDto.getSpecificApptDto()).getEntity();
             //remove inactive inspection date
             if (!IaisCommonUtils.isEmpty(appPremisesInspecApptDtos)) {
                 appPremInspApptDto1 = appPremisesInspecApptDtos.get(0);
@@ -584,8 +583,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 for (String appPremCorrId : appPremCorrIds) {
                     AppPremisesInspecApptDto appPremInspApptDto = new AppPremisesInspecApptDto();
                     appPremInspApptDto.setAppCorrId(appPremCorrId);
-                    appPremInspApptDto.setApptRefNo(null);
-                    appPremInspApptDto.setSpecificInspDate(saveDate);
+                    appPremInspApptDto.setApptRefNo(apptRefNo);
+                    appPremInspApptDto.setSpecificInspDate(null);
                     appPremInspApptDto.setId(null);
                     appPremInspApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     if(appPremInspApptDto1 != null){
@@ -615,9 +614,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             beEicGatewayClient.reSchedulingSaveFeDate(apptFeConfirmDateDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization());
 
-        } else if (apptInspectionDateDto.getProcessDec().equals(InspectionConstants.PROCESS_DECI_ACCEPTS_THE_DATE)) {
-            saveDate = appPremisesInspecApptDtos.get(0).getSpecificInspDate();
         }
+        Date saveDate = apptInspectionDateDto.getSpecificStartDate();
         //save Inspection date / status, save Application
         saveRoutingData(appPremCorrIds, taskDtoList, saveDate, apptInspectionDateDto);
     }
