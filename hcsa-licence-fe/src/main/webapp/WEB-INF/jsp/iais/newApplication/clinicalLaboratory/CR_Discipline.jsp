@@ -200,12 +200,12 @@
   var doChangeText = function (levelTwoListId) {
     if(num%2===1){
       if(levelTwoListId==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
-        $('textarea[name="pleaseIndicate1"]').prop('disabled',false);
+        $('textarea[name="pleaseIndicate0"]').prop('disabled',false);
       }
     }
     else {
       if(levelTwoListId==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
-        $('textarea[name="pleaseIndicate1"]').prop('disabled',true);
+        $('textarea[name="pleaseIndicate0"]').prop('disabled',true);
       }
     }
     num=num+1;
@@ -215,10 +215,10 @@
   var doChangeOthers = function (levelOneListId) {
     if(levelOneListId==='0B38F14D-1123-EA11-BE78-000C29D29DB0'){
       if(numOthers%2===1){
-        if($('textarea[name="pleaseIndicate1"]').disabled===false){
+        if($('textarea[name="pleaseIndicate0"]').disabled===false){
           num=num+1;
         }
-        $('textarea[name="pleaseIndicate1"]').prop('disabled',true);
+        $('textarea[name="pleaseIndicate0"]').prop('disabled',true);
       }
       numOthers=numOthers+1;
     }
