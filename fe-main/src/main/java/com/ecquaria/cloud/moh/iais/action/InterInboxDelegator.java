@@ -357,7 +357,7 @@ public class InterInboxDelegator {
         url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                 .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohLicenceView")
                 .append("?licenceId=")
-                .append(MaskUtil.maskValue("licenceId",licId));
+                .append(licId);
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
@@ -559,9 +559,9 @@ public class InterInboxDelegator {
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                 .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohWithdrawalApplication")
-                .append("?appId=")
+                .append("?withdrawAppId=")
                 .append(MaskUtil.maskValue("withdrawAppId",appId))
-                .append("&appNo=")
+                .append("&withdrawAppNo=")
                 .append(MaskUtil.maskValue("withdrawAppNo",appNo));
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);

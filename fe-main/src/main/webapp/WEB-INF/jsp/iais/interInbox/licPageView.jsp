@@ -146,7 +146,6 @@
     $(".licActions").change(function () {
         var licNo = $(this).closest("tr").find(".licNo").html();
         var licId = $(this).closest("tr").find(".licId").html();
-        alert("licNo"+licNo+"---"+licId);
         showWaiting();
         $("[name='crud_action_value']").val(licNo);
         $("[name='action_id_value']").val(licId);
