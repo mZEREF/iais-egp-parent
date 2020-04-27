@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppPremInsDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
@@ -79,10 +78,16 @@ public class KpiColourByWorkDaysBatchJob {
 
     private void logAbout(String methodName){
         log.debug(StringUtil.changeForLog("****The***** " + methodName +" ******Start ****"));
-
+        List<TaskDto> taskDtos = organizationClient.getKpiTaskByStatus().getEntity();
+        if(!IaisCommonUtils.isEmpty(taskDtos)){
+            for(TaskDto taskDto : taskDtos){
+                getTimeLimitWarningColourByTask(taskDto);
+            }
+        }
     }
 
-    private TaskDto getTimeLimitWarningColourByTask(String appPremCorrId, HcsaServiceDto hcsaServiceDto, TaskDto taskDto) {
+    private TaskDto getTimeLimitWarningColourByTask(TaskDto taskDto) {
+        String appPremCorrId = taskDto.getRefNo();
         int days = 0;
         List<Date> workAndNonWorkDays = IaisCommonUtils.genNewArrayList();
         if(taskDto.getTaskKey().equals(HcsaConsts.ROUTING_STAGE_INS)) {
