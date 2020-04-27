@@ -520,7 +520,7 @@ public class LicenceViewServiceDelegator {
         }
         if(selectsList.contains("doc")){
             appEditSelectDto.setDocEdit(true);
-            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">AuthoriseD Person</li>";
+            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Doc</li>";
         }
         if(selectsList.contains("service")){
             appEditSelectDto.setServiceEdit(true);
