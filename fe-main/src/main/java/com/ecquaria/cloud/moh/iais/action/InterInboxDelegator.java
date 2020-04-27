@@ -85,7 +85,11 @@ public class InterInboxDelegator {
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
         IaisEGPHelper.clearSessionAttr(bpc.request,InboxConst.class);
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
-        interInboxUserDto = inboxService.getUserInfoByUserId(loginContext.getUserId());
+        interInboxUserDto = new InterInboxUserDto();
+        interInboxUserDto.setLicenseeId(loginContext.getLicenseeId());
+        interInboxUserDto.setUserId(loginContext.getUserId());
+        interInboxUserDto.setOrgId(loginContext.getOrgId());
+        interInboxUserDto.setUserDomain(loginContext.getUserDomain());
         log.debug(StringUtil.changeForLog("Login role information --->> ##User-Id:"+interInboxUserDto.getUserId()+"### Licensee-Id:"+interInboxUserDto.getLicenseeId()));
         ParamUtil.setSessionAttr(bpc.request,InboxConst.INTER_INBOX_USER_INFO, interInboxUserDto);
         AuditTrailHelper.auditFunction("main-web", "main web");
@@ -621,6 +625,11 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request,InboxConst.APP_RECALL_RESULT, "The application can not recall");
     }
 
+    public void appToAppView(BaseProcessClass bpc){
+
+
+    }
+
     private void setNumInfoToRequest(HttpServletRequest request,InterInboxUserDto interInboxUserDto){
         Integer licActiveNum = inboxService.licActiveStatusNum(interInboxUserDto.getLicenseeId());
         Integer appDraftNum = inboxService.appDraftNum(interInboxUserDto.getLicenseeId());
@@ -655,7 +664,7 @@ public class InterInboxDelegator {
         List<SelectOption> applicationTypeSelectList = IaisCommonUtils.genNewArrayList();
         applicationTypeSelectList.add(new SelectOption("All", "All"));
         applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_APPEAL, "Renewal"));
-        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL, "Withdrawal "));
+        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL, "Withdrawal"));
         applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_CESSATION, "Cessation "));
         applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, "Request For Change"));
         applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, "New Licence Application"));

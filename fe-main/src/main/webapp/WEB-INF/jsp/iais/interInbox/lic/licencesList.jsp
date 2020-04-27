@@ -145,10 +145,6 @@
                                                         class="check-square"></span>
                                                 </label>
                                             </c:if>
-                                            <c:if test="${licenceQuery.status == 'LICEST001'}">
-                                                <input class="form-check-input licenceCheck" id="licence1" type="checkbox"
-                                                       name="licenceNo" value="licenId${status.index}" aria-invalid="false" onclick="licClick('${licenceQuery.status}')">
-                                            </c:if>
                                         </div>
                                     </td>
                                     <td hidden>

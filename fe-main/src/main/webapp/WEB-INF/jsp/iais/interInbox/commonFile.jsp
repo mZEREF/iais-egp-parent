@@ -103,5 +103,9 @@
         $("[name='action_no_value']").val(appNo);
         $("[name='action_type_value']").val(appType);
         submit('appDraft');
+    });
+
+    $(".appNo").click(function () {
+        submit("appToAppView");
     })
 </script>
