@@ -46,7 +46,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,10 +59,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Wenkang
@@ -166,7 +164,7 @@ public interface HcsaConfigClient {
 
 
     @PostMapping  (value = "/iais-hcsa-fee/fee-renew", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<FeeDto> renewFee(@RequestBody @Required List<LicenceFeeDto> dtos);
+    FeignResponseEntity<FeeDto> renewFee(@RequestBody List<LicenceFeeDto> dtos);
 
     @GetMapping(value = "/iais-hcsa-risk/weightagebycode{serviceCode}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskWeightageDto>> getWeightageRiskBySvcCode(@PathVariable("serviceCode")String serviceCode);

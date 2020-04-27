@@ -150,7 +150,7 @@
             <dependency>
                 <groupId>com.ecquaria.submission.client</groupId>
                 <artifactId>submissionclient</artifactId>
-                <version>0.75</version>
+                <version>0.76</version>
             </dependency>
 
             <dependency>
@@ -193,7 +193,7 @@
             <dependency>
                 <groupId>com.ecquaria.kafka</groupId>
                 <artifactId>servicewrapper</artifactId>
-                <version>0.21</version>
+                <version>0.22</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
