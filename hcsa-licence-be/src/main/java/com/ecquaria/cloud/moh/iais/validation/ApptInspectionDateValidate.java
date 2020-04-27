@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -43,6 +42,7 @@ public class ApptInspectionDateValidate implements CustomizeValidator {
         if(statusCode == 406){
             errMap.put("specificDate", "UC_INSP_ERR0007");
         }
+        ParamUtil.setSessionAttr(request, "apptInspectionDateDto", apptInspectionDateDto);
         return errMap;
     }
 }
