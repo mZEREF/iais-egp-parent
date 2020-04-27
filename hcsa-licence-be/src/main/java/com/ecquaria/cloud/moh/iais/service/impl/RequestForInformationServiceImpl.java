@@ -141,6 +141,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
             ApplicationConsts.APPLICATION_STATUS_REJECTED,
             ApplicationConsts.APPLICATION_STATUS_WITHDRAWN,
+            ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED,
             ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO
     };
     private final String[] licStatus=new String[]{

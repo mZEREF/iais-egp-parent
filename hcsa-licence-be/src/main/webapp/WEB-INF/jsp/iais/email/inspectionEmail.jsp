@@ -141,23 +141,7 @@
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                    <tr height="1">
-                                                        <td class="col-xs-2">
-                                                            <strong>
-                                                                Licence Start Date
-                                                            </strong>
-                                                        </td>
-                                                        <td>
-                                                            <div class="col-sm-9">
-                                                                <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
-                                                                    <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
-                                                                </c:if>
-                                                                <c:if test="${empty applicationViewDto.recomLiceStartDate}">
-                                                                    <p>-</p>
-                                                                </c:if>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+
                                                     <tr height="1">
                                                         <td class="col-xs-2">
                                                             <strong>
