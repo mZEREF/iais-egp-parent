@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGrpDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -46,8 +47,8 @@ public interface HcsaLicenceClient {
     @RequestMapping(path = "/hcsa-licence/hci-code-licence-number/{hciCode}",method = RequestMethod.GET)
     FeignResponseEntity<Integer> licenceNumber(@PathVariable("hciCode") String hciCode);
 
-    @RequestMapping(path = "/hcsa-licence/service-group-licence-number",method = RequestMethod.GET)
-    FeignResponseEntity<String > groupLicenceNumber(@RequestParam("serivceCode") String groupLicence,@RequestParam("orgLicecnceId")String orgLicecnceId,@RequestParam("premisesNumber") Integer premisesNumber);
+    @RequestMapping(path = "/hcsa-licence/service-group-licence-number",method = RequestMethod.POST)
+    FeignResponseEntity<String > groupLicenceNumber(@RequestBody LicenceGrpDto licenceGrpDto);
 
     @RequestMapping(path = "/hcsa-licence-transport/licences",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceGroupDto>> createLicence(@RequestBody List<LicenceGroupDto> licenceGroupDtoList);

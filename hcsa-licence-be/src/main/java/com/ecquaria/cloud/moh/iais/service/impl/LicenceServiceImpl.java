@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGrpDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -119,9 +120,13 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     @Override
-    public String getGroupLicenceNo(String hscaCode, AppPremisesRecommendationDto appPremisesRecommendationDto,String orgLicecnceId,Integer premisesNumber) {
+    public String getGroupLicenceNo(String serviceCode, AppPremisesRecommendationDto appPremisesRecommendationDto,String orgLicecnceId,Integer premisesNumber) {
         log.info(StringUtil.changeForLog("The getGroupLicenceNo start ..."));
-        String no = hcsaLicenceClient.groupLicenceNumber(hscaCode,orgLicecnceId,premisesNumber).getEntity();
+        LicenceGrpDto licenceGrpDto = new LicenceGrpDto();
+        licenceGrpDto.setSerivceCode(serviceCode);
+        licenceGrpDto.setOrgLicecnceId(orgLicecnceId);
+        licenceGrpDto.setPremisesNumber(premisesNumber);
+        String no = hcsaLicenceClient.groupLicenceNumber(licenceGrpDto).getEntity();
         log.info(StringUtil.changeForLog("The getGroupLicenceNo no -->:"+no));
         int yearLength = 0;
         if(appPremisesRecommendationDto != null && RiskConsts.YEAR.equals(appPremisesRecommendationDto.getChronoUnit())){
@@ -129,7 +134,7 @@ public class LicenceServiceImpl implements LicenceService {
         }
         log.info(StringUtil.changeForLog("The getGroupLicenceNo yearLength -->:"+yearLength));
         log.info(StringUtil.changeForLog("The getGroupLicenceNo end ..."));
-        return   systemClient.groupLicence(hscaCode,String.valueOf(yearLength),no).getEntity();
+        return   systemClient.groupLicence(serviceCode,String.valueOf(yearLength),no).getEntity();
     }
 
     @Override
