@@ -108,6 +108,10 @@ public class INTERNET___MohNewApplication___1 extends BaseProcessClass {
 	// 		PrepareJump->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareJump", this);
 	}
+	public void inboxToPreview_OnStepProcess_0() throws Exception {
+	// 		InboxToPreview->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "inboxToPreview", this);
+	}
 	
 
 }

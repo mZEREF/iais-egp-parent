@@ -186,6 +186,13 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InboxToPreview" x="460" y="620">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inboxToPreview_OnStepProcess_0" name="inboxToPreview_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Premises" stageIndicator="" x="600" y="20">
@@ -213,6 +220,12 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AckPage" stageIndicator="" x="1150" y="-60">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="inboxToView" stageIndicator="" x="640" y="620">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -288,13 +301,13 @@
    <position>{(990,170)(1040,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(990,170)(880,610)}</position>
+   <position>{(990,170)(900,690)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSaveDraft" style="oblique">
-   <position>{(1040,310)(880,610)}</position>
+   <position>{(1040,310)(900,690)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
-   <position>{(880,610)(317,617)(260,160)}</position>
+   <position>{(900,690)(306,694)(260,160)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/InvokeForms" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareForms" style="oblique">
    <position>{(520,260)(610,260)}</position>
@@ -309,7 +322,7 @@
    <position>{(990,170)(1160,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSubmit" style="oblique">
-   <position>{(1160,310)(880,610)}</position>
+   <position>{(1160,310)(900,690)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/jumpBank" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Payment" style="rectanular">
    <position>{(620,480)(730,480)}</position>
@@ -333,7 +346,7 @@
    <position>{(1270,70)(940,-40)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(1270,70)(880,610)}</position>
+   <position>{(1270,70)(900,690)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doRequestForChange" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(990,170)(1090,100)}</position>
@@ -374,6 +387,12 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/MohSubmitInspectionDate" style="rectanular">
    <position>{(1320,220)(1570,270)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InboxToPreview" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(430,160)(480,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/inboxToView" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InboxToPreview" style="rectanular">
+   <position>{(480,640)(660,640)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Merges/Merge/Merge1" componentIfTrue="/Steps/AutomaticStep/PrepareAckPage" defClass="" executor="" icon="" leftOperand="isrfiSuccess" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="1250" y="50">
@@ -390,6 +409,7 @@
    <SwitchCase component="/Steps/AutomaticStep/PreparePayment" value="&quot;payment&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareErrorAck" value="&quot;errorAck&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareJump" value="&quot;jump&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InboxToPreview" value="&quot;inboxToPreview&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="Switch2" name="Switch2" x="970" y="150">
    <Description/>
@@ -409,7 +429,7 @@
  </Switches>
  <Branches/>
  <Merges>
-  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="860" y="590">
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="880" y="670">
    <Description/>
   </Merge>
   <Merge defClass="" executor="" icon="" name="Merge2" type="Or" x="1550" y="250">

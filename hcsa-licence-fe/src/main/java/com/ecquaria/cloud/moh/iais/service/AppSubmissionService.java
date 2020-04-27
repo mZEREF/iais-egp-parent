@@ -31,6 +31,7 @@ public interface AppSubmissionService {
     public PreOrPostInspectionResultDto judgeIsPreInspection(AppSubmissionDto appSubmissionDto);
     public void setRiskToDto(AppSubmissionDto appSubmissionDto);
     public AppSubmissionDto getAppSubmissionDtoByAppNo(String appNo);
+    public AppSubmissionDto getAppSubmissionDto(String appNo);
     public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId);
     public FeeDto getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto);
     public AppSubmissionDto submitRequestChange(AppSubmissionDto appSubmissionDto, Process process);
