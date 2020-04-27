@@ -60,6 +60,9 @@ public interface AppointmentClient {
     @PostMapping(value = "/iais-appointment/appt-nonava/daylist", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<Integer, Integer>> getWorkAndNonMap(@RequestBody List<Date> dates);
 
-    @PostMapping(value = "/iais-appointment/reverse-user-calendar",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Map<String, Set<Date>>> saveUserSchedule(@RequestBody AppointmentDto appointmentDto);
+    @PostMapping(value = "/iais-appointment/user-calendar-validation",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String, Set<Date>>> validateUserCalendar(@RequestBody AppointmentDto appointmentDto);
+
+    @PostMapping(value = "/iais-appointment/manual-calendar-appointment",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> saveManualUserCalendar(@RequestBody AppointmentDto appointmentDto);
 }

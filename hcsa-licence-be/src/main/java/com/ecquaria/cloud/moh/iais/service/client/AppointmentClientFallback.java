@@ -110,7 +110,15 @@ public class AppointmentClientFallback implements AppointmentClient{
     }
 
     @Override
-    public FeignResponseEntity<Map<String, Set<Date>>> saveUserSchedule(AppointmentDto appointmentDto) {
+    public FeignResponseEntity<Map<String, Set<Date>>> validateUserCalendar(AppointmentDto appointmentDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<String> saveManualUserCalendar(AppointmentDto appointmentDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
