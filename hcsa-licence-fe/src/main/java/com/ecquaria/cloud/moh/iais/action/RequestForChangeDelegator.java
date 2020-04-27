@@ -625,7 +625,7 @@ public class RequestForChangeDelegator {
                         error.put("uenError","can not transfer to self");
                     }
                 }else{
-                    error.put("uenError","can not transfer");
+                    error.put("uenError","Please kindly submit a Cessation application and advise next Licensee to submit a new licence application.");
                 }
             }
         }
