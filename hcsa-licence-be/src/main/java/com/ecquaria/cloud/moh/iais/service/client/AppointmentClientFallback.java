@@ -8,12 +8,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import org.springframework.http.HttpHeaders;
 
 /**
  * @Author: Hc
@@ -111,7 +109,7 @@ public class AppointmentClientFallback implements AppointmentClient{
     }
 
     @Override
-    public FeignResponseEntity<Map<String, Set<Date>>> validateUserCalendar(AppointmentDto appointmentDto) {
+    public FeignResponseEntity<Map<String, List<String>>> validateUserCalendar(AppointmentDto appointmentDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

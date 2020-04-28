@@ -10,6 +10,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,11 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @FeignClient(name = "iais-appointment", configuration = FeignConfiguration.class,
         fallback = AppointmentClientFallback.class)
@@ -62,7 +60,7 @@ public interface AppointmentClient {
     FeignResponseEntity<Map<Integer, Integer>> getWorkAndNonMap(@RequestBody List<Date> dates);
 
     @PostMapping(value = "/iais-appointment/user-calendar-validation",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Map<String, Set<Date>>> validateUserCalendar(@RequestBody AppointmentDto appointmentDto);
+    FeignResponseEntity<Map<String, List<String>>> validateUserCalendar(@RequestBody AppointmentDto appointmentDto);
 
     @PostMapping(value = "/iais-appointment/manual-calendar-appointment",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveManualUserCalendar(@RequestBody AppointmentDto appointmentDto);
