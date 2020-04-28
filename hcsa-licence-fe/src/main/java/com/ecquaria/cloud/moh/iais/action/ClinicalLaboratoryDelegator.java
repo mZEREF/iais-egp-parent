@@ -797,10 +797,10 @@ public class ClinicalLaboratoryDelegator {
                 if (appSubmissionDto.isNeedEditController()) {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     if(isGetDataFromPagePo){
-                        clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION);
+                        clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_PRINCIPAL_OFFICERS);
                     }
                     if(isGetDataFromPageDpo){
-                        clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION);
+                        clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DEPUTY_PRINCIPAL_OFFICERS);
                     }
                     appSubmissionDto.setClickEditPage(clickEditPages);
                     AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();

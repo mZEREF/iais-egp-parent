@@ -116,8 +116,18 @@ public class RequestForChangeDelegator {
      * @param bpc
      * @Decription doChoose
      */
-    public void doChoose(BaseProcessClass bpc){
+    public void doChoose(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do start doChoose ...."));
+        String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        if("back".equals(action)){
+            StringBuffer url = new StringBuffer();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/main-web/eservice/INTERNET/MohInternetInbox")
+                    .append("?init_to_page=initLic");
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+            return;
+        }
         String amendType = ParamUtil.getString(bpc.request, "amendType");
         boolean flag = true;
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
