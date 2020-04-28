@@ -65,14 +65,13 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
 
     private void subVad(Map<String, String> errMap, HcsaRiskLicenceTenureDto fdto) {
         List<SubLicenceTenureDto> subList = fdto.getSubDtoList();
-        int timeFlagNum = 0;
         int itFlagNum = 0;
         int maxAndMinFlagNum = 0;
+        if( subList== null || subList.size() ==0){
+            errMap.put(fdto.getSvcCode()+"maxAddList","Please add Licence Tenure Configuration for " + fdto.getServiceName());
+            return;
+        }
         for(SubLicenceTenureDto temp:subList){
-            boolean timeFlag = timeTypeVad(temp,errMap,fdto.getSvcCode());
-            if(!timeFlag){
-                timeFlagNum++;
-            }
             boolean ltFlag = ltVad(temp,errMap,fdto.getSvcCode());
             if(!ltFlag){
                 itFlagNum++;
@@ -82,7 +81,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                 maxAndMinFlagNum++;
             }
         }
-        if(timeFlagNum==0&&itFlagNum==0&&maxAndMinFlagNum==0){
+        if(itFlagNum==0&&maxAndMinFlagNum==0){
             sortVad(subList,errMap,fdto.getSvcCode());
         }
     }
@@ -208,33 +207,36 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
         return numfalg;
     }
 
-    private boolean timeTypeVad(SubLicenceTenureDto temp, Map<String, String> errMap, String svcCode) {
-        if(StringUtil.isEmpty(temp.getDateType())){
-            errMap.put(svcCode+temp.getOrderNum()+"timeerr","The Filed is mandatory.");
-            return false;
-        }
-        return true;
-    }
 
     private boolean ltVad(SubLicenceTenureDto temp,Map<String, String> errMap,String svcCode) {
         boolean flag = true;
+        Integer numyear =0;
+        Integer numMonth =0;
         try {
-            if(StringUtil.isEmpty(temp.getLicenceTenure())){
+            if(StringUtil.isEmpty(temp.getYearNum())){
                 errMap.put(svcCode+temp.getOrderNum()+"lterr","The Filed is mandatory.");
                 flag = false;
-            }else{
-                Integer num = Integer.parseInt(temp.getLicenceTenure());
-                if(RiskConsts.MONTH.equals(temp.getDateType())){
-                    if(num<0||num>13){
-                        errMap.put(svcCode+temp.getOrderNum()+"lterr","Licence Tenure should be less than 12 months");
-                        flag = false;
-                    }
-                }else{
-                    if(num<0||num>5){
+            }
+            else{
+                numyear = Integer.parseInt(temp.getYearNum());
+                    if(numyear<0||numyear>5){
                         errMap.put(svcCode+temp.getOrderNum()+"lterr","Licence Tenure should be less than 5 years");
                         flag = false;
                     }
+                  }
+            if(StringUtil.isEmpty(temp.getMonthNum())){
+                errMap.put(svcCode+temp.getOrderNum()+"timeerr","The Filed is mandatory.");
+                flag = false;
+            }
+            else {
+                numMonth = Integer.parseInt(temp.getMonthNum());
+                if( numMonth <0|| numMonth>13){
+                    errMap.put(svcCode+temp.getOrderNum()+"timeerr","Licence Tenure should be less than 12 months");
+                    flag = false;
                 }
+            }
+            if(flag){
+                temp.setLicenceTenure(String.valueOf(numyear*12+numMonth));
             }
         }catch (Exception e){
             errMap.put(svcCode+temp.getOrderNum()+"lterr","Invalid Number.");

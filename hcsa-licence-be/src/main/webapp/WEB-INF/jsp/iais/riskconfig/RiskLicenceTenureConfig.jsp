@@ -49,16 +49,20 @@
                             <div class="table-gp">
                                 <table class="table">
                                     <thead>
-                                    <tr>
-                                        <th width="10%">Service Name</th>
-                                        <th width="22%">Effective Start Date</th>
-                                        <th width="22%">Effective End Date</th>
-                                        <th width="8%">Minimum Risk Score (greater than)</th>
-                                        <th width="8%">Maximum Risk Score (less than or equal to)</th>
-                                        <th width="10%">Licence Tenure</th>
-                                        <th width="10%">DateType</th>
-                                        <th width="10%">Action</th>
+                                    <tr style="border-style: hidden;">
+                                        <th width="10%" rowspan="2">Service Name</th>
+                                        <th width="22%" rowspan="2">Effective Start Date</th>
+                                        <th width="22%" rowspan="2">Effective End Date</th>
+                                        <th width="8%" rowspan="2">Minimum Risk Score (greater than)</th>
+                                        <th width="8%" rowspan="2">Maximum Risk Score (less than or equal to)</th>
+                                        <th width="20%" colspan="2">Licence Tenure</th>
+                                        <th width="5%" rowspan="2">Action</th>
                                     </tr>
+                                    <tr style="border-style: hidden;">
+                                    <th width="10%">Year(s)</th>
+                                    <th width="10%">Month(s)</th>
+                                    </tr>
+                                    <tr/>
                                     </thead>
                                     <tbody>
                                     <span class="error-msg" id="error_All" name="iaisErrorMsg"></span>
@@ -98,7 +102,6 @@
                                                     <c:otherwise>
                                                         <div>
                                                             <div style="width: 120px;float: left">
-                                                                <input type="text" maxlength="5" name="<c:out value="${sub.id}left"/>" value="">
                                                             </div>
                                                         </div>
                                                     </c:otherwise>
@@ -121,7 +124,6 @@
                                                     <c:otherwise>
                                                         <div>
                                                             <div style="width: 120px;float: left">
-                                                                <input type="text" maxlength="5" name="<c:out value="${sub.id}right"/>" value="<c:out value="${sub.columRight}"/>">
                                                             </div>
                                                         </div>
                                                     </c:otherwise>
@@ -134,15 +136,14 @@
                                                     <c:when test="${ten.subDtoList!=null&&!empty ten.subDtoList}">
                                                         <c:forEach var="sub" items="${ten.subDtoList}" varStatus="status">
                                                             <c:set var="tenName" value="${ten.svcCode}${sub.orderNum}"> </c:set>
-                                                            <div style="width: 100px;" id = "<c:out value="${tenName}ltdiv"/>">
-                                                                <input type="text" maxlength="5" name="<c:out value="${tenName}lt"/>" value="<c:out value="${sub.licenceTenure}"/>">
-                                                                <span class="error-msg" id="<c:out value="error_${tenName}lterr"/>" name="iaisErrorMsg"></span>
+                                                            <div style="width: 120px;height:50px;margin-bottom:15px;" id = "<c:out value="${tenName}ltdiv"/>">
+                                                                <iais:select name="${tenName}ltYear" options="yearSelectOptions" firstOption="--" value="${sub.yearNum}" ></iais:select>
                                                             </div>
+                                                            <span class="error-msg" id="<c:out value="error_${tenName}lterr"/>" name="iaisErrorMsg"></span>
                                                         </c:forEach>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <div style="width: 100px;">
-                                                            <input type="text" maxlength="5" name="<c:out value="${sub.id}right"/>" value="<c:out value="${sub.licenceTenure}"/>">
+                                                        <div style="width: 120px;height:50px;margin-bottom:15px;">
                                                         </div>
                                                     </c:otherwise>
                                                 </c:choose>
@@ -153,64 +154,64 @@
                                                         <c:forEach var="sub" items="${ten.subDtoList}" varStatus="status">
                                                             <c:set var="tenName" value="${ten.svcCode}${sub.orderNum}"> </c:set>
                                                             <div style="width: 120px;height:50px;margin-bottom:15px;" id ="<c:out value="${tenName}timediv"/>">
-                                                                <iais:select name="${tenName}type" options="timeType" firstOption="Please Select" value="${sub.dateType}" ></iais:select>
+                                                                <iais:select name="${tenName}ltMonth" options="monthSelectOptions" firstOption="--" value="${sub.monthNum}" ></iais:select>
                                                             </div>
                                                             <span class="error-msg" id="<c:out value="error_${tenName}timeerr"/>" name="iaisErrorMsg"></span>
                                                         </c:forEach>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <div style="width: 120px;height:50px;margin-bottom:15px;">
-                                                            <iais:select name="${sub.id}type" options="timeType" firstOption="Please Select" value="${sub.dateType}" ></iais:select>
                                                         </div>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
-                                            <td  width="10%">
+                                            <td  width="5%">
                                                 <c:choose>
                                                     <c:when test="${ten.subDtoList!=null&&!empty ten.subDtoList}">
                                                         <c:forEach var="sub" items="${ten.subDtoList}" varStatus="status">
-                                                            <c:if test="${ten.maxSubOrderNum>0}">
-                                                                <div style="width: 100px;height:50px;margin-bottom:15px;padding-top: 5px;">
+                                                            <div style="width: 100px;height:50px;margin-bottom:15px;padding-top: 5px;">
+                                                                <c:if test="${ten.maxSubOrderNum>=0}">
                                                                     <c:set var="tenName" value="${ten.svcCode}${sub.orderNum}"> </c:set>
-                                                                    <span class="removeBtn" onclick="removeColum(<c:out value="'${tenName}'"/>)"><i class="fa fa-minus-circle"></i></span>&nbsp;&nbsp;&nbsp;
-                                                                </div>
+                                                                    <span class="removeBtn" onclick="removeColum(<c:out value="'${tenName}'"/>)"><i class="fa fa-minus-circle"></i></span>
                                                             </c:if>
+                                                                <c:if test="${status.index == 0}">
+                                                                    <span class="removeBtn" onclick="addColum(<c:out value="'${ten.svcCode}'"/>)"><i class="fa fa-plus-circle"></i></span>
+                                                                </c:if>
+                                                            </div>
                                                         </c:forEach>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <div style="width: 100px;height:50px;margin-bottom:15px;padding-top: 5px;">
-                                                            <span class="removeBtn">  <i class="fa fa-minus-circle"></i></span>
+                                                            <span class="removeBtn" onclick="addColum(<c:out value="'${ten.svcCode}'"/>)"><i class="fa fa-plus-circle"></i></span>
                                                         </div>
                                                     </c:otherwise>
                                                 </c:choose>
-                                                <div style="width: 100px;height:50px;margin-bottom:15px;padding-top: 5px;">
-                                                <span class="removeBtn" onclick="addColum(<c:out value="'${ten.svcCode}'"/>)"><i class="fa fa-plus-circle"></i></span>
-                                                </div>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td  width="10%"></td>
                                             <td  width="22%"></td>
                                             <td width="22%"></td>
-                                            <td width="8%"></td>
                                             <td width="8%">
-
                                                 <c:set value = "error_${ten.svcCode}maxsort" var = "maxsort"/>
                                                 <span class="error-msg" id="<c:out value="${maxsort}"/>" name="iaisErrorMsg"></span>
                                             </td>
-                                            <td width="10%">
+                                            <td width="8%">
                                                 <c:set value = "error_${ten.svcCode}maxminsort" var = "maxminsort"/>
                                                 <span class="error-msg" id="<c:out value="${maxminsort}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td width="10%">
                                                 <c:set value = "error_${ten.svcCode}ltsort" var = "ltsort"/>
                                                 <span class="error-msg" id="<c:out value="${ltsort}"/>" name="iaisErrorMsg"></span>
+                                            </td>
+                                            <td width="10%">
                                                 <c:set value = "error_${ten.svcCode}maxSubList" var = "ltsort"/>
                                                 <span class="error-msg" id="<c:out value="${ltsort}"/>" name="iaisErrorMsg"></span>
                                             </td>
-                                            <td width="10%"></td>
-                                            <td width="10%"></td>
-
+                                            <td width="5%">
+                                                <c:set value = "error_${ten.svcCode}maxAddList" var = "ltsort"/>
+                                                <span class="error-msg" id="<c:out value="${ltsort}"/>" name="iaisErrorMsg"></span>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                     </tbody>

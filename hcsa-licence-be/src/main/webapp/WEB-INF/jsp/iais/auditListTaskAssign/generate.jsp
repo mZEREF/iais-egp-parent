@@ -80,18 +80,18 @@
             </iais:row>
 
             <iais:row>
-                <iais:field value="Premises Type"/>
+                <iais:field value="Type of Risk"/>
                 <iais:value width="8">
-                    <iais:select name="premType" options="premTypeOp" firstOption="Please Select" value="${auditSystemPotentialDtoForSearch.premisesType}"/>
-                    <span id="error_premType" name="iaisErrorMsg" class="error-msg"></span>
+                    <iais:select name="riskType" options="riskTypeOp" firstOption="Please Select" value="${auditSystemPotentialDtoForSearch.typeOfRisk}"/>
+                    <span id="error_riskType" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>
 
             <iais:row>
-                <iais:field value="Type of Risk:"/>
+                <iais:field value="Premises Type"/>
                 <iais:value width="8">
-                    <iais:select name="riskType" options="riskTypeOp" firstOption="Please Select" value="${auditSystemPotentialDtoForSearch.typeOfRisk}"/>
-                    <span id="error_riskType" name="iaisErrorMsg" class="error-msg"></span>
+                    <iais:select name="premType" options="premTypeOp" firstOption="Please Select" value="${auditSystemPotentialDtoForSearch.premisesType}"/>
+                    <span id="error_premType" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>
 

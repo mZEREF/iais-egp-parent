@@ -207,7 +207,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
         saveSerListDto(serListDto,appPremId);
         saveAdhocDto(showDto,appPremId);
-        saveInspectionDate(serListDto,appPremId);
+        //saveInspectionDate(serListDto,appPremId);
         saveStartTime(serListDto,appPremId);
         saveEndTime(serListDto,appPremId);
         saveOtherInspection(serListDto,appPremId);

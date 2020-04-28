@@ -90,12 +90,14 @@ public class LicenceUtil {
     public static List<SelectOption> getRiskYearsOrMonthDrop(Boolean isYear){
         List<SelectOption> selectOptions;
         if(isYear){
-            String dateTypeText =  MasterCodeUtil.getCodeDesc(RiskConsts.YEAR);
+            //String dateTypeText =  MasterCodeUtil.getCodeDesc(RiskConsts.YEAR);
+            String dateTypeText = "";
             selectOptions = new ArrayList<>(6);
             for(int i = 0;i<6;i++)
                 selectOptions.add(new SelectOption(String.valueOf(i),i + " " + dateTypeText));
         }else {
-            String dateTypeText =  MasterCodeUtil.getCodeDesc(RiskConsts.MONTH);
+           // String dateTypeText =  MasterCodeUtil.getCodeDesc(RiskConsts.MONTH);
+            String dateTypeText = "";
             selectOptions = new ArrayList<>(12);
             for(int i = 0;i<12;i++)
                 selectOptions.add(new SelectOption(String.valueOf(i),i + " " + dateTypeText));

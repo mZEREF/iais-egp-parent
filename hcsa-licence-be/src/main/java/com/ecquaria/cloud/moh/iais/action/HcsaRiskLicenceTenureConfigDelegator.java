@@ -51,10 +51,8 @@ public class HcsaRiskLicenceTenureConfigDelegator {
         log.debug(StringUtil.changeForLog("the init start ...."));
         HttpServletRequest request = bpc.request;
         LicenceTenShowDto showDto = hcsaRiskLicenceTenureSerice.getTenShowDto();
-        List<SelectOption> ops = hcsaRiskLicenceTenureSerice.getDateTypeOps();
-        ParamUtil.setSessionAttr(request,"timeType",(Serializable) ops);
-      /*  ParamUtil.setSessionAttr(request,"yearSelectOptions",(Serializable)LicenceUtil.getRiskYearsOrMonthDrop(true));
-        ParamUtil.setSessionAttr(request,"monthSelectOptions",(Serializable) LicenceUtil.getRiskYearsOrMonthDrop(false));*/
+        ParamUtil.setSessionAttr(request,"yearSelectOptions",(Serializable)LicenceUtil.getRiskYearsOrMonthDrop(true));
+        ParamUtil.setSessionAttr(request,"monthSelectOptions",(Serializable) LicenceUtil.getRiskYearsOrMonthDrop(false));
         ParamUtil.setSessionAttr(request,TEN_SHOW_DTO, showDto);
         ;
     }
@@ -153,12 +151,13 @@ public class HcsaRiskLicenceTenureConfigDelegator {
             for(SubLicenceTenureDto sbDto:subDtoList){
                 String max =  ParamUtil.getString(request,temp.getSvcCode()+sbDto.getOrderNum()+"right");
                 String min = ParamUtil.getString(request,temp.getSvcCode()+sbDto.getOrderNum()+"left");
-                String timetype = ParamUtil.getString(request,temp.getSvcCode()+sbDto.getOrderNum()+"type");
-                String lt = ParamUtil.getString(request,temp.getSvcCode()+sbDto.getOrderNum()+"lt");
+                String ltYear = ParamUtil.getString(request,temp.getSvcCode()+sbDto.getOrderNum()+"ltYear");
+                String ltMonth = ParamUtil.getString(request,temp.getSvcCode()+sbDto.getOrderNum()+"ltMonth");
                 sbDto.setColumRight(max);
                 sbDto.setColumLeft(min);
-                sbDto.setDateType(timetype);
-                sbDto.setLicenceTenure(lt);
+                sbDto.setYearNum(ltYear);
+                sbDto.setMonthNum(ltMonth);
+                sbDto.setDateType(RiskConsts.MONTH);
             }
         }
     }

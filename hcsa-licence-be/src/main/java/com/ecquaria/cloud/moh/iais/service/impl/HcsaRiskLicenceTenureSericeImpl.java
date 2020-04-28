@@ -158,13 +158,15 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
     }
 
     private boolean doSubEdit(SubLicenceTenureDto subDto, SubLicenceTenureDto baseSubDto) {
-        if(!baseSubDto.getColumLeft().equals(subDto.getColumLeft())){
+        if(!baseSubDto.getColumLeft().equalsIgnoreCase(subDto.getColumLeft())){
             return false;
-        }else if(!baseSubDto.getColumRight().equals(subDto.getColumRight())){
+        }else if(!baseSubDto.getColumRight().equalsIgnoreCase(subDto.getColumRight())){
             return false;
-        }else if(!baseSubDto.getLicenceTenure().equals(subDto.getLicenceTenure())){
+        }else if(!baseSubDto.getDateType().equalsIgnoreCase(subDto.getDateType())){
             return false;
-        }else if(!baseSubDto.getDateType().equals(subDto.getDateType())){
+        }else if(!baseSubDto.getYearNum().equalsIgnoreCase(subDto.getYearNum())){
+            return false;
+        }else if(!baseSubDto.getMonthNum().equalsIgnoreCase(subDto.getMonthNum())){
             return false;
         }
         return true;
