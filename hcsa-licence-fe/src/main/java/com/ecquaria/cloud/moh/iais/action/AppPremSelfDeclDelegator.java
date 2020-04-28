@@ -10,6 +10,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -53,7 +54,7 @@ public class AppPremSelfDeclDelegator {
     public void startStep(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         AuditTrailHelper.auditFunction("Hcsa Application", "Self desc");
-
+        ParamUtil.setSessionAttr(request, "canSubmitSelfDeclFlag", null);
         ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", null);
 
     }
@@ -94,6 +95,12 @@ public class AppPremSelfDeclDelegator {
                 selfDeclSubmitDto = appPremSelfDesc.getSelfDeclByGroupId(groupId);
             }
             ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", selfDeclSubmitDto);
+
+            //if only have common config , can not submit self-checklist
+            if(selfDeclSubmitDto == null ||
+                    (!IaisCommonUtils.isEmpty(selfDeclSubmitDto.getSelfDeclarationList()) && selfDeclSubmitDto.getSelfDeclarationList().size() == 1)){
+                ParamUtil.setSessionAttr(request, "canSubmitSelfDeclFlag", "N");
+            }
         }
     }
 

@@ -70,9 +70,6 @@
                     </div>
                   </c:otherwise>
                 </c:choose>
-
-
-
               </c:forEach>
 
           </div>
@@ -115,7 +112,19 @@
               <a class="btn btn-secondary" href="javascript:void(0);" onclick="javascript: doCancel();">Cancel</a>
               <a class="btn btn-secondary"  onclick="javascript:doClear()" href="#">Clear</a>
               <a class="btn btn-secondary"  onclick="javascript: doSave('${tabIndex}');" href="#">Draft</a>
-              <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSubmit();">Submit</a>
+
+
+              <c:choose>
+                <c:when test="${canSubmitSelfDeclFlag == 'N'}">
+                  <a class="btn btn-primary disabled" href="javascript:void(0);" onclick="javascript: doSubmit();">Submit</a>
+                </c:when>
+                <c:otherwise>
+                  <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSubmit();">Submit</a>
+                </c:otherwise>
+              </c:choose>
+
+
+
             </div>
           </td>
         </div>

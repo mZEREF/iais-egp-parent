@@ -43,6 +43,7 @@ public class SelfDeclRfiServiceImpl implements SelfDeclRfiService {
     @Autowired
     private ApplicationClient applicationClient;
 
+    // Todo Logic can be modified more easily
     @Override
     public SelfDeclSubmitDto getSelfDeclRfiData(String groupId) {
         SelfDeclSubmitDto selfDeclSubmitDto = new SelfDeclSubmitDto();
