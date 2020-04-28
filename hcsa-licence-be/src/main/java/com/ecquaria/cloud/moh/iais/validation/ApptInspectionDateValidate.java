@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +40,7 @@ public class ApptInspectionDateValidate implements CustomizeValidator {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         //key userId value date
         int statusCode = appointmentClient.validateUserCalendar(specificApptDto).getStatusCode();
-        if(statusCode == 406){
+        if(statusCode == HttpStatus.SC_NOT_ACCEPTABLE){
             errMap.put("specificDate", "UC_INSP_ERR0007");
         }
         ParamUtil.setSessionAttr(request, "apptInspectionDateDto", apptInspectionDateDto);
