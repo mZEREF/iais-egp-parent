@@ -346,8 +346,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             createTask.setProcessUrl(TaskConsts.TASK_PROCESS_URL_MAIN_FLOW);
             taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
             taskDtoList.add(createTask);
-
         }
+        taskService.createTasks(taskDtoList);
         String appPremCorrId = taskDto.getRefNo();
         //update inspection status
         updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PENDING_REQUEST_FOR_INFORMATION);
