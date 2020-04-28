@@ -106,6 +106,8 @@
     });
 
     $(".appNo").click(function () {
+        var appNo = $(this).closest("tr").find(".appNo").html();
+        $("[name='action_no_value']").val(appNo);
         submit("appToAppView");
     })
 </script>

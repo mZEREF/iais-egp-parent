@@ -625,9 +625,15 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request,InboxConst.APP_RECALL_RESULT, "The application can not recall");
     }
 
-    public void appToAppView(BaseProcessClass bpc){
-
-
+    public void appToAppView(BaseProcessClass bpc) throws IOException {
+        String appNo = ParamUtil.getString(bpc.request, InboxConst.ACTION_NO_VALUE);
+        StringBuilder url = new StringBuilder();
+        url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohNewApplication/1/InboxToPreview")
+                .append("?appNo=")
+                .append(appNo);
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
     }
 
     private void setNumInfoToRequest(HttpServletRequest request,InterInboxUserDto interInboxUserDto){
