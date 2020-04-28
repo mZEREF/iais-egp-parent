@@ -27,8 +27,8 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
-                        <h2>Golbal Risk Configuration</h2>
-                        <div class="gray-content-box">
+                        <h2>Global Risk Configuration</h2>
+
                             <div class="table-gp">
                                 <table class="table-gp">
                                     <thead>
@@ -143,7 +143,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+
                     <div>
                         <div style="float:left"> <span><a href="javascript:void(0);" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a></span></div>
                         <div style="float:right">

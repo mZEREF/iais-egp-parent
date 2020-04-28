@@ -140,7 +140,7 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
     private boolean formatVad(HcsaRiskWeightageDto temp, Map<String, String> errMap,String numStr,String mapkey,String mapv) {
         try {
             if(!StringUtil.isEmpty(numStr)){
-                if(StringUtil.stringIsFewDecimal(numStr,2)){
+                if(!StringUtil.stringIsFewDecimal(numStr,2)){
                     errMap.put(temp.getServiceCode()+mapkey,mapv);
                     return false;
                 }

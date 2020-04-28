@@ -45,21 +45,19 @@
                     <div class="instruction-content center-content">
 
                         <h2>Licence Tenure Configuration</h2>
-                        <div class="gray-content-box">
+
                             <div class="table-gp">
                                 <table class="table">
                                     <thead>
                                     <tr>
                                         <th width="10%">Service Name</th>
-                                        <th width="15%">Effective Start Date</th>
-                                        <th width="15%">Effective End Date</th>
-                                        <th width="10%">Minimum Risk Score (greater than)</th>
-                                        <th width="10%">Maximum Risk Score (less than or equal to)</th>
+                                        <th width="22%">Effective Start Date</th>
+                                        <th width="22%">Effective End Date</th>
+                                        <th width="8%">Minimum Risk Score (greater than)</th>
+                                        <th width="8%">Maximum Risk Score (less than or equal to)</th>
                                         <th width="10%">Licence Tenure</th>
                                         <th width="10%">DateType</th>
-                                        <th width="10%">Remove</th>
-                                        <th width="10%">Add</th>
-
+                                        <th width="10%">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -76,15 +74,15 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
-                                            <td width="15%"><iais:datePicker id = "${ten.svcCode}instartdate" name = "${ten.svcCode}instartdate" value="${ten.doEffectiveDate}"></iais:datePicker>
+                                            <td width="22%"><iais:datePicker id = "${ten.svcCode}instartdate" name = "${ten.svcCode}instartdate" value="${ten.doEffectiveDate}"></iais:datePicker>
                                                 <c:set value = "error_${ten.svcCode}inEffDate" var = "inEffdate"/>
                                                 <span class="error-msg" id="<c:out value="${inEffdate}"/>" name="iaisErrorMsg"></span>
                                             </td>
-                                            <td width="15%"><iais:datePicker id = "${ten.svcCode}inenddate" name = "${ten.svcCode}inenddate" value="${ten.doEndDate}"></iais:datePicker>
+                                            <td width="22%"><iais:datePicker id = "${ten.svcCode}inenddate" name = "${ten.svcCode}inenddate" value="${ten.doEndDate}"></iais:datePicker>
                                                 <c:set value = "error_${ten.svcCode}inEndDate" var = "inEnddate"/>
                                                 <span class="error-msg" id="<c:out value="${inEnddate}"/>" name="iaisErrorMsg"></span>
                                             </td>
-                                            <td  width="10%">
+                                            <td  width="8%">
                                                 <c:choose>
                                                     <c:when test="${ten.subDtoList!=null&&!empty ten.subDtoList}">
                                                         <c:forEach var="sub" items="${ten.subDtoList}" varStatus="status">
@@ -107,7 +105,7 @@
                                                 </c:choose>
 
                                             </td>
-                                            <td  width="10%">
+                                            <td  width="8%">
                                                 <c:choose>
                                                     <c:when test="${ten.subDtoList!=null&&!empty ten.subDtoList}">
                                                         <c:forEach var="sub" items="${ten.subDtoList}" varStatus="status">
@@ -174,29 +172,28 @@
                                                             <c:if test="${ten.maxSubOrderNum>0}">
                                                                 <div style="width: 100px;height:50px;margin-bottom:15px;padding-top: 5px;">
                                                                     <c:set var="tenName" value="${ten.svcCode}${sub.orderNum}"> </c:set>
-                                                                    <span class="removeBtn" onclick="removeColum(<c:out value="'${tenName}'"/>)">remove</span>&nbsp;&nbsp;&nbsp;
+                                                                    <span class="removeBtn" onclick="removeColum(<c:out value="'${tenName}'"/>)"><i class="fa fa-minus-circle"></i></span>&nbsp;&nbsp;&nbsp;
                                                                 </div>
                                                             </c:if>
                                                         </c:forEach>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <div style="width: 100px;height:50px;margin-bottom:15px;padding-top: 5px;">
-                                                            <span class="removeBtn"></span>&nbsp;&nbsp;&nbsp;
+                                                            <span class="removeBtn">  <i class="fa fa-minus-circle"></i></span>
                                                         </div>
                                                     </c:otherwise>
                                                 </c:choose>
+                                                <div style="width: 100px;height:50px;margin-bottom:15px;padding-top: 5px;">
+                                                <span class="removeBtn" onclick="addColum(<c:out value="'${ten.svcCode}'"/>)"><i class="fa fa-plus-circle"></i></span>
+                                                </div>
                                             </td>
-                                            <td><div style="width: 100px;height:50px;margin-bottom:15px;padding-top: 5px;">
-                                                <span class="removeBtn" onclick="addColum(<c:out value="'${ten.svcCode}'"/>)">Add</span>&nbsp;&nbsp;&nbsp;
-                                            </div></td>
-
                                         </tr>
                                         <tr>
                                             <td  width="10%"></td>
-                                            <td  width="20%"></td>
-                                            <td width="20%"></td>
-                                            <td width="10%"></td>
-                                            <td width="10%">
+                                            <td  width="22%"></td>
+                                            <td width="22%"></td>
+                                            <td width="8%"></td>
+                                            <td width="8%">
 
                                                 <c:set value = "error_${ten.svcCode}maxsort" var = "maxsort"/>
                                                 <span class="error-msg" id="<c:out value="${maxsort}"/>" name="iaisErrorMsg"></span>
@@ -221,7 +218,7 @@
                                 <div class="table-footnote">
                                 </div>
                             </div>
-                        </div>
+
                     </div>
                     <div>
                         <div style="float:left"> <span><a href="javascript:void(0);" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a></span></div>

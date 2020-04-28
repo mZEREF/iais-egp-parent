@@ -177,29 +177,26 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
     private boolean maxAndMinVad(SubLicenceTenureDto temp, Map<String, String> errMap, String svcCode) {
         //mandatory
         boolean numfalg = true;
-        try {
             if(StringUtil.isEmpty(temp.getColumRight())){
                 errMap.put(svcCode+temp.getOrderNum()+"righterr","The Filed is mandatory.");
                 numfalg = false;
             }else{
-               Double rightnum =  Double.parseDouble(temp.getColumRight());
-               if(rightnum<0||rightnum>999){
-                   errMap.put(svcCode+temp.getOrderNum()+"righterr","Invalid Number.");
-               }
+                if(!StringUtil.stringIsFewDecimal(temp.getColumRight(),2)){
+                    errMap.put(svcCode+temp.getOrderNum()+"righterr","Invalid Number.");
+                    numfalg = false;
+                }
             }
+
             if(StringUtil.isEmpty(temp.getColumLeft())){
                 errMap.put(svcCode+temp.getOrderNum()+"lefterr","The Filed is mandatory.");
                 numfalg = false;
             }else{
-                Double leftnum =  Double.parseDouble(temp.getColumLeft());
-                numfalg = false;
-                if(leftnum<0||leftnum>999){
+                if(!StringUtil.stringIsFewDecimal(temp.getColumLeft(),2)){
                     errMap.put(svcCode+temp.getOrderNum()+"lefterr","Invalid Number.");
+                    numfalg = false;
                 }
             }
-        }catch (Exception e){
-            numfalg = false;
-        }
+
         if(numfalg){
             Double rightnum =  Double.parseDouble(temp.getColumRight());
             Double leftnum =  Double.parseDouble(temp.getColumLeft());
