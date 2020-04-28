@@ -395,7 +395,7 @@ public class MasterCodeDelegator {
         masterCodeDto.setFilterValue(ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_FILTER_VALUE));
         masterCodeDto.setStatus(ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_STATUS));
         masterCodeDto.setRemarks(ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_REMRAKS));
-        masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_SEQUENCE))? null : ParamUtil.getInt(request,MasterCodeConstants.MASTER_CODE_SEQUENCE));
+        masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_SEQUENCE))? 100 : ParamUtil.getInt(request,MasterCodeConstants.MASTER_CODE_SEQUENCE));
         masterCodeDto.setVersion(StringUtil.isEmpty(ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_VERSION)) ? null : Float.parseFloat(ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_VERSION)));
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM)));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO)));
