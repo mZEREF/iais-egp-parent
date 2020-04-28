@@ -300,7 +300,7 @@
                                                                 <iais:field value="Licence Start Date" required="false"/>
                                                                 <iais:value width="10">
                                                                     <c:choose>
-                                                                        <c:when test="${applicationViewDto.applicationDto.status=='APST007'}">
+                                                                        <c:when test="${applicationViewDto.applicationDto.status=='APST007' || (applicationViewDto.applicationDto.status == 'APST057' && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC')}">
                                                                             <iais:datePicker id="licenceStartDate" name="tuc"
                                                                                              value="${date}"></iais:datePicker>
                                                                         </c:when>
@@ -319,7 +319,7 @@
                                                             <div id="recommendationFieldFalse"><iais:field value="${applicationViewDto.applicationDto.applicationType == 'APTY001' ? 'Recommended Licence Period' : 'Recommendation'}" required="false"/></div>
                                                             <iais:value width="10">
                                                                 <c:choose>
-                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || applicationViewDto.applicationDto.status=='APST014'}">
+                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || applicationViewDto.applicationDto.status=='APST014' || (applicationViewDto.applicationDto.status == 'APST057' && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC') || (applicationViewDto.applicationDto.status == 'APST057' && taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC')}">
                                                                         <iais:select name="recommendation"
                                                                                      options="recommendationDropdown"
                                                                                      firstOption="Please Select"
@@ -487,7 +487,7 @@
             $('#processingDecision').addClass('hidden');
             // $('#recommendationDropdown').addClass('hidden');
             $('#replytr').removeClass('hidden');
-            $('#licenceStartDate').addClass('hidden');
+            // $('#licenceStartDate').addClass('hidden');
         }
         //cessation
         if ('${applicationViewDto.applicationDto.applicationType}' == 'APTY008'){

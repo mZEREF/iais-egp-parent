@@ -272,7 +272,7 @@ public class HcsaApplicationDelegator {
                 recommendationOnlyShow = recomInNumber + " " + codeDesc;
             }
             //PSO 0062307
-            if(RoleConsts.USER_ROLE_PSO.equals(roleId)){
+            if(RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId)){
                 //pso back fill
                 checkRecommendationDropdownValue(recomInNumber,chronoUnit,codeDesc,applicationViewDto,bpc);
             }
