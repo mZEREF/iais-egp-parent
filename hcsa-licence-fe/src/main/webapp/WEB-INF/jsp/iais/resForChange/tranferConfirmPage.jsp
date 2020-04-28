@@ -104,6 +104,7 @@
       </div>
     </div>
   </div>
+  <br/>
   <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
 
