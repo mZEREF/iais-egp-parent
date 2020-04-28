@@ -21,19 +21,19 @@ import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Shicheng
@@ -115,10 +115,11 @@ public class OnlineApptAjaxController {
                     }
                     appointmentDto.setUsers(appointmentUserDtos);
                     apptInspectionDateDto.setAppointmentDto(appointmentDto);
-                    Map<String, Collection<String>> headers = appointmentClient.getUserCalendarByUserId(appointmentDto).getHeaders();
+                    FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> result = appointmentClient.getUserCalendarByUserId(appointmentDto);
+                    Map<String, Collection<String>> headers = result.getHeaders();
                     //Has it been blown up
                     if(headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
-                        Map<String, List<ApptUserCalendarDto>> inspectionDateMap = appointmentClient.getUserCalendarByUserId(appointmentDto).getEntity();
+                        Map<String, List<ApptUserCalendarDto>> inspectionDateMap = result.getEntity();
                         apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
                         map.put("buttonFlag", AppConsts.TRUE);
                         map.put("inspDateList", apptInspectionDateDto.getInspectionDate());
