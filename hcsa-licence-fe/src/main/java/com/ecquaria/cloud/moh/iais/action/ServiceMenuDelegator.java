@@ -74,7 +74,6 @@ public class ServiceMenuDelegator {
 
     public void beforeJump(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the  before jump start 1...."));
-
     }
 
     public void serviceMenuSelection(BaseProcessClass bpc){
@@ -141,7 +140,7 @@ public class ServiceMenuDelegator {
                 baseName.put(item.getId(),item.getSvcName());
             }
             for (HcsaServiceDto item:allspecifiedService
-                 ) {
+            ) {
                 specifiedName.put(item.getId(),item.getSvcName());
             }
 
@@ -156,16 +155,16 @@ public class ServiceMenuDelegator {
                 List<HcsaServiceDto> hcsaServiceDtosMap = getBaseInSpe(sepcifiedcheckedlist);
                 List<String> removeNecessary = IaisCommonUtils.genNewArrayList();
                 for (String extra: extrabaselist
-                     ) {
+                ) {
                     for (HcsaServiceDto hc:hcsaServiceDtosMap
-                         ) {
+                    ) {
                         if(extra.equals(hc.getId())){
                             removeNecessary.add(extra);
                         }
                     }
                 }
                 extrabaselist.removeAll(removeNecessary);
-               if(necessaryBaseServiceList.size() > 0){
+                if(necessaryBaseServiceList.size() > 0){
                     //no match
                     nextstep = ERROR_ATTR;
                     if(extrabaselist.size() == 0){
@@ -181,13 +180,13 @@ public class ServiceMenuDelegator {
                     }
                     ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
                 }else{
-                   if (hcsaServiceDtosMap.size() == 0){
-                       nextstep = ERROR_ATTR;
-                       err = "There is no base service in specified services.";
-                       ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
-                   }else{
-                       nextstep = CHOOSE_BASE;
-                   }
+                    if (hcsaServiceDtosMap.size() == 0){
+                        nextstep = ERROR_ATTR;
+                        err = "There is no base service in specified services.";
+                        ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                    }else{
+                        nextstep = CHOOSE_BASE;
+                    }
                 }
             }else{
                 //new app
@@ -209,19 +208,21 @@ public class ServiceMenuDelegator {
         if(!IaisCommonUtils.isEmpty(specifiedServiceIds)){
             serviceConfigIds.addAll(specifiedServiceIds);
         }
+        if(!serviceConfigIds.isEmpty()){
+            List<HcsaServiceDto> hcsaServiceDtosById = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
+            List<String> serviceCodeList=new ArrayList<>(hcsaServiceDtosById.size());
 
-        List<HcsaServiceDto> hcsaServiceDtosById = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
-        List<String> serviceCodeList=new ArrayList<>(hcsaServiceDtosById.size());
-
-        for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtosById){
-            serviceCodeList.add(hcsaServiceDto.getSvcCode());
+            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtosById){
+                serviceCodeList.add(hcsaServiceDto.getSvcCode());
+            }
+            serviceCodeList.sort(String::compareTo);
+            Map<String,Object> map=new HashMap<>();
+            map.put("serviceCodesList",serviceCodeList);
+            map.put("appType", ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            String entity = applicationClient.selectDarft(map).getEntity();
+            bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);
         }
-        serviceCodeList.sort(String::compareTo);
-        Map<String,Object> map=new HashMap<>();
-        map.put("serviceCodesList",serviceCodeList);
-        map.put("appType", ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-        String entity = applicationClient.selectDarft(map).getEntity();
-        bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);
+
     }
 
     public void chooseBase(BaseProcessClass bpc){
@@ -257,26 +258,28 @@ public class ServiceMenuDelegator {
                     basechkslist.add(item);
                 }
                 if(basechkslist.size() == 1){
-                    List<String> basechksNamelist = IaisCommonUtils.genNewArrayList();
-                    basechksNamelist = BaseIdToName(basechkslist);
-                    SearchResult searchResult = getLicense(bpc,basechksNamelist);
-                    ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, "licence");
-                    ParamUtil.setRequestAttr(bpc.request, "licence", searchResult);
-                    ParamUtil.setSessionAttr(bpc.request, "baseName", basechksNamelist.get(0));
+                    ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR,NEXT);
                 }else{
                     String err = "Base service can choose one only.";
                     ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
                     ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR,ERROR_ATTR);
                 }
-
-
                 ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, (Serializable) basechkslist);
             }
         }
 
-
     }
 
+
+    public void chooseLicence(BaseProcessClass bpc){
+        List<String> basechkslist = (List<String>)ParamUtil.getSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED);
+        List<String> basechksNamelist = IaisCommonUtils.genNewArrayList();
+        basechksNamelist = BaseIdToName(basechkslist);
+        SearchResult searchResult = getLicense(bpc,basechksNamelist);
+        ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, "licence");
+        ParamUtil.setRequestAttr(bpc.request, "licence", searchResult);
+        ParamUtil.setSessionAttr(bpc.request, "baseName", basechksNamelist.get(0));
+    }
 
     public void licenseValidation(BaseProcessClass bpc){
         String action = ParamUtil.getString(bpc.request, "action");
@@ -284,7 +287,12 @@ public class ServiceMenuDelegator {
         if(BACK_ATTR.equals(action)){
             ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, BACK_ATTR);
         }else {
-            if ("1".equals(licenceJudge)) {
+            if(licenceJudge == null){
+                ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, ERROR_ATTR);
+                String err = "Please select at least one licence.";
+                ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                ParamUtil.setRequestAttr(bpc.request, "action","err");
+            }else if("1".equals(licenceJudge)) {
                 String[] licence = ParamUtil.getStrings(bpc.request, "licence");
                 List<String> licenceList = IaisCommonUtils.genNewArrayList();
                 for (String item : licence
@@ -303,9 +311,9 @@ public class ServiceMenuDelegator {
     private List<String> BaseIdToName(List<String> baseId){
         List<String> baseName = IaisCommonUtils.genNewArrayList();
         for (HcsaServiceDto item:allbaseService
-             ) {
+        ) {
             for (String id:baseId
-                 ) {
+            ) {
                 if(item.getId().equals(id)){
                     baseName.add(item.getSvcName());
                 }
