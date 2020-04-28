@@ -15,18 +15,16 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * AccessUtil
@@ -91,6 +89,7 @@ public class AccessUtil {
             loginContext.setUserId(orgUser.getId());
             loginContext.setLoginId(user.getId());
             loginContext.setUserDomain(user.getUserDomain());
+            loginContext.setUserName(user.getDisplayName());
             List<String> userRoles = client.retrieveUserRoles(orgUser.getId()).getEntity();
             loginContext.setOrgId(orgUser.getOrgId());
             if (userRoles != null && !userRoles.isEmpty()) {
