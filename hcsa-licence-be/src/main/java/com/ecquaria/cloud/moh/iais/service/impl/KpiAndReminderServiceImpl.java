@@ -127,10 +127,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
             hcsaSvcKpiDto.setCreateBy(id);
             hcsaSvcKpiDto.setUpdateBy(id);
         }
-        hcsaSvcKpiDto.setCreateDate(new SimpleDateFormat("dd/MM/yyyy hh:mm:ssa",Locale.ENGLISH).parse(createDate));
-        AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobDto("INTERNET");
-//        hcsaSvcKpiDto.setAuditTrailDto(batchJobDto);
-
+        hcsaSvcKpiDto.setCreateDate(new SimpleDateFormat("dd/MM/yyyy",Locale.ENGLISH).parse(createDate));
         return hcsaSvcKpiDto;
     }
 

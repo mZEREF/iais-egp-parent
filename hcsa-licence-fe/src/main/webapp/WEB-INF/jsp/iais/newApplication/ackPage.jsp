@@ -100,9 +100,15 @@
                     <c:if test="${requestInformationConfig == null}">
                         <a class="btn btn-primary aMarginleft col-md-2 pull-right" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to <br>Dashboard</a>
                         <a class="btn btn-secondary aMarginleft col-md-3 pull-right" href="/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu">Apply for <br>Another Licence</a>
-                        <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doSelfAssessment">Submit <br>Self-Assessment</a>
+                        <c:if test="${AppSubmissionDto.appType!='APTY005'}">
+                            <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doSelfAssessment">Submit <br>Self-Assessment</a>
+
+                        </c:if>
                     </c:if>
-                    <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doPrefInsDate">Indicate preferred<br>Inspection Date</a>
+                    <c:if test="${AppSubmissionDto.appType!='APTY005'}">
+                        <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doPrefInsDate">Indicate preferred<br>Inspection Date</a>
+
+                    </c:if>
                 </div>
             </div>
         </div>

@@ -222,6 +222,20 @@ public class ServiceMenuDelegator {
             String entity = applicationClient.selectDarft(map).getEntity();
             bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);
         }
+        if(!serviceConfigIds.isEmpty()){
+            List<HcsaServiceDto> hcsaServiceDtosById = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
+            List<String> serviceCodeList=new ArrayList<>(hcsaServiceDtosById.size());
+            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtosById){
+                serviceCodeList.add(hcsaServiceDto.getSvcCode());
+            }
+            serviceCodeList.sort(String::compareTo);
+            Map<String,Object> map=new HashMap<>();
+            map.put("serviceCodesList",serviceCodeList);
+            map.put("appType", ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            String entity = applicationClient.selectDarft(map).getEntity();
+            bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);
+        }
+    }
 
     }
 

@@ -484,40 +484,39 @@ public class NewApplicationDelegator {
 
 
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-            String crud_action_value = ParamUtil.getString(bpc.request, "crud_action_value");
-            if(!"saveDraft".equals(crud_action_value)){
-                MasterCodeDto masterCodeDto = systemAdminClient.getMasterCodeById("B5E4744C-F96F-EA11-BE79-000C298A32C2").getEntity();
-                bpc.request.setAttribute("masterCodeDto",masterCodeDto);
+        }
+        String crud_action_value = ParamUtil.getString(bpc.request, "crud_action_value");
+        if(!"saveDraft".equals(crud_action_value)){
+            MasterCodeDto masterCodeDto = systemAdminClient.getMasterCodeById("B5E4744C-F96F-EA11-BE79-000C298A32C2").getEntity();
+            bpc.request.setAttribute("masterCodeDto",masterCodeDto);
 
-                Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
-                List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-                StringBuilder sB =new StringBuilder();
+            Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
+            List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            StringBuilder sB =new StringBuilder();
 
-                for(int i=0;i< dto.size();i++ ){
-                    String serviceId = dto.get(i).getServiceId();
-                    List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
-                    ServiceStepDto serviceStepDto = new ServiceStepDto();
-                    serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
-                    List<HcsaSvcPersonnelDto>  currentSvcAllPsnConfig= serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
-                    doCheckBox(bpc,sB,allSvcAllPsnConfig,currentSvcAllPsnConfig, dto.get(i));
-                }
-                bpc.request.getSession().setAttribute("serviceConfig",sB.toString());
-                Map<String, String> errorMap= doValidatePremiss(bpc);
-                if(errorMap.size()>0){
-                    ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
-                    HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
-                    coMap.put("premises","");
-                    coMap.put("serviceConfig",sB.toString());
-                    bpc.request.getSession().setAttribute("coMap",coMap);
-                }else {
-                    HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
-                    coMap.put("premises","premises");
-                    coMap.put("serviceConfig",sB.toString());
-                    bpc.request.getSession().setAttribute("coMap",coMap);
-                }
+            for(int i=0;i< dto.size();i++ ){
+                String serviceId = dto.get(i).getServiceId();
+                List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
+                ServiceStepDto serviceStepDto = new ServiceStepDto();
+                serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
+                List<HcsaSvcPersonnelDto>  currentSvcAllPsnConfig= serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
+                doCheckBox(bpc,sB,allSvcAllPsnConfig,currentSvcAllPsnConfig, dto.get(i));
             }
-
+            bpc.request.getSession().setAttribute("serviceConfig",sB.toString());
+            Map<String, String> errorMap= doValidatePremiss(bpc);
+            if(errorMap.size()>0){
+                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
+                HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+                coMap.put("premises","");
+                coMap.put("serviceConfig",sB.toString());
+                bpc.request.getSession().setAttribute("coMap",coMap);
+            }else {
+                HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+                coMap.put("premises","premises");
+                coMap.put("serviceConfig",sB.toString());
+                bpc.request.getSession().setAttribute("coMap",coMap);
+            }
         }
         log.info(StringUtil.changeForLog("the do doPremises end ...."));
     }
@@ -536,7 +535,9 @@ public class NewApplicationDelegator {
 
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
-
+        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+        Map<String,CommonsMultipartFile> commonsMultipartFileMap = IaisCommonUtils.genNewHashMap();
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
         AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;
         CommonsMultipartFile file = null;
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -564,8 +565,6 @@ public class NewApplicationDelegator {
             List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO);
             List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO);
             List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionDto.getAppGrpPremisesDtoList();
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
-            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             Map<String,AppGrpPrimaryDocDto> beforeReloadDocMap = (Map<String, AppGrpPrimaryDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP);
             if(appSubmissionDto.isNeedEditController()){
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
@@ -576,7 +575,7 @@ public class NewApplicationDelegator {
                 appSubmissionDto.setChangeSelectDto(appEditSelectDto);
             }
 
-            Map<String,CommonsMultipartFile> commonsMultipartFileMap = IaisCommonUtils.genNewHashMap();
+
             for(HcsaSvcDocConfigDto comm:commonHcsaSvcDocConfigList){
                 String name = "common"+comm.getId();
                 file = (CommonsMultipartFile) mulReq.getFile(name);
@@ -659,40 +658,39 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
 
-            String crud_action_values = ParamUtil.getRequestString(bpc.request, "crud_action_value");
-            if("next".equals(crud_action_values)){
-                documentValid(bpc.request, errorMap);
-                doIsCommom(bpc.request, errorMap);
-                HashMap<String,String> coMap=(HashMap<String, String>)bpc.request.getSession().getAttribute("coMap");
-                if(errorMap.isEmpty()){
-                    coMap.put("document","document");
-                }else {
-                    coMap.put("document","");
-                }
+        }
 
-                bpc.request.getSession().setAttribute("coMap",coMap);
-            }
-            if(errorMap.size()>0){
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, (Serializable) errorMap);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "documents");
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, "documents");
-                return;
+        String crud_action_values = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if("next".equals(crud_action_values)){
+            documentValid(bpc.request, errorMap);
+            doIsCommom(bpc.request, errorMap);
+            HashMap<String,String> coMap=(HashMap<String, String>)bpc.request.getSession().getAttribute("coMap");
+            if(errorMap.isEmpty()){
+                coMap.put("document","document");
+            }else {
+                coMap.put("document","");
             }
 
-            if( commonsMultipartFileMap!= null && commonsMultipartFileMap.size()>0){
-                for(AppGrpPrimaryDocDto primaryDoc:appGrpPrimaryDocDtoList){
-                    String key = primaryDoc.getPremisessName()+primaryDoc.getSvcComDocId();
-                    CommonsMultipartFile commonsMultipartFile = commonsMultipartFileMap.get(key);
-                    if(commonsMultipartFile != null && commonsMultipartFile.getSize() != 0){
-                        String fileRepoGuid = serviceConfigService.saveFileToRepo(commonsMultipartFile);
-                        primaryDoc.setFileRepoId(fileRepoGuid);
-                    }
+            bpc.request.getSession().setAttribute("coMap",coMap);
+        }
+        if(errorMap.size()>0){
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, (Serializable) errorMap);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "documents");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, "documents");
+            return;
+        }
+
+        if( commonsMultipartFileMap!= null && commonsMultipartFileMap.size()>0){
+            for(AppGrpPrimaryDocDto primaryDoc:appGrpPrimaryDocDtoList){
+                String key = primaryDoc.getPremisessName()+primaryDoc.getSvcComDocId();
+                CommonsMultipartFile commonsMultipartFile = commonsMultipartFileMap.get(key);
+                if(commonsMultipartFile != null && commonsMultipartFile.getSize() != 0){
+                    String fileRepoGuid = serviceConfigService.saveFileToRepo(commonsMultipartFile);
+                    primaryDoc.setFileRepoId(fileRepoGuid);
                 }
             }
         }
-
-
 
         log.info(StringUtil.changeForLog("the do doDocument end ...."));
     }
@@ -707,21 +705,27 @@ public class NewApplicationDelegator {
             String name = "common"+comm.getId();
             file = (CommonsMultipartFile) mulReq.getFile(name);
             Boolean isMandatory = comm.getIsMandatory();
-            if(isMandatory&&file.getSize()==0&&appGrpPrimaryDocDtoList.isEmpty()){
+            if(file==null&&isMandatory){
                 errorMap.put(name, "UC_CHKLMD001_ERR001");
-            }else if(isMandatory&&!appGrpPrimaryDocDtoList.isEmpty()){
-                Boolean flag=false;
-                for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
-                    String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
-                    if(comm.getId().equals(svcComDocId)){
-                        flag=true;
-                        break;
+            }else {
+                if(isMandatory&&file.getSize()==0&&appGrpPrimaryDocDtoList.isEmpty()){
+                    errorMap.put(name, "UC_CHKLMD001_ERR001");
+                }else if(isMandatory&&!appGrpPrimaryDocDtoList.isEmpty()){
+                    Boolean flag=false;
+                    for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
+                        String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
+                        if(comm.getId().equals(svcComDocId)){
+                            flag=true;
+                            break;
+                        }
+                    }
+                    if(!flag){
+                        errorMap.put(name, "UC_CHKLMD001_ERR001");
                     }
                 }
-                if(!flag){
-                    errorMap.put(name, "UC_CHKLMD001_ERR001");
-                }
             }
+
+
 
         }
 
@@ -805,7 +809,7 @@ public class NewApplicationDelegator {
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
                 //send email
-                sendNewApplicationPaymentOnlineSuccesedEmail(appSubmissionDto,pmtMethod,pmtRefNo);
+               /* sendNewApplicationPaymentOnlineSuccesedEmail(appSubmissionDto,pmtMethod,pmtRefNo);*/
             }
         }
 

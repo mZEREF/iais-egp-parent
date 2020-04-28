@@ -71,7 +71,7 @@
                                             </div>
                                             <div class="col-xs-12 col-sm-3">
                                                 <div class="button-group">
-                                                    <a class="btn btn-secondary" href="#" >Print</a>
+                                                    <a class="btn btn-secondary" id="rfcPrint" href="#" >Print</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -114,7 +114,10 @@
         $('#menuListForm').submit();
     });
 
+    $('#rfcPrint').click(function () {
+        window.print();
 
+    });
 
 
 </script>

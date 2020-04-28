@@ -35,11 +35,13 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import java.io.Serializable;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -76,7 +78,7 @@ public class LicenceViewServiceDelegator {
     @Autowired
     private AppointmentClient appointmentClient;
     @Autowired
-    private CessationClient cessationClient;
+    private HcsaLicenceClient hcsaLicenceClient;
     /**
      * StartStep: doStart
      *
@@ -116,6 +118,13 @@ public class LicenceViewServiceDelegator {
             appSubmissionDto = licenceViewService.getAppSubmissionByAppId(applicationId);
 
             ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
+            List<String> list=new ArrayList<>(1);
+            if(applicationDto.getOriginLicenceId()!=null){
+                list.add(applicationDto.getOriginLicenceId());
+                List<AppSubmissionDto> entity = hcsaLicenceClient.getAppSubmissionDtos(list).getEntity();
+
+            }
+
             ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
             String licenseeId = applicationGroupDto.getLicenseeId();
                 LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
@@ -350,7 +359,10 @@ public class LicenceViewServiceDelegator {
         String serviceId = appSvcRelatedInfoDto.getServiceId();
         hcsaSvcSubtypeOrSubsumedDtos = applicationViewService.getHcsaSvcSubtypeOrSubsumedByServiceId(serviceId);
         allocationDto = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
-
+        HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+        if(hcsaServiceDto!=null){
+            appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
+        }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = IaisCommonUtils.genNewHashMap();
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){

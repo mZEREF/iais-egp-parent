@@ -29,7 +29,7 @@
       <div class="col-xs-12 col-sm-10">
         <div class="text-right text-center-mobile">
 
-          <a class="btn btn-primary" href="#" id="cancel">Cancel</a>
+          <a class="btn btn-secondary" href="#" id="cancel">Cancel</a>
 
         </div>
       </div>

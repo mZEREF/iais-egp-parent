@@ -44,11 +44,11 @@
                       <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                         <div class="panel panel-default">
                           <div class="panel-heading" id="headingPremise" role="tab">
-                            <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePremise"
+                            <h4 class="panel-title"><a  class="collapsed" role="button" data-toggle="collapse" href="#collapsePremise"
                                                        aria-expanded="true" aria-controls="collapsePremise">Premises</a>
                             </h4>
                           </div>
-                          <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel"
+                          <div class="panel-collapse collapse" id="collapsePremise" role="tabpanel"
                                aria-labelledby="headingPremise">
                             <div class="panel-body">
                               <p class="text-right">
@@ -406,11 +406,11 @@
                           </div>
                         </div>
 
-                       <%-- <div class="panel panel-default">
-                          <div class="panel-heading"  role="tab">
-                            <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Primary Documents</a></h4>
+                        <div class="panel panel-default">
+                          <div class="panel-heading"  id="PrimaryDocuments" role="tab">
+                            <h4 class="panel-title"><a class="collapsed" role="button" data-toggle="collapse" href="#collapsePrimaryDocuments" aria-expanded="true" aria-controls="collapsePrimaryDocuments">Primary Documents</a></h4>
                           </div>
-                          <div class="panel-collapse collapse"  role="tabpanel" aria-labelledby="headingOne">
+                          <div class="panel-collapse collapse" id="collapsePrimaryDocuments"  role="tabpanel" aria-labelledby="PrimaryDocuments">
                             <div class="panel-body">
                               <p class="text-right">
                                 <input class="form-check-input" id="primaryCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="primary">
@@ -418,8 +418,8 @@
                               <div class="elemClass-1561088919456">
                                 <div  class="page section control  container-s-1" style="margin: 10px 0px">
                                   <div class="control-set-font control-font-header section-header">
-                                    <h2 class="summary-header">Uploaded Documents
-                                    </h2>
+                                    <label style="font-size: 2.2rem">Uploaded Documents
+                                    </label>
                                   </div>
                                   <div class="pop-up">
                                     <div class="pop-up-body">
@@ -448,11 +448,11 @@
                             </div>
                           </div>
                         </div>
---%>
+
 
                         <div class="panel panel-default">
                           <div class="panel-heading" id="headingOne" role="tab">
-                            <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne"
+                            <h4 class="panel-title"><a class="collapsed" role="button" data-toggle="collapse" href="#collapseOne"
                                                        aria-expanded="true" aria-controls="collapseOne">Key Roles</a>
                             </h4>
                           </div>
@@ -846,7 +846,7 @@
                         <div class="panel panel-default svc-content">
 
                           <div class="panel-heading" id="headingServiceInfo0" role="tab">
-                            <h4 class="panel-title"><a class="svc-pannel-collapse" role="button" data-toggle="collapse"
+                            <h4 class="panel-title"><a class="svc-pannel-collapse collapsed" role="button" data-toggle="collapse"
                                                        href="#collapseServiceInfo0" aria-expanded="true"
                                                        aria-controls="collapseServiceInfo">Service Related Information
                               - ${hcsaServiceDto.svcName}</a></h4>
