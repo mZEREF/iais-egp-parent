@@ -163,7 +163,7 @@ public class MasterCodeDelegator {
         }else{
             masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_CATEGORY);
         }
-        if(!StringUtil.isEmpty(codeStatus)){
+        if(!StringUtil.isEmpty(codeStatus) && !"Please Select".equals(codeStatus)){
             masterCodeMap.put(MasterCodeConstants.MASTER_CODE_STATUS,codeStatus);
         }else{
             masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_STATUS);

@@ -62,7 +62,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="description">Remark.</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                 <form><textarea cols="53" rows="6" id="codeRemarks"  name="codeRemarks" value="${MasterCodeDto.remarks}" maxlength="255"></textarea></form>
+                                 <form><textarea cols="53" rows="6" id="codeRemarks"  name="codeRemarks" maxlength="255">${MasterCodeDto.remarks}</textarea></form>
                             </div>
                         </div>
                         <div class="form-group">

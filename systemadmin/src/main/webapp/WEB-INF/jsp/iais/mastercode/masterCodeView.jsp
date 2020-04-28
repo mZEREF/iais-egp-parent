@@ -53,4 +53,13 @@
         $("#MasterCodeFileForm").submit();
     });
 
+    $("#MC_Clear").click(function () {
+        $("[name='codeCategory']").val("");
+        $("[name='codeDescription']").val("");
+        $("[name='esd']").val("");
+        $("[name='eed']").val("");
+        $("#codeStatus option:first").prop("selected", 'selected').val("Please Select");
+        $(".clearMC .current").text("Please Select");
+    });
+
 </script>
