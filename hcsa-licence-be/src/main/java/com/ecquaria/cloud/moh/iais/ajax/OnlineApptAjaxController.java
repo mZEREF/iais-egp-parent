@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -97,7 +98,9 @@ public class OnlineApptAjaxController {
                         AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
                         OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(tDto.getUserId()).getEntity();
                         appointmentUserDto.setLoginUserId(orgUserDto.getDisplayName());
-                        appointmentUserDto.setWorkGrpName(tDto.getWkGrpId());
+                        String workGroupId = tDto.getWkGrpId();
+                        WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
+                        appointmentUserDto.setWorkGrpName(workingGroupDto.getGroupName());
                         //get service id by task refno
                         String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
                         //get manHours by service and stage
