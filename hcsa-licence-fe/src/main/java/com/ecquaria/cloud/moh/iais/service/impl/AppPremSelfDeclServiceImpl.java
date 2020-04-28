@@ -87,6 +87,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     * @return: java.util.List<com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl>
     */
     // Todo Logic can be modified more easily
+    @TimerTrack
     public SelfDeclSubmitDto getSelfDeclByGroupId(String groupId){
         SelfDeclSubmitDto selfDeclSubmitDto = new SelfDeclSubmitDto();
         List<SelfDeclaration> selfDeclGroupList = IaisCommonUtils.genNewArrayList();

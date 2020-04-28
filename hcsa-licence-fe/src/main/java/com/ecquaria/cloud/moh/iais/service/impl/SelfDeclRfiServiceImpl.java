@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.TimerTrack;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclaration;
@@ -45,6 +46,7 @@ public class SelfDeclRfiServiceImpl implements SelfDeclRfiService {
 
     // Todo Logic can be modified more easily
     @Override
+    @TimerTrack
     public SelfDeclSubmitDto getSelfDeclRfiData(String groupId) {
         SelfDeclSubmitDto selfDeclSubmitDto = new SelfDeclSubmitDto();
         List<SelfDeclaration> selfDeclarationList = IaisCommonUtils.genNewArrayList();
@@ -62,6 +64,7 @@ public class SelfDeclRfiServiceImpl implements SelfDeclRfiService {
 
             List<AppPremisesCorrelationDto> correlationList = applicationClient.listAppPremisesCorrelation(appId).getEntity();
 
+            //Many addresses may exist under a service, need to load question and answer for each address
             for (AppPremisesCorrelationDto correlation : correlationList){
                 String correlationId = correlation.getId();
                 String appGrpPremId = correlation.getAppGrpPremId();
@@ -73,7 +76,7 @@ public class SelfDeclRfiServiceImpl implements SelfDeclRfiService {
                         .getAppPremisesSelfDeclByCorrelationId(correlationId).getEntity();
 
                 if (!addedCommon){
-                    SelfDeclaration commonSelfDecl = getCommonSelfDecl(selfDeclChklList);
+                    SelfDeclaration commonSelfDecl = loadCommonDeclarationData(selfDeclChklList);
                     selfDeclarationList.add(commonSelfDecl);
                     addedCommon = true;
                 }
@@ -136,7 +139,7 @@ public class SelfDeclRfiServiceImpl implements SelfDeclRfiService {
         selfDeclaration.setEachPremQuestion(eachPremQuestion);
     }
 
-    private SelfDeclaration getCommonSelfDecl(List<AppPremisesSelfDeclChklDto> selfDeclChklList){
+    private SelfDeclaration loadCommonDeclarationData(List<AppPremisesSelfDeclChklDto> selfDeclChklList){
         SelfDeclaration commonSelfDecl = new SelfDeclaration();
         LinkedHashMap<String, List<PremCheckItem>> eachPremQuestion = new LinkedHashMap<>();
         commonSelfDecl.setEachPremQuestion(eachPremQuestion);

@@ -34,9 +34,12 @@ public class ExecutionTimeAspect {
 
         Object result = joinPoint.proceed();
 
-        long time = System.currentTimeMillis() - start;
+        long end = System.currentTimeMillis();
+        long timeMillis = end - start;
+        float seconds = (end - start) / 1000;
 
-        log.info(StringUtil.changeForLog("feign call execution timer end [ " + time + "]" + "ms"));
+        log.info(StringUtil.changeForLog("feign call execution timer end [ " + timeMillis + "]" + "ms"));
+        log.info(StringUtil.changeForLog("feign call execution timer end [ " + seconds + "]" + "s"));
 
         return result;
     }
