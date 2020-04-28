@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -27,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplate
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.NewRfiPageListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -42,6 +44,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
@@ -59,6 +62,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +78,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -689,109 +694,162 @@ public class RequestForInformationDelegator {
     public void preNewRfi(BaseProcessClass bpc) {
         log.info("=======>>>>>preNewRfi>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-
+        String[] lengths=ParamUtil.getStrings(request,"lengths");
+        if(lengths!=null){
+            List<NewRfiPageListDto> newRfiPageListDtos=IaisCommonUtils.genNewArrayList(lengths.length);
+            for (String len:lengths
+            ) {
+                String decision=ParamUtil.getString(request, "decision"+len);
+                String date= ParamUtil.getString(request, "Due_date"+len);
+                String rfiTitle=ParamUtil.getString(request, "rfiTitle"+len);
+                String reqType=ParamUtil.getString(request,"reqType"+len);
+                String licenceNo=ParamUtil.getString(request,"licenceNo"+len);
+                NewRfiPageListDto newRfiPageListDto=new NewRfiPageListDto();
+                newRfiPageListDto.setDate(date);
+                newRfiPageListDto.setDecision(decision);
+                newRfiPageListDto.setLicenceNo(licenceNo);
+                newRfiPageListDto.setRfiTitle(rfiTitle);
+                newRfiPageListDto.setReqType(reqType);
+                newRfiPageListDtos.add(newRfiPageListDto);
+            }
+            ParamUtil.setRequestAttr(bpc.request, "newRfiPageListDtos", newRfiPageListDtos);
+        }
+        List<SelectOption> salutationList= IaisCommonUtils.genNewArrayList();
+        SelectOption selectOption=new SelectOption();
+        selectOption.setValue("documents");
+        selectOption.setText("Request for Supporting Documents");
+        salutationList.add(selectOption);
+        SelectOption selectOption1=new SelectOption();
+        selectOption1.setValue("information");
+        selectOption1.setText("Request for Information");
+        salutationList.add(selectOption1);
+        ParamUtil.setRequestAttr(bpc.request, "salutationList", salutationList);
         // 		preNewRfi->OnStepProcess
     }
     public void doCreateRequest(BaseProcessClass bpc) throws ParseException, IOException, TemplateException {
         log.info("=======>>>>>doCreateRequest>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String licPremId = (String) ParamUtil.getSessionAttr(request, "id");
-        LicenceViewDto licenceViewDto=licInspNcEmailService.getLicenceDtoByLicPremCorrId(licPremId);
-        StringBuilder officerRemarks=new StringBuilder();
-        LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
-        licPremisesReqForInfoDto.setReqType(RequestForInformationConstants.AD_HOC);
-        String date=ParamUtil.getString(request, "Due_date");
-        Date dueDate;
-        Calendar calendar = Calendar.getInstance();
-        if(!StringUtil.isEmpty(date)){
-            dueDate= Formatter.parseDate(date);
+        String[] lengths=ParamUtil.getStrings(request,"lengths");
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
+
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        errorMap=validate(request);
+        if (!errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
+            //
+            return;
         }
-        else {
-            calendar.add(Calendar.DATE,7);
-            dueDate =calendar.getTime();
-        }
-        licPremisesReqForInfoDto.setDueDateSubmission(dueDate);
-        String rfiTitle=ParamUtil.getString(request, "rfiTitle");
-        officerRemarks.append(rfiTitle).append(" ");
-        licPremisesReqForInfoDto.setLicPremId(licPremId);
-        String reqType=ParamUtil.getString(request,"reqType");
-        boolean isNeedDoc=false;
-        officerRemarks.append(" |Information");
-        if(!StringUtil.isEmpty(reqType)&&"on".equals(reqType)) {
-            isNeedDoc = true;
-            officerRemarks.append(" |Supporting Documents");
-        }
-        licPremisesReqForInfoDto.setNeedDocument(isNeedDoc);
-        licPremisesReqForInfoDto.setOfficerRemarks(officerRemarks.toString());
-        licPremisesReqForInfoDto.setRequestDate(new Date());
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        licPremisesReqForInfoDto.setRequestUser(loginContext.getUserId());
 
-        LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
+        for (String len:lengths
+        ) {
+            String decision=ParamUtil.getString(request, "decision"+len);
+            String date= ParamUtil.getString(request, "Due_date"+len);
+            String rfiTitle=ParamUtil.getString(request, "rfiTitle"+len);
+            String reqType=ParamUtil.getString(request,"reqType"+len);
 
-        String templateId= MsgTemplateConstants.MSG_TEMPLATE_RFI;
-        InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
-        String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto1.getReqInfoId()).getLicenseeId();
-        LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
-        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        StringBuilder stringBuilder=new StringBuilder();
-        stringBuilder.append("<p>   1. ").append("Information ").append(rfiTitle).append("</p>");
-        map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));
-        if(licPremisesReqForInfoDto1.isNeedDocument()){
-            stringBuilder.append("<p>   2. ").append("Documentations  ").append(rfiTitle).append("</p>");
-        }
-        map.put("DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
-        map.put("COMMENTS",StringUtil.viewHtml(""));
-        String url = "https://" + systemParamConfig.getInterServerName() +
-                "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
-                "?licenseeId=" + licenseeId;
-        map.put("A_HREF", url);
-        map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
-        String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
-
-
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        licPremisesReqForInfoDto1.setAction("create");
-        log.info("=======>>>>>Create Lic Request for Information reqInfoId "+licPremisesReqForInfoDto1.getReqInfoId());
-        try{
-            gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1,
-                    signature.date(), signature.authorization(), signature2.date(), signature2.authorization());
-
-            //send message to FE user.
-            InterMessageDto interMessageDto = new InterMessageDto();
-            interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-            List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
-            ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
-            String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",applicationDto.getApplicationNo());
-            interMessageDto.setSubject(subject);
-            interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
-            String mesNO = inboxMsgService.getMessageNo();
-            interMessageDto.setRefNo(mesNO);
-            HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
-            interMessageDto.setService_id(svcDto.getId());
-            interMessageDto.setMsgContent(mesContext);
-            interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-            interMessageDto.setUserId(licenseeId);
-            interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            inboxMsgService.saveInterMessage(interMessageDto);
-            log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
-
-            try {
-                EmailDto emailDto=new EmailDto();
-                emailDto.setContent(mesContext);
-                emailDto.setSubject(rfiEmailTemplateDto.getSubject());
-                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-                emailDto.setClientQueryCode(licPremId);
-                String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
-            }catch (Exception e){
-                log.info(e.getMessage());
+            LicenceViewDto licenceViewDto=licInspNcEmailService.getLicenceDtoByLicPremCorrId(licPremId);
+            StringBuilder officerRemarks=new StringBuilder();
+            LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
+            licPremisesReqForInfoDto.setReqType(RequestForInformationConstants.AD_HOC);
+            Date dueDate;
+            Calendar calendar = Calendar.getInstance();
+            if(!StringUtil.isEmpty(date)){
+                dueDate=Formatter.parseDate(date);
             }
-        }catch (Exception e){
-            requestForInformationService.deleteLicPremisesReqForInfo(licPremisesReqForInfoDto1.getReqInfoId());
+            else {
+                calendar.add(Calendar.DATE,14);
+                dueDate =calendar.getTime();
+            }
+            licPremisesReqForInfoDto.setDueDateSubmission(dueDate);
+            officerRemarks.append(rfiTitle).append(" ");
+            licPremisesReqForInfoDto.setLicPremId(licPremId);
+            if("information".equals(decision)){
+                officerRemarks.append(" |Information");
+            }
+            if("documents".equals(decision)){
+                officerRemarks.append(" |Supporting Documents");
+            }
+            boolean isNeedDoc=false;
+            if(!StringUtil.isEmpty(reqType)&&"on".equals(reqType)) {
+                isNeedDoc = true;
+            }
+            licPremisesReqForInfoDto.setNeedDocument(isNeedDoc);
+            licPremisesReqForInfoDto.setOfficerRemarks(officerRemarks.toString());
+            licPremisesReqForInfoDto.setRequestDate(new Date());
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            licPremisesReqForInfoDto.setRequestUser(loginContext.getUserId());
+
+            LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
+
+            String templateId= MsgTemplateConstants.MSG_TEMPLATE_RFI;
+            InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
+            String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto1.getReqInfoId()).getLicenseeId();
+            LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
+            Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+            StringBuilder stringBuilder=new StringBuilder();
+            if("information".equals(decision)){
+                stringBuilder.append("<p>   1. ").append("Information ").append(rfiTitle).append("</p>");
+            }
+            if("documents".equals(decision)){
+                stringBuilder.append("<p>   1. ").append("Documentations  ").append(rfiTitle).append("</p>");
+            }
+            map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));
+            map.put("DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
+            map.put("COMMENTS",StringUtil.viewHtml(""));
+            String url = "https://" + systemParamConfig.getInterServerName() +
+                    "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
+                    "?licenseeId=" + licenseeId;
+            map.put("A_HREF", url);
+            map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
+            String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
+
+
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            licPremisesReqForInfoDto1.setAction("create");
+            log.info("=======>>>>>Create Lic Request for Information reqInfoId "+licPremisesReqForInfoDto1.getReqInfoId());
+            try{
+                gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1,
+                        signature.date(), signature.authorization(), signature2.date(), signature2.authorization());
+
+                //send message to FE user.
+                InterMessageDto interMessageDto = new InterMessageDto();
+                interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+                List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
+                ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
+                String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",applicationDto.getApplicationNo());
+                interMessageDto.setSubject(subject);
+                interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
+                String mesNO = inboxMsgService.getMessageNo();
+                interMessageDto.setRefNo(mesNO);
+                HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
+                interMessageDto.setService_id(svcDto.getId());
+                interMessageDto.setMsgContent(mesContext);
+                interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
+                interMessageDto.setUserId(licenseeId);
+                interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                inboxMsgService.saveInterMessage(interMessageDto);
+                log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
+
+                try {
+                    EmailDto emailDto=new EmailDto();
+                    emailDto.setContent(mesContext);
+                    emailDto.setSubject(rfiEmailTemplateDto.getSubject());
+                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                    emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                    emailDto.setClientQueryCode(licPremId);
+                    String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+                }catch (Exception e){
+                    log.info(e.getMessage());
+                }
+            }catch (Exception e){
+                requestForInformationService.deleteLicPremisesReqForInfo(licPremisesReqForInfoDto1.getReqInfoId());
+            }
         }
-        ParamUtil.setRequestAttr(request, "isValid", "Y");
+
+
         // 		doCreateRequest->OnStepProcess
     }
 
@@ -853,8 +911,33 @@ public class RequestForInformationDelegator {
         gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();        // 		doUpdate->OnStepProcess
     }
 
-    private Map<String, String> validate(HttpServletRequest request) {
+    private Map<String, String> validate(HttpServletRequest request) throws ParseException {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        String[] lengths=ParamUtil.getStrings(request,"lengths");
+        for (String len:lengths
+             ) {
+            String decision=ParamUtil.getString(request, "decision"+len);
+            if(decision==null|| "Please Select".equals(decision)){
+                errMap.put("rfiSelect"+len,"ERR0010");
+
+            }
+            String date=ParamUtil.getDate(request, "Due_date"+len);
+
+            if(date==null){
+                errMap.put("Due_date"+len,"ERR0010");
+            }else {
+                date= ParamUtil.getString(request, "Due_date"+len);
+                String now=new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(new Date());
+                if(date.compareTo(now) <0 ){
+                    errMap.put("Due_date"+len,"Due Date should be a future Date.");
+                }
+            }
+            String rfiTitle=ParamUtil.getString(request, "rfiTitle"+len);
+            if(rfiTitle==null){
+                errMap.put("rfiTitle"+len,"ERR0010");
+
+            }
+        }
 
 
         return errMap;
@@ -879,5 +962,117 @@ public class RequestForInformationDelegator {
         ops.close();
         ops.flush();
         log.debug(StringUtil.changeForLog("file-repo end ...."));
+    }
+
+    @GetMapping(value = "/new-rfi-html")
+    public @ResponseBody String genNewRfiHtml(HttpServletRequest request){
+        log.debug(StringUtil.changeForLog("the genPublicHolidayHtml start ...."));
+        String length = ParamUtil.getString(request,"Length");
+
+        if(length==null){
+            length="0";
+        }
+
+        String sql = SqlMap.INSTANCE.getSql("ReqForInfoQuery", "rfi-new").getSqlStr();
+
+        List<SelectOption> salutationList= IaisCommonUtils.genNewArrayList();
+        SelectOption selectOption=new SelectOption();
+        selectOption.setValue("documents");
+        selectOption.setText("Request for Supporting Documents");
+        salutationList.add(selectOption);
+        SelectOption selectOption1=new SelectOption();
+        selectOption1.setValue("information");
+        selectOption1.setText("Request for Information");
+        salutationList.add(selectOption1);
+        Map<String,String> rfiSelect = IaisCommonUtils.genNewHashMap();
+        rfiSelect.put("name", "decision"+length);
+        rfiSelect.put("style", "display: none;");
+        String salutationSelectStr = generateDropDownHtml(rfiSelect, salutationList,"Please Select", null);
+        sql = sql.replace("(rfiSelect)", salutationSelectStr);
+
+        sql=sql.replaceAll("indexRfi",length);
+
+        return sql;
+    }
+
+    public static String generateDropDownHtml(Map<String, String> premisesOnSiteAttr, List<SelectOption> selectOptionList, String firestOption, String checkedVal){
+        StringBuffer sBuffer = new StringBuffer();
+        sBuffer.append("<select ");
+        for(Map.Entry<String, String> entry : premisesOnSiteAttr.entrySet()){
+            sBuffer.append(entry.getKey()+"=\""+entry.getValue()+"\" ");
+        }
+        sBuffer.append(" >");
+        if(!StringUtil.isEmpty(firestOption)){
+            sBuffer.append("<option value=\"\">"+ firestOption +"</option>");
+        }
+        for(SelectOption sp:selectOptionList){
+            if(!StringUtil.isEmpty(checkedVal)){
+                if(checkedVal.equals(sp.getValue())){
+                    sBuffer.append("<option selected=\"selected\" value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+                }else{
+                    sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+                }
+            }else{
+                sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+            }
+        }
+        sBuffer.append("</select>");
+        String classNameValue = premisesOnSiteAttr.get("class");
+        String className = "premSelect";
+        if(!StringUtil.isEmpty(classNameValue)){
+            className =  classNameValue;
+        }
+        sBuffer.append("<div class=\"nice-select "+className+"\" tabindex=\"0\">");
+        if(!StringUtil.isEmpty(checkedVal)){
+            sBuffer.append("<span selected=\"selected\" class=\"current\">"+ checkedVal +"</span>");
+        }else{
+            if(!StringUtil.isEmpty(firestOption)){
+                sBuffer.append("<span class=\"current\">"+firestOption+"</span>");
+            }else{
+                sBuffer.append("<span class=\"current\">"+selectOptionList.get(0).getText()+"</span>");
+            }
+        }
+        sBuffer.append("<ul class=\"list mCustomScrollbar _mCS_2 mCS_no_scrollbar\">")
+                .append("<div id=\"mCSB_2\" class=\"mCustomScrollBox mCS-light mCSB_vertical mCSB_inside\" tabindex=\"0\" style=\"max-height: none;\">")
+                .append("<div id=\"mCSB_2_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">");
+
+        if(!StringUtil.isEmpty(checkedVal)){
+            for(SelectOption kv:selectOptionList){
+                if(checkedVal.equals(kv.getValue())){
+                    sBuffer.append("<li selected=\"selected\" data-value=\""+kv.getValue()+"\" class=\"option selected\">"+kv.getText()+"</li>");
+                }else{
+                    sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+                }
+            }
+        }else if(!StringUtil.isEmpty(firestOption)){
+            sBuffer.append("<li data-value=\"\" class=\"option selected\">"+firestOption+"</li>");
+            for(SelectOption kv:selectOptionList){
+                sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+            }
+        }else{
+            for(int i = 0;i<selectOptionList.size();i++){
+                SelectOption kv = selectOptionList.get(i);
+                if(i == 0){
+                    sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option selected\">"+kv.getText()+"</li>");
+                }else{
+                    sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+                }
+            }
+        }
+
+        sBuffer.append("</div>")
+                .append("<div id=\"mCSB_2_scrollbar_vertical\" class=\"mCSB_scrollTools mCSB_2_scrollbar mCS-light mCSB_scrollTools_vertical\" style=\"display: none;\">")
+                .append("<div class=\"mCSB_draggerContainer\">")
+                .append("<div id=\"mCSB_2_dragger_vertical\" class=\"mCSB_dragger\" style=\"position: absolute; min-height: 30px; top: 0px; height: 0px;\">")
+                .append("<div class=\"mCSB_dragger_bar\" style=\"line-height: 30px;\">")
+                .append("</div>")
+                .append("</div>")
+                .append("<div class=\"mCSB_draggerRail\"></div>")
+                .append("</div>")
+                .append("</div>")
+                .append("</div>")
+                .append("</ul>")
+                .append("</div>");
+        return sBuffer.toString();
     }
 }

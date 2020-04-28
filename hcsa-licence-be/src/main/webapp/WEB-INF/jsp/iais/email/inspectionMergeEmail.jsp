@@ -143,7 +143,7 @@
                                                         <td>
                                                             <div class="col-sm-9">
                                                                 <c:forEach items="${svcNames}" var="revise"
-                                                                           varStatus="index">
+                                                                           varStatus="index">&nbsp;
                                                                     <input type="checkbox" name="revise${index.index+1}"
                                                                            value="${revise}">${revise}</input>
                                                                 </c:forEach>
