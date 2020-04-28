@@ -349,6 +349,7 @@ public class NewApplicationDelegator {
      *
      * @param bpc
      * @throws
+     * @throwsdo
      */
     public void prepareDocuments(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do prepareDocuments start ...."));
@@ -705,29 +706,25 @@ public class NewApplicationDelegator {
             String name = "common"+comm.getId();
             file = (CommonsMultipartFile) mulReq.getFile(name);
             Boolean isMandatory = comm.getIsMandatory();
-            if(file==null&&isMandatory){
-                errorMap.put(name, "UC_CHKLMD001_ERR001");
-            }else {
-                if(isMandatory&&file.getSize()==0&&appGrpPrimaryDocDtoList.isEmpty()){
-                    errorMap.put(name, "UC_CHKLMD001_ERR001");
-                }else if(isMandatory&&!appGrpPrimaryDocDtoList.isEmpty()){
-                    Boolean flag=false;
-                    for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
-                        String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
-                        if(comm.getId().equals(svcComDocId)){
-                            flag=true;
-                            break;
+            if(isMandatory&&!appGrpPrimaryDocDtoList.isEmpty()){
+                Boolean flag=false;
+                for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
+                    String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
+                    if(comm.getId().equals(svcComDocId)){
+                        flag=true;
+                        break;
                         }
                     }
                     if(!flag){
                         errorMap.put(name, "UC_CHKLMD001_ERR001");
                     }
-                }
+                }else  if(isMandatory&&file.getSize()==0&&appGrpPrimaryDocDtoList.isEmpty()){
+                    errorMap.put(name, "UC_CHKLMD001_ERR001");
             }
-
-
-
         }
+
+
+
 
     }
 
