@@ -51,7 +51,7 @@
     <c:choose>
         <c:when test="${'APTY004' == AppSubmissionDto.appType}">
             <div class="col-xs-12 col-sm-6" style="margin-top: 17px;">
-                <p><a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a></p>
+                <a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a>
             </div>
         </c:when>
         <c:otherwise>

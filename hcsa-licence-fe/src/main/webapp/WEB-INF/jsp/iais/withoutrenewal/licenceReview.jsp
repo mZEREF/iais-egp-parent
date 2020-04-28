@@ -106,7 +106,7 @@
                         <div class="application-tab-footer">
                             <div class="row">
                                 <div class="col-xs-12 col-sm-6">
-                                    <p><a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a></p>
+                                    <a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a>
                                 </div>
                                 <div class="col-xs-12 col-sm-6">
                                     <div class="text-right text-center-mobile"><a id="Next" class="btn btn-primary">Preview the Next Service</a></div>

@@ -218,6 +218,7 @@ public class WithOutRenewalDelegator {
      */
     public void prepare(BaseProcessClass bpc)throws Exception{
         log.info("**** the  auto renwal  prepare start  ******");
+        ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);
 //finish pay
         RenewDto renewDto = (RenewDto)ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
@@ -580,6 +581,7 @@ public class WithOutRenewalDelegator {
         renewDto.setAppSubmissionDtos(appSubmissionDtos);
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
         ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE2);
+        ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);
         log.info(StringUtil.changeForLog("the do toPrepareData end ...."));
     }
 
