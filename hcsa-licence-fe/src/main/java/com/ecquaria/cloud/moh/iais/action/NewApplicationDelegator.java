@@ -40,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -785,14 +786,14 @@ public class NewApplicationDelegator {
             String txnDt = DateUtil.formatDate(new Date(), "yyyy-MM-dd");
             ParamUtil.setSessionAttr(bpc.request,"txnDt",txnDt);
         }
-        String result = bpc.request.getParameter("result");
+        String result = ParamUtil.getMaskedString(bpc.request,"result");
         if (!StringUtil.isEmpty(result)) {
             log.info(StringUtil.changeForLog("payment result:" + result));
-            String pmtRefNo = bpc.request.getParameter("reqRefNo");
+            String pmtRefNo = ParamUtil.getMaskedString(bpc.request,"reqRefNo");
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
                 log.info("credit card payment success");
-                String txnDt = ParamUtil.getString(bpc.request,"txnDt");
-                String txnRefNo = ParamUtil.getString(bpc.request,"txnRefNo");
+                String txnDt = ParamUtil.getMaskedString(bpc.request,"txnDt");
+                String txnRefNo = ParamUtil.getMaskedString(bpc.request,"txnRefNo");
                 ParamUtil.setSessionAttr(bpc.request,"txnDt",txnDt);
                 ParamUtil.setSessionAttr(bpc.request,"txnRefNo",txnRefNo);
                 switch2 = "ack";
@@ -1241,9 +1242,9 @@ public class NewApplicationDelegator {
             StringBuffer url = new StringBuffer();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/payment-web/eservice/INTERNET/PaymentRequest")
-                    .append("?amount=").append(appSubmissionDto.getAmount())
-                    .append("&payMethod=").append(payMethod)
-                    .append("&reqNo=").append(appSubmissionDto.getAppGrpNo());
+                    .append("?amount=").append(MaskUtil.maskValue("amount",String.valueOf(appSubmissionDto.getAmount())))
+                    .append("&payMethod=").append(MaskUtil.maskValue("payMethod",payMethod))
+                    .append("&reqNo=").append(MaskUtil.maskValue("reqNo",appSubmissionDto.getAppGrpNo()));
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
             return;

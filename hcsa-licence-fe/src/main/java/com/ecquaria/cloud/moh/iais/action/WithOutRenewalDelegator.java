@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -228,13 +229,13 @@ public class WithOutRenewalDelegator {
             amount = appSubmissionDtos.get(0).getAmount();
             licenseeId = appSubmissionDtos.get(0).getLicenseeId();
         }
-        String result = ParamUtil.getString(bpc.request,"result");
+        String result = ParamUtil.getMaskedString(bpc.request,"result");
         if (!StringUtil.isEmpty(result)) {
             log.info(StringUtil.changeForLog("payment result:" + result));
-            String pmtRefNo = ParamUtil.getString(bpc.request,"reqRefNo");
+            String pmtRefNo = ParamUtil.getMaskedString(bpc.request,"reqRefNo");
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
-                String txnDt = ParamUtil.getString(bpc.request,"txnDt");
-                String txnRefNo = ParamUtil.getString(bpc.request,"txnRefNo");
+                String txnDt = ParamUtil.getMaskedString(bpc.request,"txnDt");
+                String txnRefNo = ParamUtil.getMaskedString(bpc.request,"txnRefNo");
 
                 ParamUtil.setSessionAttr(bpc.request,"txnDt",txnDt);
                 ParamUtil.setSessionAttr(bpc.request,"txnRefNo",txnRefNo);
@@ -368,10 +369,12 @@ public class WithOutRenewalDelegator {
             StringBuffer url = new StringBuffer();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/payment-web/eservice/INTERNET/PaymentRequest")
-                    .append("?amount=").append(totalAmount)
-                    .append("&payMethod=").append(payMethod)
-                    .append("&reqNo=").append(groupNo)
-                    .append("&backUrl=").append(backUrl);
+                    .append("?amount=").append(MaskUtil.maskValue("amount",String.valueOf(totalAmount)))
+                    .append("&payMethod=").append(MaskUtil.maskValue("payMethod",payMethod))
+                    .append("&reqNo=").append(MaskUtil.maskValue("reqNo",groupNo))
+                    .append("&backUrl=").append(MaskUtil.maskValue("backUrl",backUrl));
+
+
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
             try {
