@@ -66,7 +66,7 @@ public class AppPremSelfDeclDelegator {
      */
     public void initData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String groupId = "(String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID)";
+        String groupId = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
         String action = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
 
         if (StringUtils.isEmpty(groupId)){
