@@ -388,6 +388,9 @@ public class InterInboxDelegator {
     public void licDoRenew(BaseProcessClass bpc) throws IOException {
         boolean result = true;
         String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        String tmp = "The selected licence(s) is/are not eligible for renewal: ";
+        StringBuilder errorMessage = new StringBuilder();
         if(licIds != null){
             List<String> licIdValue = IaisCommonUtils.genNewArrayList();
             for(String item:licIds){
@@ -395,7 +398,14 @@ public class InterInboxDelegator {
             }
             for (String licId:licIdValue
                  ) {
-                 if(!inboxService.checkRenewalStatus(licId)){
+                errorMap = inboxService.checkRenewalStatus(licId);
+                if(!(errorMap.isEmpty())){
+                    String licenseNo = errorMap.get("errorMessage");
+                    if(StringUtil.isEmpty(errorMessage.toString())){
+                        errorMessage.append(tmp + licenseNo);
+                    }else{
+                        errorMessage.append(", " + licenseNo);
+                    }
                     result = false;
                 }
             }
@@ -408,7 +418,10 @@ public class InterInboxDelegator {
                 bpc.response.sendRedirect(tokenUrl);
             }else{
                 ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",result);
-                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"This application is performing the renew process");
+                if(StringUtil.isEmpty(errorMessage.toString())){
+                    errorMessage.append("This application is performing the renew process");
+                }
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMessage.toString());
             }
         }
     }

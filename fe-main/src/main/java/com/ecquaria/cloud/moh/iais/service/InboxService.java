@@ -8,6 +8,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 
+import java.util.Map;
+
 /**
  * @Author: Hc
  * @Program: iais-egp
@@ -27,7 +29,7 @@ public interface InboxService {
     void updateDraftStatus(String draftNo, String status);
     boolean updateMsgStatus(String[] msgId);
     Boolean recallApplication(RecallApplicationDto recallApplicationDto);
-    public boolean checkRenewalStatus(String licenceId);
+    public Map<String,String> checkRenewalStatus(String licenceId);
     void updateMsgStatusToRead(String msgId);
     Boolean checkEligibility(String appId);
 }

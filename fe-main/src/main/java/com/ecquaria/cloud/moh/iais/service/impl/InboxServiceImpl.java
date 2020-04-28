@@ -5,12 +5,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
@@ -19,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -145,7 +148,8 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
-    public boolean checkRenewalStatus(String licenceId) {
+    public Map<String,String> checkRenewalStatus(String licenceId) {
+        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         boolean flag = true;
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
         for(ApplicationDto app : apps){
@@ -153,9 +157,25 @@ public class InboxServiceImpl implements InboxService {
                     && !(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(app.getStatus()))
                     && !(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(app.getStatus()))){
                 flag = false;
+//                errorMap.put("errorMessage","This application is performing the renew process");
             }
         }
-        return flag;
+        //check expiry date
+        LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
+        Date expiryDate = licenceDto.getExpiryDate();
+        Date nowDate = new Date();
+
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(nowDate);
+
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(expiryDate);
+        int daysBetween = MiscUtil.getDaysBetween(startCalendar,endCalendar);
+        if(nowDate.before(expiryDate) && daysBetween > 180){
+            flag = flag && false;
+            errorMap.put("errorMessage",licenceDto.getLicenceNo());
+        }
+        return errorMap;
     }
 
     @Override
