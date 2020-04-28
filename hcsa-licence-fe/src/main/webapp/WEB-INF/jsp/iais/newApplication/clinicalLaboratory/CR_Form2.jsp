@@ -43,7 +43,7 @@
                     </c:otherwise>
                   </c:choose>
                   <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
-                    <p class="text-right"><a class="back" id="RfcSkip">Skip<em class="fa fa-angle-right"></em></a></p>
+                    <p class="text-right"><a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a></p>
                   </c:if>
                   <c:if test="${'true' != isClickEdit}">
                     <c:set var="locking" value="true"/>
@@ -51,7 +51,7 @@
                     <div id="edit-content">
                       <c:choose>
                         <c:when test="${'true' == canEdit}">
-                          <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                          <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a></p>
                         </c:when>
                         <c:otherwise>
 
@@ -387,9 +387,8 @@
         removeCgo();
 
         if(${AppSubmissionDto.needEditController && !isClickEdit}){
-            disabledAll();
-            //nice-select
-            $('div.nice-select').addClass('disabled');
+            disabledPage();
+            $('.addListBtn').addClass('hidden');
         }
 
         doEdit();
@@ -501,13 +500,10 @@
 
     var doEdit = function () {
         $('#edit').click(function () {
-            /*$assignContentEle = $(this).closest('div.assignContent');
-            $assignContentEle.find('input[type="text"]').prop('disabled',false);
-            $assignContentEle.find('div.nice-select').removeClass('disabled');*/
-            $('input[type="text"]').prop('disabled',false);
-            $('div.nice-select').removeClass('disabled');
+            unDisabledPage();
             $('#isEditHiddenVal').val('1');
             $('#edit-content').addClass('hidden');
+            $('.addListBtn').removeClass('hidden');
         });
     }
 
@@ -516,13 +512,13 @@
             $(this).html(k+1);
         });
 
-  }
-  var removeCgo = function () {
-    $('.removeBtn').click(function () {
-      var $premContentEle= $(this).closest('table.assignContent');
-      $premContentEle.remove();
-      $('.errorMsg').html("");
-    });
+    }
+    var removeCgo = function () {
+        $('.removeBtn').click(function () {
+            var $premContentEle= $(this).closest('table.assignContent');
+            $premContentEle.remove();
+            $('.errorMsg').html("");
+        });
 
-  }
+    }
 </script>

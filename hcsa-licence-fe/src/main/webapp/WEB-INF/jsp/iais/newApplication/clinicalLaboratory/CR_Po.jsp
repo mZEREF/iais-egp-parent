@@ -39,7 +39,7 @@
                     </c:otherwise>
                   </c:choose>
                   <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
-                    <p class="text-right"><a class="back" id="RfcSkip">Skip<em class="fa fa-angle-right"></em></a></p>
+                    <p class="text-right"><a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a></p>
                   </c:if>
                   <c:if test="${!isClickEdit}">
                     <c:set var="showPreview" value="true"/>
@@ -222,10 +222,10 @@
                 </c:choose>
                 <c:if test="${!isClickEditDpo}">
                   <c:set var="showPreview" value="true"/>
-                  <c:set var="cancanEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.dpoEdit || AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+                  <c:set var="canEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.dpoEdit || AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
                   <div class=" <c:if test="${'true' != showPreview}">hidden</c:if>">
                     <c:choose>
-                      <c:when test="${cancanEditDpoEdit}">
+                      <c:when test="${canEditDpoEdit}">
                         <p class="text-right"><a id="edit-dpo"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                       </c:when>
                       <c:otherwise>
@@ -242,15 +242,15 @@
                   </div>
                   <c:if test="${DeputyPrincipalOfficersMandatory> 0}">
                   <div class="col-sm-5 col-md-8" >
-                    <%--<c:if test="${ReloadPrincipalOfficers ==null ||ReloadPrincipalOfficers.size()==0}">
-                      <c:set var="flag" value="-1"/>
-                    </c:if>
-                    <c:if test="${ReloadPrincipalOfficers !=null && ReloadPrincipalOfficers.size()>0}">
-                      <c:set var="flag" value="0"/>
-                    </c:if>
-                    <c:if test="${ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0}" >
-                      <c:set var="flag" value="1"/>
-                    </c:if>--%>
+                      <%--<c:if test="${ReloadPrincipalOfficers ==null ||ReloadPrincipalOfficers.size()==0}">
+                        <c:set var="flag" value="-1"/>
+                      </c:if>
+                      <c:if test="${ReloadPrincipalOfficers !=null && ReloadPrincipalOfficers.size()>0}">
+                        <c:set var="flag" value="0"/>
+                      </c:if>
+                      <c:if test="${ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0}" >
+                        <c:set var="flag" value="1"/>
+                      </c:if>--%>
                     <iais:select cssClass="deputySelect"  name="deputyPrincipalOfficer" options="DeputyFlagSelect"  value="${DeputyPoFlag}" ></iais:select>
                     <br/>
                     <br/>
@@ -278,12 +278,12 @@
             <%--<p class="text-right"><a href="application-premises.html"><i class="fa fa-pencil-square-o"></i>Edit</a></p>--%>
 
 
-                <div class="panel-main-content">
-                  <h2>Deputy Principal Officer</h2>
-                  <div class="dpo-content">
-                  </div>
-                  <c:if test="${DeputyPrincipalOfficersMandatory>0}">
-                  <c:forEach begin="0" end="${DeputyPrincipalOfficersMandatory-1}" step="1" varStatus="status">
+            <div class="panel-main-content">
+              <h2>Deputy Principal Officer</h2>
+              <div class="dpo-content">
+              </div>
+              <c:if test="${DeputyPrincipalOfficersMandatory>0}">
+                <c:forEach begin="0" end="${DeputyPrincipalOfficersMandatory-1}" step="1" varStatus="status">
                   <c:if test="${ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0}" >
                     <c:set var="deputy" value="${ReloadDeputyPrincipalOfficers[status.index]}"/>
                   </c:if>
@@ -409,11 +409,11 @@
                       </div>
                     </div>
                   </div>
-                  </c:forEach>
-                  </c:if>
-                </div>
+                </c:forEach>
+              </c:if>
+            </div>
             <c:if test="${requestInformationConfig==null}">
-              <div class="row <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)  &&'1' == canEditDpo}">disabled</c:if>">
+              <div class="row">
                 <div class="col-sm-5">
                   <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Deputy Principal Officer</span>
                 </div>
@@ -463,6 +463,8 @@
         if(${AppSubmissionDto.needEditController && (AppSubmissionDto.appEditSelectDto.serviceEdit || AppSubmissionDto.appEditSelectDto.poEdit) && !isClickEdit}){
             $('.po-content input[type="text"]').prop('disabled',true);
             $('.po-content div.nice-select').addClass('disabled');
+            $('.po-content input[type="text"]').css('border-color','#ededed');
+            $('.po-content input[type="text"]').css('color','#999');
             $('#addPoBtn').addClass('hidden');
             $('#addPoBtn').unbind('click');
         }
@@ -470,6 +472,8 @@
             $('.deputySelect').addClass('disabled');
             $('.deputy-content input[type="text"]').prop('disabled',true);
             $('.deputy-content div.nice-select').addClass('disabled');
+            $('.deputy-content input[type="text"]').css('border-color','#ededed');
+            $('.deputy-content input[type="text"]').css('color','#999');
             $('#addDpoBtn').unbind('click');
         }
 
@@ -671,35 +675,14 @@
         });
     }
 
-   /* var retrieveData = function () {
-        $('.idNoVal').blur(function () {
-            var $poContentEle = $(this).closest('div.po-content');
-            var data = {
-                'idNo':$(this).val()
-            };
-            $.ajax({
-                'url':'${pageContext.request.contextPath}/psn-info',
-                'dataType':'json',
-                'data':data,
-                'type':'GET',
-                'success':function (data) {
-                    console.log("suc");
-                    if(data != null) {
-                        data.officeTelNo =  $poContentEle.find('input[name="officeTelNo"]').val();
-                        fillPoData($poContentEle,data);
-                    }
-                },
-                'error':function (data) {
-                    console.log("err");
-                }
-            });
-        });
-    }*/
+
 
     var doEdit = function () {
         $('#edit').click(function () {
             $('.po-content input[type="text"]').prop('disabled',false);
             $('.po-content div.nice-select').removeClass('disabled');
+            $('.po-content input[type="text"]').css('border-color','');
+            $('.po-content input[type="text"]').css('color','');
             $('#isEditHiddenVal').val('1');
             $('#addPoBtn').removeClass('hidden');
             addPo();
@@ -713,6 +696,8 @@
             $('.deputySelect').removeClass('disabled');
             $('.deputy-content input[type="text"]').prop('disabled',false);
             $('.deputy-content div.nice-select').removeClass('disabled');
+            $('.deputy-content input[type="text"]').css('border-color','');
+            $('.deputy-content input[type="text"]').css('color','');
             $('#isEditDpoHiddenVal').val('1');
             addDpo();
             $('#edit-dpo').addClass('hidden');

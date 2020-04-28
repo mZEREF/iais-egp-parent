@@ -77,48 +77,48 @@
 
 
         <c:if test="${requestInformationConfig==null && ('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
-            <c:if test="${'APTY004' ==AppSubmissionDto.appType}">
-                $('#preview').unbind();
-                $('#previewli').unbind();
-            </c:if>
-            <c:choose>
-                <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
-                    $('#documents').unbind();
-                    $('#documentsli').unbind();
-                    $('#serviceForms').unbind();
-                    $('#serviceFormsli').unbind();
-                    $('#payment').unbind();
-                    $('#paymentli').unbind();
-                </c:when>
-                <c:when test="${AppSubmissionDto.appEditSelectDto.docEdit}">
-                    $('#premises').unbind();
-                    $('#premisesli').unbind();
-                    $('#serviceForms').unbind();
-                    $('#serviceFormsli').unbind();
-                    $('#payment').unbind();
-                    $('#paymentli').unbind();
-                </c:when>
-                <c:when test="${AppSubmissionDto.appEditSelectDto.serviceEdit}">
-                    $('#premises').unbind();
-                    $('#premisesli').unbind();
-                    $('#documents').unbind();
-                    $('#documentsli').unbind();
-                    $('#payment').unbind();
-                    $('#paymentli').unbind();
-                </c:when>
-                <c:otherwise>
-                    $('#premises').unbind();
-                    $('#premisesli').unbind();
-                    $('#documents').unbind();
-                    $('#documentsli').unbind();
-                    $('#serviceForms').unbind();
-                    $('#serviceFormsli').unbind();
-                    $('#preview').unbind();
-                    $('#previewli').unbind();
-                    $('#payment').unbind();
-                    $('#paymentli').unbind();
-                </c:otherwise>
-            </c:choose>
+        <c:if test="${'APTY004' ==AppSubmissionDto.appType}">
+        $('#preview').unbind();
+        $('#previewli').unbind();
+        </c:if>
+        <c:choose>
+        <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
+        $('#documents').unbind();
+        $('#documentsli').unbind();
+        $('#serviceForms').unbind();
+        $('#serviceFormsli').unbind();
+        $('#payment').unbind();
+        $('#paymentli').unbind();
+        </c:when>
+        <c:when test="${AppSubmissionDto.appEditSelectDto.docEdit}">
+        $('#premises').unbind();
+        $('#premisesli').unbind();
+        $('#serviceForms').unbind();
+        $('#serviceFormsli').unbind();
+        $('#payment').unbind();
+        $('#paymentli').unbind();
+        </c:when>
+        <c:when test="${AppSubmissionDto.appEditSelectDto.serviceEdit}">
+        $('#premises').unbind();
+        $('#premisesli').unbind();
+        $('#documents').unbind();
+        $('#documentsli').unbind();
+        $('#payment').unbind();
+        $('#paymentli').unbind();
+        </c:when>
+        <c:otherwise>
+        $('#premises').unbind();
+        $('#premisesli').unbind();
+        $('#documents').unbind();
+        $('#documentsli').unbind();
+        $('#serviceForms').unbind();
+        $('#serviceFormsli').unbind();
+        $('#preview').unbind();
+        $('#previewli').unbind();
+        $('#payment').unbind();
+        $('#paymentli').unbind();
+        </c:otherwise>
+        </c:choose>
 
 
         </c:if>
@@ -162,6 +162,16 @@
         $('div.nice-select').addClass('disabled');
         $('input[type="text"]').css('border-color','#ededed');
         $('input[type="text"]').css('color','#999');
+    }
+
+    function unDisabledPage(){
+        $('input[type="radio"]').prop('disabled',false);
+        $('input[type="text"]').prop('disabled',false);
+        $('input[type="file"]').prop('disabled',false);
+        $('input[type="checkbox"]').prop('disabled',false);
+        $('div.nice-select').removeClass('disabled');
+        $('input[type="text"]').css('border-color','');
+        $('input[type="text"]').css('color','');
     }
 
     function readonlyPartPage($Ele) {

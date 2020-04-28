@@ -2,36 +2,33 @@
 <div class="application-tab-footer">
   <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
   <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
-<c:choose>
+  <c:choose>
   <c:when test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
-    <div class="row">
-      <div class="col-xs-12 col-sm-3"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
-      <div class="col-xs-12 col-sm-9">
-        <div class="button-group">
-          <c:choose>
-            <c:when test="${serviceStepDto.isStepEnd() && serviceStepDto.isServiceEnd()}">
-              <c:choose>
-                <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
-                  <a class="btn btn-primary next premiseId" id="RenewSave" >Save and Preview</a>
-                </c:when>
-                <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
-                  <a class="btn btn-primary next premiseId" id="RfcSave" >Save and Preview</a>
-                </c:when>
-              </c:choose>
-            </c:when>
-            <c:otherwise>
-              <a class="btn btn-primary" id="Next" >Next</a>
-            </c:otherwise>
-          </c:choose>
-          <c:if test="${requestInformationConfig==null}">
-            <a class="btn btn-secondary" id = "SaveDraft" >Save as Draft</a>
-          </c:if>
-          <a id="RfcUndo" class="" href="#" >Undo All Changes</a>
+  <div class="row">
+    <div class="col-xs-12 col-sm-3"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
+    <div class="col-xs-12 col-sm-9">
+      <div class="button-group">
+        <a id="RfcUndo" class="" href="#" >Undo All Changes</a>
+        <c:choose>
+          <c:when test="${serviceStepDto.isStepEnd() && serviceStepDto.isServiceEnd()}">
+            <c:choose>
+              <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
+                <a class="btn btn-primary next premiseId" id="RenewSave" >Save and Preview</a>
+              </c:when>
+              <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
+                <a class="btn btn-primary next premiseId" id="RfcSave" >Save and Preview</a>
+              </c:when>
+            </c:choose>
+          </c:when>
+          <c:otherwise>
+            <a class="btn btn-primary" id="Next" >Next</a>
+          </c:otherwise>
+        </c:choose>
         <input name="nextStep" value="" type="hidden">
       </div>
     </div>
-  </c:when>
-  <c:otherwise>
+    </c:when>
+    <c:otherwise>
     <div class="row">
       <div class="col-xs-12 col-sm-6"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
       <div class="col-xs-12 col-sm-6">
@@ -60,9 +57,9 @@
         <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
       </c:if>--%>
 
-      <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
+<iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
 
-      <script type="text/javascript">
+<script type="text/javascript">
     var  v;
     $(document).ready(function() {
         if($('#saveDraftSuccess').val()=='success'){
@@ -74,14 +71,14 @@
         $('#Back').click(function(){
             if(${serviceStepDto.isStepFirst()}){
                 if(${serviceStepDto.isServiceFirst()}){
-                  <c:choose>
+                    <c:choose>
                     <c:when test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
-                      submit('jump',null,null);
+                    submit('jump',null,null);
                     </c:when>
                     <c:otherwise>
-                      submit('documents',null,null);
+                    submit('documents',null,null);
                     </c:otherwise>
-                  </c:choose>
+                    </c:choose>
                 }else{
                     submitFormTabs('${serviceStepDto.previousStep.stepCode}');
                 }

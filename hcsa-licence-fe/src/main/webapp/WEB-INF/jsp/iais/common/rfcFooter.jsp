@@ -2,6 +2,11 @@
     <div class="col-xs-12 col-sm-3 ">
         <a id="RfcBack" class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
     </div>
+    <div class="col-xs-12 col-sm-6">
+        <div class="button-group">
+            <a id="RfcUndo" class="" href="#" >Undo All Changes</a>
+        </div>
+    </div>
     <c:choose>
         <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
             <div class="col-xs-12 col-sm-3  text-right">
@@ -14,12 +19,6 @@
             </div>
         </c:when>
     </c:choose>
-    <div class="col-xs-12 col-sm-6">
-        <div class="button-group">
-            <a class="btn btn-secondary premiseSaveDraft" id="RfcSaveDraft" >Save as Draft</a>
-            <a id="RfcUndo" class="" href="#" >Undo All Changes</a>
-        </div>
-    </div>
 </div>
 
 <script>
@@ -29,7 +28,7 @@
         });
 
         $('#RfcSave').click(function () {
-           submit('preview','next',null);
+            submit('preview','next',null);
         });
 
         $('#RenewSave').click(function () {
@@ -38,12 +37,12 @@
 
         $('#RfcSaveDraft').click(function () {
             <c:choose>
-                <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
-                submit('premises','saveDraft',null);
-                </c:when>
-                <c:when test="${AppSubmissionDto.appEditSelectDto.docEdit}">
-                submit('documents','saveDraft',null);
-                </c:when>
+            <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
+            submit('premises','saveDraft',null);
+            </c:when>
+            <c:when test="${AppSubmissionDto.appEditSelectDto.docEdit}">
+            submit('documents','saveDraft',null);
+            </c:when>
             </c:choose>
 
         });

@@ -51,7 +51,7 @@
                     <div class="premises-summary-preview <c:if test="${'true' != showPreview}">hidden</c:if>">
                       <c:choose>
                         <c:when test="${'true' == canEdit}">
-                          <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                          <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a></p>
                         </c:when>
                         <c:otherwise>
 
@@ -63,15 +63,14 @@
                           <span class="premise-type">
                             <strong>
                               <c:if test="${'ONSITE' == appGrpPremDto.premisesType}">
-                                <c:out value="On-site"/>
+                                <c:out value="On-site: "/>
                               </c:if>
                               <c:if test="${'CONVEYANCE' == appGrpPremDto.premisesType}">
-                                <c:out value="Conveyance"/>
+                                <c:out value="Conveyance: "/>
                               </c:if>
                               <c:if test="${'OFFSIET' == appGrpPremDto.premisesType}">
-                                <c:out value="Off-site"/>
+                                <c:out value="Off-site: "/>
                               </c:if>
-                              :
                             </strong>
                           </span>
                           <span class="premise-address">

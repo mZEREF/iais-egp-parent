@@ -49,7 +49,7 @@
                     </c:otherwise>
                   </c:choose>
                   <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
-                    <p class="text-right"><a class="back" id="RfcSkip">Skip<em class="fa fa-angle-right"></em></a></p>
+                    <p class="text-right"><a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a></p>
                   </c:if>
                   <c:if test="${'true' != isClickEdit}">
                     <c:set var="locking" value="true"/>
@@ -57,7 +57,7 @@
                     <div id="edit-content">
                       <c:choose>
                         <c:when test="${'true' == canEdit}">
-                          <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                          <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a></p>
                         </c:when>
                         <c:otherwise>
                         </c:otherwise>
@@ -66,12 +66,12 @@
                   </c:if>
                 </c:if>
               </div>
-              
+
               <c:if test="${ServicePersonnelMandatory>0}">
-              <c:forEach begin="0" end="${ServicePersonnelMandatory-1}" step="1" varStatus="status">
-                <c:if test="${AppSvcPersonnelDtoList != null && AppSvcPersonnelDtoList.size()>0}">
-                  <c:set value="${AppSvcPersonnelDtoList[status.index]}" var="appSvcPersonnelDto"/>
-                </c:if>
+                <c:forEach begin="0" end="${ServicePersonnelMandatory-1}" step="1" varStatus="status">
+                  <c:if test="${AppSvcPersonnelDtoList != null && AppSvcPersonnelDtoList.size()>0}">
+                    <c:set value="${AppSvcPersonnelDtoList[status.index]}" var="appSvcPersonnelDto"/>
+                  </c:if>
 
                   <table class="personnel-content" id="personnelRemoveId${status.index}">
                     <tbody>
@@ -192,17 +192,17 @@
                     </tr>
                     </tbody>
                   </table>
-              </c:forEach>
+                </c:forEach>
               </c:if>
-              <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig==null}">
-              <div class="row">
-                <div class="col-sm-5">
-                  <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Service Personnel</span>
+              <c:if test="${requestInformationConfig==null}">
+                <div class="row">
+                  <div class="col-sm-5">
+                    <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Service Personnel</span>
+                  </div>
+                  <div  class="col-sm-5 col-md-5">
+                    <span class="spErrorMsg" style="color: red;"></span>
+                  </div>
                 </div>
-                <div  class="col-sm-5 col-md-5">
-                  <span class="spErrorMsg" style="color: red;"></span>
-                </div>
-              </div>
               </c:if>
             </div>
           </td>
@@ -217,10 +217,9 @@
   $(document).ready(function () {
       pageController('');
 
-      if(${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)} && 'true' != '${isClickEdit}'){
-          $('input[type="text"]').prop('disabled',true);
-          //nice-select
-          $('div.nice-select').addClass('disabled');
+      if(${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && !isClickEdit}){
+          disabledPage();
+          $('.addListBtn').addClass('hidden');
       }
 
       <!--for reload when have personnelSel-->
@@ -363,6 +362,7 @@
           $('div.nice-select').removeClass('disabled');
           $('#isEditHiddenVal').val('1');
           $('#edit-content').addClass('hidden');
+          $('.addListBtn').removeClass('hidden');
       });
   }
 
