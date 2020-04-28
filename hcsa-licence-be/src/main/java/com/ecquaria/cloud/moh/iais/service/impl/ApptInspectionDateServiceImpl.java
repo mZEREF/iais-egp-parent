@@ -471,6 +471,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         }
         apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
         apptCalendarStatusDto.setConfirmRefNums(confirmRefNo);
+        apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
         cancelOrConfirmApptDate(apptCalendarStatusDto);
         //
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
@@ -535,6 +536,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             }
         }
         apptCalendarStatusDto.setConfirmRefNums(confirmRefNo);
+        apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
         cancelOrConfirmApptDate(apptCalendarStatusDto);
         //
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();

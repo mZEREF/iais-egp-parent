@@ -60,7 +60,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row">
+                  <div class="row" style="margin-bottom: 200px;">
                     <div class="col-md-1">
                       <label style="font-size: 16px"></label>
                     </div>
