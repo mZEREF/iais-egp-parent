@@ -318,9 +318,21 @@ public class MasterCodeDelegator {
         }
         MasterCodeDto masterCodeDto = new MasterCodeDto();
         getValueFromPage(masterCodeDto,request);
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ValidationResult validationResult = WebValidationHelper.validateProperty(masterCodeDto,SystemAdminBaseConstants.SAVE_ACTION);
+        if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() !=null) {
+            if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
+                validationResult.setHasErrors(true);
+            }
+        }
         if(validationResult != null && validationResult.isHasErrors()) {
-            Map<String, String> errorMap = validationResult.retrieveAll();
+            errorMap = validationResult.retrieveAll();
+            if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() !=null){
+                if(!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())){
+                    validationResult.setHasErrors(true);
+                    errorMap.put("effectiveTo","Date Start Date cannot be later than End Date");
+                }
+            }
             ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
             ParamUtil.setRequestAttr(request, "codeCategory",ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_CATEGORY));
