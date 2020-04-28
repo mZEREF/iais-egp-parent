@@ -34,10 +34,10 @@ public class PaymentRequestDelegator {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>saveData");
         HttpServletRequest request = bpc.request;
         PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
-        String amo = request.getParameter("amount");
-        String backUrl = request.getParameter("backUrl");
-        String payMethod =request.getParameter("payMethod");
-        String reqNo = request.getParameter("reqNo");
+        String amo = ParamUtil.getMaskedString(request,"amount");
+        String backUrl = ParamUtil.getMaskedString(request,"backUrl");
+        String payMethod = ParamUtil.getMaskedString(request,"payMethod");
+        String reqNo = ParamUtil.getMaskedString(request,"reqNo");
         if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(payMethod)&&!StringUtil.isEmpty(reqNo)) {
             log.info("------------------------------------->>>save****************");
             double amount = Double.parseDouble(amo);

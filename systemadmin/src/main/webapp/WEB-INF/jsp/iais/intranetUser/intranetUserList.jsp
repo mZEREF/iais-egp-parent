@@ -26,6 +26,7 @@
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_deactivate" value="">
+        <input type="hidden" id="maskUserId" name="maskUserId" value="">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -72,7 +73,7 @@
     });
 
     function doEdit(Id){
-        $("[name='crud_action_value']").val(Id);
+        $('#maskUserId').val(Id);
         submitUser('doEdit');
     }
 

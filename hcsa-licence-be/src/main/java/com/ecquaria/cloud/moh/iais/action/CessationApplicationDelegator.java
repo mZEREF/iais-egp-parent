@@ -78,7 +78,7 @@ public class CessationApplicationDelegator {
         List<String> licIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licIds");
         if (licIds == null || licIds.size() == 0) {
             licIds = IaisCommonUtils.genNewArrayList();
-            licIds.add("1D83B3AD-B04D-EA11-BE7F-000C29F371DC");
+            licIds.add("B61C1AE8-5988-EA11-BE82-000C29F371DC");
         }
         List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
         int size = appCessDtosByLicIds.size();

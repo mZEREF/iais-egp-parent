@@ -1,10 +1,4 @@
-<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
-<div class="main-content">
-<form class="form-horizontal" method="post" id="IntranetUserForm" action=<%=process.runtime.continueURL()%>>
-<%--        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>--%>
-<input type="hidden" name="crud_action_type" value="">
-<input type="hidden" name="crud_action_value" value="">
-<input type="hidden" name="crud_action_deactivate" value="">
+
 <div class="row">
 <div class="col-lg-12 col-xs-12">
 <div class="center-content">
@@ -63,7 +57,7 @@
                         <td>
                             <p class="visible-xs visible-sm table-row-title">Action</p>
                             <button type="button" class="btn btn-default btn-sm"
-                                    onclick="doEdit('${user.id}')">Edit
+                                    onclick="doEdit(<iais:mask name="maskUserId" value="${user.id}"></iais:mask>)">Edit
                             </button>
                             <button type="button" class="btn btn-default btn-sm"
                                     onclick="doDelete('${user.id}')">Delete
@@ -94,7 +88,7 @@
         </div>
         </div>
         </div>
-        </form>
+
         </div>
         <script>
         function checkAll() {
