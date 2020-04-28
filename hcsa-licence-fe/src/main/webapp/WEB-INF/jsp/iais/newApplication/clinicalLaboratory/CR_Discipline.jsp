@@ -87,7 +87,7 @@
                           <tr>
                             <td>
                               <div class="control-item-container parent-form-check" data-parent="<c:out value="${premIndexNo}${levelOneList.type}${levelOneList.name}" />" >
-                                <input type="checkbox" onclick="doChangeOthers('${levelOneList.id}')"
+                                <input type="checkbox" onclick="doChangeOthers('${levelOneList.id}|${status.index}')"
                                 <c:if test="${reloadData[reloadIndexNo1] != null && reloadData[reloadIndexNo1] != ''}">
                                        checked="checked"
                                 </c:if>
@@ -109,7 +109,7 @@
                               <tr>
                                 <td>
                                   <div class="control-item-container sub-form-check parent-form-check disabled" data-parent="<c:out value="${premIndexNo}${levelTwoList.type}${levelTwoList.name}"/>" data-child="<c:out value="${premIndexNo}${levelOneList.type}${levelOneList.name}"/>" >
-                                    <input type="checkbox" onclick="doChangeText('${levelTwoList.id}')"
+                                    <input type="checkbox" onclick="doChangeText('${levelTwoList.id}|${status.index}')"
                                     <c:if test="${reloadData[reloadIndexNo2] != null && reloadData[reloadIndexNo2] != ''}">
                                            checked="checked"
                                     </c:if>
@@ -127,7 +127,7 @@
                                   <c:choose>
                                     <c:when test="${levelTwoList.id=='27D8EB5B-1123-EA11-BE78-000C29D29DB0'}">
                                       <textarea name="pleaseIndicate${status.index}" maxlength="200" cols="45" disabled>${appGrpPremisesDto.otherScopeName}</textarea>
-                                      <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError"></span>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError${status.index}"></span>
                                     </c:when>
                                   </c:choose>
                                 </td>
@@ -196,32 +196,93 @@
     });
   };
 
-  var num=0;
+  var num=1;
+  var num1=1;
+  var num2=1;
   var doChangeText = function (levelTwoListId) {
-    if(num%2===1){
-      if(levelTwoListId==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
-        $('textarea[name="pleaseIndicate0"]').prop('disabled',false);
-      }
+    var str0=levelTwoListId.split('|')[0];
+    var str=levelTwoListId.split('|')[1];
+    switch (str) {
+      case "0":
+        if(num%2===1){
+          if(str0==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
+            $('textarea[name="pleaseIndicate0"]').prop('disabled',false);
+          }
+        }
+        else {
+          if(str0==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
+            $('textarea[name="pleaseIndicate0"]').prop('disabled',true);
+            numOthers=numOthers+1;
+          }
+        }
+        num=num+1;break;
+      case "1":
+        if(num1%2===1){
+          if(str0==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
+            $('textarea[name="pleaseIndicate1"]').prop('disabled',false);
+          }
+        }
+        else {
+          if(str0==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
+            $('textarea[name="pleaseIndicate1"]').prop('disabled',true);
+          }
+        }
+        num1=num1+1;break;
+      case "2":
+        if(num2%2===1){
+          if(str0==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
+            $('textarea[name="pleaseIndicate2"]').prop('disabled',false);
+          }
+        }
+        else {
+          if(str0==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
+            $('textarea[name="pleaseIndicate2"]').prop('disabled',true);
+          }
+        }
+        num2=num2+1;break;
     }
-    else {
-      if(levelTwoListId==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
-        $('textarea[name="pleaseIndicate0"]').prop('disabled',true);
-      }
-    }
-    num=num+1;
+
   };
 
   var numOthers=0;
+  var numOthers1=0;
+  var numOthers2=0;
   var doChangeOthers = function (levelOneListId) {
-    if(levelOneListId==='0B38F14D-1123-EA11-BE78-000C29D29DB0'){
-      if(numOthers%2===1){
-        if($('textarea[name="pleaseIndicate0"]').disabled===false){
-          num=num+1;
-        }
-        $('textarea[name="pleaseIndicate0"]').prop('disabled',true);
-      }
-      numOthers=numOthers+1;
+    var str0=levelOneListId.split('|')[0];
+    var str=levelOneListId.split('|')[1];
+    switch (str) {
+      case "0":
+        if(str0==='0B38F14D-1123-EA11-BE78-000C29D29DB0'){
+          if(numOthers%2===1){
+            if($('textarea[name="pleaseIndicate0"]').disabled===false){
+              num=num+1;
+            }
+            $('textarea[name="pleaseIndicate0"]').prop('disabled',true);
+          }
+          numOthers=numOthers+1;
+        }break;
+      case "1":
+        if(str0==='0B38F14D-1123-EA11-BE78-000C29D29DB0'){
+          if(numOthers1%2===1){
+            if($('textarea[name="pleaseIndicate1"]').disabled===false){
+              num1=num1+1;
+            }
+            $('textarea[name="pleaseIndicate1"]').prop('disabled',true);
+          }
+          numOthers1=numOthers1+1;
+        }break;
+      case "2":
+        if(str0==='0B38F14D-1123-EA11-BE78-000C29D29DB0'){
+          if(numOthers2%2===1){
+            if($('textarea[name="pleaseIndicate2"]').disabled===false){
+              num2=num2+1;
+            }
+            $('textarea[name="pleaseIndicate2"]').prop('disabled',true);
+          }
+          numOthers2=numOthers2+1;
+        }break;
     }
+
   };
 
 </script>

@@ -58,7 +58,7 @@ public class NewApplicationHelper {
         }else {
             for(int i=0;i<listDtos.size();i++){
                 if("27D8EB5B-1123-EA11-BE78-000C29D29DB0".equals(listDtos.get(i).getChkLstConfId())&&StringUtil.isEmpty(listDtos.get(i).getOtherScopeName()) ){
-                    map.put("pleaseIndicateError","ERR0009");
+                    map.put("pleaseIndicateError"+i,"ERR0009");
                 }
 
                 String parentName = listDtos.get(i).getParentName();
