@@ -104,7 +104,8 @@ public class RequestForChangeDelegator {
     public void prepareDraft(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareDraft start ...."));
         ParamUtil.setSessionAttr(bpc.request, RfcConst.DODRAFTCONFIG,null);
-        loadingDraft(bpc);
+        String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
+        loadingDraft(bpc,draftNo);
 
         log.debug(StringUtil.changeForLog("the do prepareDraft end ...."));
     }
@@ -492,9 +493,8 @@ public class RequestForChangeDelegator {
         }
     }
 
-    private void loadingDraft(BaseProcessClass bpc){
+    private void loadingDraft(BaseProcessClass bpc,String draftNo){
         log.info(StringUtil.changeForLog("the do loadingDraft start ...."));
-        String draftNo = ParamUtil.getString(bpc.request, "DraftNumber");
         //draftNo = "DQ2003030005426";
         String action = "doAmend";
         if(!StringUtil.isEmpty(draftNo)){
