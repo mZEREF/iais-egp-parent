@@ -49,9 +49,6 @@
     $(function () {
         if ('${licIsRenewed}' || '${licIsAppealed}') {
             $('#isRenewedModal').modal('show');
-            window.setTimeout(function(){
-                $('#isRenewedModal').modal('hide');
-            },3000);
         }
     });
 
