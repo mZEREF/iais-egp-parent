@@ -800,7 +800,8 @@ public class RequestForInformationDelegator {
             map.put("DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
             map.put("COMMENTS",StringUtil.viewHtml(""));
             String url = "https://" + systemParamConfig.getInterServerName() +
-                    "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" ;
+                    "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
+                    "?licenseeId=" + licenseeId;
             map.put("A_HREF", url);
             map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
             String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);

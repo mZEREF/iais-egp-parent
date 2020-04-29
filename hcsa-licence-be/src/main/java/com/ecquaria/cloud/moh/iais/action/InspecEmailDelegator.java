@@ -94,7 +94,7 @@ public class InspecEmailDelegator {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request=bpc.request;
         String taskId = ParamUtil.getMaskedString(request,"taskId");
-        AuditTrailHelper.auditFunction("NcEmail Management", "NcEmail Config");
+        AuditTrailHelper.auditFunction("NcEmail Management", "Post Inspection Task");
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
         ParamUtil.setSessionAttr(request,"appPremCorrId",null);
@@ -224,7 +224,6 @@ public class InspecEmailDelegator {
         String serviceId=applicationViewDto.getApplicationDto().getServiceId();
         TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
         String decision=ParamUtil.getString(request,"decision");
-        if(decision.equals("Select")){decision=InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW;}
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));

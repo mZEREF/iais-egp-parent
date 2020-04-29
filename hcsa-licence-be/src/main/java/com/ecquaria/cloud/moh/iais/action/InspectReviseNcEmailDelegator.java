@@ -110,7 +110,7 @@ public class InspectReviseNcEmailDelegator {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getMaskedString(request,"taskId");
-        AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
+        AuditTrailHelper.auditFunction("Checklist Management", "Post Inspection Task");
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
         String appPremCorrId = taskDto.getRefNo();
         List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");

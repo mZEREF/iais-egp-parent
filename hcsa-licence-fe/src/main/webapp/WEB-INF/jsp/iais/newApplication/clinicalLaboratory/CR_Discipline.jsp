@@ -196,9 +196,9 @@
     });
   };
 
-  var num=1;
-  var num1=1;
-  var num2=1;
+  var num=0;
+  var num1=0;
+  var num2=0;
   var doChangeText = function (levelTwoListId) {
     var str0=levelTwoListId.split('|')[0];
     var str=levelTwoListId.split('|')[1];
@@ -258,6 +258,8 @@
               num=num+1;
             }
             $('textarea[name="pleaseIndicate0"]').prop('disabled',true);
+          }else {
+            num=num+1;
           }
           numOthers=numOthers+1;
         }break;
@@ -268,6 +270,8 @@
               num1=num1+1;
             }
             $('textarea[name="pleaseIndicate1"]').prop('disabled',true);
+          }else {
+            num1=num1+1;
           }
           numOthers1=numOthers1+1;
         }break;
@@ -278,6 +282,8 @@
               num2=num2+1;
             }
             $('textarea[name="pleaseIndicate2"]').prop('disabled',true);
+          }else {
+            num2=num2+1;
           }
           numOthers2=numOthers2+1;
         }break;

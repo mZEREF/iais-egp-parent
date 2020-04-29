@@ -95,7 +95,7 @@ public class InspectionMergeSendNcEmailDelegator {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request=bpc.request;
         String taskId = ParamUtil.getMaskedString(request,"taskId");
-        AuditTrailHelper.auditFunction("Merge NcEmail Management", "Merge NcEmail Config");
+        AuditTrailHelper.auditFunction("Merge NcEmail Management", "Post Inspection Task");
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
         ParamUtil.setSessionAttr(request,"appPremCorrIds",null);
