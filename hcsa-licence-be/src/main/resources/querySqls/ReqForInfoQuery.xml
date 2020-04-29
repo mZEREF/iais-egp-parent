@@ -243,7 +243,7 @@
                                 </p>
                                 <p>
                                     <label class="col-xs-9 col-md-4 control-label">
-                                        <input type="checkbox" name = "reqTypeindexRfi" /> File Upload <input type="hidden" name="lengths" value="indexRfi" />
+                                        <input type="checkbox" name = "reqTypeindexRfi" />&nbsp;File Upload <input type="hidden" name="lengths" value="indexRfi" />
                                     </label>
                                 </p>
                             </div>

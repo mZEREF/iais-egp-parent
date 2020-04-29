@@ -35,7 +35,7 @@
                                         <div class="panel-body">
                                             <div class="form-group">
                                                 <p>
-                                                    <label class="col-xs-9 col-md-4 control-label">Select Category</label>
+                                                    <label class="col-xs-9 col-md-4 control-label">Select Category<strong style="color:#ff0000;">*</strong></label>
                                                 <div class=" col-xs-11 col-sm-4 col-md-5">
                                                 <iais:select name="decision${status.index}" options="salutationList" firstOption="Please Select" value="${newRfi.decision}"></iais:select>
                                                 </div>
@@ -50,7 +50,7 @@
                                             <br>
                                             <div class="form-group">
                                                 <p>
-                                                    <label class="col-xs-9 col-md-4 control-label" >Title</label>
+                                                    <label class="col-xs-9 col-md-4 control-label" >Title<strong style="color:#ff0000;">*</strong></label>
                                                     <label >
                                                         <textarea id="rfiTitle${status.index}"  maxlength="500" rows="8" cols="95"  name="rfiTitle${status.index}" >${newRfi.rfiTitle}</textarea><span id="error_rfiTitle${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
                                                     </label>
@@ -62,7 +62,7 @@
                                                     </label>
                                                 </p>
                                                 <p>
-                                                    <label class="col-xs-9 col-md-4 control-label" >Due Date</label>
+                                                    <label class="col-xs-9 col-md-4 control-label" >Due Date<strong style="color:#ff0000;">*</strong></label>
                                                     <label col-xs-11 col-sm-4 col-md-5>
                                                         <iais:datePicker value="${newRfi.date}"  name="Due_date${status.index}"></iais:datePicker>
                                                         <span id="error_Due_date${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
@@ -70,7 +70,7 @@
                                                 </p>
                                                 <p>
                                                     <label class="col-xs-9 col-md-4 control-label">
-                                                        <input type="checkbox" name = "reqType${status.index}" <c:if test="${newRfi.reqType!=null}">checked</c:if> /> File Upload <input type="hidden" name="lengths" value="${status.index}" />
+                                                        <input type="checkbox" name = "reqType${status.index}" <c:if test="${newRfi.reqType!=null}">checked</c:if> />&nbsp;File Upload <input type="hidden" name="lengths" value="${status.index}" />
                                                     </label>
                                                 </p>
                                             </div>
