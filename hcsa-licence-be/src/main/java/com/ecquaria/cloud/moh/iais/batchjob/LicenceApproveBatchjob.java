@@ -404,7 +404,7 @@ public class LicenceApproveBatchjob {
                 }
 
                 LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),null,applicationGroupDto,appPremisesRecommendationDto,
-                        originLicenceDto,null,applicationDtos);
+                        originLicenceDto,null,applicationDtos.get(0).getRelLicenceNo(),applicationDtos);
                 superLicDto.setLicenceDto(licenceDto);
                 //if PostInspNeeded send email
                 if(isPostInspNeeded == Integer.parseInt(AppConsts.YES)){
@@ -694,7 +694,7 @@ public class LicenceApproveBatchjob {
                 LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
                 superLicDto.setOriginLicenceDto(originLicenceDto);
                 LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),hcsaServiceDto.getSvcType(),applicationGroupDto,appPremisesRecommendationDto,
-                        originLicenceDto,applicationDto,null);
+                        originLicenceDto,applicationDto,applicationDto.getRelLicenceNo(),null);
                 superLicDto.setLicenceDto(licenceDto);
                 //if PostInspNeeded send email
                 if(isPostInspNeeded == Integer.parseInt(AppConsts.YES)){
@@ -1178,6 +1178,7 @@ public class LicenceApproveBatchjob {
                                      AppPremisesRecommendationDto appPremisesRecommendationDto,
                                      LicenceDto originLicenceDto,
                                      ApplicationDto applicationDto,
+                                     String relLicenceNo,
                                      List<ApplicationDto> applicationDtos){
         log.info(StringUtil.changeForLog("The  getLicenceDto start ..."));
         LicenceDto licenceDto = new LicenceDto();
@@ -1224,7 +1225,20 @@ public class LicenceApproveBatchjob {
                     startDate = new Date();
                 }
                 licenceDto.setStartDate(startDate);
-                licenceDto.setExpiryDate(LicenceUtil.getExpiryDate(licenceDto.getStartDate(),appPremisesRecommendationDto));
+                Date expiryDate = LicenceUtil.getExpiryDate(licenceDto.getStartDate(),appPremisesRecommendationDto);
+                log.info(StringUtil.changeForLog("The expiryDate is -->:"+expiryDate));
+                if(!StringUtil.isEmpty(relLicenceNo)){
+                    LicenceDto relLicenceDto = licenceService.getLicenceDtoByLicNo(relLicenceNo);
+                    if(relLicenceDto!=null){
+                     Date relExpiryDate = relLicenceDto.getExpiryDate();
+                     log.info(StringUtil.changeForLog("The relExpiryDate is -->:" + relExpiryDate));
+                     if(expiryDate.after(relExpiryDate)){
+                         expiryDate = relExpiryDate;
+                     }
+                     licenceDto.setRelLicenceId(relLicenceDto.getRelLicenceId());
+                    }
+                }
+                licenceDto.setExpiryDate(expiryDate);
                 //licenceDto.setEndDate(licenceDto.getExpiryDate());
                 licenceDto.setGrpLic(applicationGroupDto.isGrpLic());
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());

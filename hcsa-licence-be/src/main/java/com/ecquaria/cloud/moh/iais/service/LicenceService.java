@@ -30,6 +30,7 @@ public interface LicenceService {
     public PremisesDto getLatestVersionPremisesByHciCode(String hciCode);
     public KeyPersonnelDto getLatestVersionKeyPersonnelByIdNoAndOrgId(String idNo,String orgId);
     public LicenceDto getLicenceDto(String licenceId);
+    public LicenceDto getLicenceDtoByLicNo(String licNo);
 
     public List<LicenceGroupDto> createSuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos);
     public EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum,String submissionId);
@@ -43,5 +44,7 @@ public interface LicenceService {
     public MsgTemplateDto getMsgTemplateById(String id);
 
     public void sendEmail(EmailDto emailDto);
+
+
 
 }

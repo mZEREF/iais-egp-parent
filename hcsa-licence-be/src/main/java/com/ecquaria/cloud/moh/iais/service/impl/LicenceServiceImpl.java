@@ -161,6 +161,11 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     @Override
+    public LicenceDto getLicenceDtoByLicNo(String licNo) {
+        return hcsaLicenceClient.getLicBylicNo(licNo).getEntity();
+    }
+
+    @Override
     public List<LicenceGroupDto> createSuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
         SubmitResp submitResp = eventBusHelper.submitAsyncRequest(eventBusLicenceGroupDtos,
                 generateIdClient.getSeqId().getEntity(),
