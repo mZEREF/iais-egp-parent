@@ -232,8 +232,9 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             String mesNO = inboxMsgService.getMessageNo();
             interMessageDto.setRefNo(mesNO);
             interMessageDto.setService_id(applicationDto1.getServiceId());
-            String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName() +
-                    MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION;
+            String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
+                    MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION +
+                    taskDto.getRefNo() + "&recVersion=" + version;
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
             maskParams.put("appPremCorrId", taskDto.getRefNo());
             maskParams.put("recVersion", version);
