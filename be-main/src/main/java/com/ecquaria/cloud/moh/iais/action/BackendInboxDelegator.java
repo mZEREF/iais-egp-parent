@@ -613,7 +613,7 @@ public class BackendInboxDelegator {
                 for (TaskDto item:commPools
                 ) {
                     appNoUrl.put(item.getRefNo(), generateProcessUrl(item, bpc.request));
-                    taskList.put(item.getRefNo(), MaskUtil.maskValue("taskId", item.getId()));
+                    taskList.put(item.getRefNo(), MaskUtil.maskValue("taskcheckbox", item.getId()));
                     taskMap.put(item.getRefNo(), item);
                 }
             }
