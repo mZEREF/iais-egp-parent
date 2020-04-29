@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
@@ -350,7 +351,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Map<String, Object> getEmailNotifyList(){
+    public Map<String, List<TaskEmailDto>> getEmailNotifyList(){
         return taskOrganizationClient.getEmailNotifyList().getEntity();
     }
 
@@ -360,6 +361,11 @@ public class TaskServiceImpl implements TaskService {
         List<String> taskRefNumList = IaisCommonUtils.genNewArrayList();
         commPoolByGroupWordId.forEach(i -> taskRefNumList.add(i.getRefNo()));
         return taskRefNumList.stream().distinct().collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<String, List<String>> getAllWorkGroupMembers(List<String> groupIdList){
+        return taskOrganizationClient.getAllWorkGroupMembers(groupIdList).getEntity();
     }
 
 }
