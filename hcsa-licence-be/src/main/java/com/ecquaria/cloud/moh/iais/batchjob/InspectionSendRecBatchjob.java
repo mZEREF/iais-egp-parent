@@ -138,7 +138,7 @@ public class InspectionSendRecBatchjob {
                 interMessageDto.setService_id(aDto.getServiceId());
                 interMessageDto.setUserId(applicationGroupDto.getLicenseeId());
                 String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName() +
-                             MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION;
+                        MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION + appPremCorrId;
                 HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                 maskParams.put("appPremCorrId", appPremCorrId);
 
