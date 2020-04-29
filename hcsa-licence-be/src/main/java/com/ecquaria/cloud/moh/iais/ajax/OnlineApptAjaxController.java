@@ -22,18 +22,19 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -97,7 +98,7 @@ public class OnlineApptAjaxController {
                     for (TaskDto tDto : taskDtoList) {
                         AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
                         OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(tDto.getUserId()).getEntity();
-                        appointmentUserDto.setLoginUserId(orgUserDto.getDisplayName());
+                        appointmentUserDto.setLoginUserId(orgUserDto.getUserId());
                         String workGroupId = tDto.getWkGrpId();
                         WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
                         appointmentUserDto.setWorkGrpName(workingGroupDto.getGroupName());
