@@ -86,6 +86,8 @@ public class WithOutRenewalDelegator {
         //init session
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, null);
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,null);
+        ParamUtil.setSessionAttr(bpc.request,"totalStr",null);
+        ParamUtil.setSessionAttr(bpc.request,"totalAmount",null);
 
         //init page value
         //instructions
@@ -302,11 +304,13 @@ public class WithOutRenewalDelegator {
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
             FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
             appSubmissionDto.setLicenseeId(licenseeId);
+            //set fee detail
+            appSubmissionDto.setDetailFeeDto(feeDto.getDetailFeeDto().get(0));
             Double amount = feeDto.getTotal();
             if(!StringUtil.isEmpty(amount)){
                 total +=amount;
                 appSubmissionDto.setAmount(amount);
-                String amountStr = Formatter.formatterMoney(amount);
+                String amountStr = Formatter.formatCurrency(amount);
                 appSubmissionDto.setAmountStr(amountStr);
             }
         }

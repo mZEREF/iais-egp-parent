@@ -38,17 +38,24 @@
                                     <thead>
                                     <tr>
                                         <th>Service</th>
+                                        <th>Late Fee Type</th>
                                         <th>Application Type</th>
                                         <th>Application No.</th>
+                                        <th>Late Fee Amount</th>
                                         <th>Amount</th>
+<%--                                        <th>Amount</th>--%>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}"  varStatus="status">
+                                        <c:set var="detailFeeDto" value="${AppSubmissionDto.detailFeeDto}"/>
                                         <c:forEach var="svc" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}">
                                             <tr>
                                                 <td>
                                                     <p><c:out value="${svc.serviceName}"></c:out></p>
+                                                </td>
+                                                <td>
+                                                    <p>${detailFeeDto.lateFeeType}</p>
                                                 </td>
                                                 <td>
                                                     <p>Renewal</p>
@@ -57,8 +64,14 @@
                                                     <p><c:out value="${AppSubmissionDto.appGrpNo}-${(status.index+1) > 9 ? '' : '0'}${status.index + 1}"></c:out></p>
                                                 </td>
                                                 <td>
-                                                    <p><c:out value="${AppSubmissionDto.amountStr}"></c:out></p>
+                                                    <p>${detailFeeDto.lateFeeAmoumtStr}</p>
                                                 </td>
+                                                <td>
+                                                    <p>${detailFeeDto.amountStr}</p>
+                                                </td>
+<%--                                                <td>--%>
+<%--                                                    <p><c:out value="${AppSubmissionDto.amountStr}"></c:out></p>--%>
+<%--                                                </td>--%>
                                             </tr>
                                         </c:forEach>
                                     </c:forEach>
