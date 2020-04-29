@@ -186,7 +186,7 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
-    public InboxMsgMaskDto getInboxMaskEntity(String msgId) {
+    public List<InboxMsgMaskDto> getInboxMaskEntity(String msgId) {
         return inboxClient.getInboxMsgMask(msgId).getEntity();
     }
 }

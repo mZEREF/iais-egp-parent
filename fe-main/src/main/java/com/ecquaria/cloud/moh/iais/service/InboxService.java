@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,5 +30,5 @@ public interface InboxService {
     public Map<String,String> checkRenewalStatus(String licenceId);
     void updateMsgStatusToRead(String msgId);
     Boolean checkEligibility(String appId);
-    InboxMsgMaskDto getInboxMaskEntity(String msgId);
+    List<InboxMsgMaskDto> getInboxMaskEntity(String msgId);
 }

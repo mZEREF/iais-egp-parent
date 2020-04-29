@@ -8,6 +8,8 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @Author: Hc
  * @Program: iais-egp
@@ -48,7 +50,7 @@ public class InboxFallback implements InboxClient {
     }
 
     @Override
-    public FeignResponseEntity<InboxMsgMaskDto> getInboxMsgMask(String msgId) {
+    public FeignResponseEntity<List<InboxMsgMaskDto>> getInboxMsgMask(String msgId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

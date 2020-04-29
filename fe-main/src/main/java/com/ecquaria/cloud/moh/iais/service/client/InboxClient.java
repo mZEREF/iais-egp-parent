@@ -11,6 +11,8 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @FeignClient(name = "inter-inbox",configuration = FeignConfiguration.class,fallback = InboxFallback.class)
 public interface InboxClient {
     @PostMapping(path = "/iais-inter-inbox/inbox-param", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -26,5 +28,5 @@ public interface InboxClient {
     FeignResponseEntity<Void> updateMsgStatusToRead(@PathVariable("msgId") String msgId);
 
     @GetMapping(value = "/iais-inter-inbox/inbox/mask")
-    FeignResponseEntity<InboxMsgMaskDto> getInboxMsgMask(@RequestParam(name = "msgId")String msgId);
+    FeignResponseEntity<List<InboxMsgMaskDto>> getInboxMsgMask(@RequestParam(name = "msgId")String msgId);
 }
