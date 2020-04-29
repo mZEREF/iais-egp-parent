@@ -61,8 +61,9 @@ public interface TaskService {
       */
     int remainDays(TaskDto taskDto);
 
-    public Map<String, Object> getEmailNotifyList();
+    Map<String, List<TaskEmailDto>> getEmailNotifyList();
 
+    Map<String, List<String>> getAllWorkGroupMembers(List<String> groupIdList);
     List<String> getDistincTaskRefNumByCurrentGroup(String wrkGroupId);
 
     /**
