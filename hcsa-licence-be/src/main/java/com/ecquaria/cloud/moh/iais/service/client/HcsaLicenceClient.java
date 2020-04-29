@@ -47,7 +47,7 @@ public interface HcsaLicenceClient {
     @RequestMapping(path = "/hcsa-licence/hci-code-licence-number/{hciCode}",method = RequestMethod.GET)
     FeignResponseEntity<Integer> licenceNumber(@PathVariable("hciCode") String hciCode);
 
-    @RequestMapping(path = "/hcsa-licence/service-group-licence-number",method = RequestMethod.POST)
+    @RequestMapping(path = "/hcsa-licence/service-group-licence-number",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String > groupLicenceNumber(@RequestBody LicenceGrpDto licenceGrpDto);
 
     @RequestMapping(path = "/hcsa-licence-transport/licences",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)

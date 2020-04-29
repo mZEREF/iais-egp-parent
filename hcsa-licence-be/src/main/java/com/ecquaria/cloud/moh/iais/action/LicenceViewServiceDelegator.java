@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
@@ -122,7 +123,17 @@ public class LicenceViewServiceDelegator {
             if(applicationDto.getOriginLicenceId()!=null){
                 list.add(applicationDto.getOriginLicenceId());
                 List<AppSubmissionDto> entity = hcsaLicenceClient.getAppSubmissionDtos(list).getEntity();
+                if(!entity.isEmpty()){
+                    List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.get(0).getAppSvcRelatedInfoDtoList();
+                    if(appSvcRelatedInfoDtoList!=null&&!appSvcRelatedInfoDtoList.isEmpty()){
+                        String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
+                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+                        appSvcRelatedInfoDtoList.get(0).setServiceId(hcsaServiceDto.getId());
 
+                        appSubmissionDto.setOldAppSubmissionDto(entity.get(0));
+                    }
+
+                }
             }
 
             ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
@@ -338,8 +349,9 @@ public class LicenceViewServiceDelegator {
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto=null;
         if(oldAppSubmissionDto!=null){
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
-            oldAppSvcRelatedInfoDto = doAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList, oldAppSubmissionDto,bpc.request);
-
+            if(appSvcRelatedInfoDtoList!=null){
+                oldAppSvcRelatedInfoDto = doAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList, oldAppSubmissionDto,bpc.request);
+            }
         }
         /*************************/
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
@@ -542,5 +554,15 @@ public class LicenceViewServiceDelegator {
         appEditSelectDto.setEditType(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
         appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         return  appEditSelectDto;
+    }
+
+    private void contrastNewAndOld(AppSubmissionDto appSubmissionDto){
+        AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+        if(oldAppSubmissionDto==null){
+            return;
+        }
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+
     }
 }
