@@ -50,6 +50,7 @@ public class NotifyUnprocessedTaskBatchjob {
 
         log.debug(StringUtil.changeForLog("The NotifyUnprocessedTaskBatchjob is  start..." ));
 
+
         log.debug(StringUtil.changeForLog("Unprocessed Task Notification to Officer..." ));
         Map<String, List<TaskEmailDto>> emailmap = IaisCommonUtils.genNewHashMap();
         //get officer groupleader admin to notify
@@ -59,41 +60,45 @@ public class NotifyUnprocessedTaskBatchjob {
 
 
         List<TaskEmailDto> officerDtoList= (ArrayList<TaskEmailDto>)emailmap.get("officer");
-        List<TaskEmailDto> workgroupDtoList= (ArrayList<TaskEmailDto>)emailmap.get("workgroup");
+        List<TaskEmailDto> workgroupLeaderDtoList= (ArrayList<TaskEmailDto>)emailmap.get("workgroup");
         List<TaskEmailDto> adminDtoList= (ArrayList<TaskEmailDto>)emailmap.get("admin");
 
         String templateHtml = inspectionEmailTemplateDto.getMessageContent();
-        List<String> receipts = new ArrayList<String>();
-        EmailDto email = new EmailDto();
-        for (TaskEmailDto item: officerDtoList
-        ) {
-            //todo jugde email sent
-            receipts.clear();
-//            templateHtml.replace("OFFICER_NAME",item.getName());
-            email.setReqRefNum(REQ_REF_NUM);
-            receipts.add(item.getEmailAddr());
-            email.setContent(templateHtml);
-            email.setReceipts(receipts);
-            email.setSender("guyin@ecquaria.com");
-            email.setClientQueryCode("FFFF=EEEEEE");
-            inspEmailService.SendAndSaveEmail(email);
+
+        if(officerDtoList != null) {
+            for (TaskEmailDto item : officerDtoList
+            ) {
+                List<String> emailaddr = IaisCommonUtils.genNewArrayList();
+                emailaddr.add(item.getEmailAddr());
+                sendEmail(item,templateHtml,emailaddr," MOH IAIS – Unprocessed Task Notification to Officer");
+            }
         }
 
-        for (TaskEmailDto item: workgroupDtoList
-        ) {
-            //todo jugde email sent
-            receipts.clear();
-//            templateHtml.replace("OFFICER_NAME",item.getName());
-            email.setReqRefNum(REQ_REF_NUM);
-            receipts.add(item.getEmailAddr());
-            email.setContent(templateHtml);
-            email.setReceipts(receipts);
-            email.setSender("guyin@ecquaria.com");
-            email.setClientQueryCode("FFFF=EEEEEE");
-            inspEmailService.SendAndSaveEmail(email);
+        if (workgroupLeaderDtoList != null){
+            List<String> groupIdList = IaisCommonUtils.genNewArrayList();
+            for (TaskEmailDto item: workgroupLeaderDtoList
+            ) {
+                if(!groupIdList.contains(item.getWkGrpId())){
+                    groupIdList.add(item.getWkGrpId());
+                }
+            }
+            Map<String, List<String>> emailList= taskService.getAllWorkGroupMembers(groupIdList);
+            for (TaskEmailDto item: workgroupLeaderDtoList
+            ) {
+                 sendEmail(item,templateHtml,emailList.get(item.getWkGrpId())," MOH IAIS – Unprocessed Task Notification to Supervisors Workgroup");
+            }
         }
 
+        if(adminDtoList != null){
+            for (TaskEmailDto item: adminDtoList
+            ) {
+                List<String> adminEmailAddr = IaisCommonUtils.genNewArrayList();
+                adminEmailAddr.add(item.getEmailAddr());
+                sendEmail(item,templateHtml,adminEmailAddr," MOH IAIS – Unprocessed Task Notification to the System’s User Administrator");
+            }
+        }
 
+        log.debug(StringUtil.changeForLog("Unprocessed Task Notification end..." ));
 
 
     }
