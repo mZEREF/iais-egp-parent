@@ -476,7 +476,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         cancelOrConfirmApptDate(apptCalendarStatusDto);
         //
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
-                MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE ;
+                MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE + urlId;
         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
         maskParams.put("appPremCorrId", urlId);
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName();
@@ -545,7 +545,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
         String taskId = apptInspectionDateDto.getTaskDto().getId();
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
-                MessageConstants.MESSAGE_INBOX_URL_APPT_SYS_INSP_DATE;
+                MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE + urlId;
         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
         maskParams.put("appPremCorrId", urlId);
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName();
