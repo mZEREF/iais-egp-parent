@@ -16,7 +16,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -40,7 +48,6 @@ import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
-import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import com.esotericsoftware.minlog.Log;
@@ -189,7 +196,7 @@ public class InspectReviseNcEmailDelegator {
 
     }
 
-    public void sendEmail(BaseProcessClass bpc) throws FeignException {
+    public void sendEmail(BaseProcessClass bpc) {
 
         log.info("=======>>>>>sendEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
