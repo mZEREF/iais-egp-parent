@@ -404,7 +404,7 @@
         var task = this.getAttribute("data-task");
         $.ajax({
             data:{
-                taskId: task,
+                taskcheckbox: task,
             },
             type:"POST",
             dataType: 'json',
@@ -413,7 +413,7 @@
 
             },
             success:function(data){
-                window.location.href = href;
+                // window.location.href = href;
             }
         });
     })

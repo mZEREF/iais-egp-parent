@@ -162,7 +162,7 @@ public class BackendAjaxController {
     public @ResponseBody
     Map<String, Object> changeTaskStatus(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<>();
-        String taskId = ParamUtil.getMaskedString(request, "taskId");
+        String taskId = ParamUtil.getMaskedString(request, "taskcheckbox");
         String res = inspectionAssignTaskService.taskRead(taskId);
         map.put("res",res);
         return map;
