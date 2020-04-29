@@ -413,7 +413,7 @@
 
             },
             success:function(data){
-                // window.location.href = href;
+                window.location.href = href;
             }
         });
     })
