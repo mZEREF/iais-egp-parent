@@ -83,6 +83,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -799,12 +800,12 @@ public class RequestForInformationDelegator {
             map.put("DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
             map.put("COMMENTS",StringUtil.viewHtml(""));
             String url = "https://" + systemParamConfig.getInterServerName() +
-                    "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
-                    "?licenseeId=" + licenseeId;
+                    "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" ;
             map.put("A_HREF", url);
             map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
             String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
-
+            HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
+            mapPrem.put("licenseeId",licenseeId);
 
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -816,6 +817,7 @@ public class RequestForInformationDelegator {
 
                 //send message to FE user.
                 InterMessageDto interMessageDto = new InterMessageDto();
+                interMessageDto.setMaskParams(mapPrem);
                 interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
                 List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
                 ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
@@ -848,7 +850,9 @@ public class RequestForInformationDelegator {
                 requestForInformationService.deleteLicPremisesReqForInfo(licPremisesReqForInfoDto1.getReqInfoId());
             }
         }
-
+//        if(lengths.length>=1){
+//            requestForInformationService.clarificationApplicationUpdateByLicPremId(licPremId);
+//        }
 
         // 		doCreateRequest->OnStepProcess
     }

@@ -70,7 +70,7 @@
                                                 </p>
                                                 <p>
                                                     <label class="col-xs-9 col-md-4 control-label">
-                                                        <input type="checkbox" name = "reqType${status.index}" /> File Upload <input type="hidden" name="lengths" value="${status.index}" />
+                                                        <input type="checkbox" name = "reqType${status.index}" <c:if test="${newRfi.reqType!=null}">checked</c:if> /> File Upload <input type="hidden" name="lengths" value="${status.index}" />
                                                     </label>
                                                 </p>
                                             </div>

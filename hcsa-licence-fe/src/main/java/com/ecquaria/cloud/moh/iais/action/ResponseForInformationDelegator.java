@@ -45,7 +45,7 @@ public class ResponseForInformationDelegator {
     public void Start(BaseProcessClass bpc)  {
         log.debug(StringUtil.changeForLog("the do Start start ...."));
         HttpServletRequest request=bpc.request;
-        String licenseeId = ParamUtil.getRequestString(request,"licenseeId");
+        String licenseeId = ParamUtil.getMaskedString(request,"licenseeId");
         if(StringUtil.isEmpty(licenseeId)){
             licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
         }
