@@ -697,30 +697,31 @@ public class NewApplicationDelegator {
     }
 
     private void doIsCommom(HttpServletRequest request, Map<String, String> errorMap) {
-        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList  = appSubmissionDto.getAppGrpPrimaryDocDtos();
-        CommonsMultipartFile file ;
+
         List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>)   request.getSession().getAttribute(COMMONHCSASVCDOCCONFIGDTO);
         for(HcsaSvcDocConfigDto comm : commonHcsaSvcDocConfigList){
             String name = "common"+comm.getId();
-            file = (CommonsMultipartFile) mulReq.getFile(name);
+
             Boolean isMandatory = comm.getIsMandatory();
-            if(isMandatory&&!appGrpPrimaryDocDtoList.isEmpty()){
+            if(isMandatory&&appGrpPrimaryDocDtoList==null||isMandatory&&appGrpPrimaryDocDtoList.isEmpty()){
+                errorMap.put(name, "UC_CHKLMD001_ERR001");
+            }else if(isMandatory&&!appGrpPrimaryDocDtoList.isEmpty()){
                 Boolean flag=false;
                 for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
                     String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
                     if(comm.getId().equals(svcComDocId)){
                         flag=true;
                         break;
-                        }
                     }
-                    if(!flag){
-                        errorMap.put(name, "UC_CHKLMD001_ERR001");
-                    }
-                }else  if(isMandatory&&file.getSize()==0&&appGrpPrimaryDocDtoList.isEmpty()){
+                }
+                if(!flag){
                     errorMap.put(name, "UC_CHKLMD001_ERR001");
+                }
             }
+
         }
 
 
