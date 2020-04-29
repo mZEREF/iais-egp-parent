@@ -1,1 +1,1 @@
-<%@include file = "/include/simpleIntranetAckPage.jsp"%>
+<%@include file = "/WEB-INF/jsp/include/simpleIntranetAckPage.jsp"%>
