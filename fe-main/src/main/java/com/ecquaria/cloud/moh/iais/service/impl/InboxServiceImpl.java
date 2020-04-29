@@ -7,10 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -186,5 +183,10 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public Boolean checkEligibility(String appId) {
         return appInboxClient.isAppealEligibility(appId).getEntity();
+    }
+
+    @Override
+    public InboxMsgMaskDto getInboxMaskEntity(String msgId) {
+        return inboxClient.getInboxMsgMask(msgId).getEntity();
     }
 }

@@ -11,10 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.*;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.InboxConst;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
@@ -211,6 +208,9 @@ public class InterInboxDelegator {
         List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();
         for (InboxQueryDto inboxQueryDto:inboxQueryDtoList
                 ) {
+            InboxMsgMaskDto inboxMsgMaskDto = inboxService.getInboxMaskEntity(inboxQueryDto.getId());
+            inboxQueryDto.setMsgContent(inboxQueryDto.getMsgContent().replaceAll(inboxMsgMaskDto.getParamValue(),
+                    MaskUtil.maskValue(inboxMsgMaskDto.getParamName(),inboxMsgMaskDto.getParamValue())));
             String serviceName = inboxService.getServiceNameById(inboxQueryDto.getServiceId());
             inboxQueryDto.setServiceId(serviceName);
         }
