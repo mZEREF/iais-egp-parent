@@ -893,12 +893,12 @@ public class NewApplicationHelper {
         List<String> stringList=IaisCommonUtils.genNewArrayList();
         for(int i=0;i<medAlertPsnDtos.size();i++ ){
             String assignSelect = medAlertPsnDtos.get(i).getAssignSelect();
-            if("-1".equals(assignSelect)){
+            if("-1".equals(assignSelect)||StringUtil.isEmpty(assignSelect)){
                 errMap.put("assignSelect"+i, "UC_CHKLMD001_ERR001");
             }else {
                 StringBuilder stringBuilder1=new StringBuilder();
                 String idTyp = medAlertPsnDtos.get(i).getIdType();
-                if("-1".equals(idTyp)){
+                if("-1".equals(idTyp)||StringUtil.isEmpty(idTyp)){
                     errMap.put("idTyp"+i, "UC_CHKLMD001_ERR001");
                 }
                 String salutation = medAlertPsnDtos.get(i).getSalutation();

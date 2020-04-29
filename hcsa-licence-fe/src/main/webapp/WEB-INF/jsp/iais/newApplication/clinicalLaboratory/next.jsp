@@ -107,11 +107,13 @@
         $('#RfcSave').click(function () {
             $("[name='nextStep']").val('next');
             submit('preview',null,null);
+            submitForms('preview','saveDraft',null,controlFormLi);
         });
 
         $('#RenewSave').click(function () {
             $("[name='nextStep']").val('next');
             submit('jump',null,null);
+            submitForms('jump','saveDraft',null,controlFormLi);
         });
 
     });

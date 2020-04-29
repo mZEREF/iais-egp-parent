@@ -20,19 +20,25 @@
         </c:when>
     </c:choose>
 </div>
+<iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
 
 <script>
     $(document).ready(function() {
+        if($('#saveDraftSuccess').val()=='success'){
+            $('#saveDraft').modal('show');
+        }
         $('#RfcBack').click(function () {
             submit('jump','back',null);
         });
 
         $('#RfcSave').click(function () {
             submit('preview','next',null);
+            submit('preview','saveDraft',null);
         });
 
         $('#RenewSave').click(function () {
             submit('jump','next',null);
+            submit('jump','saveDraft',null);
         });
 
         $('#RfcSaveDraft').click(function () {
@@ -51,7 +57,13 @@
             submit('jump','undo',null);
         });
     });
+    function cancel() {
+        $('#saveDraft').modal('hide');
+    }
 
+    function jumpPage() {
+        submit('premises','saveDraft','jumpPage');
+    }
 </script>
 
 

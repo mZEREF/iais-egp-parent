@@ -32,7 +32,7 @@
           <p><span class="preview-title col-xs-2 col-md-2" style="padding-right: 0%">Premises ${status.index+1}</span><span>${appGrpPremisesDtoList[status.index].address} </span><%--${appSvcLaboratoryDisciplinesDto.premiseGetAddress}--%>
             <wrms:value width="7">
               <span class="newVal " attr="${appGrpPremisesDtoList[status.index].address}" style="display: none" ><label><c:out value=""/></label></span>
-              <span class="oldVal compareTdStyle" attr="${oldAppGrpPremisesDtoList[status.index].address}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].premiseGetAddress}"/></label></span>
+              <span class="oldVal compareTdStyle" attr="${oldAppGrpPremisesDtoList[status.index].address}" style="display: none"><label><c:out value="${oldAppGrpPremisesDtoList[status.index].address}"/></label></span>
             </wrms:value>
           </p>
 
@@ -523,7 +523,14 @@
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation</p>
                         </td>
                         <td>
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.designation}</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square">${appSvcPersonnelDtoList.designation}</span>
+                            <span class="col-xs-6 col-md-6">
+                            <wrms:value width="7">
+                              <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.designation}" style="display: none"><label></label></span>
+                              <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].designation}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].designation}"/></label></span>
+                            </wrms:value>
+                          </span>
+                          </p>
                         </td>
                       </tr>
                       <tr>
@@ -531,7 +538,13 @@
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
                         </td>
                         <td>
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square">${appSvcPersonnelDtoList.name}</span>
+
+                            <wrms:value width="7">
+                              <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.name}" style="display: none"><label></label></span>
+                              <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}"/></label></span>
+                            </wrms:value>
+                          </p>
                         </td>
                       </tr>
                       <tr>
@@ -539,7 +552,12 @@
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn No.</p>
                         </td>
                         <td>
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.profRegNo}</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.profRegNo}
+                            <wrms:value width="7">
+                              <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.profRegNo}" style="display: none"><label></label></span>
+                              <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}"/></label></span>
+                            </wrms:value>
+                          </p>
                         </td>
                       </tr>
                       <tr>
@@ -547,7 +565,12 @@
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years) </p>
                         </td>
                         <td>
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}
+                            <wrms:value width="7">
+                              <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.wrkExpYear}" style="display: none"><label></label></span>
+                              <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}"/></label></span>
+                            </wrms:value>
+                          </p>
                         </td>
                       </tr>
                     </c:when>
@@ -557,7 +580,12 @@
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
                         </td>
                         <td>
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}
+                            <wrms:value width="7">
+                              <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.name}" style="display: none"><label></label></span>
+                              <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}"/></label></span>
+                            </wrms:value>
+                          </p>
                         </td>
                       </tr>
                       <tr>
@@ -565,7 +593,12 @@
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification</p>
                         </td>
                         <td>
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.quaification}</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.quaification}
+                            <wrms:value width="7">
+                              <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.quaification}" style="display: none"><label></label></span>
+                              <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].quaification}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].quaification}"/></label></span>
+                            </wrms:value>
+                          </p>
                         </td>
                       </tr>
                       <tr>
@@ -573,7 +606,12 @@
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years)</p>
                         </td>
                         <td>
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}
+                            <wrms:value width="7">
+                              <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.wrkExpYear}" style="display: none"><label></label></span>
+                              <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}"/></label></span>
+                            </wrms:value>
+                          </p>
                         </td>
                       </tr>
 
@@ -662,7 +700,12 @@
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
                         </td>
                         <td>
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}
+                            <wrms:value width="7">
+                              <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.name}" style="display: none"><label></label></span>
+                              <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}"/></label></span>
+                            </wrms:value>
+                          </p>
                         </td>
                       </tr>
                       <tr>
@@ -670,7 +713,12 @@
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification</p>
                         </td>
                         <td>
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.quaification}</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.quaification}
+                            <wrms:value width="7">
+                              <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.quaification}" style="display: none"><label></label></span>
+                              <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].quaification}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].quaification}"/></label></span>
+                            </wrms:value>
+                          </p>
                         </td>
                       </tr>
                       <tr>
@@ -678,7 +726,12 @@
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant working experience (Years)</p>
                         </td>
                         <td>
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.wrkExpYear}
+                            <wrms:value width="7">
+                              <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.wrkExpYear}" style="display: none"><label></label></span>
+                              <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}"/></label></span>
+                            </wrms:value>
+                          </p>
                         </td>
                       </tr>
                     </c:when>
@@ -719,7 +772,12 @@
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
                         </td>
                         <td>
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.name}
+                            <wrms:value width="7">
+                              <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.name}" style="display: none"><label></label></span>
+                              <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}"/></label></span>
+                            </wrms:value>
+                          </p>
                         </td>
                       </tr>
                       <tr>
@@ -727,7 +785,12 @@
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Registration No</p>
                         </td>
                         <td>
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.profRegNo}</p>
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.profRegNo}
+                            <wrms:value width="7">
+                              <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.profRegNo}" style="display: none"><label></label></span>
+                              <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}"/></label></span>
+                            </wrms:value>
+                          </p>
                         </td>
                       </tr>
                     </c:when>
@@ -759,29 +822,45 @@
                 <table class="col-xs-8">
 
                   <tr>
-                    <td class="col-xs-8">
+                    <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${appSvcMedAlertPerson.salutation}"/></p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><iais:code code="${appSvcMedAlertPerson.salutation}"/></span>
+
+                        <wrms:value width="7">
+                          <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.salutation}" style="display: none"><label><c:out value="${appSvcPersonnelDtoList.salutation}"/></label></span>
+                          <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].salutation}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].salutation}"/></label></span>
+                        </wrms:value>
+                      </p>
                     </td>
                   </tr>
 
                   <tr>
-                    <td class="col-xs-8">
+                    <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${appSvcMedAlertPerson.name}"/></p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><iais:code code="${appSvcMedAlertPerson.name}"/></span>
+                        <wrms:value width="7">
+                          <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.name}" style="display: none"><label><c:out value="${appSvcPersonnelDtoList.name}"/></label></span>
+                          <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].name}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].name}"/></label></span>
+                        </wrms:value>
+                      </p>
                     </td>
                   </tr>
 
                   <tr>
-                    <td class="col-xs-8">
+                    <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${appSvcMedAlertPerson.idType}"/></p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><iais:code code="${appSvcMedAlertPerson.idType}"/></span>
+                        <wrms:value width="7">
+                          <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.idType}" style="display: none"><label><c:out value="${appSvcPersonnelDtoList.idType}"/></label></span>
+                          <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idType}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idType}"/></label></span>
+                        </wrms:value>
+                      </p>
                     </td>
                   </tr>
 
@@ -790,7 +869,12 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No.</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${appSvcMedAlertPerson.idNo}"/></p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><iais:code code="${appSvcMedAlertPerson.idNo}"/></span>
+                        <wrms:value width="7">
+                          <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.idNo}" style="display: none"><label><c:out value="${appSvcPersonnelDtoList.idNo}"/></label></span>
+                          <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}"/></label></span>
+                        </wrms:value>
+                      </p>
                     </td>
                   </tr>
 
@@ -799,7 +883,12 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${appSvcMedAlertPerson.mobileNo}"/></p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><iais:code code="${appSvcMedAlertPerson.mobileNo}"/></span>
+                        <wrms:value width="7">
+                          <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.mobileNo}" style="display: none"><label></label></span>
+                          <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].mobileNo}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].mobileNo}"/></label></span>
+                        </wrms:value>
+                      </p>
                     </td>
                   </tr>
 
@@ -808,7 +897,12 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email Address</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${appSvcMedAlertPerson.emailAddr}"/></p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><iais:code code="${appSvcMedAlertPerson.emailAddr}"/></span>
+                        <wrms:value width="7">
+                          <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.emailAddr}" style="display: none"><label></label></span>
+                          <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].emailAddr}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].emailAddr}"/></label></span>
+                        </wrms:value>
+                      </p>
                     </td>
                   </tr>
 
@@ -823,6 +917,22 @@
                           <c:when test="${appSvcMedAlertPerson.preferredMode=='2'}">SMS</c:when>
                           <c:when test="${appSvcMedAlertPerson.preferredMode=='3'}">Email  SMS</c:when>
                         </c:choose>
+                        <wrms:value width="7">
+                          <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.preferredMode}" style="display: none"><label></label></span>
+                          <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode}" style="display: none"><label>
+                            <c:choose>
+                              <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode=='1'}">
+                                <c:out value="Email"/>
+                              </c:when>
+                              <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode==2}">
+                                <c:out value="SMS"/>
+                              </c:when>
+                              <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode==3}">
+                                <c:out value="Email  SMS"/>
+                              </c:when>
+                            </c:choose>
+                          </label></span>
+                        </wrms:value>
                       </p>
                     </td>
                   </tr>
@@ -904,6 +1014,9 @@
 </div>
 <style>
   .compareTdStyle{display:inline;padding:.2em .6em .3em;line-height:1;color:#000;text-align:center;vertical-align:baseline;border-radius:.5em;font-size:100%;background-color:#FF0}
+  *{
+    word-wrap: break-word
+  }
 </style>
 <script type="text/javascript">
     $(document).ready(function(){

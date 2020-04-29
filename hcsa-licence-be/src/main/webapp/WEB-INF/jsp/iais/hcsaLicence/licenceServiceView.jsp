@@ -141,15 +141,16 @@
                                         </div>
                                         <div class="col-md-6">
                                             ${appGrpPremDto.hciName}
-                                        </div>
-                                        <wrms:value width="7">
+                                              <wrms:value width="7">
                                           <span class="newVal " attr="${appGrpPremDto.hciName}"
                                                 style="display: none"><label><c:out value=""/></label></span>
-                                          <span class="oldVal compareTdStyle"
-                                                attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"
-                                                style="display: none"><label><c:out
-                                                  value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/></label></span>
-                                        </wrms:value>
+                                                <span class="oldVal compareTdStyle"
+                                                      attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"
+                                                      style="display: none"><label><c:out
+                                                        value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/></label></span>
+                                              </wrms:value>
+                                        </div>
+
                                       </div>
 
                                     </c:if>
@@ -434,7 +435,7 @@
                                               <span class="col-xs-6 col-md-6">
                                                 <wrms:value width="7">
                                                   <span class="newVal compareTdStyle" attr="${appGrpPrimaryDocDto.docSize}${appGrpPrimaryDocDto.docName}"  style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/></label></span>
-                                                  <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/></label></span>
+                                                  <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/></label></span>
                                                 </wrms:value></span>
 
                                             </div>
@@ -520,6 +521,14 @@
                                           </div>
                                           <div class="col-md-6">
                                             ${newLicenceDto.postalCode}
+                                              <wrms:value width="7">
+                                                  <span class="newVal compareTdStyle" attr="${newLicenceDto.postalCode}"
+                                                        style="display: none"><label><c:out
+                                                          value="${newLicenceDto.postalCode}"/></label></span>
+                                                <span class="oldVal compareTdStyle" attr="${oldLicenceDto.postalCode}"
+                                                      style="display: none"><label><c:out
+                                                        value="${oldLicenceDto.postalCode}"/></label></span>
+                                              </wrms:value>
                                           </div>
                                         </div>
 
@@ -529,6 +538,14 @@
                                           </div>
                                           <div class="col-md-6">
                                             ${newLicenceDto.addrType}
+                                              <wrms:value width="7">
+                                                  <span class="newVal compareTdStyle" attr="${newLicenceDto.addrType}"
+                                                        style="display: none"><label><c:out
+                                                          value="${newLicenceDto.addrType}"/></label></span>
+                                                <span class="oldVal compareTdStyle" attr="${oldLicenceDto.addrType}"
+                                                      style="display: none"><label><c:out
+                                                        value="${oldLicenceDto.addrType}"/></label></span>
+                                              </wrms:value>
                                           </div>
                                         </div>
 
@@ -538,6 +555,14 @@
                                           </div>
                                           <div class="col-md-6">
                                             ${newLicenceDto.unitNo}
+                                              <wrms:value width="7">
+                                                  <span class="newVal compareTdStyle" attr="${newLicenceDto.unitNo}"
+                                                        style="display: none"><label><c:out
+                                                          value="${newLicenceDto.unitNo}"/></label></span>
+                                                <span class="oldVal compareTdStyle" attr="${oldLicenceDto.unitNo}"
+                                                      style="display: none"><label><c:out
+                                                        value="${oldLicenceDto.unitNo}"/></label></span>
+                                              </wrms:value>
                                           </div>
                                         </div>
 
@@ -547,6 +572,14 @@
                                           </div>
                                           <div class="col-md-6">
                                             ${newLicenceDto.floorNo}
+                                              <wrms:value width="7">
+                                                  <span class="newVal compareTdStyle" attr="${newLicenceDto.floorNo}"
+                                                        style="display: none"><label><c:out
+                                                          value="${newLicenceDto.floorNo}"/></label></span>
+                                                <span class="oldVal compareTdStyle" attr="${oldLicenceDto.floorNo}"
+                                                      style="display: none"><label><c:out
+                                                        value="${oldLicenceDto.floorNo}"/></label></span>
+                                              </wrms:value>
                                           </div>
                                         </div>
 
@@ -556,6 +589,14 @@
                                           </div>
                                           <div class="col-md-6">
                                             ${newLicenceDto.unitNo}
+                                              <wrms:value width="7">
+                                                  <span class="newVal compareTdStyle" attr="${newLicenceDto.unitNo}"
+                                                        style="display: none"><label><c:out
+                                                          value="${newLicenceDto.unitNo}"/></label></span>
+                                                <span class="oldVal compareTdStyle" attr="${oldLicenceDto.unitNo}"
+                                                      style="display: none"><label><c:out
+                                                        value="${oldLicenceDto.unitNo}"/></label></span>
+                                              </wrms:value>
                                           </div>
                                         </div>
 
@@ -565,6 +606,14 @@
                                           </div>
                                           <div class="col-md-6">
                                             ${newLicenceDto.streetName}
+                                              <wrms:value width="7">
+                                                  <span class="newVal compareTdStyle" attr="${newLicenceDto.streetName}"
+                                                        style="display: none"><label><c:out
+                                                          value="${newLicenceDto.streetName}"/></label></span>
+                                                <span class="oldVal compareTdStyle" attr="${oldLicenceDto.streetName}"
+                                                      style="display: none"><label><c:out
+                                                        value="${oldLicenceDto.streetName}"/></label></span>
+                                              </wrms:value>
                                           </div>
                                         </div>
 
@@ -574,6 +623,14 @@
                                           </div>
                                           <div class="col-md-6">
                                             ${newLicenceDto.buildingName}
+                                              <wrms:value width="7">
+                                                  <span class="newVal compareTdStyle" attr="${newLicenceDto.buildingName}"
+                                                        style="display: none"><label><c:out
+                                                          value="${newLicenceDto.buildingName}"/></label></span>
+                                                <span class="oldVal compareTdStyle" attr="${oldLicenceDto.buildingName}"
+                                                      style="display: none"><label><c:out
+                                                        value="${oldLicenceDto.buildingName}"/></label></span>
+                                              </wrms:value>
                                           </div>
                                         </div>
 
@@ -583,6 +640,14 @@
                                           </div>
                                           <div class="col-md-6">
                                             ${newLicenceDto.officeTelNo}
+                                              <wrms:value width="7">
+                                                  <span class="newVal compareTdStyle" attr="${newLicenceDto.officeTelNo}"
+                                                        style="display: none"><label><c:out
+                                                          value="${newLicenceDto.officeTelNo}"/></label></span>
+                                                <span class="oldVal compareTdStyle" attr="${oldLicenceDto.officeTelNo}"
+                                                      style="display: none"><label><c:out
+                                                        value="${oldLicenceDto.officeTelNo}"/></label></span>
+                                              </wrms:value>
                                           </div>
                                         </div>
 
@@ -592,6 +657,14 @@
                                           </div>
                                           <div class="col-md-6">
                                             ${newLicenceDto.emilAddr}
+                                              <wrms:value width="7">
+                                                  <span class="newVal compareTdStyle" attr="${newLicenceDto.emilAddr}"
+                                                        style="display: none"><label><c:out
+                                                          value="${newLicenceDto.emilAddr}"/></label></span>
+                                                <span class="oldVal compareTdStyle" attr="${oldLicenceDto.emilAddr}"
+                                                      style="display: none"><label><c:out
+                                                        value="${oldLicenceDto.emilAddr}"/></label></span>
+                                              </wrms:value>
                                           </div>
                                         </div>
 
@@ -908,6 +981,9 @@
     border-radius: .5em;
     font-size: 100%;
     background-color: #FF0
+  }
+  *{
+    word-wrap: break-word
   }
 </style>
 <script type="text/javascript">
