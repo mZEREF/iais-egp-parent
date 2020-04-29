@@ -99,6 +99,8 @@ public class WithOutRenewalDelegator {
             log.info("can not find licence id for without renewal");
             return;
         }
+        //get licensee ID
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
         int index = 0;
         String firstSvcName = "";
         List<String> serviceNameTitleList = IaisCommonUtils.genNewArrayList();
@@ -156,11 +158,17 @@ public class WithOutRenewalDelegator {
                     appEditSelectDto.setPremisesEdit(true);
                     appEditSelectDto.setDocEdit(true);
                     appEditSelectDto.setServiceEdit(true);
+                    ParamUtil.setSessionAttr(bpc.request,"isSingle", "Y");
+                }else{
+                    ParamUtil.setSessionAttr(bpc.request,"isSingle", "N");
                 }
                 appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             }
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
             appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_RENEWAL);
+            //set licensee ID
+            String licenseeId = interInboxUserDto.getLicenseeId();
+            appSubmissionDto.setLicenseeId(licenseeId);
 
             String draftNumber = appSubmissionService.getDraftNo(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
             String groupNumber =  appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
@@ -267,12 +275,12 @@ public class WithOutRenewalDelegator {
     }
 
     public void prepareInstructions(BaseProcessClass bpc)throws Exception{
-
+        ParamUtil.setRequestAttr(bpc.request,"hasDetail","N");
     }
 
     //prepareLicenceReview
     public void prepareLicenceReview(BaseProcessClass bpc)throws Exception{
-
+        ParamUtil.setRequestAttr(bpc.request,"hasDetail","Y");
     }
 
     //preparePayment

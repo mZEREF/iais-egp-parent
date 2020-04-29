@@ -25,13 +25,21 @@
                                     <li class="tracker-item disabled">Payment</li>
                                     <li class="tracker-item disabled">Acknowledgement</li>
                                 </ul>
-                                <h2>YOUR LICENCES TO RENEW ARE LISTED BELOW</h2>
+                                <c:if test="${isSingle == 'Y'}">
+                                    <p>You are renewing the following licence:</p>
+                                </c:if>
+                                <c:if test="${isSingle == 'N'}">
+                                    <p>Your licences to renew are listed below:</p>
+                                </c:if>
                                 <div class="table-gp">
                                     <table class="table">
                                         <thead>
                                         <tr>
                                             <th>Licence No.</th>
                                             <th>Type</th>
+                                            <c:if test="${isSingle == 'Y'}">
+                                                <th>Licensee</th>
+                                            </c:if>
                                             <th class="premises-info">Premises</th>
                                             <th>Start Date</th>
                                             <th>Expires On</th>
@@ -43,6 +51,9 @@
                                             <tr>
                                                 <td>${appSubmissionDtos.licenceNo}</td>
                                                 <td>${appSubmissionDtos.serviceName}</td>
+                                                <c:if test="${isSingle == 'Y'}">
+                                                    <td>${appSubmissionDtos.licenseeId}</td>
+                                                </c:if>
                                                 <td><c:forEach items="${appSubmissionDtos.appGrpPremisesDtoList}" var="appGrpPremisesDtoList"><span>${appGrpPremisesDtoList.renewPremises}</span><br/></c:forEach></td>
                                                 <td><fmt:formatDate value='${appSubmissionDtos.licStartDate}' pattern='dd/MM/yyyy'/></td>
                                                 <td><fmt:formatDate value='${appSubmissionDtos.licExpiryDate}' pattern='dd/MM/yyyy'/></td>
@@ -52,6 +63,9 @@
                                     </table>
                                 </div>
                             </div>
+                            <c:if test="${isSingle == 'Y'}">
+                                <p>Click proceed to view your licence details and if necessary make amendment, before renewal. </p>
+                            </c:if>
                             <div class="application-tab-footer">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
