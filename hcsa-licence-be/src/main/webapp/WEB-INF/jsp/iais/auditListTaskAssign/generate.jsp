@@ -32,7 +32,7 @@
             <iais:row>
                 <iais:field value="Postal Code/Region"/>
                 <iais:value width="8">
-                    <input type="number" name="postcode" id="postcode"  oninput="if(value.length>6)value=value.slice(0,6)" value="${auditSystemPotentialDtoForSearch.postalCode}" />
+                    <input type="text" name="postcode" id="postcode"  oninput="if(value.length>6)value=value.slice(0,6)" value="${auditSystemPotentialDtoForSearch.postalCode}" />
                     <span id="error_postcode" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>
@@ -98,7 +98,7 @@
             <iais:row>
                 <iais:field value="How many candidates to generate"/>
                 <iais:value width="8">
-                    <input type="number" name="genNum" id="genNum"  oninput="if(value.length>3)value=value.slice(0,3)" value="${auditSystemPotentialDtoForSearch.generateNum}"/>
+                    <input type="text" name="genNum" id="genNum"  oninput="if(value.length>3)value=value.slice(0,3)" value="${auditSystemPotentialDtoForSearch.generateNumString}"/>
                     <span id="error_genNum" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>

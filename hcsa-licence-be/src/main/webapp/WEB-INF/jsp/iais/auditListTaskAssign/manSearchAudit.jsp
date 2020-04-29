@@ -33,7 +33,7 @@
             <iais:row>
                 <iais:field value="Postal Code/Region"/>
                 <iais:value width="8">
-                    <input type="number" name="postcode" id="postcode"  oninput="if(value.length>6)value=value.slice(0,6)" value="${auditSystemPotentialDtoForSearch.postalCode}" />
+                    <input type="text" name="postcode" id="postcode"  oninput="if(value.length>6)value=value.slice(0,6)" value="${auditSystemPotentialDtoForSearch.postalCode}" />
                     <span id="error_postcode" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>
