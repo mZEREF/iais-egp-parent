@@ -2695,7 +2695,6 @@ public class NewApplicationDelegator {
     private void requestForInformationLoading(BaseProcessClass bpc,String appNo) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
         if(!StringUtil.isEmpty(appNo)){
-            ParamUtil.setSessionAttr(bpc.request,DRAFTCONFIG,"test");
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
             if(appSubmissionDto != null){
                 String appType =  appSubmissionDto.getAppType();
