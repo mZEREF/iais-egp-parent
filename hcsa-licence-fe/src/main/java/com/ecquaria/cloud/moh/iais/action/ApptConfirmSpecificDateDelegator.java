@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspSetMaskValueDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
@@ -44,6 +45,10 @@ public class ApptConfirmSpecificDateDelegator {
      */
     public void userConfirmSpecificDateStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmSpecificDateStart start ...."));
+        String appPremCorrId = ParamUtil.getMaskedString(bpc.request, "appPremCorrId");
+        InspSetMaskValueDto inspSetMaskValueDto = new InspSetMaskValueDto();
+        inspSetMaskValueDto.setAppPremCorrId(appPremCorrId);
+        ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", inspSetMaskValueDto);
         AuditTrailHelper.auditFunction("Appointment Confirm Specific Date", "Appointment Confirm Specific Date");
     }
 
@@ -69,8 +74,9 @@ public class ApptConfirmSpecificDateDelegator {
     public void userConfirmSpecificDatePre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmSpecificDatePre start ...."));
         ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
+        InspSetMaskValueDto inspSetMaskValueDto = (InspSetMaskValueDto)ParamUtil.getSessionAttr(bpc.request, "inspSetMaskValueDto");
         if(apptFeConfirmDateDto == null){
-            String appPremCorrId = ParamUtil.getRequestString(bpc.request, "appPremCorrId");
+            String appPremCorrId = inspSetMaskValueDto.getAppPremCorrId();
             if(!StringUtil.isEmpty(appPremCorrId)) {
                 ApplicationDto applicationDto = inspecUserRecUploadService.getApplicationByCorrId(appPremCorrId);
                 String appStatus = applicationDto.getStatus();

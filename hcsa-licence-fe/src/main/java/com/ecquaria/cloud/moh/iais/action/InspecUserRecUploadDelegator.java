@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspSetMaskValueDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -50,6 +51,12 @@ public class InspecUserRecUploadDelegator {
      */
     public void inspecUserRectifiUploadStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadStart start ...."));
+        String appPremCorrId = ParamUtil.getMaskedString(bpc.request, "appPremCorrId");
+        String versionStr = ParamUtil.getMaskedString(bpc.request, "recVersion");
+        InspSetMaskValueDto inspSetMaskValueDto = new InspSetMaskValueDto();
+        inspSetMaskValueDto.setAppPremCorrId(appPremCorrId);
+        inspSetMaskValueDto.setVersion(versionStr);
+        ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", inspSetMaskValueDto);
         AuditTrailHelper.auditFunction("User Rectification Upload", "Upload Doc Rectification");
     }
 
@@ -76,9 +83,10 @@ public class InspecUserRecUploadDelegator {
     public void inspecUserRectifiUploadPre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadPre start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
+        InspSetMaskValueDto inspSetMaskValueDto = (InspSetMaskValueDto)ParamUtil.getSessionAttr(bpc.request, "inspSetMaskValueDto");
         if(inspecUserRecUploadDtos == null){
-            String appPremCorrId = ParamUtil.getRequestString(bpc.request, "appPremCorrId");
-            String versionStr = ParamUtil.getRequestString(bpc.request, "recVersion");
+            String appPremCorrId = inspSetMaskValueDto.getAppPremCorrId();
+            String versionStr = inspSetMaskValueDto.getVersion();
             int version = 0;
             if(!StringUtil.isEmpty(versionStr)){
                 version = Integer.parseInt(versionStr);
