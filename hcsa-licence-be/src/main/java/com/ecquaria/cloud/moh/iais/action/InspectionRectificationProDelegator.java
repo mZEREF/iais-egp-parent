@@ -128,7 +128,6 @@ public class InspectionRectificationProDelegator {
         ParamUtil.setSessionAttr(bpc.request,SERLISTDTO,null);
         ParamUtil.setSessionAttr(bpc.request,ADHOCLDTO,null);
         ParamUtil.setSessionAttr(bpc.request,COMMONDTO,null);
-        ParamUtil.setSessionAttr(bpc.request,TASKDTO,null);
         ParamUtil.setSessionAttr(bpc.request,APPLICATIONVIEWDTO,null);
         ParamUtil.setSessionAttr(bpc.request,CHECKLISTFILEDTO,null);
         ParamUtil.setSessionAttr(bpc.request, "inspectionReportDto", null);
