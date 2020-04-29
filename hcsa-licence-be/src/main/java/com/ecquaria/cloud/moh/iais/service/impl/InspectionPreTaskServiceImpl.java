@@ -58,6 +58,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -232,6 +233,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
                     MessageConstants.MESSAGE_INBOX_URL_REQUEST_SELF_CHECKLIST + applicationGroupDto.getId() +
                     "&selfDeclAction=rfi";
+            HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+            maskParams.put("appPremCorrId", taskDto.getRefNo());
+            maskParams.put("selfDeclAction", "rfi");
             MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
             Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
             map.put("APPLICANT_NAME",licenseeDto.getName());
@@ -244,6 +248,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             interMessageDto.setUserId(licenseeId);
             interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            interMessageDto.setMaskParams(maskParams);
             inboxMsgService.saveInterMessage(interMessageDto);
         }
     }
