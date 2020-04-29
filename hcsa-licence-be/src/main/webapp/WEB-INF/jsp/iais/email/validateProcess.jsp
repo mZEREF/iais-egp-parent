@@ -108,7 +108,7 @@
                                                 <iais:row>
                                                     <iais:field value="Processing Decision" required="true"/>
                                                     <iais:value width="7">
-                                                        <select id="decision_email" name="decision">
+                                                        <select id="decision-validate-email" name="decision">
                                                             <option value="Select" selected>Please Select
                                                             </option>
                                                             <c:forEach items="${appTypeOption}" var="decision">
