@@ -145,7 +145,7 @@
                                         <iais:row style="color:#ff0000; display: none" id="startDateError">
                                             <iais:field value=""/>
                                             <iais:value width="18">
-                                                Licence Start From Date cannot be later than Licence Start Date To.                                            </p>
+                                                Licence Start Date From cannot be later than Licence Start Date To.                                            </p>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>

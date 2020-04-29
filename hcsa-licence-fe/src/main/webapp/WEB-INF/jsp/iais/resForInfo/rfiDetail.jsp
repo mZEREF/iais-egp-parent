@@ -25,7 +25,7 @@
                         <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                             <div class="panel-body">
                                 <div class="panel-main-content">
-                                    <iais:section title="" id = "supPoolList">
+                                    <iais:section title="" id = "rfiDetail">
                                         <iais:row>
                                             <iais:field value="Title :"/>
                                             <iais:value width="18">
