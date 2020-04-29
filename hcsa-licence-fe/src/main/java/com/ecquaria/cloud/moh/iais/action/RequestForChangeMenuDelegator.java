@@ -79,6 +79,7 @@ public class RequestForChangeMenuDelegator {
      */
     public void start(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do start start ...."));
+        String appNo = ParamUtil.getMaskedString(bpc.request,"appNo");
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
 
         ParamUtil.setSessionAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,null);
@@ -86,7 +87,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG,null);
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO, null);
-        requestForInformation(bpc);
+        requestForInformation(bpc,appNo);
 
         log.debug(StringUtil.changeForLog("the do start end ...."));
     }
@@ -947,9 +948,8 @@ public class RequestForChangeMenuDelegator {
         return appSubmissionDto;
     }
 
-    private void requestForInformation(BaseProcessClass bpc) throws CloneNotSupportedException {
+    private void requestForInformation(BaseProcessClass bpc,String appNo) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
-        String appNo = ParamUtil.getString(bpc.request,"appNo");
         if(!StringUtil.isEmpty(appNo)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
             if(appSubmissionDto != null){

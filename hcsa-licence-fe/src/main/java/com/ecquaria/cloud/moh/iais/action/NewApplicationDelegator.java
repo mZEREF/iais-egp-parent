@@ -180,6 +180,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do Start start ...."));
 
         String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
+        String appNo = ParamUtil.getMaskedString(bpc.request,"appNo");
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         //clear Session
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
@@ -201,7 +202,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,null);
         requestForChangeOrRenewLoading(bpc);
         //renewLicence(bpc);
-        requestForInformationLoading(bpc);
+        requestForInformationLoading(bpc,appNo);
         //for loading the draft by appId
         loadingDraft(bpc,draftNo);
         //load Specified info
@@ -291,7 +292,7 @@ public class NewApplicationDelegator {
             log.info(StringUtil.changeForLog("svcId not null"));
             Set<String> premisesType  = IaisCommonUtils.genNewHashSet();
             if(appSubmissionDto.isOnlySpecifiedSvc()){
-                List<String> baseSvcIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseServiceChecked");
+                List<String> baseSvcIds = appSubmissionDto.getExistBaseServiceList();
                 premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(baseSvcIds);
             }else{
                 premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
@@ -2691,10 +2692,8 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do renewLicence end ...."));
     }
 
-    private void requestForInformationLoading(BaseProcessClass bpc) throws CloneNotSupportedException {
+    private void requestForInformationLoading(BaseProcessClass bpc,String appNo) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
-
-        String appNo = ParamUtil.getString(bpc.request,"appNo");
         if(!StringUtil.isEmpty(appNo)){
             ParamUtil.setSessionAttr(bpc.request,DRAFTCONFIG,"test");
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
