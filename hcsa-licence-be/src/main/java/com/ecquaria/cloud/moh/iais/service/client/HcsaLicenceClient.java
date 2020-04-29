@@ -180,4 +180,7 @@ public interface HcsaLicenceClient {
     @GetMapping(value = "/hcsa-licence/baseLicId-list-specLicId",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getSpecIdsByBaseId(@RequestParam("licId") String licId);
 
+    @GetMapping(value = "/hcsa-licence/licence-bylicence-byNo",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicenceDto> getLicBylicNo(@RequestParam(value = "licenceNo")String licenceNo);
+
 }
