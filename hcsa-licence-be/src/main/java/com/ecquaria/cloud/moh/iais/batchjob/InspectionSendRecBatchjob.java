@@ -170,7 +170,7 @@ public class InspectionSendRecBatchjob {
                 interMessageDto.setMaskParams(maskParams);
                 inboxMsgService.saveInterMessage(interMessageDto);
 
-                InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST);
+                InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION);
                 if(inspectionEmailTemplateDto != null) {
                     EmailDto emailDto = new EmailDto();
                     emailDto.setContent(templateMessageByContent);

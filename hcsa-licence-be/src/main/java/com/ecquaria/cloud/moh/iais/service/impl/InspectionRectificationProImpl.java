@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -27,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -42,6 +44,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -49,6 +52,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
@@ -65,6 +69,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,6 +88,12 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private InspEmailService inspEmailService;
+
+    @Autowired
+    private EmailClient emailClient;
 
     @Autowired
     private ApplicationViewService applicationViewService;
@@ -221,9 +232,11 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             String mesNO = inboxMsgService.getMessageNo();
             interMessageDto.setRefNo(mesNO);
             interMessageDto.setService_id(applicationDto1.getServiceId());
-            String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
-                    MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION +
-                    taskDto.getRefNo() + "&recVersion=" + version;
+            String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName() +
+                    MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION;
+            HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+            maskParams.put("appPremCorrId", taskDto.getRefNo());
+            maskParams.put("recVersion", version);
             MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION).getEntity();
             Map<String, Object> params = IaisCommonUtils.genNewHashMap();
             params.put("process_url", url);
@@ -238,9 +251,20 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             interMessageDto.setMsgContent(templateMessageByContent);
             interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             interMessageDto.setUserId(licenseeId);
+            interMessageDto.setMaskParams(maskParams);
             interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             inboxMsgService.saveInterMessage(interMessageDto);
 
+            InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION);
+            if(inspectionEmailTemplateDto != null) {
+                EmailDto emailDto = new EmailDto();
+                emailDto.setContent(templateMessageByContent);
+                emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
+                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                emailDto.setClientQueryCode(taskDto.getId());
+                emailClient.sendNotification(emailDto);
+            }
         }
     }
 
