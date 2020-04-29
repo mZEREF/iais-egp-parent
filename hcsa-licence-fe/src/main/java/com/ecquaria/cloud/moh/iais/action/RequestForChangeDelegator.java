@@ -79,6 +79,7 @@ public class RequestForChangeDelegator {
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
         ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,null);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.DODRAFTCONFIG,null);
+        ParamUtil.setSessionAttr(bpc.request,"AmendTypeValue", null);
         init(bpc,licenceId);
 
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
@@ -160,7 +161,7 @@ public class RequestForChangeDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prepare");
             ParamUtil.setRequestAttr(bpc.request, "AmendType", amendType);
         }
-
+        ParamUtil.setSessionAttr(bpc.request,"AmendTypeValue", amendType);
         log.debug(StringUtil.changeForLog("the do doChoose end ...."));
     }
 

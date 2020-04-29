@@ -8,15 +8,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -1187,10 +1190,100 @@ public class NewApplicationHelper {
 
     }
 
+    public static void setTimeList(HttpServletRequest request){
+        List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i< 24;i++){
+            timeHourList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
+        }
+        List<SelectOption> timeMinList = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i< 60;i++){
+            timeMinList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
+        }
+        ParamUtil.setRequestAttr(request, "premiseHours", timeHourList);
+        ParamUtil.setRequestAttr(request, "premiseMinute", timeMinList);
+
+    }
+
+    public static void setPremSelect(HttpServletRequest request,Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap){
+        List premisesSelect = getPremisesSel();
+        List conveyancePremSel = getPremisesSel();
+        List offSitePremSel = getPremisesSel();
+        if (licAppGrpPremisesDtoMap != null && !licAppGrpPremisesDtoMap.isEmpty()) {
+            for (AppGrpPremisesDto item : licAppGrpPremisesDtoMap.values()) {
+                SelectOption sp= new SelectOption(item.getPremisesSelect(), item.getAddress());
+                if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())) {
+                    premisesSelect.add(sp);
+                }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())){
+                    conveyancePremSel.add(sp);
+                }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(item.getPremisesType())){
+                    offSitePremSel.add(sp);
+                }
+            }
+        }
+        ParamUtil.setSessionAttr(request, "premisesSelect", (Serializable) premisesSelect);
+        ParamUtil.setSessionAttr(request, "conveyancePremSel", (Serializable) conveyancePremSel);
+        ParamUtil.setSessionAttr(request, "offSitePremSel", (Serializable) offSitePremSel);
+    }
+
+    public static void setPremAddressSelect(HttpServletRequest request){
+        List<SelectOption> addrTypeOpt = new ArrayList<>();
+        SelectOption addrTypeSp = new SelectOption("",NewApplicationDelegator.FIRESTOPTION);
+        addrTypeOpt.add(addrTypeSp);
+        addrTypeOpt.addAll(MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE));
+        ParamUtil.setRequestAttr(request,"addressType",addrTypeOpt);
+    }
+
+    /**
+     * for preview page
+     */
+    public static void setDocInfo(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos, List<AppSvcDocDto> appSvcDocDtos, List<HcsaSvcDocConfigDto> primaryDocConfig, List<HcsaSvcDocConfigDto> svcDocConfig){
+        if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)){
+            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
+                for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:primaryDocConfig){
+                    String docConfigId = appGrpPrimaryDocDto.getSvcComDocId();
+                    if(!StringUtil.isEmpty(docConfigId) && docConfigId.equals(hcsaSvcDocConfigDto.getId())){
+                        appGrpPrimaryDocDto.setSvcComDocName(hcsaSvcDocConfigDto.getDocTitle());
+                        break;
+                    }
+                }
+            }
+        }
+        if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
+            for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){
+                for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:svcDocConfig){
+                    String docConfigId = appSvcDocDto.getSvcDocId();
+                    if(!StringUtil.isEmpty(docConfigId) && docConfigId.equals(hcsaSvcDocConfigDto.getId())){
+                        appSvcDocDto.setUpFileName(hcsaSvcDocConfigDto.getDocTitle());
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @Description for common prepare premise content
+     * @param bpc
+     * @param appSubmissionDto
+     */
+    public static void prePremises(BaseProcessClass bpc,AppSubmissionDto appSubmissionDto, Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap){
+
+
+
+    }
 
     //=============================================================================
     //private method
     //=============================================================================
+    private static List<SelectOption> getPremisesSel(){
+        List<SelectOption> selectOptionList = IaisCommonUtils.genNewArrayList();
+        SelectOption cps1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
+        SelectOption cps2 = new SelectOption("newPremise", "Add a new premises");
+        selectOptionList.add(cps1);
+        selectOptionList.add(cps2);
+        return selectOptionList;
+    }
+
     private static boolean checkCanEdit(AppEditSelectDto appEditSelectDto, String currentType){
         boolean pageCanEdit = false;
         if(appEditSelectDto != null){

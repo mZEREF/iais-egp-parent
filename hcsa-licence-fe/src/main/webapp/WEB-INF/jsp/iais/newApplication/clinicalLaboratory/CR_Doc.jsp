@@ -82,6 +82,7 @@
     $(document).ready(function() {
         if(${AppSubmissionDto.needEditController && !isClickEdit}){
             disabledPage();
+            $('.btn-file-upload').addClass('hidden');
         }
 
         doEdit();
@@ -117,6 +118,7 @@
             $('input[type="file"]').prop('disabled',false);
             $('.existFile').removeClass('hidden');
             $('.existFile').removeClass('existFile');
+            $('.btn-file-upload').removeClass('hidden');
         });
     }
 

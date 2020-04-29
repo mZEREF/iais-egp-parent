@@ -26,7 +26,7 @@
                     <input type="hidden" id="amendTypeHidden" value="${AmendType}"/>
                     <div class="col-xs-12">
                         <div class="form-check">
-                            <input class="form-check-input amendType" id="amend-licensee" type="radio" name="amendType"
+                            <input class="form-check-input amendType" id="amend-licensee" type="radio" name="amendType" <c:if test="${AmendTypeValue == '0'}">checked="checked"</c:if>
                                    value="0"/>
                             <label class="form-check-label"><span for="amend-licensee" class="check-circle"></span>Change
                                 of Licensee</label>
@@ -34,7 +34,7 @@
                     </div>
                     <div class="col-xs-12">
                         <div class="form-check">
-                            <input class="form-check-input amendType" id="amend-licence" type="radio" name="amendType"
+                            <input class="form-check-input amendType" id="amend-licence" type="radio" name="amendType" <c:if test="${AmendTypeValue == '1'}">checked="checked"</c:if>
                                    value="1"/>
                             <label class="form-check-label"><span for="amend-licence" class="check-circle"></span>Change
                                 of Licence Information</label>

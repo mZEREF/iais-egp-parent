@@ -32,7 +32,6 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
@@ -47,7 +46,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -194,10 +192,12 @@ public class RequestForChangeMenuDelegator {
      */
     public void preparePremisesEdit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePremisesEdit start ...."));
+        NewApplicationHelper.setTimeList(bpc.request);
+        List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
+        ParamUtil.setSessionAttr(bpc.request, "publicHolidaySelect", (Serializable) publicHolidayList);
 
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
-
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
         String licenseeId = interInboxUserDto.getLicenseeId();
         appSubmissionDto.setLicenseeId(licenseeId);
@@ -229,41 +229,15 @@ public class RequestForChangeMenuDelegator {
         }
         if(appGrpPremisesDto != null || rfi!=null){
             log.info(StringUtil.changeForLog("The preparePremises licenseeId is -->:"+licenseeId));
-            List premisesSelect = new ArrayList<SelectOption>();
-            List conveyancePremSel = new ArrayList<SelectOption>();
             Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = null;
             if(!StringUtil.isEmpty(licenseeId)){
                 licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
             }
-            SelectOption sp0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
-            premisesSelect.add(sp0);
-            SelectOption sp1 = new SelectOption("newPremise", "Add a new premises");
-            premisesSelect.add(sp1);
-            SelectOption cps1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
-            SelectOption cps2 = new SelectOption("newPremise", "Add a new premises");
-            conveyancePremSel.add(cps1);
-            conveyancePremSel.add(cps2);
-            if (licAppGrpPremisesDtoMap != null && !licAppGrpPremisesDtoMap.isEmpty()) {
-                for (AppGrpPremisesDto item : licAppGrpPremisesDtoMap.values()) {
-                    SelectOption sp2 = new SelectOption(item.getPremisesSelect(), item.getAddress());
-                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())) {
-                        premisesSelect.add(sp2);
-                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())){
-                        conveyancePremSel.add(sp2);
-                    }
-                }
-            }
+            //premise select
+            NewApplicationHelper.setPremSelect(bpc.request,licAppGrpPremisesDtoMap);
             //addressType
-            List<SelectOption> addrTypeOpt = new ArrayList<>();
-            SelectOption addrTypeSp = new SelectOption("",NewApplicationDelegator.FIRESTOPTION);
-            addrTypeOpt.add(addrTypeSp);
-            addrTypeOpt.addAll(MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE));
-            ParamUtil.setRequestAttr(bpc.request,"addressType",addrTypeOpt);
+            NewApplicationHelper.setPremAddressSelect(bpc.request);
             ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
-            ParamUtil.setSessionAttr(bpc.request, "premisesSelect", (Serializable) premisesSelect);
-            ParamUtil.setSessionAttr(bpc.request, "conveyancePremSel", (Serializable) conveyancePremSel);
-
-            //
             if(rfi == null){
                 //when rfc/renew check is select existing premises
                 String oldPremSel = IaisCommonUtils.genPremisesKey(premisesListQueryDto.getPostalCode(),premisesListQueryDto.getBlkNo(),premisesListQueryDto.getFloorNo(),premisesListQueryDto.getUnitNo());
@@ -275,8 +249,6 @@ public class RequestForChangeMenuDelegator {
                     NewApplicationHelper.setWrkTime(appGrpPremisesDto1);
                 }
             }
-
-
         }
         appSubmissionDto.setAppGrpPremisesDtoList(reloadPremisesDtoList);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);

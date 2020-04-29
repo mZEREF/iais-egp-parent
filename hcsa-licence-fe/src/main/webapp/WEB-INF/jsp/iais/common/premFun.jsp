@@ -252,6 +252,8 @@
                         }
                     }
                 );
+                <!--trigger tooltip -->
+                $("[data-toggle='tooltip']").tooltip();
             },
             'error':function (data) {
             }

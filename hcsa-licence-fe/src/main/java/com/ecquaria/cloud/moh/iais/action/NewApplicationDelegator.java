@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -53,7 +52,6 @@ import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -64,14 +62,12 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
@@ -160,16 +156,6 @@ public class NewApplicationDelegator {
     @Autowired
     private ApplicationClient applicationClient;
 
-    @Autowired
-    private FeEicGatewayClient feEicGatewayClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
     /**
      * StartStep: Start
      *
@@ -246,7 +232,9 @@ public class NewApplicationDelegator {
      */
     public void preparePremises(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do preparePremises start ...."));
-        getTimeList(bpc.request);
+        NewApplicationHelper.setTimeList(bpc.request);
+        List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
+        ParamUtil.setSessionAttr(bpc.request, "publicHolidaySelect", (Serializable) publicHolidayList);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         //get svcCode to get svcId
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
@@ -254,31 +242,33 @@ public class NewApplicationDelegator {
         if (hcsaServiceDtoList != null) {
             hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
         }
-        List premisesSelect = getPremisesSel();
-        List conveyancePremSel = getPremisesSel();
-        List offSitePremSel = getPremisesSel();
+
         String licenseeId = appSubmissionDto.getLicenseeId();
         log.info(StringUtil.changeForLog("The preparePremises licenseeId is -->:"+licenseeId));
         Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = null;
         if(!StringUtil.isEmpty(licenseeId)){
             licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
         }
-        if (licAppGrpPremisesDtoMap != null && !licAppGrpPremisesDtoMap.isEmpty()) {
-            for (AppGrpPremisesDto item : licAppGrpPremisesDtoMap.values()) {
-                SelectOption sp= new SelectOption(item.getPremisesSelect(), item.getAddress());
-                if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())) {
-                    premisesSelect.add(sp);
-                }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())){
-                    conveyancePremSel.add(sp);
-                }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(item.getPremisesType())){
-                    offSitePremSel.add(sp);
-                }
-            }
-        }
+        //premise select
+        NewApplicationHelper.setPremSelect(bpc.request,licAppGrpPremisesDtoMap);
         ParamUtil.setSessionAttr(bpc.request, LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
-        ParamUtil.setSessionAttr(bpc.request, "premisesSelect", (Serializable) premisesSelect);
-        ParamUtil.setSessionAttr(bpc.request, "conveyancePremSel", (Serializable) conveyancePremSel);
-        ParamUtil.setSessionAttr(bpc.request, "offSitePremSel", (Serializable) offSitePremSel);
+        //addressType
+        NewApplicationHelper.setPremAddressSelect(bpc.request);
+
+        //get premises type
+        if (!IaisCommonUtils.isEmpty(svcIds)) {
+            log.info(StringUtil.changeForLog("svcId not null"));
+            Set<String> premisesType  = IaisCommonUtils.genNewHashSet();
+            if(appSubmissionDto.isOnlySpecifiedSvc()){
+                List<String> baseSvcIds = appSubmissionDto.getExistBaseServiceList();
+                premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(baseSvcIds);
+            }else{
+                premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
+            }
+            ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
+        }else{
+            log.error(StringUtil.changeForLog("do not have select the services"));
+        }
 
         //addressType
         List<SelectOption> addrTypeOpt = new ArrayList<>();
@@ -3582,11 +3572,16 @@ public class NewApplicationDelegator {
 
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
+                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                     String currentSvcId = appSvcRelatedInfoDto.getServiceId();
                     List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = null;
                     if(!StringUtil.isEmpty(currentSvcId)){
-                        hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(currentSvcId);
+                        hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(currentSvcId);//set doc name
+                        List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                        List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
+                        NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos,appSvcDocDtos,primaryDocConfig,svcDocConfig);
                     }
                     //set AppSvcLaboratoryDisciplinesDto
                     if(!IaisCommonUtils.isEmpty(hcsaSvcSubtypeOrSubsumedDtos)){
@@ -3693,35 +3688,7 @@ public class NewApplicationDelegator {
         return svcAllPsnConfig;
     }
 
-    private void getTimeList(HttpServletRequest request){
-        List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
-        for (int i = 0; i< 24;i++){
-            timeHourList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
-        }
-        List<SelectOption> timeMinList = IaisCommonUtils.genNewArrayList();
-        for (int i = 0; i< 60;i++){
-            timeMinList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
-        }
 
-        List<SelectOption> publicHolidayList = IaisCommonUtils.genNewArrayList();
-        List<PublicHolidayDto> publicHolidayDtoList = IaisCommonUtils.genNewArrayList();
-
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        try {
-            publicHolidayDtoList = feEicGatewayClient.getpublicHoliday(signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-        }
-        publicHolidayDtoList.stream().forEach(pb -> {
-            publicHolidayList.add(new SelectOption(Formatter.formatDate(pb.getFromDate()),pb.getDescription()));
-        });
-
-        ParamUtil.setRequestAttr(request, "premiseHours", timeHourList);
-        ParamUtil.setRequestAttr(request, "premiseMinute", timeMinList);
-        ParamUtil.setSessionAttr(request, "publicHolidaySelect", (Serializable) publicHolidayList);
-    }
 
     private static String getPhName(List<SelectOption> phDtos, String dateStr){
         String result = "";
@@ -3735,15 +3702,6 @@ public class NewApplicationDelegator {
             }
         }
         return result;
-    }
-
-    private static List<SelectOption> getPremisesSel(){
-        List<SelectOption> selectOptionList = IaisCommonUtils.genNewArrayList();
-        SelectOption cps1 = new SelectOption("-1", FIRESTOPTION);
-        SelectOption cps2 = new SelectOption("newPremise", "Add a new premises");
-        selectOptionList.add(cps1);
-        selectOptionList.add(cps2);
-        return selectOptionList;
     }
 
     private void loadingSpecifiedInfo(BaseProcessClass bpc){

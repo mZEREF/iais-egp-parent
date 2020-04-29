@@ -183,6 +183,7 @@
         }
         if(${(AppSubmissionDto.needEditController && !isClickEdit) || AppSubmissionDto.onlySpecifiedSvc }){
             disabledPage();
+            $('.btn-file-upload').addClass('hidden');
         }
         
         //Binding method
@@ -229,6 +230,7 @@
             $('input[type="file"]').prop('disabled',false);
             $('.existFile').removeClass('hidden');
             $('.existFile').removeClass('existFile');
+            $('.btn-file-upload').removeClass('hidden');
         });
     }
 

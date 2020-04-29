@@ -3,6 +3,8 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -16,15 +18,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
@@ -65,6 +70,17 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     private LicenceClient licenceClient;
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
+
+    @Autowired
+    private FeEicGatewayClient feEicGatewayClient;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     @Override
     public List<HcsaServiceDto> getHcsaServiceDtosById(List<String> ids) {
@@ -266,5 +282,23 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public List<HcsaServiceDto> getHcsaServiceByNames(List<String> names) {
         return appConfigClient.getHcsaServiceByNames(names).getEntity();
+    }
+
+    @Override
+    public List<SelectOption> getPubHolidaySelect() {
+        List<SelectOption> publicHolidayList = IaisCommonUtils.genNewArrayList();
+        List<PublicHolidayDto> publicHolidayDtoList = IaisCommonUtils.genNewArrayList();
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        try {
+            publicHolidayDtoList = feEicGatewayClient.getpublicHoliday(signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+        publicHolidayDtoList.stream().forEach(pb -> {
+            publicHolidayList.add(new SelectOption(Formatter.formatDate(pb.getFromDate()),pb.getDescription()));
+        });
+        return publicHolidayList;
     }
 }
