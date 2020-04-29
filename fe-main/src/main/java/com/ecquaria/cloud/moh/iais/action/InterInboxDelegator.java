@@ -221,7 +221,6 @@ public class InterInboxDelegator {
             ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_PAGE, InboxConst.MESSAGE_VIEW);
         }
         setNumInfoToRequest(request,interInboxUserDto);
-
     }
 
     public void prepareSwitch(BaseProcessClass bpc){
@@ -314,7 +313,7 @@ public class InterInboxDelegator {
                     licSearchMap.remove("eExpiryDate");
                 }
             }else{
-                ParamUtil.setRequestAttr(request,InboxConst.LIC_EXPIRY_ERR_MSG, "Licence Start Date From cannot be later than Licence Start Date To");
+                ParamUtil.setRequestAttr(request,InboxConst.LIC_EXPIRY_ERR_MSG, "Licence Expiry Date From cannot be later than Licence Expiry Date To");
             }
         }
         licenceParameter.setFilters(licSearchMap);
@@ -477,6 +476,7 @@ public class InterInboxDelegator {
 
     public void appSwitch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("Step ---> appSwitch"));
+        ParamUtil.setRequestAttr(bpc.request,"appCannotRecall", false);
     }
 
     public void appDoSearch(BaseProcessClass bpc) throws ParseException {

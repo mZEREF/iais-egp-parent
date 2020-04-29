@@ -49,9 +49,6 @@
     $(function () {
         if ('${archiveResult}') {
             $('#isArchivedModal').modal('show');
-            window.setTimeout(function(){
-                $('#isArchivedModal').modal('hide');
-            },3000);
         }
     });
 
@@ -112,13 +109,7 @@
         if ($('.msgCheck').is(':checked')){
             submit('msgDoArchive');
         }else{
-            $('#doArchiveModal').modal('hide');
-            window.setTimeout(function(){
-                $('#archiveModal').modal('show');
-            },1000);
-            window.setTimeout(function(){
-                $('#archiveModal').modal('hide');
-            },5000);
+            $('#archiveModal').modal('show');
         }
     }
 

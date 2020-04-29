@@ -89,16 +89,18 @@
                     </iais:value>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <span class="col-xs-3 col-md-3"></span>
-                <div class="col-md-4">
-                    <span class="error-msg" style="width: 150%;position: absolute;">${LEEM}</span>
-                </div>
-                <div class="text-right">
-                    <button type="button" class="btn btn-secondary" onclick="doClearLic()">Clear</button>
-                    <button type="button" class="btn btn-primary" onclick="doSearchLic()">Search</button>
+            <div class="row">
+                <div class="col-md-12">
+                    <span class="col-xs-3 col-md-3"></span>
+                    <div class="col-md-5">
+                        <span class="error-msg" style="width: 150%;position: absolute;">${LEEM}</span>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-right">
+                            <button type="button" class="btn btn-secondary" onclick="doClearLic()">Clear</button>
+                            <button type="button" class="btn btn-primary" onclick="doSearchLic()">Search</button>
+                        </div>
+                    </div >
                 </div>
             </div>
         </div>
