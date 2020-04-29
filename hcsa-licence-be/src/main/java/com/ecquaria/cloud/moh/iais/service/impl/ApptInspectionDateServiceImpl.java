@@ -68,6 +68,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -475,11 +476,13 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         cancelOrConfirmApptDate(apptCalendarStatusDto);
         //
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
-                MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE + urlId;
+                MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE ;
+        HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+        maskParams.put("appPremCorrId", urlId);
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         inspectionDateSendEmail(submitDt, loginUrl, licenseeId, taskId);
-        createMessage(url, serviceId, submitDt, licenseeId);
+        createMessage(url, serviceId, submitDt, licenseeId, maskParams);
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_SPECIFIC_INSP_DATE, InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
     }
 
@@ -542,12 +545,14 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
         String taskId = apptInspectionDateDto.getTaskDto().getId();
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
-                MessageConstants.MESSAGE_INBOX_URL_APPT_SYS_INSP_DATE + urlId;
+                MessageConstants.MESSAGE_INBOX_URL_APPT_SYS_INSP_DATE;
+        HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+        maskParams.put("appPremCorrId", urlId);
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName();
         Date submitDt = apptInspectionDateDto.getAppointmentDto().getSubmitDt();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         inspectionDateSendEmail(submitDt, loginUrl, licenseeId, taskId);
-        createMessage(url, serviceId, submitDt, licenseeId);
+        createMessage(url, serviceId, submitDt, licenseeId, maskParams);
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_INSPECTION_DATE, InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE);
     }
 
@@ -832,7 +837,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         }
     }
 
-    private void createMessage(String url, String serviceId, Date submitDt, String licenseeId) {
+    private void createMessage(String url, String serviceId, Date submitDt, String licenseeId, HashMap<String, String> maskParams) {
         MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST).getEntity();
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy");
@@ -856,6 +861,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         interMessageDto.setMsgContent(templateMessageByContent);
         interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        interMessageDto.setMaskParams(maskParams);
         inboxMsgService.saveInterMessage(interMessageDto);
     }
 
