@@ -56,10 +56,11 @@
     };
 
     function uploadInternalDoc(){
-        showWaiting();
-        if(validateUploadInternal())
-             callAjaxUploadFile();
-        dismissWaiting();
+            $('#uploadFileButton').attr("disabled",true);
+            showWaiting();
+            if(validateUploadInternal())
+                callAjaxUploadFile();
+            dismissWaiting();
     }
 
     function deleteFile(row,repoId) {
@@ -110,6 +111,7 @@
                 }else if(data != null && data.fileSn == null){
                     $('#selectedFileShow').html('The file size must less than 4M.');
                 }
+                $('#uploadFileButton').attr("disabled", false);
             },
             error: function (msg) {
                 alert("error");
@@ -138,11 +140,13 @@
         var file = $('#selectedFile').get(0).files[0];
         if(selectedFile == null || selectedFile== "" ||file==null|| file==undefined){
             $('#selectedFileShow').html('The file cannot be empty.');
+            $('#uploadFileButton').attr("disabled", false);
             return false;
         }else {
             var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
             if(fileSize> 4){
                 $('#selectedFileShow').html('The file size must less than 4M.');
+                $('#uploadFileButton').attr("disabled", false);
                 return false;
             }
         }
@@ -150,6 +154,7 @@
         var fileRemarkLength = $('#fileRemark').val().length;
         if(fileRemarkLength > fileRemarkMaxLength){
             $('#fileRemarkShow').html('Exceeding the maximum length by ' + fileRemarkMaxLength );
+            $('#uploadFileButton').attr("disabled", false);
             flag = flag && false;
         }
         return flag;
