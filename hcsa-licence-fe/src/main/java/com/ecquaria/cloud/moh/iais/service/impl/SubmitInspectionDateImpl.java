@@ -70,7 +70,7 @@ public class SubmitInspectionDateImpl implements SubmitInspectionDate {
 
         Calendar c = Calendar.getInstance();
         c.setTime(submitDate);
-        c.add(Calendar.DAY_OF_WEEK, maxAfter);
+        c.add(Calendar.DAY_OF_MONTH, maxAfter);
         return c.getTime();
     }
 
@@ -87,7 +87,7 @@ public class SubmitInspectionDateImpl implements SubmitInspectionDate {
 
         Calendar c = Calendar.getInstance();
         c.setTime(submitDate);
-        c.add(Calendar.DAY_OF_WEEK, maxBefore);
+        c.add(Calendar.DAY_OF_MONTH, maxBefore * -1);
         return c.getTime();
     }
 

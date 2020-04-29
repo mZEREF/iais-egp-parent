@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SyncDataBody;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFeSupportDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -147,4 +148,12 @@ public interface BeEicGatewayClient {
                                                                  @RequestHeader("authorization") String authorization,
                                                                  @RequestHeader("date-Secondary") String dateSec,
                                                                  @RequestHeader("authorization-Secondary") String authorizationSec);
+
+
+    @PostMapping(value = "/v1/hcsa-insp-period-sync", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> syncInspPeriodToFe(@RequestBody HcsaServicePrefInspPeriodDto period,
+                                         @RequestHeader("date") String date,
+                                         @RequestHeader("authorization") String authorization,
+                                         @RequestHeader("date-Secondary") String dateSec,
+                                         @RequestHeader("authorization-Secondary") String authorizationSec);
 }

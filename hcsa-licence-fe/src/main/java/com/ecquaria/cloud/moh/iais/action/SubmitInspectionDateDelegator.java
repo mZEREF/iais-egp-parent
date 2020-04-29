@@ -85,13 +85,16 @@ public class SubmitInspectionDateDelegator {
 
         Date licenceExpire = submitInspectionDate.getBlockPeriodByBeforeLicenceExpire(submitDate, beforeLicencePeriodList);
 
-        ParamUtil.setSessionAttr(servletRequest, "inspStartDate" , afterApp);
-        ParamUtil.setSessionAttr(servletRequest, "inspEndDate" , licenceExpire);
+        if (afterApp != null){
+            ParamUtil.setSessionAttr(servletRequest, "inspStartDate" , IaisEGPHelper.tomorrow(afterApp));
+            ParamUtil.setSessionAttr(servletRequest, "inspStartDateDefault" , afterApp);
+        }
+
+        if (licenceExpire != null){
+            ParamUtil.setSessionAttr(servletRequest, "inspEndDate" , IaisEGPHelper.yesterday(licenceExpire));
+            ParamUtil.setSessionAttr(servletRequest, "inspEndDateDefault" , licenceExpire);
+        }
     }
-
-
-
-
 
     /**
      * @AutoStep: validate
@@ -100,13 +103,11 @@ public class SubmitInspectionDateDelegator {
      * @author: yichen
      */
     public void validate(BaseProcessClass bpc){
-        Date afterApp = (Date) ParamUtil.getSessionAttr(bpc.request, "inspStartDate" );
-        Date licenceExpire = (Date) ParamUtil.getSessionAttr(bpc.request, "inspEndDate");
+        Date afterApp = (Date) ParamUtil.getSessionAttr(bpc.request, "inspStartDateDefault" );
+        Date licenceExpire = (Date) ParamUtil.getSessionAttr(bpc.request, "inspEndDateDefault");
 
         String startDate = ParamUtil.getString(bpc.request, "inspStartDate");
         String endDate = ParamUtil.getString(bpc.request, "inspEndDate");
-
-
 
         if (StringUtil.isEmpty(startDate) || StringUtil.isEmpty(endDate)){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("dateError", "Please input inspection start date and end date."));
@@ -123,7 +124,8 @@ public class SubmitInspectionDateDelegator {
         if (afterApp != null){
             boolean isAfterDate = IaisEGPHelper.isAfterDate(afterApp, sDate);
             if (!isAfterDate){
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("inspStartDate", "Inspection start date cannot be earlier than " + IaisEGPHelper.parseToString(afterApp, "dd/MM/yyyy")));
+                Date tomorrowD = IaisEGPHelper.tomorrow(afterApp);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("inspStartDate", "Inspection start date cannot be earlier than " + IaisEGPHelper.parseToString(tomorrowD, "dd/MM/yyyy")));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 return;
             }
@@ -132,7 +134,8 @@ public class SubmitInspectionDateDelegator {
         if (licenceExpire != null){
             boolean isAfterDate = IaisEGPHelper.isAfterDate(eDate, licenceExpire);
             if (!isAfterDate){
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("inspEndDate", "Inspection end date cannot be later than " + IaisEGPHelper.parseToString(licenceExpire, "dd/MM/yyyy")));
+                Date yesterday = IaisEGPHelper.yesterday(licenceExpire);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("inspEndDate", "Inspection end date cannot be later than " + IaisEGPHelper.parseToString(yesterday, "dd/MM/yyyy")));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 return;
             }

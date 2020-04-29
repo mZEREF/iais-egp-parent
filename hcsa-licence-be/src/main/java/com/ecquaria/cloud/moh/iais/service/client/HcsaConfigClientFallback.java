@@ -275,7 +275,7 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
     }
 
     @Override
-    public FeignResponseEntity<Boolean> savePrefInspPeriod(HcsaServicePrefInspPeriodDto period) {
+    public FeignResponseEntity<HcsaServicePrefInspPeriodDto> savePrefInspPeriod(HcsaServicePrefInspPeriodDto period) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
