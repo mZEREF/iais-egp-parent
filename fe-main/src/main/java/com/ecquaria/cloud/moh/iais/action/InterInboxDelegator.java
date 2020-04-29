@@ -646,7 +646,7 @@ public class InterInboxDelegator {
         url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                 .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohNewApplication/1/InboxToPreview")
                 .append("?appNo=")
-                .append(appNo);
+                .append(MaskUtil.maskValue("appNo",appNo));
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }

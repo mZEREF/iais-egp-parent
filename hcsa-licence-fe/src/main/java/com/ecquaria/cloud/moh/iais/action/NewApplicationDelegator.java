@@ -233,7 +233,6 @@ public class NewApplicationDelegator {
                 action = "premises";
             }
         }
-        String inboxToView = ParamUtil.getString(bpc.request,"INBOX_PREVIEW");
 
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, action);
         log.info(StringUtil.changeForLog("the do prepare end ...."));
@@ -916,7 +915,7 @@ public class NewApplicationDelegator {
     }
     public void inboxToPreview(BaseProcessClass bpc) throws IOException {
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,null);
-        String appNo = ParamUtil.getString(bpc.request,"appNo");
+        String appNo = ParamUtil.getMaskedString(bpc.request,"appNo");
         if(!StringUtil.isEmpty(appNo)) {
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDto(appNo);
             if(!IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())){
