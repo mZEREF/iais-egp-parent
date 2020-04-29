@@ -449,7 +449,7 @@ public class BackendInboxDelegator {
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
 
-//        applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+        applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
     private List<ApplicationDto> removeFastTracking(List<ApplicationDto> applicationDtos){
         List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
