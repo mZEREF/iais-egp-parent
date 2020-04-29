@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
@@ -6,15 +7,12 @@
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+          String webroot=IaisEGPConstant.BE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
+<form method="post" id="mainForm"  action=<%=process.runtime.continueURL()%>  class="form-horizontal" >
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
     <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.FillupChklistDelegator"/>
     <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto"/>
     <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
@@ -242,8 +240,8 @@
             </div>
         </div>
     </div>
-    </div>
 </form>
+</div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     function doBack(){
