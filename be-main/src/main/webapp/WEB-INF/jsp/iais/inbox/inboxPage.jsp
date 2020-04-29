@@ -18,7 +18,6 @@
     <form method="post" id="mainSupForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="SearchSwitchType" value="">
-        <input type="hidden" id="taskId" name="taskId" value="">
         <input type="hidden" id="action" name="action" value="">
         <input type="hidden" id="chkIdList" name="chkIdList" value="">
         <input type="hidden" id="inspector_name" name="inspector_name" value="">
@@ -211,12 +210,6 @@
         $("#inspector_name").val(options);
     }
 
-    function doInspectorSearchTaskAssign(taskId) {
-        $("#taskId").val(taskId);
-        showWaiting();
-        submit('assign');
-    }
-
     function doInspectorSearchTaskClear() {
         $('input[name="application_no"]').val("");
         $('input[name="hci_code"]').val("");
@@ -302,7 +295,7 @@
                         // }
                         html += '<tr style = "color : ' + color + ';">';
                         if (hastaskList == "true") {
-                            html += '<td><input type="checkbox" name="taskcheckbox" value="' + taskList[res.rows[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
+                            html += '<td><input type="checkbox" name="taskId" value="' + taskList[res.rows[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
                         }
                         html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a class="applicationNoAHref" data-href=' + url[res.rows[i].refNo] +' data-task=' + taskList[res.rows[i].refNo] +  '>' + res.rows[i].applicationNo + '</a></p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res.rows[i].serviceId] + '<p></td>' +
@@ -404,7 +397,7 @@
         var task = this.getAttribute("data-task");
         $.ajax({
             data:{
-                taskcheckbox: task,
+                taskId: task,
             },
             type:"POST",
             dataType: 'json',
@@ -413,7 +406,7 @@
 
             },
             success:function(data){
-                window.location.href = href;
+                // window.location.href = href;
             }
         });
     })

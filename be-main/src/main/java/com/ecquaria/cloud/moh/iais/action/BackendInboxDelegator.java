@@ -261,7 +261,7 @@ public class BackendInboxDelegator {
      */
     public void doApprove(BaseProcessClass bpc)  throws FeignException, CloneNotSupportedException {
         applicationDtoIds = IaisCommonUtils.genNewArrayList();
-        String[] taskList =  ParamUtil.getMaskedStrings(bpc.request, "taskcheckbox");
+        String[] taskList =  ParamUtil.getMaskedStrings(bpc.request, "taskId");
         String action =  ParamUtil.getString(bpc.request, "action");
         String successStatus = "";
         String successInfo = "Success";
@@ -449,7 +449,7 @@ public class BackendInboxDelegator {
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
 
-        applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+//        applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
     private List<ApplicationDto> removeFastTracking(List<ApplicationDto> applicationDtos){
         List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
@@ -613,7 +613,7 @@ public class BackendInboxDelegator {
                 for (TaskDto item:commPools
                 ) {
                     appNoUrl.put(item.getRefNo(), generateProcessUrl(item, bpc.request));
-                    taskList.put(item.getRefNo(), MaskUtil.maskValue("taskcheckbox", item.getId()));
+                    taskList.put(item.getRefNo(), MaskUtil.maskValue("taskId", item.getId()));
                     taskMap.put(item.getRefNo(), item);
                 }
             }
