@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -188,5 +189,10 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public List<InboxMsgMaskDto> getInboxMaskEntity(String msgId) {
         return inboxClient.getInboxMsgMask(msgId).getEntity();
+    }
+
+    @Override
+    public List<PremisesDto> getPremisesByLicId(String licenceId) {
+        return licenceInboxClient.getPremisesDto(licenceId).getEntity();
     }
 }

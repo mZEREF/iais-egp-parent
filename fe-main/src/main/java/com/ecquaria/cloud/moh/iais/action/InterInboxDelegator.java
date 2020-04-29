@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.*;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
@@ -243,6 +244,17 @@ public class InterInboxDelegator {
         licParam.addFilter("licenseeId",interInboxUserDto.getLicenseeId(),true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
         SearchResult licResult = inboxService.licenceDoQuery(licParam);
+        List<InboxLicenceQueryDto> inboxLicenceQueryDtoList = licResult.getRows();
+        inboxLicenceQueryDtoList.stream().forEach(h -> {
+            List<PremisesDto> premisesDtoList = inboxService.getPremisesByLicId(h.getId());
+            List<String> addressList = IaisCommonUtils.genNewArrayList();
+            for (PremisesDto premisesDto:premisesDtoList
+                 ) {
+                addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                h.setPremisesDtoList(addressList);
+            }
+
+        });
         if(!StringUtil.isEmpty(licResult)){
             clearParameter("IILT");
             ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, licParam);

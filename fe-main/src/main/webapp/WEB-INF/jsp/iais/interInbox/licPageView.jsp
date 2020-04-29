@@ -7,6 +7,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.Formatter" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MiscUtil" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" language="java"%>
 <%
     sop.webflow.rt.api.BaseProcessClass process =

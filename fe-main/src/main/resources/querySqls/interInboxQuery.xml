@@ -60,19 +60,15 @@
 
     <sql key = "licenceQuery" remarks = "Query Inter-Licence Data by condition">
         <![CDATA[
-            SELECT
-                pre.ID AS premises_id,
+             SELECT
                 lic.id,
                 lic.licence_no,
                 lic.svc_name,
                 lic.licensee_id,
                 lic.status,
                 lic.start_date,
-                lic.expiry_date,
-                (pre.BLK_NO+' '+pre.STREET_NAME+' '+ pre.BUILDING_NAME+' # '+pre.FLOOR_NO+'-'+pre.UNIT_NO+','+pre.POSTAL_CODE) AS premise
+                lic.expiry_date
             FROM LICENCE AS lic
-            JOIN lic_premises AS licpre ON lic.ID = licpre.LICENCE_ID
-            JOIN premises AS pre ON licpre.PREMISES_ID = pre.ID
             WHERE lic.status != 'LICEST002'
             <#if id??> AND CHARINDEX(:id, lic.id) >0</#if>
             <#if serviceType??> AND lic.svc_name = :serviceType</#if>

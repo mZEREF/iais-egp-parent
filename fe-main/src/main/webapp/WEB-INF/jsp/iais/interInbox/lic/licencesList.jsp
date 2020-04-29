@@ -117,7 +117,7 @@
                                              value="Licence No."/>
                         <iais:sortableHeader needSort="true" field="SVC_NAME" value="Type"/>
                         <iais:sortableHeader needSort="true" field="STATUS" value="Status" style="width:9%;"/>
-                        <iais:sortableHeader needSort="true" field="PREMISE" value="Premises"/>
+                        <iais:sortableHeader needSort="true" field="PREMISE" value="Premises" style="width:30%;"/>
                         <iais:sortableHeader needSort="true" field="START_DATE"
                                              value="Start Date"/>
                         <iais:sortableHeader needSort="true" field="EXPIRY_DATE"
@@ -167,7 +167,19 @@
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Premises</p>
-                                        <p>${licenceQuery.premise}</p>
+                                        <c:choose>
+                                            <c:when test="${licenceQuery.premisesDtoList.size() == 1}">
+                                                <P>${licenceQuery.premisesDtoList[0]}</P>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <select>
+                                                    <option value ="">Multiple</option>
+                                                    <c:forEach items="${licenceQuery.premisesDtoList}" var="address" varStatus="index">
+                                                        <option value ="${address}">${address}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Start Date</p>
