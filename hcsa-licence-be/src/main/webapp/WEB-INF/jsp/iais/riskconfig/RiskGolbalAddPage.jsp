@@ -30,7 +30,7 @@
                         <h2>Global Risk Configuration</h2>
 
                             <div class="table-gp">
-                                <table class="table-gp">
+                                <table>
                                     <thead>
                                     <tr>
                                         <th><span>Service Name</span></th>
@@ -59,8 +59,7 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <input type="text" maxlength="2" style="width: 60px" id="<c:out value="${go.serviceCode}"/>maxLic" name="<c:out value="${go.serviceCode}"/>maxLic"value="<c:out value="${go.doMaxLic}"></c:out>">
-
+                                                <iais:select name="${go.serviceCode}maxLic" options="yearSelectOptions" firstOption="Please Select" value="${go.doMaxLic}"></iais:select>
                                             </td>
                                             <td>
                                                 <input type="text" maxlength="2" style="width: 60px" id="<c:out value="${go.serviceCode}"/>doLast" name="<c:out value="${go.serviceCode}"/>doLast"value="<c:out value="${go.doLastInspection}"></c:out>">

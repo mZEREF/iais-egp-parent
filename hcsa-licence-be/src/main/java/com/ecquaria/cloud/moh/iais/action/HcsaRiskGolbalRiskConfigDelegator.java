@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.dto.HcsaRiskGolbalVadlidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskGolbalService;
+import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.HcsaGolbalValidate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ public class HcsaRiskGolbalRiskConfigDelegator {
         List<SelectOption> autoRenewOp = hcsaRiskGolbalService.getAutoOp();
         List<SelectOption> inpTypeOp = hcsaRiskGolbalService.inpTypeOp();
         List<SelectOption> PreOrPostOp = hcsaRiskGolbalService.PreOrPostOp();
+        ParamUtil.setSessionAttr(request,"yearSelectOptions",(Serializable)LicenceUtil.getRiskYearsForGlobalRisk());
         ParamUtil.setSessionAttr(request, "autoRenewOp", (Serializable) autoRenewOp);
         ParamUtil.setSessionAttr(request, "golbalShowDto", showDto);
         ParamUtil.setSessionAttr(request, "inpTypeOp", (Serializable)inpTypeOp);

@@ -104,6 +104,15 @@ public class LicenceUtil {
         }
         return selectOptions;
     }
+
+    public static List<SelectOption> getRiskYearsForGlobalRisk(){
+        List<SelectOption> selectOptions;
+            String dateTypeText =  MasterCodeUtil.getCodeDesc(RiskConsts.YEAR);
+            selectOptions = new ArrayList<>(5);
+            for(int i = 1;i<6;i++)
+                selectOptions.add(new SelectOption(String.valueOf(i),i + " " + dateTypeText));
+        return selectOptions;
+    }
     /**
      * @author huachong & zhilin
      * @param tempMap
