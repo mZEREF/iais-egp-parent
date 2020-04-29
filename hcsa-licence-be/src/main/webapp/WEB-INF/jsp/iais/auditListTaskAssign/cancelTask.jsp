@@ -94,8 +94,8 @@
             <iais:action style="text-align:right;">
                 <button type="button" class="btn btn-secondary" onclick="javascript:cancel('${actionCancel}');">Cancel
                 </button>
-                <button type="button" class="btn btn-primary next" onclick="javascript:cancelAudit('${actionCancelAudit}');">Cancel
-                    Audit Task
+                <button type="button" class="btn btn-primary next" onclick="javascript:cancelAudit('${actionCancelAudit}');">
+                    Confirm Cancellation
                 </button>
             </iais:action>
             </div>
@@ -103,11 +103,19 @@
     </div>
 </form>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+<%@ include file="/WEB-INF/jsp/include/yesNoConfirm.jsp" %>
 <script type="text/javascript">
     function cancel(act) {
         SOP.Crud.cfxSubmit("mainForm",act);
     }
+
     function cancelAudit(act) {
-        SOP.Crud.cfxSubmit("mainForm",act);
+        showPopupConfirmation({"msg":"Please click \"Yes\" to confirm cancellation.",
+            'confirmCallback':'cancelAuditBack','data':{"act":act},"confirmBtn" : "Yes","cancelBtn":"No"
+        });
+    }
+
+    function cancelAuditBack(data) {
+        SOP.Crud.cfxSubmit("mainForm",data.act);
     }
 </script>
