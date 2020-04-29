@@ -10,13 +10,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -25,14 +23,11 @@ import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
@@ -44,7 +39,6 @@ import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,12 +52,6 @@ import java.util.Map;
 public class InspectionSendRecBatchjob {
     @Autowired
     private LicenseeService licenseeService;
-
-    @Autowired
-    private InspEmailService inspEmailService;
-
-    @Autowired
-    private EmailClient emailClient;
 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
@@ -153,6 +141,7 @@ public class InspectionSendRecBatchjob {
                              MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION;
                 HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                 maskParams.put("appPremCorrId", appPremCorrId);
+
                 MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION).getEntity();
                 Map<String, Object> params = IaisCommonUtils.genNewHashMap();
                 params.put("process_url", url);
@@ -169,18 +158,6 @@ public class InspectionSendRecBatchjob {
                 interMessageDto.setAuditTrailDto(intranet);
                 interMessageDto.setMaskParams(maskParams);
                 inboxMsgService.saveInterMessage(interMessageDto);
-
-                InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION);
-                if(inspectionEmailTemplateDto != null) {
-                    EmailDto emailDto = new EmailDto();
-                    emailDto.setContent(templateMessageByContent);
-                    emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
-                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-                    emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-                    emailDto.setClientQueryCode(aDto.getId());
-                    emailClient.sendNotification(emailDto);
-                }
-
                 aDto.setAuditTrailDto(intranet);
                 aDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION);
                 applicationViewService.updateApplicaiton(aDto);
@@ -211,9 +188,5 @@ public class InspectionSendRecBatchjob {
         inspRectificationSaveDto.setAuditTrailDto(intranet);
         beEicGatewayClient.beCreateNcData(inspRectificationSaveDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
-    }
-
-    private void inspectionDateSendEmail(Date submitDt, String url, String licenseeId, String taskId) {
-
     }
 }
