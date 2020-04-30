@@ -13,6 +13,7 @@
 <%@include file="../common/dashboard.jsp" %>
 <form class="" method="post" id="LicenceReviewForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="switch_value" value=""/>
+    <input type="hidden" id="checkSingle" value="${isSingle}"/>
     <input id="EditValue" type="hidden" name="EditValue" value="" />
     <div class="main-content">
         <div class="container">
@@ -47,14 +48,14 @@
                                         <%--main content--%>
 
                                         <div class="tab-gp steps-tab">
-                                        <div class="tab-content" style="padding-top: 0px;">
+                                            <div class="tab-content" style="padding-top: 0px;">
+                                                <c:if test="${isSingle == 'Y'}">
+                                                    <p>Please review your licence details and click edit to make necessary changes before renewal.</p>
+                                                </c:if>
                                             <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}" varStatus="status">
                                                 <c:set var="AppSubmissionDto" value="${AppSubmissionDto}" scope="request"/>
                                                 <c:set var="documentIndex" value="${status.index}" scope="request"/>
                                                 <div class="tab-pane ${status.index == '0' ? 'active' : ''}" id="serviceName${status.index}" role="tabpanel">
-
-
-
                                                     <div class="preview-gp">
                                                         <div class="row">
                                                             <div class="col-xs-12">
@@ -86,20 +87,23 @@
                                                             </div>
                                                         </div>
                                                     </div>
-
-
-
-
                                                 </div>
                                             </c:forEach>
+                                            <c:if test="${isSingle == 'Y'}">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" value="1" aria-invalid="false" <c:if test="${userAgreement}">checked="checked"</c:if> >
+                                                    <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span>I hereby certify that the information I provided is all correct and accurate</label>
+                                                </div>
+                                                <div>
+                                                    <span id="error_fieldMandatory"  class="error-msg"></span>
+                                                </div>
+                                            </c:if>
                                         </div>
                                         </div>
                                         <%--main content--%>
                                     </div>
                                 </div>
                             </div>
-
-
                             <%--content--%>
                         </div>
                         <div class="application-tab-footer">
@@ -129,10 +133,17 @@
         $('#LicenceReviewForm').submit();
     });
     $('#Next').click(function () {
-        $('[name="switch_value"]').val('doLicenceReview');
-        $('#LicenceReviewForm').submit();
+        let jQuery = $('#verifyInfoCheckbox').prop("checked");
+        let isSingle = $('#checkSingle').val();
+        if(!jQuery && (isSingle == 'Y')){
+            $('#error_fieldMandatory').html("The field is mandatory");
+            return;
+        }else if(jQuery || (isSingle == 'N')) {
+            $('#error_fieldMandatory').html("");
+            $('[name="switch_value"]').val('doLicenceReview');
+            $('#LicenceReviewForm').submit();
+        }
     });
-
 
     $('#premisesEdit').click(function () {
         $('#EditValue').val('premises');

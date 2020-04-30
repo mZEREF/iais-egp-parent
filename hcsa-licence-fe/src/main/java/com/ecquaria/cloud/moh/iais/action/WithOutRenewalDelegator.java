@@ -93,6 +93,7 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,null);
         ParamUtil.setSessionAttr(bpc.request,"totalStr",null);
         ParamUtil.setSessionAttr(bpc.request,"totalAmount",null);
+        ParamUtil.setSessionAttr(bpc.request,"userAgreement",null);
 
         //init page value
         //instructions
@@ -462,6 +463,12 @@ public class WithOutRenewalDelegator {
         }else if(PAGE1.equals(switch_value)){
             ParamUtil.setRequestAttr(bpc.request,CONTROL_SWITCH,BACK);
             ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,switch_value);
+            String userAgreement = ParamUtil.getString(bpc.request, "verifyInfoCheckbox");
+            if(!StringUtil.isEmpty(userAgreement) && AppConsts.YES.equals(userAgreement)){
+                ParamUtil.setSessionAttr(bpc.request,"userAgreement",true);
+            }else{
+                ParamUtil.setSessionAttr(bpc.request,"userAgreement",false);
+            }
         }else if(PAGE2.equals(switch_value)){
             ParamUtil.setRequestAttr(bpc.request,CONTROL_SWITCH,BACK);
             ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,switch_value);

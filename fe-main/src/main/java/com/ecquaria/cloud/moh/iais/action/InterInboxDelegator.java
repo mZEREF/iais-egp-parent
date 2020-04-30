@@ -441,7 +441,7 @@ public class InterInboxDelegator {
             }else{
                 ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",result);
                 if(StringUtil.isEmpty(errorMessage.toString())){
-                    errorMessage.append("This application is performing the renew process");
+                    errorMessage.append("There is already a pending application for the selected licence");
                 }
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMessage.toString());
             }
