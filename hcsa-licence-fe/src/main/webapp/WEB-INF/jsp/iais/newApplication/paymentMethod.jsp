@@ -48,17 +48,19 @@
 <%--<img src="<%=webroot1%>img/payments.png" width="36" height="30" alt="GIRO">--%>
 
 <div class="row">
-    <c:choose>
-        <c:when test="${'APTY004' == AppSubmissionDto.appType}">
-            <div class="col-xs-12 col-sm-6" style="margin-top: 17px;">
-                <a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a>
-            </div>
-        </c:when>
-        <c:otherwise>
-            <div class="col-xs-12 col-sm-6">
-            </div>
-        </c:otherwise>
-    </c:choose>
+<%--    <c:choose>--%>
+<%--        <c:when test="${'APTY004' == AppSubmissionDto.appType}">--%>
+<%--            <div class="col-xs-12 col-sm-6" style="margin-top: 17px;">--%>
+<%--                <a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a>--%>
+<%--            </div>--%>
+<%--        </c:when>--%>
+<%--        <c:otherwise>--%>
+<%--            <div class="col-xs-12 col-sm-6">--%>
+<%--            </div>--%>
+<%--        </c:otherwise>--%>
+<%--    </c:choose>--%>
+    <div class="col-xs-12 col-sm-6">
+    </div>
     <div class="col-xs-12 col-sm-6">
         <p class="text-right text-center-mobile"><iais:input type="button" id="proceed" cssClass="proceed btn btn-primary" value="Proceed"></iais:input></p>
     </div>
