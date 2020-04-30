@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
@@ -609,8 +610,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         if(applicationViewDto.getHciCode()==null){
             List<String> appIds= new ArrayList<>(Collections.singleton(applicationViewDto.getApplicationDto().getId()));
             List<String> licIds=getLicIdsByappIds(appIds);
-            //LicenceViewDto licenceViewDto =
-            applicationViewDto.setHciCode("-");
+            List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(licIds.get(0)).getEntity();
+            applicationViewDto.setHciCode(premisesDtoList.get(0).getHciCode());
         }
         AppInsRepDto appInsRepDto=insRepClient.getAppInsRepDto(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
         AppSubmissionDto appSubmissionDto = licenceViewService.getAppSubmissionByAppId(applicationViewDto.getApplicationDto().getId());
