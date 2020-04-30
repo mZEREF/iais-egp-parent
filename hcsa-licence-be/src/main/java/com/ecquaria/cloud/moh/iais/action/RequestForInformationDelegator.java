@@ -206,6 +206,8 @@ public class RequestForInformationDelegator {
                     reqForInfoSearchListDto.setStartDate(rfiLicenceQueryDto.getStartDate());
                     reqForInfoSearchListDto.setExpiryDate(rfiLicenceQueryDto.getExpiryDate());
                     List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiLicenceQueryDto.getId()).getEntity();
+                    reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
+                    reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
                     List<String> addressList = IaisCommonUtils.genNewArrayList();
                     for (PremisesDto premisesDto:premisesDtoList
                     ) {
@@ -545,6 +547,8 @@ public class RequestForInformationDelegator {
                     reqForInfoSearchListDto.setStartDate(rfiLicenceQueryDto.getStartDate());
                     reqForInfoSearchListDto.setExpiryDate(rfiLicenceQueryDto.getExpiryDate());
                     List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiLicenceQueryDto.getId()).getEntity();
+                    reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
+                    reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
                     List<String> addressList = IaisCommonUtils.genNewArrayList();
                     for (PremisesDto premisesDto:premisesDtoList
                     ) {

@@ -324,6 +324,8 @@ public class OfficerOnlineEnquiriesDelegator {
                             ) {
                                 rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
                                 List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(lic.getId()).getEntity();
+                                reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
+                                reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
                                 List<String> addressList = IaisCommonUtils.genNewArrayList();
                                 for (PremisesDto premisesDto:premisesDtoList
                                 ) {
@@ -334,6 +336,8 @@ public class OfficerOnlineEnquiriesDelegator {
                             }
                         }else {
                             List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(lic.getId()).getEntity();
+                            reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
+                            reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
                             List<String> addressList = IaisCommonUtils.genNewArrayList();
                             for (PremisesDto premisesDto:premisesDtoList
                             ) {
@@ -704,6 +708,8 @@ public class OfficerOnlineEnquiriesDelegator {
                             ) {
                                 rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
                                 List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(lic.getId()).getEntity();
+                                reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
+                                reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
                                 List<String> addressList = IaisCommonUtils.genNewArrayList();
                                 for (PremisesDto premisesDto:premisesDtoList
                                 ) {
@@ -714,6 +720,8 @@ public class OfficerOnlineEnquiriesDelegator {
                             }
                         }else {
                             List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(lic.getId()).getEntity();
+                            reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
+                            reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
                             List<String> addressList = IaisCommonUtils.genNewArrayList();
                             for (PremisesDto premisesDto:premisesDtoList
                             ) {
