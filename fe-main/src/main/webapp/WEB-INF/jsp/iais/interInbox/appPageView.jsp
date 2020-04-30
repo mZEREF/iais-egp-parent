@@ -85,7 +85,10 @@
         submit('appSort');
     }
     $(function () {
-        if ('${appIsAppealed}' || '${appCannotRecall}') {
+        if ('${appIsAppealed}') {
+            $('#isAppealModal').modal('show');
+        }
+        if('${appCannotRecall}'){
             $('#isAppealModal').modal('show');
         }
     });
