@@ -51,7 +51,7 @@ public class InboxConst {
     public static final String INTER_INBOX_USER_INFO       = "INTER_INBOX_USER_INFO";
 
 
-    public static final String INTER_INBOX_MESSAGE_TAB           = "IIMS";
+    public static final String INTER_INBOX_MESSAGE_TAB           = "IIMT";
     public static final String INTER_INBOX_APPLICATION_TAB       = "IIAT";
     public static final String INTER_INBOX_LICENSE_TAB           = "IILT";
 
