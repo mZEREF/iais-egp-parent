@@ -64,6 +64,7 @@
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
   <input type="hidden" name="currentValidateId" value="">
+  <input type="hidden" name="sectionItemid" value="">
     <div class="">
       <div class="row">
         <br><br>
@@ -91,13 +92,13 @@
                       <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">${chklsec.section}</a>
                         <p class="text-right"><a class="btnUp" data-id="${sectionStatus.index}" onclick="javascript:swapPosition(${sectionStatus.index},'UP', 'sectionSon')"><em class=""></em>Up</a></p>
                         <p class="text-right"><a class="btnDown" data-id="${sectionStatus.index}"  onclick="javascript:swapPosition(${sectionStatus.index},'DOWN', 'sectionSon')"><em class=""></em>Down</a></p>
-                        <p class="text-right"><a class="btnDown" data-id="${sectionStatus.index}"  onclick="javascript:removeSection('${chklsec.id}')"><em class=""></em>Remove</a></p>
+                        <p class="text-right"><a class="btnDown" data-id="${sectionStatus.index}"  onclick="javascript:removeSection('<iais:mask name="currentValidateId" value="${chklsec.id}"/>')"><em class=""></em>Remove</a></p>
                       </h4>
 
                     </div>
                     <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
                       <div class="panel-body">
-                        <p class="text-right"><a onclick="javascript:routeToItemProcess('${chklsec.id}');"><em class="fa fa-pencil-square-o"></em>Config Checklist Item </a></p>
+                        <p class="text-right"><a onclick="javascript:routeToItemProcess('<iais:mask name="currentValidateId" value="${chklsec.id}"/>');"><em class="fa fa-pencil-square-o"></em>Config Checklist Item </a></p>
 
 
                         <table id="resultTable" class="table">
@@ -142,7 +143,9 @@
                                           <p class="visible-xs visible-sm table-row-title">Date</p>
                                           <p><a class="btnUp" data-id="${chklitem.itemId}${sectionStatus.index}" onclick="javascript:swapPosition('${chklitem.itemId}${sectionStatus.index}','UP', 'itemClass')"><em class=""> </em>Up</a>
                                             <a class="btnUp" data-id="${chklitem.itemId}${sectionStatus.index}" onclick="javascript:swapPosition('${chklitem.itemId}${sectionStatus.index}','DOWN', 'itemClass')"><em class=""></em>Down</a>
-                                            <a class="btnUp"  onclick="javascript:removeSectionItem('${chklsec.id}','${chklitem.itemId}')"><em class=""></em>Remove</a></p>
+                                            <a class="btnUp"  onclick="javascript:removeSectionItem('<iais:mask name="currentValidateId" value="${chklsec.id}"/>','<iais:mask name="sectionItemid" value="${chklitem.itemId}"/>')"><em class=""></em>Remove</a></p>
+
+
                                           </p>
 
                                         </td>
@@ -245,10 +248,12 @@
 
     function removeSectionItem(sectionId, itemId){
         $('input[name=currentValidateId]').val(sectionId);
+        $('input[name=sectionItemid]').val(itemId);
         SOP.Crud.cfxSubmit("mainForm","removeSectionItem", itemId);
     }
 
     function removeSection(id){
+      $('input[name=currentValidateId]').val(id);
         SOP.Crud.cfxSubmit("mainForm","removeSection", id);
     }
 </script>

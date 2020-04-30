@@ -206,13 +206,6 @@ public class AuditTrailDelegator {
         String startDate = ParamUtil.getString(request, AuditTrailConstants.PARAM_STARTDATE);
         String endDate = ParamUtil.getString(request, AuditTrailConstants.PARAM_ENDDATE);
 
-        ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_OPERATIONTYPE, operationType);
-        ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_OPERATION, operation);
-        ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_USER, user);
-        ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_STARTDATE, startDate);
-        ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_ENDDATE, endDate);
-
-
         AuditTrailQueryDto queryDto = new AuditTrailQueryDto();
         if(operation != null){
             queryDto.setOperation(Integer.parseInt(operation));
@@ -235,6 +228,10 @@ public class AuditTrailDelegator {
 
             if(!StringUtil.isEmpty(operation)){
                 searchParam.addFilter(AuditTrailConstants.PARAM_OPERATION, Integer.valueOf(operation), true);
+            }
+
+            if(!StringUtil.isEmpty(user)){
+                searchParam.addFilter(AuditTrailConstants.PARAM_USER, user, true);
             }
 
             if(!StringUtil.isEmpty(startDate)){
@@ -273,6 +270,8 @@ public class AuditTrailDelegator {
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doPaging(searchParam,bpc.request);
+        SearchResult<AuditTrailQueryDto> trailDtoSearchResult = auditTrailService.listAuditTrailDto(searchParam);
+        ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_SEARCHRESULT, trailDtoSearchResult);
     }
 
     /**
@@ -283,6 +282,8 @@ public class AuditTrailDelegator {
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doSorting(searchParam,  request);
+        SearchResult<AuditTrailQueryDto> trailDtoSearchResult = auditTrailService.listAuditTrailDto(searchParam);
+        ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_SEARCHRESULT, trailDtoSearchResult);
     }
 
 }

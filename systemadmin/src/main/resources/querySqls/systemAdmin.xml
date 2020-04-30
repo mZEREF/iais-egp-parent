@@ -142,6 +142,7 @@
             <#if startDate??> and action_time >= CONVERT(datetime, :startDate, 103) </#if>
             <#if endDate??> and action_time <= CONVERT(datetime, :endDate, 103) </#if>
             <#if operationType??> and [domain] = :operationType </#if>
+            <#if user??> and moh_user_id = :user </#if>
         ]]>
     </sql>
 
@@ -186,6 +187,7 @@
             <#if startDate??> and action_time >= CONVERT(datetime, :startDate, 103) </#if>
             <#if endDate??> and action_time <= CONVERT(datetime, :endDate, 103) </#if>
             <#if operationType??> and [domain] = :operationType </#if>
+            <#if user??> and moh_user_id = :user </#if>
         ]]>
     </sql>
 

@@ -475,7 +475,7 @@ public class HcsaChklConfigDelegator {
      */
     public void removeSection(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String value = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        String value = ParamUtil.getMaskedString(request, HcsaChecklistConstants.PARAM_PAGE_INDEX);
 
         ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
         if (configDto != null){
@@ -499,8 +499,8 @@ public class HcsaChklConfigDelegator {
      */
     public void removeSectionItem(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String currentSectionId = ParamUtil.getString(request, "currentValidateId");
-        String value = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        String currentSectionId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.PARAM_PAGE_INDEX);
+        String value = ParamUtil.getMaskedString(bpc.request,"sectionItemid");
 
         ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
         if (configDto != null){
