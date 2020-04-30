@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
@@ -221,13 +220,7 @@ public class ApplicationClientFallback implements ApplicationClient{
         return entity;
     }
 
-    @Override
-    public FeignResponseEntity<List<AppCessMiscDto>> getAppCessMiscDtosByCorrIds(List<String> corrIds) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
+
 
     @Override
     public FeignResponseEntity<List<ApplicationDto>> getApplicationByStatus(String appStatus) {
