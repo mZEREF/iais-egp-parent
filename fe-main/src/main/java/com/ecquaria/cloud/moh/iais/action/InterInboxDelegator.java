@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -80,13 +81,18 @@ public class InterInboxDelegator {
             .resultAttr(InboxConst.LIC_RESULT)
             .sortField("START_DATE").sortType(InboxConst.DESCENDING).build();
 
-    public void start(BaseProcessClass bpc) throws IllegalAccessException {
+    public void start(BaseProcessClass bpc) throws IllegalAccessException, ParseException {
         IaisEGPHelper.clearSessionAttr(bpc.request,InboxConst.class);
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId(),bpc.getSession().getId());
         interInboxUserDto = new InterInboxUserDto();
         interInboxUserDto.setLicenseeId(loginContext.getLicenseeId());
         interInboxUserDto.setUserId(loginContext.getUserId());
         interInboxUserDto.setOrgId(loginContext.getOrgId());
+        interInboxUserDto.setFunctionName(auditTrailDto.getFunctionName());
+        interInboxUserDto.setLicenseNo(auditTrailDto.getLicenseNum());
+        interInboxUserDto.setModuleName(auditTrailDto.getModule());
+        interInboxUserDto.setLastLogin(Formatter.parseDateTime(auditTrailDto.getActionTime()));
         interInboxUserDto.setUserDomain(loginContext.getUserDomain());
         log.debug(StringUtil.changeForLog("Login role information --->> ##User-Id:"+interInboxUserDto.getUserId()+"### Licensee-Id:"+interInboxUserDto.getLicenseeId()));
         ParamUtil.setSessionAttr(bpc.request,InboxConst.INTER_INBOX_USER_INFO, interInboxUserDto);

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
@@ -24,6 +25,22 @@ public class AuditTrailMainClientFallBack implements AuditTrailMainClient {
 
 	@Override
 	public FeignResponseEntity<List<AuditTrailEntityDto>> getAuditTrailsByMigrated1() {
+		FeignResponseEntity entity = new FeignResponseEntity<>();
+		HttpHeaders headers = new HttpHeaders();
+		entity.setHeaders(headers);
+		return entity;
+	}
+
+	@Override
+	public FeignResponseEntity<AuditTrailDto> getLastLoginInfo(String loginUserId) {
+		FeignResponseEntity entity = new FeignResponseEntity<>();
+		HttpHeaders headers = new HttpHeaders();
+		entity.setHeaders(headers);
+		return entity;
+	}
+
+	@Override
+	public FeignResponseEntity<AuditTrailDto> getLastAction(String sessionId) {
 		FeignResponseEntity entity = new FeignResponseEntity<>();
 		HttpHeaders headers = new HttpHeaders();
 		entity.setHeaders(headers);

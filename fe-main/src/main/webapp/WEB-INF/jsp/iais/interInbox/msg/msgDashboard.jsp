@@ -44,8 +44,24 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="dashboard-footernote">
-                    <p class="dashboard-small-txt"><strong>Last Login:</strong> 07 February 2020, 14: 39 | <strong>Last
-                        Activity:</strong> Application For Renewal - Licence No. EP000-2020-2, On 01 Feb 2020</p>
+                    <p class="dashboard-small-txt"><strong>Last Login:</strong> <fmt:formatDate value="${INTER_INBOX_USER_INFO.lastLogin}" pattern="dd/MM/yyyy HH:mm"/> |
+                        <strong>Last Activity:</strong>
+                        <c:choose>
+                            <c:when test="${INTER_INBOX_USER_INFO.functionName != null}">
+                                ${INTER_INBOX_USER_INFO.functionName}
+                            </c:when>
+                            <c:otherwise>
+                                N/A
+                            </c:otherwise>
+                        </c:choose> - Licence No.
+                        <c:choose>
+                            <c:when test="${INTER_INBOX_USER_INFO.licenseNo != null}">
+                                ${INTER_INBOX_USER_INFO.licenseNo}
+                            </c:when>
+                            <c:otherwise>
+                                N/A
+                            </c:otherwise>
+                        </c:choose> , On <fmt:formatDate value="${INTER_INBOX_USER_INFO.lastLogin}" pattern="dd/MM/yyyy"/></p>
                 </div>
             </div>
         </div>

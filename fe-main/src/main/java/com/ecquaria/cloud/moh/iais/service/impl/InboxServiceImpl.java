@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -40,6 +41,9 @@ public class InboxServiceImpl implements InboxService {
 
     @Autowired
     private FeUserClient feUserClient;
+
+    @Autowired
+    private AuditTrailMainClient auditTrailMainClient;
 
     @Autowired
     private EicGatewayFeMainClient eicGatewayFeMainClient;
@@ -194,5 +198,15 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public List<PremisesDto> getPremisesByLicId(String licenceId) {
         return licenceInboxClient.getPremisesDto(licenceId).getEntity();
+    }
+
+    @Override
+    public AuditTrailDto getLastLoginInfo(String loginUserId,String sessionId) {
+        AuditTrailDto auditTrailDto = new AuditTrailDto();
+        auditTrailDto.setActionTime(auditTrailMainClient.getLastLoginInfo(loginUserId).getEntity().getActionTime());
+        auditTrailDto.setModule(auditTrailMainClient.getLastAction(sessionId).getEntity().getModule());
+        auditTrailDto.setFunctionName(auditTrailMainClient.getLastAction(sessionId).getEntity().getFunctionName());
+        auditTrailDto.setLicenseNum(auditTrailMainClient.getLastAction(sessionId).getEntity().getLicenseNum());
+        return auditTrailDto;
     }
 }
