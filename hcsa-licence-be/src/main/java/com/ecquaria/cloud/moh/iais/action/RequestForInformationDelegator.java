@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
@@ -17,9 +18,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
@@ -32,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.NewRfiPageListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -201,16 +205,16 @@ public class RequestForInformationDelegator {
                     reqForInfoSearchListDto.setServiceName(rfiLicenceQueryDto.getServiceName());
                     reqForInfoSearchListDto.setStartDate(rfiLicenceQueryDto.getStartDate());
                     reqForInfoSearchListDto.setExpiryDate(rfiLicenceQueryDto.getExpiryDate());
-                    reqForInfoSearchListDto.setHciCode(rfiLicenceQueryDto.getHciCode());
-                    reqForInfoSearchListDto.setHciName(rfiLicenceQueryDto.getHciName());
-                    reqForInfoSearchListDto.setBlkNo(rfiLicenceQueryDto.getBlkNo());
-                    reqForInfoSearchListDto.setBuildingName(rfiLicenceQueryDto.getBuildingName());
-                    reqForInfoSearchListDto.setUnitNo(rfiLicenceQueryDto.getUnitNo());
-                    reqForInfoSearchListDto.setStreetName(rfiLicenceQueryDto.getStreetName());
-                    reqForInfoSearchListDto.setFloorNo(rfiLicenceQueryDto.getFloorNo());
+                    List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiLicenceQueryDto.getId()).getEntity();
+                    List<String> addressList = IaisCommonUtils.genNewArrayList();
+                    for (PremisesDto premisesDto:premisesDtoList
+                    ) {
+                        addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                        reqForInfoSearchListDto.setAddress(addressList);
+                    }
                     reqForInfoSearchListDto.setLicenseeId(rfiLicenceQueryDto.getLicenseeId());
-                    reqForInfoSearchListDto.setLicPremId(rfiLicenceQueryDto.getLicPremId());
-
+                    List<LicPremisesDto> licPremisesDtos=hcsaLicenceClient.getLicPremListByLicId(rfiLicenceQueryDto.getId()).getEntity();
+                    reqForInfoSearchListDto.setLicPremId(licPremisesDtos.get(0).getId());
                     LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiLicenceQueryDto.getLicenseeId());
                     reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
                     reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
@@ -271,7 +275,8 @@ public class RequestForInformationDelegator {
                             //reqForInfoSearchListDto.setServiceName(lic.getServiceName());
                             reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                             reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
-                            reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
+                            List<LicPremisesDto> licPremisesDtos=hcsaLicenceClient.getLicPremListByLicId(lic.getId()).getEntity();
+                            reqForInfoSearchListDto.setLicPremId(licPremisesDtos.get(0).getId());
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
@@ -341,6 +346,9 @@ public class RequestForInformationDelegator {
             filters.put("appType", applicationType);
         }
         if(!StringUtil.isEmpty(status)){
+            if(status.equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)){
+                status=ApplicationConsts.APPLICATION_STATUS_APPROVED;
+            }
             filters.put("appStatus", status);
         }
         if(!StringUtil.isEmpty(subDate)){
@@ -381,7 +389,8 @@ public class RequestForInformationDelegator {
                             //reqForInfoSearchListDto.setServiceName(lic.getServiceName());
                             reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                             reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
-                            reqForInfoSearchListDto.setLicPremId(lic.getLicPremId());
+                            List<LicPremisesDto> licPremisesDtos=hcsaLicenceClient.getLicPremListByLicId(lic.getId()).getEntity();
+                            reqForInfoSearchListDto.setLicPremId(licPremisesDtos.get(0).getId());
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
@@ -535,15 +544,16 @@ public class RequestForInformationDelegator {
                     reqForInfoSearchListDto.setServiceName(rfiLicenceQueryDto.getServiceName());
                     reqForInfoSearchListDto.setStartDate(rfiLicenceQueryDto.getStartDate());
                     reqForInfoSearchListDto.setExpiryDate(rfiLicenceQueryDto.getExpiryDate());
-                    reqForInfoSearchListDto.setHciCode(rfiLicenceQueryDto.getHciCode());
-                    reqForInfoSearchListDto.setHciName(rfiLicenceQueryDto.getHciName());
-                    reqForInfoSearchListDto.setBlkNo(rfiLicenceQueryDto.getBlkNo());
-                    reqForInfoSearchListDto.setBuildingName(rfiLicenceQueryDto.getBuildingName());
-                    reqForInfoSearchListDto.setUnitNo(rfiLicenceQueryDto.getUnitNo());
-                    reqForInfoSearchListDto.setStreetName(rfiLicenceQueryDto.getStreetName());
-                    reqForInfoSearchListDto.setFloorNo(rfiLicenceQueryDto.getFloorNo());
+                    List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiLicenceQueryDto.getId()).getEntity();
+                    List<String> addressList = IaisCommonUtils.genNewArrayList();
+                    for (PremisesDto premisesDto:premisesDtoList
+                    ) {
+                        addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                        reqForInfoSearchListDto.setAddress(addressList);
+                    }
                     reqForInfoSearchListDto.setLicenseeId(rfiLicenceQueryDto.getLicenseeId());
-                    reqForInfoSearchListDto.setLicPremId(rfiLicenceQueryDto.getLicPremId());
+                    List<LicPremisesDto> licPremisesDtos=hcsaLicenceClient.getLicPremListByLicId(rfiLicenceQueryDto.getId()).getEntity();
+                    reqForInfoSearchListDto.setLicPremId(licPremisesDtos.get(0).getId());
                     LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiLicenceQueryDto.getLicenseeId());
                     reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
                     reqForInfoSearchListDtos.add(reqForInfoSearchListDto);

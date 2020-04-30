@@ -125,7 +125,21 @@
                                             <td><a onclick="javascript:doLicInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.licenceId)}')">${pool.licenceNo}</a></td>
                                             <td><c:out value="${pool.hciCode}"/></td>
                                             <td><c:out value="${pool.hciName}"/></td>
-                                            <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${pool.address.size() == 1}">
+                                                        <c:out value="${pool.address[0]}"/>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <select>
+                                                            <option value ="">Multiple</option>
+                                                            <c:forEach items="${pool.address}" var="address" varStatus="index">
+                                                                <option value ="${address}">${address}</option>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
                                             <td><c:out value="${pool.licenseeName}"/></td>
                                             <td><c:out value="${pool.serviceName}"/></td>
                                             <td><fmt:formatDate value="${pool.startDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" />-<fmt:formatDate value="${pool.expiryDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>

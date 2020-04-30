@@ -1,5 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MiscUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
@@ -105,7 +106,26 @@
                                             <td><a onclick="javascript:doLicInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.licenceId)}')">${pool.licenceNo}</a></td>
                                             <td><c:out value="${pool.hciCode}"/></td>
                                             <td><c:out value="${pool.hciName}"/></td>
-                                            <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
+                                            <td>
+                                                <c:if test="${pool.licenceNo==null}">
+                                                    <c:out value="${MiscUtil.getAddress(pool.blkNo,pool.streetName,pool.buildingName,pool.floorNo,pool.unitNo,'')}"/>
+                                                </c:if>
+                                                <c:if test="${pool.licenceNo!=null}">
+                                                    <c:choose>
+                                                        <c:when test="${pool.address.size() == 1}">
+                                                            <c:out value="${pool.address[0]}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <select>
+                                                                <option value ="">Multiple</option>
+                                                                <c:forEach items="${pool.address}" var="address" varStatus="index">
+                                                                    <option value ="${address}">${address}</option>
+                                                                </c:forEach>
+                                                            </select>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </c:if>
+                                            </td>
                                             <td><c:out value="${pool.licenseeName}"/></td>
                                             <td><iais:service value="${pool.serviceName}"></iais:service></td>
                                             <td><fmt:formatDate value="${pool.startDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" />-<fmt:formatDate value="${pool.expiryDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
