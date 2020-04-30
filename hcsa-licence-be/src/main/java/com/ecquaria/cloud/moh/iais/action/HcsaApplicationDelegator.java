@@ -1515,15 +1515,15 @@ public class HcsaApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request,"date",date);
         }
 
-        String appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = null;
-        try{
-            appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(
-                    applicationViewDto.getApplicationDto().getApplicationNo(),appStatus);
-            String internalRemarks = appPremisesRoutingHistoryDto.getInternalRemarks();
-            ParamUtil.setRequestAttr(bpc.request,"internalRemarks",internalRemarks);
-        }catch (Exception e){
-            log.error(StringUtil.changeForLog("first do main flow ,have no two history"));
-        }
+//        String appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
+//        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = null;
+//        try{
+//            appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(
+//                    applicationViewDto.getApplicationDto().getApplicationNo(),appStatus);
+//            String internalRemarks = appPremisesRoutingHistoryDto.getInternalRemarks();
+//            ParamUtil.setRequestAttr(bpc.request,"internalRemarks",internalRemarks);
+//        }catch (Exception e){
+//            log.error(StringUtil.changeForLog("first do main flow ,have no two history"));
+//        }
     }
 }
