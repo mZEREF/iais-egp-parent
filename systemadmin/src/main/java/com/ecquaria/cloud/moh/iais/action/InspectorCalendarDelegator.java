@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
@@ -217,15 +216,6 @@ public class InspectorCalendarDelegator {
 		String userBlockDateDescription = ParamUtil.getString(request, AppointmentConstants.USER_BLOCK_DATE_DESCRIPTION_ATTR);
 		String recurrence = ParamUtil.getString(request, AppointmentConstants.RECURRENCE_ATTR);
 		String recurrenceEndDate = ParamUtil.getString(request, AppointmentConstants.RECURRENCE_END_DATE_ATTR);
-
-		ParamUtil.setSessionAttr(request, AppointmentConstants.SHORT_NAME_ATTR, groupName);
-		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_NAME_ATTR, userName);
-		ParamUtil.setRequestAttr(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_ATTR, yearVal);
-		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_BLOCK_DATE_START_ATTR, userBlockDateStart);
-		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_BLOCK_DATE_END_ATTR, userBlockDateEnd);
-		ParamUtil.setRequestAttr(request, AppointmentConstants.USER_BLOCK_DATE_DESCRIPTION_ATTR, userBlockDateDescription);
-		ParamUtil.setRequestAttr(request, AppointmentConstants.RECURRENCE_ATTR, recurrence);
-		ParamUtil.setRequestAttr(request, AppointmentConstants.RECURRENCE_END_DATE_ATTR, recurrenceEndDate);
 
 		InspectorCalendarQueryDto queryDto = new InspectorCalendarQueryDto();
 		queryDto.setGroupName(groupName);

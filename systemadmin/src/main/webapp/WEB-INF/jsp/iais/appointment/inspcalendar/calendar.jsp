@@ -29,7 +29,7 @@
              <iais:row>
                 <iais:field value="Working Group:" required="true"/>
                 <iais:value width="18">
-                  <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  options = "wrlGrpNameOpt"  value="${shortName}" ></iais:select>
+                  <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  options = "wrlGrpNameOpt"  value="${param.shortName}" ></iais:select>
                   <span id="error_groupName" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
               </iais:row>
@@ -40,7 +40,7 @@
               <iais:row>
                 <iais:field value="Inspector ID:" required="true"/>
                 <iais:value width="18">
-                  <input type="text" id="userName" name="userName" value="${userName}" maxlength="255" />
+                  <input type="text" id="userName" name="userName" value="${param.userName}" maxlength="255" />
                   <span id="error_userName" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
               </iais:row>
@@ -50,7 +50,7 @@
               <iais:field value="Year:" required="true"/>
               <iais:value width="18">
                 <iais:select name="dropYearOpt" id="dropYearOpt"
-                             options = "dropYearOpt" firstOption="Please Select" value="${dropYear}" ></iais:select>
+                             options = "dropYearOpt" firstOption="Please Select" value="${param.dropYear}" ></iais:select>
                 <span id="error_year" name="iaisErrorMsg" class="error-msg"></span>
               </iais:value>
             </iais:row>
@@ -58,7 +58,7 @@
             <iais:row>
               <iais:field value="Non-Available Date Start:"/>
               <iais:value width="18">
-                <iais:datePicker id = "userBlockDateStart" name = "userBlockDateStart"  value="${userBlockDateStart}"></iais:datePicker>
+                <iais:datePicker id = "userBlockDateStart" name = "userBlockDateStart"  value="${param.userBlockDateStart}"></iais:datePicker>
                 <span id="error_userBlockDateStart" name="iaisErrorMsg" class="error-msg"></span>
               </iais:value>
             </iais:row>
@@ -66,7 +66,7 @@
             <iais:row>
               <iais:field value="Non-Available Date End:"/>
               <iais:value width="18">
-                <iais:datePicker id = "userBlockDateEnd" name = "userBlockDateEnd"  value="${userBlockDateEnd}"></iais:datePicker>
+                <iais:datePicker id = "userBlockDateEnd" name = "userBlockDateEnd"  value="${param.userBlockDateEnd}"></iais:datePicker>
                 <span id="error_userBlockDateEnd" name="iaisErrorMsg" class="error-msg"></span>
               </iais:value>
             </iais:row>
@@ -74,7 +74,7 @@
             <iais:row>
               <iais:field value="Non-Available Date Description:"/>
               <iais:value width="18">
-                <input type="text" name="userBlockDateDescription" maxlength="255" value="${userBlockDateDescription}" />
+                <input type="text" name="userBlockDateDescription" maxlength="255" value="${param.userBlockDateDescription}" />
                 <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
               </iais:value>
             </iais:row>
@@ -83,14 +83,14 @@
               <iais:field value="Recurrence:"/>
               <iais:value width="18">
                 <iais:select name="recurrence" id="recurrence"
-                             codeCategory="CATE_ID_DATE_TYPE" value="${recurrence}" ></iais:select>
+                             codeCategory="CATE_ID_DATE_TYPE" value="${param.recurrence}" ></iais:select>
               </iais:value>
             </iais:row>
 
               <iais:row>
                 <iais:field value="Recurrence End Date:"/>
                 <iais:value width="18">
-                  <iais:datePicker id = "recurrenceEndDate" name = "recurrenceEndDate"  value="${recurrenceEndDate}"></iais:datePicker>
+                  <iais:datePicker id = "recurrenceEndDate" name = "recurrenceEndDate"  value="${param.recurrenceEndDate}"></iais:datePicker>
                   <span id="error_year" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
               </iais:row>

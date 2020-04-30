@@ -44,7 +44,7 @@
             <tr>
               <td>
                 <label>
-                  Common  &nbsp; <input class="form-check-input " id="commmon" type="radio" name="module" aria-invalid="false" value="General Regulation"> General Regulation
+                  Common  &nbsp; <input class="form-check-input " id="commmon" type="radio" name="module" aria-invalid="false" <c:if test="${param.module != null && param.module != ''}"> checked="checked"</c:if> value="General Regulation"> General Regulation
                 </label>
               </td>
             </tr>
@@ -69,14 +69,14 @@
         <div class="form-group">
           <label class="col-md-2">Service Name &nbsp;</label>
           <div class="col-md-5">
-            <iais:select name="svcName" id="svcName" options = "svcNameSelect" firstOption="Please Select" value="${svcName}"></iais:select>
+            <iais:select name="svcName" id="svcName" options = "svcNameSelect" firstOption="Please Select" value="${param.svcName}"></iais:select>
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-md-2">Service Sub-Type &nbsp;</label>
           <div class="col-md-5">
-            <iais:select name="svcSubType" id="svcSubType"   options = "subtypeSelect" firstOption="Please Select" value="${svcSubType}"></iais:select>
+            <iais:select name="svcSubType" id="svcSubType"   options = "subtypeSelect" firstOption="Please Select" value="${param.svcSubType}"></iais:select>
           </div>
         </div>
 

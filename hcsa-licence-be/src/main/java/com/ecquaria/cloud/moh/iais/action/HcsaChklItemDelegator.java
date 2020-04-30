@@ -91,13 +91,6 @@ public class HcsaChklItemDelegator {
             ParamUtil.setSessionAttr(request, "currentValidateId", null);
         }
 
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, null);
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_DESC, null);
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM, null);
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_STATUS, null);
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_ANSWER_TYPE, null);
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_RISK_LEVEL, null);
-
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, null);
@@ -634,13 +627,6 @@ public class HcsaChklItemDelegator {
         itemDto.setStatus(status);
         itemDto.setRiskLevel(riskLevel);
         itemDto.setAnswerType(answerType);
-
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, clause);
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_DESC, desc);
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM, chklItem);
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_STATUS, status);
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_ANSWER_TYPE, answerType);
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_RISK_LEVEL, riskLevel);
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(itemDto, "search");
         if(validationResult != null && validationResult.isHasErrors()){

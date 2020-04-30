@@ -1,4 +1,4 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %><%--
+<%--
   Created by IntelliJ IDEA.
   User: yichen
   Date: 2/13/2020
@@ -35,7 +35,7 @@
                 <td>
                     <label class="col-xs-0 col-md-5 control-label">Name</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
-                        <input type="text" name="name" value="${name}" maxlength="66">
+                        <input type="text" name="name" value="${param.name}" maxlength="66">
                         <span id="error_name" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>
@@ -43,7 +43,7 @@
                 <td>
                     <label class="col-xs-0 col-md-5 control-label">Professional Regn No</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
-                        <input type="text" name="profRegNo" value="${sessionScope.profRegNo}" maxlength="20"/>
+                        <input type="text" name="profRegNo" value="${param.profRegNo}" maxlength="20"/>
                         <span id="error_profRegNo" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>
@@ -53,7 +53,7 @@
                 <td>
                     <label class="col-xs-0 col-md-5 control-label">HCI Name</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
-                        <input type="text" name="hciName" value="${hciName}" maxlength="100"/>
+                        <input type="text" name="hciName" value="${param.hciName}" maxlength="100"/>
                         <span id="error_hciName" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>
@@ -61,7 +61,7 @@
                 <td>
                     <label class="col-xs-0 col-md-5 control-label">HCI Code</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
-                        <input type="text" name="hciCode" value="${hciCode}" maxlength="7"/>
+                        <input type="text" name="hciCode" value="${param.hciCode}" maxlength="7"/>
                         <span id="error_hciCode" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>
@@ -72,7 +72,7 @@
                 <td>
                     <label class="col-xs-0 col-md-5 control-label">HCI Postal Code</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
-                        <input type="text" name="hciPostalcode" value="${hciPostalcode}" maxlength="6"/>
+                        <input type="text" name="hciPostalcode" value="${param.hciPostalcode}" maxlength="6"/>
                         <span id="error_hciPostalcode" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>
@@ -80,7 +80,7 @@
                 <td>
                     <label class="col-xs-0 col-md-5 control-label">HCI Address</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
-                        <input type="text" name="practiceLocation" value="${practiceLocation}" maxlength="32"/>
+                        <input type="text" name="practiceLocation" value="${param.practiceLocation}" maxlength="32"/>
                         <span id="error_practiceLocation" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>
@@ -91,7 +91,7 @@
                     <label class="col-xs-0 col-md-5 control-label">Service Name</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
                         <iais:select name="serviceName" id="serviceName" options="svcNameSelect"
-                                     firstOption="Please Select" value="${serviceName}"></iais:select>
+                                     firstOption="Please Select" value="${param.serviceName}"></iais:select>
                         <span id="error_serviceName" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>
@@ -100,7 +100,7 @@
                     <label class="col-xs-0 col-md-5 control-label">Designation</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
                         <iais:select name="designation" id="designation" codeCategory="CATE_ID_DESIGNATION"
-                                     firstOption="Please Select" value="${designation}"></iais:select>
+                                     firstOption="Please Select" value="${param.designation}"></iais:select>
                         <span id="error_designation" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>
@@ -112,7 +112,7 @@
                     <div class="col-sm-7 col-md-5 col-xs-6">
                         <iais:select name="role" id="role" options="psnType"
                                      firstOption="Please Select"
-                                     value="${role}"></iais:select>
+                                     value="${param.role}"></iais:select>
                         <span id="error_role" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>

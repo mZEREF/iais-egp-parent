@@ -240,8 +240,6 @@ public class HcsaChklConfigDelegator {
         String svcSubType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE);
 
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE, common);
-        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE, svcName);
-        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE, svcSubType);
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE_CHECKBOX, moduleCheckBox);
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE_CHECKBOX, typeCheckBox);
 
