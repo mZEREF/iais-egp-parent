@@ -82,7 +82,8 @@ public class InterInboxDelegator {
             .sortField("START_DATE").sortType(InboxConst.DESCENDING).build();
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException, ParseException {
-        IaisEGPHelper.clearSessionAttr(bpc.request,InboxConst.class);
+        clearSessionAttr(bpc.request);
+        IaisEGPHelper.clearSessionAttr(bpc.request,FilterParameter.class);
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId(),bpc.getSession().getId());
         interInboxUserDto = new InterInboxUserDto();
@@ -807,5 +808,11 @@ public class InterInboxDelegator {
             appParameter.setFilters(null);
             licenceParameter.setFilters(null);
         }
+    }
+
+    private void clearSessionAttr(HttpServletRequest request){
+        ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, null);
+        ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, null);
+        ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, null);
     }
 }
