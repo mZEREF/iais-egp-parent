@@ -26,10 +26,10 @@
         <div class="bg-title">
             <c:choose>
                 <c:when test="${isUpdate eq 'Y'}">
-                    <h2>Regulation Update</h2>
+                    <h2>Update Regulation</h2>
                 </c:when>
                 <c:otherwise>
-                    <h2>Regulation Create</h2>
+                    <h2>Create Regulation</h2>
                 </c:otherwise>
             </c:choose>
 
