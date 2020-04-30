@@ -11,15 +11,14 @@
             <div class="col-md-4">
                 <label class="col-md-3 control-label" for="inboxType" style="margin-top:5%;">Type</label>
                 <div class="col-md-8">
-                    <%String inboxType = request.getParameter("inboxType");%>
-                    <iais:select name="inboxType" id="inboxType" options="inboxTypeSelect" value="<%=inboxType%>"></iais:select>
+                    <iais:select name="inboxType" id="inboxType" options="inboxTypeSelect" value="${param.inboxType}"/>
                 </div>
             </div>
             <div class="col-md-5">
                 <label class="col-md-3 control-label" for="inboxService" style="margin-top:3%;">Service</label>
                 <div class="col-md-8">
                     <%String inboxService = request.getParameter("inboxService");%>
-                    <iais:select name="inboxService" id="inboxService" options="inboxServiceSelect" value="<%=inboxService%>"></iais:select>
+                    <iais:select name="inboxService" id="inboxService" options="inboxServiceSelect" value="${param.inboxService}"/>
                 </div>
             </div>
             <div class="col-md-3">
@@ -28,7 +27,7 @@
                         <div class="input-group">
                             <input class="form-control" id="inboxAdvancedSearch" type="text"
                                    placeholder="Search Your Keywords" name="inboxAdvancedSearch"
-                                   aria-label="inboxAdvancedSearch" maxlength="50"><span class="input-group-btn">
+                                   aria-label="inboxAdvancedSearch" maxlength="50" value="${param.inboxAdvancedSearch}"><span class="input-group-btn">
                                 <button class="btn btn-default buttonsearch" title="Search by keywords"
                                         onclick="searchBySubject()"><em class="fa fa-search"></em></button></span>
                         </div>

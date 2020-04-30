@@ -17,7 +17,7 @@
                             or Part of:</label>
                         <div class="col-xs-7 col-md-7">
                             <input id="appNoPath" name="appNoPath" type="text" maxlength="20"
-                                   value="<%=request.getParameter("appNoPath")==null?"":request.getParameter("appNoPath")%>">
+                                   value="${param.appNoPath}">
                         </div>
                     </iais:value>
                 </div>
@@ -26,9 +26,8 @@
                         <label class="col-xs-4 col-md-4" for="appServiceType" style="margin-top:3%;">Service
                             Type:</label>
                         <div class="col-xs-8 col-md-8">
-                            <%String appServiceType = request.getParameter("appServiceType");%>
                             <iais:select name="appServiceType" id="appServiceType" cssClass="appServiceType"
-                                         options="appServiceType" value="<%=appServiceType%>"></iais:select>
+                                         options="appServiceType" value="${param.appServiceType}"/>
                         </div>
                     </iais:value>
                 </div>
@@ -39,9 +38,8 @@
                         <label class="col-xs-5 col-md-5" for="appTypeSelect" style="margin-top:3%;">Application
                             Type:</label>
                         <div class="col-xs-7 col-md-7">
-                            <%String appTypeSelect = request.getParameter("appTypeSelect");%>
                             <iais:select name="appTypeSelect" id="appTypeSelect" cssClass="appTypeSelect"
-                                         options="appTypeSelect" value="<%=appTypeSelect%>"></iais:select>
+                                         options="appTypeSelect" value="${param.appTypeSelect}"/>
                         </div>
                     </iais:value>
                 </div>
@@ -52,7 +50,7 @@
                         <div class="col-xs-8 col-md-8">
                             <%String appStatusSelect = request.getParameter("appStatusSelect");%>
                             <iais:select options="appStatusSelect" cssClass="appStatusSelect" name="appStatusSelect"
-                                         id="appStatusSelect" value="<%=appStatusSelect%>"></iais:select>
+                                         id="appStatusSelect" value="${param.appStatusSelect}"/>
                         </div>
                     </iais:value>
                 </div>
@@ -62,10 +60,8 @@
                     <iais:value>
                         <label class="col-xs-5 col-md-5" for="esd" style="margin-top:3%;">Date Submitted:</label>
                         <div class="col-xs-7 col-md-7">
-                            <%
-                                Date esd = Formatter.parseDate(request.getParameter("esd"));
-                            %>
-                            <iais:datePicker id="esd" name="esd" dateVal="<%=esd%>" onchange="LimitDeadline(this.value)"/>
+
+                            <iais:datePicker id="esd" name="esd" value="${param.esd}" onchange="LimitDeadline(this.value)"/>
                         </div>
                     </iais:value>
                 </div>
@@ -73,10 +69,7 @@
                     <iais:value>
                         <label class="col-xs-4 col-md-4" for="appStatusSelect" style="margin-top:3%;">To</label>
                         <div class="col-xs-8 col-md-8">
-                            <%
-                                Date eed = Formatter.parseDate(request.getParameter("eed"));
-                            %>
-                            <iais:datePicker id="eed" name="eed" dateVal="<%=eed%>" />
+                            <iais:datePicker id="eed" name="eed" value="${param.eed}"/>
                         </div>
                     </iais:value>
                 </div>

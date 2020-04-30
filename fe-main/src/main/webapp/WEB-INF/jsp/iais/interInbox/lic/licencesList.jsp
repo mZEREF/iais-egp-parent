@@ -12,7 +12,7 @@
                             by Licence No or Part of:</label>
                         <div class="col-xs-8 col-md-8">
                             <input id="licNoPath" name="licNoPath" type="text" maxlength="20"
-                                   value="<%=request.getParameter("licNoPath")==null?"":request.getParameter("licNoPath")%>">
+                                   value="${param.licNoPath}">
                         </div>
                     </iais:value>
                 </div>
@@ -23,8 +23,7 @@
                         <label class="col-xs-4 col-md-4" for="licType" style="text-align:left;margin-top: 1.5%">Service
                             Type:</label>
                         <div class="col-xs-8 col-md-8">
-                            <%String licType = request.getParameter("licType");%>
-                            <iais:select name="licType" id="licType" options="licType" value="<%=licType%>"/>
+                            <iais:select name="licType" id="licType" options="licType" value="${param.licType}"/>
                         </div>
                     </iais:value>
                 </div>
@@ -35,8 +34,7 @@
                         <label class="col-xs-4 col-md-4" for="licStatus" style="text-align:left;margin-top: 1.5%">Licence
                             Status:</label>
                         <div class="col-xs-8 col-md-8">
-                            <%String licStatus = request.getParameter("licStatus");%>
-                            <iais:select name="licStatus" id="licStatus" options="licStatus" value="<%=licStatus%>"/>
+                            <iais:select name="licStatus" id="licStatus" options="licStatus" value="${param.licStatus}"/>
                         </div>
                     </iais:value>
                 </div>
@@ -47,15 +45,13 @@
                         <label class="col-md-3" for="fStartDate" style="text-align:left;margin-top: 1.5%">Licence Start
                             Date:</label>
                         <div class="col-md-4">
-                            <%Date fStartDate = Formatter.parseDate(request.getParameter("fStartDate"));%>
-                            <iais:datePicker id="fStartDate" name="fStartDate" dateVal="<%=fStartDate%>"/>
+                            <iais:datePicker id="fStartDate" name="fStartDate" value="${param.fStartDate}"/>
                         </div>
                         <div class="col-xs-1 col-md-1" style="margin-top: 1.5%">
                             <span>To</span>
                         </div>
                         <div class="col-md-4">
-                            <%Date eStartDate = Formatter.parseDate(request.getParameter("eStartDate"));%>
-                            <iais:datePicker id="eStartDate" name="eStartDate" dateVal="<%=eStartDate%>"/>
+                            <iais:datePicker id="eStartDate" name="eStartDate" value="${param.eStartDate}"/>
                         </div>
                     </iais:value>
                 </div>
@@ -74,8 +70,7 @@
                         <label class="col-xs-3 col-md-3" style="text-align:left;margin-top: 1.5%">Licence Expiry
                             Date:</label>
                         <div class="col-xs-4 col-md-4">
-                            <%Date fExpiryDate = Formatter.parseDate(request.getParameter("fExpiryDate"));%>
-                            <iais:datePicker id="fExpiryDate" name="fExpiryDate" dateVal="<%=fExpiryDate%>"/>
+                            <iais:datePicker id="fExpiryDate" name="fExpiryDate" value="${param.fExpiryDate}"/>
                         </div>
                     </iais:value>
                     <div class="col-xs-1 col-md-1" style="margin-top: 1.5%">
@@ -83,8 +78,7 @@
                     </div>
                     <iais:value>
                         <div class="col-xs-4 col-md-4">
-                            <%Date eExpiryDate = Formatter.parseDate(request.getParameter("eExpiryDate"));%>
-                            <iais:datePicker id="eExpiryDate" name="eExpiryDate" dateVal="<%=eExpiryDate%>"/>
+                            <iais:datePicker id="eExpiryDate" name="eExpiryDate" value="${param.eExpiryDate}"/>
                         </div>
                     </iais:value>
                 </div>
