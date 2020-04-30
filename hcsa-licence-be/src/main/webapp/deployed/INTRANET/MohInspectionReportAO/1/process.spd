@@ -52,7 +52,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="910" y="100">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="910" y="320">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -79,11 +79,8 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AOReportPage" style="oblique">
    <position>{(220,120)(450,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Roback" style="oblique">
-   <position>{(800,120)(930,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Page2" style="oblique">
-   <position>{(930,120)(930,520)}</position>
+   <position>{(930,340)(930,520)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Page1" style="oblique">
    <position>{(640,520)(930,520)}</position>
@@ -106,9 +103,21 @@
   <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
    <position>{(640,320)(640,520)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Roback" style="rectanular">
+   <position>{(800,120)(910,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(910,120)(930,340)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AOReportPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(910,120)(240,36)(220,120)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/InspectorReportPre" componentIfTrue="/Pages/WebPage/Page1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="620" y="300">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Pages/WebPage/AOReportPage" componentIfTrue="/Pages/WebPage/Page2" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="890" y="100">
    <Description/>
   </Condition>
  </Conditions>

@@ -5,7 +5,9 @@ package com.ecquaria.cloud.moh.iais.service.client;
  * @date 2020/2/7 13:24
  */
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -34,7 +36,15 @@ import java.util.List;
     @GetMapping(value = "/iais-cessation/listHciName",produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> listHciNames();
 
-    @GetMapping(value = "/iais-cessation/isCeasedResult/{licId}",produces =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-cessation/isCeasedResult",produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> isCeased(@RequestParam("licId") String licId);
 
+    @GetMapping(value = "/iais-cessation/list-appGrp",produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationGroupDto>> listAppGrpForCess();
+
+    @PostMapping(value = "/iais-cessation/list-cessation-corrIds",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppCessMiscDto>> getAppCessMiscDtosByCorrIds(@RequestBody List<String> corrIds);
+
+    @GetMapping(value = "/iais-cessation/appId-misc-cessation",produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremiseMiscDto> getAppPremiseMiscDtoByAppId(@RequestParam("appId") String appId);
 }

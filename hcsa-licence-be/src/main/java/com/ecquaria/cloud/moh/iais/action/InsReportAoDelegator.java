@@ -130,6 +130,7 @@ public class InsReportAoDelegator {
         ParamUtil.setSessionAttr(bpc.request, "preapreRecommendationDto", preapreRecommendationDto);
         ValidationResult validationResult = WebValidationHelper.validateProperty(preapreRecommendationDto, "edit");
         if (validationResult.isHasErrors()) {
+            log.debug(StringUtil.changeForLog("the validationResult start ...."));
             Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.FALSE);
@@ -140,9 +141,12 @@ public class InsReportAoDelegator {
             ParamUtil.setSessionAttr(bpc.request, "reportClassTop", reportClassTop);
             ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", infoClassBelow);
             ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", reportClassBelow);
+            log.debug(StringUtil.changeForLog("the validationResult end ...."));
             return;
         }
         saveAoRecommendation(appPremisesCorrelationId,preapreRecommendationDto);
+        log.debug(StringUtil.changeForLog("the saveAoRecommendation start ...."));
+        ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
         insRepService.routBackTaskToInspector(taskDto,applicationDto,appPremisesCorrelationId,historyRemarks);
     }
 
@@ -193,7 +197,6 @@ public class InsReportAoDelegator {
         String processRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
         String enforcement = ParamUtil.getRequestString(bpc.request, "engageEnforcement");
         String enforcementRemarks = ParamUtil.getRequestString(bpc.request, "enforcementRemarks");
-
         appPremisesRecommendationDto.setEngageEnforcement(enforcement);
         appPremisesRecommendationDto.setEngageEnforcementRemarks(enforcementRemarks);
         appPremisesRecommendationDto.setRiskLevel(riskLevel);
@@ -222,7 +225,12 @@ public class InsReportAoDelegator {
         }
         if (engageRecommendationDto != null) {
             String remarks = engageRecommendationDto.getRemarks();
-            String engage = "on";
+            String engage ;
+            if(StringUtil.isEmpty(remarks)){
+                engage = "off";
+            }else {
+                engage = "on";
+            }
             initRecommendationDto.setEngageEnforcement(engage);
             initRecommendationDto.setEngageEnforcementRemarks(remarks);
         }
@@ -252,6 +260,7 @@ public class InsReportAoDelegator {
             AppPremisesRecommendationDto recommendationDtoEngage = new AppPremisesRecommendationDto();
             recommendationDtoEngage.setAppPremCorreId(appPremisesCorrelationId);
             recommendationDtoEngage.setRemarks(null);
+            recommendationDtoEngage.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE);
             insRepService.updateengageRecommendation(recommendationDtoEngage);
         }
         if(!StringUtil.isEmpty(riskLevel)){
@@ -271,6 +280,7 @@ public class InsReportAoDelegator {
             AppPremisesRecommendationDto followRecommendationDtoFollow = new AppPremisesRecommendationDto();
             followRecommendationDtoFollow.setAppPremCorreId(appPremisesCorrelationId);
             followRecommendationDtoFollow.setRemarks(null);
+            followRecommendationDtoFollow.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION);
             insRepService.updateFollowRecommendation(followRecommendationDtoFollow);
         }
     }
