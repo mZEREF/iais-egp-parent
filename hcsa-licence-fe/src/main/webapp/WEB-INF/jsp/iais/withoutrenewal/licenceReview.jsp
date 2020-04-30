@@ -70,15 +70,12 @@
                                                                                 </c:if>
                                                                                 <div class="panel-main-content">
                                                                                     <c:set var="appGrpPremisesDtoList" value="${AppSubmissionDto.appGrpPremisesDtoList}"></c:set>
-                                                                                    <c:set var="currentPreviewSvcInfo" value="${currentPreviewSvcInfoList.get(documentIndex)}"></c:set>
+                                                                                    <%--<c:set var="currentPreviewSvcInfo" value="${currentPreviewSvcInfoList.get(documentIndex)}"></c:set>--%>
                                                                                     <c:set var="reloadDisciplineAllocationMap" value="${reloadDisciplineAllocationMapList.get(documentIndex)}"></c:set>
                                                                                     <c:set var="ReloadPrincipalOfficers" value="${ReloadPrincipalOfficersList.get(documentIndex)}"></c:set>
                                                                                     <c:set var="ReloadDeputyPrincipalOfficers" value="${deputyPrincipalOfficersDtosList.get(documentIndex)}"></c:set>
-                                                                                    <%@include file="../common/previewSvcDisciplines.jsp"%>
-                                                                                    <%@include file="../common/firstPreviewSvcGovernanceOfficer.jsp"%>
-                                                                                    <%@include file="../common/previewSvcAllocation.jsp"%>
-                                                                                    <%@include file="../common/firstPreviewSvcPrincipalOfficers.jsp"%>
-                                                                                    <%@include file="../common/previewSvcDocument.jsp"%>
+                                                                                    <c:set var="currentPreviewSvcInfo" value="${AppSubmissionDto.appSvcRelatedInfoDtoList.get(0)}"></c:set>
+                                                                                    <%@include file="../common/previewSvcInfo.jsp"%>
                                                                                 </div>
                                                                             </div>
                                                                         </div>

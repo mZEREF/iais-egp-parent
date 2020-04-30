@@ -48,11 +48,7 @@
                                                                     <a href="#" id="doSvcEdit"><em class="fa fa-pencil-square-o"></em>Edit</a>
                                                                 </p>
                                                                 <div class="panel-main-content">
-                                                                    <%@include file="../common/previewSvcDisciplines.jsp"%>
-                                                                    <%@include file="../common/firstPreviewSvcGovernanceOfficer.jsp"%>
-                                                                    <%@include file="../common/previewSvcAllocation.jsp"%>
-                                                                    <%@include file="../common/firstPreviewSvcPrincipalOfficers.jsp"%>
-                                                                    <%@include file="../common/previewSvcDocument.jsp"%>
+                                                                    <%@include file="../common/previewSvcInfo.jsp"%>
                                                                 </div>
                                                             </div>
                                                         </div>
