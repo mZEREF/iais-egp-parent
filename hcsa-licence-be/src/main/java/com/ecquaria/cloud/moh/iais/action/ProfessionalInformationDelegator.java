@@ -142,7 +142,7 @@ public class ProfessionalInformationDelegator {
 		File file = null;
 
 		SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-		//searchParam.setPageNo(0);
+		searchParam.setPageNo(0);
 		searchParam.setPageSize(Integer.MAX_VALUE);
 
 		log.debug("indicates that a record has been selected ");
