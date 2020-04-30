@@ -365,7 +365,7 @@ public class InterInboxDelegator {
             bpc.response.sendRedirect(tokenUrl);
         }else{
             ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",result);
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"The licence is appealed");
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"An appeal has already been submitted for this licence/application");
         }
     }
 
@@ -581,7 +581,7 @@ public class InterInboxDelegator {
             bpc.response.sendRedirect(tokenUrl);
         }else{
             ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",result);
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"The application is appealed");
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"An appeal has already been submitted for this licence/application");
         }
     }
 
