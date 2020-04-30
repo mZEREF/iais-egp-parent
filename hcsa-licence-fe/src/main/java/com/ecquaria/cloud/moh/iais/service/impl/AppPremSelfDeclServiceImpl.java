@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -163,7 +164,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
             String correlationId = correlationDto.getId();
             String appGrpPremId = correlationDto.getAppGrpPremId();
             AppGrpPremisesEntityDto appGrpPremises = applicationClient.getAppGrpPremise(appGrpPremId).getEntity();
-            String address = IaisCommonUtils.appendPremisesAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(),
+            String address = MiscUtil.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(),
                     appGrpPremises.getBuildingName(), appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
 
             List<PremCheckItem> premCheckItemList = SelfChecklistHelper.loadPremisesQuestion(config, address);
@@ -179,7 +180,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
             String corrId = correlationDto.getId();
             String appGrpPremId = correlationDto.getAppGrpPremId();
             AppGrpPremisesEntityDto appGrpPremises = applicationClient.getAppGrpPremise(appGrpPremId).getEntity();
-            String address = IaisCommonUtils.appendPremisesAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(),
+            String address = MiscUtil.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(),
                     appGrpPremises.getBuildingName(), appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
 
             List<PremCheckItem> premCheckItemList = SelfChecklistHelper.loadPremisesQuestion(config, address);

@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.SelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.service.SelfDeclRfiService;
@@ -69,7 +70,7 @@ public class SelfDeclRfiServiceImpl implements SelfDeclRfiService {
                 String correlationId = correlation.getId();
                 String appGrpPremId = correlation.getAppGrpPremId();
                 AppGrpPremisesEntityDto appGrpPremises = applicationClient.getAppGrpPremise(appGrpPremId).getEntity();
-                String address = IaisCommonUtils.appendPremisesAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(),
+                String address = MiscUtil.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(),
                         appGrpPremises.getBuildingName(), appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
 
                 List<AppPremisesSelfDeclChklDto> selfDeclChklList = applicationClient

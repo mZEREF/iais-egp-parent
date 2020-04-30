@@ -43,7 +43,7 @@
                 <td>
                     <label class="col-xs-0 col-md-5 control-label">Professional Regn No</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
-                        <input type="text" name="profRegNo" value="${profRegNo}" maxlength="20"/>
+                        <input type="text" name="profRegNo" value="${sessionScope.profRegNo}" maxlength="20"/>
                         <span id="error_profRegNo" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>

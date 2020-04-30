@@ -103,6 +103,17 @@ public class ProfessionalInformationDelegator {
 		log.debug(StringUtil.changeForLog("Search by professional information start ...."));
 		AuditTrailHelper.auditFunction("hcsa-licence-be", "Search by professional information");
 
+		ParamUtil.setSessionAttr(request, "name", null);
+		ParamUtil.setSessionAttr(request, "profRegNo", null);
+		ParamUtil.setSessionAttr(request, "postalCode", null);
+		ParamUtil.setSessionAttr(request, "address", null);
+		ParamUtil.setSessionAttr(request, "hciName", null);
+		ParamUtil.setSessionAttr(request, "hciCode", null);
+		ParamUtil.setSessionAttr(request, "hciPostalcode", null);
+		ParamUtil.setSessionAttr(request, "practiceLocation", null);
+		ParamUtil.setSessionAttr(request, "serviceName", null);
+		ParamUtil.setSessionAttr(request, "designation", null);
+		ParamUtil.setSessionAttr(request, "role", null);
 		ParamUtil.setSessionAttr(request, PROFESSIONAL_INFORMATION_SEARCH, null);
 		ParamUtil.setSessionAttr(request, PROFESSIONAL_INFORMATION_RESULT, null);
 	}
@@ -131,6 +142,9 @@ public class ProfessionalInformationDelegator {
 		File file = null;
 
 		SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+		//searchParam.setPageNo(0);
+		searchParam.setPageSize(Integer.MAX_VALUE);
+
 		log.debug("indicates that a record has been selected ");
 
 		QueryHelp.setMainSql("onlineEnquiry", "searchByProfessionalInfo",searchParam);
@@ -217,17 +231,17 @@ public class ProfessionalInformationDelegator {
 		String designation = ParamUtil.getString(request, "designation");
 		String role = ParamUtil.getString(request, "role");
 
-		ParamUtil.setRequestAttr(request, "name", name);
-		ParamUtil.setRequestAttr(request, "profRegNo", profRegNo);
-		ParamUtil.setRequestAttr(request, "postalCode", postalCode);
-		ParamUtil.setRequestAttr(request, "address", address);
-		ParamUtil.setRequestAttr(request, "hciName", hciName);
-		ParamUtil.setRequestAttr(request, "hciCode", hciCode);
-		ParamUtil.setRequestAttr(request, "hciPostalcode", hciPostalcode);
-		ParamUtil.setRequestAttr(request, "practiceLocation", practiceLocation);
-		ParamUtil.setRequestAttr(request, "serviceName", serviceName);
-		ParamUtil.setRequestAttr(request, "designation", designation);
-		ParamUtil.setRequestAttr(request, "role", role);
+		ParamUtil.setSessionAttr(request, "name", name);
+		ParamUtil.setSessionAttr(request, "profRegNo", profRegNo);
+		ParamUtil.setSessionAttr(request, "postalCode", postalCode);
+		ParamUtil.setSessionAttr(request, "address", address);
+		ParamUtil.setSessionAttr(request, "hciName", hciName);
+		ParamUtil.setSessionAttr(request, "hciCode", hciCode);
+		ParamUtil.setSessionAttr(request, "hciPostalcode", hciPostalcode);
+		ParamUtil.setSessionAttr(request, "practiceLocation", practiceLocation);
+		ParamUtil.setSessionAttr(request, "serviceName", serviceName);
+		ParamUtil.setSessionAttr(request, "designation", designation);
+		ParamUtil.setSessionAttr(request, "role", role);
 
 		ProfessionalInformationQueryDto dto = new ProfessionalInformationQueryDto();
 		dto.setName(name);

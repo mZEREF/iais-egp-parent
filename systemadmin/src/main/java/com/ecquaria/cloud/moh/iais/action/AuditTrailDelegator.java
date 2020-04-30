@@ -167,6 +167,8 @@ public class AuditTrailDelegator {
             return;
         }
 
+        //searchParam.setPageNo(0);
+        searchParam.setPageSize(Integer.MAX_VALUE);
         SearchResult<AuditTrailQueryDto> searchResult = auditTrailService.listAuditTrailDto(searchParam);
         if (searchResult == null){
             log.info("==export audit trail log , the record is empty>>>>");

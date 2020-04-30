@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.RegulationService;
+import com.google.inject.internal.cglib.proxy.$Factory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -389,7 +390,10 @@ public class RegulationDelegator {
 
         File file = null;
 
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, HcsaRegulationConstants.PARAM_SEARCH);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        searchParam.setPageNo(0);
+        searchParam.setPageSize(Integer.MAX_VALUE);
+
         SearchResult searchResult =  regulationService.searchRegulation(searchParam);
         if (searchResult != null){
             List<RegulationQueryDto> regulationResult = searchResult.getRows();
