@@ -14,19 +14,19 @@
   <iais:row>
     <iais:field value="Operation Type" required="true"></iais:field>
     <iais:value width="7">
-      <iais:select name="operationType" id="operationType" value="${operationType}" options="operationTypeSelect" firstOption="Please select" ></iais:select>
+      <iais:select name="operationType" id="operationType" value="${param.operationType}" options="operationTypeSelect" firstOption="Please select" ></iais:select>
       <span id="error_domain" name="iaisErrorMsg" class="error-msg"></span>
     </iais:value>
 
     <iais:field value="Operation" required="false"></iais:field>
     <iais:value width="7">
-      <iais:select name="operation" id="operation" value="${operation}" options="operationValueTypeSelect" firstOption="Please select"></iais:select>
+      <iais:select name="operation" id="operation" value="${param.operation}" options="operationValueTypeSelect" firstOption="Please select"></iais:select>
       <span id="error_operation" name="iaisErrorMsg" class="error-msg"></span>
     </iais:value>
 
     <iais:field value="User" required="false"></iais:field>
     <iais:value width="7">
-      <input type="text" name="user" value="${user}" />
+      <input type="text" name="user" value="${param.user}" />
       <span id="error_user" name="iaisErrorMsg" class="error-msg"></span>
     </iais:value>
 
@@ -34,14 +34,14 @@
 
     <iais:field value="Operation Start Date Time" required="true"></iais:field>
     <iais:value width="7">
-      <iais:datePicker id = "startDate" name = "startDate"  value="${startDate}"></iais:datePicker>
+      <iais:datePicker id = "startDate" name = "startDate"  value="${param.startDate}"></iais:datePicker>
      <%--// <span id="error_startDate" name="iaisErrorMsg" class="error-msg"></span>--%>
       <span id="error_actionTime" name="iaisErrorMsg" class="error-msg"></span>
     </iais:value>
 
     <iais:field value="Operation End Date Time" required="true"></iais:field>
     <iais:value width="7">
-      <iais:datePicker id = "endDate" name = "endDate"  value="${endDate}"></iais:datePicker>
+      <iais:datePicker id = "endDate" name = "endDate"  value="${param.endDate}"></iais:datePicker>
      <%-- <span id="error_endDate" name="iaisErrorMsg" class="error-msg"></span>--%>
     </iais:value>
 

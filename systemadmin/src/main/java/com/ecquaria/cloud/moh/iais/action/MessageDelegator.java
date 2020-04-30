@@ -202,11 +202,6 @@ public class MessageDelegator {
         String msgType = ParamUtil.getString(request, MessageConstants.PARAM_MSG_TYPE);
         String module = ParamUtil.getString(request, MessageConstants.PARAM_MODULE);
 
-
-        ParamUtil.setRequestAttr(request, MessageConstants.PARAM_DOMAIN_TYPE, domainType);
-        ParamUtil.setRequestAttr(request, MessageConstants.PARAM_MSG_TYPE, msgType);
-        ParamUtil.setRequestAttr(request, MessageConstants.PARAM_MODULE, module);
-
         MessageDto dto = new MessageDto();
         dto.setDomainType(domainType);
         dto.setMsgType(msgType);

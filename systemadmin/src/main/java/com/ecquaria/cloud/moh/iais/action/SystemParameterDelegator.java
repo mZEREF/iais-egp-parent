@@ -123,11 +123,6 @@ public class SystemParameterDelegator {
         queryDto.setDescription(description);
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 
-        ParamUtil.setRequestAttr(request, SystemParameterConstants.PARAM_DOMAIN_TYPE, domainType);
-        ParamUtil.setRequestAttr(request, SystemParameterConstants.PARAM_MODULE, module);
-        ParamUtil.setRequestAttr(request, SystemParameterConstants.PARAM_STATUS, status);
-        ParamUtil.setRequestAttr(request, SystemParameterConstants.PARAM_DESCRIPTION, description);
-
         ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "search");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();

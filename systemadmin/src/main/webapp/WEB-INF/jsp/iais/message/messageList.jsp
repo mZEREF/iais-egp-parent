@@ -20,7 +20,7 @@
                 <div class="form-group">
                     <iais:field value="Type" required="true"/>
                     <iais:value width="7">
-                        <iais:select name="domainType" id="domainType" value="${domainType}" options="domainTypeSelect" firstOption="Please Select" onchange="displaySection()"></iais:select>
+                        <iais:select name="domainType" id="domainType" value="${param.domainType}" options="domainTypeSelect" firstOption="Please Select" onchange="displaySection()"></iais:select>
                     </iais:value>
                     <span id="error_domainType" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
@@ -28,14 +28,14 @@
                 <div id = "msgTypeRow" class="form-group" style="display:none">
                     <iais:field value="Message Type" />
                     <iais:value width="7">
-                        <iais:select name="msgType" id="msgType" value="${msgType}" options="msgTypeSelect" firstOption="Please Select" onchange="displaySection()"></iais:select>
+                        <iais:select name="msgType" id="msgType" value="${param.msgType}" options="msgTypeSelect" firstOption="Please Select" onchange="displaySection()"></iais:select>
                     </iais:value>
                 </div>
 
                 <div id = "moduleTypeRow" class="form-group" style="display:none">
                     <iais:field value="Module" />
                     <iais:value width="7">
-                        <iais:select name="module"  id="module" value="${module}" options="moduleTypeSelect" firstOption="Please Select" ></iais:select>
+                        <iais:select name="module"  id="module" value="${param.module}" options="moduleTypeSelect" firstOption="Please Select" ></iais:select>
                     </iais:value>
                 </div>
 
