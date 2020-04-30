@@ -53,7 +53,7 @@
             <div class="fileContent" style="margin-bottom:1%;">
               <input class="hidden delFlag" type="hidden" name="${svcDelFlag}" value="N"/>
               <input type="hidden" name="docConfig" value=""/>
-              <span class="fileName"><a class="fileName <c:if test="${!isClickEdit}">disabled</c:if>" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}"  >${svcDoc.docName}</a></span>&nbsp;&nbsp;
+              <span class="fileNameSpan"><a class="fileName <c:if test="${!isClickEdit}">disabled</c:if>" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}"  >${svcDoc.docName}</a></span>&nbsp;&nbsp;
               <c:choose>
                 <c:when test="${svcDoc.docName == '' || svcDoc.docName == null }">
                                                     <span class="hidden delBtn">
@@ -96,17 +96,18 @@
     $('.selectedFile').change(function () {
         var file = $(this).val();
         var documentDiv = $(this).closest('.document-upload-list');
-        documentDiv.find('.fileName').html(getFileName(file));
-        documentDiv.find('.fileName span:eq(1)').html('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>');
-        documentDiv.find('.fileName span:eq(1)').removeClass('hidden');
+        documentDiv.find('.fileNameSpan').html(getFileName(file));
+        documentDiv.find('.delBtn').html('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>');
+        documentDiv.find('.delBtn').removeClass('hidden');
         var $fileUploadContentEle = $(this).closest('div.file-upload-gp');
         $fileUploadContentEle.find('.delBtn').removeClass('hidden');
     });
 
     $('.delBtn').click(function () {
-        $(this).parent().children('span:eq(0)').html('');
-        $(this).parent().children('span:eq(1)').html('');
-        $(this).parent().children('span:eq(1)').next().addClass("hidden");
+        var documentDiv = $(this).closest('.document-upload-list');
+        documentDiv.find('.fileNameSpan').html('');
+        documentDiv.find('.delBtn').html('');
+        documentDiv.find('.delBtn').addClass('hidden');
         $(this).closest('.fileContent').find('input.selectedFile').val('');
         $(this).closest('.fileContent').find('input.delFlag').val('Y');
     });
