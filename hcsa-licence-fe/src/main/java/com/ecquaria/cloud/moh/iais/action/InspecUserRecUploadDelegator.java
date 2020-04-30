@@ -52,7 +52,7 @@ public class InspecUserRecUploadDelegator {
     public void inspecUserRectifiUploadStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadStart start ...."));
         String appPremCorrId = ParamUtil.getMaskedString(bpc.request, "appPremCorrId");
-        String versionStr = ParamUtil.getMaskedString(bpc.request, "recVersion");
+        String versionStr = ParamUtil.getRequestString(bpc.request, "recVersion");
         InspSetMaskValueDto inspSetMaskValueDto = new InspSetMaskValueDto();
         inspSetMaskValueDto.setAppPremCorrId(appPremCorrId);
         inspSetMaskValueDto.setVersion(versionStr);

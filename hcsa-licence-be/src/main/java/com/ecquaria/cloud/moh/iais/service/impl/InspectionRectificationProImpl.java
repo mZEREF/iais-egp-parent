@@ -237,7 +237,6 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
                     taskDto.getRefNo() + "&recVersion=" + version;
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
             maskParams.put("appPremCorrId", taskDto.getRefNo());
-            maskParams.put("recVersion", version);
             MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION).getEntity();
             Map<String, Object> params = IaisCommonUtils.genNewHashMap();
             params.put("process_url", url);
