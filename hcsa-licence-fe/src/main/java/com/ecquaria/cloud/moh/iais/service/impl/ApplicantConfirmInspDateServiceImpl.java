@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -21,21 +23,27 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ApplicantConfirmInspDateService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -60,6 +68,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     @Autowired
     private LicenceClient licenceClient;
+
+    @Autowired
+    private AppSubmissionService appSubmissionService;
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
@@ -342,6 +353,30 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
         createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
+        EmailDto emailDto = getApptInspEmailDto(apptFeConfirmDateDto.getAppPremCorrId());
+        apptFeConfirmDateDto.setEmailDto(emailDto);
+        //todo
+        //send email
+
+    }
+
+    private EmailDto getApptInspEmailDto(String appPremCorrId) {
+        MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_REMIND_NC_RECTIFICATION);
+        EmailDto emailDto = new EmailDto();
+        if(msgTemplateDto != null) {
+            String mesContext;
+            try {
+                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), null);
+            } catch (IOException | TemplateException e) {
+                log.error(e.getMessage(), e);
+                throw new IaisRuntimeException(e);
+            }
+            emailDto.setContent(mesContext);
+            emailDto.setSubject(msgTemplateDto.getTemplateName());
+            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setClientQueryCode(appPremCorrId);
+        }
+        return emailDto;
     }
 
     private void setCreateInspectionStatus(ApptInspectionDateDto apptInspectionDateDto, String status) {
@@ -536,6 +571,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 apptFeConfirmDateDto.setAppPremCorrId(appPremCorrId);
                 apptFeConfirmDateDto.setApptRefNo(appPremisesInspecApptDto.getApptRefNo());
                 apptFeConfirmDateDto.setSpecificDateShow(dateStr);
+                apptFeConfirmDateDto.setApptInspDateMap(apptInspDateMap);
             }
         }
         apptFeConfirmDateDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
