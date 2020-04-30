@@ -212,8 +212,8 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                     String s = FileUtil.genMd5FileChecksum(bytes);
                     File curFile =new File(backups + File.separator + s + AppServicesConsts.ZIP_NAME);
                     file.renameTo(curFile);
-                    log.info("----------- new zip file name is"+backups+File.separator+s+AppServicesConsts.ZIP_NAME);
-                    String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,"backupsAudit" + File.separator+s+AppServicesConsts.ZIP_NAME);
+                    log.info("----------- new zip file name is"+backups+File.separator+fileNamesss+AppServicesConsts.ZIP_NAME);
+                    String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,"backupsAudit" + File.separator+fileNamesss+AppServicesConsts.ZIP_NAME);
                     if(!s1.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
                         flag=false;
