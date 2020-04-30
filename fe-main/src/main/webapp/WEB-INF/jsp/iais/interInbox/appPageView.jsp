@@ -86,6 +86,7 @@
     }
     $(function () {
         if ('${appIsAppealed}') {
+            alert("appeal");
             $('#isAppealModal').modal('show');
         }
         if('${appCannotRecall}'){

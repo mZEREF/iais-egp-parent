@@ -497,7 +497,7 @@ public class InterInboxDelegator {
 
     public void appSwitch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("Step ---> appSwitch"));
-        ParamUtil.setRequestAttr(bpc.request,"appCannotRecall", false);
+//        ParamUtil.setRequestAttr(bpc.request,"appCannotRecall", false);
     }
 
     public void appDoSearch(BaseProcessClass bpc) throws ParseException {
