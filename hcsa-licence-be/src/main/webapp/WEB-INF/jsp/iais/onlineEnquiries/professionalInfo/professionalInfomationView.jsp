@@ -108,7 +108,7 @@
 
             <tr>
                 <td>
-                    <label class="col-xs-0 col-md-5 control-label">Service Personnal Role</label>
+                    <label class="col-xs-0 col-md-5 control-label">Service Personnel Role</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
                         <iais:select name="role" id="role" options="psnType"
                                      firstOption="Please Select"
