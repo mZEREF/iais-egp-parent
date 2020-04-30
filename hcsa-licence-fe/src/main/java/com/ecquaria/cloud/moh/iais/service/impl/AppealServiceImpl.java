@@ -231,6 +231,7 @@ public class AppealServiceImpl implements AppealService {
             request.getSession().setAttribute("hciNames",hciNames);
             request.getSession().setAttribute("serviceName",svcName);
             request.getSession().setAttribute("licenceNo",licenceNo);
+            request.getSession().setAttribute("appealNo",licenceDto.getLicenceNo());
         } else if (APPLICATION.equals(type)) {
             ApplicationDto applicationDto = applicationClient.getApplicationById(appealingFor).getEntity();
             boolean maxCGOnumber = isMaxCGOnumber(applicationDto);
@@ -269,7 +270,7 @@ public class AppealServiceImpl implements AppealService {
             if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status)){
                 request.getSession().setAttribute("applicationAPPROVED","APPROVED");
             }
-
+            request.getSession().setAttribute("appealNo",applicationDto.getApplicationNo());
             request.getSession().setAttribute("serviceId",applicationDto.getServiceId());
         }
         request.getSession().setAttribute(APPEALING_FOR,appealingFor);
@@ -614,7 +615,7 @@ public class AppealServiceImpl implements AppealService {
 
         }
         appealDto.setAppGrpPremisesDtos(premisesDtos);
-  /*      applicationClient.submitAppeal(appealDto);*/
+        applicationClient.submitAppeal(appealDto);
         ApplicationGroupDto applicationGroupDto1 = appealDto.getApplicationGroupDto();
         String groupId = applicationGroupDto1.getId();
         request.setAttribute("groupId",groupId);

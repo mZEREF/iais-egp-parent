@@ -695,6 +695,5 @@ public class LicenceViewServiceDelegator {
         }
         appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(appSvcPersonnelDtoList);
     }
-
-
+    
 }

@@ -24,7 +24,7 @@
 
     <div  class="col-xs-12 col-md-10">
       <div class="col-xs-12 col-md-6">
-        <input type="text" name="appealingFor" disabled  value="${appealingFor}" >
+        <input type="text" name="appealingFor" disabled  value="${appealNo}" >
         <span name="iaisErrorMsg" class="error-msg" id="error_submit"></span>
       </div>
     </div>

@@ -2023,15 +2023,15 @@ public class NewApplicationDelegator {
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList  = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>)   request.getSession().getAttribute(COMMONHCSASVCDOCCONFIGDTO);
         Boolean flag =false;
-        if(appGrpPrimaryDocDtoList==null||commonHcsaSvcDocConfigList==null){
+        if(commonHcsaSvcDocConfigList==null){
             return;
         }
         for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto : commonHcsaSvcDocConfigList) {
             Boolean isMandatory = hcsaSvcDocConfigDto.getIsMandatory();
             String id = hcsaSvcDocConfigDto.getId();
-            if(isMandatory&&appGrpPrimaryDocDtoList.size()==0){
+            if(isMandatory&&appGrpPrimaryDocDtoList==null||isMandatory&&appGrpPrimaryDocDtoList.isEmpty()){
                 documentMap.put("common","UC_CHKLMD001_ERR001");
-            }else {
+            }else if(isMandatory&&appGrpPrimaryDocDtoList!=null){
                 for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
                     String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
                     if(id.equals(svcDocId)){

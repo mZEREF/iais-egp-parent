@@ -62,7 +62,8 @@
       <label style="font-size: 2.2rem">CLINICAL GOVERNANCE OFFICER</label>
       <div class="amend-preview-info">
         <c:forEach var="cgo" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
-        <p><strong class="col-xs-6">Clinical Governance Officer ${status.index+1}</strong><span class="col-xs-4 col-md-4">${cgo.name}</span></p>
+        <p><strong class="col-xs-6">Clinical Governance Officer ${status.index+1}</strong><span class="col-xs-4 col-md-4"><c:if test="${cgo.name==null}">-</c:if><c:if test="${cgo.name!=null}">${cgo.name}</c:if></span>
+        </p>
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">
@@ -72,10 +73,10 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
                   </td>
                   <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6"><iais:code code="${cgo.salutation}" /></span>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6"><c:if test="${cgo.salutation==null}">-</c:if><c:if test="${cgo.salutation!=null}">${cgo.salutation}</c:if></span>
                       <span class="col-xs-6 col-md-6">
                              <wrms:value width="7">
-                               <span class="newVal compareTdStyle" attr="${cgo.salutation}" style="display: none"><label><iais:code code="${cgo.salutation}"/></label></span>
+                               <span class="newVal compareTdStyle" attr="<c:if test="${cgo.salutation==null}">-</c:if><c:if test="${cgo.salutation!=null}">${cgo.salutation}</c:if>" style="display: none"><label><iais:code code="${cgo.salutation}"/></label></span>
                                <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].salutation}" style="display: none"><label><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].salutation}"/></label></span>
                              </wrms:value>
 
@@ -89,16 +90,12 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
                   </td>
                   <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6">${cgo.name }</span>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6"><c:if test="${cgo.name==null}">-</c:if><c:if test="${cgo.name!=null}">${cgo.name}</c:if></span>
                       <span class="col-xs-6 col-md-6">
-                           <span class="col-xs-6 col-md-6">
-                                 <wrms:value width="7">
-                                   <span class="newVal compareTdStyle" attr="${cgo.name }" style="display: none"><label><c:out value="${cgo.name }"/></label></span>
-                                   <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}"/></label></span>
-                                 </wrms:value>
-
-                           </span>
-
+                        <wrms:value width="7">
+                          <span class="newVal compareTdStyle" attr="<c:if test="${cgo.name==null}">-</c:if><c:if test="${cgo.name!=null}">${cgo.name}</c:if>" style="display: none"></span>
+                          <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}" style="display: none"><label><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}"/></label></span>
+                        </wrms:value>
                         </span>
 
                     </p>
@@ -111,10 +108,10 @@
                     </p>
                   </td>
                   <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6">${cgo.idType }</span>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6"><c:if test="${cgo.idType==null}">-</c:if><c:if test="${cgo.idType!=null}">${cgo.idType}</c:if></span>
                       <span class="col-xs-6 col-md-6">
                             <wrms:value width="7">
-                              <span class="newVal compareTdStyle" attr="${cgo.idType }" style="display: none"><label><c:out value="${cgo.idType }"/></label></span>
+                              <span class="newVal compareTdStyle" attr="<c:if test="${cgo.idType==null}">-</c:if><c:if test="${cgo.idType!=null}">${cgo.idType}</c:if>" style="display: none"></span>
                               <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idType}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idType}"/></label></span>
                             </wrms:value>
                         </span>
@@ -127,11 +124,11 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No. </p>
                   </td>
                   <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6">${cgo.idNo }</span>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6"><c:if test="${cgo.idNo==null}">-</c:if><c:if test="${cgo.idNo!=null}">${cgo.idNo}</c:if></span>
                       <span class="col-xs-6 col-md-6">
 
                          <wrms:value width="7">
-                           <span class="newVal compareTdStyle" attr="${cgo.idNo }"  style="display: none"><label><c:out value="${cgo.idNo }"/></label></span>
+                           <span class="newVal compareTdStyle" attr="<c:if test="${cgo.idNo==null}">-</c:if><c:if test="${cgo.idNo!=null}">${cgo.idNo}</c:if>"  style="display: none"></span>
                            <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}"/></label></span>
                          </wrms:value>
 
@@ -146,11 +143,11 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation </p>
                   </td>
                   <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6"><iais:code code="${cgo.designation}"/></span>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6"><c:if test="${cgo.designation==null}">-</c:if><iais:code code="${cgo.designation}"/></span>
                       <span  class="col-xs-6 col-md-6">
                         <wrms:value width="7">
-                          <span class="newVal compareTdStyle" attr="${cgo.designation}" style="display: none"><label><c:out value="${cgo.designation}"/></label></span>
-                          <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].designation}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].designation}"/></label></span>
+                          <span class="newVal compareTdStyle" attr="<c:if test="${cgo.designation==null}">-</c:if><c:if test="${cgo.designation!=null}">${cgo.designation}</c:if>" style="display: none"></span>
+                          <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].designation}" style="display: none"><label><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].designation}" /></label></span>
                         </wrms:value>
                         </span>
                     </p>
@@ -168,21 +165,25 @@
                               <c:when test="${cgo.professionType=='PROF001'}">Dentist</c:when>
                               <c:when test="${cgo.professionType=='PROF002'}">Doctor</c:when>
                               <c:when test="${cgo.professionType=='PROF003'}">Nurse</c:when>
+                              <c:when test="${cgo.professionType==null}">-</c:when>
                             </c:choose>
                         </span>
-                      <wrms:value width="7">
-                        <span class="newVal compareTdStyle" attr="${cgo.professionType  }" style="display: none"><label><c:out value="${cgo.professionType}"/></label></span>
-                        <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionType}" style="display: none">
+                      <span class="col-xs-6 col-md-6">
+                         <wrms:value width="7">
+                           <span class="newVal compareTdStyle" attr="<c:if test="${cgo.professionType==null}">-</c:if><c:if test="${cgo.professionType!=null}">${cgo.professionType}</c:if>" style="display: none"></span>
+                           <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionType}" style="display: none">
                           <label>
                             <c:choose>
-                              <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionType=='PROF001'  }"><c:out value="Dentist"/></c:when>
-                              <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionType=='PROF002'  }"><c:out value="Doctor"/></c:when>
-                              <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionType=='PROF003'  }"><c:out value="Nurse"/></c:when>
+                              <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionType=='PROF001'}"><c:out value="Dentist"/></c:when>
+                              <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionType=='PROF002'}"><c:out value="Doctor"/></c:when>
+                              <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionType=='PROF003'}"><c:out value="Nurse"/></c:when>
+                              <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].professionType==null  }"><c:out value="-"/></c:when>
                             </c:choose>
                           </label>
                         </span>
-                      </wrms:value>
+                         </wrms:value>
                       </span>
+
                     </p>
                   </td>
                 </tr>
@@ -191,10 +192,10 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn No.</p>
                   </td>
                   <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6">${cgo.profRegNo}</span>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6"><c:if test="${cgo.profRegNo==null}">-</c:if><c:if test="${cgo.profRegNo!=null}"></c:if>${cgo.profRegNo}</span>
                       <span  class="col-xs-6 col-md-6">
                               <wrms:value width="7">
-                                <span class="newVal compareTdStyle" attr="${cgo.profRegNo }" style="display: none"><label><c:out value="${cgo.profRegNo}"/></label></span>
+                                <span class="newVal compareTdStyle" attr="<c:if test="${cgo.profRegNo==null}">-</c:if><c:if test="${cgo.profRegNo!=null}"></c:if>${cgo.profRegNo}" style="display: none"></span>
                                 <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/></label></span>
                               </wrms:value>
                         </span>
@@ -206,10 +207,10 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Specialty</p>
                   </td>
                   <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6"> ${cgo.speciality }</span>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6"><c:if test="${cgo.speciality==null}">-</c:if><c:if test="${cgo.speciality!=null}">${cgo.speciality}</c:if></span>
                       <span  class="col-xs-6 col-md-6">
                               <wrms:value width="7">
-                                <span class="newVal compareTdStyle" attr="${cgo.speciality }" style="display: none"><label><c:out value=" ${cgo.speciality }"/></label></span>
+                                <span class="newVal compareTdStyle" attr="<c:if test="${cgo.speciality==null}">-</c:if><c:if test="${cgo.speciality!=null}">${cgo.speciality}</c:if>" style="display: none"></span>
                                 <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}"/></label></span>
                               </wrms:value>
                         </span>
@@ -240,11 +241,11 @@
                   <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.</p>
                 </td>
                 <td>
-                  <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6">${cgo.mobileNo}</span>
+                  <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6"><c:if test="${cgo.mobileNo==null}">-</c:if><c:if test="${cgo.mobileNo!=null}">${cgo.mobileNo}</c:if></span>
 
                     <span class="col-xs-6 col-md-6">
                             <wrms:value width="7">
-                              <span class="newVal compareTdStyle" attr="${cgo.mobileNo}"  style="display: none"><label><c:out value="${cgo.mobileNo}"/></label></span>
+                              <span class="newVal compareTdStyle" attr="<c:if test="${cgo.mobileNo==null}">-</c:if><c:if test="${cgo.mobileNo!=null}">${cgo.mobileNo}</c:if>"  style="display: none"></span>
                               <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].mobileNo}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].mobileNo}"/></label></span>
                             </wrms:value>
                         </span>
@@ -257,11 +258,11 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email Address</p>
                   </td>
                   <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6">${cgo.emailAddr}</span>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <span class="col-xs-6 col-md-6"><c:if test="${cgo.emailAddr==null}">-</c:if><c:if test="${cgo.emailAddr!=null}">${cgo.emailAddr}</c:if></span>
 
                       <span class="col-xs-6 col-md-6">
                             <wrms:value width="7">
-                              <span class="newVal compareTdStyle" attr="${cgo.emailAddr}"  style="display: none"><label><c:out value="${cgo.emailAddr}"/></label></span>
+                              <span class="newVal compareTdStyle" attr="<c:if test="${cgo.emailAddr==null}">-</c:if><c:if test="${cgo.emailAddr!=null}">${cgo.emailAddr}</c:if>"  style="display: none"></span>
                               <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].emailAddr}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].mobileNo}"/></label></span>
                             </wrms:value>
                         </span>
@@ -363,10 +364,10 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6"><iais:code code="${po.salutation}"/></span>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6"><c:if test="${po.salutation==null}">-</c:if><c:if test="${po.salutation!=null}">${po.salutation}</c:if></span>
                         <span class="col-xs-6 col-md-6">
                           <wrms:value width="7">
-                            <span class="newVal compareTdStyle" attr="${po.salutation}" style="display: none"><label><iais:code code="${po.salutation}"/></label></span>
+                            <span class="newVal compareTdStyle" attr="<c:if test="${po.salutation==null}">-</c:if><c:if test="${po.salutation!=null}">${po.salutation}</c:if>" style="display: none"></span>
                             <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].salutation}" style="display: none"><label><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].salutation}"/></label></span>
                           </wrms:value>
 
@@ -380,12 +381,12 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6">${po.name}</span>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6"><c:if test="${po.name==null}">-</c:if><c:if test="${po.name!=null}">${po.name}</c:if></span>
 
                         <span  class="col-xs-6 col-md-6">
 
                            <wrms:value width="7">
-                             <span class="newVal compareTdStyle" attr="${po.name}" style="display: none"><label><c:out value="${po.name}"/></label></span>
+                             <span class="newVal compareTdStyle" attr="<c:if test="${po.name==null}">-</c:if><c:if test="${po.name!=null}">${po.name}</c:if>" style="display: none"></span>
                              <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].name}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].name}"/></label></span>
                            </wrms:value>
 
@@ -399,10 +400,10 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6">${po.idType}</span>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6"><c:if test="${po.idType==null}">-</c:if><c:if test="${po.idType!=null}">${po.idType}</c:if></span>
                         <span class="col-xs-6 col-md-6">
                            <wrms:value width="7">
-                             <span class="newVal compareTdStyle" attr="${po.idType}"  style="display: none"><label><c:out value="${po.idType}"/></label></span>
+                             <span class="newVal compareTdStyle" attr="<c:if test="${po.idType==null}">-</c:if><c:if test="${po.idType!=null}">${po.idType}</c:if>"  style="display: none"></span>
                              <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idType}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idType}"/></label></span>
                            </wrms:value>
                         </span>
@@ -415,10 +416,10 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No.</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6">${po.idNo}</span>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6"><c:if test="${po.idNo==null}">-</c:if><c:if test="${po.idNo!=null}">${po.idNo}</c:if></span>
                         <span  class="col-xs-6 col-md-6">
                               <wrms:value width="7">
-                                <span class="newVal compareTdStyle" attr="${po.idNo}"  style="display: none"><label><c:out value="${po.idNo}"/></label></span>
+                                <span class="newVal compareTdStyle" attr="<c:if test="${po.idNo==null}">-</c:if><c:if test="${po.idNo!=null}">${po.idNo}</c:if>"  style="display: none"></span>
                                 <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"/></label></span>
                               </wrms:value>
 
@@ -433,10 +434,10 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6"><iais:code code="${po.designation}"/></span>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6"><c:if test="${po.designation==null}">-</c:if><iais:code code="${po.designation}"/></span>
                         <span  class="col-xs-6 col-md-6">
                           <wrms:value width="7">
-                            <span class="newVal compareTdStyle" attr="${po.designation}" style="display: none"><label><iais:code code="${po.designation}"/></label></span>
+                            <span class="newVal compareTdStyle" attr="<c:if test="${po.designation==null}">-</c:if><c:if test="${po.designation!=null}">${po.designation}</c:if>" style="display: none"></span>
                             <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].designation}" style="display: none"><label><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].designation}"/></label></span>
                           </wrms:value>
 
@@ -453,7 +454,7 @@
                       </p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6">${po.officeTelNo}</span>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6"><c:if test="${po.officeTelNo==null}">-</c:if><c:if test="${po.officeTelNo!=null}">${po.officeTelNo}</c:if></span>
                         <span  class="col-xs-6 col-md-6">
                             <wrms:value width="7">
                               <span class="newVal compareTdStyle" attr="${po.officeTelNo}" style="display: none"><label><c:out value="${po.officeTelNo}"/></label></span>
@@ -468,10 +469,10 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6">${po.mobileNo}</span>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-6"><c:if test="${po.mobileNo==null}">-</c:if><c:if test="${po.mobileNo!=null}">${po.mobileNo}</c:if></span>
                         <span class="col-xs-6 col-md-6">
                               <wrms:value width="7">
-                                <span class="newVal compareTdStyle" attr="${po.mobileNo}" style="display: none"><label><c:out value="${po.mobileNo}"/></label></span>
+                                <span class="newVal compareTdStyle" attr="<c:if test="${po.mobileNo==null}">-</c:if><c:if test="${po.mobileNo!=null}">${po.mobileNo}</c:if>" style="display: none"></span>
                                 <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].mobileNo}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].mobileNo}"/></label></span>
                               </wrms:value>
 
@@ -485,10 +486,10 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email Address</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></span><span class="col-xs-6 col-md-6">${po.emailAddr}</span>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></span><span class="col-xs-6 col-md-6"><c:if test="${po.emailAddr==null}">-</c:if><c:if test="${po.emailAddr!=null}">${po.emailAddr}</c:if></span>
                         <span class="col-xs-6 col-md-6">
                           <wrms:value width="7">
-                            <span class="newVal compareTdStyle" attr="${po.emailAddr}" style="display: none"><label><c:out value="${po.emailAddr}"/></label></span>
+                            <span class="newVal compareTdStyle" attr="<c:if test="${po.emailAddr==null}">-</c:if><c:if test="${po.emailAddr!=null}">${po.emailAddr}</c:if>" style="display: none"></span>
                             <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].emailAddr}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].emailAddr}"/></label></span>
                           </wrms:value>
                         </span>
@@ -826,10 +827,10 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><iais:code code="${appSvcMedAlertPerson.salutation}"/></span>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><c:if test="${appSvcMedAlertPerson.salutation==null}">-</c:if><iais:code code="${appSvcMedAlertPerson.salutation}"/></span>
 
                         <wrms:value width="7">
-                          <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.salutation}" style="display: none"><label><c:out value="${appSvcPersonnelDtoList.salutation}"/></label></span>
+                          <span class="newVal compareTdStyle" attr="<c:if test="${appSvcMedAlertPerson.salutation==null}">-</c:if><c:if test="${appSvcMedAlertPerson.salutation!=null}">${appSvcMedAlertPerson.salutation}</c:if>" style="display: none"></span>
                           <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].salutation}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].salutation}"/></label></span>
                         </wrms:value>
                       </p>
@@ -841,9 +842,9 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><iais:code code="${appSvcMedAlertPerson.name}"/></span>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><c:if test="${appSvcMedAlertPerson.name==null}">-</c:if><iais:code code="${appSvcMedAlertPerson.name}"/></span>
                         <wrms:value width="7">
-                          <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.name}" style="display: none"><label><c:out value="${appSvcPersonnelDtoList.name}"/></label></span>
+                          <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.name}" style="display: none"></span>
                           <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].name}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].name}"/></label></span>
                         </wrms:value>
                       </p>
@@ -855,9 +856,9 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><iais:code code="${appSvcMedAlertPerson.idType}"/></span>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><c:if test="${appSvcMedAlertPerson.idType==null}">-</c:if><iais:code code="${appSvcMedAlertPerson.idType}"/></span>
                         <wrms:value width="7">
-                          <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.idType}" style="display: none"><label><c:out value="${appSvcPersonnelDtoList.idType}"/></label></span>
+                          <span class="newVal compareTdStyle" attr="<c:if test="${appSvcMedAlertPerson.idType==null}">-</c:if><c:if test="${appSvcMedAlertPerson.idType!=null}">${appSvcMedAlertPerson.idType}</c:if>" style="display: none"></span>
                           <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idType}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idType}"/></label></span>
                         </wrms:value>
                       </p>
@@ -869,9 +870,9 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No.</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><iais:code code="${appSvcMedAlertPerson.idNo}"/></span>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><c:if test="${appSvcMedAlertPerson.idNo==null}">-</c:if><c:if test="${appSvcMedAlertPerson.idNo!=null}">${appSvcMedAlertPerson.idNo}</c:if></span>
                         <wrms:value width="7">
-                          <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.idNo}" style="display: none"><label><c:out value="${appSvcPersonnelDtoList.idNo}"/></label></span>
+                          <span class="newVal compareTdStyle" attr="<c:if test="${appSvcMedAlertPerson.idNo==null}">-</c:if><c:if test="${appSvcMedAlertPerson.idNo!=null}">${appSvcMedAlertPerson.idNo}</c:if>" style="display: none"></span>
                           <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}"/></label></span>
                         </wrms:value>
                       </p>
@@ -883,9 +884,9 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><iais:code code="${appSvcMedAlertPerson.mobileNo}"/></span>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><c:if test="${appSvcMedAlertPerson.mobileNo==null}">-</c:if><c:if test="${appSvcMedAlertPerson.mobileNo!=null}">${appSvcMedAlertPerson.mobileNo}</c:if></span>
                         <wrms:value width="7">
-                          <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.mobileNo}" style="display: none"><label></label></span>
+                          <span class="newVal compareTdStyle" attr="<c:if test="${appSvcMedAlertPerson.mobileNo==null}">-</c:if><c:if test="${appSvcMedAlertPerson.mobileNo!=null}">${appSvcMedAlertPerson.mobileNo}</c:if>" style="display: none"></span>
                           <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].mobileNo}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].mobileNo}"/></label></span>
                         </wrms:value>
                       </p>
@@ -897,7 +898,7 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email Address</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><iais:code code="${appSvcMedAlertPerson.emailAddr}"/></span>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"><c:if test="${appSvcMedAlertPerson.emailAddr==null}">-</c:if><c:if test="${appSvcMedAlertPerson.emailAddr!=null}">${appSvcMedAlertPerson.emailAddr}</c:if></span>
                         <wrms:value width="7">
                           <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.emailAddr}" style="display: none"><label></label></span>
                           <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].emailAddr}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].emailAddr}"/></label></span>
@@ -991,7 +992,7 @@
                           <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].fileRepoId}"/>&fileRepoName=${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}" title="Download" class="downloadFile">
                               ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}
                           </a>
-                         <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize}"/></label></span>
+                         <c:out value="(${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize})KB"/></label></span>
                         </wrms:value>
 
                       </div>
@@ -1017,6 +1018,10 @@
   *{
     word-wrap: break-word
   }
+  p {
+    margin: 0 0 0px;
+  }
+
 </style>
 <script type="text/javascript">
     $(document).ready(function(){
@@ -1040,7 +1045,7 @@
             }else  if($("#view").val()==""){
                 if (oldVal != newVal) {
                     $(this).show();
-                    $(this).html("NA");
+                    $(this).html("-");
                 } else {
                     $(this).hide();
                 }
