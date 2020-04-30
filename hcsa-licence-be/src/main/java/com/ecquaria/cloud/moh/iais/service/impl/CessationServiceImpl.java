@@ -6,10 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
@@ -139,10 +136,11 @@ public class CessationServiceImpl implements CessationService {
         for (int i = 0; i < appCessationDtos.size(); i++) {
             AppCessationDto appCessationDto = appCessationDtos.get(0);
             String licId = appCessationDto.getLicId();
+            String premiseId = appCessationDto.getPremiseId();
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.clear();
             licIds.add(licId);
-            String appId = transform(licIds,licenseeId);
+            String appId = transform(licIds,licenseeId,premiseId);
             appIds.add(appId);
             AppCessMiscDto appCessMiscDto = setMiscData(appCessationDto, appId);
             appCessMiscDtos.add(appCessMiscDto);
@@ -196,7 +194,7 @@ public class CessationServiceImpl implements CessationService {
             licIds.clear();
             licIds.add(licId);
             String appId = appIds.get(i);
-            ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();;
+            ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
             applicationDtos.add(applicationDto);
             List<AppCessLicDto> appCessDtosByLicIds = getAppCessDtosByLicIds(licIds);
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
@@ -264,8 +262,9 @@ public class CessationServiceImpl implements CessationService {
         taskService.createHistorys(appPremisesRoutingHistoryDtos);
     }
 
-    private String transform(List<String> licIds, String licenseeId) {
+    private String transform(List<String> licIds, String licenseeId,String premiseId) {
         Double amount = 0.0;
+        String appId = null;
         AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -294,7 +293,16 @@ public class CessationServiceImpl implements CessationService {
         AppSubmissionDto entity = applicationClient.saveApps(appSubmissionDto).getEntity();
         AppSubmissionDto appSubmissionDtoSave = applicationClient.saveSubmision(entity).getEntity();
         List<ApplicationDto> applicationDtos = appSubmissionDtoSave.getApplicationDtos();
-        String appId = applicationDtos.get(0).getId();
+        for(ApplicationDto applicationDto :applicationDtos) {
+            String id = applicationDto.getId();
+            AppGrpPremisesDto dto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
+            String hciCode = dto.getHciCode();
+            PremisesDto entity1 = hcsaLicenceClient.getLicPremisesDtoById(premiseId).getEntity();
+            String hciCode1 = entity1.getHciCode();
+            if (hciCode1.equals(hciCode)) {
+                appId = id ;
+            }
+        }
         return appId;
     }
 

@@ -78,7 +78,7 @@ public class CessationApplicationDelegator {
         List<String> licIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licIds");
         if (licIds == null || licIds.size() == 0) {
             licIds = IaisCommonUtils.genNewArrayList();
-            licIds.add("C71C1AE8-5988-EA11-BE82-000C29F371DC");
+            licIds.add("F8F910D8-5C81-EA11-BE82-000C29F371DC");
         }
         List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(licIds);
         int size = appCessDtosByLicIds.size();
@@ -124,7 +124,8 @@ public class CessationApplicationDelegator {
         Map<String, String> errorMap = new HashMap<>(34);
         Boolean choose = false;
         for (int i = 1; i <= size; i++) {
-            for (int j = 1; j <= size; j++) {
+            int size1 = appCessHciDtos.get(i - 1).getAppCessHciDtos().size();
+            for (int j = 1; j <= size1; j++) {
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + WHICHTODO + j);
                 if (!StringUtil.isEmpty(whichTodo)) {
                     choose = true;

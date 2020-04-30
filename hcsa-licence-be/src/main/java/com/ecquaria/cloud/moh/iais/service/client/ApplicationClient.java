@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
@@ -27,7 +26,6 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
