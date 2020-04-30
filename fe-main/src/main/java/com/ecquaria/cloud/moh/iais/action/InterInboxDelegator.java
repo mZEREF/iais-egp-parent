@@ -421,10 +421,12 @@ public class InterInboxDelegator {
                 errorMap = inboxService.checkRenewalStatus(licId);
                 if(!(errorMap.isEmpty())){
                     String licenseNo = errorMap.get("errorMessage");
-                    if(StringUtil.isEmpty(errorMessage.toString())){
-                        errorMessage.append(tmp + licenseNo);
-                    }else{
-                        errorMessage.append(", " + licenseNo);
+                    if(!StringUtil.isEmpty(licenseNo)){
+                        if(StringUtil.isEmpty(errorMessage.toString())){
+                            errorMessage.append(tmp + licenseNo);
+                        }else{
+                            errorMessage.append(", " + licenseNo);
+                        }
                     }
                     result = false;
                 }

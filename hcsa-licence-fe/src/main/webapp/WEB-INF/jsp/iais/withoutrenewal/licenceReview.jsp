@@ -20,22 +20,24 @@
                 <div class="col-xs-12">
                     <div class="center-content">
                         <div class="licence-renewal-content">
-                            <ul class="progress-tracker">
-                                <li class="tracker-item active disabled">Instructions</li>
-                                <li class="tracker-item active">Licence Review</li>
-                                <li class="tracker-item disabled">Payment</li>
-                                <li class="tracker-item disabled">Acknowledgement</li>
-                            </ul>
                             <%--content--%>
                             <div class="tab-pane" id="serviceInformationTab" role="tabpanel">
                                 <div class="multiservice">
+                                    <ul class="progress-tracker col-xs-12" ${isSingle == 'Y' ? 'style="margin-left:-8%;"' : ''}>
+                                        <li class="tracker-item active disabled">Instructions</li>
+                                        <li class="tracker-item active">Licence Review</li>
+                                        <li class="tracker-item disabled">Payment</li>
+                                        <li class="tracker-item disabled">Acknowledgement</li>
+                                    </ul>
+                                </div>
+                                <div class="multiservice">
                                     <div class="tab-gp side-tab clearfix">
-                                        <ul class="nav nav-pills nav-stacked hidden-xs hidden-sm" role="tablist">
+                                        <ul class="nav nav-pills nav-stacked hidden-xs hidden-sm"  ${isSingle == 'Y' ? 'hidden' : ''} role="tablist">
                                             <c:forEach var="serviceName" items="${serviceNames}" varStatus="status">
                                                 <li class="complete ${status.index == '0' ? 'active' : ''}" role="presentation"><a href="#serviceName${status.index}" aria-controls="lorem1" role="tab" data-toggle="tab">${serviceName}</a></li>
                                             </c:forEach>
                                         </ul>
-                                        <div class="mobile-side-nav-tab visible-xs visible-sm">
+                                        <div class="mobile-side-nav-tab visible-xs visible-sm" ${isSingle == 'Y' ? 'hidden' : ''}>
                                             <select id="serviceSelect">
                                                 <c:forEach var="serviceName" items="${serviceNames}" varStatus="status">
                                                     <option value="serviceName${status.index}">${serviceName}</option>
@@ -102,11 +104,16 @@
                         </div>
                         <div class="application-tab-footer">
                             <div class="row">
-                                <div class="col-xs-12 col-sm-6">
+                                <div class="col-xs-12 col-sm-8">
                                     <a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a>
                                 </div>
-                                <div class="col-xs-12 col-sm-6">
-                                    <div class="text-right text-center-mobile"><a id="Next" class="btn btn-primary">Preview the Next Service</a></div>
+                                <c:if test="${isSingle == 'Y'}">
+                                    <div class="col-xs-12 col-sm-1">
+                                        <p class="print text-right"><a href="#" id="print-review"> <em class="fa fa-print"></em>Print</a></p>
+                                    </div>
+                                </c:if>
+                                <div class="col-xs-12 col-sm-3">
+                                    <div class="text-right text-center-mobile"><a id="Next" class="btn btn-primary">${isSingle == 'Y'? 'Submit and Pay' : 'Preview the Next Service'}</a></div>
                                 </div>
                             </div>
                         </div>
@@ -143,6 +150,9 @@
         $('#LicenceReviewForm').submit();
     });
 
+    $("#print-review").click(function () {
+        window.print();
+    })
 
 
 </script>

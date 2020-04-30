@@ -159,7 +159,7 @@ public class InboxServiceImpl implements InboxService {
                     && !(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(app.getStatus()))
                     && !(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(app.getStatus()))){
                 flag = false;
-//                errorMap.put("errorMessage","This application is performing the renew process");
+                errorMap.put("errorMessage1","This application is performing the renew process");
             }
         }
         //check expiry date
