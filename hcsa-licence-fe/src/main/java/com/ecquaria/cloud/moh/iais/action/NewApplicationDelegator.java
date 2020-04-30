@@ -797,7 +797,7 @@ public class NewApplicationDelegator {
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
                 //send email
-               /* sendNewApplicationPaymentOnlineSuccesedEmail(appSubmissionDto,pmtMethod,pmtRefNo);*/
+               sendNewApplicationPaymentOnlineSuccesedEmail(appSubmissionDto,pmtMethod,pmtRefNo);
             }
         }
 
@@ -1326,10 +1326,12 @@ public class NewApplicationDelegator {
             String licenseeId = appSubmissionDto.getLicenseeId();
             List<ApplicationDto> applicationDtos = appSubmissionDto.getApplicationDtos();
             List<String> applicationNos = new ArrayList<String>();
-            for(ApplicationDto applicationDto : applicationDtos){
-                String applicationNo = applicationDto.getApplicationNo();
-                if(!StringUtil.isEmpty(applicationNo)){
-                    applicationNos.add(applicationNo);
+            if(!IaisCommonUtils.isEmpty(applicationDtos)){
+                for(ApplicationDto applicationDto : applicationDtos){
+                    String applicationNo = applicationDto.getApplicationNo();
+                    if(!StringUtil.isEmpty(applicationNo)){
+                        applicationNos.add(applicationNo);
+                    }
                 }
             }
             String appGrpNo = appSubmissionDto.getAppGrpNo();
