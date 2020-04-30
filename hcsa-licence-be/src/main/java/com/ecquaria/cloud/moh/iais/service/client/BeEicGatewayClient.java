@@ -150,7 +150,7 @@ public interface BeEicGatewayClient {
                                                                  @RequestHeader("authorization-Secondary") String authorizationSec);
 
 
-    @PostMapping(value = "/v1/hcsa-insp-period-sync", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/v1/hcsa-insp-period-sync", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> syncInspPeriodToFe(@RequestBody HcsaServicePrefInspPeriodDto period,
                                          @RequestHeader("date") String date,
                                          @RequestHeader("authorization") String authorization,

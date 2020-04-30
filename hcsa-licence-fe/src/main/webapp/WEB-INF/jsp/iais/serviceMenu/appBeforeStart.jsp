@@ -84,14 +84,7 @@
                 <p><a href="#">View</a></p>
               </div>
             </div>
-            <div class="license-info-row">
-              <div class="licnese-info">
-                <p>MedAlert Contact Person: <strong>Shun Qiu</strong></p>
-              </div>
-              <div class="license-edit">
-                <p><a href="#">View</a></p>
-              </div>
-            </div>
+
           </div>
         </div>
         <h3>Before You Begin</h3>
