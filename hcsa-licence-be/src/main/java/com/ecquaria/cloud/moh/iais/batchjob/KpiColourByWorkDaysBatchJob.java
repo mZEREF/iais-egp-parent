@@ -73,17 +73,16 @@ public class KpiColourByWorkDaysBatchJob {
      */
     public void mohKpiColourShowStep(BaseProcessClass bpc){
         logAbout("MohKpiColourShow");
-
-    }
-
-    private void logAbout(String methodName){
-        log.debug(StringUtil.changeForLog("****The***** " + methodName +" ******Start ****"));
         List<TaskDto> taskDtos = organizationClient.getKpiTaskByStatus().getEntity();
         if(!IaisCommonUtils.isEmpty(taskDtos)){
             for(TaskDto taskDto : taskDtos){
                 getTimeLimitWarningColourByTask(taskDto);
             }
         }
+    }
+
+    private void logAbout(String methodName){
+        log.debug(StringUtil.changeForLog("****The***** " + methodName +" ******Start ****"));
     }
 
     private TaskDto getTimeLimitWarningColourByTask(TaskDto taskDto) {
