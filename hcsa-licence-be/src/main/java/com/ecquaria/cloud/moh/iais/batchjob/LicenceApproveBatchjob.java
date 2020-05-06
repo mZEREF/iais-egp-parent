@@ -1096,7 +1096,6 @@ public class LicenceApproveBatchjob {
                     result =  true;
                 }
             }
-
         }
         log.info(StringUtil.changeForLog("The result is -->:"+result));
         log.info(StringUtil.changeForLog("The isExist end ..."));
