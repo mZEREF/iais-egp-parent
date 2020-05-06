@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -114,9 +115,10 @@ public class HcsaApplicationAjaxController{
            String  mask =MaskUtil.maskValue("fileRo"+index, appIntranetDocDto.getFileRepoId());
            String url ="<a href=\"pageContext.request.contextPath/file-repo?filerepo=fileRostatus.index&fileRostatus.index=maskDec&fileRepoName=interalFile.docName&OWASP_CSRFTOKEN=csrf\" title=\"Download\" class=\"downloadFile\">";
             url= url.replaceAll("pageContext.request.contextPath","/hcsa-licence-web").replaceAll("status.index",String.valueOf(index)).
-                   replaceAll("interalFile.docName",appIntranetDocDto.getDocName()).replaceAll("maskDec",mask).replaceAll("csrf",CSRF);
+                   replaceAll("interalFile.docName",selectedFile.getOriginalFilename()).replaceAll("maskDec",mask).replaceAll("csrf",CSRF);
             appIntranetDocDto.setUrl(url);
-            appIntranetDocDto.setFileSn(fileSizes);
+            InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
+            appIntranetDocDto.setFileSn((serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? 999:fileSizes);
             appIntranetDocDtos.add( appIntranetDocDto);
             applicationViewDto.setAppIntranetDocDtoList(appIntranetDocDtos);
             ParamUtil.setSessionAttr(request,"applicationViewDto",(Serializable) applicationViewDto);
@@ -151,7 +153,8 @@ public class HcsaApplicationAjaxController{
             if(appIntranetDocDe!= null)
             appIntranetDocDtos.remove( appIntranetDocDe);
             ParamUtil.setSessionAttr(request,"applicationViewDto",(Serializable) applicationViewDto);
-            map.put("fileSn",appIntranetDocDtos.size());
+            InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
+            map.put("fileSn", (serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? -1 : appIntranetDocDtos.size());
             if(appIntranetDocDtos.size() == 0){
                 map.put("noFilesMessage", MessageUtil.getMessageDesc("ACK018"));
             }

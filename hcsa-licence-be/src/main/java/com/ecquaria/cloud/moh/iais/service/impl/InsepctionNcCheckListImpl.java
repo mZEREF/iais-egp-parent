@@ -243,12 +243,14 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 appPremisesSpecialDocDto.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
                 appPremisesSpecialDocDto.setSubmitDt(new Date());
                 appPremisesSpecialDocDto.setId(fillUpCheckListGetAppClient.saveAppPremisesSpecialDoc(serListDto.getAppPremisesSpecialDocDto()).getEntity());
+                serListDto.setCopyAppPremisesSpecialDocDto(fillupChklistService.getCopyAppPremisesSpecialDocDtoByAppPremisesSpecialDocDto(appPremisesSpecialDocDto));
             }
         }else {
             String oldFileGuid = serListDto.getOldFileGuid();
             if(!StringUtil.isEmpty(oldFileGuid)){
                 fileRepoClient.removeFileById(oldFileGuid);
                 serListDto.setOldFileGuid(null);
+                serListDto.setCopyAppPremisesSpecialDocDto(null);
             }
             fillUpCheckListGetAppClient.deleteAppPremisesSpecialDocByPremId(appPremId);
         }

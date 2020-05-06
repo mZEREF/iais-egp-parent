@@ -76,7 +76,7 @@
                 </thead>
                 <tbody id="tbodyFileListId">
                 <c:choose>
-                    <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">
+                    <c:when test="${empty applicationViewDto.appIntranetDocDtoList && empty serListDto.copyAppPremisesSpecialDocDto}">
                         <tr>
                             <td colspan="6"  align="center" >
                                 <iais:message key="ACK018"
@@ -85,13 +85,35 @@
                         </tr>
                     </c:when>
                     <c:otherwise>
+                        <c:if test="${not empty serListDto.copyAppPremisesSpecialDocDto}">
+                            <tr>
+                                <td  width="30%">
+                                    <p><c:out value="${serListDto.copyAppPremisesSpecialDocDto.docDesc}"></c:out></p>
+                                </td>
+                                <td  width="20%">
+                                    <p><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRoLetter&fileRoLetter=<iais:mask name="fileRoLetter"  value="${serListDto.copyAppPremisesSpecialDocDto.fileRepoId}"/>&fileRepoName=${serListDto.copyAppPremisesSpecialDocDto.docName}.${serListDto.copyAppPremisesSpecialDocDto.docType}" title="Download" class="downloadFile"><c:out
+                                            value="${serListDto.copyAppPremisesSpecialDocDto.docName}.${serListDto.copyAppPremisesSpecialDocDto.docType}"></c:out></a></p>
+                                </td>
+                                <td  width="10%">
+                                    <p><c:out value="${serListDto.copyAppPremisesSpecialDocDto.docSize}"></c:out></p>
+                                </td>
+                                <td  width="20%">
+                                    <p><c:out value="${serListDto.copyAppPremisesSpecialDocDto.submitByName}"></c:out></p>
+                                </td>
+                                <td  width="15%">
+                                    <p>${serListDto.copyAppPremisesSpecialDocDto.submitDtString}</p>
+                                </td>
+                                <td width="5%">
+                                </td>
+                            </tr>
+                        </c:if>
                         <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
                             <tr>
                                 <td  width="30%">
                                     <p><c:out value="${interalFile.docDesc}"></c:out></p>
                                 </td>
                                 <td  width="20%">
-                                    <p><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${interalFile.docName}" title="Download" class="downloadFile"><c:out
+                                    <p><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${interalFile.docName}.${interalFile.docType}" title="Download" class="downloadFile"><c:out
                                             value="${interalFile.docName}.${interalFile.docType}"></c:out></a></p>
                                 </td>
                                 <td  width="10%">

@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.service;
 
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocDraftDto;
@@ -22,7 +24,6 @@ public interface FillupChklistService {
     /**
      * list checklist config by SearchParam
      * backend method: listChecklistConfig
-     * @param searchParam
      * @return
      */
 
@@ -74,4 +75,5 @@ public interface FillupChklistService {
     String  getStringByRecomType(String appPremCorrId,String recomType);
 
     InspectionFDtosDto  getInspectionFDtosDto(String appPremCorrId,TaskDto taskDto,List<InspectionFillCheckListDto> cDtoList);
+    AppIntranetDocDto getCopyAppPremisesSpecialDocDtoByAppPremisesSpecialDocDto(AppPremisesSpecialDocDto appPremisesSpecialDocDto);
 }

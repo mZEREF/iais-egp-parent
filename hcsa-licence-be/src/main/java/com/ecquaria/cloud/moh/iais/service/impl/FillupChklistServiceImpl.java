@@ -1324,6 +1324,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
        if(appPremisesSpecialDocDto != null){
            serListDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto );
            serListDto.setOldFileGuid(appPremisesSpecialDocDto.getFileRepoId());
+           serListDto.setCopyAppPremisesSpecialDocDto(getCopyAppPremisesSpecialDocDtoByAppPremisesSpecialDocDto(appPremisesSpecialDocDto));
        }
         String startDate = getStringByRecomType(appPremCorrId,InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME);
         String endDate = getStringByRecomType(appPremCorrId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME);
@@ -1347,6 +1348,26 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         getSvcName(serListDto);
         return serListDto;
     }
+
+    @Override
+    public  AppIntranetDocDto getCopyAppPremisesSpecialDocDtoByAppPremisesSpecialDocDto(AppPremisesSpecialDocDto appPremisesSpecialDocDto){
+        AppIntranetDocDto copyAppPremisesSpecialDocDto = new AppIntranetDocDto();
+        String[] docNameSpec = appPremisesSpecialDocDto.getDocName().split("[.]");
+        if(docNameSpec.length == 2){
+            copyAppPremisesSpecialDocDto.setDocName(docNameSpec[0]);
+            copyAppPremisesSpecialDocDto.setDocDesc(docNameSpec[0]);
+            copyAppPremisesSpecialDocDto.setDocType(docNameSpec[1]);
+        }else
+            return null;
+        copyAppPremisesSpecialDocDto.setId(appPremisesSpecialDocDto.getId());
+        copyAppPremisesSpecialDocDto.setFileRepoId(appPremisesSpecialDocDto.getFileRepoId());
+        copyAppPremisesSpecialDocDto.setDocSize(String.valueOf(appPremisesSpecialDocDto.getDocSize()+"KB"));
+        OrgUserDto user = applicationViewService.getUserById(appPremisesSpecialDocDto.getSubmitBy());
+        copyAppPremisesSpecialDocDto.setSubmitByName(user.getDisplayName());
+        copyAppPremisesSpecialDocDto.setSubmitDtString(Formatter.formatDateTime(appPremisesSpecialDocDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss"));
+        return  copyAppPremisesSpecialDocDto;
+    }
+
 
     // only HH : DD
     public  String[]  getStringsByHHDD(String dateString){
