@@ -18,7 +18,15 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="dashboard-page-title">
-                        <h1>Edit HCSA Internet User Account</h1>
+                        <c:choose>
+                            <c:when test="${'Y'.equals(canEditFlag)}">
+                                <h1>Create HCSA Internet User Account</h1>
+                            </c:when>
+                            <c:otherwise>
+                                <h1>Edit HCSA Internet User Account</h1>
+                            </c:otherwise>
+                        </c:choose>
+
                     </div>
                 </div>
             </div>

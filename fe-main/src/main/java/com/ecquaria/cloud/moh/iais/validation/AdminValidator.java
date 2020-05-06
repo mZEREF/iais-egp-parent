@@ -5,9 +5,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * AdminValidator
@@ -45,11 +47,9 @@ public class AdminValidator implements CustomizeValidator {
                 map.put("NRICFIN", "cannot be blank");
             }
             if (!StringUtil.isEmpty(emailAddr)) {
-                if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
+                if (ValidationUtils.isEmail(emailAddr)) {
                     map.put("emailAddr", "Please key in a valid email address");
                 }
-            } else {
-                map.put("emailAddr", "cannot be blank");
             }
         }
         return map;

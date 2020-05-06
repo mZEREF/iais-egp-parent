@@ -69,6 +69,8 @@ public class FeAdminManageDelegate {
         for (FeUserQueryDto item:feAdminQueryDtoSearchResult.getRows()
              ) {
             item.setSalutation(MasterCodeUtil.getCodeDesc(item.getSalutation()));
+            item.setIdType(MasterCodeUtil.getCodeDesc(item.getIdType()));
+            item.setDesignation(MasterCodeUtil.getCodeDesc(item.getDesignation()));
         }
         CrudHelper.doPaging(searchParam,bpc.request);
         ParamUtil.setRequestAttr(bpc.request, "feAdmin",feAdminQueryDtoSearchResult);
@@ -82,7 +84,7 @@ public class FeAdminManageDelegate {
         FeUserDto accountDto = new FeUserDto();
         accountDto.setUenNo(organizationDto.getUenNo());
         ParamUtil.setSessionAttr(bpc.request,"user", accountDto);
-        ParamUtil.setRequestAttr(bpc.request,"canEditFlag", "Y");
+        ParamUtil.setSessionAttr(bpc.request,"canEditFlag", "Y");
     }
 
     public void edit(BaseProcessClass bpc) {
@@ -91,7 +93,7 @@ public class FeAdminManageDelegate {
 
         FeUserDto feUserDto = orgUserManageService.getUserAccount(userId);
         ParamUtil.setSessionAttr(bpc.request,"user",feUserDto);
-        ParamUtil.setRequestAttr(bpc.request,"canEditFlag", "N");
+        ParamUtil.setSessionAttr(bpc.request,"canEditFlag", "N");
     }
 
 
@@ -119,15 +121,19 @@ public class FeAdminManageDelegate {
             String role = ParamUtil.getString(bpc.request,"role");
 
             FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, "user");
+            if(feUserDto.getIdType() == null){
+                feUserDto.setIdType(idType);
+            }
             feUserDto.setDisplayName(name);
+            feUserDto.setUserId(name);
             feUserDto.setSalutation(salutation);
-            feUserDto.setIdType(idType);
             feUserDto.setIdentityNo(idNo);
             feUserDto.setDesignation(designation);
             feUserDto.setMobileNo(mobileNo);
             feUserDto.setOfficeTelNo(officeNo);
             feUserDto.setEmail(email);
-            feUserDto.setOrganization(organizationId);
+            feUserDto.setUserDomain(AppConsts.DOMAIN_INTERNET);
+            feUserDto.setOrgId(organizationId);
             if("active".equals(active)){
                 feUserDto.setAvailable(true);
             }else{
