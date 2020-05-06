@@ -57,7 +57,7 @@ public class AuditTcuListDelegator {
             ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
         }
         ParamUtil.setSessionAttr(request, "aduitTypeOp", (Serializable) aduitTypeOp);
-        ParamUtil.setSessionAttr(request, "modulename", "Tcu Audit List");
+        ParamUtil.setSessionAttr(request, "modulename", "TCU Audit List");
     }
 
     public void pre(BaseProcessClass bpc) {
