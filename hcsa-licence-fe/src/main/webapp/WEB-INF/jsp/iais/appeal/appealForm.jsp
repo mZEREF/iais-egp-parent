@@ -39,9 +39,9 @@
           <c:if test="${type=='application'}"><c:if test="${applicationAPPROVED==''||applicationAPPROVED==null}">
             <option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option></c:if>
           </c:if>
-         <%-- <c:if test="${type=='application'}">
+          <c:if test="${lateFee==true}">
             <option value="MS002" <c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
-          </c:if>--%>
+          </c:if>
             <c:if test="${maxCGOnumber==true}">
               <c:if test="${type=='application'}">
                 <option value="MS003" <c:if test="${appPremiseMiscDto.reason=='MS003'}">selected="selected"</c:if>>Appeal for appointment of additional CGO to a service</option>
@@ -60,9 +60,9 @@
           <div class="col-xs-12 col-md-10" id="othersReason" style="display: none" >
             <label style="font-size: 20px;margin-top: 1%">Others reason</label>
             <input type="text" maxlength="100"   name="othersReason" value="${appPremiseMiscDto.otherReason}" >
-
+            <span class="error-msg" name="iaisErrorMsg" id="error_otherReason"></span>
           </div>
-          <span class="error-msg" name="iaisErrorMsg" id="error_otherReason"></span>
+
           <div class="form-check-gp" id="selectHciNameAppeal" style="display: none" class="col-xs-12 col-md-6">
             <label style="font-size: 20px">Select HCI Name To Appeal</label>
             <c:forEach items="${hciNames}" var="hciName" >
@@ -145,11 +145,11 @@
             <a class="btn btn-secondary" href="#" id="cancel">Cancel</a>
             <a class="btn btn-secondary" href="#" id="save">Save</a>
             <a class="btn btn-primary" href="#" id="submit">Submit</a>
-
           </div>
         </div>
       </div>
     </div>
+
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
   </form>
 </div>

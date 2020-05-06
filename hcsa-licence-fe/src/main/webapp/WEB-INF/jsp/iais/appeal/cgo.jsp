@@ -443,7 +443,7 @@
         if('APTY005' == '${AppSubmissionDto.appType}' && 'true' != '${isClickEdit}'){
             disabledAll();
             //nice-select
-            $('div.nice-select').addClass('disabled');
+         /*   $('div.nice-select').addClass('disabled');*/
         }
 
         doEdit();

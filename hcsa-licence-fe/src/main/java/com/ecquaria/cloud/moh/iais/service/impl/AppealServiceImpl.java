@@ -54,6 +54,7 @@ import sop.servlet.webflow.HttpHandler;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -135,22 +136,27 @@ public class AppealServiceImpl implements AppealService {
         String remarks = request.getParameter("remarks");
         String othersReason = request.getParameter("othersReason");
         String draftStatus=(String)request.getAttribute("draftStatus");
+        AppealPageDto appealPageDto = reAppealPage(request);
         CommonsMultipartFile selectedFile =(CommonsMultipartFile) request.getFile("selectedFile");
         if(selectedFile!=null&&selectedFile.getSize()>0){
             String filename = selectedFile.getOriginalFilename();
             req.getSession().setAttribute("file",selectedFile);
             req.setAttribute("filename",filename);
+            appealPageDto.setCommonsMultipartFile(selectedFile);
         }
         else if(file!=null&&file.getSize()>0){
             if(Y.equals(isDelete)){
                 String filename = file.getOriginalFilename();
                 req.getSession().setAttribute("file",file);
                 req.setAttribute("filename",filename);
+                appealPageDto.setCommonsMultipartFile(file);
             }
         }
         if(N.equals(isDelete)){
             req.getSession().removeAttribute("appPremisesSpecialDocDto");
             req.getSession().removeAttribute("filename");
+            appealPageDto.setCommonsMultipartFile(null);
+
         }
         List<AppSvcCgoDto> appSvcCgoDtoList = reAppSvcCgo(request);
         ParamUtil.setRequestAttr(req, "CgoMandatoryCount", appSvcCgoDtoList.size());
@@ -158,7 +164,7 @@ public class AppealServiceImpl implements AppealService {
         ParamUtil.setSessionAttr(req, "GovernanceOfficersList", (Serializable) appSvcCgoDtoList);
 
         String groupId =(String) request.getAttribute("groupId");
-        AppealPageDto appealPageDto = reAppealPage(request);
+
         String s = JsonUtil.parseToJson(appealPageDto);
         AppPremiseMiscDto appPremiseMiscDto=new AppPremiseMiscDto();
         if(!StringUtil.isEmpty(saveDraftId)){
@@ -173,7 +179,6 @@ public class AppealServiceImpl implements AppealService {
             }
             appPremiseMiscDto.setRemarks(remarks);
             appPremiseMiscDto.setReason(reasonSelect);
-
             if (ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME.equals(reasonSelect)) {
                 appPremiseMiscDto.setNewHciName(proposedHciName);
             }
@@ -205,6 +210,23 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public void getMessage(HttpServletRequest request) {
+        String draftNumber = ParamUtil.getMaskedString(request, "draftNumber");
+        if(draftNumber!=null){
+            AppSubmissionDto appSubmissionDto = applicationClient.getAppSubmissionDtoByAppNo(draftNumber).getEntity();
+            String amountStr = appSubmissionDto.getAmountStr();
+            try {
+                AppealPageDto appealPageDto = JsonUtil.parseToObject(amountStr, AppealPageDto.class);
+                CommonsMultipartFile commonsMultipartFile = appealPageDto.getCommonsMultipartFile();
+                if(commonsMultipartFile!=null){
+                    request.getSession().setAttribute("selectedFile",commonsMultipartFile);
+                    request.getSession().setAttribute("filename",commonsMultipartFile.getName());
+                }
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }
+
+
+        }
         String appealingFor = ParamUtil.getMaskedString(request, APPEALING_FOR);
         String type  = request.getParameter(TYPE);
         if (LICENCE.equals(type)) {
@@ -237,6 +259,18 @@ public class AppealServiceImpl implements AppealService {
             boolean maxCGOnumber = isMaxCGOnumber(applicationDto);
             if(!maxCGOnumber){
                 request.getSession().setAttribute("maxCGOnumber",maxCGOnumber);
+            }
+            String originLicenceId = applicationDto.getOriginLicenceId();
+            if(originLicenceId!=null){
+                LicenceDto licenceDto = licenceClient.getLicBylicId(originLicenceId).getEntity();
+                try {
+                    int[] dateDuration = MiscUtil.getDateDuration(new Date(), licenceDto.getExpiryDate());
+                    if(dateDuration[1]==2&&dateDuration[2]==1){
+                        request.getSession().setAttribute("lateFee",true);
+                    }
+                } catch (ParseException e) {
+                   log.error(e.getMessage()+"------",e);
+                }
             }
             String serviceId = applicationDto.getServiceId();
             String id = applicationDto.getId();
@@ -805,7 +839,6 @@ public class AppealServiceImpl implements AppealService {
                     appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
                 }
 
-                appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
                 appealDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
 
             } catch (IOException e) {
@@ -830,7 +863,6 @@ public class AppealServiceImpl implements AppealService {
                         appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
                     }
 
-                    appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
                     appealDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
 
                 }catch (Exception e){

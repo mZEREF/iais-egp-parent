@@ -93,7 +93,7 @@ public class AppealApproveBatchjob {
                                           appealApproveDto);
                                   break;
                               case ApplicationConsts.APPEAL_TYPE_LICENCE :
-                                  appealLicence(applicationDto,appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),appealApproveDto.getAppPremisesRecommendationDto());
+                                  appealLicence(applicationDto,appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto());
                                   break;
 //                        case ApplicationConsts.APPEAL_TYPE_OTHER :
 //                            appealOther(appealApplicaiton,rollBackApplication,applicationDto);

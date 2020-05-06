@@ -852,6 +852,44 @@
 
         });
 
+
+        if($("select[name='onSiteAddressType']").val()=='ADDTY001'){
+
+            if($(this).parent().parent().next().children("label").children().length<1){
+
+                $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
+                $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
+                $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
+            }
+        }else if($("select[name='onSiteAddressType']").val()=='ADDTY002'){
+
+            $(this).parent().parent().next().children("label").children().remove();
+            $(this).parent().parent().next().next().children("label").children().remove();
+            $(this).parent().parent().next().next().next().children("label").children().remove();
+        }
+
+        if($("select[name='conveyanceAddrType']").val()=='ADDTY001'){
+            if( $(this).parent().parent().next().children("label").children().length<1){
+                $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
+                $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
+                $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
+            }
+        }else if($("select[name='conveyanceAddrType']").val()=='ADDTY002'){
+            $(this).parent().parent().next().children("label").children().remove();
+            $(this).parent().parent().next().next().children("label").children().remove();
+            $(this).parent().parent().next().next().next().children("label").children().remove();
+        }
+        if($("select[name='offSiteAddrType']").val()=='ADDTY001'){
+            if( $(this).parent().parent().next().children("label").children().length<1){
+                $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
+                $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
+                $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
+            }
+        }else if($("select[name='offSiteAddrType']").val()=='ADDTY002'){
+            $(this).parent().parent().next().children("label").children().remove();
+            $(this).parent().parent().next().next().children("label").children().remove();
+            $(this).parent().parent().next().next().next().children("label").children().remove();
+        }
         $("select[name='conveyanceAddrType']").change(function () {
             var $addrTypeContent = $(this).closest('div.premContent');
 
@@ -884,8 +922,6 @@
             }
         });
     }
-
-
 
 
 

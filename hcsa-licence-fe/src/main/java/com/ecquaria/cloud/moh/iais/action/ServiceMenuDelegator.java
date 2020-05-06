@@ -307,6 +307,8 @@ public class ServiceMenuDelegator {
                 ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, NEXT);
             }
         }
+        List<String> baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED);
+        List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED);
     }
 
     private List<String> BaseIdToName(List<String> baseId){

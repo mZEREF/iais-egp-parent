@@ -79,9 +79,9 @@
                                                 <c:if test="${requestInformationConfig==null}">
                                                     <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
                                                     <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
-                                                    <c:if test="${'APTY005' != AppSubmissionDto.appType}">
+
                                                         <a class="btn btn-secondary" id = "SaveDraft"  >Save as Draft</a>
-                                                    </c:if>
+
                                                 </c:if>
                                                 <a class="next btn btn-primary" id = "Next">SUBMIT & PAY </a></div>
                                         </div>
