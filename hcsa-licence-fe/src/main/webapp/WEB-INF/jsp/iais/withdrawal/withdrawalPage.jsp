@@ -19,52 +19,43 @@
                     <div class="internet-content">
                         <div class="row">
                             <div class="center-content">
-                                <iais:field value="You are withdrawing for" required="false"/>
+                                <iais:field value="You are withdrawing for" required="false" style="font-size:3rem"/>
                             </div>
                         </div>
                         <div class="row">
                             <div class="center-content">
                                 <div class="col-md-12">
-                                    <span>${appNo}</span>
+                                    <span style="font-size:2rem">${appNo}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="center-content">
-                                <iais:field value="Reason for Withdrawal" required="true"/>
+                                <iais:field value="Reason for Withdrawal" required="true" style="font-size:3rem"/>
                             </div>
                         </div>
                         <div class="row">
                             <div class="center-content">
                                 <div class="col-md-7">
-                                    <%
-                                        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-                                        String wReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
-                                    %>
                                     <iais:select name="withdrawalReason" id="withdrawalReason"
                                                  options="withdrawalReasonList"
-                                                 onchange="withdrawalReasons(this.value);" value="<%=wReason%>"></iais:select>
+                                                 onchange="withdrawalReasons(this.value);" value="${param.wReason}"/>
                                     <span id="error_withdrawnReason" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <div id="reason" <%
-                            if (!"WDR005".equals(wReason)){
-                                %>hidden
-                            <%}%>
-                        >
+                        <div id="reason" <c:if test="${'WDR005' != wReason}">hidden</c:if>>
                             <div class="row">
                                 <div class="center-content">
-                                    <label class="col-md-4">Any supporting remarks</label>
+                                    <label class="col-md-4"  style="font-size:3rem">Any supporting remarks</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="center-content">
                                     <div class="col-md-6">
-                                        <%String withdrawnRemarks = request.getParameter("withdrawnRemarks");%>
                                     <textarea name="withdrawnRemarks" cols="90" rows="15" id="withdrawnRemarks"
-                                        title="content" content="<%=withdrawnRemarks%>" maxlength="500"></textarea>
+                                        title="content" maxlength="500">${param.withdrawnRemarks}</textarea>
                                         <span id="error_withdrawnRemarks" name="iaisErrorMsg"
                                               class="error-msg"></span>
                                     </div>
@@ -73,7 +64,7 @@
                         </div>
                         <div class="row">
                             <div class="center-content">
-                                <iais:field value="File Upload for Withdrawal  Reasons" required="false"/>
+                                <iais:field value="File Upload for Withdrawal  Reasons" required="false"  style="font-size:3rem"/>
                             </div>
                         </div>
                         <div class="row">
@@ -93,7 +84,7 @@
                         </div>
                         <div class="row">
                             <div class="center-content">
-                                <div class="col-md-2 col-md-offset-8">
+                                <div class="col-md-2 col-md-offset-8" style="text-align: right">
                                     <div class="components">
                                         <a class="btn btn-secondary" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Cancel</a>
                                     </div>
@@ -113,11 +104,11 @@
 </div>
 <script type="text/javascript">
 
-    // $(function () {
-    //     if (obj == "WDR005") {
-    //         $("#reason").show();
-    //     }
-    // });
+    $(function () {
+        if (obj == "WDR005") {
+            $("#reason").show();
+        }
+    });
 
     function withdrawalReasons(obj) {
         console.log(obj);

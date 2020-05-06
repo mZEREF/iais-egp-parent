@@ -8,10 +8,12 @@
         <div class="navigation-gp">
             <div class="row">
                 <%@ include file="../common/dashboardDropDown.jsp" %>
-                <div style="margin-top: 20px;margin-left: 2%" >
-                    <h1>Withdrawal Application From</h1>
-                </div>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div style="margin-top: 20px;margin-left: 2%" >
+            <h1>Withdrawal From</h1>
         </div>
     </div>
 </div>
