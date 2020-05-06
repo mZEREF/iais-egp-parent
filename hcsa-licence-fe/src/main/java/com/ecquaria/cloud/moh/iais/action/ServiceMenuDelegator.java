@@ -285,16 +285,16 @@ public class ServiceMenuDelegator {
     public void licenseValidation(BaseProcessClass bpc){
         String action = ParamUtil.getString(bpc.request, "action");
         String licenceJudge = ParamUtil.getString(bpc.request, "licenceJudge");
+        String[] licence = ParamUtil.getStrings(bpc.request, "licence");
         if(BACK_ATTR.equals(action)){
             ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, BACK_ATTR);
         }else {
-            if(licenceJudge == null){
+            if(licenceJudge == null || licence == null){
                 ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, ERROR_ATTR);
                 String err = "Please select at least one licence.";
                 ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
                 ParamUtil.setRequestAttr(bpc.request, "action","err");
             }else if("1".equals(licenceJudge)) {
-                String[] licence = ParamUtil.getStrings(bpc.request, "licence");
                 List<String> licenceList = IaisCommonUtils.genNewArrayList();
                 for (String item : licence
                 ) {
