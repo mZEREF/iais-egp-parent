@@ -17,13 +17,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.InspectorCalendarQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -143,9 +143,11 @@ public class InspSupAddAvailabilityDelegator {
         List<String> roleList = new ArrayList<>(loginContext.getRoleIds());
         if(roleList.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
             List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
-            //List<SelectOption> inspectorOption = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds);
+            GroupRoleFieldDto groupRoleFieldDto = new GroupRoleFieldDto();
+            groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
+            List<SelectOption> inspectorOption = groupRoleFieldDto.getMemberOption();
             ParamUtil.setSessionAttr(bpc.request, "curRole", RoleConsts.USER_ROLE_INSPECTION_LEAD);
-            //ParamUtil.setSessionAttr(bpc.request, "nonAvaUserName", (Serializable) inspectorOption);
+            ParamUtil.setSessionAttr(bpc.request, "nonAvaUserName", (Serializable) inspectorOption);
         } else {
             ParamUtil.setSessionAttr(bpc.request, "curRole", RoleConsts.USER_ROLE_INSPECTIOR);
             OrgUserDto oDto = inspSupAddAvailabilityService.getOrgUserDtoById(loginContext.getUserId());
@@ -285,9 +287,11 @@ public class InspSupAddAvailabilityDelegator {
         List<String> roleList = new ArrayList<>(loginContext.getRoleIds());
         if(roleList.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
             List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
-            //List<SelectOption> inspectorOption = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds);
+            GroupRoleFieldDto groupRoleFieldDto = new GroupRoleFieldDto();
+            groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
+            List<SelectOption> inspectorOption = groupRoleFieldDto.getMemberOption();
             ParamUtil.setSessionAttr(bpc.request, "curRole", RoleConsts.USER_ROLE_INSPECTION_LEAD);
-            //ParamUtil.setSessionAttr(bpc.request, "nonAvaUserName", (Serializable) inspectorOption);
+            ParamUtil.setSessionAttr(bpc.request, "nonAvaUserName", (Serializable) inspectorOption);
         } else {
             ParamUtil.setSessionAttr(bpc.request, "curRole", RoleConsts.USER_ROLE_INSPECTIOR);
             OrgUserDto oDto = inspSupAddAvailabilityService.getOrgUserDtoById(loginContext.getUserId());
