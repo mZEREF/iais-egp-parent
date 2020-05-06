@@ -85,10 +85,6 @@ public class InsReportDelegator {
             insRepDto.setReportNoteBy(inspectorUser.getReportNoteBy());
             insRepDto.setInspectors(inspectorUser.getInspectors());
         }
-        String appStatus = applicationViewDto.getApplicationDto().getStatus();
-        if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION.equals(appStatus)||ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(appStatus)){
-            initRecommendation(correlationId,applicationViewDto,bpc);
-        }
         AppPremisesRecommendationDto accRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPECTYPE).getEntity();
         if(accRecommendationDto!=null){
             String recomDecision = accRecommendationDto.getRecomDecision();
@@ -96,6 +92,10 @@ public class InsReportDelegator {
                 accRecommendationDto.setRecommendation(InspectionReportConstants.APPROVEDLTC);
                 ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, accRecommendationDto);
             }
+        }
+        String appStatus = applicationViewDto.getApplicationDto().getStatus();
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION.equals(appStatus)||ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(appStatus)){
+            initRecommendation(correlationId,applicationViewDto,bpc);
         }
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
         List<SelectOption> chronoOption = getChronoOption();

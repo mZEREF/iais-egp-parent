@@ -73,16 +73,18 @@
     });
 
     function doEdit(Id){
-        $('#maskUserId').val(Id);
+        $('#maskUserId').val(Id)
         submitUser('doEdit');
     }
 
     function doDelete(Id){
+        $('#maskUserId').val(Id)
         $("[name='crud_action_value']").val(Id);
         submitUser('doDelete');
     }
 
     function doRole(Id){
+        $('#maskUserId').val(Id)
         $("[name='crud_action_value']").val(Id);
         submitUser('doRole');
     }

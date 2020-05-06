@@ -534,7 +534,7 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     @Override
-    public void routingTaskToAo2(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId) throws FeignException {
+    public void routingTaskToAo2(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId,String historyRemarks) throws FeignException {
         String serviceId = applicationDto.getServiceId();
         String status = applicationDto.getStatus();
         String applicationNo = applicationDto.getApplicationNo();
@@ -564,7 +564,7 @@ public class InsRepServiceImpl implements InsRepService {
             taskService.createTasks(taskDtos);
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_AO2,applicationDto);
             String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
-            createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId1, subStage);
+            createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId1, subStage);
             createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO2, groupId2, null);
         }
 
@@ -588,7 +588,7 @@ public class InsRepServiceImpl implements InsRepService {
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
         createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
-        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, historyRemarks, null, RoleConsts.USER_ROLE_AO1, groupId2, subStage);
+        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId2, subStage);
     }
 
     @Override

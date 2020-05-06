@@ -188,4 +188,7 @@ public interface HcsaLicenceClient {
     @GetMapping(value = "/hcsa-licence/premise-cessation-id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PremisesDto> getLicPremisesDtoById(@RequestParam(value = "id")String id);
 
+    @PostMapping(value = "/hcsa-licence/licId-base-cessation",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getBaseLicIds(@RequestBody List<String> licenceIds);
+
 }

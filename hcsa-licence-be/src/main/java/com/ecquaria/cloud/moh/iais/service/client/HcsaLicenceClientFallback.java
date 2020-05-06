@@ -26,6 +26,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 
 /**
  * @author Wenkang
@@ -400,4 +401,13 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<String>> getBaseLicIds(List<String> licenceIds) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 }

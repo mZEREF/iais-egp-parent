@@ -118,6 +118,7 @@
                                                                               hidden> The field is mandatory.</span>
                                                                     </iais:value>
                                                                 </iais:row>
+                                                                <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">
                                                                 <iais:row>
                                                                     <iais:field value="Licence Start Date" required="false"/>
                                                                     <iais:value width="10">
@@ -129,6 +130,7 @@
                                                                         </c:if>
                                                                     </iais:value>
                                                                 </iais:row>
+                                                                </c:if>
                                                                 <div class="fastTrack">
                                                                     <iais:row>
                                                                         <iais:field value="Fast Tracking?" required="false"/>

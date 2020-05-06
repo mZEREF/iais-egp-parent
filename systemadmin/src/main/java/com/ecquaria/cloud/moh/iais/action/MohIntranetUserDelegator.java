@@ -153,8 +153,7 @@ public class MohIntranetUserDelegator {
             return;
         }
 
-        String id = request.getParameter("maskUserId");
-        String maskUserId = ParamUtil.getMaskedString(request, "maskUserId");
+        String id  = ParamUtil.getMaskedString(bpc.request, "maskUserId");
         OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
 
         if (id != null && orgUserDto == null) {

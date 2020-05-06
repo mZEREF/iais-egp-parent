@@ -122,7 +122,7 @@ public class InsReportAoDelegator {
         log.debug(StringUtil.changeForLog("the back start ...."));
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATIONVIEWDTO);
         TaskDto taskDto =  (TaskDto)ParamUtil.getSessionAttr(bpc.request, TASKDTO);
-        String historyRemarks = ParamUtil.getRequestString(bpc.request, "processingDecision");
+        String historyRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         AppPremisesRecommendationDto appPremisesRecommendationDto = (AppPremisesRecommendationDto)ParamUtil.getSessionAttr(bpc.request, RECOMMENDATION_DTO);
@@ -183,9 +183,9 @@ public class InsReportAoDelegator {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         }
-
+        String historyRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
         saveAoRecommendation(appPremisesCorrelationId,preapreRecommendationDto);
-        insRepService.routingTaskToAo2(taskDto,applicationDto,appPremisesCorrelationId);
+        insRepService.routingTaskToAo2(taskDto,applicationDto,appPremisesCorrelationId,historyRemarks);
         ParamUtil.setSessionAttr(bpc.request, INSREPDTO, insRepDto);
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
     }

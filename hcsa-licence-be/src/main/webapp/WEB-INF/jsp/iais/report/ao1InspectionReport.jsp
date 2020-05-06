@@ -86,7 +86,6 @@
                                                                         <textarea style="resize:none" name="processRemarks" cols="65" rows="6"  title="content" MAXLENGTH="8000"><c:out value="${appPremisesRecommendationDto.processRemarks}"/></textarea>
                                                                     </iais:value>
                                                                 </iais:row>
-
                                                                 <iais:row>
                                                                     <iais:field value="Processing Decision" required="true"/>
                                                                     <iais:value width="6">
@@ -94,6 +93,8 @@
                                                                         <span id="error_submit" class="error-msg" hidden> The field is mandatory.</span>
                                                                     </iais:value>
                                                                 </iais:row>
+
+                                                                <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">
                                                                 <iais:row>
                                                                     <iais:field value="Licence Start Date" required="false"/>
                                                                     <iais:value width="10">
@@ -105,6 +106,7 @@
                                                                         </c:if>
                                                                     </iais:value>
                                                                 </iais:row>
+                                                                </c:if>
                                                                 <div class="fastTrack">
                                                                     <iais:row>
                                                                         <iais:field value="Fast Tracking?" required="false"/>
