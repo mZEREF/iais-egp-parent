@@ -45,7 +45,6 @@
     $(".draftAction").change(function () {
         var appNo = $(this).closest("tr").find(".appdraftNo").html();
         var action = $(this).val();
-        alert("appNo"+appNo+"---"+action);
         if ("Reload" == action) {
             $("[name='action_no_value']").val(appNo);
             submit('appDoReload');

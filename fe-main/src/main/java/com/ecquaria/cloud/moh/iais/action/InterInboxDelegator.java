@@ -50,8 +50,6 @@ public class InterInboxDelegator {
         this.inboxService = inboxService;
     }
 
-    private InterInboxUserDto interInboxUserDto;
-
     private static String msgStatus[] = {
             MessageConstants.MESSAGE_STATUS_READ,
             MessageConstants.MESSAGE_STATUS_UNREAD,
@@ -86,7 +84,7 @@ public class InterInboxDelegator {
         IaisEGPHelper.clearSessionAttr(bpc.request,FilterParameter.class);
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId(),bpc.getSession().getId());
-        interInboxUserDto = new InterInboxUserDto();
+        InterInboxUserDto interInboxUserDto = new InterInboxUserDto();
         interInboxUserDto.setLicenseeId(loginContext.getLicenseeId());
         interInboxUserDto.setUserId(loginContext.getUserId());
         interInboxUserDto.setOrgId(loginContext.getOrgId());
@@ -133,6 +131,7 @@ public class InterInboxDelegator {
     public void msgToArchive(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
         inboxParam.addFilter("userId", interInboxUserDto.getLicenseeId(),true);
         inboxParam.addFilter(InboxConst.MESSAGE_STATUS, msgArchiverStatus,true);
@@ -169,6 +168,7 @@ public class InterInboxDelegator {
 
     public void msgToView(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
         String msgId = ParamUtil.getMaskedString(request,InboxConst.MSG_ACTION_ID);
         inboxService.updateMsgStatusToRead(msgId);
         String msgContent = ParamUtil.getMaskedString(request,InboxConst.CRUD_ACTION_VALUE);
@@ -208,6 +208,7 @@ public class InterInboxDelegator {
         log.debug(StringUtil.changeForLog("Step ---> Into Message Page"));
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
         inboxParam.addFilter("userId", interInboxUserDto.getLicenseeId(),true);
         inboxParam.addFilter(InboxConst.MESSAGE_STATUS, msgStatus,true);
@@ -247,6 +248,7 @@ public class InterInboxDelegator {
         log.debug(StringUtil.changeForLog("Step ---> toLicencePage"));
         HttpServletRequest request = bpc.request;
         prepareLicSelectOption(request);
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
         SearchParam licParam = SearchResultHelper.getSearchParam(request,licenceParameter,true);
         licParam.addFilter("licenseeId",interInboxUserDto.getLicenseeId(),true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
@@ -477,6 +479,7 @@ public class InterInboxDelegator {
         /**
          * Application SearchResult
          */
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
         SearchParam appParam = SearchResultHelper.getSearchParam(request,appParameter,true);
         appParam.addFilter("licenseeId", interInboxUserDto.getLicenseeId(),true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.APPLICATION_QUERY_KEY,appParam);
@@ -816,5 +819,6 @@ public class InterInboxDelegator {
         ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, null);
         ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, null);
         ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, null);
+        ParamUtil.setSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO, null);
     }
 }
