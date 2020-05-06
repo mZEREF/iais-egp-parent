@@ -108,7 +108,7 @@ public class WithOutRenewalDelegator {
             return;
         }
         //get licensee ID
-        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"INTER_INBOX_USER_INFO");
         int index = 0;
         String firstSvcName = "";
         List<String> serviceNameTitleList = IaisCommonUtils.genNewArrayList();
@@ -324,8 +324,13 @@ public class WithOutRenewalDelegator {
         }
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         //app submit
-        InterInboxUserDto interInboxUserDto = (InterInboxUserDto)ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
-        String licenseeId = interInboxUserDto.getLicenseeId();
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto)ParamUtil.getSessionAttr(bpc.request,"INTER_INBOX_USER_INFO");
+        String licenseeId = null;
+        if(interInboxUserDto!=null){
+            licenseeId = interInboxUserDto.getLicenseeId();
+        }else{
+            log.error(StringUtil.changeForLog("interInboxUserDto null"));
+        }
         Double total = 0d;
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
             FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
@@ -358,8 +363,13 @@ public class WithOutRenewalDelegator {
 
     //prepareAcknowledgement
     public void prepareAcknowledgement(BaseProcessClass bpc)throws Exception{
-        InterInboxUserDto interInboxUserDto = (InterInboxUserDto)ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
-        String licenseeId = interInboxUserDto.getLicenseeId();
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto)ParamUtil.getSessionAttr(bpc.request,"INTER_INBOX_USER_INFO");
+        String licenseeId = null;
+        if(interInboxUserDto!=null){
+            licenseeId = interInboxUserDto.getLicenseeId();
+        }else{
+            log.error(StringUtil.changeForLog("interInboxUserDto null"));
+        }
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
         String emailAddress = emailAddressesToString(licenseeEmailAddrs);
         ParamUtil.setRequestAttr(bpc.request,"emailAddress",emailAddress);
