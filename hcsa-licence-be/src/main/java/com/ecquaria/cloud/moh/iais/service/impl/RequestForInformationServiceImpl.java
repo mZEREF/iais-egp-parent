@@ -480,7 +480,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         fileItem = new DiskFileItem("selectedFile", Files.probeContentType(f.toPath()),
                                 false, fileName.toString(), (int) f.length(), f.getParentFile());
                     } catch (IOException e) {
-                        e.printStackTrace();
                         log.error(e.getMessage(),e);
                     }
 //                    try ( InputStream input = new FileInputStream(f);){

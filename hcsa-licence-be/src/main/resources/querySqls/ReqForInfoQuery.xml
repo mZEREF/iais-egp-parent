@@ -25,6 +25,7 @@
             <#if appStatus??> AND app.status = :appStatus</#if>
             <#if subDate??> AND T4.submit_dt >= convert(datetime,:subDate)</#if>
             <#if toDate??> AND T4.submit_dt <= convert(datetime,:toDate)</#if>
+            <#if licenseeId??>AND T4.licensee_id = :licenseeId</#if>
             <#if hciCode??> AND  charindex(:hciCode, T3.HCI_CODE )>0</#if>
             <#if hciName??> AND charindex(:hciName, T3.HCI_NAME )>0</#if>
             <#if hciStreetName??> AND charindex(:hciStreetName, T3.STREET_NAME )>0</#if>
@@ -42,7 +43,6 @@
             <#if licence_no??>AND :licence_no = :licence_no</#if>
             <#if app_id??>AND :app_id = :app_id</#if>
             <#if org_ids??>AND :org_ids = :org_ids</#if>
-            <#if licenseeId??>AND :licenseeId = :licenseeId</#if>
             <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
             <#if licenseeRegnNo??>AND :licenseeRegnNo = :licenseeRegnNo</#if>
             <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
@@ -86,10 +86,9 @@
             <#if hciPostalCode??> AND charindex(:hciPostalCode, Prem.POSTAL_CODE )>0</#if>
             <#if svc_names??> AND lic.SVC_NAME in( :svc_names)</#if>
             <#if svc_name??> AND lic.SVC_NAME = :svc_name</#if>
-            <#if licenseeIds??> AND lic.LICENSEE_ID in( :licenseeIds)</#if>
             <#if licenseeRegnNo??> AND charindex( :licenseeRegnNo,keyPsnExt.PROF_REG_NO )>0</#if>
+            <#if licenseeId??>AND lic.licensee_id = :licenseeId</#if>
 
-            <#if licenseeId??>AND :licenseeId = :licenseeId</#if>
             <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
             <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
             <#if id??>AND :id = :id</#if>

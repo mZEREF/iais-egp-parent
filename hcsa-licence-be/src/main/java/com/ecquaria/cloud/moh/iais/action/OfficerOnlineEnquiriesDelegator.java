@@ -151,7 +151,7 @@ public class OfficerOnlineEnquiriesDelegator {
         log.info("=======>>>>>preBasicSearch>>>>>>>>>>>>>>>>requestForInformation");
 
         HttpServletRequest request = bpc.request;
-
+        ParamUtil.setSessionAttr(request,"SearchResult", null);
         String searchNo=ParamUtil.getString(request,SEARCH_NO);
         ParamUtil.setRequestAttr(request,SEARCH_NO,searchNo);
         int count=0;
@@ -243,9 +243,6 @@ public class OfficerOnlineEnquiriesDelegator {
 //                        if(svcNames.size()!=0){
 //                            filter.put("svc_names", svcNames);
 //                        }
-                        if(licenseeIds.size()!=0){
-                            filter.put("licenseeIds", licenseeIds);
-                        }
                         licenceParameter.setFilters(filter);
                         SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
                         licParam.setPageNo(0);
@@ -284,9 +281,6 @@ public class OfficerOnlineEnquiriesDelegator {
 //            if(svcNames.size()!=0){
 //                filter.put("svc_names", svcNames);
 //            }
-            if(licenseeIds.size()!=0){
-                filter.put("licenseeIds", licenseeIds);
-            }
             licenceParameter.setFilters(filter);
             SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
             CrudHelper.doPaging(licParam,bpc.request);
@@ -312,7 +306,6 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(!StringUtil.isEmpty(lic.getAppId())){
                         filter.put("id", lic.getAppId());
                         filter.remove("svc_names");
-                        filter.remove("licenseeIds");
                         applicationParameter.setFilters(filter);
 
                         SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
@@ -443,7 +436,7 @@ public class OfficerOnlineEnquiriesDelegator {
         log.info("=======>>>>>doSearchLicence>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request = bpc.request;
         preSelectOption(request);
-
+        ParamUtil.setSessionAttr(request,"SearchResult", null);
         String applicationNo = ParamUtil.getString(bpc.request, "application_no");
         String applicationType = ParamUtil.getString(bpc.request, "application_type");
         String status = ParamUtil.getString(bpc.request, "application_status");
@@ -624,12 +617,6 @@ public class OfficerOnlineEnquiriesDelegator {
                         if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
                             filters.put("app_id", rfiApplicationQueryDto.getId());
                         }
-//                        if(svcNames.size()!=0){
-//                            filters.put("svc_names", svcNames);
-//                        }
-                        if(licenseeIds.size()!=0){
-                            filters.put("licenseeIds", licenseeIds);
-                        }
                         licenceParameter.setFilters(filters);
                         SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
                         licParam.setPageNo(0);
@@ -669,7 +656,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 filters.put("svc_names", svcNames);
             }
             if(licenseeIds.size()!=0){
-                filters.put("licenseeIds", licenseeIds);
+                filters.put("licenseeId", licenseeIds.get(0));
             }
             licenceParameter.setFilters(filters);
             SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
@@ -696,7 +683,9 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(!StringUtil.isEmpty(lic.getAppId())){
                         filters.put("id", lic.getAppId());
                         filters.remove("svc_names");
-                        filters.remove("licenseeIds");
+                        if(licenseeIds.size()!=0){
+                            filters.put("licenseeId", licenseeIds.get(0));
+                        }
                         applicationParameter.setFilters(filters);
 
                         SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
@@ -728,7 +717,7 @@ public class OfficerOnlineEnquiriesDelegator {
                                 addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
                                 reqForInfoSearchListDto.setAddress(addressList);
                             }
-                            reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+                            //reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
                 }
