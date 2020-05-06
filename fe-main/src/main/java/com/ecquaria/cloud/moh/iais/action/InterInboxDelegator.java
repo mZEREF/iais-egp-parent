@@ -83,7 +83,7 @@ public class InterInboxDelegator {
         clearSessionAttr(bpc.request);
         IaisEGPHelper.clearSessionAttr(bpc.request,FilterParameter.class);
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
-        AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId(),bpc.getSession().getId());
+        AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId());
         InterInboxUserDto interInboxUserDto = new InterInboxUserDto();
         interInboxUserDto.setLicenseeId(loginContext.getLicenseeId());
         interInboxUserDto.setUserId(loginContext.getUserId());
