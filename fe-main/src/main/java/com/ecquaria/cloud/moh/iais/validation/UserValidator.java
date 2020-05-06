@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,10 +29,8 @@ public class UserValidator implements CustomizeValidator {
                     map.put("identityNo", "Please key in a valid NRIC/FIN");
                 }
             }
-            if (dto.getEmail() != null && !StringUtil.isEmpty(dto.getEmail())) {
-                if (!dto.getEmail().matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
-                    map.put("email", "Please key in a valid email address");
-                }
+            if (dto.getEmail() != null && !ValidationUtils.isEmail(dto.getEmail())) {
+                map.put("email", "Please key in a valid email address");
             }
             if(dto.getMobileNo() != null && !StringUtil.isEmpty(dto.getMobileNo())){
                 if (!dto.getMobileNo().matches("^[8|9][0-9]{7}$")) {
