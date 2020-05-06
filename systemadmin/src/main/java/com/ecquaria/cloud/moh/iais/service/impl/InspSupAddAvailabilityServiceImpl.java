@@ -3,8 +3,12 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InspSupAddAvailabilityService;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
@@ -14,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * InspSupAddAvailabilityServiceImpl
@@ -85,5 +90,57 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
             dateContainFlag = appointmentClient.dateIsContainNonWork(apptNonAvailabilityDateDto).getEntity();
         }
         return dateContainFlag;
+    }
+
+    @Override
+    public List<String> getWorkGroupIdsByLogin(LoginContext loginContext) {
+        List<String> workGroupIdList = IaisCommonUtils.genNewArrayList();
+        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
+        for(UserGroupCorrelationDto ugcDto:userGroupCorrelationDtos){
+            if(ugcDto.getIsLeadForGroup() == 1){
+                workGroupIdList.add(ugcDto.getGroupId());
+            }
+        }
+        return workGroupIdList;
+    }
+
+    @Override
+    public GroupRoleFieldDto getInspectorOptionByLogin(LoginContext loginContext, List<String> workGroupIds, GroupRoleFieldDto groupRoleFieldDto) {
+        List<SelectOption> inspectorOption = IaisCommonUtils.genNewArrayList();
+        Map<String, String> userIdMap = IaisCommonUtils.genNewHashMap();
+        if(IaisCommonUtils.isEmpty(workGroupIds)){
+            return null;
+        }
+        List<String> userIdList = IaisCommonUtils.genNewArrayList();
+        for(String workId:workGroupIds){
+            List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(workId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+            userIdList = getUserIdList(orgUserDtoList, userIdList);
+        }
+        List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(userIdList)){
+            orgUserDtos = organizationClient.retrieveOrgUserAccount(userIdList).getEntity();
+        }
+        if(orgUserDtos != null && !(orgUserDtos.isEmpty())){
+            for(int i = 0; i < orgUserDtos.size(); i++){
+                userIdMap.put(i + "", orgUserDtos.get(i).getId());
+                SelectOption so = new SelectOption(i + "", orgUserDtos.get(i).getDisplayName());
+                inspectorOption.add(so);
+            }
+        }
+        groupRoleFieldDto.setUserIdMap(userIdMap);
+        groupRoleFieldDto.setMemberOption(inspectorOption);
+        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
+        Integer isLeadForGroup = userGroupCorrelationDtos.get(0).getIsLeadForGroup();
+        if(1!=isLeadForGroup){
+            groupRoleFieldDto.setMemberOption(null);
+        }
+        return groupRoleFieldDto;
+    }
+
+    private List<String> getUserIdList(List<OrgUserDto> orgUserDtoList, List<String> userIdList) {
+        for(OrgUserDto oDto:orgUserDtoList){
+            userIdList.add(oDto.getId());
+        }
+        return userIdList;
     }
 }

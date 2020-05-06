@@ -2,7 +2,9 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.List;
 
@@ -73,4 +75,22 @@ public interface InspSupAddAvailabilityService {
       * @Descripation: date Is Contain Non Work
       */
     String dateIsContainNonWork(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto);
+
+    /**
+     * @author: shicheng
+     * @Date 2019/12/11
+     * @Param: loginContext
+     * @return: List<String>
+     * @Descripation: get Work Group Ids By Login
+     */
+    List<String> getWorkGroupIdsByLogin(LoginContext loginContext);
+
+    /**
+     * @author: shicheng
+     * @Date 2019/12/11
+     * @Param: loginContext
+     * @return: GroupRoleFieldDto
+     * @Descripation: get Inspector Option By Login
+     */
+    GroupRoleFieldDto getInspectorOptionByLogin(LoginContext loginContext, List<String> workGroupIds, GroupRoleFieldDto groupRoleFieldDto);
 }

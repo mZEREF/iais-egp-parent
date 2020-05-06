@@ -28,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspSupAddAvailabilityService;
-import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -49,12 +48,8 @@ public class InspSupAddAvailabilityDelegator {
     private InspSupAddAvailabilityService inspSupAddAvailabilityService;
 
     @Autowired
-    private InspectionService inspectionService;
-
-    @Autowired
-    private InspSupAddAvailabilityDelegator(InspectionService inspectionService, InspSupAddAvailabilityService inspSupAddAvailabilityService){
+    private InspSupAddAvailabilityDelegator(InspSupAddAvailabilityService inspSupAddAvailabilityService){
         this.inspSupAddAvailabilityService = inspSupAddAvailabilityService;
-        this.inspectionService = inspectionService;
     }
 
     /**
@@ -142,9 +137,9 @@ public class InspSupAddAvailabilityDelegator {
         ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = (ApptNonAvailabilityDateDto) ParamUtil.getSessionAttr(bpc.request, "inspNonAvailabilityDto");
         List<String> roleList = new ArrayList<>(loginContext.getRoleIds());
         if(roleList.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
-            List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
+            List<String> workGroupIds = inspSupAddAvailabilityService.getWorkGroupIdsByLogin(loginContext);
             GroupRoleFieldDto groupRoleFieldDto = new GroupRoleFieldDto();
-            groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
+            groupRoleFieldDto = inspSupAddAvailabilityService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
             List<SelectOption> inspectorOption = groupRoleFieldDto.getMemberOption();
             ParamUtil.setSessionAttr(bpc.request, "curRole", RoleConsts.USER_ROLE_INSPECTION_LEAD);
             ParamUtil.setSessionAttr(bpc.request, "nonAvaUserName", (Serializable) inspectorOption);
@@ -286,9 +281,9 @@ public class InspSupAddAvailabilityDelegator {
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<String> roleList = new ArrayList<>(loginContext.getRoleIds());
         if(roleList.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
-            List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
+            List<String> workGroupIds = inspSupAddAvailabilityService.getWorkGroupIdsByLogin(loginContext);
             GroupRoleFieldDto groupRoleFieldDto = new GroupRoleFieldDto();
-            groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
+            groupRoleFieldDto = inspSupAddAvailabilityService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
             List<SelectOption> inspectorOption = groupRoleFieldDto.getMemberOption();
             ParamUtil.setSessionAttr(bpc.request, "curRole", RoleConsts.USER_ROLE_INSPECTION_LEAD);
             ParamUtil.setSessionAttr(bpc.request, "nonAvaUserName", (Serializable) inspectorOption);
