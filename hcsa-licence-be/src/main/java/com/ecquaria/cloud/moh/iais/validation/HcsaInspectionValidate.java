@@ -261,15 +261,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     if("C".equals(level)){
                         caLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "caRightLowCaseCounth", "Invalid Number");
+                        errMap.put(serviceCode + "caRightLowCaseCounth", "ERR0013");
                         fdto.setDoCaLeftHighCountherr(true);
                     }else if("I".equals(level)){
                         miLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "miRightLowCaseCounth", "Invalid Number");
+                        errMap.put(serviceCode + "miRightLowCaseCounth", "ERR0013");
                         fdto.setDoMiLeftHighCountherr(false);
                     }else if("A".equals(level)){
                         mjLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "mjRightLowCaseCounth", "Invalid Number");
+                        errMap.put(serviceCode + "mjRightLowCaseCounth", "ERR0013");
                         fdto.setDoMjLeftHighCountherr(false);
                     }
                 }
@@ -277,15 +277,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         } catch (Exception e) {
             if("C".equals(level)){
                 caLeftHighNumFlag = false;
-                errMap.put(serviceCode + "caRightLowCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "caRightLowCaseCounth", "ERR0013");
                 fdto.setDoCaLeftHighCountherr(true);
             }else if("I".equals(level)){
                 miLeftHighNumFlag = false;
-                errMap.put(serviceCode + "miRightLowCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "miRightLowCaseCounth", "ERR0013");
                 fdto.setDoMiLeftHighCountherr(true);
              }else if("A".equals(level)){
                 mjLeftHighNumFlag = false;
-                errMap.put(serviceCode + "mjRightLowCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "mjRightLowCaseCounth", "ERR0013");
                 fdto.setDoMjLeftHighCountherr(true);
             }
             e.printStackTrace();
@@ -295,13 +295,13 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum +1 != inLeftHighNum){
                     if("C".equals(level)&&caLeftHighNumFlag){
-                        errMap.put(serviceCode + "caRightLowCaseCounth", "High Maximum cases and Moderate Minimum can only differ by 1");
+                        errMap.put(serviceCode + "caRightLowCaseCounth", "ERR0014");
                         fdto.setDoCaLeftHighCountherr(true);
                     }else if("I".equals(level)&&miLeftHighNumFlag){
-                        errMap.put(serviceCode + "miRightLowCaseCounth", "High Maximum cases and Moderate Minimum can only differ by 1");
+                        errMap.put(serviceCode + "miRightLowCaseCounth", "ERR0014");
                         fdto.setDoMiLeftHighCountherr(true);
                     }else if("A".equals(level)&&mjLeftHighNumFlag){
-                        errMap.put(serviceCode + "mjRightLowCaseCounth", "High Maximum cases and Moderate Minimum can only differ by 1");
+                        errMap.put(serviceCode + "mjRightLowCaseCounth", "ERR0014");
                         fdto.setDoMjLeftHighCountherr(true);
                     }
                 }
@@ -322,15 +322,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
                     if("C".equals(level)){
                         caRightLowNumFlag = false;
-                        errMap.put(serviceCode + "caRightLowCaseCounth", "Invalid Number");
+                        errMap.put(serviceCode + "caRightLowCaseCounth", "ERR0013");
                         fdto.setDoCaRightLowCountherr(true);
                     }else if("I".equals(level)){
                         miRightLowNumFlag = false;
-                        errMap.put(serviceCode + "miRightLowCaseCounth", "Invalid Number");
+                        errMap.put(serviceCode + "miRightLowCaseCounth", "ERR0013");
                         fdto.setDoMiRightLowCountherr(true);
                     }else if("A".equals(level)){
                         mjRightLowNumFlag = false;
-                        errMap.put(serviceCode + "mjRightLowCaseCounth", "Invalid Number");
+                        errMap.put(serviceCode + "mjRightLowCaseCounth", "ERR0013");
                         fdto.setDoMjRightLowCountherr(true);
                     }
                 }
@@ -339,15 +339,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
             // TODO: handle exception
             if("C".equals(level)){
                 caRightLowNumFlag = false;
-                errMap.put(serviceCode + "caRightLowCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "caRightLowCaseCounth", "ERR0013");
                 fdto.setDoCaRightLowCountherr(true);
             }else if("I".equals(level)){
                 miRightLowNumFlag = false;
-                errMap.put(serviceCode + "miRightLowCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "miRightLowCaseCounth", "ERR0013");
                 fdto.setDoMiRightLowCountherr(true);
             }else if("A".equals(level)){
                 mjRightLowNumFlag = false;
-                errMap.put(serviceCode + "miRightLowCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "miRightLowCaseCounth", "ERR0013");
                 fdto.setDoMiRightLowCountherr(true);
             }
             e.printStackTrace();
@@ -358,17 +358,17 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 if(inLeftModNum -1 != inRightLowNum){
                     if("C".equals(level)){
                         if(caRightLowNumFlag){
-                            errMap.put(serviceCode + "caRightLowCaseCounth", "Low Maximum cases and Moderate Minimum can only differ by 1");
+                            errMap.put(serviceCode + "caRightLowCaseCounth", "ERR0015");
                             fdto.setDoCaRightLowCountherr(true);
                         }
                     }else if("I".equals(level)){
                         if(miRightLowNumFlag){
-                            errMap.put(serviceCode + "miRightLowCaseCounth", "Low Maximum cases and Moderate Minimum can only differ by 1");
+                            errMap.put(serviceCode + "miRightLowCaseCounth", "ERR0015");
                             fdto.setDoMiRightLowCountherr(true);
                         }
                     }else if("A".equals(level)){
                         if(mjRightLowNumFlag){
-                            errMap.put(serviceCode + "mjRightLowCaseCounth", "Low Maximum cases and Moderate Minimum can only differ by 1");
+                            errMap.put(serviceCode + "mjRightLowCaseCounth", "ERR0015");
                             fdto.setDoMjRightLowCountherr(true);
                         }
                     }
@@ -389,26 +389,26 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 inLeftModNum = Integer.parseInt(inLeftMod);
                 if(inLeftModNum<0||inLeftModNum>999){
                     if("C".equals(level)){
-                        errMap.put(serviceCode+"caLeftModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"caLeftModCaseCounth","ERR0013");
                         fdto.setDoCaLeftModCountherr(true);
                     }else if("I".equals(level)){
-                        errMap.put(serviceCode+"miLeftModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"miLeftModCaseCounth","ERR0013");
                         fdto.setDoMiLeftModCountherr(true);
                     }else if("A".equals(level)){
-                        errMap.put(serviceCode+"mjLeftModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"mjLeftModCaseCounth","ERR0013");
                         fdto.setDoMjLeftModCountherr(true);
                     }
                 }
                 numberFlag++;
             }catch (Exception e){
                 if("C".equals(level)){
-                    errMap.put(serviceCode+"caLeftModCaseCounth","Invalid Number");
+                    errMap.put(serviceCode+"caLeftModCaseCounth","ERR0013");
                     fdto.setDoCaLeftModCountherr(true);
                 }else if("I".equals(level)){
-                    errMap.put(serviceCode+"miLeftModCaseCounth","Invalid Number");
+                    errMap.put(serviceCode+"miLeftModCaseCounth","ERR0013");
                     fdto.setDoMiLeftModCountherr(true);
                 }else if("A".equals(level)){
-                    errMap.put(serviceCode+"mjLeftModCaseCounth","Invalid Number");
+                    errMap.put(serviceCode+"mjLeftModCaseCounth","ERR0013");
                     fdto.setDoMjLeftModCountherr(true);
                 }
                 e.printStackTrace();
@@ -419,13 +419,13 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum<0 || inRightModNum >999){
                     if("C".equals(level)){
-                        errMap.put(serviceCode+"caRightModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"caRightModCaseCounth","ERR0013");
                         fdto.setDoCaRightModCountherr(true);
                     }else if("I".equals(level)){
-                        errMap.put(serviceCode+"miRightModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"miRightModCaseCounth","ERR0013");
                         fdto.setDoMiRightModCountherr(true);
                     }else if("A".equals(level)){
-                        errMap.put(serviceCode+"mjRightModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"mjRightModCaseCounth","ERR0013");
                         fdto.setDoMjRightModCountherr(true);
                     }
                 }
@@ -433,13 +433,13 @@ public class HcsaInspectionValidate implements CustomizeValidator {
             }catch (Exception e){
                 if(inRightModNum<0 || inRightModNum >999){
                     if("C".equals(level)){
-                        errMap.put(serviceCode+"caRightModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"caRightModCaseCounth","ERR0013");
                         fdto.setDoCaRightModCountherr(true);
                     }else if("I".equals(level)){
-                        errMap.put(serviceCode+"miRightModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"miRightModCaseCounth","ERR0013");
                         fdto.setDoMiRightModCountherr(true);
                     }else if("A".equals(level)){
-                        errMap.put(serviceCode+"mjRightModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"mjRightModCaseCounth","ERR0013");
                         fdto.setDoMjRightModCountherr(true);
                     }
                 }

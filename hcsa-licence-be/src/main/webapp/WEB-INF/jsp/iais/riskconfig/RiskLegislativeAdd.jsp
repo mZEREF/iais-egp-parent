@@ -107,14 +107,14 @@
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
                                             <td>
-                                                <c:set value = "error_${leg.svcCode}inLeftModCaseCounth" var = "inleftmod"/>
-                                                <span class="error-msg" id="<c:out value="${inleftmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${leg.svcCode}inLeftHighCaseCounth" var = "inlefthigh"/>
-                                                <span class="error-msg" id="<c:out value="${inlefthigh}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${leg.svcCode}inRightLowCaseCounth" var = "inrightlow"/>
                                                 <span class="error-msg" id="<c:out value="${inrightlow}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${leg.svcCode}inLeftModCaseCounth" var = "inleftmod"/>
+                                                <span class="error-msg" id="<c:out value="${inleftmod}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${leg.svcCode}inRightModCaseCounth" var = "inrightmod"/>
                                                 <span class="error-msg" id="<c:out value="${inrightmod}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${leg.svcCode}inLeftHighCaseCounth" var = "inlefthigh"/>
+                                                <span class="error-msg" id="<c:out value="${inlefthigh}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -137,7 +137,7 @@
 
     </div>
 </form>
-<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+<%@ include file="validationForRisk.jsp" %>
 <script type="text/javascript">
     function doNext() {
         SOP.Crud.cfxSubmit("mainForm","next");

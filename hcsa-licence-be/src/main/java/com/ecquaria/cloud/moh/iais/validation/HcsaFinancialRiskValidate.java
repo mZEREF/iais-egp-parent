@@ -83,11 +83,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             try {
                 Integer thold = Integer.parseInt(fdto.getInThershold());
                 if(thold<0 || thold>999){
-                    errMap.put(fdto.getServiceCode()+"inThershold","Invalid Number");
+                    errMap.put(fdto.getServiceCode()+"inThershold","ERR0013");
                     fdto.setInThersholderr(true);
                 }
             }catch (Exception e){
-                errMap.put(fdto.getServiceCode()+"inThershold","Invalid Number");
+                errMap.put(fdto.getServiceCode()+"inThershold","ERR0013");
                 fdto.setInThersholderr(true);
             }
         }
@@ -98,11 +98,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             try {
                 Integer thold = Integer.parseInt(fdto.getPrThershold());
                 if(thold<0 || thold>999){
-                    errMap.put(fdto.getServiceCode()+"prThershold","Invalid Number");
+                    errMap.put(fdto.getServiceCode()+"prThershold","ERR0013");
                     fdto.setPrThersholderr(true);
                 }
             }catch (Exception e){
-                errMap.put(fdto.getServiceCode()+"prThershold","Invalid Number");
+                errMap.put(fdto.getServiceCode()+"prThershold","ERR0013");
                 fdto.setPrThersholderr(true);
             }
         }
@@ -130,20 +130,20 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 inLeftModNum = Integer.parseInt(inLeftMod);
                 if(inLeftModNum<0||inLeftModNum>999){
                     if(isIn){
-                        errMap.put(serviceCode+"inLeftModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"inLeftModCaseCounth","ERR0013");
                         fdto.setInLeftModCaseCountherr(true);
                     }else{
-                        errMap.put(serviceCode+"prLeftModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"prLeftModCaseCounth","ERR0013");
                         fdto.setPrLeftModCaseCountherr(true);
                     }
                 }
                 numberFlag++;
             }catch (Exception e){
                 if(isIn){
-                    errMap.put(serviceCode+"inLeftModCaseCounth","Invalid Number");
+                    errMap.put(serviceCode+"inLeftModCaseCounth","ERR0013");
                     fdto.setInLeftModCaseCountherr(true);
                 }else{
-                    errMap.put(serviceCode+"prLeftModCaseCounth","Invalid Number");
+                    errMap.put(serviceCode+"prLeftModCaseCounth","ERR0013");
                     fdto.setPrLeftModCaseCountherr(true);
                 }
                 e.printStackTrace();
@@ -154,20 +154,20 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum<0 || inRightModNum >999){
                     if(isIn){
-                        errMap.put(serviceCode+"inRightModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"inRightModCaseCounth","ERR0013");
                         fdto.setInRightModCaseCountherr(true);
                     }else{
-                        errMap.put(serviceCode+"prRightModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"prRightModCaseCounth","ERR0013");
                         fdto.setPrRightModCaseCountherr(true);
                     }
                 }
                 numberFlag++;
             }catch (Exception e){
                 if(isIn){
-                    errMap.put(serviceCode+"inRightModCaseCounth","Invalid Number");
+                    errMap.put(serviceCode+"inRightModCaseCounth","ERR0013");
                     fdto.setInRightModCaseCountherr(true);
                 }else{
-                    errMap.put(serviceCode+"prRightModCaseCounth","Invalid Number");
+                    errMap.put(serviceCode+"prRightModCaseCounth","ERR0013");
                     fdto.setPrRightModCaseCountherr(true);
                 }
                 e.printStackTrace();
@@ -199,11 +199,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     if(isIn){
                         inLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
+                        errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0013");
                         fdto.setInLeftHighCaseCounterr(true);
                     }else{
                         prLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "prLeftHighCaseCounth", "Invalid Number");
+                        errMap.put(serviceCode + "prLeftHighCaseCounth", "ERR0013");
                         fdto.setPrLeftHighCaseCounterr(true);
                     }
                 }
@@ -211,11 +211,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         } catch (Exception e) {
             if(isIn){
                 inLeftHighNumFlag = false;
-                errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0013");
                 fdto.setInLeftHighCaseCounterr(true);
             }else{
                 prLeftHighNumFlag = false;
-                errMap.put(serviceCode + "prLeftHighCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "prLeftHighCaseCounth", "ERR0013");
                 fdto.setPrLeftHighCaseCounterr(true);
             }
             e.printStackTrace();
@@ -225,10 +225,10 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum +1 != inLeftHighNum){
                     if(isIn&&inLeftHighNumFlag){
-                        errMap.put(serviceCode + "inLeftHighCaseCounth", "High Maximum cases and Moderate Minimum can only differ by 1");
+                        errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0014");
                         fdto.setInLeftHighCaseCounterr(true);
                     }else if(!isIn&&prLeftHighNumFlag){
-                        errMap.put(serviceCode + "prLeftHighCaseCounth", "High Maximum cases and Moderate Minimum can only differ by 1");
+                        errMap.put(serviceCode + "prLeftHighCaseCounth", "ERR0014");
                         fdto.setPrLeftHighCaseCounterr(true);
                     }
                 }
@@ -249,11 +249,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
                     if(isIn){
                         inRightLowNumFlag = false;
-                        errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                        errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0013");
                         fdto.setInRightLowCaseCountherr(true);
                     }else{
                         prRightLowNumFlag = false;
-                        errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
+                        errMap.put(serviceCode + "prRightLowCaseCounth", "ERR0013");
                         fdto.setPrRightLowCaseCountherr(true);
                     }
                 }
@@ -262,11 +262,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             // TODO: handle exception
             if(isIn){
                 inRightLowNumFlag = false;
-                errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0013");
                 fdto.setInRightLowCaseCountherr(true);
             }else{
                 prRightLowNumFlag = false;
-                errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "prRightLowCaseCounth", "ERR0013");
                 fdto.setPrRightLowCaseCountherr(true);
             }
 
@@ -278,12 +278,12 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 if(inLeftModNum -1 != inRightLowNum){
                     if(isIn){
                         if(inRightLowNumFlag){
-                            errMap.put(serviceCode + "inRightLowCaseCounth", "Low Maximum cases and Moderate Minimum can only differ by 1");
+                            errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0015");
                             fdto.setInRightLowCaseCountherr(true);
                         }
                     }else{
                         if(prRightLowNumFlag){
-                            errMap.put(serviceCode + "prRightLowCaseCounth", "Low Maximum cases and Moderate Minimum can only differ by 1");
+                            errMap.put(serviceCode + "prRightLowCaseCounth", "ERR0015");
                             fdto.setPrRightLowCaseCountherr(true);
                         }
                     }

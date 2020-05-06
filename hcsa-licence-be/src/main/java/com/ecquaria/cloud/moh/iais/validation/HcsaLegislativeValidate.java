@@ -155,10 +155,10 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             try {
                 Integer thold = Integer.parseInt(fdto.getDoThershold());
                 if(thold<0 || thold>999){
-                    errMap.put(fdto.getSvcCode()+"inThershold","Invalid Number");
+                    errMap.put(fdto.getSvcCode()+"inThershold","ERR0013");
                 }
             }catch (Exception e){
-                errMap.put(fdto.getSvcCode()+"inThershold","Invalid Number");
+                errMap.put(fdto.getSvcCode()+"inThershold","ERR0013");
             }
         }
     }
@@ -182,13 +182,13 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 inLeftHighNum = Integer.parseInt(inLeftHigh);
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     inLeftHighNumFlag = false;
-                    errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
+                    errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0013");
                     fdto.setDoLeftHighCaseCountherr(true);
                 }
             }
         } catch (Exception e) {
             inLeftHighNumFlag = false;
-            errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
+            errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0013");
             fdto.setDoLeftHighCaseCountherr(true);
             e.printStackTrace();
         }
@@ -196,7 +196,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             if(!StringUtil.isEmpty(inRightMod)){
                 inRightModNum = Integer.parseInt(inRightMod);
                 if((inRightModNum +1 != inLeftHighNum)&&inLeftHighNumFlag){
-                    errMap.put(serviceCode + "inLeftHighCaseCounth", "High Maximum cases and Moderate Minimum can only differ by 1");
+                    errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0014");
                     fdto.setDoLeftHighCaseCountherr(true);
                 }
             }
@@ -214,14 +214,14 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 inRightLowNum = Integer.parseInt(inRightLow);
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
                     inrightflag = false;
-                    errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                    errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0013");
                     fdto.setDoRightModCaseCountherr(true);
                 }
             }
         } catch (Exception e) {
             // TODO: handle exception
                 inrightflag = false;
-                errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0013");
                 fdto.setDoRightLowCaseCountherr(true);
             e.printStackTrace();
         }
@@ -229,7 +229,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             if(!StringUtil.isEmpty(inLeftMod)&&inrightflag){
                 inLeftModNum = Integer.parseInt(inLeftMod);
                 if(inLeftModNum -1 != inRightLowNum){
-                    errMap.put(serviceCode + "inRightLowCaseCounth", "Low Maximum cases and Moderate Minimum can only differ by 1");
+                    errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0015");
                 }
             }
         } catch (Exception e) {
@@ -246,12 +246,12 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             try {
                 inLeftModNum = Integer.parseInt(inLeftMod);
                 if(inLeftModNum<0||inLeftModNum>999){
-                        errMap.put(serviceCode+"inLeftModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"inLeftModCaseCounth","ERR0013");
                         fdto.setDoLeftModCaseCountherr(true);
                 }
                 numberFlag++;
             }catch (Exception e){
-                    errMap.put(serviceCode+"inLeftModCaseCounth","Invalid Number");
+                    errMap.put(serviceCode+"inLeftModCaseCounth","ERR0013");
                     fdto.setDoLeftModCaseCountherr(true);
                 e.printStackTrace();
             }
@@ -260,12 +260,12 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             try {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum<0 || inRightModNum >999){
-                    errMap.put(serviceCode+"inRightModCaseCounth","Invalid Number");
+                    errMap.put(serviceCode+"inRightModCaseCounth","ERR0013");
                     fdto.setDoRightModCaseCountherr(true);
                 }
                 numberFlag++;
             }catch (Exception e){
-                errMap.put(serviceCode+"inRightModCaseCounth","Invalid Number");
+                errMap.put(serviceCode+"inRightModCaseCounth","ERR0013");
                 fdto.setDoRightModCaseCountherr(true);
                 e.printStackTrace();
             }

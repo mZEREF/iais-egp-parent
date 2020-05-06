@@ -107,14 +107,14 @@
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
                                             <td>
-                                                <c:set value = "error_${lea.svcCode}inLeftModCaseCounth" var = "inleftmod"/>
-                                                <span class="error-msg" id="<c:out value="${inleftmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${lea.svcCode}inLeftHighCaseCounth" var = "inlefthigh"/>
-                                                <span class="error-msg" id="<c:out value="${inlefthigh}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${lea.svcCode}inRightLowCaseCounth" var = "inrightlow"/>
                                                 <span class="error-msg" id="<c:out value="${inrightlow}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${lea.svcCode}inLeftModCaseCounth" var = "inleftmod"/>
+                                                <span class="error-msg" id="<c:out value="${inleftmod}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${lea.svcCode}inRightModCaseCounth" var = "inrightmod"/>
                                                 <span class="error-msg" id="<c:out value="${inrightmod}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${lea.svcCode}inLeftHighCaseCounth" var = "inlefthigh"/>
+                                                <span class="error-msg" id="<c:out value="${inlefthigh}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                         </tr>
                                         <tr>
@@ -173,14 +173,14 @@
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
                                             <td>
-                                                <c:set value = "error_${lea.svcCode}prRightModCaseCounth" var = "prrightmod"/>
-                                                <span class="error-msg" id="<c:out value="${prrightmod}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${lea.svcCode}prRightLowCaseCounth" var = "prrightlow"/>
                                                 <span class="error-msg" id="<c:out value="${prrightlow}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${lea.svcCode}prLeftHighCaseCounth" var = "prlefthigh"/>
-                                                <span class="error-msg" id="<c:out value="${prlefthigh}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${lea.svcCode}prLeftModCaseCounth" var = "prleftmod"/>
                                                 <span class="error-msg" id="<c:out value="${prleftmod}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${lea.svcCode}prRightModCaseCounth" var = "prrightmod"/>
+                                                <span class="error-msg" id="<c:out value="${prrightmod}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${lea.svcCode}prLeftHighCaseCounth" var = "prlefthigh"/>
+                                                <span class="error-msg" id="<c:out value="${prlefthigh}"/>" name="iaisErrorMsg"></span>
                                             </td>
 
                                         </tr>
@@ -203,7 +203,7 @@
         </div>
     </div>
 </form>
-<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+<%@ include file="validationForRisk.jsp" %>
 <script type="text/javascript">
     function doNext() {
         SOP.Crud.cfxSubmit("mainForm","next");

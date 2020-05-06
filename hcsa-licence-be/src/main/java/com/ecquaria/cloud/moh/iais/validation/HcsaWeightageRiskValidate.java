@@ -127,11 +127,11 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
     }
     private void doWeightageVad(HcsaRiskWeightageDto temp, Map<String, String> errMap) {
         boolean isnullFlag = notEmptyVad(temp,errMap);
-        boolean lasInpNumFlag = formatVad(temp,errMap,temp.getDoLastInp(),"lastInp","Invalid Number");
-        boolean lasSecInpNumFlag = formatVad(temp,errMap,temp.getDoSecLastInp(),"secLastInp","Invalid Number");
-        boolean lasFinNumFlag = formatVad(temp,errMap,temp.getDoFinancial(),"fin","Invalid Number");
-        boolean lasLeaNumFlag = formatVad(temp,errMap,temp.getDoLeadship(),"lea","Invalid Number");
-        boolean lasLegNumFlag = formatVad(temp,errMap,temp.getDoLegislative(),"leg","Invalid Number");
+        boolean lasInpNumFlag = formatVad(temp,errMap,temp.getDoLastInp(),"lastInp","ERR0013");
+        boolean lasSecInpNumFlag = formatVad(temp,errMap,temp.getDoSecLastInp(),"secLastInp","ERR0013");
+        boolean lasFinNumFlag = formatVad(temp,errMap,temp.getDoFinancial(),"fin","ERR0013");
+        boolean lasLeaNumFlag = formatVad(temp,errMap,temp.getDoLeadship(),"lea","ERR0013");
+        boolean lasLegNumFlag = formatVad(temp,errMap,temp.getDoLegislative(),"leg","ERR0013");
         if(isnullFlag&&lasInpNumFlag&&lasSecInpNumFlag&&lasFinNumFlag&&lasLeaNumFlag&&lasLegNumFlag){
             calwWeightageVad(temp,errMap);
         }

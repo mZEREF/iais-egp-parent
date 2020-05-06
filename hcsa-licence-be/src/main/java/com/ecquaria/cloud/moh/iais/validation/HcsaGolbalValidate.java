@@ -156,10 +156,10 @@ public class HcsaGolbalValidate implements CustomizeValidator {
         try {
             int num = Integer.parseInt(strNum);
             if(num<0||num>99){
-                errMap.put(serviceCode+key,"Invalid Number");
+                errMap.put(serviceCode+key,"ERR0013");
             }
         }catch (Exception e){
-            errMap.put(serviceCode+key,"Invalid Number");
+            errMap.put(serviceCode+key,"ERR0013");
         }
 
     }

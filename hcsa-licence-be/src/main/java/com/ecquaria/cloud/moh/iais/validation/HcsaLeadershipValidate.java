@@ -66,11 +66,11 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             try {
                 Integer thold = Integer.parseInt(fdto.getAdThershold());
                 if(thold<0 || thold>999){
-                    errMap.put(fdto.getSvcCode()+"inThershold","Invalid Number");
+                    errMap.put(fdto.getSvcCode()+"inThershold","ERR0013");
                     fdto.setAdThersholderr(true);
                 }
             }catch (Exception e){
-                errMap.put(fdto.getSvcCode()+"inThershold","Invalid Number");
+                errMap.put(fdto.getSvcCode()+"inThershold","ERR0013");
                 fdto.setAdThersholderr(true);
             }
         }
@@ -81,11 +81,11 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             try {
                 Integer thold = Integer.parseInt(fdto.getDpThershold());
                 if(thold<0 || thold>999){
-                    errMap.put(fdto.getSvcCode()+"prThershold","Invalid Number");
+                    errMap.put(fdto.getSvcCode()+"prThershold","ERR0013");
                     fdto.setDpThersholderr(true);
                 }
             }catch (Exception e){
-                errMap.put(fdto.getSvcCode()+"prThershold","Invalid Number");
+                errMap.put(fdto.getSvcCode()+"prThershold","ERR0013");
                 fdto.setDpThersholderr(true);
             }
         }
@@ -113,20 +113,20 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 inLeftModNum = Integer.parseInt(inLeftMod);
                 if(inLeftModNum<0||inLeftModNum>999){
                     if(isIn){
-                        errMap.put(serviceCode+"inLeftModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"inLeftModCaseCounth","ERR0013");
                         fdto.setAdLeftModCaseCountherr(true);
                     }else{
-                        errMap.put(serviceCode+"prLeftModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"prLeftModCaseCounth","ERR0013");
                         fdto.setDpLeftModCaseCountherr(true);
                     }
                 }
                 numberFlag++;
             }catch (Exception e){
                 if(isIn){
-                    errMap.put(serviceCode+"inLeftModCaseCounth","Invalid Number");
+                    errMap.put(serviceCode+"inLeftModCaseCounth","ERR0013");
                     fdto.setAdLeftModCaseCountherr(true);
                 }else{
-                    errMap.put(serviceCode+"prLeftModCaseCounth","Invalid Number");
+                    errMap.put(serviceCode+"prLeftModCaseCounth","ERR0013");
                     fdto.setDpLeftModCaseCountherr(true);
                 }
                 e.printStackTrace();
@@ -137,20 +137,20 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum<0 || inRightModNum >999){
                     if(isIn){
-                        errMap.put(serviceCode+"inRightModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"inRightModCaseCounth","ERR0013");
                         fdto.setAdRightModCaseCountherr(true);
                     }else{
-                        errMap.put(serviceCode+"prRightModCaseCounth","Invalid Number");
+                        errMap.put(serviceCode+"prRightModCaseCounth","ERR0013");
                         fdto.setDpRightModCaseCountherr(true);
                     }
             }
                 numberFlag++;
             }catch (Exception e){
                 if(isIn){
-                    errMap.put(serviceCode+"inRightModCaseCounth","Invalid Number");
+                    errMap.put(serviceCode+"inRightModCaseCounth","ERR0013");
                     fdto.setAdRightModCaseCountherr(true);
                 }else{
-                    errMap.put(serviceCode+"prRightModCaseCounth","Invalid Number");
+                    errMap.put(serviceCode+"prRightModCaseCounth","ERR0013");
                     fdto.setDpRightModCaseCountherr(true);
                 }
                 e.printStackTrace();
@@ -180,11 +180,11 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     if(isIn){
                         inLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
+                        errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0013");
                         fdto.setAdLeftHighCaseCountherr(true);
                     }else{
                         prLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "prLeftHighCaseCounth", "Invalid Number");
+                        errMap.put(serviceCode + "prLeftHighCaseCounth", "ERR0013");
                         fdto.setDpLeftHighCaseCountherr(true);
                     }
                 }
@@ -192,11 +192,11 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         } catch (Exception e) {
             if(isIn){
                 inLeftHighNumFlag = false;
-                errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0013");
                 fdto.setAdLeftHighCaseCountherr(true);
             }else{
                 prLeftHighNumFlag = false;
-                errMap.put(serviceCode + "prLeftHighCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "prLeftHighCaseCounth", "ERR0013");
                 fdto.setDpLeftHighCaseCountherr(true);
             }
             e.printStackTrace();
@@ -229,11 +229,11 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
                     if(isIn){
                         inRightLowNumFlag = false;
-                        errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                        errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0013");
                         fdto.setAdRightLowCaseCountherr(true);
                     }else{
                         prRightLowNumFlag = false;
-                        errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
+                        errMap.put(serviceCode + "prRightLowCaseCounth", "ERR0013");
                         fdto.setDpRightLowCaseCountherr(true);
                     }
                 }
@@ -242,12 +242,12 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             // TODO: handle exception
             if(isIn){
                 if(inRightLowNumFlag){
-                    errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                    errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0013");
                     fdto.setAdRightModCaseCountherr(true);
                 }
             }else{
                 if(prRightLowNumFlag){
-                    errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
+                    errMap.put(serviceCode + "prRightLowCaseCounth", "ERR0013");
                     fdto.setDpRightLowCaseCountherr(true);
                 }
             }
@@ -259,10 +259,10 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 inLeftModNum = Integer.parseInt(inLeftMod);
                 if(inLeftModNum -1 != inRightLowNum){
                     if(isIn){
-                        errMap.put(serviceCode + "inRightLowCaseCounth", "Low Maximum cases and Moderate Minimum can only differ by 1");
+                        errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0015");
                         fdto.setAdRightLowCaseCountherr(true);
                     }else{
-                        errMap.put(serviceCode + "prRightLowCaseCounth", "Low Maximum cases and Moderate Minimum can only differ by 1");
+                        errMap.put(serviceCode + "prRightLowCaseCounth", "ERR0015");
                         fdto.setDpRightLowCaseCountherr(true);
                     }
                 }
