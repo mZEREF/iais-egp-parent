@@ -1085,11 +1085,33 @@ public class LicenceApproveBatchjob {
        return result;
     }
 
+    private boolean isExist(List<LicDocumentRelationDto> licDocumentRelationDtos,String fileRepoId){
+        boolean result = false;
+        log.info(StringUtil.changeForLog("The isExist start ..."));
+        log.info(StringUtil.changeForLog("The fileRepoId is -->:"+fileRepoId));
+        if(!IaisCommonUtils.isEmpty(licDocumentRelationDtos) && !StringUtil.isEmpty(fileRepoId)){
+            for(LicDocumentRelationDto licDocumentRelationDto : licDocumentRelationDtos){
+                DocumentDto documentDto = licDocumentRelationDto.getDocumentDto();
+                if(fileRepoId.equals(documentDto.getFileRepoId())){
+                    result =  true;
+                }
+            }
+
+        }
+        log.info(StringUtil.changeForLog("The result is -->:"+result));
+        log.info(StringUtil.changeForLog("The isExist end ..."));
+        return result;
+    }
+
     private List<LicDocumentRelationDto> getLicDocumentRelationDto(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,List<AppSvcDocDto> appSvcDocDtos,
                                                                    List<AppPremisesCorrelationDto> appPremisesCorrelationDtos,List<PremisesGroupDto> premisesGroupDtos){
+        log.info(StringUtil.changeForLog("The getLicDocumentRelationDto start ..."));
         List<LicDocumentRelationDto> licDocumentRelationDtos = IaisCommonUtils.genNewArrayList();
         if(appGrpPrimaryDocDtos != null){
             for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
+                if(isExist(licDocumentRelationDtos,appGrpPrimaryDocDto.getFileRepoId())){
+                  continue;
+                }
                 if(!IaisCommonUtils.isEmpty(premisesGroupDtos)){
                     for(PremisesGroupDto premisesGroupDto : premisesGroupDtos){
                         PremisesDto premisesDto = premisesGroupDto.getPremisesDto();
@@ -1143,6 +1165,7 @@ public class LicenceApproveBatchjob {
                licDocumentRelationDtos.add(licDocumentRelationDto);
            }
         }
+        log.info(StringUtil.changeForLog("The getLicDocumentRelationDto end ..."));
         return licDocumentRelationDtos;
     }
 
