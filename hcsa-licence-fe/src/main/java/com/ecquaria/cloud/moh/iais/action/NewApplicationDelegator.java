@@ -33,7 +33,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -49,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -3615,9 +3615,10 @@ public class NewApplicationDelegator {
         AppEditSelectDto changeSelectDto1 = appSubmissionDto.getChangeSelectDto()==null?new AppEditSelectDto():appSubmissionDto.getChangeSelectDto();
         appSubmissionDto.setChangeSelectDto(changeSelectDto1);
         //set licenseeId
-        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
-        if(interInboxUserDto != null){
-            appSubmissionDto.setLicenseeId(interInboxUserDto.getLicenseeId());
+//        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        if(loginContext != null){
+            appSubmissionDto.setLicenseeId(loginContext.getLicenseeId());
         }else{
             appSubmissionDto.setLicenseeId("");
             log.info(StringUtil.changeForLog("user info is empty....."));

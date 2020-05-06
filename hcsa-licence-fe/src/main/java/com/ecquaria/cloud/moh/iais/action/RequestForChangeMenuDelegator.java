@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
@@ -176,8 +177,8 @@ public class RequestForChangeMenuDelegator {
     public void preparePremisesList(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePremisesList start ...."));
         //set licenseeId
-        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
-        String licenseeId = interInboxUserDto.getLicenseeId();
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = loginContext.getLicenseeId();
         List<PremisesListQueryDto> premisesDtos = requestForChangeService.getPremisesList(licenseeId);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) premisesDtos);
         ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"Premises List");
