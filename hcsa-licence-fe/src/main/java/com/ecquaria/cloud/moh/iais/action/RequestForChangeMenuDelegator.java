@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -199,8 +198,8 @@ public class RequestForChangeMenuDelegator {
 
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
-        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
-        String licenseeId = interInboxUserDto.getLicenseeId();
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = loginContext.getLicenseeId();
         appSubmissionDto.setLicenseeId(licenseeId);
         List<AppGrpPremisesDto> reloadPremisesDtoList = IaisCommonUtils.genNewArrayList();
         AppGrpPremisesDto appGrpPremisesDto = null;
@@ -362,8 +361,8 @@ public class RequestForChangeMenuDelegator {
      */
     public void preparePersonnelList(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePersonnelList start ...."));
-        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
-        String licenseeId = interInboxUserDto.getLicenseeId();
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = loginContext.getLicenseeId();
         List<PersonnelListQueryDto> licenseeKeyApptPersonDtoList =  requestForChangeService.getLicencePersonnelListQueryDto(licenseeId);
         Map<String,List<PersonnelListQueryDto>> personnelListMap = IaisCommonUtils.genNewHashMap();
         for(PersonnelListQueryDto personnelListQueryDto:licenseeKeyApptPersonDtoList){
@@ -504,8 +503,8 @@ public class RequestForChangeMenuDelegator {
         List<AppSubmissionDto> appSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(licenceIds);
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         List<String> names = IaisCommonUtils.genNewArrayList();
-        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
-        String licenseeId = interInboxUserDto.getLicenseeId();
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = loginContext.getLicenseeId();
         for(AppSubmissionDto appSubmissionDto:appSubmissionDtos){
             if(appSubmissionDto != null ) {
                 appSubmissionDto.setLicenseeId(licenseeId);
