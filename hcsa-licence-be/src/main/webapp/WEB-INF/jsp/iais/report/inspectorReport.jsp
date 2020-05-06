@@ -389,7 +389,7 @@
                 <table class="table">
                     <tr>
                         <td class="col-xs-4">
-                            <p>Recommendation${appPremisesRecommendationDto.recommendation} <strong style="color:#ff0000;"> *</strong></p>
+                            <p>Recommendation <strong style="color:#ff0000;"> *</strong></p>
                         </td>
                             <td class="col-xs-4">
                                 <iais:select name="recommendation" options="recommendationOption" firstOption="Please Select" value="${appPremisesRecommendationDto.recommendation}" onchange="javascirpt:changeRecommendation(this.value);"/>
