@@ -20,80 +20,97 @@
     <input type="hidden" name="crud_action_type"  value=""/>
     <div class="main-content">
         <div class="container">
-            <div class="row center">
-                <c:choose>
-                    <c:when test="${'error' != AckStatus}">
-                        <div class="col-xs-12">
-                            <p class="ack-font-20"><strong>Submission successful</strong></p>
-                        </div>
+            <div class="row">
 
-                        <c:forEach items="${hcsaServiceDtoList}" var="list">
-                            <div class="col-xs-12">
-                                <p class="ack-font-20">- <strong><c:out value="${list.svcName}"/> </strong></p>
-                            </div>
-                        </c:forEach>
-                        <br/>
-                        <div class="ack-font-16">
-                            <div class="col-xs-12">
-                                A confirmation email will be sent to ${emailAddress}.
-                                <br/>
-                                <br/>
-                            </div>
-                            <div class="col-xs-12">
-                                We will review your application and notify you if any changes are required.
-                            </div>
-                            <div class="col-xs-12">
-                                An inspection date will be arranged if necessary.
-                                <br/>
-                                <br/>
-                            </div>
-                            <div class="col-xs-12">
-                                Transactional details:
-                            </div>
-                            <div class="col-xs-12">
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <%--<th>Application No.</th>--%>
-                                        <c:if test="${'Credit' == renewDto.appSubmissionDtos.get(0).paymentMethod}">
-                                            <th>Transactional No.</th>
-                                        </c:if>
-                                        <th>Date & Time</th>
-                                        <th>Amount Deducted</th>
-                                        <th>Payment Method</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}">
-                                            <tr>
-                                                <%--<td><c:out value="${AppSubmissionDto.appGrpNo}"/></td>--%>
-                                                <c:if test="${'Credit'==AppSubmissionDto.paymentMethod}">
-                                                    <td><c:out value="${txnRefNo}"/></td>
-                                                </c:if>
-                                                <td><c:out value="${txnDt}"/></td>
-                                                <td><c:out value="${AppSubmissionDto.amountStr}"/></td>
-                                                <td>
-                                                    <c:choose>
-                                                        <c:when test="${'Credit'==AppSubmissionDto.paymentMethod}">
-                                                            Credit Card
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <c:out value="${AppSubmissionDto.paymentMethod}"/>
-                                                        </c:otherwise>
-                                                    </c:choose>
-                                                </td>
-                                            </tr>
-                                        </c:forEach>
-                                    </tbody>
-                                </table>
-                            </div>
+                <div class="col-xs-12">
+                    <div class="center-content">
+                        <div class="licence-renewal-content">
+                            <ul class="progress-tracker">
+                                <li class="tracker-item disabled">Instructions</li>
+                                <li class="tracker-item disabled">Licence Review</li>
+                                <li class="tracker-item disabled">Payment</li>
+                                <li class="tracker-item active">Acknowledgement</li>
+                            </ul>
+
+                            <c:choose>
+                                <c:when test="${'error' != AckStatus}">
+                                    <div class="col-xs-12">
+                                        <p class="ack-font-20"><strong>Submission successful</strong></p>
+                                    </div>
+
+                                    <c:forEach items="${hcsaServiceDtoList}" var="list">
+                                        <div class="col-xs-12">
+                                            <p class="ack-font-20">- <strong><c:out value="${list.svcName}"/> </strong></p>
+                                        </div>
+                                    </c:forEach>
+                                    <br/>
+                                    <div class="ack-font-16">
+                                        <div class="col-xs-12">
+                                            A confirmation email will be sent to ${emailAddress}.
+                                            <br/>
+                                            <br/>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            We will review your application and notify you if any changes are required.
+                                        </div>
+                                        <div class="col-xs-12">
+                                            An inspection date will be arranged if necessary.
+                                            <br/>
+                                            <br/>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            Transactional details:
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <%--<th>Application No.</th>--%>
+                                                    <c:if test="${'Credit' == renewDto.appSubmissionDtos.get(0).paymentMethod}">
+                                                        <th>Transactional No.</th>
+                                                    </c:if>
+                                                    <th>Date & Time</th>
+                                                    <th>Amount Deducted</th>
+                                                    <th>Payment Method</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+            <%--                                        <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}">--%>
+                                                        <c:set var="AppSubmissionDto" value="${renewDto.appSubmissionDtos.get(0)}" scope="request"/>
+                                                        <tr>
+                                                            <%--<td><c:out value="${AppSubmissionDto.appGrpNo}"/></td>--%>
+                                                            <c:if test="${'Credit'==AppSubmissionDto.paymentMethod}">
+                                                                <td><c:out value="${txnRefNo}"/></td>
+                                                            </c:if>
+                                                            <td><c:out value="${txnDt}"/></td>
+                                                            <td><c:out value="${totalStr}"/></td>
+                                                            <td>
+                                                                <c:choose>
+                                                                    <c:when test="${'Credit'==AppSubmissionDto.paymentMethod}">
+                                                                        Credit Card
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <c:out value="${AppSubmissionDto.paymentMethod}"/>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </td>
+                                                        </tr>
+            <%--                                        </c:forEach>--%>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <h3>${AckMessage}</h3>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
-                    </c:when>
-                    <c:otherwise>
-                        <h3>${AckMessage}</h3>
-                    </c:otherwise>
-                </c:choose>
+                    </div>
+                </div>
             </div>
+
+
             <div class="row margin-bottom-10 text-right">
                 <div class="col-xs-12 col-md-1">
                     <p class="print"><a href="#" id="print-ack"> <em class="fa fa-print"></em>Print</a></p>

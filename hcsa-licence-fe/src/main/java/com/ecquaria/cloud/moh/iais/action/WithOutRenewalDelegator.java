@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -336,7 +337,12 @@ public class WithOutRenewalDelegator {
             FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
             appSubmissionDto.setLicenseeId(licenseeId);
             //set fee detail
-            appSubmissionDto.setDetailFeeDto(feeDto.getDetailFeeDto().get(0));
+            List<FeeExtDto> detailFeeDtos = feeDto.getDetailFeeDto();
+            if(!IaisCommonUtils.isEmpty(detailFeeDtos)){
+                appSubmissionDto.setDetailFeeDto(detailFeeDtos.get(0));
+            }else{
+                log.error(StringUtil.changeForLog("feeDto detailFeeDtos null"));
+            }
             Double amount = feeDto.getTotal();
             if(!StringUtil.isEmpty(amount)){
                 total +=amount;
@@ -345,7 +351,7 @@ public class WithOutRenewalDelegator {
                 appSubmissionDto.setAmountStr(amountStr);
             }
         }
-        String totalStr = Formatter.formatterMoney(total);
+        String totalStr = Formatter.formatCurrency(total);
         //do app submit
         ApplicationGroupDto applicationGroupDto = appSubmissionService.createApplicationDataByWithOutRenewal(renewDto);
         //set group no.
@@ -373,6 +379,7 @@ public class WithOutRenewalDelegator {
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
         String emailAddress = emailAddressesToString(licenseeEmailAddrs);
         ParamUtil.setRequestAttr(bpc.request,"emailAddress",emailAddress);
+        ParamUtil.setRequestAttr(bpc.request,"hasDetail","N");
     }
 
     //doInstructions
@@ -657,7 +664,7 @@ public class WithOutRenewalDelegator {
                 if(i == emailAddresses.size() -1){
                     emailAddress += emailAddresses.get(i);
                 }else{
-                    emailAddress += emailAddresses.get(i) + ",";
+                    emailAddress += emailAddresses.get(i) + ", ";
                 }
             }
         }
