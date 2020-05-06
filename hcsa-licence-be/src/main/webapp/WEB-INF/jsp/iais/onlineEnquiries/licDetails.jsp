@@ -253,11 +253,12 @@
                                                             <td align="right">ID No</td>
                                                             <td>${personnel.keyPersonnelDto.idNo}</td>
                                                         </tr>
-
-                                                        <tr>
-                                                            <td align="right">Designation</td>
-                                                            <td>${personnel.keyPersonnelDto.designation}</td>
-                                                        </tr>
+                                                        <c:if test="${personnel.licKeyPersonnelDto.psnType!='MedAlert'}">
+                                                            <tr>
+                                                                <td align="right">Designation</td>
+                                                                <td>${personnel.keyPersonnelDto.designation}</td>
+                                                            </tr>
+                                                        </c:if>
                                                         <c:if test="${personnel.licKeyPersonnelDto.psnType=='Clinical Governance Officer'}">
                                                             <tr>
                                                                 <td align="right">Professional Type</td>

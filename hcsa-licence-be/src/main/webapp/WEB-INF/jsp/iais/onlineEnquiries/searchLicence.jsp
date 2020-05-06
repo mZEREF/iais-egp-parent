@@ -336,14 +336,6 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="Service Personnel Professional Regn No."/>
-                                            <iais:value width="18">
-                                                <label>
-                                                    <input type="text" maxlength="20" style="width:180%; font-weight:normal;" name="personnelRegnNo" value="${SearchParam.filters['personnelRegnNo']}" />
-                                                </label>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
                                             <iais:field value="Service Personnel Role"/>
                                             <iais:value width="18">
                                                 <div id="personnelRoleOption">
@@ -351,12 +343,21 @@
                                                 </div>
                                             </iais:value>
                                         </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Service Personnel Professional Regn No."/>
+                                            <iais:value width="18">
+                                                <label>
+                                                    <input type="text" maxlength="20" style="width:180%; font-weight:normal;" name="personnelRegnNo" value="${SearchParam.filters['personnelRegnNo']}" />
+                                                </label>
+                                            </iais:value>
+                                        </iais:row>
                                     </iais:section>
                                 </div>
                             </div>
                         </div>
-
                     </c:if>
+                    <br>
+                    <br>
                     <iais:action style="text-align:left;">
                         <a  onclick="javascript:doLicBack()">< Back</a>
                     </iais:action>

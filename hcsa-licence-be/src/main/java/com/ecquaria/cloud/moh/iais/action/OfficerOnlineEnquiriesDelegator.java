@@ -717,7 +717,7 @@ public class OfficerOnlineEnquiriesDelegator {
                                 addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
                                 reqForInfoSearchListDto.setAddress(addressList);
                             }
-                            //reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+                            reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
                 }
@@ -784,6 +784,10 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setUnitNo(rfiApplicationQueryDto.getUnitNo());
         reqForInfoSearchListDto.setStreetName(rfiApplicationQueryDto.getStreetName());
         reqForInfoSearchListDto.setFloorNo(rfiApplicationQueryDto.getFloorNo());
+        List<String> addressList = IaisCommonUtils.genNewArrayList();
+        addressList.add(MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),""));
+        reqForInfoSearchListDto.setAddress(addressList);
+
         try{
             List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
             if(appPremisesRecommendationDtos.size()>=2){

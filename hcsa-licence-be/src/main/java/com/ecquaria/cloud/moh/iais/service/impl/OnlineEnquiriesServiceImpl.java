@@ -181,6 +181,11 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 per.getLicKeyPersonnelDto().setPsnType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getLicKeyPersonnelDto().getPsnType()}).get(0).getText());
                 per.getKeyPersonnelDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getSalutation()}).get(0).getText());
                 per.getKeyPersonnelDto().setDesignation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getDesignation()}).get(0).getText());
+                switch (per.getKeyPersonnelExtDto().getPreferredMode()){
+                    case "1":per.getKeyPersonnelExtDto().setPreferredMode("Email");break;
+                    case "2":per.getKeyPersonnelExtDto().setPreferredMode("SMS");break;
+                    case "3":per.getKeyPersonnelExtDto().setPreferredMode("Email  SMS");break;
+                }
                 per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelExtDto().getProfessionType()}).get(0).getText());
             }catch (NullPointerException e){
                 log.info(e.getMessage());
@@ -610,8 +615,10 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         if(applicationViewDto.getHciCode()==null){
             List<String> appIds= new ArrayList<>(Collections.singleton(applicationViewDto.getApplicationDto().getId()));
             List<String> licIds=getLicIdsByappIds(appIds);
-            List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(licIds.get(0)).getEntity();
-            applicationViewDto.setHciCode(premisesDtoList.get(0).getHciCode());
+            if(licIds.size()!=0){
+                List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(licIds.get(0)).getEntity();
+                applicationViewDto.setHciCode(premisesDtoList.get(0).getHciCode());
+            }
         }
         AppInsRepDto appInsRepDto=insRepClient.getAppInsRepDto(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
         AppSubmissionDto appSubmissionDto = licenceViewService.getAppSubmissionByAppId(applicationViewDto.getApplicationDto().getId());
