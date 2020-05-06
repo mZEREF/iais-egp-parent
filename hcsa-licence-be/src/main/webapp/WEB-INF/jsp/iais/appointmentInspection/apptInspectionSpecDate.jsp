@@ -55,7 +55,7 @@
                     </div>
                     <div class="col-md-6">
                       <div class="col-xs-12 col-md-4">
-                        <label style="font-size: 16px">To</label>
+                        <span style="font-size: 16px">To</span>
                         <p></p>
                       </div>
                     </div>

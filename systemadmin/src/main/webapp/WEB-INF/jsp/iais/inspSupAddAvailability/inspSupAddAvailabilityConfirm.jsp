@@ -23,11 +23,6 @@
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="mainConForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
     <input type="hidden" name="inspSupAddAvailabilityType" value="">
     <input type="hidden" name="nonActionValue" value="">
     <input type="hidden" name="lastActionValue" id="lastActionValue" value="<c:out value="${actionValue}"/>">
@@ -49,13 +44,13 @@
                       <iais:row>
                         <iais:field value="Name"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspNonAvailabilityDto.userName}"/></label>
+                          <span><c:out value="${inspNonAvailabilityDto.userName}"/></span>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Blocked Out Date" required="true"/>
                         <iais:value width="7">
-                          <label>From <fmt:formatDate value='${inspNonAvailabilityDto.nonAvaStartDate}' pattern='dd/MM/yyyy' /> to <fmt:formatDate value='${inspNonAvailabilityDto.nonAvaEndDate}' pattern='dd/MM/yyyy' /></label>
+                          <span><fmt:formatDate value='${inspNonAvailabilityDto.nonAvaStartDate}' pattern='dd/MM/yyyy' /> to <fmt:formatDate value='${inspNonAvailabilityDto.nonAvaEndDate}' pattern='dd/MM/yyyy' /></span>
                         </iais:value>
                       </iais:row>
                       <iais:row>
@@ -67,7 +62,7 @@
                       <iais:row>
                         <iais:field value="Recurrence"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspNonAvailabilityDto.recurrence}"/></label>
+                          <span><c:out value="${inspNonAvailabilityDto.recurrence}"/></span>
                         </iais:value>
                       </iais:row>
                       <iais:action >

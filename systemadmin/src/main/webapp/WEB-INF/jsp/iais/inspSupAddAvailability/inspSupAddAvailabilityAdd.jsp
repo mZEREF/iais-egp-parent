@@ -20,77 +20,71 @@
 <%
   String webroot=IaisEGPConstant.BE_CSS_ROOT;
 %>
-<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
+<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">Add Non-Availability Form
   <form method="post" id="mainAddForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
     <input type="hidden" name="inspSupAddAvailabilityType" value="">
     <input type="hidden" name="nonActionValue" value="">
-    <iais:body >
-      <div class="container">
-        <div class="col-xs-12">
-          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-            <h3>
-              <span>Add Non-Availability Form</span>
-            </h3>
-            <div class="panel panel-default">
-              <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                <div class="panel-body">
-                  <div class="panel-main-content">
+    <div class="main-content">
+      <div class="row">
+        <div class="col-lg-12 col-xs-12">
+          <div class="center-content">
+            <div class="intranet-content">
+              <div class="container">
+                <div class="col-xs-12">
+                  <iais:body >
                     <iais:section title="" id = "addAvailability">
                       <iais:row>
                         <c:if test="${curRole eq 'INSPECTOR_LEAD'}">
                           <iais:field value="Name" required="true"/>
                           <iais:value width="7">
-                            <iais:select name="nonAvaUserNameId" options="nonAvaUserName" firstOption="Please select" value="${inspNonAvailabilityDto.userCorrId}" ></iais:select>
+                            <iais:select name="nonAvaUserNameId" options="nonAvaUserName" firstOption="Please Select" value="${inspNonAvailabilityDto.userCorrId}" ></iais:select>
                             <br><span class="error-msg" name="iaisErrorMsg" id="error_userName"></span>
                           </iais:value>
                         </c:if>
                         <c:if test="${curRole ne 'INSPECTOR_LEAD'}">
                           <iais:field value="Name"/>
                           <iais:value width="7">
-                            <label><c:out value="${userName}"/></label>
+                            <span style="font-size: 16px"><c:out value="${userName}"/></span>
                           </iais:value>
                         </c:if>
                       </iais:row>
-                      <iais:row>
+                      <div class="form-group" style="margin-bottom: 0px;">
                         <iais:field value="Blocked Out Date" required="true"/>
                         <iais:value width="7">
-                          <label>From <iais:datePicker id = "nonAvaStartDate" name = "nonAvaStartDate" value="${inspNonAvailabilityDto.blockOutStart}"></iais:datePicker> to <iais:datePicker id = "nonAvaEndDate" name = "nonAvaEndDate" value="${inspNonAvailabilityDto.blockOutEnd}"></iais:datePicker></label>
+                          <iais:datePicker id = "nonAvaStartDate" name = "nonAvaStartDate" value="${inspNonAvailabilityDto.blockOutStart}"></iais:datePicker>
+                          <span style="font-size: 16px">To</span><p></p>
+                          <iais:datePicker id = "nonAvaEndDate" name = "nonAvaEndDate" value="${inspNonAvailabilityDto.blockOutEnd}"></iais:datePicker>
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_nonAvaStartDate"></span>
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_nonAvaEndDate"></span>
                         </iais:value>
-                      </iais:row>
-                      <iais:row>
+                      </div>
+                      <div class="form-group">
                         <iais:field value="Blocked Out Date Description"/>
                         <iais:value width="7">
                           <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" maxlength="255" ><c:out value="${inspNonAvailabilityDto.nonAvaDescription}"></c:out></textarea>
                         </iais:value>
-                      </iais:row>
-                      <iais:row>
+                      </div>
+                      <div class="form-group">
                         <iais:field value="Recurrence" required="true"/>
                         <iais:value width="7">
-                          <iais:select name="recurrence" options="recurrenceOption" firstOption="Please select" value="${inspNonAvailabilityDto.recurrence}" ></iais:select>
+                          <iais:select name="recurrence" options="recurrenceOption" firstOption="Please Select" value="${inspNonAvailabilityDto.recurrence}" ></iais:select>
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_recurrence"></span>
                         </iais:value>
-                      </iais:row>
+                      </div>
                       <iais:action >
-                        <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doInspAvailabilityAddBack()">Back</button>
-                        <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:doInspAvailabilityAddNext()">Next</button>
+                        <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspAvailabilityAddNext()">Confirm</button>
+                        <a class="back" id="Back" onclick="javascript:doInspAvailabilityAddBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                       </iais:action>
                     </iais:section>
-                  </div>
+                  </iais:body>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </iais:body>
+    </div>
   </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
