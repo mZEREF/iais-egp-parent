@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityEventDto;
@@ -246,11 +245,11 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
         auditTrailEntityEventDto.setAuditTrailDto(intranet);
         //eventbus
-        auditTrailEntityEventDto.setEventRefNo(processFileTrackDto.getRefId());
-        eventBusHelper.submitAsyncRequest(auditTrailEntityEventDto,submissionId, EventBusConsts.SERVICE_NAME_AUDIT_TRAIL,
-                EventBusConsts.OPERATION_SYNC_AUDIT_TRAIL,auditTrailEntityEventDto.getEventRefNo(),null);
-        return true;
-         //return auditTrailMainBeClient.syucUpdateAuditTrail(auditTrailEntityEventDto.getAuditTrailEntityDtos()).getStatusCode() == 200;
+//        auditTrailEntityEventDto.setEventRefNo(processFileTrackDto.getRefId());
+//        eventBusHelper.submitAsyncRequest(auditTrailEntityEventDto,submissionId, EventBusConsts.SERVICE_NAME_AUDIT_TRAIL,
+//                EventBusConsts.OPERATION_SYNC_AUDIT_TRAIL,auditTrailEntityEventDto.getEventRefNo(),null);
+//        return true;
+        return auditTrailMainBeClient.syucUpdateAuditTrail(auditTrailEntityEventDto.getAuditTrailEntityDtos()).getStatusCode() == 200;
 
     }
 
