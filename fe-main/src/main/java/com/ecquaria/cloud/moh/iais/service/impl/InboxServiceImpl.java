@@ -9,19 +9,30 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.*;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigInboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
+import com.ecquaria.cloud.moh.iais.service.client.InboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Service
 @Slf4j
@@ -201,12 +212,21 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
-    public AuditTrailDto getLastLoginInfo(String loginUserId,String sessionId) {
+    public AuditTrailDto getLastLoginInfo(String loginUserId) {
         AuditTrailDto auditTrailDto = new AuditTrailDto();
-        auditTrailDto.setActionTime(auditTrailMainClient.getLastLoginInfo(loginUserId).getEntity().getActionTime());
-        auditTrailDto.setModule(auditTrailMainClient.getLastAction(sessionId).getEntity().getModule());
-        auditTrailDto.setFunctionName(auditTrailMainClient.getLastAction(sessionId).getEntity().getFunctionName());
-        auditTrailDto.setLicenseNum(auditTrailMainClient.getLastAction(sessionId).getEntity().getLicenseNum());
+        AuditTrailDto loginDto = auditTrailMainClient.getLastLoginInfo(loginUserId).getEntity();
+        if (loginDto != null) {
+            auditTrailDto.setActionTime(loginDto.getActionTime());
+            String sessionId = loginDto.getSessionId();
+            AuditTrailDto actDto = auditTrailMainClient.getLastAction(sessionId).getEntity();
+            if (actDto != null) {
+                auditTrailDto.setModule(actDto.getModule());
+                auditTrailDto.setFunctionName(actDto.getFunctionName());
+                auditTrailDto.setLicenseNum(actDto.getLicenseNum());
+                auditTrailDto.setApplicationNum(actDto.getApplicationNum());
+            }
+        }
+
         return auditTrailDto;
     }
 }

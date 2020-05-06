@@ -34,5 +34,5 @@ public interface InboxService {
     Boolean checkEligibility(String appId);
     List<InboxMsgMaskDto> getInboxMaskEntity(String msgId);
     List<PremisesDto> getPremisesByLicId(String licenceId);
-    AuditTrailDto getLastLoginInfo(String loginUserId,String sessionId);
+    AuditTrailDto getLastLoginInfo(String loginUserId);
 }
