@@ -1042,14 +1042,13 @@ public class NewApplicationDelegator {
         appEditSelectDto.setDocEdit(true);
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
 
-       /* Map<String, String> map = doPreviewAndSumbit(bpc);
+        Map<String, String> map = doPreviewAndSumbit(bpc);
         if(!map.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"Msg",map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
             return;
-        }*/
-
+        }
 
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
 
@@ -3580,14 +3579,15 @@ public class NewApplicationDelegator {
                     String currentSvcId = appSvcRelatedInfoDto.getServiceId();
                     List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = null;
                     if(!StringUtil.isEmpty(currentSvcId)){
-                        hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(currentSvcId);//set doc name
+                        hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(currentSvcId);
+                        //set doc name
                         List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                         List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
                         NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos,appSvcDocDtos,primaryDocConfig,svcDocConfig);
                     }
                     //set AppSvcLaboratoryDisciplinesDto
                     if(!IaisCommonUtils.isEmpty(hcsaSvcSubtypeOrSubsumedDtos)){
-                        NewApplicationHelper.setLaboratoryDisciplinesInfo(appSvcRelatedInfoDto,hcsaSvcSubtypeOrSubsumedDtos);
+                        NewApplicationHelper.setLaboratoryDisciplinesInfo(appGrpPremisesDtos,appSvcRelatedInfoDto,hcsaSvcSubtypeOrSubsumedDtos);
                     }
                     //set AppSvcDisciplineAllocationDto
                     //NewApplicationHelper.setDisciplineAllocationDtoInfo(appSvcRelatedInfoDto);
@@ -3603,19 +3603,20 @@ public class NewApplicationDelegator {
                     }
                 }
             }
-            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
-                    ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
-                    || rfi != null){
+            if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) || rfi != null){
                 //set oldAppSubmission when rfi,rfc,renew
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+            }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) && rfi == null){
+                AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+                ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
             }
+
 
         }
         AppEditSelectDto changeSelectDto1 = appSubmissionDto.getChangeSelectDto()==null?new AppEditSelectDto():appSubmissionDto.getChangeSelectDto();
         appSubmissionDto.setChangeSelectDto(changeSelectDto1);
         //set licenseeId
-//        InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"inter-inbox-user-info");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         if(loginContext != null){
             appSubmissionDto.setLicenseeId(loginContext.getLicenseeId());

@@ -35,9 +35,12 @@
                                                 <%@include file="../common/previewPrimary.jsp"%>
                                                 <c:forEach var="hcsaServiceDto" items="${hcsaServiceDtoList}" varStatus="status" >
                                                     <div class="panel panel-default svc-content">
+                                                        <input type="hidden" name="iframeId" value="svcIframe${status.index}"/>
+                                                        <input type="hidden" name="maskId" value="<iais:mask name="svc${status.index}" value="${hcsaServiceDto.id}"/>"/>
+                                                        <input type="hidden" name="maskName" value="svc${status.index}"/>
 
                                                         <div class="panel-heading  <c:if test="${fn:contains(serviceConfig,hcsaServiceDto.id)}">incompleted</c:if> <c:if test="${fn:contains(serviceConfig,hcsaServiceDto.id)==false}">completed</c:if>  "  id="headingServiceInfo" role="tab">
-                                                            <h4 class="panel-title" onclick="setIframeUrl('<iais:mask name="svc${status.index}" value="${hcsaServiceDto.id}"/>','svc${status.index}',$(this),'svcIframe${status.index}')"><a  class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${hcsaServiceDto.svcName}</a></h4>
+                                                            <h4 class="panel-title svcTitle"><a  class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${hcsaServiceDto.svcName}</a></h4>
                                                         </div>
 
                                                         <div class=" panel-collapse collapse" id="collapseServiceInfo${status.index}" role="tabpanel" aria-labelledby="headingServiceInfo${status.index}" >
@@ -49,7 +52,7 @@
                                                                     </p>
                                                                 </c:if>
                                                                 <input type="hidden" value="0" name="svcCount" />
-                                                                <iframe id="svcIframe${status.index}"  class="svc-iframe" title="" src=""  width="100%" frameborder ="0" ></iframe>
+                                                                <%--<iframe id="svcIframe${status.index}"  class="svc-iframe" title="" src=""  width="100%" frameborder ="0" ></iframe>--%>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -183,18 +186,22 @@
     function jumpPage() {
         submit('premises','saveDraft','jumpPage');
     }
-    function setIframeUrl(maskId,maskName,svcDOM,iframeId) {
-        var $svcContenEle = svcDOM.closest('div.svc-content');
-        var svcCount = $svcContenEle.find('input[name="svcCount"]').val();
+
+    $('.svcTitle').click(function () {
+        var $svcEle = $(this).closest('div.svc-content');
+        var svcCount = $svcEle.find('input[name="svcCount"]').val();
         if(0 != svcCount){
             return;
         }
         showWaiting();
-        $svcContenEle.find('input[name="svcCount"]').val(1);
+        var maskName = $svcEle.find('input[name="maskName"]').val();
+        var maskId = $svcEle.find('input[name="maskId"]').val();
+        var iframeId = $svcEle.find('input[name="iframeId"]').val();
+        $svcEle.find('input[name="svcCount"]').val(1);
         var url ='${pageContext.request.contextPath}<%=RedirectUtil.changeUrlToCsrfGuardUrlUrl("/eservice/INTERNET/MohServiceRelatedInformation/1/PrepareView",request)%>&'+maskName+'='+maskId+'&maskName='+maskName+'&iframeId='+iframeId;
-        var iframe =  $svcContenEle.find('.svc-iframe');
-        iframe.prop('src',url);
-    }
+        var iframeHtml = "<iframe id=\""+ iframeId+ "\"  class=\"svc-iframe\" title=\"\" src=\""+ url +"\"  width=\"100%\" frameborder =\"0\" ></iframe>"
+        $svcEle.find('input[name="svcCount"]').after(iframeHtml);
 
+    });
 
 </script>
