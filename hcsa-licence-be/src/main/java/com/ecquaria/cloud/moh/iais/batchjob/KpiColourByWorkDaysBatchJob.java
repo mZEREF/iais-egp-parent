@@ -162,7 +162,7 @@ public class KpiColourByWorkDaysBatchJob {
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         int allWorkDays = 0;
         int allHolidays = 0;
-        if(subStage.equals(HcsaConsts.ROUTING_STAGE_INP)){
+        if(HcsaConsts.ROUTING_STAGE_INP.equals(subStage)){
             AppPremInsDraftDto appPremInsDraftDto = inspectionTaskClient.getAppPremInsDraftDtoByAppPreCorrId(taskDto.getRefNo()).getEntity();
             Date startDate = appPremInsDraftDto.getClockin();
             Date completeDate;
@@ -210,13 +210,17 @@ public class KpiColourByWorkDaysBatchJob {
                 tDto.setWkGrpId(taskDto.getWkGrpId());
                 tDto.setTaskKey(taskDto.getTaskKey());
                 inspecTaskCreAndAssDto.setTaskDto(tDto);
-                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
-                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
-                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_NCEMAIL);
-                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
-                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
-                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1);
-                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECK_FILLUP);
+                if(HcsaConsts.ROUTING_STAGE_PRE.equals(subStage)){
+                    processUrls.add(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
+                } else if(HcsaConsts.ROUTING_STAGE_POT.equals(subStage)) {
+                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
+                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
+                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_NCEMAIL);
+                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
+                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
+                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1);
+                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECK_FILLUP);
+                }
                 inspecTaskCreAndAssDto.setProcessUrls(processUrls);
                 List<TaskDto> taskDtos = organizationClient.getInsKpiTask(inspecTaskCreAndAssDto).getEntity();
                 if(!IaisCommonUtils.isEmpty(taskDtos)){
