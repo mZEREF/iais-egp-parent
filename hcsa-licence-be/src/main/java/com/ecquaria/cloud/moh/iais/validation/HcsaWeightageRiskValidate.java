@@ -12,11 +12,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author: jiahao
  * @Date: 2019/12/26 15:41
  */
+@Slf4j
 public class HcsaWeightageRiskValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {

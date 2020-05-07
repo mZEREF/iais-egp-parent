@@ -82,6 +82,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Autowired
     private SystemParamConfig systemParamConfig;
 
+    @Autowired
+    private EmailHelper emailHelper;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -206,12 +209,12 @@ public class ApplicationServiceImpl implements ApplicationService {
             map.put("DETAILS", StringUtil.viewHtml("test"));
             map.put("A_HREF", StringUtil.viewHtml(""));
             map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
-            MsgTemplateDto entity = EmailHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SELF_DECL_ID);
+            MsgTemplateDto entity = emailHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SELF_DECL_ID);
             String messageContent = entity.getMessageContent();
             String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
 
             List<String> licenseeIdList =  userAccountList.stream().map(ApplicationGroupDto::getLicenseeId).collect(Collectors.toList());
-            List<String> emailAddress = EmailHelper.getEmailAddressListByLicenseeId(licenseeIdList);
+            List<String> emailAddress = emailHelper.getEmailAddressListByLicenseeId(licenseeIdList);
 
             EmailDto emailDto = new EmailDto();
             emailDto.setContent(templateMessageByContent);

@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -12,7 +11,9 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import java.util.Map;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class HcsaApplicationViewValidate implements CustomizeValidator {
     private final String VERIFIED = ApplicationConsts.PROCESSING_DECISION_VERIFIED;
     private final String ROLLBACK = ApplicationConsts.PROCESSING_DECISION_ROLLBACK;

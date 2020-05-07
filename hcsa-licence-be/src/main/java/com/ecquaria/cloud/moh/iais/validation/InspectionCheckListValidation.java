@@ -13,11 +13,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author: jiahao
  * @Date: 2019/11/27 10:06
  */
+@Slf4j
 public class InspectionCheckListValidation implements CustomizeValidator {
     private static final String ERR0010 = "ERR0010";
     private static final String UC_CHKLMD001_ERR007 = "UC_CHKLMD001_ERR007";

@@ -8,11 +8,13 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author: jiahao
  * @Date: 2020/2/26 17:16
  */
+@Slf4j
 public class AuditAssginListValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {

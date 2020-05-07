@@ -8,15 +8,16 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author: jiahao
  * @Date: 2020/1/2 18:22
  */
+@Slf4j
 public class HcsaInspectionValidate implements CustomizeValidator {
 
     private static  Integer MAX_VALUE_LENGTH = 3;
