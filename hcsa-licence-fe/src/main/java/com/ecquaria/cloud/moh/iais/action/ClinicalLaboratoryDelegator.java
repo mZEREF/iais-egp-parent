@@ -71,7 +71,7 @@ public class ClinicalLaboratoryDelegator {
     public static final String  ERRORMAP_GOVERNANCEOFFICERS = "errorMap_governanceOfficers";
     public static final String  RELOADSVCDOC = "ReloadSvcDoc";
     public static final String  SERVICEPERSONNELTYPE = "ServicePersonnelType";
-
+    public static final String  PLEASEINDICATE = "Please indicate";
 
     //dropdown
     public static final String DROPWOWN_IDTYPESELECT = "IdTypeSelect";
@@ -481,7 +481,7 @@ public class ClinicalLaboratoryDelegator {
 
                         AppSvcChckListDto appSvcChckListDto = new AppSvcChckListDto();
                         appSvcChckListDto.setChkLstConfId(checkInfo.getId());
-                        if("27D8EB5B-1123-EA11-BE78-000C29D29DB0".equals(checkInfo.getId())){
+                        if(PLEASEINDICATE.equals(checkInfo.getName())){
                             String subName = ParamUtil.getString(bpc.request, "pleaseIndicate"+i);
                             appGrpPremisesDto.setOtherScopeName(subName);
                             appSvcChckListDto.setOtherScopeName(subName);
@@ -504,30 +504,28 @@ public class ClinicalLaboratoryDelegator {
                     appSvcLaboratoryDisciplinesDto.setAppSvcChckListDtoList(appSvcChckListDtoList);
                     appSvcLaboratoryDisciplinesDtoList.add(appSvcLaboratoryDisciplinesDto);
                 }
-                String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
-                if ("next".equals(crud_action_type)) {
-                    errorMap = NewApplicationHelper.doValidateLaboratory(appSvcChckListDtoList, currentSvcId);
-
-                    if (appSubmissionDto.isNeedEditController()) {
-                        Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
-                        clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_LABORATORY);
-                        appSubmissionDto.setClickEditPage(clickEditPages);
-                        AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
-                        appEditSelectDto.setServiceEdit(true);
-                        appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-                    }
-                    ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
-                    HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
-                    Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
-                    if(errorMap.isEmpty()&&allChecked.isEmpty()){
-                        coMap.put("information","information");
-                    }else {
-                        coMap.put("information","");
-                    }
-                    bpc.request.getSession().setAttribute("coMap",coMap);
-
-                }
                 i++;
+            }
+            String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
+            if ("next".equals(crud_action_type)) {
+                errorMap = NewApplicationHelper.doValidateLaboratory(appGrpPremisesDtoList,appSvcLaboratoryDisciplinesDtoList, currentSvcId);
+                if (appSubmissionDto.isNeedEditController()) {
+                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
+                    clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_LABORATORY);
+                    appSubmissionDto.setClickEditPage(clickEditPages);
+                    AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
+                    appEditSelectDto.setServiceEdit(true);
+                    appSubmissionDto.setChangeSelectDto(appEditSelectDto);
+                }
+                ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
+                HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+                Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
+                if(errorMap.isEmpty()&&allChecked.isEmpty()){
+                    coMap.put("information","information");
+                }else {
+                    coMap.put("information","");
+                }
+                bpc.request.getSession().setAttribute("coMap",coMap);
             }
             ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadChkLstMap);
 

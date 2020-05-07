@@ -11,7 +11,7 @@
                             <div class="form-check active">
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                                     <c:choose>
-                                        <c:when test="${checkList.chkLstConfId=='27D8EB5B-1123-EA11-BE78-000C29D29DB0'}">${checkList.otherScopeName}</c:when>
+                                        <c:when test="${checkList.chkName=='Please indicate'}">${checkList.otherScopeName}</c:when>
                                         <c:otherwise>${checkList.chkName}</c:otherwise>
                                     </c:choose>
                                 </p>

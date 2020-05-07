@@ -87,7 +87,7 @@
                           <tr>
                             <td>
                               <div class="control-item-container parent-form-check" data-parent="<c:out value="${premIndexNo}${levelOneList.type}${levelOneList.name}" />" >
-                                <input type="checkbox" onclick="doChangeOthers('${levelOneList.id}|${status.index}')"
+                                <input type="checkbox"
                                 <c:if test="${reloadData[reloadIndexNo1] != null && reloadData[reloadIndexNo1] != ''}">
                                        checked="checked"
                                 </c:if>
@@ -106,11 +106,27 @@
                               <c:set var="checkIndexNo2" value="${premIndexNo};${levelTwoList.name};${levelTwoList.code};${levelTwoList.parentId}"/>
                               <c:set var="reloadIndexNo2" value="${currentServiceId}${premIndexNo}${levelTwoList.id}"/>
                               <!--two -->
+                              <c:choose>
+                                <c:when test="${reloadData[reloadIndexNo2] != null && reloadData[reloadIndexNo2] != ''}">
+                                  <c:set var="checkStat" value="true"/>
+                                </c:when>
+                                <c:otherwise>
+                                  <c:set var="checkStat" value="false"/>
+                                </c:otherwise>
+                              </c:choose>
+                              <c:choose>
+                                <c:when test="${levelTwoList.name=='Please indicate'}">
+                                  <c:set var="needTextArea" value="true"/>
+                                </c:when>
+                                <c:otherwise>
+                                  <c:set var="needTextArea" value="false"/>
+                                </c:otherwise>
+                              </c:choose>
                               <tr>
                                 <td>
                                   <div class="control-item-container sub-form-check parent-form-check disabled" data-parent="<c:out value="${premIndexNo}${levelTwoList.type}${levelTwoList.name}"/>" data-child="<c:out value="${premIndexNo}${levelOneList.type}${levelOneList.name}"/>" >
-                                    <input type="checkbox" onclick="doChangeText('${levelTwoList.id}|${status.index}')"
-                                    <c:if test="${reloadData[reloadIndexNo2] != null && reloadData[reloadIndexNo2] != ''}">
+                                    <input type="checkbox"
+                                    <c:if test="${checkStat}">
                                            checked="checked"
                                     </c:if>
                                            id="<c:out value="control--${levelTwo.begin}--${levelTwo.index}"/>"
@@ -125,10 +141,14 @@
                                 </td>
                                 <td >
                                   <c:choose>
-                                    <c:when test="${levelTwoList.id=='27D8EB5B-1123-EA11-BE78-000C29D29DB0'}">
-                                      <textarea name="pleaseIndicate${status.index}" maxlength="200" cols="45" disabled>${appGrpPremisesDto.otherScopeName}</textarea>
+                                    <c:when test="${needTextArea}">
+                                      <input type="hidden" name="needTextArea" value="1"/>
+                                      <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" cols="45" <c:if test="${!checkStat}">disabled</c:if> >${appGrpPremisesDto.otherScopeName}</textarea>
                                       <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError${status.index}"></span>
                                     </c:when>
+                                    <c:otherwise>
+                                      <input type="hidden" name="needTextArea" value="0"/>
+                                    </c:otherwise>
                                   </c:choose>
                                 </td>
                               </tr>
@@ -183,8 +203,8 @@
     });
 
     doEdit();
-    doChangeText();
-    doChangeOthers();
+    /*doChangeText();*/
+    /*doChangeOthers();*/
   });
 
 
@@ -196,12 +216,12 @@
     });
   };
 
-  var num=0;
+ /* var num=0;
   var num1=0;
   var num2=0;
-  var doChangeText = function (levelTwoListId) {
-    var str0=levelTwoListId.split('|')[0];
-    var str=levelTwoListId.split('|')[1];
+  var doChangeText = function (str0,str) {
+/!*    var str0=levelTwoListId.split('|')[0];
+    var str=levelTwoListId.split('|')[1];*!/
     switch (str) {
       case "0":
         if(num%2===1){
@@ -289,6 +309,18 @@
         }break;
     }
 
-  };
+  };*/
+
+ $('input[type="checkbox"]').click(function () {
+    var $chckBox = $(this).closest('tr');
+    var needTextArea = $chckBox.find('input[name="needTextArea"]').val();
+    if(needTextArea == '1'){
+        if($(this).prop('checked')){
+            $chckBox.find('.pleaseIndicate').prop('disabled',false);
+        }else{
+            $chckBox.find('.pleaseIndicate').prop('disabled',true)
+        }
+    }
+ });
 
 </script>

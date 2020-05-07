@@ -95,7 +95,7 @@
                                         <p class="visible-xs visible-sm table-row-title">Laboratory Disciplines</p>
                                         <input type="hidden" name="${cgoName}" value="${chkLst.chkLstConfId}"/>
                                         <c:choose>
-                                          <c:when test="${chkLst.chkLstConfId=='27D8EB5B-1123-EA11-BE78-000C29D29DB0'}"><p>${chkLst.otherScopeName}</p></c:when>
+                                          <c:when test="${chkLst.chkName=='Please indicate'}"><p>${chkLst.otherScopeName}</p></c:when>
                                           <c:otherwise><p>${chkLst.chkName}</p></c:otherwise>
                                         </c:choose>
                                       </td>

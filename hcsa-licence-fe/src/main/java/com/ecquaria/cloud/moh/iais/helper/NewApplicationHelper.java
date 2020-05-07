@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -52,56 +53,57 @@ import java.util.Map;
  */
 
 public class NewApplicationHelper {
-    public static Map<String,String> doValidateLaboratory(List<AppSvcChckListDto>  listDtos, String serviceId){
+    public static Map<String,String> doValidateLaboratory(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppSvcLaboratoryDisciplinesDto>  appSvcLaboratoryDisciplinesDtos, String serviceId){
         Map<String,String> map=IaisCommonUtils.genNewHashMap();
-        int count=0;
+        int premCount = 0 ;
+        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
+            AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = appSvcLaboratoryDisciplinesDtos.get(premCount);
+                List<AppSvcChckListDto> listDtos = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                int count=0;
+                if(listDtos.isEmpty()){
+                    /*   map.put("checkError","UC_CHKLMD001_ERR002");*/
+                }else {
+                    for(int i=0;i<listDtos.size();i++){
+                        if(ClinicalLaboratoryDelegator.PLEASEINDICATE.equals(listDtos.get(i).getChkName())&&StringUtil.isEmpty(listDtos.get(i).getOtherScopeName()) ){
+                            map.put("pleaseIndicateError"+premCount,"ERR0009");
+                        }
 
-        if(listDtos.isEmpty()){
-            /*   map.put("checkError","UC_CHKLMD001_ERR002");*/
-        }else {
-            for(int i=0;i<listDtos.size();i++){
-                if("27D8EB5B-1123-EA11-BE78-000C29D29DB0".equals(listDtos.get(i).getChkLstConfId())&&StringUtil.isEmpty(listDtos.get(i).getOtherScopeName()) ){
-                    map.put("pleaseIndicateError"+i,"ERR0009");
-                }
-
-                String parentName = listDtos.get(i).getParentName();
-                if(parentName==null){
-                    count++;
-                    continue;
-                }else  if(listDtos.get(i).isChkLstType()){
-                    if(serviceId.equals(parentName)){
-                        count++;
-                        continue;
-                    }
-                    for(AppSvcChckListDto every :listDtos) {
-                        if(every.getChildrenName()!=null){
-                            if(every.getChildrenName().equals(parentName)){
+                        String parentName = listDtos.get(i).getParentName();
+                        if(parentName==null){
+                            count++;
+                            continue;
+                        }else  if(listDtos.get(i).isChkLstType()){
+                            if(serviceId.equals(parentName)){
                                 count++;
-                                break;
+                                continue;
+                            }
+                            for(AppSvcChckListDto every :listDtos) {
+                                if(every.getChildrenName()!=null){
+                                    if(every.getChildrenName().equals(parentName)){
+                                        count++;
+                                        break;
+                                    }
+                                }
                             }
                         }
-
-                    }
-                }
-                else if(!listDtos.get(i).isChkLstType()){
-                    for(AppSvcChckListDto every :listDtos) {
-                        if (every.getChkLstConfId().equals(parentName)) {
-                            count++;
-                            break;
-
+                        else if(!listDtos.get(i).isChkLstType()){
+                            for(AppSvcChckListDto every :listDtos) {
+                                if (every.getChkLstConfId().equals(parentName)) {
+                                    count++;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
-            }
-
+                if(count!=listDtos.size()){
+                    map.put("checkError","UC_CHKLMD001_ERR002");
+                }
+            premCount++;
         }
-        if(count!=listDtos.size()){
-            map.put("checkError","UC_CHKLMD001_ERR002");
-        }
-
         return map;
-
     }
+
     public static Map<String,String> doValidateGovernanceOfficers(List<AppSvcCgoDto> appSvcCgoList){
 
         if(appSvcCgoList == null){
@@ -684,7 +686,7 @@ public class NewApplicationHelper {
                             for(AppSvcChckListDto appSvcChckListDto:appSvcChckListDtoList){
                                 if(chkLstId.equals(appSvcChckListDto.getChkLstConfId())){
                                     appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getChkName());
-                                    if("27D8EB5B-1123-EA11-BE78-000C29D29DB0".equals(appSvcChckListDto.getChkLstConfId())){
+                                    if(ClinicalLaboratoryDelegator.PLEASEINDICATE.equals(appSvcChckListDto.getChkName())){
                                         appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getOtherScopeName());
                                     }
                                 }
