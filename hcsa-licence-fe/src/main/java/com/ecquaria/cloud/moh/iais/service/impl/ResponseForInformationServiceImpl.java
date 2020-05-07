@@ -92,7 +92,10 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         String s = FileUtil.genMd5FileChecksum(data.getBytes());
         File file=MiscUtil.generateFile(download+File.separator, s+fileFormat);
         if(!file.exists()){
-            file.createNewFile();
+            boolean createFlag = file.createNewFile();
+            if (!createFlag) {
+                log.error("Create File fail");
+            }
         }
         File groupPath=new File(download+File.separator);
 
@@ -220,7 +223,10 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                     byte[] bytes = by.toByteArray();
                     String s = FileUtil.genMd5FileChecksum(bytes);
                     File curFile =new File(backups + File.separator + s + ".zip");
-                    file.renameTo(curFile);
+                    boolean renameFlag = file.renameTo(curFile);
+                    if (!renameFlag) {
+                        log.error("Rename file fail");
+                    }
                     log.info("----------- new zip file name is"+backups+File.separator+fileNamesss+".zip");
                     String s1 = saveFileName(fileNamesss+".zip","backupsRec" + File.separator+fileNamesss+".zip",licPreId);
                     if(!s1.equals("SUCCESS")){
