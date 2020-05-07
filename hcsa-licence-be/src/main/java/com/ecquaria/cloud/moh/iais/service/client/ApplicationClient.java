@@ -7,18 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDt
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
@@ -218,10 +207,15 @@ public interface ApplicationClient {
     FeignResponseEntity<List<ApplicationDto>> getAppsByGrpNo(@PathVariable(name = "grpNo") String grpNo);
     @GetMapping(value = "/iais-application-be/application-refno-by-licId-HclCode",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getRefNoByLicId(@RequestParam ("licId")String licId,@RequestParam ("HclCode")String HclCode);
+
     @GetMapping(value = "/iais-apppremisescorrelation-be/app-premises-correlations/{appId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesCorrelationDto>> getAppPremisesCorrelationsByAppId(@PathVariable("appId") String appId);
 
     @GetMapping(value = "/iais-application-be/app-rec-status/{appStatus}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getApplicationByStatus(@PathVariable(name = "appStatus") String appStatus);
 
+    @RequestMapping(path = "/iais-application-be/getAppSubmissionForAuditDtoByAppGroupNo",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE )
+    FeignResponseEntity<AppSubmissionForAuditDto>  getAppSubmissionForAuditDto(@RequestParam("appGroupNo") String appGroupNo);
+    @GetMapping(value = "/iais-application-be/application-group-no-by-RefNo",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> getRefNoByRefNo(@RequestParam ("RefNo")String RefNo);
 }

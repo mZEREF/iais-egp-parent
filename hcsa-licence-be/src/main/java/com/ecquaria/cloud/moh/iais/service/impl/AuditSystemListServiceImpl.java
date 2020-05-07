@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionForAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -156,6 +157,15 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                 }
             }
             if(auditCombinationDto != null){
+                //  Synchronize app to fe
+                AppSubmissionForAuditDto appSubmissionForAuditDto = applicationClient.getAppSubmissionForAuditDto(eventRefNum).getEntity();
+                if( appSubmissionForAuditDto == null )
+                    log.info("========create applicationDtos is no success.");
+                else {
+                    appSubmissionForAuditDto.setAuditTrailDto(auditCombinationDto.getLicPremisesAuditDto().getAuditTrailDto());
+                    saveAppForAuditToFe(appSubmissionForAuditDto,false);
+                }
+                log.info("========create TaskCall is start.");
                 createTask(auditCombinationDto.getAuditTaskDataFillterDto(), submissionId, auditCombinationDto,eventRefNum);
             }
 
@@ -236,6 +246,24 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         updateLicenceSaveCancelTask(auditCombinationDto,status,submitId);
         updateAppCancelTaskByEventBus(auditCombinationDto,submitId);
         updateTaskCancelTaskByEventBus(auditCombinationDto,submitId);
+
+        // sysn fe app
+        log.info("========================>>>>>sysn fe app !!!!");
+        String groupNo = applicationClient.getRefNoByRefNo(RefNo).getEntity();
+        AppSubmissionForAuditDto appSubmissionForAuditDto = applicationClient.getAppSubmissionForAuditDto(groupNo).getEntity();
+        appSubmissionForAuditDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        saveAppForAuditToFe(appSubmissionForAuditDto,true);
+    }
+
+    public  void saveAppForAuditToFe(AppSubmissionForAuditDto appSubmissionForAuditDto,boolean isCancel){
+        log.info("========================>>>>>sysn fe app start!!!!");
+        appSubmissionForAuditDto.setIsCancel(isCancel);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        //  Synchronize app to fe
+        beEicGatewayClient.saveAppForAuditToFe(appSubmissionForAuditDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
+        log.info("========================>>>>>sysn fe app end!!!!");
     }
 
     public void updateAppCancelTaskByEventBus(AuditCombinationDto auditCombinationDto,String submitId){

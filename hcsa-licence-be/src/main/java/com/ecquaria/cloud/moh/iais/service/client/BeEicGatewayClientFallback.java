@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionForAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataRequest;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataResponse;
@@ -152,6 +153,14 @@ public class BeEicGatewayClientFallback implements BeEicGatewayClient{
 
     @Override
     public FeignResponseEntity<Void> syncInspPeriodToFe(HcsaServicePrefInspPeriodDto period, String date, String authorization, String dateSec, String authorizationSec) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<AppSubmissionForAuditDto> saveAppForAuditToFe(AppSubmissionForAuditDto appSubmissionForAuditDto, String date, String authorization, String dateSec, String authorizationSec) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

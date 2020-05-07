@@ -7,18 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDt
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
@@ -35,6 +24,22 @@ import java.util.Map;
  * @date 11/26/2019
  */
 public class ApplicationClientFallback implements ApplicationClient{
+
+    @Override
+    public FeignResponseEntity<AppSubmissionForAuditDto> getAppSubmissionForAuditDto(String appGroupNo) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<String> getRefNoByRefNo(String RefNo) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 
     @Override
     public FeignResponseEntity<ApplicationViewDto> getAppViewByCorrelationId(String correlationId) {

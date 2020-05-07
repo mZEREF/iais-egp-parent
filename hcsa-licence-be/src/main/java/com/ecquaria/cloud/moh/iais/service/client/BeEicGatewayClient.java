@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionForAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataRequest;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataResponse;
@@ -156,4 +157,12 @@ public interface BeEicGatewayClient {
                                          @RequestHeader("authorization") String authorization,
                                          @RequestHeader("date-Secondary") String dateSec,
                                          @RequestHeader("authorization-Secondary") String authorizationSec);
+
+    @PostMapping(value = "/v1/iais-application/saveAppForAuditToFe", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppSubmissionForAuditDto> saveAppForAuditToFe(@RequestBody AppSubmissionForAuditDto appSubmissionForAuditDto,
+                                                                  @RequestHeader("date") String date,
+                                                                  @RequestHeader("authorization") String authorization,
+                                                                  @RequestHeader("date-Secondary") String dateSec,
+                                                                  @RequestHeader("authorization-Secondary") String authorizationSec);
 }
