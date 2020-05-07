@@ -98,7 +98,9 @@ public class CreateDoInspTaskBatchJob {
             for(ApplicationDto applicationDto : applicationDtoList){
                 AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
                 AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-                appPremisesRecommendationDtos.add(appPremisesRecommendationDto);
+                if(appPremisesRecommendationDto != null) {
+                    appPremisesRecommendationDtos.add(appPremisesRecommendationDto);
+                }
             }
         }
         if(IaisCommonUtils.isEmpty(appPremisesRecommendationDtos)){

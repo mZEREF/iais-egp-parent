@@ -94,10 +94,12 @@ public class InspectionCreTaskByInspDateDelegator {
             for(ApplicationDto applicationDto : applicationDtoList){
                 AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
                 AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-                appPremisesRecommendationDtos.add(appPremisesRecommendationDto);
+                if(appPremisesRecommendationDto != null) {
+                    appPremisesRecommendationDtos.add(appPremisesRecommendationDto);
+                }
             }
         }
-        if(appPremisesRecommendationDtos == null || appPremisesRecommendationDtos.isEmpty()){
+        if(IaisCommonUtils.isEmpty(appPremisesRecommendationDtos)){
             return;
         }
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
