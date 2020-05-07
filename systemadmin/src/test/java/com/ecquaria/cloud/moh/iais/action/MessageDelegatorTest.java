@@ -9,7 +9,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -81,19 +80,11 @@ public class MessageDelegatorTest {
     }
 
     @Test
-    public void testStartStep(){
-        try {
-            messageDelegator.startStep(bpc);
-        } catch (IllegalAccessException e) {
-            log.error(e.getMessage(), e);
-        }
+    public void testStartStep() throws IllegalAccessException {
+        messageDelegator.startStep(bpc);
 
         bpc.request = null;
-        try {
-            messageDelegator.startStep(bpc);
-        } catch (IllegalAccessException e) {
-            log.error(e.getMessage(), e);
-        }
+        messageDelegator.startStep(bpc);
 
         Assert.assertTrue(true);
     }
