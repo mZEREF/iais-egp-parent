@@ -156,7 +156,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public SearchResult<PersonnelListQueryDto> psnDoQuery(SearchParam searchParam) {
-        return null;
+        return licenceClient.psnDoQuery(searchParam).getEntity();
     }
 
     @Override

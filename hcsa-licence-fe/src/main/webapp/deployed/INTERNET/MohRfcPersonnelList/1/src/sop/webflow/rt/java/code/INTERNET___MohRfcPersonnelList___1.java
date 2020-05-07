@@ -10,8 +10,8 @@
  * reasons.
  */
 package sop.webflow.rt.java.code;
-import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
+import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTERNET___MohRfcPersonnelList___1 extends BaseProcessClass {
 	
@@ -59,6 +59,18 @@ public class INTERNET___MohRfcPersonnelList___1 extends BaseProcessClass {
 	public void step1_OnStepProcess_1() throws Exception {
 	// 		Step1->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "personnleListStart", this);
+	}
+
+	public void doPaging_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "personnlePaging", this);
+	}
+
+	public void doSorting_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "personnleSorting", this);
+	}
+
+	public void doSearch_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "personnleSearch", this);
 	}
 
 	

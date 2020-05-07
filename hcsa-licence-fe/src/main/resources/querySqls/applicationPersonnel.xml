@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="applicationPersonnelQuery">
+    <sql key = "appPersonnelQuery" remarks = "Query Application Data by condition">
+        <![CDATA[
+                select T3.ID,T1.ID as licence_id,T1.STATUS,T1.SVC_NAME,
+                T3.NAME,T3.ID_NO,T3.EMAIL_ADDR,T3.MOBILE_NO,T3.DESIGNATION,T3.SALUTATION,T3.ID_TYPE,
+                T2.PSN_TYPE,
+                T4.PROFESSION_TYPE,T4.PROF_REG_NO
+                 from licence T1
+                 join lic_key_personnel T2 on T1.ID = T2.LICENCE_ID
+                 join key_personnel T3 on T2.PERSON_ID = T3.ID
+                 join key_personnel_ext
+                 T4 on T2.PSN_EXT_ID = T4.ID WHERE 1 = 1
+                 <#if licenseeId??> and T1.LICENSEE_ID =:licenseeId </#if>
+                  and T1.STATUS ='LICEST001'
+                  and T2.PSN_EXT_ID is not NULL and T1.ID = (
+                  select top 1 lic.ID from licence lic where
+                  T1.LICENCE_NO =lic.LICENCE_NO order by VERSION desc )
+                  UNION
+                  select
+                  T3.ID,T1.ID as licence_id,
+                  T1.STATUS,T1.SVC_NAME,T3.NAME,T3.ID_NO,T3.EMAIL_ADDR,T3.MOBILE_NO,
+                  T2.PSN_TYPE,T3.DESIGNATION,'' PROFESSION_TYPE,'' PROF_REG_NO,T3.SALUTATION,
+                  T3.ID_TYPE from licence T1 join lic_key_personnel T2 on T1.ID = T2.LICENCE_ID
+                  join key_personnel
+                  T3 on T2.PERSON_ID = T3.ID WHERE T1.STATUS ='LICEST001'
+                     and T2.PSN_EXT_ID is null and T1.ID =
+                ( select top 1 lic.ID from licence lic where T1.LICENCE_NO = lic.LICENCE_NO order by VERSION desc )
+        ]]>
+    </sql>
+</sqls>
+

@@ -12,14 +12,9 @@
 <div class="tab-pane" id="tabApp" role="tabpanel">
     <form class="form-inline" method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-        <input type="hidden" name="crud_action_type_form_value" value="">
+        <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" id="hiddenIndex" name="hiddenIndex" value="" />
-
-        <div class="row col-xs-12">
-            <div class="col-xs-12">
-                <label>${PersonnelListMap.size()} outof ${PersonnelListMap.size()}</label>
-            </div>
-        </div>
+        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="col-xl-12">
             <div class="col-sm-5 col-md-1">
                 <label class="control-label" for="psnType">Roles: </label>
@@ -38,9 +33,11 @@
         <div class="row col-xs-12 ">
             <div class="col-xs-12">
                 <div class="table-gp">
+                    <iais:pagination param="PersonnelSearchParam" result="PersonnelSearchResult"/>
                     <table class="table">
                     <thead>
                     <tr>
+                        <th>No.</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Mobile</th>
@@ -52,6 +49,11 @@
                     <c:forEach var="personnelist" items="${PersonnelListMap}" varStatus="status">
                         <c:set var="onePersonnel" value="${personnelist.value.get(0)}"></c:set>
                         <tr class="personnel">
+                            <td>
+                                <p class="visible-xs visible-sm table-row-title">Code Category</p>
+                                <p><c:out
+                                        value="${(status.index + 1) + (PersonnelSearchParam.pageNo - 1) * PersonnelSearchParam.pageSize}"/></p>
+                            </td>
                             <td>
                                 <p><a  class="personnel"><c:out value="${onePersonnel.psnName}"/></a></p>
                                 <input type="hidden" class="statusIndex" name="statusIndex" value="${status.index}" />
@@ -95,7 +97,6 @@
                 <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
             </div>
         </div>
-
         <div class="row">
         </div>
     </form>
@@ -103,12 +104,10 @@
 <script>
     $(document).ready(function () {
 
-
     });
 
     $('a.personnel').click(function () {
         $personnelEle = $(this).closest('tr.personnel');
-
         var index =  $personnelEle.find('.statusIndex').val();
         $('#hiddenIndex').val(index);
         doSubmitForm('preparePersonnelEdit','', '');
@@ -120,18 +119,24 @@
 
 
     function doSubmitForm(action,value,additional){
-        $("[name='crud_action_type_form_value']").val(action);
-
-
+        $("[name='crud_action_type']").val(action);
         var mainForm = document.getElementById('menuListForm');
         mainForm.submit();
     }
 
     function doBack(action ) {
-        $("[name='crud_action_type_value']").val('back');
-        $("[name='crud_action_type_form_value']").val(action);
+        $("[name='crud_action_type']").val('back');
+        $("[name='crud_action_type']").val(action);
         var mainForm = document.getElementById('menuListForm');
         mainForm.submit();
+    }
 
+    function jumpToPagechangePage(){
+        alert("---")
+        SOP.Crud.cfxSubmit("menuListForm", "page");
+    }
+
+    function sortRecords(sortFieldName,sortType){
+        SOP.Crud.cfxSubmit("menuListForm","sort",sortFieldName,sortType);
     }
 </script>

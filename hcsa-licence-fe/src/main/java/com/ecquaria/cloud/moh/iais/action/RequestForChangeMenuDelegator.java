@@ -5,7 +5,10 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -22,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -29,11 +33,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -59,6 +61,15 @@ import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESS
 @Slf4j
 @Delegator("MohRequestForChangeMenuDelegator")
 public class RequestForChangeMenuDelegator {
+
+
+    private final FilterParameter filterParameter = new FilterParameter.Builder()
+            .clz(PersonnelListQueryDto.class)
+            .searchAttr("PersonnelSearchParam")
+            .resultAttr("PersonnelSearchResult")
+            .sortField("NAME").sortType(SearchParam.ASCENDING).build();
+
+
     @Autowired
     RequestForChangeService requestForChangeService;
 
@@ -130,23 +141,7 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the prepare end ...."));
     }
 
-    /**
-     *
-     * @param bpc
-     * @Decription preparePersonnel  personnel List entrance
-     */
-    public void preparePersonnel(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the preparePersonnel start ...."));
-        String action = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
-        if(StringUtil.isEmpty(action)){
-            action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
-            if(StringUtil.isEmpty(action)){
-                action = "prePersonnelList";
-            }
-        }
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,action);
-        log.debug(StringUtil.changeForLog("the preparePersonnel end ...."));
-    }
+
     /**
      *
      * @param bpc
@@ -355,15 +350,59 @@ public class RequestForChangeMenuDelegator {
 
 
     /**
+     * @param bpc
+     * @Decription search
+     */
+    public void personnleSearch(BaseProcessClass bpc){
+
+    }
+
+
+    /**
+     * @param bpc
+     * @Decription sort
+     */
+    public void personnleSorting(BaseProcessClass bpc){
+        log.info("personnleSorting");
+        SearchResultHelper.doSort(bpc.request, filterParameter);
+    }
+
+
+    /**
+     * @param bpc
+     * @Decription page
+     */
+    public void personnlePaging(BaseProcessClass bpc){
+        log.info("personnlePaging");
+        SearchResultHelper.doPage(bpc.request, filterParameter);
+    }
+
+
+    /**
      *
      * @param bpc
-     * @Decription preparePersonnelList
+     * @Decription preparePersonnel  personnel List entrance
      */
-    public void preparePersonnelList(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do preparePersonnelList start ...."));
+    public void preparePersonnel(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the preparePersonnel start ...."));
+        String action = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(StringUtil.isEmpty(action)){
+            action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+            if(StringUtil.isEmpty(action)){
+                action = "prePersonnelList";
+            }
+        }
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
-        List<PersonnelListQueryDto> licenseeKeyApptPersonDtoList =  requestForChangeService.getLicencePersonnelListQueryDto(licenseeId);
+        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, filterParameter, true);
+        searchParam.addFilter("licenseeId", licenseeId, true);
+        QueryHelp.setMainSql("applicationPersonnelQuery", "appPersonnelQuery", searchParam);
+        SearchResult searchResult = requestForChangeService.psnDoQuery(searchParam);
+        if (!StringUtil.isEmpty(searchResult)) {
+            ParamUtil.setSessionAttr(bpc.request, "PersonnelSearchParam", searchParam);
+            ParamUtil.setRequestAttr(bpc.request, "PersonnelSearchResult", searchResult);
+        }
+        List<PersonnelListQueryDto> licenseeKeyApptPersonDtoList = searchResult.getRows();
         Map<String,List<PersonnelListQueryDto>> personnelListMap = IaisCommonUtils.genNewHashMap();
         for(PersonnelListQueryDto personnelListQueryDto:licenseeKeyApptPersonDtoList){
             String idNo = personnelListQueryDto.getIdNo();
@@ -382,6 +421,40 @@ public class RequestForChangeMenuDelegator {
         personelRoles.add(sp2);
         personelRoles.add(sp3);
         ParamUtil.setRequestAttr(bpc.request,"PersonnelRoleList",personelRoles);
+        ParamUtil.setSessionAttr(bpc.request,RfcConst.PERSONNELLISTMAP, (Serializable) personnelListMap);
+        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"PersonnelList");
+        log.debug(StringUtil.changeForLog("the do preparePersonnelList end ...."));
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,action);
+        log.debug(StringUtil.changeForLog("the preparePersonnel end ...."));
+    }
+
+
+
+    /**
+     *
+     * @param bpc
+     * @Decription preparePersonnelList
+     */
+    public void preparePersonnelList(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do preparePersonnelList start ...."));
+        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, filterParameter, true);
+        QueryHelp.setMainSql("applicationPersonnelQuery", "appPersonnelQuery", searchParam);
+        SearchResult searchResult = requestForChangeService.psnDoQuery(searchParam);
+        if (!StringUtil.isEmpty(searchResult)) {
+            ParamUtil.setSessionAttr(bpc.request, "PersonnelSearchParam", searchParam);
+            ParamUtil.setRequestAttr(bpc.request, "PersonnelSearchResult", searchResult);
+        }
+        List<PersonnelListQueryDto> licenseeKeyApptPersonDtoList = searchResult.getRows();
+        Map<String,List<PersonnelListQueryDto>> personnelListMap = IaisCommonUtils.genNewHashMap();
+        for(PersonnelListQueryDto personnelListQueryDto:licenseeKeyApptPersonDtoList){
+            String idNo = personnelListQueryDto.getIdNo();
+            List<PersonnelListQueryDto> personnelListQueryDtos  = personnelListMap.get(idNo);
+            if(IaisCommonUtils.isEmpty(personnelListQueryDtos)){
+                personnelListQueryDtos = IaisCommonUtils.genNewArrayList();
+            }
+            personnelListQueryDtos.add(personnelListQueryDto);
+            personnelListMap.put(idNo,personnelListQueryDtos);
+        }
         ParamUtil.setSessionAttr(bpc.request,RfcConst.PERSONNELLISTMAP, (Serializable) personnelListMap);
         ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"PersonnelList");
         log.debug(StringUtil.changeForLog("the do preparePersonnelList end ...."));
@@ -455,7 +528,7 @@ public class RequestForChangeMenuDelegator {
                 List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(licenceId);
                 if(!IaisCommonUtils.isEmpty(applicationDtos)){
                     ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
-                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"preAck");
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"preAck");
                     ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is  ongoing application for the licence");
                     return;
                 }
@@ -492,7 +565,7 @@ public class RequestForChangeMenuDelegator {
 
         if(!errMap.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,RfcConst.SWITCH_VALUE,"loading");
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"preparePersonnelEdit");
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"preparePersonnelEdit");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             return;
         }
@@ -548,10 +621,7 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appSubmissionDto = setPersonnelDate(appSubmissionDto,personnelListQueryDto);
         }
-
-
         requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos);
-
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit end ...."));
     }
 
@@ -563,8 +633,6 @@ public class RequestForChangeMenuDelegator {
      */
     public void prepareAckPage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareAckPage start ...."));
-
-
         log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 
@@ -581,7 +649,6 @@ public class RequestForChangeMenuDelegator {
             String amountStr = "$"+decimalFormat.format(appSubmissionDto.getAmount());
             appSubmissionDto.setAmountStr(amountStr);
         }
-
         log.debug(StringUtil.changeForLog("the do prePayment end ...."));
     }
 
