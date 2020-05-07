@@ -118,8 +118,8 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/doEdit" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/editTemplateView" style="rectanular">
    <position>{(310,380)(330,460)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/editTemplate" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(330,550)(548,551)(548,280)(320,280)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/editTemplateView" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(330,550)(548,551)(546,382)(310,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doEdit" style="rectanular">
    <position>{(330,460)(330,550)}</position>
@@ -159,7 +159,7 @@
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/editTemplate" componentIfTrue="/Pages/WebPage/ackPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="310" y="530">
+  <Condition componentIfFalse="/Pages/WebPage/editTemplateView" componentIfTrue="/Pages/WebPage/ackPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="310" y="530">
    <Description/>
   </Condition>
  </Conditions>

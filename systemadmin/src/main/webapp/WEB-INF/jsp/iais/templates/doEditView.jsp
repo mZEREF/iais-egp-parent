@@ -16,6 +16,7 @@
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
+        <input type="hidden" name="template_content_size" value="-1">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -26,14 +27,14 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="msgType">Message Type</label>
 
-                            <div class="col-xs-8 col-sm-6 col-md-4">
-                                <iais:select name="msgType" id="msgType" options="messageTypeSelect" disabled="true"></iais:select>
-                                <span id="error_msgTypeErr" name="iaisErrorMsg" class="error-msg"></span>
+                            <div class="col-xs-5 col-sm-5 col-md-5">
+                                <iais:select name="msgType" id="msgType" options="messageTypeSelect" disabled="true" value="${MsgTemplateDto.messageType}"/>
+                                <span id="error_msgType" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="templateName">Template Name</label>
-                            <div class="col-xs-8 col-sm-6 col-md-6">
+                            <div class="col-xs-5 col-sm-5 col-md-5">
                                 <input id="templateName" type="text" value="${MsgTemplateDto.templateName}"
                                        name="templateName" maxlength="500">
                                 <span id="error_templateName" name="iaisErrorMsg" class="error-msg"></span>
@@ -41,25 +42,25 @@
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Delivery Mode</label>
-                            <div class="col-xs-8 col-sm-6 col-md-4">
+                            <div class="col-xs-5 col-sm-5 col-md-5">
                                 <iais:select name="deliveryMode" id="deliveryMode"
-                                             options="deliveryModeSelect" disabled="true"></iais:select>
-                                <span id="error_deliveryModeErr" name="iaisErrorMsg"
+                                             options="deliveryModeSelect" value="${MsgTemplateDto.deliveryMode}" disabled="true"/>
+                                <span id="error_deliveryMode" name="iaisErrorMsg"
                                       class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="esd">Effective Start Date</label>
-                            <div class="col-xs-8 col-sm-6 col-md-6">
+                            <div class="col-xs-5 col-sm-5 col-md-5">
                                 <iais:datePicker id="esd" name="esd" dateVal="${MsgTemplateDto.effectiveFrom}"/>
                                 <span id="error_effectiveFrom" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="eed">Effective End Date</label>
-                            <div class="col-xs-8 col-sm-6 col-md-6">
+                            <div class="col-xs-5 col-sm-5 col-md-5">
                                 <iais:datePicker id="eed" name="eed"
-                                                 dateVal="${MsgTemplateDto.effectiveTo}"></iais:datePicker>
+                                                 dateVal="${MsgTemplateDto.effectiveTo}"/>
                                 <span id="error_effectiveTo" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
@@ -71,6 +72,7 @@
                                       title="content">
                                 ${MsgTemplateDto.messageContent}
                             </textarea>
+                            <span id="error_messageContent" name="iaisErrorMsg" class="error-msg"></span>
                         </div>
                         <div class="form-group">
                             <div class="col-xs-2 col-sm-2" style="padding-top: 30px;">
@@ -94,7 +96,6 @@
 <script src="<%=webroot%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=webroot%>js/initTinyMce.js"></script>
 <script>
-
     function submit(action) {
         $("[name='crud_action_type']").val(action);
         $("#TemplateEditForm").submit();
@@ -121,23 +122,23 @@
             ' bold italic backcolor | alignleft aligncenter ' +
             ' alignright alignjustify | bullist numlist outdent indent |' +
             ' removeformat | help | code',
-            ax_wordlimit_num: 10,
+            ax_wordlimit_num:20,
             ax_wordlimit_callback: function(editor,txt,num){
-
+                console.log("content-size:"+num);
+                $("[name='template_content_size']").val(num);
+                console.log($("[name='template_content_size']").val())
             }
         });
     });
 
     tinymce.PluginManager.add('ax_wordlimit', function(editor) {
-        var global$1 = tinymce.util.Tools.resolve('tinymce.util.Tools');
         var global$2 = tinymce.util.Tools.resolve('tinymce.util.Delay');
         var ax_wordlimit_type = editor.getParam('ax_wordlimit_type', 'letter' );
         var ax_wordlimit_num = editor.getParam('ax_wordlimit_num', false );
         var ax_wordlimit_delay = editor.getParam('ax_wordlimit_delay', 500 );
-        var ax_wordlimit_callback = editor.getParam('ax_wordlimit_callback', function(){});
+        var ax_wordlimit_callback = editor.getParam('ax_wordlimit_callback', function(){} );
         var ax_wordlimit_event = editor.getParam('ax_wordlimit_event', 'SetContent Undo Redo Keyup' );
         var onsign=1;
-        //size
         var sumLetter = function(){
             var html = editor.getContent();
             var re1 = new RegExp("<.+?>","g");
@@ -155,9 +156,8 @@
                     default:
                         var res = sumLetter();
                 }
-
                 if( res.num > ax_wordlimit_num ){
-                    ax_wordlimit_callback(editor, res.txt, ax_wordlimit_num);
+                    ax_wordlimit_callback(editor, res.txt, res.num);
                 }
                 setTimeout(function(){onsign=1}, ax_wordlimit_delay);
             }
@@ -170,7 +170,6 @@
                 }, 300);
             }
         };
-
         setup();
     });
 

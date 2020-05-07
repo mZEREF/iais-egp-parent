@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -119,8 +120,6 @@ public class TemplatesDelegator {
             msgTemplateDto.setMessageType(messageType);
             msgTemplateDto.setDeliveryMode(deliveryMode);
             ParamUtil.setSessionAttr(request,MsgTemplateConstants.MSG_TEMPLATE_DTO, msgTemplateDto);
-
-
             List<SelectOption> messageTypeSelectList = IaisCommonUtils.genNewArrayList();
             messageTypeSelectList.add(new SelectOption(messageType, messageTypeTxt));
             messageTypeSelectList.add(new SelectOption("MTTP001", "Alert"));
@@ -128,33 +127,52 @@ public class TemplatesDelegator {
             messageTypeSelectList.add(new SelectOption("MTTP003", "Letter"));
             messageTypeSelectList.add(new SelectOption("MTTP004", "Notification"));
             messageTypeSelectList.add(new SelectOption("MTTP005", "Scheduled Maintenance"));
-            ParamUtil.setRequestAttr(bpc.request, "messageTypeSelect", messageTypeSelectList);
+            ParamUtil.setSessionAttr(bpc.request, "messageTypeSelect", (Serializable) messageTypeSelectList);
 
             List<SelectOption> deliveryModeSelectList = IaisCommonUtils.genNewArrayList();
             deliveryModeSelectList.add(new SelectOption(deliveryMode, deliveryModeTxt));
             deliveryModeSelectList.add(new SelectOption("DEMD001", "Mail"));
             deliveryModeSelectList.add(new SelectOption("DEMD002", "SMS"));
             deliveryModeSelectList.add(new SelectOption("DEMD003", "System Inbox"));
-            ParamUtil.setRequestAttr(bpc.request, "deliveryModeSelect", deliveryModeSelectList);
+            ParamUtil.setSessionAttr(bpc.request, "deliveryModeSelect", (Serializable) deliveryModeSelectList);
         }
     }
 
     public void doEdit(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request,SystemAdminBaseConstants.CRUD_ACTION_TYPE);
+        Integer contentSize = ParamUtil.getInt(request,SystemAdminBaseConstants.TEMPLATE_CONTENT_SIZE);
         if (!SystemAdminBaseConstants.EDIT_ACTION.equals(type)){
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
             return;
         }
         MsgTemplateDto msgTemplateDto = (MsgTemplateDto) ParamUtil.getSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO);
+        getValueFromPage(msgTemplateDto, request);
         ValidationResult validationResult =WebValidationHelper.validateProperty(msgTemplateDto, "edit");
+        if (msgTemplateDto.getEffectiveFrom() != null && msgTemplateDto.getEffectiveTo() !=null) {
+            if (!msgTemplateDto.getEffectiveFrom().before(msgTemplateDto.getEffectiveTo())) {
+                validationResult.setHasErrors(true);
+            }
+        }
+        if (contentSize != -1 && contentSize>8000) {
+            validationResult.setHasErrors(true);
+        }
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
+            if (msgTemplateDto.getEffectiveFrom() != null && msgTemplateDto.getEffectiveTo() !=null){
+                if(!msgTemplateDto.getEffectiveFrom().before(msgTemplateDto.getEffectiveTo())){
+                    validationResult.setHasErrors(true);
+                    errorMap.put("effectiveTo","Effective Start Date cannot be later than End Date");
+                }
+            }
+            if (contentSize>8000) {
+                errorMap.put("messageContent","The content should not exceed 8000 words");
+            }
             ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
+            ParamUtil.setSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO,msgTemplateDto);
             return;
         }else {
-            getValueFromPage(msgTemplateDto, request);
             templatesService.updateMsgTemplate(msgTemplateDto);
             ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ISVALID,SystemAdminBaseConstants.YES);
         }
@@ -236,8 +254,6 @@ public class TemplatesDelegator {
     }
 
     private void getValueFromPage(MsgTemplateDto msgTemplateDto, HttpServletRequest request) throws ParseException {
-        msgTemplateDto.setMessageType(ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE));
-        msgTemplateDto.setDeliveryMode(ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE));
         msgTemplateDto.setTemplateName(ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME));
         msgTemplateDto.setMessageContent(ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_MESSAGE_CONTENT));
         msgTemplateDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM)));
