@@ -91,10 +91,8 @@
                         <div class="row">
                             <div class="col-xs-11 col-md-11">
                                 <div class="text-right">
-                                    <button class="btn btn-secondary" type="button"
-                                       onclick="javascript:doInspectorSearchTaskClear()">Clear</button>
-                                    <button class="btn btn-primary" type="button"
-                                       onclick="javascript:doInspectorSearchTaskSearch()">Search</button>
+                                    <button class="btn btn-secondary" type="button" id="clearBtn" >Clear</button>
+                                    <button class="btn btn-primary" type="button" id="searchBtn" >Search</button>
                                 </div>
                             </div>
                         </div>
@@ -210,7 +208,7 @@
         $("#inspector_name").val(options);
     }
 
-    function doInspectorSearchTaskClear() {
+    $("#clearBtn").click(function () {
         $('input[name="application_no"]').val("");
         $('input[name="hci_code"]').val("");
         $('input[name="hci_address"]').val("");
@@ -219,7 +217,7 @@
         $("#application_status option:first").prop("selected", 'selected');
         $("#inspector_name option:first").prop("selected", 'selected');
         $("#searchCondition .current").text("Please Select");
-    }
+    })
 
     function submit(action) {
         showWaiting();
@@ -228,10 +226,10 @@
         mainPoolForm.submit();
     }
 
-    function doInspectorSearchTaskSearch() {
+    $("#searchBtn").click(function () {
         showWaiting();
         submit('search');
-    }
+    })
 
     function getAppByGroupId(applicationGroupNo, divid) {
         if (!isInArray(dividajaxlist,divid)) {
