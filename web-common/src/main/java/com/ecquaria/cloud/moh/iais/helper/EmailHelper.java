@@ -14,8 +14,8 @@ import java.util.List;
  */
 
 public class EmailHelper {
-	public static IaisSystemClient iaisSystemClient = SpringContextHelper.getContext().getBean(IaisSystemClient.class);
-	public static OrganizationBeClient organizationBeClient = SpringContextHelper.getContext().getBean(OrganizationBeClient.class);
+	private static IaisSystemClient iaisSystemClient = SpringContextHelper.getContext().getBean(IaisSystemClient.class);
+	private static OrganizationBeClient organizationBeClient = SpringContextHelper.getContext().getBean(OrganizationBeClient.class);
 
 
 	private EmailHelper(){
