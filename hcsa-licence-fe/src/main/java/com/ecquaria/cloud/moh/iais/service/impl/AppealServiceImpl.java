@@ -142,20 +142,20 @@ public class AppealServiceImpl implements AppealService {
             String filename = selectedFile.getOriginalFilename();
             req.getSession().setAttribute("file",selectedFile);
             req.setAttribute("filename",filename);
-            appealPageDto.setCommonsMultipartFile(selectedFile);
+
         }
         else if(file!=null&&file.getSize()>0){
             if(Y.equals(isDelete)){
                 String filename = file.getOriginalFilename();
                 req.getSession().setAttribute("file",file);
                 req.setAttribute("filename",filename);
-                appealPageDto.setCommonsMultipartFile(file);
+
             }
         }
         if(N.equals(isDelete)){
             req.getSession().removeAttribute("appPremisesSpecialDocDto");
             req.getSession().removeAttribute("filename");
-            appealPageDto.setCommonsMultipartFile(null);
+
 
         }
         List<AppSvcCgoDto> appSvcCgoDtoList = reAppSvcCgo(request);
@@ -216,11 +216,7 @@ public class AppealServiceImpl implements AppealService {
             String amountStr = appSubmissionDto.getAmountStr();
             try {
                 AppealPageDto appealPageDto = JsonUtil.parseToObject(amountStr, AppealPageDto.class);
-                CommonsMultipartFile commonsMultipartFile = appealPageDto.getCommonsMultipartFile();
-                if(commonsMultipartFile!=null){
-                    request.getSession().setAttribute("selectedFile",commonsMultipartFile);
-                    request.getSession().setAttribute("filename",commonsMultipartFile.getName());
-                }
+
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
