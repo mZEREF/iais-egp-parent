@@ -7,7 +7,9 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class GatewayRSAEncrypt {
 
 	public static String sign(String myinfo) {

@@ -1,11 +1,11 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.client.IaisSystemClient;
 import com.ecquaria.cloud.moh.iais.client.OrganizationBeClient;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author: yichen
@@ -13,20 +13,18 @@ import java.util.List;
  * @description:
  */
 
+@Component
 public class EmailHelper {
-	private static IaisSystemClient iaisSystemClient = SpringContextHelper.getContext().getBean(IaisSystemClient.class);
-	private static OrganizationBeClient organizationBeClient = SpringContextHelper.getContext().getBean(OrganizationBeClient.class);
+	@Autowired
+	private IaisSystemClient iaisSystemClient;
+	@Autowired
+	private OrganizationBeClient organizationBeClient;
 
-
-	private EmailHelper(){
-		throw new IllegalStateException("Utility class");
-	}
-
-	public static MsgTemplateDto getMsgTemplate(String templateId){
+	public MsgTemplateDto getMsgTemplate(String templateId){
 		return iaisSystemClient.getMsgTemplate(templateId).getEntity();
 	}
 
-	public static List<String> getEmailAddressListByLicenseeId(List<String> licenseeIdList){
+	public List<String> getEmailAddressListByLicenseeId(List<String> licenseeIdList){
 		return organizationBeClient.getEmailAddressListByLicenseeId(licenseeIdList).getEntity();
 	}
 

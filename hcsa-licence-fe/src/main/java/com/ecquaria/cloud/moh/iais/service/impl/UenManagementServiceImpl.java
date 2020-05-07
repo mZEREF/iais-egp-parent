@@ -35,11 +35,13 @@ import java.util.Map;
 @Service
 public class UenManagementServiceImpl implements UenManagementService {
     @Autowired
-    UenManagementClient uenManagementClient;
+    private UenManagementClient uenManagementClient;
     @Autowired
-    SystemAdminClient systemAdminClient;
+    private SystemAdminClient systemAdminClient;
     @Autowired
-    FeEmailClient emailClient;
+    private FeEmailClient emailClient;
+    @Autowired
+    private EmailHelper emailHelper;
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
@@ -81,7 +83,7 @@ public class UenManagementServiceImpl implements UenManagementService {
             emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
             List<String> licenseeIds= IaisCommonUtils.genNewArrayList();
             licenseeIds.add(mohUenDto.getId());
-            List<String> emailAddress = EmailHelper.getEmailAddressListByLicenseeId(licenseeIds);
+            List<String> emailAddress = emailHelper.getEmailAddressListByLicenseeId(licenseeIds);
             emailDto.setReceipts(emailAddress);
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);

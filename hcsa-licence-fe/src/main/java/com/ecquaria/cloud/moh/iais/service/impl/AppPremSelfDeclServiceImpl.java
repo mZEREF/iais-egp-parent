@@ -70,6 +70,9 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     @Autowired
     private FeEicGatewayClient gatewayClient;
 
+    @Autowired
+    private EmailHelper emailHelper;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -269,7 +272,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
             map.put("DETAILS", StringUtil.viewHtml("test"));
             map.put("A_HREF", StringUtil.viewHtml(""));
             map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
-            MsgTemplateDto entity = EmailHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SELF_DECL_ID);
+            MsgTemplateDto entity = emailHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SELF_DECL_ID);
             String messageContent = entity.getMessageContent();
             String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
 
