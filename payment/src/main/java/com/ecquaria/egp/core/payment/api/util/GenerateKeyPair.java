@@ -4,7 +4,9 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class GenerateKeyPair {
 
 	private String priKey;
