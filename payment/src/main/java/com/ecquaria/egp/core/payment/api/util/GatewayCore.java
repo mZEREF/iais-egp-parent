@@ -6,7 +6,9 @@ import com.ecquaria.egp.core.payment.api.config.GatewayConstants;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class GatewayCore {
 
 	public static String buildSign(Map<String, String> sArray, String sign_type) throws Exception {
