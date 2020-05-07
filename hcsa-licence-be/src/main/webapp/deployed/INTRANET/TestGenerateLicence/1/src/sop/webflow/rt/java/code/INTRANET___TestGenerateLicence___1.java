@@ -11,14 +11,14 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTRANET___TestApi___1 extends BaseProcessClass {
-	//private static final String DELEGATOR ="hcsaApplicationDelegator";
-	private static final String DELEGATOR ="licenceApproveBatchjob";
+public class INTRANET___TestGenerateLicence___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="licenceApproveBatchjobTest";
+
 	public void step2_OnStepProcess_0() throws Exception {
 	// 		Step2->OnStepProcess
-		//EngineHelper.delegate(DELEGATOR, "routingTask", this);
 		EngineHelper.delegate(DELEGATOR, "doBatchJob", this);
 	}
 
