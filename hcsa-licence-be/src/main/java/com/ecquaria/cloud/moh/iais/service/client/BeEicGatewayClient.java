@@ -120,7 +120,7 @@ public interface BeEicGatewayClient {
                                                                  @RequestHeader("date-Secondary") String dateSec,
                                                                  @RequestHeader("authorization-Secondary") String authorizationSec);
 
-    @PostMapping(value = "v1/hcsal/riskscore-configs", produces = MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/v1/hcsal/riskscore-configs", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaRiskFeSupportDto> feCreateRiskData(@RequestBody HcsaRiskFeSupportDto hcsaRiskFeSupportDto,
                                                                  @RequestHeader("date") String date,
