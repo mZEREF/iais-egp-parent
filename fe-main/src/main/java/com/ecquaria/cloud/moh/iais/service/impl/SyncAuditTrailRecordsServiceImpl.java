@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.SyncAuditTrailRecordsService;
@@ -97,22 +98,13 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         backups = sharedPath + "backupsAudit";
 
         String s = FileUtil.genMd5FileChecksum(data.getBytes());
-        File file=MiscUtil.generateFile(download+File.separator, s+fileFormat);
+        File file = MiscUtil.generateFile(download+File.separator, s+fileFormat);
         File groupPath=new File(download+File.separator);
 
-        if(!groupPath.exists()){
-            groupPath.mkdirs();
-        }
-        try {
-            if(!file.exists()){
-                file.createNewFile();
-            }
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-        }
-
-        try (FileOutputStream fileInputStream = new FileOutputStream(backups+File.separator+file.getName());
-             FileOutputStream fileOutputStream  =new FileOutputStream(file);){
+        MiscUtil.checkDirs(groupPath);
+        File backupFile = MiscUtil.generateFile(backups, file.getName());
+        try (FileOutputStream fileInputStream = new FileOutputStream(backupFile);
+             FileOutputStream fileOutputStream = new FileOutputStream(file);){
 
             fileOutputStream.write(data.getBytes());
             fileInputStream.write(data.getBytes());
@@ -211,8 +203,9 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                     byte[] bytes = by.toByteArray();
                     String s = FileUtil.genMd5FileChecksum(bytes);
                     File curFile =new File(backups + File.separator + s + AppServicesConsts.ZIP_NAME);
-                    file.renameTo(curFile);
-                    log.info("----------- new zip file name is"+backups+File.separator+fileNamesss+AppServicesConsts.ZIP_NAME);
+                    boolean renameTo = file.renameTo(curFile);
+                    log.info(StringUtil.changeForLog("----------- new zip file name is"
+                            + backups + File.separator + fileNamesss+AppServicesConsts.ZIP_NAME + " " + renameTo));
                     String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,"backupsAudit" + File.separator+fileNamesss+AppServicesConsts.ZIP_NAME);
                     if(!s1.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
