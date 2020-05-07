@@ -208,7 +208,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appCorrelationDto.getApplicationId()).getEntity();
             ApplicationDto applicationDto=applicationClient.getApplicationById(appCorrelationDto.getApplicationId()).getEntity();
             ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
-            complianceHistoryDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? InspectionConstants.INSPECTION_TYPE_ONSITE:InspectionConstants.INSPECTION_TYPE_ONSITE);
+            complianceHistoryDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Off-Site Inspection":InspectionConstants.INSPECTION_TYPE_ONSITE);
             complianceHistoryDto.setAppPremCorrId(appPremisesCorrelationDto.getId());
             complianceHistoryDto.setComplianceTag("Full");
             try{
