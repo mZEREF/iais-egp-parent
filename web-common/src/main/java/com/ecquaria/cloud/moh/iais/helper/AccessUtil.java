@@ -98,6 +98,7 @@ public class AccessUtil {
             }
             if (AppConsts.USER_DOMAIN_INTRANET.equals(orgUser.getUserDomain())) {
                 List<String> wrkGrps = client.getWorkGrpsByUserId(orgUser.getId()).getEntity();
+                loginContext.setNricNum(orgUser.getIdentityNo());
                 if (wrkGrps != null && !wrkGrps.isEmpty()) {
                     loginContext.getWrkGrpIds().addAll(wrkGrps);
                 }
