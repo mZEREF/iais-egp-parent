@@ -158,7 +158,7 @@ public interface BeEicGatewayClient {
                                          @RequestHeader("date-Secondary") String dateSec,
                                          @RequestHeader("authorization-Secondary") String authorizationSec);
 
-    @PostMapping(value = "/v1/iais-application/saveAppForAuditToFe", produces = MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/v1/hcsa-audit-insp-app-sync", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionForAuditDto> saveAppForAuditToFe(@RequestBody AppSubmissionForAuditDto appSubmissionForAuditDto,
                                                                   @RequestHeader("date") String date,
