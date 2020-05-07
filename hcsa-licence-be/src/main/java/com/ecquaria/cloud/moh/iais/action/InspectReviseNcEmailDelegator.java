@@ -367,7 +367,7 @@ public class InspectReviseNcEmailDelegator {
                 appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW});
             }
         }catch (Exception e){
-            log.info(e.getMessage());
+            log.error(e.getMessage(), e);
         }
 
 

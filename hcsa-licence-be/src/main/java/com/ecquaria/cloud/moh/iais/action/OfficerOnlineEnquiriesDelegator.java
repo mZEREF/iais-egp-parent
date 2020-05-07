@@ -813,7 +813,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiApplicationQueryDto.getLicenseeId());
                 reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
             } catch (Exception e) {
-                log.info(e.getMessage());
+                log.error(e.getMessage(), e);
             }
 
         }
@@ -827,7 +827,7 @@ public class OfficerOnlineEnquiriesDelegator {
             String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
             ParamUtil.setSessionAttr(request,"id",id);
         }catch (Exception e){
-            log.info(e.getMessage());
+            log.error(e.getMessage(), e);
         }
 
         String [] appIds=ParamUtil.getStrings(request,"appIds");
@@ -841,7 +841,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
             }
         }catch (Exception e){
-            log.info(e.getMessage());
+            log.error(e.getMessage(), e);
         }
 
         ParamUtil.setSessionAttr(request,"licIds", (Serializable) licIds);

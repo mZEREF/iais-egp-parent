@@ -94,7 +94,7 @@ public class SendsReminderToReplyRfiBatchjob {
             emailDto.setClientQueryCode(licPremisesReqForInfoDto.getLicPremId());
             String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
         }catch (Exception e){
-            log.info(e.getMessage());
+            log.error(e.getMessage(), e);
         }
 
         licPremisesReqForInfoDto.setReminder(licPremisesReqForInfoDto.getReminder()+1);

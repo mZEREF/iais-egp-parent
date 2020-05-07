@@ -131,7 +131,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     break;
                 }
             }catch (Exception e){
-                log.info(e.getMessage());
+                log.error(e.getMessage(), e);
             }
         }
 
@@ -152,7 +152,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     mesContext.append(ncEmail);
                 }
             }catch (Exception e){
-                log.info(e.getMessage());
+                log.error(e.getMessage(), e);
             }
         }
         for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
@@ -164,7 +164,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     break;
                 }
             }catch (Exception e){
-                log.info(e.getMessage());
+                log.error(e.getMessage(), e);
             }
         }
         InspectionEmailTemplateDto inspectionEmailTemplateDto= new InspectionEmailTemplateDto();
@@ -330,7 +330,7 @@ public class InspectionMergeSendNcEmailDelegator {
                         }
                     }
                 }catch (Exception e){
-                    log.info(e.getMessage());
+                    log.error(e.getMessage(), e);
                 }
 
                 if(isNoNc){
@@ -416,7 +416,7 @@ public class InspectionMergeSendNcEmailDelegator {
                 emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
                 String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
             }catch (Exception e){
-                log.info(e.getMessage());
+                log.error(e.getMessage(), e);
             }
 
         }

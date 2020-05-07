@@ -165,7 +165,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         try{
             organizationLicDto.setDoMain(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()).get(0));
         }catch (Exception e){
-            log.info(e.getMessage());
+            log.error(e.getMessage(), e);
             organizationLicDto.setDoMain("-");
         }
         List<PersonnelsDto> personnelsDto= hcsaLicenceClient.getPersonnelDtoByLicId(licenceId).getEntity();
@@ -188,7 +188,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 }
                 per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelExtDto().getProfessionType()}).get(0).getText());
             }catch (NullPointerException e){
-                log.info(e.getMessage());
+                log.error(e.getMessage(), e);
             }
         }
 
@@ -208,7 +208,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appCorrelationDto.getApplicationId()).getEntity();
             ApplicationDto applicationDto=applicationClient.getApplicationById(appCorrelationDto.getApplicationId()).getEntity();
             ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
-            complianceHistoryDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Post":"Pre");
+            complianceHistoryDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? InspectionConstants.INSPECTION_TYPE_ONSITE:InspectionConstants.INSPECTION_TYPE_ONSITE);
             complianceHistoryDto.setAppPremCorrId(appPremisesCorrelationDto.getId());
             complianceHistoryDto.setComplianceTag("Full");
             try{
@@ -236,7 +236,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 List<AdhocChecklistItemDto> adhocChecklistItemDtos=applicationClient.getAdhocByAppPremCorrId(appPremisesCorrelationDto.getId()).getEntity();
                 complianceHistoryDto.setRiskTag(adhocChecklistItemDtos.get(0).getRiskLvl());
             }catch (Exception e){
-                log.info(e.getMessage());
+                log.error(e.getMessage(), e);
             }
             try{
                 List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
@@ -250,7 +250,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 }
 
             }catch (Exception e){
-                log.info(e.getMessage());
+                log.error(e.getMessage(), e);
                 // complianceHistoryDtos.add(complianceHistoryDto);
             }
         }
@@ -626,7 +626,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         try{
             licenseeDto.setEmilAddr(IaisEGPHelper.getLicenseeEmailAddrs(appInsRepDto.getLicenseeId()).get(0));
         }catch (Exception e){
-            log.info(e.getMessage());
+            log.error(e.getMessage(), e);
         }
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos =  appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if(IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){

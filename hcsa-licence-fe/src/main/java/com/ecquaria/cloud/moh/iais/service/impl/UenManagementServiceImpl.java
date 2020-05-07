@@ -90,7 +90,7 @@ public class UenManagementServiceImpl implements UenManagementService {
             feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization());
         }catch (Exception e){
-            log.info(e.getMessage());
+            log.error(e.getMessage(), e);
         }
         return false;
     }

@@ -592,7 +592,7 @@ public class RequestForInformationDelegator {
             String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
             ParamUtil.setSessionAttr(request,"id",id);
         }catch (Exception e){
-            log.info(e.getMessage());
+            log.error(e.getMessage(), e);
         }
 
         // 		doSearchLicenceAfter->OnStepProcess
@@ -612,7 +612,7 @@ public class RequestForInformationDelegator {
             String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
             ParamUtil.setSessionAttr(request,"id",id);
         }catch (Exception e){
-            log.info(e.getMessage());
+            log.error(e.getMessage(), e);
         }
 
 // 		doSearchApplicationAfter->OnStepProcess
@@ -668,7 +668,7 @@ public class RequestForInformationDelegator {
 //                }
 //            }
 //        }catch (Exception e){
-//            log.info(e.getMessage());
+//            log.error(e.getMessage(), e);
 //        }
 
         if(!licPremisesReqForInfoDtoList.isEmpty()) {
@@ -701,7 +701,7 @@ public class RequestForInformationDelegator {
             String reqInfoId = ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             ParamUtil.setSessionAttr(bpc.request, "reqInfoId", reqInfoId);
         }catch (Exception e){
-            log.info(e.getMessage());
+            log.error(e.getMessage(), e);
         }
         // 		doReqForInfo->OnStepProcess
     }
@@ -859,7 +859,7 @@ public class RequestForInformationDelegator {
                     emailDto.setClientQueryCode(licPremId);
                     String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
                 }catch (Exception e){
-                    log.info(e.getMessage());
+                    log.error(e.getMessage(), e);
                 }
             }catch (Exception e){
                 requestForInformationService.deleteLicPremisesReqForInfo(licPremisesReqForInfoDto1.getReqInfoId());

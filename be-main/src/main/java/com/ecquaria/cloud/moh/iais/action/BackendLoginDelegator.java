@@ -15,15 +15,16 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
 
 /**
  * BackendLoginDelegator
@@ -64,7 +65,7 @@ public class BackendLoginDelegator {
             OrgUserDto orgUserDto=organizationMainClient.retrieveOneOrgUserAccount(userId).getEntity();
             ParamUtil.setSessionAttr(request,"orgUserDto",orgUserDto);
         }catch (Exception e){
-            log.info(e.getMessage());
+            log.error(e.getMessage(), e);
         }
 
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
