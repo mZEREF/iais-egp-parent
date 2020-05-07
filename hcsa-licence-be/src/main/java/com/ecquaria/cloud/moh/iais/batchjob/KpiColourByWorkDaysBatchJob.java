@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -14,6 +16,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
@@ -55,6 +59,9 @@ public class KpiColourByWorkDaysBatchJob {
 
     @Autowired
     private AppointmentClient appointmentClient;
+
+    @Autowired
+    private TaskService taskService;
     /**
      * StartStep: mohKpiColourShowStart
      *
@@ -74,9 +81,10 @@ public class KpiColourByWorkDaysBatchJob {
     public void mohKpiColourShowStep(BaseProcessClass bpc){
         logAbout("MohKpiColourShow");
         List<TaskDto> taskDtos = organizationClient.getKpiTaskByStatus().getEntity();
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         if(!IaisCommonUtils.isEmpty(taskDtos)){
             for(TaskDto taskDto : taskDtos){
-                getTimeLimitWarningColourByTask(taskDto);
+                getTimeLimitWarningColourByTask(taskDto, intranet);
             }
         }
     }
@@ -85,7 +93,7 @@ public class KpiColourByWorkDaysBatchJob {
         log.debug(StringUtil.changeForLog("****The***** " + methodName +" ******Start ****"));
     }
 
-    private TaskDto getTimeLimitWarningColourByTask(TaskDto taskDto) {
+    private void getTimeLimitWarningColourByTask(TaskDto taskDto, AuditTrailDto intranet) {
         String appPremCorrId = taskDto.getRefNo();
         int days = 0;
         List<Date> workAndNonWorkDays = IaisCommonUtils.genNewArrayList();
@@ -131,7 +139,8 @@ public class KpiColourByWorkDaysBatchJob {
             }
         }
         taskDto.setSlaRemainInDays(days);
-        return taskDto;
+        taskDto.setAuditTrailDto(intranet);
+        taskService.updateTask(taskDto);
     }
 
     private Map<Integer, Integer> getWorkingDaysBySubStage(String subStage, TaskDto taskDto) {
