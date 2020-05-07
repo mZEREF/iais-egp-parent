@@ -19,8 +19,6 @@ function doValidation(){
             doValidationParse(data);
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            alert("error: " + textStatus);
-            alert("error: " + errorThrown);
             $("#iaisErrorFlag").val('Error:Exception');
         }
     });
