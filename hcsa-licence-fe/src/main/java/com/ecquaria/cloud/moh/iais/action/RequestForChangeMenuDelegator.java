@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
@@ -48,6 +49,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -176,10 +178,38 @@ public class RequestForChangeMenuDelegator {
         List<PremisesListQueryDto> premisesDtos = requestForChangeService.getPremisesList(licenseeId);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) premisesDtos);
         ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"Premises List");
-
+        List<SelectOption> list=new ArrayList<>();
+        setSelectOption(list);
+        ParamUtil.setSessionAttr(bpc.request,"applicationType",(Serializable)list);
         log.debug(StringUtil.changeForLog("the do preparePremisesList end ...."));
     }
 
+    private void setSelectOption( List<SelectOption> list){
+        SelectOption onsite=new SelectOption();
+        onsite.setText("On-site");
+        onsite.setValue("ONSITE");
+        SelectOption conveyance=new SelectOption();
+        conveyance.setText("Conveyance");
+        conveyance.setValue("CONVEYANCE");
+        SelectOption offsiet=new SelectOption();
+        offsiet.setText("Off-site");
+        offsiet.setValue("OFFSIET");
+        list.add(offsiet);
+        list.add(conveyance);
+        list.add(onsite);
+    }
+
+    public void doSort(BaseProcessClass bpc){
+
+    }
+
+    public void doPage(BaseProcessClass bpc){
+
+    }
+
+    public void doSearch (BaseProcessClass bpc){
+
+    }
     /**
      *
      * @param bpc
@@ -631,11 +661,42 @@ public class RequestForChangeMenuDelegator {
      * @param bpc
      * @Decription prepareAckPage
      */
+    public void selectLicence(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do selectLicence start ...."));
+        PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
+        String premisesId = premisesListQueryDto.getPremisesId();
+      /*  List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByPremisesId(premisesId);
+        bpc.request.setAttribute("licenceDtoList",licenceDtoList);
+*/
+        log.debug(StringUtil.changeForLog("the do selectLicence end ...."));
+    }
+
+
     public void prepareAckPage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareAckPage start ...."));
+        String[] licenceNames = bpc.request.getParameterValues("licenceName");
+        if(licenceNames!=null){
+            for(String string: licenceNames){
+              if(string.startsWith("G")){
+
+
+              }else if(string.startsWith("L")){
+
+
+              }
+
+            }
+        }
+
         log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 
+    private ApplicationGroupDto getApplicationGroupDto(){
+        ApplicationGroupDto applicationGroupDto=new ApplicationGroupDto();
+
+
+        return applicationGroupDto;
+    }
     /**
      *
      * @param bpc
@@ -753,6 +814,7 @@ public class RequestForChangeMenuDelegator {
             if(!IaisCommonUtils.isEmpty(applicationDtos)){
                 ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
                 ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is  ongoing application for the licence");
+                log.info(StringUtil.changeForLog("There is  ongoing application for the licence"));
                 return;
             }
         }

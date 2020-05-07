@@ -53,4 +53,5 @@ public interface RequestForChangeService {
 
 
     void sendEmail(String appGrpId,String type,String appNo,String serviceName,String licenceNo,Double amount,String licenceeName,String giroNo,String licenseeId,String subject,String aoName) throws Exception;
+    List<LicenceDto> getLicenceDtoByPremisesId(String premisesId);
 }

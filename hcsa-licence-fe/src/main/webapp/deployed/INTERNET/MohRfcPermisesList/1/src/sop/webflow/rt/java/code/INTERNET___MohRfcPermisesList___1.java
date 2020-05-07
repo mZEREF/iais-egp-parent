@@ -10,8 +10,9 @@
  * reasons.
  */
 package sop.webflow.rt.java.code;
-import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTERNET___MohRfcPermisesList___1 extends BaseProcessClass {
 
@@ -52,7 +53,7 @@ public class INTERNET___MohRfcPermisesList___1 extends BaseProcessClass {
 
 	public void prepareAckPage_OnStepProcess_0 () throws Exception { 
 		// 		PrepareAckPage->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareAckPage", this);
+		EngineHelper.delegate(DELEGATOR, "PrepareAckPage", this);
 	}
 
 	public void jumpBlank_OnStepProcess_0() throws Exception {
@@ -86,5 +87,27 @@ public class INTERNET___MohRfcPermisesList___1 extends BaseProcessClass {
 	// 		dosubmit->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doSubmit", this);
 	}
+
+    public void doSort_OnStepProcess_0() throws Exception {
+    // 		doSort->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doSort", this);
+    }
+
+    public void doPage_OnStepProcess_0() throws Exception {
+    // 		doPage->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doPage", this);
+    }
+
+    public void doSearch_OnStepProcess_0() throws Exception {
+    // 		doSearch->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doSearch", this);
+    }
+
+    public void selectLicence_OnStepProcess_0() throws Exception {
+    // 		selectLicence->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "selectLicence", this);
+    }
+
+ 
 
 }

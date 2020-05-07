@@ -88,6 +88,6 @@ public interface LicenceClient {
 
     @GetMapping(path= "/hcsa-licence/application-licence-correlation/{licId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getAppIdsByLicId(@PathVariable(value = "licId") String licId);
-
-
+    @GetMapping(value = "/hcsa-licence/licences-by-premises-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenceDto>> getLicenceDtosBypremisesId(@RequestParam(value = "premisesId") String premisesId);
 }

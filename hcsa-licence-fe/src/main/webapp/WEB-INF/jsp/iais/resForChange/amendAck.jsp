@@ -7,13 +7,15 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
+
+<%@include file="dashboard.jsp" %>
+<%@include file="../common/dashboard.jsp" %>
 <br/>
 <form method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type_form_value" value="">
     <input type="hidden" name="crud_action_type_value" value="">
 
-    <%@include file="dashboard.jsp" %>
     <div class="main-content">
         <div class="container">
             <div class="row">
