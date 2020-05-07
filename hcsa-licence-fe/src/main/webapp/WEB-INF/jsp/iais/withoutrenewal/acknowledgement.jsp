@@ -38,9 +38,9 @@
                                         <p class="ack-font-20"><strong>Submission successful</strong></p>
                                     </div>
 
-                                    <c:forEach items="${hcsaServiceDtoList}" var="list">
+                                    <c:forEach items="${serviceNames}" var="serviceName">
                                         <div class="col-xs-12">
-                                            <p class="ack-font-20">- <strong><c:out value="${list.svcName}"/> </strong></p>
+                                            <p class="ack-font-20">- <strong><c:out value="${serviceName}"/> </strong></p>
                                         </div>
                                     </c:forEach>
                                     <br/>
