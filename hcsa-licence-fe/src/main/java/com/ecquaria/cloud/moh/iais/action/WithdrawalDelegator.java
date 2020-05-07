@@ -76,7 +76,7 @@ public class WithdrawalDelegator {
         CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
         withdrawnDto.setApplicationId(withdrawAppId);
         withdrawnDto.setWithdrawnReason(withdrawnReason);
-        if ("Others".equals(withdrawnReason)){
+        if ("WDR005".equals(withdrawnReason)){
             String withdrawnRemarks = ParamUtil.getRequestString(bpc.request, "withdrawnRemarks");
             withdrawnDto.setWithdrawnRemarks(withdrawnRemarks);
         }
@@ -86,6 +86,7 @@ public class WithdrawalDelegator {
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",commonsMultipartFile.getFileItem().getName());
+            ParamUtil.setRequestAttr(bpc.request,"withdrawDtoView",withdrawnDto);
         }else{
             if (!commonsMultipartFile.isEmpty()){
                 String fileRepoId = serviceConfigService.saveFileToRepo(commonsMultipartFile);
