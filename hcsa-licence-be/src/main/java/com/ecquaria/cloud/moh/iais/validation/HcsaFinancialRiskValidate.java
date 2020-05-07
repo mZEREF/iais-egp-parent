@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * HcsaFinancialRiskValidate
@@ -32,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author jiahao
  * @date 20/11/2019
  */
+@Slf4j
 public class HcsaFinancialRiskValidate implements CustomizeValidator {
 
     @Override
