@@ -20,7 +20,7 @@
 <%
   String webroot=IaisEGPConstant.BE_CSS_ROOT;
 %>
-<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">Add Non-Availability Form
+<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="mainAddForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="inspSupAddAvailabilityType" value="">
@@ -34,6 +34,9 @@
                 <div class="col-xs-12">
                   <iais:body >
                     <iais:section title="" id = "addAvailability">
+                      <h2>
+                        <span>Add Non-Availability Form</span>
+                      </h2>
                       <iais:row>
                         <c:if test="${curRole eq 'INSPECTOR_LEAD'}">
                           <iais:field value="Name" required="true"/>
@@ -53,10 +56,10 @@
                         <iais:field value="Blocked Out Date" required="true"/>
                         <iais:value width="7">
                           <iais:datePicker id = "nonAvaStartDate" name = "nonAvaStartDate" value="${inspNonAvailabilityDto.blockOutStart}"></iais:datePicker>
+                          <br><span class="error-msg" name="iaisErrorMsg" id="error_blockOutStart"></span>
                           <span style="font-size: 16px">To</span><p></p>
                           <iais:datePicker id = "nonAvaEndDate" name = "nonAvaEndDate" value="${inspNonAvailabilityDto.blockOutEnd}"></iais:datePicker>
-                          <br><span class="error-msg" name="iaisErrorMsg" id="error_nonAvaStartDate"></span>
-                          <br><span class="error-msg" name="iaisErrorMsg" id="error_nonAvaEndDate"></span>
+                          <br><span class="error-msg" name="iaisErrorMsg" id="error_blockOutEnd"></span>
                         </iais:value>
                       </div>
                       <div class="form-group">
@@ -65,7 +68,7 @@
                           <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" maxlength="255" ><c:out value="${inspNonAvailabilityDto.nonAvaDescription}"></c:out></textarea>
                         </iais:value>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group" style="margin-bottom: 100px;">
                         <iais:field value="Recurrence" required="true"/>
                         <iais:value width="7">
                           <iais:select name="recurrence" options="recurrenceOption" firstOption="Please Select" value="${inspNonAvailabilityDto.recurrence}" ></iais:select>

@@ -26,58 +26,63 @@
     <input type="hidden" name="inspSupAddAvailabilityType" value="">
     <input type="hidden" name="nonActionValue" value="">
     <input type="hidden" name="lastActionValue" id="lastActionValue" value="<c:out value="${actionValue}"/>">
-    <iais:body >
-      <div class="container">
-        <div class="col-xs-12">
-          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-            <h3>
-              <span>Confirm Non-Availability Form</span>
-            </h3>
-            <div class="panel panel-default">
-              <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                <div class="panel-body">
-                  <div class="panel-main-content">
-                    <c:if test="${'true' eq containDate}">
-                      <iais:message key="ACK052" escape="true"></iais:message>
-                    </c:if>
+    <div class="main-content">
+      <div class="row">
+        <div class="col-lg-12 col-xs-12">
+          <div class="center-content">
+            <div class="intranet-content">
+              <div class="container">
+                <div class="col-xs-12">
+                  <iais:body >
                     <iais:section title="" id = "addAvailability">
-                      <iais:row>
-                        <iais:field value="Name"/>
-                        <iais:value width="7">
-                          <span><c:out value="${inspNonAvailabilityDto.userName}"/></span>
-                        </iais:value>
-                      </iais:row>
-                      <iais:row>
-                        <iais:field value="Blocked Out Date" required="true"/>
-                        <iais:value width="7">
-                          <span><fmt:formatDate value='${inspNonAvailabilityDto.nonAvaStartDate}' pattern='dd/MM/yyyy' /> to <fmt:formatDate value='${inspNonAvailabilityDto.nonAvaEndDate}' pattern='dd/MM/yyyy' /></span>
-                        </iais:value>
-                      </iais:row>
-                      <iais:row>
-                        <iais:field value="Blocked Out Date Description"/>
-                        <iais:value width="7">
+                      <h2>
+                        <span>Confirm Non-Availability Form</span>
+                      </h2>
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label style="font-size: 16px">Name</label>
+                        </div>
+                        <div class="col-md-6">
+                          <span style="font-size: 16px"><iais:code code="${inspNonAvailabilityDto.checkUserName}"/></span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label style="font-size: 16px">Blocked Out Date</label>
+                        </div>
+                        <div class="col-md-6">
+                          <span style="font-size: 16px"><fmt:formatDate value='${inspNonAvailabilityDto.blockOutStart}' pattern='dd/MM/yyyy'/> To <fmt:formatDate value='${inspNonAvailabilityDto.blockOutEnd}' pattern='dd/MM/yyyy' /></span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label style="font-size: 16px">Blocked Out Date Description</label>
+                        </div>
+                        <div class="col-md-6">
                           <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" maxlength="255" disabled><c:out value="${inspNonAvailabilityDto.blockOutDesc}"></c:out></textarea>
-                        </iais:value>
-                      </iais:row>
-                      <iais:row>
-                        <iais:field value="Recurrence"/>
-                        <iais:value width="7">
-                          <span><c:out value="${inspNonAvailabilityDto.recurrence}"/></span>
-                        </iais:value>
-                      </iais:row>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label style="font-size: 16px">Recurrence</label>
+                        </div>
+                        <div class="col-md-6">
+                          <span style="font-size: 16px"><c:out value="${inspNonAvailabilityDto.recurrence}"/></span>
+                        </div>
+                      </div>
                       <iais:action >
-                        <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doInspAvailabilityConBack()">Back</button>
-                        <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:doInspAvailabilityConSubmit()">Submit</button>
+                        <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspAvailabilityConSubmit()">Submit</button>
+                        <a class="back" id="Back" onclick="javascript:doInspAvailabilityConBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                       </iais:action>
                     </iais:section>
-                  </div>
+                  </iais:body>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </iais:body>
+    </div>
   </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
