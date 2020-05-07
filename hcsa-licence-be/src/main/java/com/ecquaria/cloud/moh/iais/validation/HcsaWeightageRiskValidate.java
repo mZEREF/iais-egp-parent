@@ -68,7 +68,7 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
     public void doSpecialDateFlag(Map<String, String> errMap,HcsaRiskWeightageDto fdto){
@@ -81,7 +81,7 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
                 errMap.put(fdto.getServiceCode() + "inEffDate", "Effective Date should later than Previous version");
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
     public boolean doUsualDateVad(Date effDate,Date endDate,String serviceCode,Map<String, String> errMap,int inEdit,int prEdit){
@@ -153,7 +153,7 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
             }
         }catch (Exception e){
             errMap.put(temp.getServiceCode()+mapkey,mapv);
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return false;
         }
         return false;

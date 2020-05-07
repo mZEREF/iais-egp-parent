@@ -222,7 +222,7 @@ public class InspectionNcCheckListDelegator {
                 try {
                     showPageDto = (AdCheckListShowDto) CopyUtil.copyMutableObject(showDto);
                 }catch (Exception e){
-                    e.printStackTrace();
+                    log.error(e.getMessage(), e);
                 }
                 ParamUtil.setSessionAttr(request,"adchklDto",showPageDto);
                 LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -361,7 +361,7 @@ public class InspectionNcCheckListDelegator {
         try {
             showPageDto = (AdCheckListShowDto) CopyUtil.copyMutableObject(showDto);
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         ParamUtil.setSessionAttr(request,"adchklDto",showPageDto);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);

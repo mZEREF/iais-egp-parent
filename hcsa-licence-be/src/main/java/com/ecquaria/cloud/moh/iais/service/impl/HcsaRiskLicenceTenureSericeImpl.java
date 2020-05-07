@@ -221,7 +221,7 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
                 dbFin.setStatus("CMSTAT003");
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
     }
@@ -253,7 +253,7 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
             ltDto.setRiskScoreTh(Double.parseDouble(sub.getColumRight()));
             ltDto.setChronoUnit(sub.getDateType());
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
        return ltDto;
     }

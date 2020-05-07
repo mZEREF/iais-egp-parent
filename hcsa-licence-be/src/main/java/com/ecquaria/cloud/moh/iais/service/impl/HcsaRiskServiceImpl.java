@@ -155,7 +155,7 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
                 }
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
     }
@@ -211,7 +211,7 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
                 effDate = Formatter.parseDate(dto.getInEffectiveStartDate());
                 endDate = Formatter.parseDate(dto.getInEffectiveEndDate());
             }catch (Exception e){
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
             finDto.setEffectiveDate(effDate);
             finDto.setEndDate(endDate);
@@ -231,7 +231,7 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
                 effDate = Formatter.parseDate(dto.getPrEffectiveStartDate());
                 endDate = Formatter.parseDate(dto.getPrEffectiveEndDate());
             }catch (Exception e){
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
             finDto.setEffectiveDate(effDate);
             finDto.setEndDate(endDate);

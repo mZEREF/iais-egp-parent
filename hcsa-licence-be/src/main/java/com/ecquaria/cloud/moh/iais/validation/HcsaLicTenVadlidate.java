@@ -241,7 +241,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
         }catch (Exception e){
             errMap.put(svcCode+temp.getOrderNum()+"lterr","ERR0013.");
             flag = false;
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return flag;
     }
@@ -303,7 +303,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -333,7 +333,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                 errMap.put(fdto.getSvcCode() + "inEffDate", "Effective Date should later than Previous version");
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 

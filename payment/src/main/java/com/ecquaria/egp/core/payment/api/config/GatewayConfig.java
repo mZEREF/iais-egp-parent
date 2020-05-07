@@ -10,7 +10,7 @@ public class GatewayConfig {
 		try {
 			properties.load(GatewayConfig.class.getClassLoader().getResourceAsStream("payment-client.properties"));
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 	}
 	

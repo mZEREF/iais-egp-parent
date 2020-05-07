@@ -29,7 +29,7 @@ public class GenerateKeyPair {
 			//System.out.println("priKey=" + priKey);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 			System.out.println("generate fail");
 		}
 		;

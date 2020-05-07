@@ -130,9 +130,9 @@ public class UserDownloadDelegator {
             xmlWriter.close();
             bytes = FileUtils.readFileToByteArray(tempFile);
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return bytes;
     }

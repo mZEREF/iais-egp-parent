@@ -180,7 +180,7 @@ public class HcsaRiskLegislativeServiceImpl implements HcsaRiskLegislativeServic
                 }
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
     }
@@ -215,7 +215,7 @@ public class HcsaRiskLegislativeServiceImpl implements HcsaRiskLegislativeServic
             effDate = Formatter.parseDate(dto.getDoEffectiveDate());
             endDate = Formatter.parseDate(dto.getDoEndDate());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         finDto.setEffectiveDate(effDate);
         finDto.setEndDate(endDate);

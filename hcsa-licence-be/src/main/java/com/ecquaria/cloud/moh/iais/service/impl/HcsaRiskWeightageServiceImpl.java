@@ -153,7 +153,7 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
         try {
             dto = (HcsaRiskWeightageDto)CopyUtil.copyMutableObject(temp);
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         try {
             if(dto!=null){
@@ -177,7 +177,7 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
                 dto.setEffectiveDate(Formatter.parseDate(temp.getDoEffectiveDate()));
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return dto;
     }
@@ -221,7 +221,7 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
                 weightage.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return weightageLeastVersionList;
     }

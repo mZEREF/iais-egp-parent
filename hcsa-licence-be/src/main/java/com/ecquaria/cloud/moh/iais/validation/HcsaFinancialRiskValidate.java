@@ -146,7 +146,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                     errMap.put(serviceCode+"prLeftModCaseCounth","ERR0013");
                     fdto.setPrLeftModCaseCountherr(true);
                 }
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
         if(!StringUtil.isEmpty(inRightMod)){
@@ -170,7 +170,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                     errMap.put(serviceCode+"prRightModCaseCounth","ERR0013");
                     fdto.setPrRightModCaseCountherr(true);
                 }
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
         if(numberFlag == 2){
@@ -218,7 +218,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 errMap.put(serviceCode + "prLeftHighCaseCounth", "ERR0013");
                 fdto.setPrLeftHighCaseCounterr(true);
             }
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         try {
             if(!StringUtil.isEmpty(inRightMod)){
@@ -234,7 +234,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
     }
@@ -270,7 +270,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 fdto.setPrRightLowCaseCountherr(true);
             }
 
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         try {
             if(!StringUtil.isEmpty(inLeftMod)){
@@ -290,7 +290,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
     }
@@ -377,7 +377,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
     public void doSpecialDateFlag(Map<String, String> errMap,HcsaRiskFinanceMatrixDto fdto,boolean isIn){
@@ -399,7 +399,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 fdto.setPrEffectiveStartDateerr(true);
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 

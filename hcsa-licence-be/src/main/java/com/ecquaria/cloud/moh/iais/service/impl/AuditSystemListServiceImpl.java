@@ -208,7 +208,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             log.info("========================>>>>> create task !!!!");
             eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,EventBusConsts.OPERATION_CREATE_AUDIT_TASK_CALL_BACK,auditCombinationDto.getEventRefNo(),null);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -243,7 +243,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         try {
             eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts. OPERATION__AUDIT_TASK_CANCELED,auditCombinationDto.getEventRefNo(),null);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -254,7 +254,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             auditCombinationDto.setTaskDtos(taskDtos);
             eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,EventBusConsts. OPERATION__AUDIT_TASK_CANCELED,auditCombinationDto.getEventRefNo(),null);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -269,7 +269,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         try {
             eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts. OPERATION__AUDIT_TASK_CANCELED,auditCombinationDto.getEventRefNo(),null);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -317,7 +317,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         try {
             eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,auditCombinationDto.getEventRefNo(),null);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -447,7 +447,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         try {
             eventBusHelper.submitAsyncRequest(auditCombinationDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_CREATE_AUDIT_TASK,auditCombinationDto.getEventRefNo(),null);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return null;
     }

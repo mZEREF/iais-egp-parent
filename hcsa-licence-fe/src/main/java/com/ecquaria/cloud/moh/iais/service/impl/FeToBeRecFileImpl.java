@@ -192,7 +192,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             try {
                 zos.putNextEntry(new ZipEntry(filePath + File.separator));
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
             for(File f: Objects.requireNonNull(file.listFiles())){
                 zipFile(zos, f, curFileName);

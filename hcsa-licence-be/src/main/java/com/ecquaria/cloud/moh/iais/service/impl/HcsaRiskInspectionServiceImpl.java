@@ -289,7 +289,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
                 }
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
     }
@@ -336,7 +336,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
                 effDate = Formatter.parseDate(dto.getDoCaEffectiveDate());
                 endDate = Formatter.parseDate(dto.getDoCaEndDate());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
             finDto.setEffectiveDate(effDate);
             finDto.setEndDate(endDate);
@@ -353,7 +353,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
                 effDate = Formatter.parseDate(dto.getDoMiEffectiveDate());
                 endDate = Formatter.parseDate(dto.getDoMiEndDate());
             }catch (Exception e){
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
             finDto.setEffectiveDate(effDate);
             finDto.setEndDate(endDate);
@@ -370,7 +370,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
                 effDate = Formatter.parseDate(dto.getDoMjEffectiveDate());
                 endDate = Formatter.parseDate(dto.getDoMjEndDate());
             }catch (Exception e){
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
             finDto.setEffectiveDate(effDate);
             finDto.setEndDate(endDate);

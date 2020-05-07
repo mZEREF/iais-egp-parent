@@ -264,9 +264,9 @@ public class ConfigServiceImpl implements ConfigService {
             try {
                 sendEmail(request);
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             } catch (TemplateException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
 */
         }

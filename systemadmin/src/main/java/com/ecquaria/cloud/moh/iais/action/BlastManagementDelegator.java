@@ -244,7 +244,7 @@ public class BlastManagementDelegator {
                 schedule.setTime(time);
                 blastManagementDto.setSchedule(schedule);
             } catch (ParseException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
 
@@ -267,7 +267,7 @@ public class BlastManagementDelegator {
                     schedule.setTime(time);
                     blastManagementDto.setSchedule(schedule);
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage(), e);
                 }
             }
             if(mode.equals(SMS)){

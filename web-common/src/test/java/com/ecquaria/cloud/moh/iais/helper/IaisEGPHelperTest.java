@@ -110,7 +110,7 @@ public class IaisEGPHelperTest {
 
             IaisEGPHelper.clearSessionAttr(null, IaisEGPHelperTest.class);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -120,7 +120,7 @@ public class IaisEGPHelperTest {
         try {
             IaisEGPHelper.clearSessionAttr(mockHttpServletRequest, IaisEGPHelperTest.class);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         Assert.assertTrue(true);
     }

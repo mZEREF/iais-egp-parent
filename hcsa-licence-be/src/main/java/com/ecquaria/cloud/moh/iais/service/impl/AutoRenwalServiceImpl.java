@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisServiceRegistryHelper;
 import com.ecquaria.cloud.moh.iais.service.AutoRenwalService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -104,9 +103,9 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     try {
                         sendEmailToOffice(v.get(i),request);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        log.error(e.getMessage(), e);
                     } catch (TemplateException e) {
-                        e.printStackTrace();
+                        log.error(e.getMessage(), e);
                     }
                 }
             }

@@ -95,13 +95,13 @@ public class GatewayCore {
             writer = new FileWriter(GatewayConfig.log_path);
             writer.write(sWord);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         } finally {
             if (writer != null) {
                 try {
                     writer.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage(), e);
                 }
             }
         }

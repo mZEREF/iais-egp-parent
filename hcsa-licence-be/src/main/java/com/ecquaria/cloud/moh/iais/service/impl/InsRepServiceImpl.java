@@ -745,7 +745,7 @@ public class InsRepServiceImpl implements InsRepService {
             eventBusHelper.submitAsyncRequest(taskDtos,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,EventBusConsts.OPERATION_POST_INSPECTION_TASK,eventRefNum,null);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
 

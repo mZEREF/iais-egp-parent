@@ -114,7 +114,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -143,7 +143,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
             }
 
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -288,7 +288,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 errMap.put(serviceCode + "mjRightLowCaseCounth", "ERR0013");
                 fdto.setDoMjLeftHighCountherr(true);
             }
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         try {
             if(!StringUtil.isEmpty(inRightMod)){
@@ -307,7 +307,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
     public void inRightLowVad(Map<String, String> errMap,String inRightLow,String inLeftMod,String serviceCode,String level,HcsaRiskInspectionMatrixDto fdto){
@@ -350,7 +350,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 errMap.put(serviceCode + "miRightLowCaseCounth", "ERR0013");
                 fdto.setDoMiRightLowCountherr(true);
             }
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         try {
             if(!StringUtil.isEmpty(inLeftMod)){
@@ -375,7 +375,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
     }
@@ -411,7 +411,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                     errMap.put(serviceCode+"mjLeftModCaseCounth","ERR0013");
                     fdto.setDoMjLeftModCountherr(true);
                 }
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
         if(!StringUtil.isEmpty(inRightMod)){
@@ -443,7 +443,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                         fdto.setDoMjRightModCountherr(true);
                     }
                 }
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
         if(numberFlag == 2){

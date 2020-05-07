@@ -206,7 +206,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
                 status = "CMSTAT001";
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         lastVersionDto.setEndDate(doeffDate);
         lastVersionDto.setStatus(status);
@@ -262,7 +262,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
             dto.setServiceCode(temp.getServiceCode());
             dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return dto;
     }

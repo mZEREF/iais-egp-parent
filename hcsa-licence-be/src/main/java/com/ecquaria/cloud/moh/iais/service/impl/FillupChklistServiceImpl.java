@@ -236,7 +236,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         try {
             tcuDate = Formatter.parseDate(dto.getTuc());
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         if(tcuDate!=null){
             appPreRecommentdationDto.setRecomInDate(tcuDate);
@@ -285,7 +285,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             fillUpCheckListGetAppClient.saveAppPreInspChkl(appDto);
             fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw e;
         }
     }

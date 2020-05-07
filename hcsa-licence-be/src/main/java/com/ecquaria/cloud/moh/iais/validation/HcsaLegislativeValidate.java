@@ -86,7 +86,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -100,7 +100,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 errMap.put(fdto.getSvcCode() + "inEffDate", "Effective Date should later than Previous version");
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -190,7 +190,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             inLeftHighNumFlag = false;
             errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0013");
             fdto.setDoLeftHighCaseCountherr(true);
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         try {
             if(!StringUtil.isEmpty(inRightMod)){
@@ -201,7 +201,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
     }
@@ -223,7 +223,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 inrightflag = false;
                 errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0013");
                 fdto.setDoRightLowCaseCountherr(true);
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         try {
             if(!StringUtil.isEmpty(inLeftMod)&&inrightflag){
@@ -233,7 +233,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
     }
@@ -253,7 +253,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             }catch (Exception e){
                     errMap.put(serviceCode+"inLeftModCaseCounth","ERR0013");
                     fdto.setDoLeftModCaseCountherr(true);
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
         if(!StringUtil.isEmpty(inRightMod)){
@@ -267,7 +267,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             }catch (Exception e){
                 errMap.put(serviceCode+"inRightModCaseCounth","ERR0013");
                 fdto.setDoRightModCaseCountherr(true);
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
         if(numberFlag == 2){

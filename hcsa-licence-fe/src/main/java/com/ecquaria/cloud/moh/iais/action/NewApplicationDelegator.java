@@ -878,7 +878,7 @@ public class NewApplicationDelegator {
                 try {
                     doStart(bpc);
                 } catch (CloneNotSupportedException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage(), e);
                 }
                 return;
             }else {

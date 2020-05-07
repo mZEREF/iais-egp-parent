@@ -416,7 +416,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         try {
             tcuDate = Formatter.parseDate(serListDto.getTuc());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         if ( !StringUtil.isEmpty(serListDto.getTuc()) && tcuDate != null ) {
             appPreRecommentdationDto.setRecomInDate(tcuDate);
@@ -518,7 +518,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 appDto.setAnswer(answerJson);
                 fillUpCheckListGetAppClient.saveAppPreInspChkl(appDto);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
                 throw e;
             }
         }

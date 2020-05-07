@@ -27,7 +27,7 @@ public class GatewayRSAEncrypt {
 			return bytesToHexStr(signed);
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 
 		return "";
@@ -83,7 +83,7 @@ public class GatewayRSAEncrypt {
 				return true;
 			} 
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 		
 		return false;

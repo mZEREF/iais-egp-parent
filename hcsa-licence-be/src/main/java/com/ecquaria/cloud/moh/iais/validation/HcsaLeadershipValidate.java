@@ -129,7 +129,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                     errMap.put(serviceCode+"prLeftModCaseCounth","ERR0013");
                     fdto.setDpLeftModCaseCountherr(true);
                 }
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
         if(!StringUtil.isEmpty(inRightMod)){
@@ -153,7 +153,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                     errMap.put(serviceCode+"prRightModCaseCounth","ERR0013");
                     fdto.setDpRightModCaseCountherr(true);
                 }
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
         if(numberFlag == 2){
@@ -199,7 +199,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 errMap.put(serviceCode + "prLeftHighCaseCounth", "ERR0013");
                 fdto.setDpLeftHighCaseCountherr(true);
             }
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         try {
             if(!StringUtil.isEmpty(inRightMod)){
@@ -215,7 +215,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
     public void inRightLowVad(Map<String, String> errMap,String inRightLow,String inLeftMod,String serviceCode,boolean isIn,HcsaRiskLeadershipMatrixDto fdto){
@@ -252,7 +252,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 }
             }
 
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         try {
             if(!StringUtil.isEmpty(inLeftMod)){
@@ -268,7 +268,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
     }
@@ -355,7 +355,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
     public void doSpecialDateFlag(Map<String, String> errMap,HcsaRiskLeadershipMatrixDto fdto,boolean isIn){
@@ -377,7 +377,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 fdto.setDpEffectiveStartDateerr(true);
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 

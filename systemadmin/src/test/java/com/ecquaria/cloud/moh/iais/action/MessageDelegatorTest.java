@@ -85,14 +85,14 @@ public class MessageDelegatorTest {
         try {
             messageDelegator.startStep(bpc);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
         bpc.request = null;
         try {
             messageDelegator.startStep(bpc);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
         Assert.assertTrue(true);

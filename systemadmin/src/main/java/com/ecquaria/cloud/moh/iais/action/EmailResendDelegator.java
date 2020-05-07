@@ -125,7 +125,7 @@ public class EmailResendDelegator {
                 long time = schedule.getTime() + Long.parseLong(HH) * 60 * 60 * 1000 + Long.parseLong(MM) * 60 * 1000;
                 schedule.setTime(time);
             } catch (ParseException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
         blastManagementDto.setSchedule(schedule);

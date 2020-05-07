@@ -281,7 +281,7 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
                 }
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
     }
@@ -337,7 +337,7 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
                 effDate = Formatter.parseDate(dto.getAdEffectiveStartDate());
                 endDate = Formatter.parseDate(dto.getAdEffectiveEndDate());
             }catch (Exception e){
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
             finDto.setEffectiveDate(effDate);
             finDto.setEndDate(endDate);
@@ -357,7 +357,7 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
                 effDate = Formatter.parseDate(dto.getDpEffectiveStartDate());
                 endDate = Formatter.parseDate(dto.getDpEffectiveEndDate());
             }catch (Exception e){
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
             finDto.setEffectiveDate(effDate);
             finDto.setEndDate(endDate);
