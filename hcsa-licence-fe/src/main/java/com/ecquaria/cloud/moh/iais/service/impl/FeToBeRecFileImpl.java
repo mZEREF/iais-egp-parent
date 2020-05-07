@@ -237,7 +237,10 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                     String s = FileUtil.genMd5FileChecksum(bytes);
                     File curFile = new File(backups, s + ".zip");
                     if (!curFile.exists()){
-                        curFile.createNewFile();
+                        boolean createFlag = curFile.createNewFile();
+                        if (!createFlag) {
+                            log.error("Create file fail");
+                        }
                     }
                     boolean reNameFlag = file.renameTo(curFile);
                     if(reNameFlag) {
