@@ -289,19 +289,27 @@ public class ServiceMenuDelegator {
         if(BACK_ATTR.equals(action)){
             ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, BACK_ATTR);
         }else {
-            if(licenceJudge == null || licence == null){
+            if(licenceJudge == null){
                 ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, ERROR_ATTR);
                 String err = "Please select at least one licence.";
                 ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
                 ParamUtil.setRequestAttr(bpc.request, "action","err");
             }else if("1".equals(licenceJudge)) {
-                List<String> licenceList = IaisCommonUtils.genNewArrayList();
-                for (String item : licence
-                ) {
-                    licenceList.add(item);
+                if(licence == null){
+                    ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, ERROR_ATTR);
+                    String err = "Please select at least one licence.";
+                    ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                    ParamUtil.setRequestAttr(bpc.request, "action","err");
+                }else{
+                    List<String> licenceList = IaisCommonUtils.genNewArrayList();
+                    for (String item : licence
+                    ) {
+                        licenceList.add(item);
+                    }
+                    ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, NEXT);
+                    ParamUtil.setSessionAttr(bpc.request, "licence", (Serializable) licenceList);
                 }
-                ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, NEXT);
-                ParamUtil.setSessionAttr(bpc.request, "licence", (Serializable) licenceList);
+
             } else {
                 ParamUtil.setSessionAttr(bpc.request, "licence", null);
                 ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, NEXT);
