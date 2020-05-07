@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -166,12 +167,11 @@ public class ApptReSchedulingInspDateDelegator {
     private Date getSpecificDate(String specificDate1, List<SelectOption> hoursOption, String hours) {
         if(specificDate1 != null) {
             Date specificDate = null;
-            SimpleDateFormat sdf = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
             Date sub_date1 = null;
             try {
-                sub_date1 = sdf.parse(specificDate1);
+                sub_date1 = Formatter.parseDate(specificDate1);
             } catch (ParseException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -188,7 +188,7 @@ public class ApptReSchedulingInspDateDelegator {
             try {
                 specificDate = sdf3.parse(sub_date);
             } catch (ParseException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
             return specificDate;
         }

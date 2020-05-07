@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
@@ -24,16 +23,15 @@ import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.esotericsoftware.minlog.Log;
+import java.io.Serializable;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.util.List;
 
 
 /**
@@ -109,7 +107,9 @@ public class FillupChklistDelegator {
         }
        // String serviceType = "Inspection";
         TaskDto taskDto = taskService.getTaskById(taskId);
-        if(taskDto == null) return;
+        if(taskDto == null) {
+            return;
+        }
         String appPremCorrId = taskDto.getRefNo();
         //fillupChklistService.getDraftByTaskId(taskId,serviceType);
         //fillupChklistService.getAllAppChklDraftList(appPremCorrId);
@@ -208,7 +208,7 @@ public class FillupChklistDelegator {
             try {
                 showPageDto = (AdCheckListShowDto) CopyUtil.copyMutableObject(showDto);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
             fillupChklistService.saveDraft(comDto,showDto,serListDto,taskDto.getRefNo());
 
@@ -240,7 +240,7 @@ public class FillupChklistDelegator {
         try {
             showPageDto = (AdCheckListShowDto)CopyUtil.copyMutableObject(showDto);
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         ParamUtil.setSessionAttr(request,"adchklDto",showPageDto);
         fillupChklistService.saveAdhocDto(showDto,icDto.getCheckList().get(0).getAppPreCorreId());

@@ -208,7 +208,7 @@ public class ApptInspectionDateDelegator {
             try {
                 sub_date1 = sdf.parse(specificDate1);
             } catch (ParseException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -225,7 +225,7 @@ public class ApptInspectionDateDelegator {
             try {
                 specificDate = sdf3.parse(sub_date);
             } catch (ParseException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
             return specificDate;
         }
