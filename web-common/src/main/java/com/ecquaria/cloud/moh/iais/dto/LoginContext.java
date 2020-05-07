@@ -20,6 +20,7 @@ public class LoginContext implements Serializable {
     @Setter private String userId;
     @Setter private String userDomain;
     @Setter private String userName;
+    @Setter private String nricNum;
     private Set<String> roleIds;
     @Setter private String curRoleId;
     // BE User Info
