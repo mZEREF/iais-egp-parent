@@ -113,6 +113,8 @@ public class KpiColourByWorkDaysBatchJob {
                     }
                     workAndNonWorkDays = getWorkAndNonWorkDays(workAndNonWorkDays, startDate, completeDate);
                 }
+                Set<Date> setDate = new HashSet<>(workAndNonWorkDays);
+                workAndNonWorkDays = new ArrayList<>(setDate);
                 Map<Integer, Integer> workAndNonMapS = appointmentClient.getWorkAndNonMap(workAndNonWorkDays).getEntity();
                 if(workAndNonMapS != null && workAndNonMapS.size() > 0) {
                     for (Map.Entry<Integer, Integer> map : workAndNonMapS.entrySet()) {
@@ -180,6 +182,8 @@ public class KpiColourByWorkDaysBatchJob {
                 }
                 workAndNonWorkDays = getWorkAndNonWorkDays(workAndNonWorkDays, startDate, completeDate);
             }
+            Set<Date> setDate = new HashSet<>(workAndNonWorkDays);
+            workAndNonWorkDays = new ArrayList<>(setDate);
             Map<Integer, Integer> workAndNonMapS = appointmentClient.getWorkAndNonMap(workAndNonWorkDays).getEntity();
             if(workAndNonMapS != null && workAndNonMapS.size() > 0) {
                 for (Map.Entry<Integer, Integer> map : workAndNonMapS.entrySet()) {
@@ -242,6 +246,8 @@ public class KpiColourByWorkDaysBatchJob {
             }
             workAndNonWorkDays = getWorkAndNonWorkDays(workAndNonWorkDays, startDate, completeDate);
         }
+        Set<Date> setDate = new HashSet<>(workAndNonWorkDays);
+        workAndNonWorkDays = new ArrayList<>(setDate);
         Map<Integer, Integer> workAndNonMapS = appointmentClient.getWorkAndNonMap(workAndNonWorkDays).getEntity();
         if(workAndNonMapS != null && workAndNonMapS.size() > 0) {
             for (Map.Entry<Integer, Integer> map : workAndNonMapS.entrySet()) {
@@ -268,6 +274,7 @@ public class KpiColourByWorkDaysBatchJob {
         String subStage = "";
         if(appInspectionStatusDto != null) {
             String status = appInspectionStatusDto.getStatus();
+            //todo
             if (status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_PRE) ||
                     status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_APPOINTMENT_INSPECTION_DATE )||
                     status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_RE_APPOINTMENT_INSPECTION_DATE) ||
