@@ -113,8 +113,6 @@ public class InspectionCreTaskByInspDateDelegator {
                     hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
                     List<TaskDto> taskDtos = getTaskByHistoryTasks(aRecoDto.getAppPremCorreId());
                     createTasksByHistory(taskDtos, intranet, hcsaSvcStageWorkingGroupDtos.get(0).getCount(), aRecoDto.getAppPremCorreId());
-                    aRecoDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                    fillUpCheckListGetAppClient.updateAppRecom(aRecoDto);
                     updateInspectionStatus(aRecoDto.getAppPremCorreId(), InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
                 }
             }
