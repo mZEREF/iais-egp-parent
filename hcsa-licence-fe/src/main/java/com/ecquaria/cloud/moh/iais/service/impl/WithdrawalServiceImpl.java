@@ -41,7 +41,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         applicationGroupDto.setGroupNo(systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity());
         applicationGroupDto.setDeclStmt("N");
         applicationGroupDto.setIsCharitable(0);
-        applicationGroupDto.setGrpLic(false);
+       // applicationGroupDto.setGrpLic(false);
         applicationGroupDto.setIsByGiro(0);
         applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         applicationGroupDto.setIsBundledFee(0);

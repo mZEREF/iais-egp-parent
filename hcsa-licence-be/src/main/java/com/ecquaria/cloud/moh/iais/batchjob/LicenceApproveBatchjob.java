@@ -88,6 +88,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator("licenceApproveBatchjob")
 @Slf4j
 public class LicenceApproveBatchjob {
+    private final String GENERALLICENCE = "generalLicence";
+    private final String GROUPLICENCE  = "groupLicence";
 
     @Autowired
     private LicenceService licenceService;
@@ -127,32 +129,32 @@ public class LicenceApproveBatchjob {
             if(applicationLicenceDto != null){
                 ApplicationGroupDto applicationGroupDto = applicationLicenceDto.getApplicationGroupDto();
                 if(applicationGroupDto != null){
-
                     List<LicenceGroupDto> licenceGroupDtos = IaisCommonUtils.genNewArrayList();
                     List<ApplicationGroupDto> success = IaisCommonUtils.genNewArrayList();
                     List<Map<String,String>> fail = IaisCommonUtils.genNewArrayList();
                     // delete the reject applicaiton
                     List<ApplicationListDto> applicationListDtoList = applicationLicenceDto.getApplicationListDtoList();
                     deleteRejectApplication(applicationListDtoList);
-                    boolean isGrpLic = applicationGroupDto.isGrpLic();
                     log.debug(StringUtil.changeForLog("The application group no is -->;"+applicationGroupDto.getGroupNo()) );
-                    log.debug(StringUtil.changeForLog("The isGrpLic is -->;"+isGrpLic));
-                    GenerateResult generateResult =null;
+                    Map<String,ApplicationLicenceDto> applicationLicenceDtoMap = sepaApplication(applicationLicenceDto);
+                    ApplicationLicenceDto generalApplicationLicenceDto = applicationLicenceDtoMap.get(GENERALLICENCE);
+                    ApplicationLicenceDto groupApplicationLicenceDto = applicationLicenceDtoMap.get(GROUPLICENCE);
+                    GenerateResult generalGenerateResult =null;
+                    GenerateResult groupGenerateResult =null;
                     try{
-                        if(isGrpLic){
+                        if(groupApplicationLicenceDto != null){
                             //generate the Group licence
-                            generateResult = generateGroupLicence(applicationLicenceDto,hcsaServiceDtos);
-                        }else{
+                            groupGenerateResult = generateGroupLicence(groupApplicationLicenceDto,hcsaServiceDtos);
+                        }
+                        if(generalApplicationLicenceDto != null){
                             //generate licence
-                            generateResult = generateLIcence(applicationLicenceDto,hcsaServiceDtos);
+                            generalGenerateResult = generateLIcence(generalApplicationLicenceDto,hcsaServiceDtos);
                         }
                     }catch (Exception exception){
                         log.error(StringUtil.changeForLog("This  applicaiton group  have error -- >"+applicationGroupDto.getGroupNo()));
                         log.error(exception.getMessage(), exception);
                     }
-
-                    toDoResult(licenceGroupDtos,generateResult,success,fail,applicationGroupDto);
-
+                    toDoResult(licenceGroupDtos,generalGenerateResult,groupGenerateResult,success,fail,applicationGroupDto);
                     if(success.size() > 0){
                     //
                     AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
@@ -195,6 +197,49 @@ public class LicenceApproveBatchjob {
 
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is end ..."));
     }
+
+    private Map<String,ApplicationLicenceDto> sepaApplication(ApplicationLicenceDto applicationLicenceDto){
+        log.info(StringUtil.changeForLog("The sepaApplication is strat ..."));
+        Map<String,ApplicationLicenceDto> result = new HashMap();
+        ApplicationGroupDto applicationGroupDto = applicationLicenceDto.getApplicationGroupDto();
+        List<ApplicationListDto> applicationListDtoList = applicationLicenceDto.getApplicationListDtoList();
+        if(!IaisCommonUtils.isEmpty(applicationListDtoList)){
+            log.info(StringUtil.changeForLog("The sepaApplication applicationListDtoList.size() is -->: " + applicationListDtoList.size()));
+            List<ApplicationListDto> generalLicence = IaisCommonUtils.genNewArrayList();
+            List<ApplicationListDto> groupLicence = IaisCommonUtils.genNewArrayList();
+           for (ApplicationListDto applicationListDto : applicationListDtoList){
+               ApplicationDto applicationDto =  applicationListDto.getApplicationDto();
+               if(applicationDto.isGrpLic()){
+                   groupLicence.add(applicationListDto);
+               }else{
+                   generalLicence.add(applicationListDto);
+               }
+           }
+            log.info(StringUtil.changeForLog("The sepaApplication generateLicence.size() is -->: " + generalLicence.size()));
+           if(!IaisCommonUtils.isEmpty(generalLicence)){
+               ApplicationLicenceDto generateApplicationLicenceDto = new ApplicationLicenceDto();
+               generateApplicationLicenceDto.setApplicationGroupDto(applicationGroupDto);
+               generateApplicationLicenceDto.setApplicationListDtoList(generalLicence);
+               result.put(GENERALLICENCE,generateApplicationLicenceDto);
+           }else{
+               result.put(GENERALLICENCE,null);
+           }
+            log.info(StringUtil.changeForLog("The sepaApplication groupLicence.size() is -->: " + groupLicence.size()));
+            if(!IaisCommonUtils.isEmpty(groupLicence)){
+                ApplicationLicenceDto groupApplicationLicenceDto = new ApplicationLicenceDto();
+                groupApplicationLicenceDto.setApplicationGroupDto(applicationGroupDto);
+                groupApplicationLicenceDto.setApplicationListDtoList(groupLicence);
+                result.put(GROUPLICENCE,groupApplicationLicenceDto);
+            }else{
+                result.put(GROUPLICENCE,null);
+            }
+        }else{
+            log.error(StringUtil.changeForLog("The sepaApplication the applicationListDtoList is null"));
+        }
+        log.info(StringUtil.changeForLog("The sepaApplication is end ..."));
+        return result;
+    }
+
     private List<ApplicationDto> updateApplicationStatusToGenerated(List<ApplicationDto> applicationDtos){
         List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isEmpty(applicationDtos)){
@@ -252,6 +297,53 @@ public class LicenceApproveBatchjob {
             result.add(applicationGroupDto);
         }
         return  result;
+    }
+
+    private void toDoResult(List<LicenceGroupDto> licenceGroupDtos,GenerateResult generalResult,GenerateResult groupResult,
+                            List<ApplicationGroupDto> success,
+                            List<Map<String,String>> fail, ApplicationGroupDto applicationGroupDto){
+        log.info(StringUtil.changeForLog("The toDoResult is start ..."));
+        if(generalResult!=null && groupResult!=null){
+            boolean isGeneralSuccess = generalResult.isSuccess();
+            boolean isGroupSuccess = groupResult.isSuccess();
+            if(isGeneralSuccess && isGroupSuccess){
+                if(applicationGroupDto!=null){
+                    success.add(applicationGroupDto);
+                }else{
+                    log.info(StringUtil.changeForLog("There is not the applicationGroupDto for this job"));
+                }
+                LicenceGroupDto generalLicenceGroupDto = generalResult.getLicenceGroupDto();
+                if(generalLicenceGroupDto!=null){
+                    licenceGroupDtos.add(generalLicenceGroupDto);
+                }
+                LicenceGroupDto groupLicenceGroupDto = groupResult.getLicenceGroupDto();
+                if(generalLicenceGroupDto!=null){
+                    licenceGroupDtos.add(groupLicenceGroupDto);
+                }
+            }else if(!isGeneralSuccess){
+                Map<String,String> error = new HashMap();
+                error.put(applicationGroupDto.getGroupNo(),generalResult.getErrorMessage());
+                fail.add(error);
+                for(Map.Entry<String,String> ent : error.entrySet()){
+                    String value = ent.getValue();
+                    log.error(StringUtil.changeForLog("The error is -->:"+value));
+                }
+            }else if(!isGroupSuccess){
+                Map<String,String> error = new HashMap();
+                error.put(applicationGroupDto.getGroupNo(),groupResult.getErrorMessage());
+                fail.add(error);
+                for(Map.Entry<String,String> ent : error.entrySet()){
+                    String value = ent.getValue();
+                    log.error(StringUtil.changeForLog("The error is -->:"+value));
+                }
+            }
+        }else if(generalResult!=null){
+            toDoResult(licenceGroupDtos,generalResult,success,fail,applicationGroupDto);
+        }else if(groupResult!=null){
+            toDoResult(licenceGroupDtos,groupResult,success,fail,applicationGroupDto);
+        }
+        log.info(StringUtil.changeForLog("The toDoResult is end ..."));
+
     }
 
     private void toDoResult(List<LicenceGroupDto> licenceGroupDtos,GenerateResult generateResult,List<ApplicationGroupDto> success,
@@ -404,7 +496,7 @@ public class LicenceApproveBatchjob {
                 }
 
                 LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),null,applicationGroupDto,appPremisesRecommendationDto,
-                        originLicenceDto,null,applicationDtos.get(0).getRelLicenceNo(),applicationDtos);
+                        originLicenceDto,null,applicationDtos.get(0).getRelLicenceNo(),applicationDtos,true);
                 superLicDto.setLicenceDto(licenceDto);
                 //if PostInspNeeded send email
                 if(isPostInspNeeded == Integer.parseInt(AppConsts.YES)){
@@ -694,7 +786,7 @@ public class LicenceApproveBatchjob {
                 LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
                 superLicDto.setOriginLicenceDto(originLicenceDto);
                 LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),hcsaServiceDto.getSvcType(),applicationGroupDto,appPremisesRecommendationDto,
-                        originLicenceDto,applicationDto,applicationDto.getRelLicenceNo(),null);
+                        originLicenceDto,applicationDto,applicationDto.getRelLicenceNo(),null,false);
                 superLicDto.setLicenceDto(licenceDto);
                 //if PostInspNeeded send email
                 if(isPostInspNeeded == Integer.parseInt(AppConsts.YES)){
@@ -1201,7 +1293,8 @@ public class LicenceApproveBatchjob {
                                      LicenceDto originLicenceDto,
                                      ApplicationDto applicationDto,
                                      String relLicenceNo,
-                                     List<ApplicationDto> applicationDtos){
+                                     List<ApplicationDto> applicationDtos,
+                                     boolean isGrpLic){
         log.info(StringUtil.changeForLog("The  getLicenceDto start ..."));
         LicenceDto licenceDto = new LicenceDto();
         licenceDto.setSvcName(svcName);
@@ -1262,7 +1355,7 @@ public class LicenceApproveBatchjob {
                 }
                 licenceDto.setExpiryDate(expiryDate);
                 //licenceDto.setEndDate(licenceDto.getExpiryDate());
-                licenceDto.setGrpLic(applicationGroupDto.isGrpLic());
+                licenceDto.setGrpLic(isGrpLic);
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
             }
             int version = 1;

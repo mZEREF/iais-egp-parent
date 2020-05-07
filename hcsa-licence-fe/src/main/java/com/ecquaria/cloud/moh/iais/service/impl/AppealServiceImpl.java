@@ -676,7 +676,7 @@ public class AppealServiceImpl implements AppealService {
         applicationGroupDto.setIsBundledFee(0);
         applicationGroupDto.setIsCharitable(0);
         applicationGroupDto.setIsByGiro(0);
-        applicationGroupDto.setGrpLic(false);
+        //applicationGroupDto.setGrpLic(false);
         applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         applicationGroupDto.setDeclStmt(N);
         applicationGroupDto.setSubmitBy("C55C9E62-750B-EA11-BE7D-000C29F371DC");
