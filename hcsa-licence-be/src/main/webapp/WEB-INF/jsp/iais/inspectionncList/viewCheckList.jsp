@@ -155,9 +155,7 @@
                                                                 <c:set var="sec" value="${two.index}"></c:set>
                                                                 <c:set var="thr" value="${status.index}"></c:set>
                                                                 <c:forEach var="oldser" items="${otherVersionfdtos}">
-                                                                    <wrms:value width="7">
                                                                         <span class="oldVal compareTdStyle" attr="${oldser.fdtoList[fir].sectionDtoList[sec].itemDtoList[thr].incqDto.chkanswer}"><label><c:out value="${oldser.fdtoList[fir].sectionDtoList[sec].itemDtoList[thr].incqDto.chkanswer}"/></label></span>
-                                                                    </wrms:value>
                                                                 </c:forEach>
 
                                                             </td>
