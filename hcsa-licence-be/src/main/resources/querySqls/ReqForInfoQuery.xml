@@ -43,6 +43,7 @@
             <#if licence_no??>AND :licence_no = :licence_no</#if>
             <#if app_id??>AND :app_id = :app_id</#if>
             <#if org_ids??>AND :org_ids = :org_ids</#if>
+            <#if licenseeIdNo??>AND :licenseeIdNo = :licenseeIdNo</#if>
             <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
             <#if licenseeRegnNo??>AND :licenseeRegnNo = :licenseeRegnNo</#if>
             <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
@@ -89,6 +90,7 @@
             <#if licenseeRegnNo??> AND charindex( :licenseeRegnNo,keyPsnExt.PROF_REG_NO )>0</#if>
             <#if licenseeId??>AND lic.licensee_id = :licenseeId</#if>
 
+            <#if licenseeIdNo??>AND :licenseeIdNo = :licenseeIdNo</#if>
             <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
             <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
             <#if id??>AND :id = :id</#if>
@@ -117,9 +119,10 @@
             LEFT JOIN licensee_individual licInd ON licInd.ID = lic.ID
             WHERE 1=1
             <#if uenNo??> AND charindex( :uenNo,org.UEN_NO )>0</#if>
-            <#if licenseeId??> AND charindex( :licenseeId,licInd.ID_NO )>0</#if>
+            <#if licenseeIdNo??> AND charindex( :licenseeIdNo,licInd.ID_NO )>0</#if>
             <#if licenseeName??> AND charindex(:licenseeName,lic.NAME )>0</#if>
 
+            <#if licenseeId??>AND :licenseeId = :licenseeId</#if>
             <#if licenseeRegnNo??> AND :licenseeRegnNo = :licenseeRegnNo</#if>
             <#if id??>AND :id = :id</#if>
             <#if appType??>AND :appType = :appType</#if>
@@ -178,6 +181,7 @@
             <#if hciStreetName??>AND :hciStreetName = :hciStreetName</#if>
             <#if hciPostalCode??>AND :hciPostalCode = :hciPostalCode</#if>
             <#if licenseeId??>AND :licenseeId = :licenseeId</#if>
+            <#if licenseeIdNo??>AND :licenseeIdNo = :licenseeIdNo</#if>
             <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
             <#if licenseeRegnNo??>AND :licenseeRegnNo = :licenseeRegnNo</#if>
             <#if personnelName??> AND :personnelName = :personnelName</#if>

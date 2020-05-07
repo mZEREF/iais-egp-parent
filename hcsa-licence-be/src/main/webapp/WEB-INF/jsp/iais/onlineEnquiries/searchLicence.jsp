@@ -267,7 +267,7 @@
                                             <iais:field value="Licensee ID"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" maxlength="10" style="width:180%; font-weight:normal;" name="licensee_id" value="${SearchParam.filters['licenseeId']}" />
+                                                    <input type="text" maxlength="10" style="width:180%; font-weight:normal;" name="licensee_idNo" value="${SearchParam.filters['licenseeIdNo']}" />
                                                 </label>
                                             </iais:value>
                                         </iais:row>

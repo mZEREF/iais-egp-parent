@@ -449,7 +449,7 @@ public class OfficerOnlineEnquiriesDelegator {
         String hciName = ParamUtil.getString(bpc.request, "hci_name");
         String hciStreetName = ParamUtil.getString(bpc.request, "hci_street_name");
         String hciPostalCode = ParamUtil.getString(bpc.request, "hci_postal_code");
-        String licenseeId = ParamUtil.getString(bpc.request, "licensee_id");
+        String licenseeIdNo = ParamUtil.getString(bpc.request, "licensee_idNo");
         String licenseeName = ParamUtil.getString(bpc.request, "licensee_name");
         String licenseeRegnNo = ParamUtil.getString(bpc.request, "licensee_regn_no");
         String personnelId = ParamUtil.getString(bpc.request, "personnelId");
@@ -555,8 +555,8 @@ public class OfficerOnlineEnquiriesDelegator {
 
         if(ParamUtil.getString(request,"licenseeChk")!=null){
             count[3]=4;
-            if(!StringUtil.isEmpty(licenseeId)){
-                filters.put("licenseeId",licenseeId);
+            if(!StringUtil.isEmpty(licenseeIdNo)){
+                filters.put("licenseeIdNo",licenseeIdNo);
             }
             if(!StringUtil.isEmpty(licenseeName)){
                 filters.put("licenseeName", licenseeName);
