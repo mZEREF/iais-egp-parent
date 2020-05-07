@@ -19,6 +19,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,11 +35,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -103,25 +102,17 @@ public class IaisEGPHelperTest {
     }
 
     @Test
-    public void testClearSessionAttrToError(){
+    public void testClearSessionAttrToError() throws IllegalAccessException {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
-        try {
-            IaisEGPHelper.clearSessionAttr(mockHttpServletRequest, null);
+        IaisEGPHelper.clearSessionAttr(mockHttpServletRequest, null);
 
-            IaisEGPHelper.clearSessionAttr(null, IaisEGPHelperTest.class);
-        } catch (IllegalAccessException e) {
-            log.error(e.getMessage(), e);
-        }
+        IaisEGPHelper.clearSessionAttr(null, IaisEGPHelperTest.class);
     }
 
     @Test
-    public void testClearSessionAttrToSuccess(){
+    public void testClearSessionAttrToSuccess() throws IllegalAccessException {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
-        try {
-            IaisEGPHelper.clearSessionAttr(mockHttpServletRequest, IaisEGPHelperTest.class);
-        } catch (IllegalAccessException e) {
-            log.error(e.getMessage(), e);
-        }
+        IaisEGPHelper.clearSessionAttr(mockHttpServletRequest, IaisEGPHelperTest.class);
         Assert.assertTrue(true);
     }
 
