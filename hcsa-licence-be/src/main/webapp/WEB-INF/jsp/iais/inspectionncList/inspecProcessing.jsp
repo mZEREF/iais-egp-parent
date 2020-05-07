@@ -14,7 +14,7 @@
                 <iais:section title="">
                     <iais:row>
                         <iais:field value="Current Status" required="false"/>
-                        <iais:value width="10"><iais:code code="${applicationViewDto.applicationDto.status}"/></iais:value>
+                        <iais:value width="10"><p><span style="font-size: 16px"><iais:code code="${applicationViewDto.applicationDto.status}"/></iais:value></span></p>
                     </iais:row>
                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION == applicationViewDto.applicationDto.applicationType}">
                         <iais:row>
