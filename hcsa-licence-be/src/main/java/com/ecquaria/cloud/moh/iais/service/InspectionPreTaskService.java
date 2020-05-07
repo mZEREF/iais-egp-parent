@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionHistoryShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -92,4 +93,13 @@ public interface InspectionPreTaskService {
       * @Descripation: route back to ASO/PSO
       */
     void routingAsoPsoBack(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, LoginContext loginContext);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/5/7
+      * @Param: originLicenceId
+      * @return: List<InspectionHistoryShowDto>
+      * @Descripation: get Inspection History(past two) By licenceId
+      */
+    List<InspectionHistoryShowDto> getInspectionHistory(String originLicenceId);
 }

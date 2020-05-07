@@ -1,18 +1,17 @@
 package com.ecquaria.cloud.moh.iais.action;
 
-import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.AdhocChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionHistoryShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -92,13 +91,13 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", null);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", null);
-        ParamUtil.setSessionAttr(bpc.request, "inboxUrl", null);
         ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO, null);
         ParamUtil.setSessionAttr(bpc.request,"commonDto", null);
         ParamUtil.setSessionAttr(bpc.request,"serListDto", null);
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, null);
         ParamUtil.setSessionAttr(bpc.request, "actionValue", null);
+        ParamUtil.setSessionAttr(bpc.request, "inspectionHistoryShowDtos", null);
     }
 
     /**
@@ -118,12 +117,12 @@ public class InspectionPreDelegator {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appStatus = applicationDto.getStatus();
         inspectionPreTaskDto.setAppStatus(appStatus);
-        setInboxUrlToSession(bpc);
         List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption();
-        List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
         List<SelectOption> rfiCheckOption = inspectionPreTaskService.getRfiCheckOption();
         inspectionPreTaskDto.setPreInspRfiOption(rfiCheckOption);
-
+        //adhocChecklist
+        List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
+        //Self-Checklist
         Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> mapInDto = inspectionPreTaskService.getSelfCheckListByCorrId(taskDto.getRefNo());
         InspectionFillCheckListDto inspectionFillCheckListDto = new InspectionFillCheckListDto();
         List<InspectionFillCheckListDto> ifcDtos = IaisCommonUtils.genNewArrayList();
@@ -134,31 +133,18 @@ public class InspectionPreDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request,"commonDto",inspectionFillCheckListDto);
-        ParamUtil.setSessionAttr(bpc.request,"serListDto", (Serializable) ifcDtos);
+        ParamUtil.setSessionAttr(bpc.request,"serListDto123", (Serializable) ifcDtos);
 
+        //Inspection Checklist
+        List<InspectionHistoryShowDto> inspectionHistoryShowDtos = inspectionPreTaskService.getInspectionHistory(applicationDto.getOriginLicenceId());
+
+        ParamUtil.setSessionAttr(bpc.request, "inspectionHistoryShowDtos", (Serializable) inspectionHistoryShowDtos);
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
         ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONDTO, applicationDto);
         ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO, applicationViewDto);
-    }
-
-    private void setInboxUrlToSession(BaseProcessClass bpc) {
-        StringBuilder sb = new StringBuilder("https://");
-        String url = MessageConstants.MESSAGE_CALL_BACK_URL_BEINBOX;
-        sb.append(bpc.request.getServerName());
-        if (!url.startsWith("/")) {
-            sb.append("/");
-        }
-        sb.append(url);
-        if (url.indexOf("?") >= 0) {
-            sb.append("&");
-        } else {
-            sb.append("?");
-        }
-        String inboxUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(sb.toString(), bpc.request);
-        ParamUtil.setSessionAttr(bpc.request, "inboxUrl", inboxUrl);
     }
 
     /**

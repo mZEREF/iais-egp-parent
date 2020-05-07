@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -91,8 +92,16 @@ public class CreateDoInspTaskBatchJob {
      */
     public void mohCreateInspectionTask(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohCreateInspectionTask start ...."));
-        List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = inspectionTaskClient.getAppPremisesRecommendationDtoByType(InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-        if(appPremisesRecommendationDtos == null || appPremisesRecommendationDtos.isEmpty()){
+        List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
+        List<ApplicationDto> applicationDtoList = applicationClient.getApplicationByStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION).getEntity();
+        if(!IaisCommonUtils.isEmpty(applicationDtoList)){
+            for(ApplicationDto applicationDto : applicationDtoList){
+                AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
+                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                appPremisesRecommendationDtos.add(appPremisesRecommendationDto);
+            }
+        }
+        if(IaisCommonUtils.isEmpty(appPremisesRecommendationDtos)){
             return;
         }
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
@@ -110,8 +119,6 @@ public class CreateDoInspTaskBatchJob {
                         hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
                         List<TaskDto> taskDtos = getTaskByHistoryTasks(aRecoDto.getAppPremCorreId());
                         createTasksByHistory(taskDtos, intranet, hcsaSvcStageWorkingGroupDtos.get(0).getCount(), aRecoDto.getAppPremCorreId());
-                        aRecoDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                        fillUpCheckListGetAppClient.updateAppRecom(aRecoDto);
                         updateInspectionStatus(aRecoDto.getAppPremCorreId(), InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
                     }
                 }
