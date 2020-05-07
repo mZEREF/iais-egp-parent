@@ -21,7 +21,7 @@ public class UserConstants {
     public static final String ORG_TYPE   = "Comp";
 
 
-    public static final String SESSION_USER_DTO   = "user";
+    public static final String SESSION_USER_DTO   = "inter_user_attr";
     public static final String SESSION_CAN_EDIT_USERINFO   = "canEditFlag";
 
 
