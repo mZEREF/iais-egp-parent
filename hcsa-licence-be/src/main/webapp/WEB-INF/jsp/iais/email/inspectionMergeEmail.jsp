@@ -145,7 +145,7 @@
                                                                 <c:forEach items="${svcNames}" var="revise"
                                                                            varStatus="index">&nbsp;
                                                                     <input type="checkbox" name="revise${index.index+1}"
-                                                                           value="${revise}">${revise}</input>
+                                                                           value="${revise}"/>&nbsp;${revise}&nbsp;
                                                                 </c:forEach>
                                                             </div>
                                                         </td>
