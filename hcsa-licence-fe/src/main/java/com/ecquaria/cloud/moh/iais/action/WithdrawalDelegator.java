@@ -44,10 +44,15 @@ public class WithdrawalDelegator {
     @Autowired
     private ServiceConfigService serviceConfigService;
 
-    private String appId;
+    private String withdrawAppId;
 
     public void start(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("****The Start Step****"));
+        String appNo = ParamUtil.getMaskedString(bpc.request, "withdrawAppNo");
+        withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
+        if (!StringUtil.isEmpty(appNo)){
+            ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", appNo);
+        }
         AuditTrailHelper.auditFunction("Withdrawal Application", "Withdrawal Application");
     }
 
@@ -60,8 +65,6 @@ public class WithdrawalDelegator {
         withdrawalReason.add(new SelectOption("WDR003", "Failure to obtain pre requisite licence from other agency(ies)"));
         withdrawalReason.add(new SelectOption("WDR004", "No longer wish to provide the service"));
         withdrawalReason.add(new SelectOption("WDR005", "Others"));
-        appId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
-        ParamUtil.setSessionAttr(bpc.request, "appNo", ParamUtil.getMaskedString(bpc.request, "withdrawAppNo"));
         ParamUtil.setRequestAttr(bpc.request, "withdrawalReasonList", withdrawalReason);
     }
 
@@ -69,10 +72,9 @@ public class WithdrawalDelegator {
         WithdrawnDto withdrawnDto = new WithdrawnDto();
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
-//        String appId = ParamUtil.getString(bpc.request, "appId");
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
         CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
-        withdrawnDto.setApplicationId(appId);
+        withdrawnDto.setApplicationId(withdrawAppId);
         withdrawnDto.setWithdrawnReason(withdrawnReason);
         if ("Others".equals(withdrawnReason)){
             String withdrawnRemarks = ParamUtil.getRequestString(bpc.request, "withdrawnRemarks");
@@ -83,6 +85,7 @@ public class WithdrawalDelegator {
             Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",commonsMultipartFile.getFileItem().getName());
         }else{
             if (!commonsMultipartFile.isEmpty()){
                 String fileRepoId = serviceConfigService.saveFileToRepo(commonsMultipartFile);

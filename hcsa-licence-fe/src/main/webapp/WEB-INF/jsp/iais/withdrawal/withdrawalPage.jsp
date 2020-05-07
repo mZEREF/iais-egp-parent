@@ -25,7 +25,7 @@
                         <div class="row">
                             <div class="center-content">
                                 <div class="col-md-12">
-                                    <span style="font-size:2rem">${appNo}</span>
+                                    <span style="font-size:2rem">${withdrawAppNo}</span>
                                 </div>
                             </div>
                         </div>
@@ -39,13 +39,13 @@
                                 <div class="col-md-7">
                                     <iais:select name="withdrawalReason" id="withdrawalReason"
                                                  options="withdrawalReasonList"
-                                                 onchange="withdrawalReasons(this.value);" value="${param.wReason}"/>
+                                                 onchange="withdrawalReasons(this.value);" value="${param.withdrawalReason}"/>
                                     <span id="error_withdrawnReason" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <div id="reason" <c:if test="${'WDR005' != wReason}">hidden</c:if>>
+                        <div id="reason" <c:if test="${'WDR005' != param.withdrawalReason}">hidden</c:if>>
                             <div class="row">
                                 <div class="center-content">
                                     <label class="col-md-4"  style="font-size:3rem">Any supporting remarks</label>
@@ -76,8 +76,8 @@
                                     </div>
                                     <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
-                                <div id="delFile" class="col-md-9" style="margin-top: 13px;color: #1F92FF;" hidden="hidden">
-                                    <b id="fileName"></b>
+                                <div id="delFile" class="col-md-9" style="margin-top: 13px;color: #1F92FF;margin-left: -15%" hidden="hidden">
+                                    <b id="fileName">${file_upload_withdraw}</b>
                                     <button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"><i class="fa fa-times"></i></button>
                                 </div>
                             </div>
@@ -103,10 +103,12 @@
     <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
 <script type="text/javascript">
-
     $(function () {
-        if (obj == "WDR005") {
+        if (${param.withdrawalReason == "WDR005"}) {
             $("#reason").show();
+        }
+        if (${file_upload_withdraw != null}) {
+            $("#delFile").removeAttr("hidden");
         }
     });
 
