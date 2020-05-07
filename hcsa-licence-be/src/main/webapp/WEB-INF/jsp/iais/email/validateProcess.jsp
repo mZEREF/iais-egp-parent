@@ -102,7 +102,7 @@
                                                     <iais:value width="4000">
                                                             <textarea name="remarks" cols="60" rows="7"
                                                                       maxlength="300"
-                                                                      title="content">${insEmailDto.remarks}</textarea>
+                                                                      >${insEmailDto.remarks}</textarea>
                                                     </iais:value>
                                                 </iais:row>
                                                 <iais:row>
@@ -125,6 +125,21 @@
                                                         </div>
                                                     </iais:value>
                                                 </iais:row>
+                                                <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <label style="font-size: 16px">Licence Start Date</label>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
+                                                                <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
+                                                            </c:if>
+                                                            <c:if test="${empty applicationViewDto.recomLiceStartDate}">
+                                                                <p>-</p>
+                                                            </c:if>
+                                                        </div>
+                                                    </div>
+                                                </c:if>
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         <label style="font-size: 16px">Fast Tracking?</label>

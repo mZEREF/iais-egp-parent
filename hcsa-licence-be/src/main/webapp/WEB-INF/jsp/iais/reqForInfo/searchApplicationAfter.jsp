@@ -27,63 +27,75 @@
                         <span>Advanced Search Criteria For Application</span>
                     </h3>
 
-                    <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                        <div class="panel-body">
-                            <div class="panel-main-content">
-                                <iais:section title="" id = "supPoolList">
-                                    <iais:row>
-                                        <iais:field value="Application No."/>
-                                        <iais:value width="18">
-                                            <label>
-                                                <input type="text" style="width:180%; font-weight:normal;" name="application_no" maxlength="20" value="${SearchParam.filters['appNo']}" />
-                                            </label>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Application Type"/>
-                                        <iais:value width="18">
-                                            <div id="application_type">
-                                                <iais:select  name="application_type" options="appTypeOption" firstOption="Please Select" value="${SearchParam.filters['appType']}" ></iais:select>
-                                            </div>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Application Status"/>
-                                        <iais:value width="18">
-                                            <div id="application_status">
-                                                <iais:select  name="application_status" options="appStatusOption" firstOption="Please Select" value="${SearchParam.filters['appStatus']}" ></iais:select>
-                                            </div>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Application Submitted Date From"/>
-                                        <iais:value width="18">
-                                            <iais:datePicker id = "sub_date" name = "sub_date" value="${SearchParam.filters['subDate']}" ></iais:datePicker>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Application Submitted Date To"/>
-                                        <iais:value width="18">
-                                            <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['toDate']}"></iais:datePicker>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row style="color:#ff0000; display: none" id="submittedDateError">
-                                        <iais:field value=""/>
-                                        <iais:value width="18">
-                                            Application Submitted Date From cannot be later than Application Submitted Date To.                                            </p>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:action style="text-align:left;">
-                                        <a   onclick="javascript:doAppBack()">< Back</a>
-                                    </iais:action>
-                                    <iais:action style="text-align:right;">
-                                        <button class="btn btn-secondary" type="button"  onclick="javascript:doAppClear()">Clear</button>
-                                        <button class="btn btn-primary" type="button"  onclick="javascript:doAppSearch()">Search</button>
-                                    </iais:action>
-                                </iais:section>
+                    <div class="row">
+                        <div class="col-xs-10 col-md-12">
+                            <div class="components">
+                                <a class="btn btn-secondary" data-toggle="collapse"
+                                   data-target="#searchCondition">Filter</a>
                             </div>
                         </div>
                     </div>
+
+                    <div id="searchCondition" class="collapse">
+                        <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                            <div class="panel-body">
+                                <div class="panel-main-content">
+                                    <iais:section title="" id = "supPoolList">
+                                        <iais:row>
+                                            <iais:field value="Application No."/>
+                                            <iais:value width="18">
+                                                <label>
+                                                    <input type="text" style="width:180%; font-weight:normal;" name="application_no" maxlength="20" value="${SearchParam.filters['appNo']}" />
+                                                </label>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Application Type"/>
+                                            <iais:value width="18">
+                                                <div id="application_type">
+                                                    <iais:select  name="application_type" options="appTypeOption" firstOption="Please Select" value="${SearchParam.filters['appType']}" ></iais:select>
+                                                </div>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Application Status"/>
+                                            <iais:value width="18">
+                                                <div id="application_status">
+                                                    <iais:select  name="application_status" options="appStatusOption" firstOption="Please Select" value="${SearchParam.filters['appStatus']}" ></iais:select>
+                                                </div>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Application Submitted Date From"/>
+                                            <iais:value width="18">
+                                                <iais:datePicker id = "sub_date" name = "sub_date" value="${SearchParam.filters['subDate']}" ></iais:datePicker>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Application Submitted Date To"/>
+                                            <iais:value width="18">
+                                                <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['toDate']}"></iais:datePicker>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row style="color:#ff0000; display: none" id="submittedDateError">
+                                            <iais:field value=""/>
+                                            <iais:value width="18">
+                                                Application Submitted Date From cannot be later than Application Submitted Date To.                                            </p>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:action style="text-align:left;">
+                                            <a   onclick="javascript:doAppBack()">< Back</a>
+                                        </iais:action>
+                                        <iais:action style="text-align:right;">
+                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doAppClear()">Clear</button>
+                                            <button class="btn btn-primary" type="button"  onclick="javascript:doAppSearch()">Search</button>
+                                        </iais:action>
+                                    </iais:section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
 
                 </div>
             </div>

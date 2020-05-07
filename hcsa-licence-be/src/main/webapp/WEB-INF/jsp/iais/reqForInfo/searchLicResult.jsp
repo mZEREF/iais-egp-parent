@@ -22,41 +22,50 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <br><br><br><br><br><br>
                     <h2>Basic Search Criteria</h2>
-
-                    <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                        <div class="panel-body">
-                            <div class="panel-main-content">
-                                <iais:section title="" id = "supPoolList">
-                                    <iais:row>
-                                        <iais:field value="Search No"/>
-                                        <iais:value width="18">
-                                            <label>
-                                                <input type="text" name="search_no" maxlength="20" value="${search_no}" style="width:180%; font-weight:normal;" />
-                                            </label>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:value width="18">
-                                            <input type="radio" name="select_search" value="application"  /> Application No
-                                        </iais:value>
-                                        <iais:value width="18">
-                                            <input type="radio" name="select_search" value="licence" checked /> Licence No
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:action style="text-align:right;">
-                                        <button type="button" class="btn btn-secondary" type="button"
-                                                onclick="javascript:doClear();">Clear</button>
-                                        <button type="button" class="btn btn-primary" type="button"
-                                                onclick="javascript:doSearch();">Search</button>
-                                        <button type="button" class="btn btn-primary" type="button"
-                                                onclick="javascript:doAdvancedSearch();">Advanced Search</button>
-
-                                    </iais:action>
-                                </iais:section>
+                    <div class="row">
+                        <div class="col-xs-10 col-md-12">
+                            <div class="components">
+                                <a class="btn btn-secondary" data-toggle="collapse"
+                                   data-target="#searchCondition">Filter</a>
                             </div>
                         </div>
                     </div>
 
+                    <div id="searchCondition" class="collapse">
+                        <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                            <div class="panel-body">
+                                <div class="panel-main-content">
+                                    <iais:section title="" id = "supPoolList">
+                                        <iais:row>
+                                            <iais:field value="Search No"/>
+                                            <iais:value width="18">
+                                                <label>
+                                                    <input type="text" name="search_no" maxlength="20" value="${search_no}" style="width:180%; font-weight:normal;" />
+                                                </label>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:value width="18">
+                                                <input type="radio" name="select_search" value="application"  /> Application No
+                                            </iais:value>
+                                            <iais:value width="18">
+                                                <input type="radio" name="select_search" value="licence" checked /> Licence No
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:action style="text-align:right;">
+                                            <button type="button" class="btn btn-secondary" type="button"
+                                                    onclick="javascript:doClear();">Clear</button>
+                                            <button type="button" class="btn btn-primary" type="button"
+                                                    onclick="javascript:doSearch();">Search</button>
+                                            <button type="button" class="btn btn-primary" type="button"
+                                                    onclick="javascript:doAdvancedSearch();">Advanced Search</button>
+
+                                        </iais:action>
+                                    </iais:section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
