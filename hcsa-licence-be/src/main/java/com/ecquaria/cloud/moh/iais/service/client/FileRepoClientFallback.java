@@ -24,7 +24,18 @@ public class FileRepoClientFallback implements FileRepoClient{
 
     @Override
     public FeignResponseEntity<String> removeFileById(String fileId) {
-        return null;
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<String> saveFileToDataBase(FileRepoDto fileRepoDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
     }
 
     @Override

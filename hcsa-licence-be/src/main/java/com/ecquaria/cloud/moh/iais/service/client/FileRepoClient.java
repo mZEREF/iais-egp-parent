@@ -32,4 +32,7 @@ public interface FileRepoClient {
 
     @DeleteMapping(value = "/no-file/{fileId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> removeFileById(@PathVariable("fileId")String fileId);
+
+    @PostMapping(value="/delay-file", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> saveFileToDataBase(@RequestBody FileRepoDto fileRepoDto);
 }
