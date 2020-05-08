@@ -46,10 +46,6 @@ public class CessationApplicationDelegator {
 
     @Autowired
     private CessationService cessationService;
-    @Autowired
-    private ApplicationClient applicationClient;
-    @Autowired
-    private LicenceClient licenceClient;
 
     private static final String APPCESSATIONDTOS ="appCessationDtos";
     private static final String READINFO ="readInfo";

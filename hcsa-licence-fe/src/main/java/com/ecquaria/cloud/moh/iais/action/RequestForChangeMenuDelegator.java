@@ -62,20 +62,15 @@ import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESS
 @Delegator("MohRequestForChangeMenuDelegator")
 public class RequestForChangeMenuDelegator {
 
-
     private FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(PersonnelListQueryDto.class)
             .searchAttr("PersonnelSearchParam")
             .resultAttr("PersonnelSearchResult")
             .sortField("NAME").sortType(SearchParam.ASCENDING).build();
-
-
     @Autowired
     RequestForChangeService requestForChangeService;
-
     @Autowired
     private AppSubmissionService appSubmissionService;
-
     @Autowired
     private ServiceConfigService serviceConfigService;
 
@@ -504,8 +499,13 @@ public class RequestForChangeMenuDelegator {
      * @Decription preparePersonnelEdit
      */
     public void preparePersonnelEdit(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do preparePersonnelEdit start ...."));
-        List<PersonnelListQueryDto> personnelEditList = (List<PersonnelListQueryDto>) ParamUtil.getSessionAttr(bpc.request, RfcConst.PERSONNELEDITLIST);
+        log.debug(StringUtil.changeForLog("the do doPersonnelList start ...."));
+        String hiddenIndex = ParamUtil.getString(bpc.request,"hiddenIndex");
+        String idNo = ParamUtil.getMaskedString(bpc.request,"personnelNo"+hiddenIndex);
+        Map<String,List<PersonnelListQueryDto>> personnelListMap  = (Map<String, List<PersonnelListQueryDto>>) ParamUtil.getSessionAttr(bpc.request,RfcConst.PERSONNELLISTMAP);
+        List<PersonnelListQueryDto> personnelEditList = personnelListMap.get(idNo);
+        ParamUtil.setSessionAttr(bpc.request,RfcConst.PERSONNELEDITLIST, (Serializable) personnelEditList);
+        log.debug(StringUtil.changeForLog("the do doPersonnelList end ...."));
         List<SelectOption> idTypeSelectList = NewApplicationHelper.getIdTypeSelOp();
         ParamUtil.setRequestAttr(bpc.request, ClinicalLaboratoryDelegator.DROPWOWN_IDTYPESELECT, idTypeSelectList);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.PERSONNELEDITLIST, (Serializable) personnelEditList);
@@ -520,11 +520,6 @@ public class RequestForChangeMenuDelegator {
      */
     public void doPersonnelEdit(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit start ...."));
-        String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
-        if ("back".equals(action)) {
-            return;
-        }
-
         List<PersonnelListQueryDto> personnelEditList = (List<PersonnelListQueryDto>) ParamUtil.getSessionAttr(bpc.request, RfcConst.PERSONNELEDITLIST);
         String email = ParamUtil.getString(bpc.request, "emailAddress");
         String mobile = ParamUtil.getString(bpc.request, "mobileNo");
@@ -537,8 +532,6 @@ public class RequestForChangeMenuDelegator {
         personnelListQueryDto.setDesignation(designation);
         personnelListQueryDto.setProfessionType(professionType);
         personnelListQueryDto.setProfessionRegnNo(professionRegnNo);
-
-
         for (PersonnelListQueryDto item : personnelEditList) {
             String licenceId = item.getLicenceId();
             if (!StringUtil.isEmpty(licenceId)) {
@@ -551,8 +544,6 @@ public class RequestForChangeMenuDelegator {
                 }
             }
         }
-
-
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         if (StringUtil.isEmpty(email)) {
             errMap.put("emailAddr", "UC_CHKLMD001_ERR001");
@@ -561,7 +552,6 @@ public class RequestForChangeMenuDelegator {
                 errMap.put("emailAddr", "CHKLMD001_ERR006");
             }
         }
-
         if (StringUtil.isEmpty(mobile)) {
             errMap.put("mobileNo", "UC_CHKLMD001_ERR001");
         } else if (!StringUtil.isEmpty(mobile)) {
@@ -578,8 +568,6 @@ public class RequestForChangeMenuDelegator {
         if (StringUtil.isEmpty(professionRegnNo)) {
             errMap.put("professionRegnNo", "UC_CHKLMD001_ERR001");
         }
-
-
         if (!errMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preparePersonnelEdit");
