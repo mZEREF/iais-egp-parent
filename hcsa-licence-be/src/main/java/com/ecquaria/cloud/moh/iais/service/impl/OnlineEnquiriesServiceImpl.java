@@ -257,7 +257,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     }
 
     @Override
-    public EnquiryInspectionReportDto getInsRepDto(ApplicationViewDto applicationViewDto,String licenceId) {
+    public EnquiryInspectionReportDto getInsRepDto(ApplicationViewDto applicationViewDto,String licenceId,String index) {
+        int indexNo=Integer.parseInt(index);
         EnquiryInspectionReportDto inspectionReportDto = new EnquiryInspectionReportDto();
         List<PremisesDto> licPremisesDto=hcsaLicenceClient.getPremisess(licenceId).getEntity();
         inspectionReportDto.setHciCode(licPremisesDto.get(0).getHciCode());
@@ -383,22 +384,24 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }else {
             inspectionReportDto.setNcRectification(null);
         }
-        AppPremisesRecommendationDto NcRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_TCU).getEntity();
+        List<AppPremisesRecommendationDto>  appPremisesRecommendationDtos  = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_TCU).getEntity();
+
+        AppPremisesRecommendationDto ncRecommendationDto =appPremisesRecommendationDtos.get(indexNo);
         //best practice remarks
         String bestPractice = "-";
         String remarks = "-";
-        if(NcRecommendationDto==null){
+        if(ncRecommendationDto==null){
             inspectionReportDto.setMarkedForAudit("No");
-        }else if(NcRecommendationDto!=null) {
-            Date recomInDate = NcRecommendationDto.getRecomInDate();
+        }else if(ncRecommendationDto!=null) {
+            Date recomInDate = ncRecommendationDto.getRecomInDate();
             if(recomInDate==null){
                 inspectionReportDto.setMarkedForAudit("No");
             }else {
                 inspectionReportDto.setMarkedForAudit("Yes");
                 inspectionReportDto.setTcuDate(recomInDate);
             }
-            String ncBestPractice = NcRecommendationDto.getBestPractice();
-            String ncRemarks = NcRecommendationDto.getRemarks();
+            String ncBestPractice = ncRecommendationDto.getBestPractice();
+            String ncRemarks = ncRecommendationDto.getRemarks();
             if(!StringUtil.isEmpty(ncBestPractice)){
                 bestPractice = ncBestPractice ;
             }
@@ -411,17 +414,17 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         Date inspectionDate = null;
         String inspectionStartTime = null;
         String inspectionEndTime = null;
-        AppPremisesRecommendationDto appPreRecommentdationDtoStart = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME).getEntity();
-        AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-        AppPremisesRecommendationDto appPreRecommentdationDtoEnd = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME).getEntity();
+        List<AppPremisesRecommendationDto> appPreRecommentdationDtoStart = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME).getEntity();
+        List<AppPremisesRecommendationDto> appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+        List<AppPremisesRecommendationDto> appPreRecommentdationDtoEnd = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME).getEntity();
         if(appPreRecommentdationDtoDate!=null){
-            inspectionDate = appPreRecommentdationDtoDate.getRecomInDate();
+            inspectionDate = appPreRecommentdationDtoDate.get(indexNo).getRecomInDate();
         }
         if(appPreRecommentdationDtoStart!=null){
-            inspectionStartTime = appPreRecommentdationDtoStart.getRecomDecision();
+            inspectionStartTime = appPreRecommentdationDtoStart.get(indexNo).getRecomDecision();
         }
         if(appPreRecommentdationDtoEnd!=null){
-            inspectionEndTime = appPreRecommentdationDtoEnd.getRecomDecision();
+            inspectionEndTime = appPreRecommentdationDtoEnd.get(indexNo).getRecomDecision();
         }
         AppPremisesRecommendationDto rectiDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSPECTYPE).getEntity();
 
@@ -612,9 +615,10 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     public void preInspReport(HttpServletRequest request) {
         log.info("=======>>>>>preInspReport>>>>>>>>>>>>>>>>requestForInformation");
         String appPremCorrId = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        String index=ParamUtil.getString(request, "crud_action_additional");
         String licenceId = (String) ParamUtil.getSessionAttr(request, "id");
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremCorrId);
-        EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto,licenceId);
+        EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto,licenceId,index);
         ParamUtil.setSessionAttr(request, "insRepDto", insRepDto);
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
         ParamUtil.setSessionAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);

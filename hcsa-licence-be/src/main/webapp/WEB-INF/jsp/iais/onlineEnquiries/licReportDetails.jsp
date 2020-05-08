@@ -297,7 +297,9 @@
 
                                     <%--        <div class="row">--%>
                                     <div class="alert alert-info" role="alert">
-                                        <p><span><strong>Section A (HCI Details)</strong></span></p>
+                                        <strong>
+                                            <h4 style="border-bottom: none">Section A (HCI Details)</h4>
+                                        </strong>
                                     </div>
                                     <div class="row">
                                         <div class="col-xs-12">
@@ -305,82 +307,92 @@
                                                 <table class="table">
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Licence No:</p>
+                                                            <p>Licence No.</p>
                                                         </td>
-                                                        <td class="col-xs-8">
-                                                            <p>${insRepDto.licenceNo}</p>
+                                                        <td class="col-xs-4">
+                                                            <p><c:out value="${insRepDto.licenceNo}"/></p>
                                                         </td>
+                                                        <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Service Name:</p>
+                                                            <p>Service Name</p>
                                                         </td>
-                                                        <td class="col-xs-8">
-                                                            <p>${insRepDto.serviceName}</p>
+                                                        <td class="col-xs-4">
+                                                            <p><c:out value="${insRepDto.serviceName}"/></p>
                                                         </td>
+                                                        <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>HCI Code:</p>
+                                                            <p>HCI Code</p>
                                                         </td>
-                                                        <td class="col-xs-8">
-                                                            <p>${insRepDto.hciCode}</p>
+                                                        <td class="col-xs-4">
+                                                            <p><c:out value="${insRepDto.hciCode}"/></p>
                                                         </td>
+                                                        <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>HCI Name:</p>
+                                                            <p>HCI Name</p>
                                                         </td>
-                                                        <td class="col-xs-8">
-                                                            <p>${insRepDto.hciName}</p>
+                                                        <td class="col-xs-4">
+                                                            <p><c:out value="${insRepDto.hciName}"/></p>
                                                         </td>
+                                                        <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>HCI Address:</p>
+                                                            <p>HCI Address</p>
                                                         </td>
-                                                        <td class="col-xs-8">
-                                                            <p>${insRepDto.hciAddress}</p>
+                                                        <td class="col-xs-4">
+                                                            <p><c:out value="${insRepDto.hciAddress}"/></p>
                                                         </td>
+                                                        <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Licensee Name:</p>
+                                                            <p>Licensee Name</p>
                                                         </td>
-                                                        <td class="col-xs-8">
-                                                            <p>${insRepDto.licenseeName}</p>
+                                                        <td class="col-xs-4">
+                                                            <p><c:out value="${insRepDto.licenseeName}"/></p>
                                                         </td>
+                                                        <td class="col-xs-4"/>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Principal Officers:</p>
+                                                            <p>Principal Officers</p>
                                                         </td>
-                                                        <td class="col-xs-8">
+                                                        <td class="col-xs-4">
                                                             <c:if test="${insRepDto.principalOfficers != null && not empty insRepDto.principalOfficers}">
                                                                 <p><c:forEach items="${insRepDto.principalOfficers}" var="poName">
                                                                     <c:out value="${poName}"/><br>
                                                                 </c:forEach></p>
                                                             </c:if>
                                                         </td>
+                                                        <td class="col-xs-4"/>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Subsumed Services:</p>
+                                                            <p>Subsumed Services</p>
                                                         </td>
-                                                        <td class="col-xs-8">
+                                                        <td class="col-xs-4">
                                                             <c:if test="${insRepDto.subsumedServices != null && not empty insRepDto.subsumedServices}">
                                                                 <c:forEach var="service" items="${insRepDto.subsumedServices}">
                                                                     <p><c:out value="${service}"></c:out></p>
                                                                 </c:forEach>
                                                             </c:if>
                                                         </td>
+                                                        <td class="col-xs-4"/>
                                                     </tr>
                                                 </table>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="alert alert-info" role="alert">
-                                        <p><span><strong>Section B (Type of Inspection)</strong></span></p>
+                                        <strong>
+                                            <h4 style="border-bottom: none">Section B (Type of Inspection)</h4>
+                                        </strong>
                                     </div>
                                     <div class="row">
                                         <div class="col-xs-12">
@@ -388,175 +400,137 @@
                                                 <table class="table">
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Date of Inspection:</p>
+                                                            <p>Date of Inspection</p>
                                                         </td>
                                                         <td class="col-xs-8">
                                                             <fmt:formatDate value="${insRepDto.inspectionDate}"
-                                                                            pattern="${AppConsts.DEFAULT_DATE_FORMAT}"></fmt:formatDate>
+                                                                            pattern="dd/MM/yyyy"></fmt:formatDate>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Time of Inspection:</p>
+                                                            <p>Time of Inspection</p>
                                                         </td>
                                                         <td class="col-xs-8">
-                                                            <fmt:formatDate value="${insRepDto.inspectionStartTime}"
-                                                                            pattern="${AppConsts.DEFAULT_DATE_FORMAT}"></fmt:formatDate>-
-                                                            <fmt:formatDate value="${insRepDto.inspectionEndTime}"
-                                                                            pattern="${AppConsts.DEFAULT_DATE_FORMAT}"></fmt:formatDate>
+                                                            <c:out value="${insRepDto.inspectionStartTime}"></c:out>-<c:out value="${insRepDto.inspectionEndTime}"></c:out>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Reason for Visit:</p>
+                                                            <p>Reason for Visit</p>
                                                         </td>
-                                                        <td class="col-xs-8">
+                                                        <td class="col-xs-4">
                                                             <p>${insRepDto.reasonForVisit}</p>
                                                         </td>
+                                                        <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Inspected By:</p>
+                                                            <p>Inspected By</p>
                                                         </td>
-                                                        <td class="col-xs-8">
+                                                        <td class="col-xs-4">
                                                             <c:if test="${insRepDto.inspectors != null && not empty insRepDto.inspectors}">
                                                                 <p><c:forEach items="${insRepDto.inspectors}" var="inspector" varStatus="status">
                                                                 <p><c:out value="${inspector}"></c:out></p>
                                                             </c:forEach></p>
                                                             </c:if>
                                                         </td>
+                                                        <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Other Inspection Officer:</p>
+                                                            <p>Other Inspection Officer</p>
                                                         </td>
-                                                        <td class="col-xs-8">
+                                                        <td class="col-xs-4">
                                                             <c:if test="${insRepDto.inspectOffices != null && not empty insRepDto.inspectOffices}">
                                                                 <p><c:forEach items="${insRepDto.inspectOffices}" var="ioName">
                                                                     <c:out value="${ioName}"/><br>
                                                                 </c:forEach></p>
                                                             </c:if>
                                                         </td>
+                                                        <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Reported By:</p>
+                                                            <p>Reported By</p>
                                                         </td>
-                                                        <td class="col-xs-8">
+                                                        <td class="col-xs-4">
                                                             <p>${insRepDto.reportedBy}</p>
                                                         </td>
+                                                        <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Report Noted By:</p>
+                                                            <p>Report Noted By</p>
                                                         </td>
-                                                        <td class="col-xs-8">
+                                                        <td class="col-xs-4">
                                                             <p>${insRepDto.reportNoteBy}</p>
                                                         </td>
+                                                        <td class="col-xs-4"></td>
                                                     </tr>
                                                 </table>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="alert alert-info" role="alert">
-                                        <p><span><strong>Section C (Inspection Findings)</strong></span></p>
+                                        <strong>
+                                            <h4 style="border-bottom: none">Section C (Inspection Findings)</h4>
+                                        </strong>
                                     </div>
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">
-                                                <div class="text ">
-                                                    <p><span>Part I: Inspection Checklist</span></p>
+                                                <div class="text">
+                                                    <p><h4><strong><span>Part I: Inspection Checklist</span></strong></h4></p>
                                                 </div>
                                                 <table class="table">
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Checklist Used:</p>
+                                                            <p>Checklist Used</p>
                                                         </td>
-
-                                                        <td class="col-xs-8">
+                                                        <td class="col-xs-4">
                                                             <p>${insRepDto.serviceName}</p>
-                                                            <c:if test="${insRepDto.commonCheckList != null}">
-                                                                <div class="tab-pane" id="ServiceInfo" role="tabpanel">
-                                                                    <c:forEach var ="cdto" items ="${insRepDto.subTypeCheckList.fdtoList}" varStatus="status">
-                                                                        <h3>${cdto.subType}</h3>
-                                                                        <div class="table-gp">
-                                                                            <c:forEach var ="section" items ="${cdto.sectionDtoList}">
-                                                                                <br/>
-                                                                                <h4><c:out value="${section.sectionName}"></c:out></h4>
-                                                                                <table class="table">
-                                                                                    <thead>
-                                                                                    <tr>
-                                                                                        <th>No.</th>
-                                                                                        <th>Regulation Clause Number</th>
-                                                                                        <th>Item</th>
-                                                                                        <th>Rectified</th>
-                                                                                    </tr>
-                                                                                    </thead>
-                                                                                    <tbody>
-                                                                                    <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
-                                                                                        <tr>
-                                                                                            <td class="row_no">${(status.index + 1) }</td>
-                                                                                            <td>${item.incqDto.regClauseNo}</td>
-                                                                                            <td>${item.incqDto.checklistItem}</td>
-                                                                                            <c:set value = "${cdto.subName}${item.incqDto.sectionName}${item.incqDto.itemId}" var = "ckkId"/>
-                                                                                            <td>
-                                                                                                <div id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>ck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
-                                                                                                    <input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${cdto.subName}${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameSub}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec" disabled/>
-                                                                                                </div>
-                                                                                                <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameSub}${item.incqDto.itemId}" var = "err"/>
-                                                                                                <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    </c:forEach>
-                                                                                    </tbody>
-                                                                                </table>
-                                                                            </c:forEach>
-                                                                        </div>
-                                                                    </c:forEach>
-                                                                </div>
-                                                            </c:if>
                                                         </td>
+                                                        <td class="col-xs-4"></td>
                                                     </tr>
                                                 </table>
-                                                <div class="text ">
-                                                    <p><span>Part II: Findings</span></p>
+                                                <div class="text">
+                                                    <p><h4><strong><span>Part II: Findings</span></strong></h4></p>
                                                 </div>
                                                 <div class="table-gp">
                                                     <table class="table" >
                                                         <tr>
                                                             <td class="col-xs-4">
-                                                                <p>Remarks:</p>
+                                                                <p>Remarks</p>
                                                             </td>
-                                                            <td class="col-xs-8">
+                                                            <td class="col-xs-4">
                                                                 <p>${insRepDto.taskRemarks}</p>
                                                             </td>
+                                                            <td class="col-xs-4"/>
                                                         </tr>
                                                         <tr>
                                                             <td class="col-xs-4">
-                                                                <p>Marked for Audit:</p>
+                                                                <p>Marked for Audit</p>
                                                             </td>
-                                                            <td class="col-xs-8">
-                                                                <c:if test="${insRepDto.markedForAudit}">
-                                                                    <p>Yes <c:out value="${insRepDto.tcuDate}"/></p>
-                                                                </c:if>
-                                                                <c:if test="${!insRepDto.markedForAudit}">
-                                                                    <p>No</p>
-                                                                </c:if>
+                                                            <td class="col-xs-4">
+                                                                <p><c:out value="${insRepDto.markedForAudit}"/>&nbsp;&nbsp;<fmt:formatDate value="${insRepDto.tcuDate}" pattern="dd/MM/yyyy"/></p>
                                                             </td>
+                                                            <td class="col-xs-4"/>
                                                         </tr>
                                                         <tr>
                                                             <td class="col-xs-4">
-                                                                <p>Recommended Best Practices:</p>
+                                                                <p>Recommended Best Practices</p>
                                                             </td>
-                                                            <td class="col-xs-8">
+                                                            <td class="col-xs-4">
                                                                 <p>${insRepDto.bestPractice}</p>
                                                             </td>
+                                                            <td class="col-xs-4"/>
                                                         </tr>
                                                         <tr>
                                                             <td class="col-xs-4">
-                                                                <p>Non-Compliances:</p>
+                                                                <p>Non-Compliances</p>
                                                             </td>
-                                                            <td class="col-xs-8">
+                                                            <td colspan="2" class="col-xs-8">
                                                                 <c:if test="${insRepDto.ncRegulation != null && not empty insRepDto.ncRegulation}">
                                                                     <table class="table">
                                                                         <thead>
@@ -591,24 +565,19 @@
                                                         </tr>
                                                         <tr>
                                                             <td class="col-xs-4">
-                                                                <p>Status:</p>
+                                                                <p>Status</p>
                                                             </td>
-                                                            <td class="col-xs-8">
+                                                            <td class="col-xs-4">
                                                                 <p>${insRepDto.status}</p>
                                                             </td>
+                                                            <td class="col-xs-4"/>
                                                         </tr>
                                                         <tr>
                                                             <td class="col-xs-4">
-                                                                <p>Risk Level:</p>
+                                                                <p>Risk Level <strong style="color:#ff0000;"> *</strong></p>
                                                             </td>
                                                             <td class="col-xs-4">
-                                                                <c:if test="${appPremisesRecommendationDto.riskLevel == null}"> <iais:select
-                                                                        name="riskLevel" options="riskLevelOptions" firstOption="Please select"
-                                                                        value="${riskLevel}"/></c:if>
-                                                                <c:if test="${appPremisesRecommendationDto.riskLevel != null}"> <iais:select
-                                                                        name="riskLevel" options="riskLevelOptions" firstOption="Please select"
-                                                                        value="${appPremisesRecommendationDto.riskLevel}"/></c:if>
-
+                                                                <iais:select name="riskLevel" options="riskLevelOptions" firstOption="Please Select" value="${appPremisesRecommendationDto.riskLevel}"/>
                                                                 <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
                                                             </td>
                                                             <td class="col-xs-4">
@@ -621,7 +590,7 @@
                                     </div>
                                     <div class="alert alert-info" role="alert">
                                         <strong>
-                                            <h4>Section D (Rectification)</h4>
+                                            <h4 style="border-bottom: none">Section D (Rectification)</h4>
                                         </strong>
                                     </div>
                                     <div class="row">
@@ -630,9 +599,9 @@
                                                 <table class="table">
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Rectified:</p>
+                                                            <p>Rectified</p>
                                                         </td>
-                                                        <td class="col-xs-8">
+                                                        <td colspan="2" class="col-xs-8">
                                                             <c:if test="${insRepDto.ncRectification != null}">
                                                                 <table class="table">
                                                                     <thead>
@@ -667,12 +636,11 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Remarks:</p>
+                                                            <p>Remarks</p>
                                                         </td>
                                                         <div>
                                                             <td class="col-xs-4">
-                                                                <p><textarea name="remarks" cols="50" rows="6" title="content" maxlength="8000"><c:if test="${appPremisesRecommendationDto.remarks ==null}">${reportRemarks}</c:if><c:if test="${appPremisesRecommendationDto.remarks !=null}"><c:out value="${appPremisesRecommendationDto.remarks}"/></c:if></textarea></p>
-                                                                <span id="error_remarks" name="iaisErrorMsg" class="error-msg"></span>
+                                                                <p><c:out value="${insRepDto.inspectypeRemarks}"></c:out></p>
                                                             </td>
                                                         </div>
                                                         <td class="col-xs-4">
@@ -694,7 +662,7 @@
                                     </div>
                                     <div class="alert alert-info" role="alert">
                                         <strong>
-                                            <h4>Section E (Recommendations) </h4>
+                                            <h4 style="border-bottom: none">Section E (Recommendations)</h4>
                                         </strong>
                                     </div>
                                     <div class="row">
@@ -703,50 +671,31 @@
                                                 <table class="table">
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Recommendation:</p>
+                                                            <p>Recommendation <strong style="color:#ff0000;"> *</strong></p>
                                                         </td>
-                                                        <c:if test="${appPremisesRecommendationDto.recommendation==null}">
-                                                            <td class="col-xs-4">
-                                                                <iais:select name="recommendation" options="recommendationOption" firstOption="Please select" value="${recomDecision}" onchange="javascirpt:changeRecommendation(this.value);"/>
-                                                            </td>
-                                                        </c:if>
-                                                        <c:if test="${appPremisesRecommendationDto.recommendation !=null}">
-                                                            <td>
-                                                                <iais:select name="recommendation" options="recommendationOption" firstOption="Please select" value="${appPremisesRecommendationDto.recommendation}" onchange="javascirpt:changeRecommendation(this.value);"/>
-                                                            </td>
-                                                        </c:if>
+                                                        <td class="col-xs-4">
+                                                            <iais:select name="recommendation" options="recommendationOption" firstOption="Please Select" value="${appPremisesRecommendationDto.recommendation}" onchange="javascirpt:changeRecommendation(this.value);"/>
+                                                        </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr id="period" hidden>
                                                         <td class="col-xs-4">
-                                                            <p>Period:</p>
+                                                            <p>Period <strong style="color:#ff0000;"> *</strong></p>
                                                         </td>
-                                                        <c:if test="${appPremisesRecommendationDto.period !=null}">
-                                                            <td class="col-xs-4">
-                                                                <iais:select name="periods" options="riskOption" firstOption="Please select"
-                                                                             onchange="javascirpt:changePeriod(this.value);"
-                                                                             value="${appPremisesRecommendationDto.period}"/>
-                                                                <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
-                                                            </td>
-                                                        </c:if>
-                                                        <c:if test="${appPremisesRecommendationDto.period ==null}">
-                                                            <td class="col-xs-4">
-                                                                <iais:select name="periods" value="${option}" options="riskOption" firstOption="Please select" onchange="javascirpt:changePeriod(this.value);"/>
-                                                                <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
-                                                            </td>
-                                                        </c:if>
+                                                        <td class="col-xs-4">
+                                                            <iais:select name="periods" options="riskOption" firstOption="Please Select" onchange="javascirpt:changePeriod(this.value);" value="${appPremisesRecommendationDto.period}"/>
+                                                            <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
+                                                        </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr id="selfPeriod" hidden>
                                                         <td class="col-xs-4">
-                                                            <p>Other Period:</p>
+                                                            <p>Other Period <strong style="color:#ff0000;"> *</strong></p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <input id=recomInNumber type="text" name="number" <c:if test="${number ==null}">value="${recnumber}"</c:if>
-                                                                   <c:if test="${number !=null}">value="${number}"</c:if>>
+                                                            <input id=recomInNumber type="text" name="number" maxlength="2" value="${appPremisesRecommendationDto.recomInNumber}">
+                                                            <iais:select id="chronoUnit" name="chrono" options="chronoOption" firstOption="Please Select" value="${appPremisesRecommendationDto.chronoUnit}"/>
                                                             <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
-                                                            <c:if test="${chrono ==null}"><iais:select id="chronoUnit" name="chrono" options="chronoOption" firstOption="Please select" value="${recchrono}"/></c:if>
-                                                            <c:if test="${chrono !=null}"><iais:select id="chronoUnit" name="chrono" options="chronoOption" firstOption="Please select" value="${chrono}"/></c:if>
                                                             <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
                                                         </td>
                                                         <td class="col-xs-4"></td>
@@ -766,28 +715,28 @@
                                                 <table class="table">
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Follow up Action:</p>
+                                                            <p>Follow up Action</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <p><textarea name="followUpAction" cols="50" rows="6" title="content" maxlength="8000"><c:if test="${appPremisesRecommendationDto.followUpAction == null}"><c:out value="${followRemarks}"/></c:if><c:if test="${appPremisesRecommendationDto.followUpAction != null}"><c:out value="${appPremisesRecommendationDto.followUpAction}"/></c:if></textarea></p>
+                                                            <P><textarea style="resize:none" name="followUpAction" cols="50" rows="6" title="content" maxlength="8000"><c:out value="${appPremisesRecommendationDto.followUpAction}"/></textarea></P>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>To Engage Enforcement?:</p>
+                                                            <p>To Engage Enforcement?</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <input type="checkbox" id="enforcement" name="engageEnforcement" onchange="javascirpt:changeEngage();" <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if> <c:if test="${engage =='on'}">checked</c:if>>
+                                                            <input type="checkbox" id="enforcement" name="engageEnforcement" onchange="javascirpt:changeEngage();" <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if> >
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr id="engageRemarks" hidden>
                                                         <td class="col-xs-4">
-                                                            <p>Enforcement Remarks</p>
+                                                            <p>Enforcement Remarks <strong style="color:#ff0000;"> *</strong></p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <p><textarea name="enforcementRemarks" cols="50" rows="6" title="content" MAXLENGTH="4000"><c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks ==null}"><c:out value="${remarks}"/></c:if><c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks !=null}"><c:out value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></c:if></textarea></p>
+                                                            <textarea style="resize:none" name="enforcementRemarks" cols="50" rows="6" title="content" MAXLENGTH="4000"><c:out value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
                                                             <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                                         </td>
                                                         <td class="col-xs-4"></td>
@@ -796,8 +745,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
                                 </div>
                             </div>
 
@@ -806,10 +753,10 @@
                 </div>
             </div>
         </div>
-        <a  onclick="javascript:SOP.Crud.cfxSubmit('mainForm');" >< BACK</a>
+        <a  onclick="javascript:SOP.Crud.cfxSubmit('mainForm');" >< Back</a>
     </div>
 </form>
-
+<%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
 
     function insRepsubmit() {
@@ -818,42 +765,42 @@
 
     function changePeriod(obj) {
         if (obj == "Others") {
-            document.getElementById("selfPeriod").style.display = "";
             $("#selfPeriod").show();
         } else {
-            document.getElementById("selfPeriod").style.display = "none";
+            $("#selfPeriod").hide();
+            //$("#period").hide();
         }
     }
 
     function changeRecommendation(obj) {
-        if (obj == "Approved") {
-            document.getElementById("period").style.display = "";
+        if (obj == "IRE001" || obj == "IRE002") {
             $("#period").show();
         } else {
-            document.getElementById("period").style.display = "none";
+            $("#period").hide();
+            $("#selfPeriod").hide();
+            $("#period").hide();
         }
     }
 
 
     function changeEngage() {
         if ($('#enforcement').is(':checked')) {
-            document.getElementById("engageRemarks").style.display = "";
             $("#engageRemarks").show();
         } else {
-            document.getElementById("engageRemarks").style.display = "none";
+            $("#engageRemarks").hide();
         }
     }
 
 
     $(document).ready(function () {
-        if ($("#recommendation").val() == "Approved") {
-            changeRecommendation("Approved");
+        if ($("#recommendation").val() == "IRE001") {
+            changeRecommendation("IRE001");
+        }
+        if ($("#recommendation").val() == "IRE002") {
+            changeRecommendation("IRE002");
         }
         if ($("#periods").val() == "Others") {
             changePeriod("Others");
-        }
-        if ($('#tcuNeeded').is(':checked')) {
-            $("#tcuDate").show();
         }
         if ($('#enforcement').is(':checked')) {
             $("#engageRemarks").show();
