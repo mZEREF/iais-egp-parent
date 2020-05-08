@@ -75,47 +75,7 @@
         <!-- init start-->
         init = 0;
         <!--for reload -->
-        $('.premTypeValue').each(function (k,v) {
-            checkedType = $(this).val();
-            var $premCountEle = $(this).closest('div.premContent');
-            if('ONSITE'==checkedType){
-                $premCountEle.find('.onSiteSelect').removeClass('hidden');
-                $premCountEle.find('.conveyanceSelect').addClass('hidden');
-                $premCountEle.find('.new-premise-form-conv').addClass('hidden');
-                var premSelValue =  $premCountEle.find('.onSiteSelect .premSelect').val();
-                if(premSelValue == "newPremise"){
-                    $premCountEle.find('.new-premise-form-on-site').removeClass('hidden');
-                }else if(premSelValue == "-1"){
-
-                }else{
-                    $premCountEle.find('.new-premise-form-on-site').removeClass('hidden');
-                    <!--disable this form -->
-                    var $premFormOnsite = $premCountEle.find('div.new-premise-form-on-site');
-                    readonlyPartPage($premFormOnsite);
-                    <!--hidden btn -->
-                    $premCountEle.find('a.retrieveAddr').addClass('hidden');
-                    $premCountEle.find('button.addPubHolDay').addClass('hidden');
-                }
-            }else if('CONVEYANCE' == checkedType){
-                $premCountEle.find('.conveyanceSelect').removeClass('hidden');
-                $premCountEle.find('.onSiteSelect').addClass('hidden');
-                $premCountEle.find('.new-premise-form-on-site').addClass('hidden');
-                var premSelValue =  $premCountEle.find('.conveyanceSelect .premSelect').val();
-                if(premSelValue =="newPremise"){
-                    $premCountEle.find('.new-premise-form-conv').removeClass('hidden');
-                }else if(premSelValue == "-1"){
-
-                }else{
-                    $premCountEle.find('.new-premise-form-conv').removeClass('hidden');
-                    <!--disable this form -->
-                    var $premFormConveyance = $premCountEle.find('div.new-premise-form-conv');
-                    readonlyPartPage($premFormConveyance);
-                    <!--hidden btn -->
-                    $premCountEle.find('a.retrieveAddr').addClass('hidden');
-                    $premCountEle.find('button.addPubHolDay').addClass('hidden');
-                }
-            }
-        });
+        reloadPage();
 
         retrieveAddr();
         premSelect();
