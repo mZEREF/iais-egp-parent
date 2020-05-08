@@ -2,6 +2,7 @@
 <sqls catalog="systemAdmin">
     <sql key = "masterCodeQuery" remarks = "query MasterCode sql">
         <![CDATA[
+        SELECT * FROM (
             SELECT master_code_id,
                    master_code_key,
                    (SELECT category_description FROM cm_master_code_category where code_category = mc.code_category) as code_category,
@@ -13,14 +14,14 @@
                    effective_from,
                    effective_to,
                    version
-            FROM CM_MASTER_CODE as mc
-            WHERE mc.STATUS != 'CMSTAT002'
-            <#if id??> AND CHARINDEX(:id, mc.master_code_id) >0</#if>
-            <#if codeCategory??> AND mc.code_category = :codeCategory</#if>
-            <#if codeDescription??> AND mc.code_description = :codeDescription</#if>
-            <#if esd??> AND mc.effective_from > :esd</#if>
-            <#if eed??> AND mc.effective_to < :eed</#if>
-            <#if codeStatus??> AND mc.status = :codeStatus</#if>
+            FROM CM_MASTER_CODE as mc) AS ACM
+            WHERE ACM.STATUS != 'CMSTAT002'
+            <#if id??> AND CHARINDEX(:id, ACM.master_code_id) >0</#if>
+            <#if codeCategory??> AND ACM.code_category LIKE :codeCategory</#if>
+            <#if codeDescription??> AND ACM.code_description LIKE :codeDescription</#if>
+            <#if esd??> AND ACM.effective_from > :esd</#if>
+            <#if eed??> AND ACM.effective_to < :eed</#if>
+            <#if codeStatus??> AND ACM.status = :codeStatus</#if>
         ]]>
     </sql>
 

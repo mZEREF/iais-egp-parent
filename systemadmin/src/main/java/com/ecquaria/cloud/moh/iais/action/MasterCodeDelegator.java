@@ -154,12 +154,8 @@ public class MasterCodeDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
         Map<String,Object> masterCodeMap = IaisCommonUtils.genNewHashMap();
         if (!StringUtil.isEmpty(categoryDescription)){
-            String codeCategory = masterCodeService.findCodeCategoryByDescription(categoryDescription);
-            if (!StringUtil.isEmpty(codeCategory)){
-                masterCodeMap.put(MasterCodeConstants.MASTER_CODE_CATEGORY,codeCategory);
-            }else{
-                masterCodeMap.put(MasterCodeConstants.MASTER_CODE_CATEGORY,CODE_CATEGORY_UNUSER);
-            }
+//            String codeCategory = masterCodeService.findCodeCategoryByDescription(categoryDescription);
+            masterCodeMap.put(MasterCodeConstants.MASTER_CODE_CATEGORY,"%"+categoryDescription+"%");
         }else{
             masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_CATEGORY);
         }
@@ -169,7 +165,7 @@ public class MasterCodeDelegator {
             masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_STATUS);
         }
         if(!StringUtil.isEmpty(codeDescription)){
-            masterCodeMap.put(MasterCodeConstants.MASTER_CODE_DESCRIPTION,codeDescription);
+            masterCodeMap.put(MasterCodeConstants.MASTER_CODE_DESCRIPTION,"%"+codeDescription+"%");
         }else{
             masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_DESCRIPTION);
         }
