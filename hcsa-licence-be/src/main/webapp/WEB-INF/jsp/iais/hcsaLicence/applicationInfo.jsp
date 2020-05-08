@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="table-gp">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" style="margin-bottom: 0">
                         <tbody>
                         <tr>
                             <td align="right">Application Type</td>
