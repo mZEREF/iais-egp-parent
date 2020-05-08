@@ -390,14 +390,19 @@
                                      Public Holidays Operating Hours (Start)
                                     </div>
                                     <div class="col-md-6">
-                                        ${appPremPhOpenPeriod.convStartFromHH} : ${appPremPhOpenPeriod.convStartFromMM}
+                                      <c:if test="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH && empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromMM}">
+                                        <c:out value="-"/>
+                                      </c:if>
+                                      <c:if test="${!empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH && !empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromMM}">
+                                        <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH} : ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromMM}"/>
+                                      </c:if>
                                           <wrms:value width="7">
-                                          <span class="newVal " attr="${appPremPhOpenPeriod.convStartFromHH}" style="display: none"><label><c:out
+                                          <span class="newVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH}" style="display: none"><label><c:out
                                                   value=""/></label></span>
                                             <span class="oldVal compareTdStyle"
-                                                  attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH}"
+                                                  attr="${appPremPhOpenPeriod.convStartFromHH}"
                                                   style="display: none"><label><c:out
-                                                    value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH}"/></label></span>
+                                                    value="${appPremPhOpenPeriod.convStartFromHH}"/></label></span>
                                           </wrms:value>
                                     </div>
                                   </div>
