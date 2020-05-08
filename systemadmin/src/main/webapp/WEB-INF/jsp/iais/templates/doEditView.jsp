@@ -122,6 +122,8 @@
             ' bold italic backcolor | alignleft aligncenter ' +
             ' alignright alignjustify | bullist numlist outdent indent |' +
             ' removeformat | help | code',
+            autoresize_bottom_margin: 20,
+            min_heigh:100,
             ax_wordlimit_num:20,
             ax_wordlimit_callback: function(editor,txt,num){
                 console.log("content-size:"+num);
