@@ -114,7 +114,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     };
     private final String[] appStatus=new String[]{
             ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION,
-            ApplicationConsts.APPLICATION_STATUS_RECALLED,
+            //ApplicationConsts.APPLICATION_STATUS_RECALLED,
             ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,
             ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,
             ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE,
