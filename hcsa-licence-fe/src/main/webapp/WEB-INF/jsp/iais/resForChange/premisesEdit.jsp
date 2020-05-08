@@ -19,6 +19,7 @@
          value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
   <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
   <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
+  <input type="hidden" name="licenceName" value=""/>
   <%--Validation fields End--%>
   <div class="main-content">
     <div class="container">
@@ -33,6 +34,45 @@
                       <h2>${PremisesListQueryDto.svcId}:${PremisesListQueryDto.premisesType}:${PremisesListQueryDto.address}</h2>
                     </div>
                   </div>
+                </div>
+                <div class="form-check col-sm-12">
+                  <input  class="form-check-input other-lic"  type="radio" name="otherLicence" value = "1" aria-invalid="false">
+                  <label class="form-check-label" ><span class="check-circle"></span>Edit Address</label>
+                </div>
+                <div class="form-check col-sm-12">
+                  <input  class="form-check-input other-lic"  type="radio" name="otherLicence" value = "2" aria-invalid="false">
+                  <label class="form-check-label" ><span class="check-circle"></span>Edit Premises Name</label>
+                </div>
+                <div class="form-check col-sm-12">
+                  <ul>
+                    <li>You may also apply the same changes to other licences associated with these premises.</li>
+                    <li>Please note that payment is required for each affected licence.</li>
+                  </ul>
+                </div>
+
+                <div class="form-check col-sm-12">
+                  <label style="font-weight: normal;font-size: 16px">Select the licences to include with these changes:</label>
+                </div>
+                <div class="form-check col-sm-6" >
+
+                  <table>
+                    <tr>
+                      <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence</td>
+                      <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence No.</td>
+                      <span id="error_selectLicence" class="error-msg"></span>
+                    </tr>
+                    <c:forEach items="${licenceDtoList}" var="licence">
+                      <tr>
+                        <td >
+                          <div class="col-xs-12 col-md-12 form-check" style="padding:0px 15px;margin-top:15px">
+                            <input class="form-check-input"  type="checkbox" value="<iais:mask name="licenceName" value="${licence.id}"/>" name="licenceName" aria-invalid="false">
+                            <label class="form-check-label"><span class="check-square"></span>${licence.svcName}</label>
+                          </div></td>
+                        <td class="form-check col-sm-3">${licence.licenceNo}</td>
+                      </tr>
+                    </c:forEach>
+
+                  </table>
                 </div>
                 <!--todo:slect prem issue -->
                 <%@include file="../common/premisesContent.jsp"%>

@@ -311,4 +311,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return licenceClient.getLicenceDtosBypremisesId(premisesId).getEntity();
     }
 
+    @Override
+    public SearchResult<PremisesListQueryDto> searchPreInfo(SearchParam searchParam) {
+        return licenceClient.getPremises(searchParam).getEntity();
+    }
+
 }

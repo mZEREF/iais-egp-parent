@@ -14,23 +14,25 @@
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
   <input type="hidden" name="crud_action_type_form_value" value="">
   <input type="hidden" id="hiddenIndex" name="hiddenIndex" value="" />
+    <input type="hidden" name="crud_action_type" value="">
+    <input type="hidden" name="crud_action_value" value="">
 
-  <div class="row col-xs-11">
+    <div class="row col-xs-11">
     <div class="col-xs-12" style="margin-left: 3%">
-      <label>4 outof 4</label>
+
     </div>
   </div>
-  <div class="tab-search col-xs-11" style="margin-left: 3%">
+  <div class="tab-search col-xs-11" style="margin-left: 3%;margin-top:1%">
     <div class="form-group">
       <label class="control-label" for="premType">Type</label>
-      <div class="col-xs-12 col-md-8 col-lg-9">
-        <iais:select name="" id="premType" options="applicationType" firstOption="All"></iais:select>
+      <div class="col-xs-12 col-md-8 col-lg-9" id="premTypeDiv">
+        <iais:select name="premType"  value="${premiseDoSearch}" options="applicationType" firstOption="All"></iais:select>
       </div>
     </div>
     <div class="form-group" style="position: absolute ;right: 1%" >
       <div class="col-xs-12 col-md-4 col-lg-9">
-        <a class="btn btn-secondary">Clear</a>
-        <a class="btn btn-primary">search</a>
+        <a class="btn btn-secondary" id="premiseClear">Clear</a>
+        <a class="btn btn-primary" id="premiseSearch">search</a>
       </div>
     </div>
 
@@ -40,6 +42,7 @@
       <div class="table-gp">
         <span class="error-msg"><c:out value="${Error_Status}"/></span>
         <table class="table">
+          <iais:pagination param="PremisesSearchParam" result="PremisesSearchResult"/>
           <thead>
             <tr>
             <th>Address</th>
@@ -93,10 +96,28 @@
     
     var index =  $premAddrEle.find('.statusIndex').val();
     $('#hiddenIndex').val(index);
-    doSubmitForm('prePremisesEdit','', '');
-  
+    /*doSubmitForm('prePremisesEdit','', '');*/
+      SOP.Crud.cfxSubmit("menuListForm", "prePremisesEdit");
   });
   
   $('#Back').click(function() {
+  });
+
+  function jumpToPagechangePage(){
+      SOP.Crud.cfxSubmit("menuListForm", "doPage");
+  }
+
+  function sortRecords(sortFieldName,sortType){
+      SOP.Crud.cfxSubmit("menuListForm","doSort",sortFieldName,sortType);
+  }
+
+  $('#premiseSearch').click(function () {
+      SOP.Crud.cfxSubmit("menuListForm", "doSearch",$('#premType').val(),"");
+  });
+  $('#premiseClear').click(function () {
+
+    $('#premType option:first').prop('selected', 'selected');
+    $("#premTypeDiv .current").text("All");
+
   });
 </script>

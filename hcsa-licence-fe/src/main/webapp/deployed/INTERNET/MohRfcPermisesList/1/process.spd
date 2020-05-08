@@ -93,7 +93,7 @@
     <JavaCode defClass="" executor="" methodName="doRequestForInformationSubmit_OnStepProcess_0" name="doRequestForInformationSubmit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doSubmit" x="740" y="420">
+  <AutomaticStep defClass="" executor="" icon="" name="doSubmit" x="790" y="340">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -121,13 +121,6 @@
     <JavaCode defClass="" executor="" methodName="doSearch_OnStepProcess_0" name="doSearch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="selectLicence" x="840" y="230">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="selectLicence_OnStepProcess_0" name="selectLicence_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="premisesList" stageIndicator="" x="550" y="20">
@@ -149,12 +142,6 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="1000" y="-130">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
-  </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="selectLicenceToSubmit" stageIndicator="" x="780" y="310">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -236,7 +223,7 @@
    <position>{(910,150)(980,540)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSubmit" style="oblique">
-   <position>{(760,440)(730,240)}</position>
+   <position>{(810,360)(730,240)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preparePremisesList" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSearch" style="oblique">
    <position>{(240,-110)(510,-120)}</position>
@@ -259,14 +246,8 @@
   <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareAckPage" style="oblique">
    <position>{(910,0)(1020,-110)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/selectLicence" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(910,150)(860,250)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/selectLicenceToSubmit" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/selectLicence" style="oblique">
-   <position>{(860,250)(800,330)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doSubmit" linkstyle="Direct" name="" sourceName="/Pages/WebPage/selectLicenceToSubmit" style="oblique">
-   <position>{(800,330)(760,440)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSubmit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(910,150)(810,360)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -281,9 +262,9 @@
    <SwitchCase component="/Steps/AutomaticStep/back" value=""/>
    <SwitchCase component="/Steps/AutomaticStep/doRequestForInformationSubmit" value="&quot;doRfi&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;loading&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/selectLicence" value="&quot;doSubmit&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doSubmit" value="&quot;doSubmit&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_form" name="Switch3" x="190" y="230">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="190" y="230">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/preparePremisesList" value="&quot;prePremisesList&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preparePremisesEdit" value="&quot;prePremisesEdit&quot;"/>

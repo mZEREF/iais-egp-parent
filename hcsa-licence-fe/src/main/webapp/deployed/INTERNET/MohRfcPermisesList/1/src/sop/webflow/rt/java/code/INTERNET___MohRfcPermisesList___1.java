@@ -103,11 +103,6 @@ public class INTERNET___MohRfcPermisesList___1 extends BaseProcessClass {
         EngineHelper.delegate(DELEGATOR, "doSearch", this);
     }
 
-    public void selectLicence_OnStepProcess_0() throws Exception {
-    // 		selectLicence->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "selectLicence", this);
-    }
-
  
 
 }

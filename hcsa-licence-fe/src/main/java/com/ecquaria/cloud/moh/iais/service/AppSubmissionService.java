@@ -42,4 +42,7 @@ public interface AppSubmissionService {
     public void updateApplicationsStatus(String appGroupId,String stuts);
     public boolean checkRenewalStatus(String licenceId);
     public AppSubmissionDto getExistBaseSvcInfo(List<String> licenceIds);
+    void transform(AppSubmissionDto appSubmissionDto,String licenseeId);
+    void saveAppsubmission(AppSubmissionDto appSubmissionDto );
+    boolean compareAndSendEmail(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto);
 }

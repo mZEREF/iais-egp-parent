@@ -1,13 +1,20 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -25,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -406,5 +414,213 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public AppSubmissionDto getExistBaseSvcInfo(List<String> licenceIds) {
         return licenceClient.getExistBaseSvcInfo(licenceIds).getEntity();
+    }
+
+    @Override
+    public void transform(AppSubmissionDto appSubmissionDto, String licenseeId) {
+        Double amount = 0.0;
+        AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
+        String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_CESSATION).getEntity();
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+        String svcId = hcsaServiceDto.getId();
+        String svcCode = hcsaServiceDto.getSvcCode();
+        appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
+        appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+        appSubmissionDto.setAppGrpNo(grpNo);
+        appSubmissionDto.setFromBe(false);
+        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+        appSubmissionDto.setAmount(amount);
+        appSubmissionDto.setAuditTrailDto(internet);
+        appSubmissionDto.setPreInspection(true);
+        appSubmissionDto.setRequirement(true);
+        appSubmissionDto.setLicenseeId(licenseeId);
+        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        setRiskToDto(appSubmissionDto);
+    }
+
+    @Override
+    public void saveAppsubmission(AppSubmissionDto appSubmissionDto) {
+        AppSubmissionDto entity = applicationClient.saveSubmision(appSubmissionDto).getEntity();
+        applicationClient.saveApps(entity).getEntity();
+    }
+    @Override
+    public boolean compareAndSendEmail(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto){
+        boolean isAuto = true;
+
+        AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
+        if(appEditSelectDto != null ){
+            if(appEditSelectDto.isPremisesEdit()){
+                if(!appSubmissionDto.getAppGrpPremisesDtoList().equals(oldAppSubmissionDto)){
+                    isAuto =  compareHciName(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
+                    if(isAuto){
+                        isAuto = compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
+                    }
+                    //send eamil
+
+                }
+            }
+
+            if(appEditSelectDto.isMedAlertEdit()){
+                //todo:
+            }
+            //one svc
+            AppSvcRelatedInfoDto appSvcRelatedInfoDtoList = getAppSvcRelatedInfoDto(appSubmissionDto.getAppSvcRelatedInfoDtoList());
+            AppSvcRelatedInfoDto oldAppSvcRelatedInfoDtoList = getAppSvcRelatedInfoDto(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
+            if(appEditSelectDto.isPoEdit() || appEditSelectDto.isDpoEdit() || appEditSelectDto.isServiceEdit()){
+                //remove
+                List<AppSvcPrincipalOfficersDto> newAppSvcPrincipalOfficersDto  = appSvcRelatedInfoDtoList.getAppSvcPrincipalOfficersDtoList();
+                List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDto = oldAppSvcRelatedInfoDtoList.getAppSvcPrincipalOfficersDtoList();
+                if(newAppSvcPrincipalOfficersDto.size() > oldAppSvcPrincipalOfficersDto.size()){
+                    isAuto = false;
+                    //send eamil
+                }
+                //change
+                List<String> newPoIdNos = IaisCommonUtils.genNewArrayList();
+                List<String> oldPoIdNos = IaisCommonUtils.genNewArrayList();
+                List<String> newDpoIdNos = IaisCommonUtils.genNewArrayList();
+                List<String> olddDpoIdNos = IaisCommonUtils.genNewArrayList();
+
+                for(AppSvcPrincipalOfficersDto item:newAppSvcPrincipalOfficersDto){
+                    if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(item.getPsnType())){
+                        newPoIdNos.add(item.getIdNo());
+                    }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(item.getPsnType())){
+                        newDpoIdNos.add(item.getIdNo());
+                    }
+                }
+                for(AppSvcPrincipalOfficersDto item:oldAppSvcPrincipalOfficersDto){
+                    if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(item.getPsnType())){
+                        oldPoIdNos.add(item.getIdNo());
+                    }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(item.getPsnType())){
+                        olddDpoIdNos.add(item.getIdNo());
+                    }
+                }
+                if(!newPoIdNos.equals(oldPoIdNos)){
+                    isAuto = false;
+                }
+                if(!newDpoIdNos.equals(olddDpoIdNos)){
+                    isAuto = false;
+                }
+            }
+
+            if(appEditSelectDto.isServiceEdit()){
+                List<AppSvcCgoDto> newAppSvcCgoDto =  appSvcRelatedInfoDtoList.getAppSvcCgoDtoList();
+                List<AppSvcCgoDto> oldAppSvcCgoDto =  oldAppSvcRelatedInfoDtoList.getAppSvcCgoDtoList();
+                List<String> newCgoIdNos = IaisCommonUtils.genNewArrayList();
+                List<String> oldCgoIdNos = IaisCommonUtils.genNewArrayList();
+                if(!IaisCommonUtils.isEmpty(newAppSvcCgoDto) && !IaisCommonUtils.isEmpty(oldAppSvcCgoDto)){
+                    for(AppSvcCgoDto item:newAppSvcCgoDto){
+                        newCgoIdNos.add(item.getIdNo());
+                    }
+                    for(AppSvcCgoDto item:oldAppSvcCgoDto){
+                        oldCgoIdNos.add(item.getIdNo());
+                    }
+                    if(!newCgoIdNos.equals(oldCgoIdNos)){
+                        isAuto = false;
+                    }
+
+                }
+
+                List<AppSvcLaboratoryDisciplinesDto> newDisciplinesDto = appSvcRelatedInfoDtoList.getAppSvcLaboratoryDisciplinesDtoList();
+                List<AppSvcLaboratoryDisciplinesDto> oldDisciplinesDto = oldAppSvcRelatedInfoDtoList.getAppSvcLaboratoryDisciplinesDtoList();
+
+                if(!IaisCommonUtils.isEmpty(newDisciplinesDto) && !IaisCommonUtils.isEmpty(oldDisciplinesDto)){
+                    for(AppSvcLaboratoryDisciplinesDto item:newDisciplinesDto){
+                        String hciName = item.getPremiseVal();
+                        AppSvcLaboratoryDisciplinesDto oldAppSvcLaboratoryDisciplinesDto = getDisciplinesDto(oldDisciplinesDto,hciName);
+                        List<AppSvcChckListDto> newCheckList =  item.getAppSvcChckListDtoList();
+                        List<AppSvcChckListDto> oldCheckList = oldAppSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                        if(!IaisCommonUtils.isEmpty(newCheckList) && !IaisCommonUtils.isEmpty(oldCheckList)){
+                            List<String> newCheckListIds = IaisCommonUtils.genNewArrayList();
+                            List<String> oldCheckListIds = IaisCommonUtils.genNewArrayList();
+                            for(AppSvcChckListDto checBox:oldCheckList){
+                                oldCheckListIds.add(checBox.getChkLstConfId());
+                            }
+                            for(AppSvcChckListDto checBox:newCheckList){
+                                if(!oldCheckListIds.contains(checBox.getChkLstConfId())){
+                                    isAuto = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if(!newDisciplinesDto.equals(oldDisciplinesDto)){
+
+                    }
+
+                }
+
+
+            }
+
+            if(appEditSelectDto.isDocEdit()){
+            /*if(!appSubmissionDto.getAppGrpPrimaryDocDtos().equals(oldAppSubmissionDto.getAppGrpPrimaryDocDtos()) ||
+                    !appSvcRelatedInfoDtoList.getAppSvcDocDtoLit().equals(oldAppSvcRelatedInfoDtoList.getAppSvcDocDtoLit())){
+                //send eamil
+
+            }*/
+
+            }
+        }
+
+        return isAuto;
+    }
+
+    private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+            return appSvcRelatedInfoDtos.get(0);
+        }
+        return new AppSvcRelatedInfoDto();
+    }
+
+    private boolean compareHciName(List<AppGrpPremisesDto> appGrpPremisesDtos,List<AppGrpPremisesDto> oldAppGrpPremisesDtos){
+        int length = appGrpPremisesDtos.size();
+        int oldLength = oldAppGrpPremisesDtos.size();
+        if(length == oldLength){
+            for(int i=0; i<length; i++){
+                AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(0);
+                AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(0);
+                if(!getHciName(appGrpPremisesDto).equals(getHciName(oldAppGrpPremisesDto))){
+                    return false;
+                }
+            }
+        }
+        //is same
+        return true;
+    }
+    private String getHciName(AppGrpPremisesDto appGrpPremisesDto){
+        String hciName = "";
+        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+            hciName = appGrpPremisesDto.getHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+            hciName = appGrpPremisesDto.getConveyanceVehicleNo();
+        }
+        return hciName;
+    }
+
+    private AppSvcLaboratoryDisciplinesDto getDisciplinesDto(List<AppSvcLaboratoryDisciplinesDto> disciplinesDto,String hciName){
+        for(AppSvcLaboratoryDisciplinesDto iten:disciplinesDto){
+            if(hciName.equals(iten.getPremiseVal())){
+                return iten;
+            }
+        }
+        return new AppSvcLaboratoryDisciplinesDto();
+    }
+    private boolean compareLocation(List<AppGrpPremisesDto> appGrpPremisesDtos,List<AppGrpPremisesDto> oldAppGrpPremisesDtos){
+        int length = appGrpPremisesDtos.size();
+        int oldLength = oldAppGrpPremisesDtos.size();
+        if(length == oldLength){
+            for(int i=0; i<length; i++){
+                AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(0);
+                AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(0);
+                if(!appGrpPremisesDto.getAddress().equals(oldAppGrpPremisesDto.getAddress())){
+                    return false;
+                }
+            }
+        }
+        //is same
+        return true;
     }
 }
