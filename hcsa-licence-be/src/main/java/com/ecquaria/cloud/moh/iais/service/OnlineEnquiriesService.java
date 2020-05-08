@@ -20,7 +20,7 @@ import java.util.List;
  * @date 2020/2/11
  */
 public interface OnlineEnquiriesService {
-    EnquiryInspectionReportDto getInsRepDto(ApplicationViewDto applicationViewDto);
+    EnquiryInspectionReportDto getInsRepDto(ApplicationViewDto applicationViewDto,String licenceId);
     SearchResult<LicenseeQueryDto> searchLicenseeIdsParam(SearchParam searchParam);
     SearchResult<HcsaSvcQueryDto> searchSvcNamesParam(SearchParam searchParam);
     SearchResult<ProfessionalInformationQueryDto> searchProfessionalInformation(SearchParam searchParam);

@@ -40,7 +40,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComplianceHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
@@ -50,7 +49,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.SectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.EnquiryInspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -185,6 +183,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     case "1":per.getKeyPersonnelExtDto().setPreferredMode("Email");break;
                     case "2":per.getKeyPersonnelExtDto().setPreferredMode("SMS");break;
                     case "3":per.getKeyPersonnelExtDto().setPreferredMode("Email  SMS");break;
+                    default:per.getKeyPersonnelExtDto().setPreferredMode("-");break;
                 }
                 per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelExtDto().getProfessionType()}).get(0).getText());
             }catch (NullPointerException e){
@@ -258,10 +257,13 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     }
 
     @Override
-    public EnquiryInspectionReportDto getInsRepDto(ApplicationViewDto applicationViewDto) {
+    public EnquiryInspectionReportDto getInsRepDto(ApplicationViewDto applicationViewDto,String licenceId) {
         EnquiryInspectionReportDto inspectionReportDto = new EnquiryInspectionReportDto();
+        List<PremisesDto> licPremisesDto=hcsaLicenceClient.getPremisess(licenceId).getEntity();
+        inspectionReportDto.setHciCode(licPremisesDto.get(0).getHciCode());
         //inspection report application dto
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
+
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appId = applicationDto.getId();
         String appGrpId = applicationDto.getAppGrpId();
@@ -270,6 +272,15 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         String appTypeCode = insRepClient.getAppType(appId).getEntity();
         ApplicationGroupDto applicationGroupDto = insRepClient.getApplicationGroupDto(appGrpId).getEntity();
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(appInsRepDto.getLicenseeId()).getEntity();
+        if(StringUtil.isEmpty(licenceId)){
+            inspectionReportDto.setLicenceNo("-");
+        }else{
+            LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licenceId).getEntity();
+            if(licenceDto!=null){
+                String licenceNo = licenceDto.getLicenceNo();
+                inspectionReportDto.setLicenceNo(licenceNo);
+            }
+        }
         if(licenseeDto!=null){
             String name = licenseeDto.getName();
             inspectionReportDto.setLicenseeName(name);
@@ -283,15 +294,17 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         inspectionReportDto.setPrincipalOfficers(poNames);
 
 
-        List<String> inspectors = taskOrganizationClient.getInspectorByAppCorrId(appPremisesCorrelationId).getEntity();
-        List<OrgUserDto> inspectorsNames = organizationClient.retrieveOrgUserAccount(inspectors).getEntity();
         List<String> nameList = IaisCommonUtils.genNewArrayList();
-        for(OrgUserDto orgUserDto :inspectorsNames){
-            nameList.add(orgUserDto.getDisplayName());
+        AppPremisesRecommendationDto otherOfficesDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS).getEntity();
+        if(otherOfficesDto!=null){
+            String otherOffices = otherOfficesDto.getRemarks();
+            nameList.add(otherOffices);
+            inspectionReportDto.setInspectOffices(nameList);
+        }else {
+            String s = "-";
+            nameList.add(s);
+            inspectionReportDto.setInspectOffices(nameList);
         }
-        inspectionReportDto.setInspectOffices(nameList);
-
-
         //get application type (pre/post)
         Integer isPre = applicationGroupDto.getIsPreInspection();
         String appType = MasterCodeUtil.getCodeDesc(appTypeCode);
@@ -305,10 +318,10 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         //serviceId transform serviceCode
         List<String> list = IaisCommonUtils.genNewArrayList();
         String serviceId = appInsRepDto.getServiceId();
-        list.add(serviceId);
+        list.add(serviceId) ;
         List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
-        String svcName = "";
-        String svcCode = "";
+        String svcName = "" ;
+        String svcCode = "" ;
         if (listHcsaServices != null && !listHcsaServices.isEmpty()) {
             for (HcsaServiceDto hcsaServiceDto : listHcsaServices) {
                 svcName = hcsaServiceDto.getSvcName();
@@ -318,8 +331,12 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
         List<HcsaSvcSubtypeOrSubsumedDto> subsumedDtos = hcsaConfigClient.listSubCorrelationFooReport(serviceId).getEntity();
         List<String> subsumedServices = IaisCommonUtils.genNewArrayList();
-        for(HcsaSvcSubtypeOrSubsumedDto subsumedDto :subsumedDtos){
-            subsumedServices.add(subsumedDto.getName());
+        if (subsumedDtos != null && !subsumedDtos.isEmpty()) {
+            for(HcsaSvcSubtypeOrSubsumedDto subsumedDto :subsumedDtos){
+                subsumedServices.add(subsumedDto.getName());
+            }
+        }else {
+            subsumedServices.add("-");
         }
         inspectionReportDto.setSubsumedServices(subsumedServices);
         //Nc
@@ -328,19 +345,22 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         List<ReportNcRectifiedDto> listReportNcRectifiedDto = IaisCommonUtils.genNewArrayList();
         //add ReportNcRegulationDto and add ncItemId
         if (listChecklistQuestionDtos != null && !listChecklistQuestionDtos.isEmpty()) {
-            String configId = listChecklistQuestionDtos.get(0).getConfigId();
             List<NcAnswerDto> ncAnswerDtoList = insepctionNcCheckListService.getNcAnswerDtoList(appPremisesCorrelationId);
             if (ncAnswerDtoList != null && !ncAnswerDtoList.isEmpty()) {
                 for (NcAnswerDto ncAnswerDto : ncAnswerDtoList) {
                     ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
                     reportNcRegulationDto.setNc(ncAnswerDto.getItemQuestion());
-                    reportNcRegulationDto.setRegulation(ncAnswerDto.getClause());
+                    String clause = ncAnswerDto.getClause();
+                    if(StringUtil.isEmpty(clause)){
+                        reportNcRegulationDto.setRegulation("-");
+                    }else {
+                        reportNcRegulationDto.setRegulation(clause);
+                    }
                     listReportNcRegulationDto.add(reportNcRegulationDto);
                 }
-                inspectionReportDto.setStatus("Partial Compliance");
-                inspectionReportDto.setNcRegulation(listReportNcRegulationDto);
-
             }
+            inspectionReportDto.setStatus("Partial Compliance");
+            inspectionReportDto.setNcRegulation(listReportNcRegulationDto);
         }else {
             inspectionReportDto.setStatus("Full Compliance");
             inspectionReportDto.setNcRegulation(null);
@@ -364,61 +384,54 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             inspectionReportDto.setNcRectification(null);
         }
         AppPremisesRecommendationDto NcRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_TCU).getEntity();
+        //best practice remarks
+        String bestPractice = "-";
+        String remarks = "-";
         if(NcRecommendationDto==null){
             inspectionReportDto.setMarkedForAudit("No");
-        }else if(NcRecommendationDto!=null&&NcRecommendationDto.getRecomInDate()!=null) {
-            inspectionReportDto.setMarkedForAudit("Yes");
+        }else if(NcRecommendationDto!=null) {
             Date recomInDate = NcRecommendationDto.getRecomInDate();
-            inspectionReportDto.setTcuDate(recomInDate);
+            if(recomInDate==null){
+                inspectionReportDto.setMarkedForAudit("No");
+            }else {
+                inspectionReportDto.setMarkedForAudit("Yes");
+                inspectionReportDto.setTcuDate(recomInDate);
+            }
+            String ncBestPractice = NcRecommendationDto.getBestPractice();
+            String ncRemarks = NcRecommendationDto.getRemarks();
+            if(!StringUtil.isEmpty(ncBestPractice)){
+                bestPractice = ncBestPractice ;
+            }
+            if(!StringUtil.isEmpty(ncRemarks)){
+                remarks = ncRemarks ;
+            }
         }
-        //checkList
-
-        List<InspectionFillCheckListDto> cDtoList = getInspectionFillCheckListDtoListForReview(applicationViewDto.getAppPremisesCorrelationId(),"service");
-        List<InspectionFillCheckListDto> commonList =getInspectionFillCheckListDtoListForReview(applicationViewDto.getAppPremisesCorrelationId(),"common");
-        InspectionFillCheckListDto commonDto = null;
-        if(commonList!=null && !commonList.isEmpty()){
-            commonDto = commonList.get(0);
-        }
-        InspectionFDtosDto subType = new InspectionFDtosDto();
-        subType.setFdtoList(cDtoList);
-        inspectionReportDto.setCommonCheckList(commonDto);
-        inspectionReportDto.setSubTypeCheckList(subType);
         inspectionReportDto.setRectifiedWithinKPI("Yes");
+        //Date time
         Date inspectionDate = null;
-        Date inspectionStartTime = null;
-        Date inspectionEndTime = null;
+        String inspectionStartTime = null;
+        String inspectionEndTime = null;
         AppPremisesRecommendationDto appPreRecommentdationDtoStart = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME).getEntity();
         AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-        AppPremisesRecommendationDto appPreRecommentdationDtoEnd = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME).getEntity();
+        AppPremisesRecommendationDto appPreRecommentdationDtoEnd = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME).getEntity();
         if(appPreRecommentdationDtoDate!=null){
             inspectionDate = appPreRecommentdationDtoDate.getRecomInDate();
         }
         if(appPreRecommentdationDtoStart!=null){
-            inspectionStartTime = appPreRecommentdationDtoStart.getRecomInDate();
+            inspectionStartTime = appPreRecommentdationDtoStart.getRecomDecision();
         }
         if(appPreRecommentdationDtoEnd!=null){
-            inspectionEndTime = appPreRecommentdationDtoEnd.getRecomInDate();
+            inspectionEndTime = appPreRecommentdationDtoEnd.getRecomDecision();
         }
-        String bestPractice = null;
-        String remarks = null;
-        if (NcRecommendationDto != null) {
-            bestPractice = NcRecommendationDto.getBestPractice();
-            remarks = NcRecommendationDto.getRemarks();
-        }
-        AdCheckListShowDto adhocCheckListDto = insepctionNcCheckListService.getAdhocCheckListDto(appPremisesCorrelationId);
-        if(adhocCheckListDto!=null){
-            inspectionReportDto.setOtherCheckList(adhocCheckListDto);
-        }
-
+        AppPremisesRecommendationDto rectiDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSPECTYPE).getEntity();
 
         inspectionReportDto.setServiceName(svcName);
-        inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
         inspectionReportDto.setHciName(appInsRepDto.getHciName());
         inspectionReportDto.setHciAddress(appInsRepDto.getHciAddress());
         inspectionReportDto.setReasonForVisit(reasonForVisit);
         inspectionReportDto.setInspectionDate(inspectionDate);
-//        inspectionReportDto.setInspectionStartTime(inspectionStartTime.toString());
-//        inspectionReportDto.setInspectionEndTime(inspectionEndTime.toString());
+        inspectionReportDto.setInspectionStartTime(inspectionStartTime);
+        inspectionReportDto.setInspectionEndTime(inspectionEndTime);
         inspectionReportDto.setBestPractice(bestPractice);
         inspectionReportDto.setTaskRemarks(remarks);
         inspectionReportDto.setCurrentStatus(status);
@@ -599,9 +612,9 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     public void preInspReport(HttpServletRequest request) {
         log.info("=======>>>>>preInspReport>>>>>>>>>>>>>>>>requestForInformation");
         String appPremCorrId = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
-
+        String licenceId = (String) ParamUtil.getSessionAttr(request, "id");
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremCorrId);
-        EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto);
+        EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto,licenceId);
         ParamUtil.setSessionAttr(request, "insRepDto", insRepDto);
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
         ParamUtil.setSessionAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
