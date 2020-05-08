@@ -183,7 +183,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                 numfalg = false;
             }else{
                 if(!StringUtil.stringIsFewDecimal(temp.getColumRight(),2)){
-                    errMap.put(svcCode+temp.getOrderNum()+"righterr","ERR0013.");
+                    errMap.put(svcCode+temp.getOrderNum()+"righterr","ERR0013");
                     numfalg = false;
                 }
             }
