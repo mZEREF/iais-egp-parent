@@ -146,7 +146,7 @@ public class LicenceApproveBatchjobTest {
                             groupGenerateResult = generateGroupLicence(groupApplicationLicenceDto,hcsaServiceDtos);
                         }
                         if(generalApplicationLicenceDto != null){
-                            //generate licence
+                            //generate the general licence
                             generalGenerateResult = generateLIcence(generalApplicationLicenceDto,hcsaServiceDtos);
                         }
                     }catch (Exception exception){
@@ -431,6 +431,90 @@ public class LicenceApproveBatchjobTest {
         log.info(StringUtil.changeForLog("The getAppPremisesRecommendationDto end ..."));
         return result;
     }
+
+    private String addPremisesGroupDtos(List<PremisesGroupDto> allPremisesGroupDtos,List<PremisesGroupDto> premisesGroupDtos,
+                                      ApplicationListDto applicationListDto){
+        log.info(StringUtil.changeForLog("The allPremisesGroupDtos start ..."));
+        String errorMsg = null;
+         if(!IaisCommonUtils.isEmpty(premisesGroupDtos)){
+            for (PremisesGroupDto premisesGroupDto : premisesGroupDtos){
+                PremisesDto premisesDto =  premisesGroupDto.getPremisesDto();
+                String hciCode = premisesDto.getHciCode();
+                log.info(StringUtil.changeForLog("The allPremisesGroupDtos hciCode is -->:"+hciCode));
+                boolean isExist = isExistPremisess(allPremisesGroupDtos,hciCode);
+                log.info(StringUtil.changeForLog("The allPremisesGroupDtos isExist is -->:"+isExist));
+                if(!isExist){
+                    premisesDto.setVersion(getVersionByHciCode(hciCode));
+                    List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = premisesGroupDto.getLicPremisesScopeGroupDtoList();
+                    if(!IaisCommonUtils.isEmpty(licPremisesScopeGroupDtoList)){
+                      for (LicPremisesScopeGroupDto licPremisesScopeGroupDto : licPremisesScopeGroupDtoList){
+                          LicPremisesScopeAllocationDto licPremisesScopeAllocationDto = licPremisesScopeGroupDto.getLicPremisesScopeAllocationDto();
+                          KeyPersonnelDto keyPersonnelDto = licPremisesScopeGroupDto.getKeyPersonnelDto();
+                          String idNo = keyPersonnelDto.getIdNo();
+                          log.info(StringUtil.changeForLog("The allPremisesGroupDtos idNo is -->:"+idNo));
+                          String appSvcKeyPsnId = getAppSvcKeyPsnId(applicationListDto,idNo);
+                          if(!StringUtil.isEmpty(appSvcKeyPsnId)){
+                              licPremisesScopeAllocationDto.setLicCgoId(appSvcKeyPsnId);
+                          }else{
+                              errorMsg = "can not find  the CGO for idNo is -->:"+idNo;
+                              log.error(StringUtil.changeForLog(errorMsg));
+                          }
+                      }
+                    }
+                    allPremisesGroupDtos.add(premisesGroupDto);
+                }
+            }
+         }
+        log.info(StringUtil.changeForLog("The allPremisesGroupDtos end ..."));
+         return errorMsg;
+    }
+
+    private String getAppSvcKeyPsnId(ApplicationListDto applicationListDto,String idNo){
+        log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId start ..."));
+       String result = null;
+       if(!StringUtil.isEmpty(idNo)){
+           String personnelId = null;
+           List<AppGrpPersonnelDto> appGrpPersonnelDtos = applicationListDto.getAppGrpPersonnelDtos();
+           if(!IaisCommonUtils.isEmpty(appGrpPersonnelDtos)){
+               log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId appGrpPersonnelDtos.size() is -- >:" + appGrpPersonnelDtos.size()));
+               for (AppGrpPersonnelDto appGrpPersonnelDtos1 :appGrpPersonnelDtos ){
+                   if(idNo.equals(appGrpPersonnelDtos1.getIdNo())){
+                       personnelId = appGrpPersonnelDtos1.getId();
+                       break;
+                   }
+               }
+           }
+           log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId personnelId is -- >:" + personnelId));
+           if(!StringUtil.isEmpty(personnelId)){
+               List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationListDto.getAppSvcKeyPersonnelDtos();
+               if(!IaisCommonUtils.isEmpty(appSvcKeyPersonnelDtos)){
+                   log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId appSvcKeyPersonnelDtos.size() is -- >:" + appSvcKeyPersonnelDtos.size()));
+                   for (AppSvcKeyPersonnelDto appSvcKeyPersonnelDto : appSvcKeyPersonnelDtos){
+                       if(personnelId.equals(appSvcKeyPersonnelDto.getAppGrpPsnId()) && ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(appSvcKeyPersonnelDto.getPsnType())){
+                           result = appSvcKeyPersonnelDto.getId();
+                           break;
+                       }
+                   }
+               }
+           }
+       }
+        log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId result is -- >:" + result));
+        log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId end ..."));
+       return  result;
+    }
+
+    private boolean isExistPremisess(List<PremisesGroupDto> allPremisesGroupDtos,String hciCode){
+       boolean result = false;
+       if(!IaisCommonUtils.isEmpty(allPremisesGroupDtos) && !StringUtil.isEmpty(hciCode)){
+           for (PremisesGroupDto premisesGroupDto : allPremisesGroupDtos){
+               if(hciCode.equals(premisesGroupDto.getPremisesDto().getHciCode())){
+                   result =  true;
+                   break;
+               }
+           }
+       }
+       return result;
+    }
     private GenerateResult generateGroupLicence(ApplicationLicenceDto applicationLicenceDto,List<HcsaServiceDto> hcsaServiceDtos){
         log.debug(StringUtil.changeForLog("The generateGroupLicence is start ..."));
         GenerateResult result = new GenerateResult();
@@ -523,12 +607,32 @@ public class LicenceApproveBatchjobTest {
                     List<PremisesGroupDto> premisesGroupDtos1 = getPremisesGroupDto(applicationLicenceDto,appGrpPremisesEntityDtos,appPremisesCorrelationDtos,appSvcPremisesScopeDtos,
                             appSvcPremisesScopeAllocationDtos, hcsaServiceDto,organizationId,isPostInspNeeded);
                     if(!IaisCommonUtils.isEmpty(premisesGroupDtos1)){
-                        PremisesGroupDto premisesGroupDto = premisesGroupDtos1.get(0);
-                        if(premisesGroupDto.isHasError()){
-                            errorMessage = premisesGroupDto.getErrorMessage();
-                            break;
-                        }
+//                        PremisesGroupDto premisesGroupDto = premisesGroupDtos1.get(0);
+//                        if(premisesGroupDto.isHasError()){
+//                            errorMessage = premisesGroupDto.getErrorMessage();
+//                            break;
+//                        }
                         premisesGroupDtos.addAll(premisesGroupDtos1);
+                    }
+                    //RFC for premises: Generate partPremises group Licence
+                    ApplicationDto applicationDto = applicationListDto.getApplicationDto();
+                    String appType = applicationDto.getApplicationType();
+                    log.info(StringUtil.changeForLog("The generateGroupLicence appType is -->:"+appType));
+                    boolean isPartPremises = applicationDto.isPartPremises();
+                    log.info(StringUtil.changeForLog("The generateGroupLicence isPartPremises is -->:"+isPartPremises));
+                    if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) && isPartPremises){
+                       String everyOriginLicenceId = applicationDto.getOriginLicenceId();
+                        log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is -->:"+everyOriginLicenceId));
+                       if(!StringUtil.isEmpty(everyOriginLicenceId)){
+                           List<PremisesGroupDto> premisesGroupDtoList = licenceService.getPremisesGroupDtoByOriginLicenceId(everyOriginLicenceId);
+                           String msg = addPremisesGroupDtos(premisesGroupDtos,premisesGroupDtoList,applicationListDto);
+                           if(!StringUtil.isEmpty(msg)){
+                               errorMessage = msg;
+                               break;
+                           }
+                       }else{
+                           log.error(StringUtil.changeForLog("This Appno do not have the OriginLicenceId -- >" +applicationDto.getApplicationNo()));
+                       }
                     }
                     //create key_personnel key_personnel_ext lic_key_personnel
                     List<AppGrpPersonnelDto> appGrpPersonnelDtos = applicationListDto.getAppGrpPersonnelDtos();
@@ -542,9 +646,8 @@ public class LicenceApproveBatchjobTest {
                         }
                         personnelsDtos.addAll(personnelsDto1s);
                     }
-                    ApplicationDto applicationDto = applicationListDto.getApplicationDto();
+
                     if(applicationDto != null){
-                        String appType = applicationDto.getApplicationType();
                         String applicationNo = applicationDto.getApplicationNo();
                         String loginUrl = "#";
                         //new application send email
@@ -982,11 +1085,6 @@ public class LicenceApproveBatchjobTest {
             String premisesId = appGrpPremisesEntityDto.getId();
             String appPremCorrecId = getAppPremCorrecId(appPremisesCorrelationDtos,premisesId);
             if(StringUtil.isEmpty(appPremCorrecId)){
-//                premisesGroupDto.setHasError(true);
-//                premisesGroupDto.setErrorMessage("This PremisesId can not find out appPremCorrecId -->:"+premisesId);
-//                reuslt.clear();
-//                reuslt.add(premisesGroupDto);
-//                break;
                 continue;
             }
             AppPremisesRecommendationDto appPremisesRecommendationDto = licenceService.getTcu(appPremCorrecId);

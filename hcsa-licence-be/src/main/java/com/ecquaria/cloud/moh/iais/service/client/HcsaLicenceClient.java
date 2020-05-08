@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGrpDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
@@ -24,6 +25,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditInspect
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
+import java.util.Map;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,9 +37,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Wenkang
@@ -189,5 +189,8 @@ public interface HcsaLicenceClient {
 
     @PostMapping(value = "/hcsa-licence/licId-base-cessation",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getBaseLicIds(@RequestBody List<String> licenceIds);
+
+    @GetMapping(path = "/hcsa-licence-transport/PremisesGroupDto/{originLicenceId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<PremisesGroupDto>> getPremisesGroupDtos(@PathVariable(name = "originLicenceId") String originLicenceId);
 
 }
