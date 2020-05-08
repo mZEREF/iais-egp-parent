@@ -334,14 +334,23 @@
                                         Operating Hours (Start)
                                       </div>
                                       <div class="col-md-6">
-                                          ${appGrpPremDto.onsiteStartHH} : ${appGrpPremDto.onsiteStartMM}
+<%--                                          ${appGrpPremDto.onsiteStartHH} : ${appGrpPremDto.onsiteStartMM}--%>
+                                            <c:if test="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}">
+                                                <c:out value="-"/>
+                                            </c:if>
+                                            <c:if test="${!empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}">
+                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"
+                                                              pattern="HH : mm"></fmt:formatDate>
+                                            </c:if>
                                         <wrms:value width="7">
-                                        <span class="newVal " attr="${appGrpPremDto.wrkTimeFrom}" style="display: none"><label><c:out
+                                        <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}" style="display: none"><label><c:out
                                                 value=""/></label></span>
                                           <span class="oldVal compareTdStyle"
-                                                attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"
-                                                style="display: none"><label><c:out
-                                                  value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"/></label></span>
+                                                attr="${appGrpPremDto.wrkTimeFrom}"
+                                                style="display: none">
+                                            <fmt:formatDate value="${appGrpPremDto.wrkTimeFrom}"
+                                                            pattern="HH : mm"></fmt:formatDate>
+                                          </span>
                                         </wrms:value>
                                       </div>
                                     </div>
@@ -351,14 +360,23 @@
                                        Operating Hours (End)
                                       </div>
                                       <div class="col-md-6">
-                                          ${appGrpPremDto.onsiteEndHH} : ${appGrpPremDto.onsiteEndMM}
+<%--                                          ${appGrpPremDto.onsiteEndHH} : ${appGrpPremDto.onsiteEndMM}--%>
+                                            <c:if test="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}">
+                                              <c:out value="-"/>
+                                            </c:if>
+                                            <c:if test="${!empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}">
+                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"
+                                                              pattern="HH : mm"></fmt:formatDate>
+                                            </c:if>
                                             <wrms:value width="7">
-                                              <span class="newVal " attr="${appGrpPremDto.wrkTimeTo}"
+                                              <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"
                                               style="display: none"><label><c:out value=""/></label></span>
                                               <span class="oldVal compareTdStyle"
-                                                    attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"
-                                                    style="display: none"><label><c:out
-                                                      value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"/></label></span>
+                                                    attr="${appGrpPremDto.wrkTimeTo}"
+                                                    style="display: none">
+                                                  <fmt:formatDate value="${appGrpPremDto.wrkTimeTo}"
+                                                                  pattern="HH : mm"></fmt:formatDate>
+                                              </span>
                                             </wrms:value>
                                       </div>
                                     </div>
@@ -397,12 +415,12 @@
                                         <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH} : ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromMM}"/>
                                       </c:if>
                                           <wrms:value width="7">
-                                          <span class="newVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH}" style="display: none"><label><c:out
+                                          <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH}" style="display: none"><label><c:out
                                                   value=""/></label></span>
                                             <span class="oldVal compareTdStyle"
                                                   attr="${appPremPhOpenPeriod.convStartFromHH}"
                                                   style="display: none"><label><c:out
-                                                    value="${appPremPhOpenPeriod.convStartFromHH}"/></label></span>
+                                                    value="${appPremPhOpenPeriod.convStartFromHH} : ${appPremPhOpenPeriod.convStartFromMM}"/></label></span>
                                           </wrms:value>
                                     </div>
                                   </div>
@@ -412,15 +430,24 @@
                                       Public Holidays Operating Hours (End)
                                     </div>
                                     <div class="col-md-6">
-                                        ${appPremPhOpenPeriod.convEndToHH} : ${appPremPhOpenPeriod.convEndToMM}
+<%--                                        ${appPremPhOpenPeriod.convEndToHH} : ${appPremPhOpenPeriod.convEndToMM}--%>
+                                          <c:if test="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}">
+                                              <c:out value="-"/>
+                                          </c:if>
+                                          <c:if test="${!empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}">
+                                            <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}"
+                                                            pattern="HH : mm"></fmt:formatDate>
+                                          </c:if>
 
                                           <wrms:value width="7">
-                                          <span class="newVal " attr="${appPremPhOpenPeriod.endTo}"
+                                          <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}"
                                                 style="display: none"><label><c:out value=""/></label></span>
                                             <span class="oldVal compareTdStyle"
-                                                  attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}"
-                                                  style="display: none"><label><c:out
-                                                    value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}"/></label></span>
+                                                  attr="${appPremPhOpenPeriod.endTo}"
+                                                  style="display: none">
+                                              <fmt:formatDate value="${appPremPhOpenPeriod.endTo}"
+                                                              pattern="HH : mm"></fmt:formatDate>
+                                            </span>
                                           </wrms:value>
                                     </div>
                                   </div>
