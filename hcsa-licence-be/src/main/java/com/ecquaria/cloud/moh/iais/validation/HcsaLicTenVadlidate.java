@@ -193,7 +193,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                 numfalg = false;
             }else{
                 if(!StringUtil.stringIsFewDecimal(temp.getColumLeft(),2)){
-                    errMap.put(svcCode+temp.getOrderNum()+"lefterr","ERR0013.");
+                    errMap.put(svcCode+temp.getOrderNum()+"lefterr","ERR0013");
                     numfalg = false;
                 }
             }
@@ -241,7 +241,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                 temp.setLicenceTenure(String.valueOf(numyear*12+numMonth));
             }
         }catch (Exception e){
-            errMap.put(svcCode+temp.getOrderNum()+"lterr","ERR0013.");
+            errMap.put(svcCode+temp.getOrderNum()+"lterr","ERR0013");
             flag = false;
             log.error(e.getMessage(), e);
         }
