@@ -288,6 +288,7 @@ public class InspectionPreDelegator {
         }
         inspectionPreTaskService.routingAsoPsoBack(taskDto, inspectionPreTaskDto, loginContext);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
+        ParamUtil.setRequestAttr(bpc.request, "successPage", "routeBack");
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
     }
 

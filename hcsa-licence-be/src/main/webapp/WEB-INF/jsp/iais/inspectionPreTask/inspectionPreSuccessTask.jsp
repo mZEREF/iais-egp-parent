@@ -12,7 +12,12 @@
       <div class="center-content">
         <div class="intranet-content">
           <div class="bg-title">
-            <h2>The application has been submitted.</h2>
+            <c:if test="${'routeBack' eq successPage}">
+              <h2>You have successfully routed back your application</h2>
+            </c:if>
+            <c:if test="${'routeBack' ne successPage}">
+              <h2>The application has been submitted</h2>
+            </c:if>
           </div>
         </div>
         <div align="left"><span><a href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"></em> Back</a></span></div>
