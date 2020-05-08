@@ -337,7 +337,6 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "nextStages", (Serializable)nextStageList);
 
         List<SelectOption> nextStageReplyList = IaisCommonUtils.genNewArrayList();
-        nextStageReplyList.add(new SelectOption("", "Please Select"));
         nextStageReplyList.add(new SelectOption("PROCREP", "Give Clarification"));
         ParamUtil.setSessionAttr(bpc.request, "nextStageReply", (Serializable)nextStageReplyList);
 
@@ -372,7 +371,6 @@ public class HcsaApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, "doDocument", "Y");
             return;
         }
-
         //validate
         HcsaApplicationViewValidate hcsaApplicationViewValidate = new HcsaApplicationViewValidate();
         Map<String, String> errorMap = hcsaApplicationViewValidate.validate(bpc.request);

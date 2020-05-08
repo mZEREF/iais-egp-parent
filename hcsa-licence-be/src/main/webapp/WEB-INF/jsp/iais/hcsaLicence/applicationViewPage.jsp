@@ -111,7 +111,7 @@
                                                     <c:if test="${applicationViewDto.applicationDto.status == 'APST014'}">
                                                         <div id="decision">
                                                             <iais:row>
-                                                                <iais:field value="Decision" required="true"/>
+                                                                <iais:field value="Processing Decision" required="true"/>
                                                                 <iais:value width="10">
                                                                     <iais:select name="decisionValues" id="decisionValues"
                                                                                  options="decisionValues"
@@ -351,11 +351,15 @@
             // $('#ApplicationViewInspection').css('display', 'none');
             // $('#recommendationDropdown').removeClass('hidden');
         }
-        if ('${applicationViewDto.applicationDto.status}' == 'APST057' || '${applicationViewDto.applicationDto.status}' == 'APST014' || '${applicationViewDto.applicationDto.status}' == 'APST013') {
+        if ('${applicationViewDto.applicationDto.status}' == 'APST057' ||  '${applicationViewDto.applicationDto.status}' == 'APST013') {
             $('#processingDecision').addClass('hidden');
             // $('#recommendationDropdown').addClass('hidden');
             $('#replytr').removeClass('hidden');
             // $('#licenceStartDate').addClass('hidden');
+        }
+        <%-- DMS approval and reject --%>
+        if ('${applicationViewDto.applicationDto.status}' == 'APST014'){
+            $('#processingDecision').addClass('hidden');
         }
         //cessation
         if ('${applicationViewDto.applicationDto.applicationType}' == 'APTY008'){
