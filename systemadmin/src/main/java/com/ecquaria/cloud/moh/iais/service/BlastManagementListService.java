@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailDto;
@@ -27,4 +28,5 @@ public interface BlastManagementListService {
     void setActual(String id);
     String getMessageId();
     void sendEmail(EmailDto emailDto, Map<String, byte[]> attachments);
+    List<OrgUserDto> retrieveOrgUserAccount(List<String> ids);
 }

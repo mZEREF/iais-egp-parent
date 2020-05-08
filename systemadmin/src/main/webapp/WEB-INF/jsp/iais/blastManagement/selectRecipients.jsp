@@ -23,19 +23,10 @@
                             <li class="tracker-item active">Select Recipients to send</li>
                         </ul>
                         <div class="form-group">
-                            <label class="col-xs-4 col-md-4 control-label" >Add Email Addresses</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <textarea cols="50" rows="10" name="email" class="textarea" id="email" title="content">${emailAddress}</textarea>
-                                    <span id="error_addr" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
-                            </iais:value>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-xs-4 col-md-4 control-label">Or use a distribution list</label>
+                            <label class="col-xs-4 col-md-4 control-label">Use a distribution list</label>
                             <iais:value width="10">
                                 <iais:select name="distribution" options="distribution" value=""></iais:select>
+                                <span class="error-distribution" name="iaisErrorMsg" id="error_distribution"></span>
                             </iais:value>
                         </div>
                     </div>

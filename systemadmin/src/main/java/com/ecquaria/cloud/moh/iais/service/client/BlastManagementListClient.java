@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -23,8 +25,9 @@ import java.util.List;
  */
 @FeignClient(name = "system-admin", configuration = FeignConfiguration.class, fallback = IntranetUserClientFallback.class)
 public interface BlastManagementListClient {
-    @PostMapping(value = "/iais-emails/getBlastManagementList",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<SearchResult<BlastManagementListDto>> getBlastManagementList(@RequestBody SearchParam searchParam);
+    @RequestMapping(value = "/iais-emails/getBlastManagementList",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<SearchResult<BlastManagementListDto>> getBlastManagementList(SearchParam searchParam);
 
     @PostMapping(value = "/iais-emails/blastList",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<BlastManagementDto> saveBlastList(@RequestBody BlastManagementDto blastManagementDto);

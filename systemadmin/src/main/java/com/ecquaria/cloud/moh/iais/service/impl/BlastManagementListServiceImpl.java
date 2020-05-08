@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailDto;
@@ -11,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.client.BlastManagementListClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,8 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
     private EmailSmsClient emailSmsClient;
     @Autowired
     private SystemClient systemClient;
+    @Autowired
+    private OrganizationClient organizationClient;
     @Override
     public SearchResult<BlastManagementListDto> blastList(SearchParam searchParam) {
         return blastManagementListClient.getBlastManagementList(searchParam).getEntity();
@@ -87,6 +91,11 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
             log.error(e.getMessage(),e);
         }
     }
+    @Override
+    public List<OrgUserDto> retrieveOrgUserAccount(List<String> ids){
+        return organizationClient.retrieveOrgUserAccount(ids).getEntity();
+    }
+
 
     @Override
     public String getMessageId(){

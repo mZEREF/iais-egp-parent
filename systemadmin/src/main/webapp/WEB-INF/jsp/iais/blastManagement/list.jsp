@@ -106,12 +106,10 @@
                                                 <p><c:out value="${item.mode}"/></p>
                                             </td>
                                             <td>
-                                                <p><fmt:formatDate value="${item.schedule}"
-                                                                   pattern="dd/MM/yyyy HH:mm"/></p>
+                                                <p><c:out value="${item.schedule}"/></p>
                                             </td>
                                             <td>
-                                                <p><fmt:formatDate value="${item.actual}"
-                                                                   pattern="dd/MM/yyyy HH:mm"/></p>
+                                                <p><c:out value="${item.actual}"/></p>
                                             </td>
                                             <td>
                                                 <p><c:out value="${item.docName}"/></p>

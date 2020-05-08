@@ -43,7 +43,7 @@
                         </div>
 
                         <div class="form-group" id="serviceDivByrole">
-                            <iais:field value="Recipients Roles" required="true"/>
+                            <iais:field value="Distribution List" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:select name="role" options="roleSelection" value="${distribution.getRole()}" firstOption="Please Select" disabled=""></iais:select>

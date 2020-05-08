@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
@@ -20,6 +21,8 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
@@ -94,6 +97,15 @@ public class BlastManagementDelegator {
         CrudHelper.doPaging(searchParam,bpc.request);
         QueryHelp.setMainSql("systemAdmin", "queryBlastManagementList",searchParam);
         SearchResult<BlastManagementListDto> searchResult = blastManagementListService.blastList(searchParam);
+        for (BlastManagementListDto item:searchResult.getRows()
+             ) {
+            if(item.getSchedule() != null){
+                item.setSchedule(getDate(item.getSchedule()));
+            }
+            if(item.getActual() != null){
+                item.setActual(getDate(item.getActual()));
+            }
+        }
         ParamUtil.setRequestAttr(bpc.request,"blastSearchResult",searchResult);
         ParamUtil.setRequestAttr(bpc.request,"blastSearchParam",searchParam);
 
@@ -234,6 +246,7 @@ public class BlastManagementDelegator {
         blastManagementDto.setStatus(status);
         blastManagementDto.setHH(HH);
         blastManagementDto.setMM(MM);
+        blastManagementDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         SimpleDateFormat newformat =  new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
 
         if(!StringUtil.isEmpty(date)){
@@ -335,26 +348,27 @@ public class BlastManagementDelegator {
      * @param bpc
      */
     public void selectRecipients(BaseProcessClass bpc){
-        String email = ParamUtil.getString(bpc.request, "email");
         String distribution = ParamUtil.getString(bpc.request, "distribution");
-        if(email != null){
-            List<String> emaillist = Arrays.asList(email.split("\r\n"));
-            blastManagementDto.setEmailAddress(emaillist);
-        }
-
-        if(distribution != null){
-            blastManagementDto.setDistributionId(distribution);
-        }
-        ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
-        ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page3");
-        if(validationResult != null && validationResult.isHasErrors()) {
-            Map<String, String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
+        if(distribution == null){
+            getDistribution(bpc);
+            Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+            errMap.put("distribution","Please select distribution list for mass email.");
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
 
         }else{
-            blastManagementListService.saveBlast(blastManagementDto);
-            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
+            blastManagementDto.setDistributionId(distribution);
+            ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
+            ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page3");
+            if(validationResult != null && validationResult.isHasErrors()) {
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
+
+            }else{
+                blastManagementListService.saveBlast(blastManagementDto);
+                ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
+            }
         }
 
     }
@@ -402,6 +416,32 @@ public class BlastManagementDelegator {
         if (!searchResult.getRows().isEmpty()){
             //master code to description
             List<BlastManagementListDto> blastManagementListDtos = searchResult.getRows();
+            List<String> ids = IaisCommonUtils.genNewArrayList();
+
+            for (BlastManagementListDto item:blastManagementListDtos
+                 ) {
+                ids.add(item.getCreateBy());
+            }
+            Map<String, String> userNameList = new HashMap<>();
+            List<OrgUserDto> actionByRealNameList=blastManagementListService.retrieveOrgUserAccount(ids);
+            for (OrgUserDto item:actionByRealNameList
+                 ) {
+                userNameList.put(item.getId(),item.getDisplayName());
+            }
+            for (BlastManagementListDto item:blastManagementListDtos
+            ) {
+                item.setStatus(MasterCodeUtil.getCodeDesc(item.getStatus()));
+                item.setCreateBy(userNameList.get(item.getCreateBy()));
+                if(item.getSchedule() != null){
+                    item.setSchedule(getDate(item.getSchedule()));
+                }
+                if(item.getActual() != null){
+                    item.setActual(getDate(item.getActual()));
+                }
+                if(item.getCreateDt() != null){
+                    item.setCreateDt(getDate(item.getCreateDt()));
+                }
+            }
             file = ExcelWriter.exportExcel(blastManagementListDtos, BlastManagementListDto.class, "Blast_Management_Upload_Template");
         }
 
@@ -415,6 +455,11 @@ public class BlastManagementDelegator {
         }
 
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
+
+    private String getDate(String date){
+        int index=date.lastIndexOf(".");
+        return date.substring(0,index);
     }
 
     private void getDistribution(BaseProcessClass bpc){
