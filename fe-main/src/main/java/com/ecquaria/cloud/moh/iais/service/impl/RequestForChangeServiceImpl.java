@@ -38,11 +38,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId) {
-        return licenceClient.getAppSubmissionDto(licenceId).getEntity();
-    }
-
-    @Override
     public ApplicationDto getApplicationByLicenceId(String licenceId) {
         return applicationClient.getApplicaitonByLicenceId(licenceId).getEntity();
     }

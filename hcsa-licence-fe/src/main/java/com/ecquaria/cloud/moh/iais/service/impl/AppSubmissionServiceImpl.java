@@ -329,8 +329,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId) {
-        return licenceClient.getAppSubmissionDto(licenceId).getEntity();
+    public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId,String hciCode) {
+        return licenceClient.getAppSubmissionDto(licenceId,hciCode).getEntity();
     }
 
     @Override

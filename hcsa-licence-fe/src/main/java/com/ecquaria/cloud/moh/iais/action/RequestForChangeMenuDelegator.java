@@ -305,7 +305,7 @@ public class RequestForChangeMenuDelegator {
             if (!IaisCommonUtils.isEmpty(premisesListQueryDtos)) {
                 premisesListQueryDto = getPremisesListQueryDto(premisesListQueryDtos, licId, premId);
                 if (premisesListQueryDto != null) {
-                    appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(premisesListQueryDto.getLicenceId());
+                    appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(premisesListQueryDto.getLicenceId(),"");
                     List<String> names = IaisCommonUtils.genNewArrayList();
                     if(appSubmissionDto != null ) {
                         // from draft,rfi
@@ -599,7 +599,7 @@ public class RequestForChangeMenuDelegator {
         for(PersonnelListQueryDto item:personnelEditList){
             licenceIds.add(item.getLicenceId());
         }
-        List<AppSubmissionDto> appSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(licenceIds);
+        List<AppSubmissionDto> appSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(licenceIds,"");
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         List<String> names = IaisCommonUtils.genNewArrayList();
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -20,16 +21,19 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -72,8 +76,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId) {
-        return licenceClient.getAppSubmissionDto(licenceId).getEntity();
+    public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId,String hciCode) {
+        return licenceClient.getAppSubmissionDto(licenceId,hciCode).getEntity();
     }
 
     @Override
@@ -89,7 +93,14 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public List<ApplicationDto> getAppByLicIdAndExcludeNew(String licenceId) {
-        return applicationClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
+        List<ApplicationDto> applicationDtos = applicationClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();;
+        List<ApplicationDto> newApplicationDtos = IaisCommonUtils.genNewArrayList();
+        for(ApplicationDto applicationDto:applicationDtos){
+            if(!ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(applicationDto.getStatus())){
+                newApplicationDtos.add(applicationDto);
+            }
+        }
+        return newApplicationDtos;
     }
 
 
@@ -130,8 +141,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public List<AppSubmissionDto> getAppSubmissionDtoByLicenceIds(List<String> licenceIds) {
-        return licenceClient.getAppSubmissionDtos(licenceIds).getEntity();
+    public List<AppSubmissionDto> getAppSubmissionDtoByLicenceIds(List<String> licenceIds,String hciCode) {
+        return licenceClient.getAppSubmissionDtos(licenceIds,hciCode).getEntity();
     }
 
     @Override

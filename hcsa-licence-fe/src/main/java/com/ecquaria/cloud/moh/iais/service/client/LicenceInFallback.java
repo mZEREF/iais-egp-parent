@@ -22,7 +22,7 @@ import java.util.List;
 public class LicenceInFallback implements LicenceClient {
 
     @Override
-    public FeignResponseEntity<AppSubmissionDto> getAppSubmissionDto(String licenceId) {
+    public FeignResponseEntity<AppSubmissionDto> getAppSubmissionDto(String licenceId,String hciCode) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -122,7 +122,7 @@ public class LicenceInFallback implements LicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<List<AppSubmissionDto>> getAppSubmissionDtos(List<String> licenceIds) {
+    public FeignResponseEntity<List<AppSubmissionDto>> getAppSubmissionDtos(List<String> licenceIds,String hciCode) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

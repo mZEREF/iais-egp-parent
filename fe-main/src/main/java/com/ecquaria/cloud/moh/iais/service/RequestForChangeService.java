@@ -15,8 +15,6 @@ import java.util.List;
 public interface RequestForChangeService {
     List<PremisesListQueryDto> getPremisesList(String licenseeId);
 
-    AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId);
-
     ApplicationDto getApplicationByLicenceId(String licenceId);
 
     AppSubmissionDto submitChange(AppSubmissionDto appSubmissionDto, Process process);

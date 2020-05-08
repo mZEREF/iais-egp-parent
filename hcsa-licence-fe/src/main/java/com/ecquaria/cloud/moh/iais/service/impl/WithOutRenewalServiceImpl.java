@@ -26,8 +26,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     }
 
     @Override
-    public List<AppSubmissionDto> getAppSubmissionDtos(List<String> licenceIds) {
-        return licenceClient.getAppSubmissionDtos(licenceIds).getEntity();
+    public List<AppSubmissionDto> getAppSubmissionDtos(List<String> licenceIds,String hciCode) {
+        return licenceClient.getAppSubmissionDtos(licenceIds,hciCode).getEntity();
     }
 
     @Override

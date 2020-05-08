@@ -449,7 +449,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     }
 
     public String createAuditTaskApp(List<String> licIds, String submissionId,AuditCombinationDto auditCombinationDto) {
-        List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
+        List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds,"").getEntity();
         String grpNo = auditCombinationDto.getEventRefNo();
         for(AppSubmissionDto entity : appSubmissionDtoList){
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.getAppSvcRelatedInfoDtoList();

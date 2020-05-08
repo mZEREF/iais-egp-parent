@@ -341,7 +341,7 @@ public class RequestForChangeDelegator {
             if(error.isEmpty()){
                 String newLicenseeId = licenseeDto.getId();
                 log.info(StringUtil.changeForLog("The newLicenseeId is -->:"+newLicenseeId));
-                AppSubmissionDto appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
+                AppSubmissionDto appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId,"");
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                 appSubmissionDto.setLicenseeId(newLicenseeId);
                 appSubmissionDto.setAutoRfc(true);
@@ -492,7 +492,7 @@ public class RequestForChangeDelegator {
 
         //load data
         if(!StringUtil.isEmpty(licenceId)){
-            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
+            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId,"");
             if(appSubmissionDto == null || IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList()) ||
                     IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
                 log.info("appSubmissionDto incomplete , licenceId:"+licenceId);

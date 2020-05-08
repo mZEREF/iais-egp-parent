@@ -15,7 +15,7 @@ import java.util.List;
 public interface WithOutRenewalService {
     WithOutRenewalDto getRenewalViewByLicNo(String licenceNo);
 
-    List<AppSubmissionDto> getAppSubmissionDtos(List<String> licenceIds);
+    List<AppSubmissionDto> getAppSubmissionDtos(List<String> licenceIds,String hciCode);
 
     String getAppGrpNoByAppType(String appType);
 

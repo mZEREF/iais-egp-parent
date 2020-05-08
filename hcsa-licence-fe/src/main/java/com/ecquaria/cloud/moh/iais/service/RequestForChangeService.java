@@ -4,10 +4,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
-import freemarker.template.TemplateException;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 
-import java.io.IOException;
 import java.util.List;
 
 /****
@@ -18,7 +21,7 @@ import java.util.List;
 public interface RequestForChangeService {
     List<PremisesListQueryDto> getPremisesList(String licenseeId);
 
-    AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId);
+    AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId,String hciCode);
 
     List<ApplicationDto> getAppByLicIdAndExcludeNew(String licenceId);
 
@@ -38,7 +41,7 @@ public interface RequestForChangeService {
 
     List<PersonnelListQueryDto> getLicencePersonnelListQueryDto(String licenseeId);
 
-    List<AppSubmissionDto> getAppSubmissionDtoByLicenceIds(List<String> licenceIds);
+    List<AppSubmissionDto> getAppSubmissionDtoByLicenceIds(List<String> licenceIds,String hciCode);
 
     List<AppSubmissionDto> saveAppsBySubmissionDtos(List<AppSubmissionDto> appSubmissionDtos);
 
