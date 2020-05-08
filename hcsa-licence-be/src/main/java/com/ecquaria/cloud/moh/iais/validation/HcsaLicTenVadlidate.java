@@ -179,7 +179,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
         //mandatory
         boolean numfalg = true;
             if(StringUtil.isEmpty(temp.getColumRight())){
-                errMap.put(svcCode+temp.getOrderNum()+"righterr","The Filed is mandatory.");
+                errMap.put(svcCode+temp.getOrderNum()+"righterr","UC_CHKLMD001_ERR001");
                 numfalg = false;
             }else{
                 if(!StringUtil.stringIsFewDecimal(temp.getColumRight(),2)){
@@ -189,7 +189,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
             }
 
             if(StringUtil.isEmpty(temp.getColumLeft())){
-                errMap.put(svcCode+temp.getOrderNum()+"lefterr","The Filed is mandatory.");
+                errMap.put(svcCode+temp.getOrderNum()+"lefterr","UC_CHKLMD001_ERR001");
                 numfalg = false;
             }else{
                 if(!StringUtil.stringIsFewDecimal(temp.getColumLeft(),2)){
@@ -216,7 +216,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
         Integer numMonth =0;
         try {
             if(StringUtil.isEmpty(temp.getYearNum())){
-                errMap.put(svcCode+temp.getOrderNum()+"lterr","The Filed is mandatory.");
+                errMap.put(svcCode+temp.getOrderNum()+"lterr","UC_CHKLMD001_ERR001");
                 flag = false;
             }
             else{
@@ -227,7 +227,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                     }
                   }
             if(StringUtil.isEmpty(temp.getMonthNum())){
-                errMap.put(svcCode+temp.getOrderNum()+"timeerr","The Filed is mandatory.");
+                errMap.put(svcCode+temp.getOrderNum()+"timeerr","UC_CHKLMD001_ERR001");
                 flag = false;
             }
             else {
