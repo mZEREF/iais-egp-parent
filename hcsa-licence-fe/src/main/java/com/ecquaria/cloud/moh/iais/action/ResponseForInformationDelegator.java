@@ -1,10 +1,14 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ResponseForInformationService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -21,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ResponseForInformationDelegator
@@ -79,10 +84,17 @@ public class ResponseForInformationDelegator {
     public void preDetail(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do preDetail start ...."));
         HttpServletRequest request=bpc.request;
-        String id =  ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        LicPremisesReqForInfoDto licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(id);
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto;
+        try {
+            String id =  ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+             licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(id);
+             logAbout("ReqForInfoId:"+licPremisesReqForInfoDto.getReqInfoId());
+        }catch (Exception e){
+             licPremisesReqForInfoDto= (LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(request,"licPreReqForInfoDto");
+        }
+
         licPremisesReqForInfoDto.setOfficerRemarks(licPremisesReqForInfoDto.getOfficerRemarks().split("\\|")[0]);
-        ParamUtil.setRequestAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
+        ParamUtil.setSessionAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
         // 		doRFI->OnStepProcess
     }
 
@@ -115,6 +127,15 @@ public class ResponseForInformationDelegator {
         String userReply=mulReq.getParameter("userReply");
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(crudActionValue);
         CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile");
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        errorMap=validate(bpc.request);
+        if (!errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
+            //
+            return;
+        }
         if(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename())){
             file.getFileItem().setFieldName("selectedFile");
             licPremisesReqForInfoDto.setDocName(file.getOriginalFilename());
@@ -143,5 +164,31 @@ public class ResponseForInformationDelegator {
     }
     private  void logAbout(String methodName){
         log.debug(StringUtil.changeForLog("****The***** " +methodName +" ******Start ****"));
+    }
+
+    public Map<String, String> validate(HttpServletRequest httpServletRequest) {
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) httpServletRequest.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        CommonsMultipartFile commonsMultipartFile= (CommonsMultipartFile) mulReq.getFile( "UploadFile");
+        if(commonsMultipartFile.isEmpty()){
+            errMap.put("UploadFile","The file cannot be empty.");
+        }else{
+            Map<String, Boolean> booleanMap = ValidationUtils.validateFile(commonsMultipartFile);
+            Boolean fileSize = booleanMap.get("fileSize");
+            Boolean fileType = booleanMap.get("fileType");
+            //size
+            if(!fileSize){
+                errMap.put("UploadFile","The file size must less than " + 4 + "M.");
+            }
+            //type
+            if(!fileType){
+                errMap.put("UploadFile","The file type is invalid.");
+            }
+        }
+        String userReply=mulReq.getParameter("userReply");
+        if(userReply.isEmpty()){
+            errMap.put("userReply","ERR009");
+        }
+        return errMap;
     }
 }

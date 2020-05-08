@@ -79,7 +79,7 @@
                                         <iais:row style="text-align:center;">
                                             <iais:value width="18">
                                                 <label>
-                                                    <textarea id="userReply_rfi" name="userReply" rows="8" style=" font-weight:normal;" cols="70">${licPreReqForInfoDto.userReply}</textarea>
+                                                    <textarea id="userReply_rfi" name="userReply" rows="8" style=" font-weight:normal;" cols="70">${licPreReqForInfoDto.userReply}</textarea><span id="error_userReply" name="iaisErrorMsg" class="error-msg" ></span>
                                                 </label>
                                             </iais:value>
                                         </iais:row>
@@ -90,7 +90,7 @@
 
                                                         &nbsp;&nbsp;&nbsp;<div id="uploadFileName"></div>
                                                         <input class="selectedFile commDoc" id="commonDoc"  name = "UploadFile" type="file" style="display: none;" aria-label="selectedFile1" >
-                                                        <a class="btn btn-file-upload btn-secondary" >Attachment</a><br/>
+                                                        <a class="btn btn-file-upload btn-secondary" >Attachment</a><span id="error_UploadFile" name="iaisErrorMsg" class="error-msg" ></span><br/>
                                                     </div>
 
                                                 </iais:value>
@@ -112,6 +112,7 @@
         </div>
     </div>
 </form>
+<%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <script type="text/javascript">
     function doBack(){
         SOP.Crud.cfxSubmit("mainForm", "back");
