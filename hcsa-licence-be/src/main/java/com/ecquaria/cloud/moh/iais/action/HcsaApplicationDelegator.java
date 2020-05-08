@@ -344,7 +344,6 @@ public class HcsaApplicationDelegator {
 
 
         List<SelectOption> decisionValues = IaisCommonUtils.genNewArrayList();
-        decisionValues.add(new SelectOption("", "Please Select"));
         decisionValues.add(new SelectOption("decisionApproval", "Approve"));
         decisionValues.add(new SelectOption("decisionReject", "Reject"));
         ParamUtil.setSessionAttr(bpc.request, "decisionValues", (Serializable)decisionValues);
