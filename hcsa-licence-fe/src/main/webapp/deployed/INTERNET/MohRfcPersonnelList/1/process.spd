@@ -2,77 +2,63 @@
 <Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohRfcPersonnelList" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Step1" x="-70" y="300">
+  <StartStep defClass="" executor="" icon="" name="Step1" x="-60" y="80">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_1" name="step1_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preparePersonnelList" x="240" y="170">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preparePersonnelList_OnStepProcess_0" name="preparePersonnelList_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doPersonnelList" x="490" y="170">
+  <AutomaticStep defClass="" executor="" icon="" name="doPersonnelList" x="300" y="80">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doPersonnelList_OnStepProcess_0" name="doPersonnelList_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preparePersonnelEdit" x="240" y="300">
+  <AutomaticStep defClass="" executor="" icon="" name="preparePersonnelEdit" x="640" y="190">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preparePersonnelEdit_OnStepProcess_0" name="preparePersonnelEdit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doPersonnelEdit" x="490" y="300">
+  <AutomaticStep defClass="" executor="" icon="" name="doPersonnelEdit" x="660" y="430">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doPersonnelEdit_OnStepProcess_0" name="doPersonnelEdit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preparePersonnel" x="10" y="300">
+  <AutomaticStep defClass="" executor="" icon="" name="preparePersonnel" x="10" y="80">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="ControlSwitch" x="960" y="300">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="controlSwitch_OnStepProcess_0" name="controlSwitch_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="prepareAckPage" x="190" y="460">
+  <AutomaticStep defClass="" executor="" icon="" name="prepareAckPage" x="240" y="200">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="prepareAckPage_OnStepProcess_0" name="prepareAckPage_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doSearch" x="280" y="50">
+  <AutomaticStep defClass="" executor="" icon="" name="doSearch" x="430" y="190">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doSearch_OnStepProcess_0" name="doSearch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doSorting" x="190" y="50">
+  <AutomaticStep defClass="" executor="" icon="" name="doSorting" x="350" y="200">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doSorting_OnStepProcess_0" name="doSorting_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doPaging" x="360" y="50">
+  <AutomaticStep defClass="" executor="" icon="" name="doPaging" x="520" y="190">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -81,19 +67,19 @@
   </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="personnelList" stageIndicator="" x="380" y="170">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="personnelList" stageIndicator="" x="180" y="80">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="personnelEdit" stageIndicator="" x="370" y="300">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="personnelEdit" stageIndicator="" x="660" y="310">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="520" y="460">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="260" y="350">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -102,85 +88,85 @@
  </Pages>
  <Forms/>
  <Links>
-  <SynchronousLink destinationName="/Pages/WebPage/personnelList" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preparePersonnelList" style="oblique">
-   <position>{(260,190)(400,190)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doPersonnelList" linkstyle="Direct" name="" sourceName="/Pages/WebPage/personnelList" style="oblique">
-   <position>{(400,190)(510,190)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/personnelEdit" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preparePersonnelEdit" style="oblique">
-   <position>{(260,320)(390,320)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doPersonnelEdit" linkstyle="Direct" name="" sourceName="/Pages/WebPage/personnelEdit" style="oblique">
-   <position>{(390,320)(510,320)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnel" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1" style="oblique">
-   <position>{(-50,320)(30,320)}</position>
+   <position>{(-40,100)(30,100)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPersonnelList" style="oblique">
-   <position>{(510,190)(980,320)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/personnelList" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preparePersonnel" style="rectanular">
+   <position>{(30,100)(200,100)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPersonnelEdit" style="oblique">
-   <position>{(510,320)(980,320)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doPersonnelList" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/personnelList" style="rectanular">
+   <position>{(200,100)(320,100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doPersonnelList" style="rectanular">
+   <position>{(320,100)(520,100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSorting" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch" style="oblique">
+   <position>{(520,100)(370,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch" style="oblique">
+   <position>{(520,100)(450,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doPaging" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch" style="oblique">
+   <position>{(520,100)(540,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnelEdit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch" style="oblique">
+   <position>{(520,100)(660,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSorting" style="oblique">
+   <position>{(370,220)(460,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSearch" style="oblique">
+   <position>{(450,210)(460,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPaging" style="oblique">
+   <position>{(540,210)(460,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/personnelEdit" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preparePersonnelEdit" style="rectanular">
+   <position>{(660,210)(680,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doPersonnelEdit" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/personnelEdit" style="rectanular">
+   <position>{(680,330)(680,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doPersonnelEdit" style="rectanular">
+   <position>{(680,450)(700,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond" style="oblique">
+   <position>{(700,570)(460,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnelEdit" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond" style="rectanular">
+   <position>{(700,570)(571,569)(660,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnel" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(460,570)(59,574)(30,100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareAckPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch" style="oblique">
+   <position>{(520,100)(260,220)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareAckPage" style="oblique">
-   <position>{(210,480)(540,480)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preparePersonnel" style="oblique">
-   <position>{(30,320)(190,320)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnelList" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(190,320)(260,190)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnelEdit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(190,320)(260,320)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareAckPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(190,320)(210,480)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnel" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(1000,440)(73,601)(30,320)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ControlSwitch" style="oblique">
-   <position>{(980,320)(1000,440)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doSorting" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
-   <position>{(190,320)(210,70)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doPaging" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(190,320)(179,14)(389,17)(380,70)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(190,320)(181,60)(300,70)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnelList" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPaging" style="oblique">
-   <position>{(380,70)(260,190)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnelList" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSearch" style="oblique">
-   <position>{(300,70)(260,190)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnelList" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSorting" style="oblique">
-   <position>{(210,70)(260,190)}</position>
+   <position>{(260,220)(280,370)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/preparePersonnelEdit" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond" operator="=" rightOperand="&quot;true&quot;" x="680" y="550">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doSearch" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="170" y="300">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doSearch" executor="" icon="" leftOperand="crud_action_type" name="Switch" x="500" y="80">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/preparePersonnelList" value="&quot;prePersonnelList&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/preparePersonnelEdit" value="&quot;preparePersonnelEdit&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/prepareAckPage" value="&quot;preAck&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSorting" value="&quot;sort&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doPaging" value="&quot;page&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;search&quot;"/>
-  </Switch>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preparePersonnel" executor="" icon="" leftOperand="switch" name="Switch1" x="980" y="420">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/preparePersonnel" value="&quot;loading&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doPaging" value="&quot;page&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preparePersonnelEdit" value="&quot;edit&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareAckPage" value="&quot;success&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
- <Merges/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="440" y="550">
+   <Description/>
+  </Merge>
+ </Merges>
  <StudioLabels/>
  <StageIndicator/>
  <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>

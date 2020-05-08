@@ -20,7 +20,7 @@
                 <label class="control-label" for="psnType">Roles: </label>
             </div>
             <div class="col-sm-5 col-md-2">
-                <iais:select name="" id="psnType" options="PersonnelRoleList" firstOption="All"></iais:select>
+                <iais:select name="psnTypes" id="psnType" value="${psnType}" options="PersonnelRoleList" firstOption="All" onchange="doSearch()"></iais:select>
             </div>
             <div class="col-sm-5 col-md-6">
             </div>
@@ -37,7 +37,7 @@
                     <table class="table">
                     <thead>
                     <tr>
-                        <th>No.</th>
+<%--                        <th>No.</th>--%>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Mobile</th>
@@ -49,11 +49,11 @@
                     <c:forEach var="personnelist" items="${PersonnelListMap}" varStatus="status">
                         <c:set var="onePersonnel" value="${personnelist.value.get(0)}"></c:set>
                         <tr class="personnel">
-                            <td>
-                                <p class="visible-xs visible-sm table-row-title">Code Category</p>
-                                <p><c:out
-                                        value="${(status.index + 1) + (PersonnelSearchParam.pageNo - 1) * PersonnelSearchParam.pageSize}"/></p>
-                            </td>
+<%--                            <td>--%>
+<%--                                <p class="visible-xs visible-sm table-row-title">Code Category</p>--%>
+<%--                                <p><c:out--%>
+<%--                                        value="${(status.index + 1) + (PersonnelSearchParam.pageNo - 1) * PersonnelSearchParam.pageSize}"/></p>--%>
+<%--                            </td>--%>
                             <td>
                                 <p><a  class="personnel"><c:out value="${onePersonnel.psnName}"/></a></p>
                                 <input type="hidden" class="statusIndex" name="statusIndex" value="${status.index}" />
@@ -110,7 +110,7 @@
         $personnelEle = $(this).closest('tr.personnel');
         var index =  $personnelEle.find('.statusIndex').val();
         $('#hiddenIndex').val(index);
-        doSubmitForm('preparePersonnelEdit','', '');
+        doSubmitForm('edit','', '');
 
     });
 
@@ -131,8 +131,12 @@
         mainForm.submit();
     }
 
+    function doSearch(){
+        SOP.Crud.cfxSubmit("menuListForm", "search");
+    }
+
+
     function jumpToPagechangePage(){
-        alert("---")
         SOP.Crud.cfxSubmit("menuListForm", "page");
     }
 
