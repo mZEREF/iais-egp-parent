@@ -150,6 +150,10 @@ public class KpiColourByWorkDaysBatchJob {
                 }
             }
         }
+        //Remove today
+        if(days > 0){
+            days--;
+        }
         taskDto.setSlaRemainInDays(days);
         taskDto.setAuditTrailDto(intranet);
         taskService.updateTask(taskDto);
