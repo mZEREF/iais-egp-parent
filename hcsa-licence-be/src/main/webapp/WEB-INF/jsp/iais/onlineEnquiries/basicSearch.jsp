@@ -155,7 +155,7 @@
                             <tr align="center">
                                 <th class="form-check">
                                     <c:if test="${!empty SearchResult.rows}">
-                                        <input class="form-check-input licenceCheck" type="checkbox" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll();"/>
+                                        <input class="form-check-input licenceCheck" type="checkbox" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll('${isASO}');"/>
                                         <label class="form-check-label" for="checkboxAll">
                                             <span class="check-square"></span>
                                         </label>
@@ -334,10 +334,12 @@
         SOP.Crud.cfxSubmit("mainForm", "appDetails",appCorrId);
     }
 
-    function checkAll() {
+    function checkAll(isAso) {
         if ($('#checkboxAll').is(':checked')) {
             $("input[name='appIds']").attr("checked", "true");
-            $('.CeaseBtn').prop('disabled',false);
+            if(isAso==="1"){
+                $('.CeaseBtn').prop('disabled',false);
+            }
         } else {
             $("input[name='appIds']").removeAttr("checked");
             $('.CeaseBtn').prop('disabled',true);

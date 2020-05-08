@@ -46,6 +46,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import ecq.commons.sequence.uuid.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -266,6 +267,7 @@ public class OfficerOnlineEnquiriesDelegator {
                             }
                         }
                         else {
+                            licenceIds.add(UUID.randomUUID().toString());
                             ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
                             rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
