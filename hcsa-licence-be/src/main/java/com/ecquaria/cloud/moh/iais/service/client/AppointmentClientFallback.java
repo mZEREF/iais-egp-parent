@@ -6,12 +6,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.KpiCountDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import org.springframework.http.HttpHeaders;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.springframework.http.HttpHeaders;
 
 /**
  * @Author: Hc
@@ -101,7 +103,7 @@ public class AppointmentClientFallback implements AppointmentClient{
     }
 
     @Override
-    public FeignResponseEntity<Map<Integer, Integer>> getWorkAndNonMap(List<Date> dates) {
+    public FeignResponseEntity<Map<Integer, Integer>> getWorkAndNonMap(KpiCountDto kpiCountDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -126,6 +128,14 @@ public class AppointmentClientFallback implements AppointmentClient{
 
     @Override
     public FeignResponseEntity<Void> updateUserCalendarStatus(ApptCalendarStatusDto apptCalDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<Date>> getHolidays() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
