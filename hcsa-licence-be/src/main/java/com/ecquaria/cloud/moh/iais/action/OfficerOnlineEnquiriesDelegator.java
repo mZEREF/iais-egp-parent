@@ -210,6 +210,7 @@ public class OfficerOnlineEnquiriesDelegator {
                         SearchResult<LicenseeQueryDto> licenseeParamResult = onlineEnquiriesService.searchLicenseeIdsParam(licenseeParam);
                         for (LicenseeQueryDto r:licenseeParamResult.getRows()
                         ) {
+                            filter.put("licenseeId",r.getId());
                             licenseeIds.add(r.getId());
                         }
                         if(licenseeIds.size()==0){
@@ -570,6 +571,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 SearchResult<LicenseeQueryDto> licenseeParamResult = onlineEnquiriesService.searchLicenseeIdsParam(licenseeParam);
                 for (LicenseeQueryDto r:licenseeParamResult.getRows()
                 ) {
+                    filters.put("licenseeId",r.getId());
                     licenseeIds.add(r.getId());
                 }
                 if(licenseeIds.size()==0){
@@ -781,6 +783,9 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getHciName());
         reqForInfoSearchListDto.setBlkNo(rfiApplicationQueryDto.getBlkNo());
         String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getRiskLevel()}).get(0).getText();
+        if(StringUtil.isEmpty(riskLevel)){
+            riskLevel="-";
+        }
         reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
         reqForInfoSearchListDto.setBuildingName(rfiApplicationQueryDto.getBuildingName());
         reqForInfoSearchListDto.setUnitNo(rfiApplicationQueryDto.getUnitNo());
