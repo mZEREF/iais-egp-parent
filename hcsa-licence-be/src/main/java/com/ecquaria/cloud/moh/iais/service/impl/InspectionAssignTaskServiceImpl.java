@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -35,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -58,6 +60,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
+
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     @Autowired
     private OrganizationClient organizationClient;
@@ -146,7 +151,35 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         //set inspector checkbox list
         setInspectorByOrgUserDto(inspecTaskCreAndAssDto, orgUserDtos, loginContext);
         setInspectorLeadName(inspecTaskCreAndAssDto, orgUserDtos, workGroupId);
+        //set recommendation leads
+        setInspectorLeadRecom(inspecTaskCreAndAssDto, appCorrelationId);
         return inspecTaskCreAndAssDto;
+    }
+
+    private void setInspectorLeadRecom(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String appCorrelationId) {
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appCorrelationId, InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
+        if(appPremisesRecommendationDto == null){
+            List<String> leadNames = inspecTaskCreAndAssDto.getInspectionLeads();
+            if(!IaisCommonUtils.isEmpty(leadNames)){
+                String nameStr = "";
+                for(String name : leadNames){
+                    if(StringUtil.isEmpty(nameStr)){
+                        nameStr = name;
+                    } else {
+                        nameStr = nameStr + "," + name;
+                    }
+                }
+                appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+                appPremisesRecommendationDto.setAppPremCorreId(appCorrelationId);
+                appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                appPremisesRecommendationDto.setVersion(1);
+                appPremisesRecommendationDto.setRecomInDate(null);
+                appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPECTION_LEAD);
+                appPremisesRecommendationDto.setRecomDecision(nameStr);
+                appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+            }
+        }
     }
 
     @Override

@@ -70,6 +70,86 @@
 
                         <div class="tab-pane" id="tabDocuments" role="tabpanel">
                           <%@ include file="../inspectionncList/tabDocuments.jsp" %>
+                          <div class="alert alert-info" role="alert">
+                            <strong>
+                              <h4>Past Inspection Detail</h4>
+                            </strong>
+                          </div>
+                          <div class="row">
+                            <div class="col-xs-12">
+                              <div class="table-gp">
+                                <table class="table">
+                                  <thead>
+                                  <tr>
+                                    <th>S/N</th>
+                                    <th>HCI Code</th>
+                                    <th>HCI Name / Address</th>
+                                    <th>Service Name</th>
+                                    <th>Licence Period</th>
+                                    <th>Last Inspection Date</th>
+                                    <th>Compliance and Risk Assessment</th>
+                                    <th>Inspector Lead</th>
+                                    <th>Inspector</th>
+                                    <th>Remarks</th>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+                                  <c:choose>
+                                    <c:when test="${empty inspectionHistoryShowDtos}">
+                                      <tr>
+                                        <td colspan="12">
+                                          <iais:message key="ACK018" escape="true"></iais:message>
+                                          <!--No Record!!-->
+                                        </td>
+                                      </tr>
+                                    </c:when>
+                                    <c:otherwise>
+                                      <c:forEach var="inspHistory" items="${inspectionHistoryShowDtos}" varStatus="status">
+                                        <tr>
+                                          <td class="row_no"><c:out value="${status.index + 1}"/></td>
+                                          <td><c:out value="${inspHistory.hciCode}"/></td>
+                                          <td><c:out value="${inspHistory.hciNameAddress}"/></td>
+                                          <td><c:out value="${inspHistory.serviceName}"/></td>
+                                          <td><c:out value="${inspHistory.licencePeriod}"/></td>
+                                          <td>
+                                            <c:if test="${inspHistory.inspDate != null}">
+                                              <fmt:formatDate value='${inspHistory.inspDate}' pattern='dd/MM/yyyy'/>
+                                            </c:if>
+                                            <c:if test="${inspHistory.inspDate == null}">
+                                              <c:out value="-"/>
+                                            </c:if>
+                                          </td>
+                                          <td><c:out value="${inspHistory.complianceRisk}"/></td>
+                                          <td>
+                                            <c:if test="${!empty inspHistory.inspLeads}">
+                                              <c:forEach var="inspLead" items="${inspHistory.inspLeads}">
+                                                <c:out value="${inspLead}"/>
+                                              </c:forEach>
+                                            </c:if>
+                                            <c:if test="${empty inspHistory.inspLeads}">
+                                              <c:out value="-"/>
+                                            </c:if>
+                                          </td>
+                                          <td>
+                                            <c:if test="${!empty inspHistory.inspectors}">
+                                              <c:forEach var="inspector" items="${inspHistory.inspectors}">
+                                                <c:out value="${inspector}"/>
+                                              </c:forEach>
+                                            </c:if>
+                                            <c:if test="${empty inspHistory.inspectors}">
+                                              <c:out value="-"/>
+                                            </c:if>
+                                          </td>
+                                          <td><c:out value="${inspHistory.remark}"/></td>
+                                        </tr>
+                                      </c:forEach>
+                                    </c:otherwise>
+                                  </c:choose>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
                         </div>
 
                         <div class="tab-pane" id="tabInspection" role="tabpanel">
@@ -252,73 +332,6 @@
                               <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
                             </iais:action>
                             <br><br><br>
-                            <div class="alert alert-info" role="alert">
-                              <strong>
-                                <h4>Inspection History</h4>
-                              </strong>
-                            </div>
-                            <div class="row">
-                              <div class="col-xs-12">
-                                <div class="table-gp">
-                                  <table class="table">
-                                    <thead>
-                                    <tr>
-                                      <th>S/N</th>
-                                      <th>HCI Code</th>
-                                      <th>HCI Name / Address</th>
-                                      <th>Service Name</th>
-                                      <th>Licence Period</th>
-                                      <th>Last Inspection Date</th>
-                                      <th>Compliance and Risk Assessment</th>
-                                      <th>Inspector Lead</th>
-                                      <th>Inspector</th>
-                                      <th>Remarks</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                      <c:choose>
-                                        <c:when test="${empty inspectionHistoryShowDtos}">
-                                          <tr>
-                                            <td colspan="12">
-                                              <iais:message key="ACK018" escape="true"></iais:message>
-                                              <!--No Record!!-->
-                                            </td>
-                                          </tr>
-                                        </c:when>
-                                        <c:otherwise>
-                                          <c:forEach var="inspHistory" items="${inspectionHistoryShowDtos}" varStatus="status">
-                                            <tr>
-                                              <td class="row_no"><c:out value="${status.index + 1}"/></td>
-                                              <td><c:out value="${inspHistory.hciCode}"/></td>
-                                              <td><c:out value="${inspHistory.hciNameAddress}"/></td>
-                                              <td><c:out value="${inspHistory.serviceName}"/></td>
-                                              <td><c:out value="${inspHistory.licencePeriod}"/></td>
-                                              <td><fmt:formatDate value='${inspHistory.inspDate}' pattern='dd/MM/yyyy'/></td>
-                                              <td><c:out value="${inspHistory.complianceRisk}"/></td>
-                                              <td>
-                                                <c:if test="${!empty inspHistory.inspLeads}">
-                                                  <c:forEach var="inspLead" items="${inspHistory.inspLeads}">
-                                                    <c:out value="${inspLead}"/>
-                                                  </c:forEach>
-                                                </c:if>
-                                              </td>
-                                              <td>
-                                                <c:if test="${!empty inspHistory.inspectors}">
-                                                  <c:forEach var="inspector" items="${inspHistory.inspectors}">
-                                                    <c:out value="${inspector}"/>
-                                                  </c:forEach>
-                                                </c:if>
-                                              </td>
-                                              <td><c:out value="${inspHistory.remark}"/></td>
-                                            </tr>
-                                          </c:forEach>
-                                        </c:otherwise>
-                                      </c:choose>
-                                    </tbody>
-                                  </table>
-                                </div>
-                              </div>
-                            </div>
                             <div class="alert alert-info" role="alert">
                               <strong>
                                 <h4>Processing History</h4>

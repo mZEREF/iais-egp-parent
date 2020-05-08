@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -22,14 +23,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionHistoryShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
@@ -49,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClien
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
@@ -108,6 +113,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     @Autowired
     private HcsaChklClient hcsaChklClient;
+
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
 
     @Autowired
     private FillupChklistService fillupChklistService;
@@ -375,15 +383,44 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                 if(index <= 1){
                     InspectionHistoryShowDto inspectionHistoryShowDto = new InspectionHistoryShowDto();
                     String appId = licAppCorrelationDto.getApplicationId();
+                    LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(originLicenceId).getEntity();
+                    Date licStartDate = licenceDto.getStartDate();
+                    Date licEndDate = licenceDto.getExpiryDate();
+                    if(licStartDate != null && licEndDate != null){
+                        String startDateStr = Formatter.formatDateTime(licStartDate, "dd/MM/yyyy");
+                        String endDateStr = Formatter.formatDateTime(licEndDate, "dd/MM/yyyy");
+                        String licPeriod = startDateStr + " - " + endDateStr;
+                        inspectionHistoryShowDto.setLicencePeriod(licPeriod);
+                    }
                     ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
-                    //get application number
-                    String appNo = applicationDto.getApplicationNo();
+                    //get service name
+                    String serviceId = applicationDto.getServiceId();
+                    HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+                    inspectionHistoryShowDto.setServiceName(hcsaServiceDto.getSvcName());
                     AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
                     //get task refNo. (appPremCorrId)
                     String taskRefNo = appPremisesCorrelationDto.getId();
                     //get inspection date
                     AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskRefNo, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-
+                    //get remarks
+                    AppPremisesRecommendationDto appPremisesRecommendationDto2 = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskRefNo, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+                    String remark = StringUtil.viewHtml(appPremisesRecommendationDto2.getRemarks());
+                    //get group premises and address
+                    AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(taskRefNo);
+                    String hciCode = StringUtil.viewHtml(appGrpPremisesDto.getHciCode());
+                    String hciName = appGrpPremisesDto.getHciName();
+                    String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
+                    inspectionHistoryShowDto.setHciCode(hciCode);
+                    if(StringUtil.isEmpty(hciName)){
+                        inspectionHistoryShowDto.setHciNameAddress(address);
+                    } else {
+                        String hciNameAddress = hciName + " / " + address;
+                        inspectionHistoryShowDto.setHciNameAddress(hciNameAddress);
+                    }
+                    //get inspectors and leads
+                    inspectionHistoryShowDto = getInspectorAndLeadByRefNo(taskRefNo, inspectionHistoryShowDto);
+                    //todo risk
+                    inspectionHistoryShowDto.setRemark(remark);
                     inspectionHistoryShowDto.setInspDate(appPremisesRecommendationDto.getRecomInDate());
                     inspectionHistoryShowDtos.add(inspectionHistoryShowDto);
                     index++;
@@ -391,6 +428,34 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             }
         }
         return inspectionHistoryShowDtos;
+    }
+
+    private InspectionHistoryShowDto getInspectorAndLeadByRefNo(String taskRefNo, InspectionHistoryShowDto inspectionHistoryShowDto) {
+        List<TaskDto> taskDtos = organizationClient.getTaskByRefNoStatus(taskRefNo, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY).getEntity();
+        if(!IaisCommonUtils.isEmpty(taskDtos)){
+            List<String> inspectorNames = IaisCommonUtils.genNewArrayList();
+            for(TaskDto taskDto : taskDtos){
+                String userId = taskDto.getUserId();
+                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+                String name = orgUserDto.getDisplayName();
+                inspectorNames.add(name);
+            }
+            inspectionHistoryShowDto.setInspectors(inspectorNames);
+            AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskRefNo, InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
+            if(appPremisesRecommendationDto != null) {
+                String nameStr = appPremisesRecommendationDto.getRecomDecision();
+                if(!StringUtil.isEmpty(nameStr)) {
+                    List<String> leadNameList = IaisCommonUtils.genNewArrayList();
+                    String[] leadNameStr = nameStr.split(",");
+                    for(int i = 0; i < leadNameStr.length; i++){
+                        String leadName = leadNameStr[i].trim();
+                        leadNameList.add(leadName);
+                    }
+                    inspectionHistoryShowDto.setInspLeads(leadNameList);
+                }
+            }
+        }
+        return inspectionHistoryShowDto;
     }
 
     private TaskDto getCompletedTaskByHistory(TaskDto taskDto, String userId) {
