@@ -6,12 +6,15 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -20,9 +23,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionComplianceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
@@ -419,7 +424,13 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                     }
                     //get inspectors and leads
                     inspectionHistoryShowDto = getInspectorAndLeadByRefNo(taskRefNo, inspectionHistoryShowDto);
-                    //todo risk
+                    //get risk lvl
+                    HcsaRiskInspectionComplianceDto hcsaRiskInspectionComplianceDto = getRiskLevelByRefNo(taskRefNo, hcsaServiceDto.getSvcCode());
+                    String riskLvl = "-";
+                    if(hcsaRiskInspectionComplianceDto != null){
+                        riskLvl = hcsaRiskInspectionComplianceDto.getRiskRating();
+                    }
+                    inspectionHistoryShowDto.setComplianceRisk(riskLvl);
                     inspectionHistoryShowDto.setRemark(remark);
                     inspectionHistoryShowDto.setInspDate(appPremisesRecommendationDto.getRecomInDate());
                     inspectionHistoryShowDtos.add(inspectionHistoryShowDto);
@@ -428,6 +439,38 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             }
         }
         return inspectionHistoryShowDtos;
+    }
+
+    private HcsaRiskInspectionComplianceDto getRiskLevelByRefNo(String taskRefNo, String serviceCode) {
+        HcsaRiskInspectionComplianceDto hcsaRiskInspectionComplianceDto = new HcsaRiskInspectionComplianceDto();
+        AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(taskRefNo).getEntity();
+        if(appPremPreInspectionNcDto != null) {
+            String ncId = appPremPreInspectionNcDto.getId();
+            List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
+            if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtos)){
+                int ncCountThCritical = 0;
+                int ncCountThMajor = 0;
+                int ncCountThMinor = 0;
+                for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtos){
+                    String itemId = appPremisesPreInspectionNcItemDto.getItemId();
+                    ChecklistItemDto checklistItemDto = hcsaChklClient.getChklItemById(itemId).getEntity();
+                    String riskRating = checklistItemDto.getRiskLevel();
+                    if(RiskConsts.CRITICAL.equals(riskRating)){
+                        ncCountThCritical++;
+                    } else if(RiskConsts.MAJOR.equals(riskRating)){
+                        ncCountThMajor++;
+                    } else if(RiskConsts.MINOR.equals(riskRating)){
+                        ncCountThMinor++;
+                    }
+                }
+                hcsaRiskInspectionComplianceDto.setNcCountThCritical(ncCountThCritical);
+                hcsaRiskInspectionComplianceDto.setNcCountThMajor(ncCountThMajor);
+                hcsaRiskInspectionComplianceDto.setNcCountThMinor(ncCountThMinor);
+                hcsaRiskInspectionComplianceDto.setSvcCode(serviceCode);
+                hcsaRiskInspectionComplianceDto = hcsaConfigClient.getHcsaRiskInspectionComplianceDto(hcsaRiskInspectionComplianceDto).getEntity();
+            }
+        }
+        return hcsaRiskInspectionComplianceDto;
     }
 
     private InspectionHistoryShowDto getInspectorAndLeadByRefNo(String taskRefNo, InspectionHistoryShowDto inspectionHistoryShowDto) {
