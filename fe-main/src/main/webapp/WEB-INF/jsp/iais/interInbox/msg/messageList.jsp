@@ -44,14 +44,14 @@
                     <thead>
                     <tr>
                         <C:if test="${msgPage == 'msgView'}">
-                            <iais:sortableHeader needSort="false" field="" value=" "></iais:sortableHeader>
+                            <iais:sortableHeader needSort="false" field="" value=" "/>
                         </C:if>
-                        <iais:sortableHeader needSort="true" field="subject" value="Subject"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="subject" value="Subject"/>
                         <iais:sortableHeader needSort="true" field="message_type"
-                                             value="Message Type"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true" field="ref_no" value="Ref. No."></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true" field="service_id" value="Service"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true" field="CREATED_DT" value="Date"></iais:sortableHeader>
+                                             value="Message Type"/>
+                        <iais:sortableHeader needSort="true" field="ref_no" value="Ref. No."/>
+                        <iais:sortableHeader needSort="true" field="service_id" value="Service"/>
+                        <iais:sortableHeader needSort="true" field="CREATED_DT" value="Date"/>
                     </tr>
                     </thead>
                     <tbody>
@@ -151,13 +151,32 @@
                         </div>
                     </div>
                 </div>
-
+                <!--Modal End-->
+                <div class="modal fade" id="doArchiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Are you sure you want to archive ?</span></div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary btn-md" onclick="doArchive()">Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!--Modal End-->
                 <div class="row" style="margin-top: 1.5%">
                     <div class="col-md-12">
                         <C:if test="${msgPage == 'msgView'}">
                             <div class="col-md-5 pull-right">
-                                <button type="button" class="btn btn-primary" onclick="doArchive()" style="margin-right: 10px;">Archive</button>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#doArchiveModal" style="margin-right: 10px;">Archive</button>
                                 <button type="button" class="btn btn-primary pull-right" onclick="toArchiveView()">Access Archive</button>
                             </div>
                         </C:if>

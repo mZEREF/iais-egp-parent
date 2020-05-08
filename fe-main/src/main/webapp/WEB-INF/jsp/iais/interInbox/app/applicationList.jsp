@@ -97,12 +97,12 @@
                 <thead>
                 <tr>
                     <iais:sortableHeader needSort="true" field="APPLICATION_NO"
-                                         value="Application No."></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true" field="APP_TYPE" value="Type"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true" field="SERVICE_ID" value="Service"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true" field="STATUS" value="Status"></iais:sortableHeader>
+                                         value="Application No."/>
+                    <iais:sortableHeader needSort="true" field="APP_TYPE" value="Type"/>
+                    <iais:sortableHeader needSort="true" field="SERVICE_ID" value="Service"/>
+                    <iais:sortableHeader needSort="true" field="STATUS" value="Status"/>
                     <iais:sortableHeader needSort="true" field="CREATED_DT"
-                                         value="Submission Date"></iais:sortableHeader>
+                                         value="Submission Date"/>
                     <th style="width:15%">Actions</th>
                 </tr>
                 </thead>
@@ -111,7 +111,7 @@
                     <c:when test="${empty appResult.rows}">
                         <tr>
                             <td colspan="6">
-                                <iais:message key="ACK018" escape="true"></iais:message>
+                                <iais:message key="ACK018" escape="true"/>
                             </td>
                         </tr>
                     </c:when>
@@ -131,7 +131,7 @@
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Type</p>
-                                    <p class="apptype"><iais:code code="${app.applicationType}"></iais:code></p>
+                                    <p class="apptype"><iais:code code="${app.applicationType}"/></p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Service</p>
@@ -139,7 +139,7 @@
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Status</p>
-                                    <p><iais:code code="${app.status}"></iais:code></p>
+                                    <p><iais:code code="${app.status}"/></p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
