@@ -5,13 +5,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayQueryDto;
 
+import java.util.List;
+
 /**
  * @author guyin
  * @date 2019/12/28 10:40
  */
 public interface PublicHolidayService {
     SearchResult<PublicHolidayQueryDto> getHoliday(SearchParam searchParam);
+    PublicHolidayDto getHolidayById(String id);
     PublicHolidayDto createHoliday(PublicHolidayDto publicHolidayDto);
     PublicHolidayDto updateHoliday(PublicHolidayDto publicHolidayDto);
-    void deleteHoliday(String id);
+    void deleteHoliday(List<String> id);
 }

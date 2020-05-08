@@ -24,7 +24,7 @@
                             <label class="col-xs-12 col-md-4 control-label" >Holiday Description</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="Description" type="text" name="Description">
+                                    <textarea id="Description" type="text" name="Description" style="width: 100%;height: 150px"></textarea>
                                     <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -47,10 +47,21 @@
                                 </div>
                             </iais:value>
                         </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label">Status</label>
+                            <iais:value>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <iais:select name="status" options="statusOption" cssClass="statusOption" firstOption="Please Select"
+                                                 value="${param.status}"></iais:select>
+                                    <span id="error_to_date" name="iaisErrorMsg" class="error-msg"></span>
+                                </div>
+                            </iais:value>
+                        </div>
                     </div>
                     <div class="application-tab-footer">
                         <div class="row">
-                            <div class="col-xs-12 col-sm-12">
+                            <div class="col-xs-11 col-sm-11">
                                 <div class="text-right text-center-mobile"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myCreateModal" id="createholiday">SUBMIT</button></div>
                             </div>
                         </div>

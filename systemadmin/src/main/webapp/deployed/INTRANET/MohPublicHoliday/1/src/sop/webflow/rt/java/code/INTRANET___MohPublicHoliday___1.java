@@ -62,6 +62,11 @@ public class INTRANET___MohPublicHoliday___1 extends BaseProcessClass {
 	// 		search->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doSearch", this);
 	}
+	public void searchPage_OnStepProcess_0() throws Exception {
+	// 		searchPage->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "searchPage", this);
+		
+	}
 	
 	
 	

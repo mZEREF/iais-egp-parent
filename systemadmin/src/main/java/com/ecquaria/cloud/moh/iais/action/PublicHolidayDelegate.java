@@ -4,6 +4,8 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -13,18 +15,20 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.impl.PublicHolidayServiceImpl;
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.ecquaria.cloud.moh.iais.service.PublicHolidayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 
 
 /*
@@ -38,20 +42,26 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Slf4j
 public class PublicHolidayDelegate {
     @Autowired
-    PublicHolidayServiceImpl publicHolidayService;
+    PublicHolidayService publicHolidayService;
 
-    private SearchParam holidaySearchParam = new SearchParam(PublicHolidayQueryDto.class.getName());
+    private SearchParam holidaySearchParam ;
     /**
      * doStart
      * @param bpc
      */
     public void doStart(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction("public holiday", "public holiday");
+        initSearchParam();
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        holidaySearchParam.addFilter("year", "%" + year + "%",true);
+    }
+
+    private void initSearchParam(){
+        holidaySearchParam = new SearchParam(PublicHolidayQueryDto.class.getName());
         holidaySearchParam.setPageSize(10);
         holidaySearchParam.setPageNo(1);
         holidaySearchParam.setSort("ID", SearchParam.ASCENDING);
-        ParamUtil.setRequestAttr(bpc.request,"descriptionSwitch",null);
-        ParamUtil.setRequestAttr(bpc.request,"yearSwitch",null);
     }
 
     /**
@@ -59,35 +69,16 @@ public class PublicHolidayDelegate {
      * @param bpc
      */
     public void doPrepare(BaseProcessClass bpc){
-        QueryHelp.setMainSql("systemAdmin", "getHolidayList", holidaySearchParam);
-        List<PublicHolidayQueryDto> publicHolidayDtoList = publicHolidayService.getHoliday(holidaySearchParam).getRows();
-
-        Calendar cal = Calendar.getInstance();
-
-        String []arr = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-        List<Map<String,String>> holidayList = IaisCommonUtils.genNewArrayList();
-        for (PublicHolidayQueryDto item: publicHolidayDtoList
-             ) {
-            Map<String, String> holidayMap = new HashMap<String,String>();
-            if(item.getFromDate().equals(item.getToDate())){
-                cal.setTime(item.getFromDate());
-                holidayMap.put("week",arr[cal.get(Calendar.DAY_OF_WEEK)-1]);
-                holidayMap.put("date",Formatter.formatDate(item.getFromDate()));
-            }else{
-                cal.setTime(item.getFromDate());
-                String fromweek = arr[cal.get(Calendar.DAY_OF_WEEK)-1];
-                cal.setTime(item.getToDate());
-                String toweek = arr[cal.get(Calendar.DAY_OF_WEEK)-1];
-                holidayMap.put("week",fromweek + "-" + toweek);
-                holidayMap.put("date",Formatter.formatDate(item.getFromDate()) + "-" + Formatter.formatDate(item.getToDate()));
-            }
-            holidayMap.put("description",item.getDescription());
-            holidayMap.put("id",item.getId());
-            holidayMap.put("sub_date",Formatter.formatDate(item.getFromDate()));
-            holidayMap.put("to_date",Formatter.formatDate(item.getToDate()));
-            holidayList.add(holidayMap);
+        if(holidaySearchParam == null){
+            initSearchParam();
         }
-        ParamUtil.setRequestAttr(bpc.request,"holidayList",holidayList);
+        QueryHelp.setMainSql("systemAdmin", "getHolidayList", holidaySearchParam);
+        SearchResult<PublicHolidayQueryDto> HolidaySearchResult = publicHolidayService.getHoliday(holidaySearchParam);
+
+        ParamUtil.setRequestAttr(bpc.request,"HolidaySearchResult",HolidaySearchResult);
+        ParamUtil.setRequestAttr(bpc.request,"holidaySearchParam",holidaySearchParam);
+        statusOption(bpc);
+        yearOption(bpc);
 
     }
 
@@ -105,10 +96,10 @@ public class PublicHolidayDelegate {
      */
     public void doEdit(BaseProcessClass bpc) throws ParseException {
         log.debug(StringUtil.changeForLog("Public holiday edit ...."));
-        ParamUtil.setRequestAttr(bpc.request,"description",ParamUtil.getRequestString(bpc.request,"des"));
-        ParamUtil.setRequestAttr(bpc.request,"holidayId",ParamUtil.getRequestString(bpc.request,"holidayId"));
-        ParamUtil.setRequestAttr(bpc.request,"sub_date",Formatter.parseDate(ParamUtil.getString(bpc.request, "sub_date")));
-        ParamUtil.setRequestAttr(bpc.request,"to_date",Formatter.parseDate(ParamUtil.getString(bpc.request, "to_date")));
+        String holidayId = ParamUtil.getMaskedString(bpc.request,"holidayId");
+        PublicHolidayDto publicHolidayDto = publicHolidayService.getHolidayById(holidayId);
+        ParamUtil.setRequestAttr(bpc.request,"holiday",publicHolidayDto);
+        statusOption(bpc);
     }
 
     /**
@@ -122,7 +113,7 @@ public class PublicHolidayDelegate {
         publicHolidayDto.setId(ParamUtil.getRequestString(bpc.request,"holidayId"));
         publicHolidayDto.setFromDate(Formatter.parseDate(ParamUtil.getString(bpc.request, "sub_date")));
         publicHolidayDto.setToDate(Formatter.parseDate(ParamUtil.getString(bpc.request, "to_date")));
-        publicHolidayDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        publicHolidayDto.setStatus(ParamUtil.getString(bpc.request, "status"));
         PublicHolidayDto resDto = publicHolidayService.updateHoliday(publicHolidayDto);
         if(resDto != null){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,"true");
@@ -143,7 +134,7 @@ public class PublicHolidayDelegate {
      * @param bpc
      */
     public void doCreate(BaseProcessClass bpc){
-
+        statusOption(bpc);
     }
 
     /**
@@ -151,8 +142,13 @@ public class PublicHolidayDelegate {
      * @param bpc
      */
     public void doDelete(BaseProcessClass bpc){
-        String id = ParamUtil.getRequestString(bpc.request,"holidayId");
-        publicHolidayService.deleteHoliday(id);
+        String[] id = ParamUtil.getMaskedStrings(bpc.request,"deleteId");
+        List<String> holidayIds = IaisCommonUtils.genNewArrayList();
+        for (String item:id
+             ) {
+            holidayIds.add(item);
+        }
+        publicHolidayService.deleteHoliday(holidayIds);
     }
 
     /**
@@ -160,20 +156,27 @@ public class PublicHolidayDelegate {
      * @param bpc
      */
     public void doSearch(BaseProcessClass bpc){
-        String descriptionSwitch = ParamUtil.getRequestString(bpc.request,"descriptionSwitch");
-        String yearSwitch = ParamUtil.getRequestString(bpc.request,"yearSwitch");
-        holidaySearchParam.getParams().clear();
-        holidaySearchParam.getFilters().clear();
-        holidaySearchParam.setPageNo(1);
-        if(!StringUtil.isEmpty(descriptionSwitch)){
-            holidaySearchParam.addFilter("description", "%" + descriptionSwitch + "%",true);
+        initSearchParam();
+        String description = ParamUtil.getRequestString(bpc.request,"des");
+        String year = ParamUtil.getRequestString(bpc.request,"year");
+        String nonWorking = ParamUtil.getRequestString(bpc.request,"nonWorking");
+        String status = ParamUtil.getRequestString(bpc.request,"searchStatus");
+        if(description != null && !StringUtil.isEmpty(description)){
+            holidaySearchParam.addFilter("description", "%" + description + "%",true);
         }
-        if(!StringUtil.isEmpty(yearSwitch)){
-            holidaySearchParam.addFilter("year", "%" + yearSwitch + "%",true);
+        if(year != null && !StringUtil.isEmpty(year)){
+            holidaySearchParam.addFilter("year", "%" + year + "%",true);
         }
+        if(nonWorking != null && !StringUtil.isEmpty(nonWorking)){
+            holidaySearchParam.addFilter("nonWorking", nonWorking,true);
+        }
+        if(status != null && !StringUtil.isEmpty(status)){
+            holidaySearchParam.addFilter("status",  status,true);
+        }
+    }
 
-        ParamUtil.setRequestAttr(bpc.request,"descriptionSwitch",descriptionSwitch);
-        ParamUtil.setRequestAttr(bpc.request,"yearSwitch",yearSwitch);
+    public void searchPage(BaseProcessClass bpc){
+        CrudHelper.doPaging(holidaySearchParam,bpc.request);
     }
 
     /**
@@ -185,7 +188,7 @@ public class PublicHolidayDelegate {
         publicHolidayDto.setDescription(ParamUtil.getRequestString(bpc.request,"Description"));
         publicHolidayDto.setFromDate(Formatter.parseDate(ParamUtil.getString(bpc.request, "sub_date")));
         publicHolidayDto.setToDate(Formatter.parseDate(ParamUtil.getString(bpc.request, "to_date")));
-        publicHolidayDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        publicHolidayDto.setStatus(ParamUtil.getString(bpc.request, "status"));
 
         ValidationResult validationResult = WebValidationHelper.validateEntity(publicHolidayDto);
         if(validationResult != null && validationResult.isHasErrors()){
@@ -201,4 +204,22 @@ public class PublicHolidayDelegate {
     }
 
 
+    private void yearOption(BaseProcessClass bpc){
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        List<SelectOption> selectOptionList = IaisCommonUtils.genNewArrayList();
+        for (int count = year;count > year - 5;count --) {
+            selectOptionList.add(new SelectOption(Integer.toString(count), Integer.toString(count)));
+        }
+        ParamUtil.setRequestAttr(bpc.request,"yearOption",selectOptionList);
+    }
+
+    private  void statusOption(BaseProcessClass bpc){
+        String[] status = new String[]{
+                AppConsts.COMMON_STATUS_ACTIVE,
+                AppConsts.COMMON_STATUS_IACTIVE
+        };
+        List<SelectOption> selectOptions =  MasterCodeUtil.retrieveOptionsByCodes(status);
+        ParamUtil.setRequestAttr(bpc.request,"statusOption",selectOptions);
+    }
 }

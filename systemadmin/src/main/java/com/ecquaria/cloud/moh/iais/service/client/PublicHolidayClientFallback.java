@@ -13,6 +13,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
+import java.util.List;
+
 public class PublicHolidayClientFallback implements PublicHolidayClient{
 
     @Override
@@ -22,6 +24,15 @@ public class PublicHolidayClientFallback implements PublicHolidayClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<PublicHolidayDto> getHolidayById(String id) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 
     @Override
     public FeignResponseEntity<PublicHolidayDto> doSave(PublicHolidayDto publicHolidayDto) {
@@ -40,10 +51,11 @@ public class PublicHolidayClientFallback implements PublicHolidayClient{
     }
 
     @Override
-    public FeignResponseEntity<Void> doDelete(String id) {
+    public FeignResponseEntity<Void> doDelete(List<String> id) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
+
 }

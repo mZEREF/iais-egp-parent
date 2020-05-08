@@ -1,8 +1,9 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -14,96 +15,108 @@
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <input type="hidden" name="crud_action_type" value="">
-        <input type="hidden" name="crud_action_value" value="">
-        <input type="hidden" name="crud_action_additional" value="">
-        <div class="col-lg-12 col-xs-12">
-            <div class="center-content">
-                <div class="intranet-content">
-                    <div class="bg-title">
-                        <h2>Public Holiday</h2>
-                    </div>
-                    <div class="row">
-                        <div class="form-horizontal">
-                            <div class="form-group">
-                                <label class="col-xs-12 col-md-4 control-label">Description</label>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="descriptionSwitch" name="descriptionSwitch" type="text"
-                                           value="${descriptionSwitch}">
+            <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+            <div class="col-lg-12 col-xs-12">
+                <div class="center-content">
+                    <div class="intranet-content">
+                        <div class="bg-title">
+                            <h2>Public Holiday</h2>
+                        </div>
+                        <div class="row">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">Description</label>
+                                    <div class="col-md-4">
+                                        <input id="des" name="des" type="text" maxlength="255"
+                                               value="${param.des}">
+                                    </div>
+                                    <label class="col-md-2 control-label">Year</label>
+                                    <div class="col-md-4">
+                                        <iais:select name="year" options="yearOption" cssClass="yearOption"
+                                                     value="${param.year}"></iais:select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-xs-12 col-md-4 control-label">Year</label>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="yearSwitch" name="yearSwitch" type="text" value="${yearSwitch}">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">Non-working Date</label>
+                                    <div class="col-md-4">
+                                        <iais:datePicker id="nonWorking" name="nonWorking" value="${param.nonWorking}"/>
+                                    </div>
+                                    <label class="col-md-2 control-label">Status</label>
+                                    <div class="col-md-4">
+                                        <iais:select name="searchStatus" options="statusOption" cssClass="statusOption" firstOption="Please Select"
+                                                     value="${param.searchStatus}"></iais:select>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="application-tab-footer">
+                                <div class="row">
+                                    <div class="col-xs-11 col-md-11">
+                                        <div class="text-right">
+                                                <a class="btn btn-secondary" id="clear">Clear</a>
+                                            <a class="btn btn-primary" id="search">Search</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <iais:pagination param="holidaySearchParam" result="HolidaySearchResult"/>
+
+                        <div class="table-gp">
+                            <table class="table">
+                                <thead>
+                                <tr align="center">
+                                    <th></th>
+                                    <th>S/N</th>
+                                    <th>Year</th>
+                                    <th>Non-working Date</th>
+                                    <th>Holiday Description</th>
+                                    <th>Status</th>
+                                    <th>Edit</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <c:choose>
+                                        <c:when test="${empty HolidaySearchResult.rows}">
+                                            <tr>
+                                                <td colspan="7">
+                                                    <iais:message key="ACK018" escape="true"></iais:message>
+                                                </td>
+                                            </tr>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:forEach var="item" items="${HolidaySearchResult.rows}" varStatus="status">
+                                                <tr>
+                                                    <td><input type="checkbox" name="deleteId" value="<iais:mask name="deleteId" value="${item.id}"/>"></td>
+                                                    <td><c:out value="${(status.index + 1) + (holidaySearchParam.pageNo - 1) * holidaySearchParam.pageSize}"/></td>
+                                                    <td><c:out value="${item.year}"/></td>
+                                                    <td><c:out value="${item.nonWorking}"/></td>
+                                                    <td><c:out value="${item.description}"/></td>
+                                                    <td><iais:code code="${item.status}"></iais:code></td>
+                                                    <td><a class="editHoliday" data-holiday="<iais:mask name="holidayId" value="${item.id}"/>">edit</a></td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tbody>
+                            </table>
                         </div>
                         <div class="application-tab-footer">
                             <div class="row">
                                 <div class="col-xs-11 col-md-11">
                                     <div class="text-right">
-                                        <a class="btn btn-secondary" id="clear">Clear</a>
-                                        <a class="btn btn-primary" id="search">Search</a>
+                                        <a class="btn btn-secondary" id="delete">Delete</a>
+                                        <a class="btn btn-primary" id="createholiday">Create</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="table-gp">
-                        <table class="table">
-                            <thead>
-                            <tr align="center">
-                                <th>Date</th>
-                                <th>Week</th>
-                                <th>Description</th>
-                                <th>Edit</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                <c:choose>
-                                    <c:when test="${empty holidayList}">
-                                        <tr>
-                                            <td colspan="6">
-                                                <iais:message key="ACK018" escape="true"></iais:message>
-                                            </td>
-                                        </tr>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:forEach var="item" items="${holidayList}" varStatus="status">
-                                            <tr>
-                                                <td><c:out value="${item.date}"/></td>
-                                                <td><c:out value="${item.week}"/></td>
-                                                <td><c:out value="${item.description}"/></td>
-                                                <td>
-                                                    <a onclick="edit('${item.id}','${item.sub_date}','${item.to_date}','${item.description}')">edit</a>
-                                                    <a onclick="deleteItem('${item.id}')">delete</a></td>
-                                            </tr>
-                                        </c:forEach>
-                                    </c:otherwise>
-                                </c:choose>
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
             </div>
-        </div>
-        <div class="application-tab-footer">
-            <div class="row">
-                <div class="col-xs-11 col-md-11">
-                    <div class="text-right">
-                        <a class="btn btn-primary" id="createholiday">Create</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <input type="hidden" name="holidayId" id="holidayId" value="">
-        <input type="hidden" name="sub_date" id="sub_date" value="">
-        <input type="hidden" name="to_date" id="to_date" value="">
-        <input type="hidden" name="des" id="des" value="">
+        <input id="holidayId" name="holidayId" hidden value="">
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
@@ -112,23 +125,33 @@
         SOP.Crud.cfxSubmit("mainForm", "create");
     });
 
-    function edit(id, sub_date, to_date, des) {
+    $('.editHoliday').click(function () {
+        console.log("1111")
+        var id = $(this).attr('data-holiday');
+        console.log(id)
         $("#holidayId").val(id);
-        $("#sub_date").val(sub_date);
-        $("#to_date").val(to_date);
-        $("#des").val(des);
         SOP.Crud.cfxSubmit("mainForm", "edit");
-    };
+    });
 
-    function deleteItem(id) {
+    $('#delete').click(function () {
         if(confirm('Are you sure you want to delete this item?')){
-            $("#holidayId").val(id);
             SOP.Crud.cfxSubmit("mainForm", "delete");
         }
-
-    }
+    })
 
     $('#search').click(function () {
         SOP.Crud.cfxSubmit("mainForm", "search");
     });
+    
+    $('#clear').click(function () {
+        $('input[name="description"]').val("");
+        $('input[name="nonWorking"]').val("");
+        $("#statusOption option:first").prop("selected", 'selected');
+        $("#statusOption .current").text("Please Select");
+
+    })
+
+    function jumpToPagechangePage() {
+        SOP.Crud.cfxSubmit("mainForm", "page");
+    }
 </script>

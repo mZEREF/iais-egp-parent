@@ -10,12 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author guyin
  * @date 2019/12/28 10:41
  */
-@Service
 @Slf4j
+@Service
 public class PublicHolidayServiceImpl implements PublicHolidayService {
 
     @Autowired
@@ -24,6 +26,11 @@ public class PublicHolidayServiceImpl implements PublicHolidayService {
     @Override
     public SearchResult<PublicHolidayQueryDto> getHoliday(SearchParam searchParam) {
         return publicHolidayClient.getAllHoliday(searchParam).getEntity();
+    }
+
+    @Override
+    public PublicHolidayDto getHolidayById(String id){
+        return publicHolidayClient.getHolidayById(id).getEntity();
     }
 
     @Override
@@ -37,7 +44,7 @@ public class PublicHolidayServiceImpl implements PublicHolidayService {
     }
 
     @Override
-    public void deleteHoliday(String id){
+    public void deleteHoliday(List<String> id){
         publicHolidayClient.doDelete(id).getEntity();
     }
 
