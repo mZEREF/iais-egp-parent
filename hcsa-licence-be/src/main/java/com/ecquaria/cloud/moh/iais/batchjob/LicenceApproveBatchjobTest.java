@@ -33,7 +33,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicFeeGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicFeeGroupItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
@@ -442,8 +441,8 @@ public class LicenceApproveBatchjobTest {
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is -->:"+isPostInspNeeded));
 
         //create licence group fee
-        LicFeeGroupDto licFeeGroupDto = getLicFeeGroupDto(applicationGroupDto.getAmount().toString());
-        licenceGroupDto.setLicFeeGroupDto(licFeeGroupDto);
+//        LicFeeGroupDto licFeeGroupDto = getLicFeeGroupDto(applicationGroupDto.getAmount().toString());
+//        licenceGroupDto.setLicFeeGroupDto(licFeeGroupDto);
 
         LicenseeDto oldLicenseeDto = getOrganizationIdBylicenseeId(applicationGroupDto.getLicenseeId());
         //get organizationId
@@ -581,10 +580,10 @@ public class LicenceApproveBatchjobTest {
                     //
                 }
                 //create LicFeeGroupItemDto
-                List<LicFeeGroupItemDto> licFeeGroupItemDtos = IaisCommonUtils.genNewArrayList();
-                LicFeeGroupItemDto licFeeGroupItemDto = new LicFeeGroupItemDto();
-                licFeeGroupItemDtos.add(licFeeGroupItemDto);
-                superLicDto.setLicFeeGroupItemDtos(licFeeGroupItemDtos);
+//                List<LicFeeGroupItemDto> licFeeGroupItemDtos = IaisCommonUtils.genNewArrayList();
+//                LicFeeGroupItemDto licFeeGroupItemDto = new LicFeeGroupItemDto();
+//                licFeeGroupItemDtos.add(licFeeGroupItemDto);
+//                superLicDto.setLicFeeGroupItemDtos(licFeeGroupItemDtos);
 
                 //create LicSvcSpecificPersonnelDto
                 List<AppSvcPersonnelDto> appSvcPersonnelDtos = applicationListDtos.get(0).getAppSvcPersonnelDtos();
@@ -711,8 +710,8 @@ public class LicenceApproveBatchjobTest {
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is -->:"+isPostInspNeeded));
 
         //create licence group fee
-        LicFeeGroupDto licFeeGroupDto = getLicFeeGroupDto(applicationGroupDto.getAmount().toString());
-        licenceGroupDto.setLicFeeGroupDto(licFeeGroupDto);
+//        LicFeeGroupDto licFeeGroupDto = getLicFeeGroupDto(applicationGroupDto.getAmount().toString());
+//        licenceGroupDto.setLicFeeGroupDto(licFeeGroupDto);
 
         LicenseeDto oldLicenseeDto = getOrganizationIdBylicenseeId(applicationGroupDto.getLicenseeId());
         //get organizationId
@@ -821,10 +820,10 @@ public class LicenceApproveBatchjobTest {
                 licAppCorrelationDtos.add(licAppCorrelationDto);
                 superLicDto.setLicAppCorrelationDtos(licAppCorrelationDtos);
                 //create LicFeeGroupItemDto
-                List<LicFeeGroupItemDto> licFeeGroupItemDtos = IaisCommonUtils.genNewArrayList();
-                LicFeeGroupItemDto licFeeGroupItemDto = new LicFeeGroupItemDto();
-                licFeeGroupItemDtos.add(licFeeGroupItemDto);
-                superLicDto.setLicFeeGroupItemDtos(licFeeGroupItemDtos);
+//                List<LicFeeGroupItemDto> licFeeGroupItemDtos = IaisCommonUtils.genNewArrayList();
+//                LicFeeGroupItemDto licFeeGroupItemDto = new LicFeeGroupItemDto();
+//                licFeeGroupItemDtos.add(licFeeGroupItemDto);
+//                superLicDto.setLicFeeGroupItemDtos(licFeeGroupItemDtos);
                 //create the document and lic_document from the primary doc.
                 List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = applicationListDto.getAppGrpPrimaryDocDtos();
                 List<AppSvcDocDto> appSvcDocDtos = applicationListDto.getAppSvcDocDtos();
