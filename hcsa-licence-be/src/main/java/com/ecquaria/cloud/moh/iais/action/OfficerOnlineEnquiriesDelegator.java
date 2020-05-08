@@ -278,7 +278,7 @@ public class OfficerOnlineEnquiriesDelegator {
             }
             ParamUtil.setRequestAttr(request,"SearchParam", appParam);
         }
-        else {
+        else if(count==3||count==4){
             SearchResultHelper.doPage(request,licenceParameter);
 //            if(svcNames.size()!=0){
 //                filter.put("svc_names", svcNames);
