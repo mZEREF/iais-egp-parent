@@ -217,4 +217,19 @@
         $('#litterFileId').val("");
         $("#error_litterFile").html("");
     }
+
+
+    //only for doc change
+    $('#documentsli').click(function(){
+        $("#mainForm").removeClass("form-horizontal");});
+
+    $('#infoli').click(function(){
+        $("#mainForm").addClass("form-horizontal");});
+
+    $('#checkListli').click(function(){
+        $("#mainForm").addClass("form-horizontal");});
+
+    $('#processingli').click(function(){
+        $("#mainForm").addClass("form-horizontal");});
+
 </script>

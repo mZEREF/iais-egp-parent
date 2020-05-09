@@ -236,7 +236,7 @@ public interface HcsaConfigClient {
     @GetMapping(value = "/hcsa-routing/hcsa-svc-routing-by-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity <HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageById(@RequestParam("id") String id);
 
-    @GetMapping(path = "/iais-hcsa-risk/lastandaecriskScore",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/iais-hcsa-risk/lastandaecriskScore",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaLastInspectionDto> getLastAndSecRiskScore(@RequestBody HcsaLastInspectionDto inspDto);
 
     @GetMapping(path = "/iais-hcsa-service/service-by-name/{svcName}")

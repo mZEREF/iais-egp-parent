@@ -28,7 +28,7 @@
                     <div class="col-xs-12">
                         <div class="tab-gp dashboard-tab">
                             <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                                <li class="<c:choose>
+                                <li id="infoli" class="<c:choose>
                                             <c:when test="${serListDto.checkListTab=='chkList'}">
                                                    complete
                                                 </c:when>
@@ -36,9 +36,9 @@
                                                     active
                                                 </c:otherwise>
                                             </c:choose>" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
-                                <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
+                                <li id="documentsli" class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
                                                                             data-toggle="tab">Documents</a></li>
-                                <li class="<c:choose>
+                                <li id="checkListli" class="<c:choose>
                                             <c:when test="${serListDto.checkListTab=='chkList'}">
                                                    active
                                                 </c:when>
@@ -47,7 +47,7 @@
                                                 </c:otherwise>
                                             </c:choose>" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
                                                                                 data-toggle="tab">Checklist</a></li>
-                                <li class="complete" role="presentation"><a href="#Processing" aria-controls="Processing" role="tab"
+                                <li id="processingli" class="complete" role="presentation"><a href="#Processing" aria-controls="Processing" role="tab"
                                                                             data-toggle="tab">Processing</a></li>
                             </ul>
                             <div class="tab-nav-mobile visible-xs visible-sm">
