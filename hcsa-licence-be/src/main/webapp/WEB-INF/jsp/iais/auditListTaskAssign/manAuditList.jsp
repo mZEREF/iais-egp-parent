@@ -25,7 +25,6 @@
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
                         <h2>${modulename}</h2>
-                        <div class="gray-content-box">
                             <div class="table-gp">
                                 <table class="table">
                                     <thead>
@@ -96,19 +95,17 @@
                                 <div class="table-footnote">
                                 </div>
                             </div>
-                        </div>
+                        <iais:action style="text-align:right;">
+                            <button type="button" class="btn btn-secondary" onclick="javascript:cancel();">Cancel
+                            </button>
+                            <button type="button" class="btn btn-primary next" onclick="javascript:confirm();">Confirm
+                                to Audit
+                            </button>
+                            <button type="button" class="btn btn-primary next" onclick="javascript:cancelAudit();">Cancel
+                                Audit Task
+                            </button>
+                        </iais:action>
                     </div>
-
-                    <iais:action style="text-align:right;">
-                        <button type="button" class="btn btn-secondary" onclick="javascript:cancel();">Cancel
-                        </button>
-                        <button type="button" class="btn btn-primary next" onclick="javascript:confirm();">Confirm
-                            to Audit
-                        </button>
-                        <button type="button" class="btn btn-primary next" onclick="javascript:cancelAudit();">Cancel
-                            Audit Task
-                        </button>
-                    </iais:action>
                 </div>
             </div>
         </div>

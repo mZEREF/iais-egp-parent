@@ -27,63 +27,62 @@
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
                         <h2>${modulename}</h2>
-                        <div class="gray-content-box">
-                            <div class="table-gp">
-                                <table class="table">
-                                    <thead>
+                        <div class="table-gp">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Service Name</th>
+                                    <th>Postal Code/Region </th>
+                                    <th>Last Inspection done before(Start) </th>
+                                    <th>Last Inspection done before(End) </th>
+                                    <th>Results of last Compliance</th>
+                                    <th>Hcsa Service Code</th>
+                                    <th>HCI Code</th>
+                                    <th>Premises Type</th>
+                                    <th>Type of Risk</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <span class="error-msg" id="error_selectedOne" name="iaisErrorMsg"></span>
+                                <c:if test="${empty auditTaskDataDtos}">
                                     <tr>
-                                        <th></th>
-                                        <th>Service Name</th>
-                                        <th>Postal Code/Region </th>
-                                        <th>Last Inspection done before(Start) </th>
-                                        <th>Last Inspection done before(End) </th>
-                                        <th>Results of last Compliance</th>
-                                        <th>Hcsa Service Code</th>
-                                        <th>HCI Code</th>
-                                        <th>Premises Type</th>
-                                        <th>Type of Risk</th>
+                                        <td colspan="10" align="center">
+                                            <iais:message key="ACK018" escape="true"/>
+                                        </td>
                                     </tr>
-                                    </thead>
-                                    <tbody>
-                                    <span class="error-msg" id="error_selectedOne" name="iaisErrorMsg"></span>
-                                    <c:if test="${empty auditTaskDataDtos}">
-                                        <tr>
-                                            <td colspan="10" align="center">
-                                                <iais:message key="ACK018" escape="true"/>
-                                            </td>
-                                        </tr>
-                                    </c:if>
-                                    <c:forEach var = "item" items = "${auditTaskDataDtos}" varStatus="status">
-                                        <tr>
-                                            <c:set var="id" value="${status.index}"></c:set>
-                                            <td> <input name="<c:out value="${id}"/>selectForAuditList" id="<c:out value="${id}"/>selectForAuditList" type="checkbox" value="ad" <c:if test="${item.addAuditList}">checked</c:if>/></td>
-                                            <td><c:out value="${item.svcName}"/></td>
-                                            <td><c:out value="${item.postalCode}"/></td>
-                                            <td><c:out value="${item.lastInspStart}"/></td>
-                                            <td><c:out value="${item.lastInspEnd}"/></td>
-                                            <td><c:out value="${item.resultComplicance}"/></td>
-                                            <td><c:out value="${item.svcCode}"/></td>
-                                            <td><c:out value="${item.hclCode}"/></td>
-                                            <td><c:out value="${item.premisesType}"/></td>
-                                        </tr>
-                                    </c:forEach>
-                                    </tbody>
-                                </table>
-                                <div class="table-footnote">
-                                </div>
+                                </c:if>
+                                <c:forEach var = "item" items = "${auditTaskDataDtos}" varStatus="status">
+                                    <tr>
+                                        <c:set var="id" value="${status.index}"></c:set>
+                                        <td> <input name="<c:out value="${id}"/>selectForAuditList" id="<c:out value="${id}"/>selectForAuditList" type="checkbox" value="ad" <c:if test="${item.addAuditList}">checked</c:if>/></td>
+                                        <td><c:out value="${item.svcName}"/></td>
+                                        <td><c:out value="${item.postalCode}"/></td>
+                                        <td><c:out value="${item.lastInspStart}"/></td>
+                                        <td><c:out value="${item.lastInspEnd}"/></td>
+                                        <td><c:out value="${item.resultComplicance}"/></td>
+                                        <td><c:out value="${item.svcCode}"/></td>
+                                        <td><c:out value="${item.hclCode}"/></td>
+                                        <td><c:out value="${item.premisesType}"/></td>
+                                        <td><c:out value="${item.riskType}"/></td>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                            <div class="table-footnote">
                             </div>
+                            <iais:action style="text-align:right;">
+                                <button class="btn btn-secondary" id="clearbtn" type="button"
+                                        onclick="javascript:cancel();">
+                                    Cancel
+                                </button>
+                                <button class="btn btn-primary next" type="button" onclick="javascript:addToAudit();;">
+                                    Add to Audit List
+                                </button>
+                            </iais:action>
                         </div>
                     </div>
 
-                    <iais:action style="text-align:right;">
-                        <button class="btn btn-secondary" id="clearbtn" type="button"
-                                onclick="javascript:cancel();">
-                            Cancel
-                        </button>
-                        <button class="btn btn-primary next" type="button" onclick="javascript:addToAudit();;">
-                            Add to Audit List
-                        </button>
-                    </iais:action>
                 </div>
             </div>
         </div>

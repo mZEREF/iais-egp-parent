@@ -23,76 +23,73 @@
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
                         <h2>${modulename}</h2>
-                        <div class="gray-content-box">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>HCI Code</th>
+                                <th>HCI Name</th>
+                                <th>Address</th>
+                                <th>Service Name</th>
+                                <th>Audit Type</th>
+                                <th>Inspector</th>
+                                <th>Cancel Reason</th>
+                                <th>Select for Audit</th>
+                                <th>Reason</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <span class="error-msg" id="error_selectedOne" name="iaisErrorMsg"></span>
+                            <c:if test="${empty auditTaskDataDtos}">
+                                <tr>
+                                    <td colspan="8" align="center">
+                                        <iais:message key="ACK018" escape="true"/>
+                                    </td>
+                                </tr>
+                            </c:if>
+                            <c:forEach var = "item" items = "${auditTaskDataDtos}" varStatus="status">
+                                <tr>
+                                    <c:set var="id" value="${status.index}"></c:set>
+                                    <td><c:out value="${item.hclCode}"/></td>
+                                    <td><c:out value="${item.hclName}"/></td>
+                                    <td><c:out value="${item.address}"/></td>
+                                    <td><c:out value="${item.svcName}"/></td>
+                                    <td>
+                                        <iais:code code= "${item.auditType}"/>
+                                        <input name="${id}auditType" id="${id}auditType" type="hidden" value="${item.auditType}">
+                                    </td>
+                                    <td>
+                                        <label>${item.inspector}</label>
+                                    </td>
+                                    <td>
+                                        <textarea cols="30" disabled rows="5" name="${id}reason"  maxlength="2000"><c:out value="${item.cancelReason}"></c:out></textarea>
+                                    </td>
+                                    <td>
+                                        <input name="<c:out value="${id}"/>selectForAd" id="<c:out value="${id}"/>selectForAd" type="checkbox" value="ad" <c:if test="${item.selectedForAudit}">checked</c:if>/>
+                                        <br/>
+                                        <c:set value="error_${id}select" var="errselect"/>
+                                        <span class="error-msg" id="<c:out value="${errselect}"/>"
+                                              name="iaisErrorMsg"></span>
+                                    </td>
+                                    <td>
+                                        <textarea cols="30" rows="5" name="${id}newReason"  maxlength="2000"><c:out value="${item.reasonForAO}"></c:out></textarea>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
                             <div class="table-gp">
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th>HCI Code</th>
-                                        <th>HCI Name</th>
-                                        <th>Address</th>
-                                        <th>Service Name</th>
-                                        <th>Audit Type</th>
-                                        <th>Inspector</th>
-                                        <th>Cancel Reason</th>
-                                        <th>Select for Audit</th>
-                                        <th>Reason</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <span class="error-msg" id="error_selectedOne" name="iaisErrorMsg"></span>
-                                  <c:if test="${empty auditTaskDataDtos}">
-                                      <tr>
-                                          <td colspan="8" align="center">
-                                              <iais:message key="ACK018" escape="true"/>
-                                          </td>
-                                      </tr>
-                                  </c:if>
-                                    <c:forEach var = "item" items = "${auditTaskDataDtos}" varStatus="status">
-                                        <tr>
-                                            <c:set var="id" value="${status.index}"></c:set>
-                                            <td><c:out value="${item.hclCode}"/></td>
-                                            <td><c:out value="${item.hclName}"/></td>
-                                            <td><c:out value="${item.address}"/></td>
-                                            <td><c:out value="${item.svcName}"/></td>
-                                            <td>
-                                                <iais:code code= "${item.auditType}"/>
-                                                <input name="${id}auditType" id="${id}auditType" type="hidden" value="${item.auditType}">
-                                            </td>
-                                            <td>
-                                                <label>${item.inspector}</label>
-                                            </td>
-                                            <td>
-                                                <textarea cols="30" disabled rows="5" name="${id}reason"  maxlength="2000"><c:out value="${item.cancelReason}"></c:out></textarea>
-                                            </td>
-                                            <td>
-                                                <input name="<c:out value="${id}"/>selectForAd" id="<c:out value="${id}"/>selectForAd" type="checkbox" value="ad" <c:if test="${item.selectedForAudit}">checked</c:if>/>
-                                                <br/>
-                                                <c:set value="error_${id}select" var="errselect"/>
-                                                <span class="error-msg" id="<c:out value="${errselect}"/>"
-                                                      name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td>
-                                                <textarea cols="30" rows="5" name="${id}newReason"  maxlength="2000"><c:out value="${item.reasonForAO}"></c:out></textarea>
-                                            </td>
-                                        </tr>
-                                    </c:forEach>
-                                    </tbody>
-                                </table>
                                 <div class="table-footnote">
                                 </div>
                             </div>
-                        </div>
+                        <iais:action style="text-align:right;">
+                            <button type="button" class="btn btn-primary next" onclick="javascript:cancelAudit('0');">
+                                Reject
+                            </button>
+                            <button type="button" class="btn btn-primary next" onclick="javascript:cancelAudit('1');">
+                                Confirm
+                            </button>
+                        </iais:action>
                     </div>
-
-                    <iais:action style="text-align:right;">
-                        <button type="button" class="btn btn-primary next" onclick="javascript:cancelAudit('0');">
-                            Reject
-                        </button>
-                        <button type="button" class="btn btn-primary next" onclick="javascript:cancelAudit('1');">
-                            Confirm
-                        </button>
-                    </iais:action>
                 </div>
             </div>
         </div>
