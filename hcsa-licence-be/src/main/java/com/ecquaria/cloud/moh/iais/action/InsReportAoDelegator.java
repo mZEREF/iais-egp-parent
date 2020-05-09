@@ -178,7 +178,7 @@ public class InsReportAoDelegator {
         if(fastTracking!=null){
             applicationDto.setFastTracking(true);
         }
-        if(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(applicationDto.getStatus())){
+        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK.equals(applicationDto.getStatus())){
             insRepService.routTastToRoutBack(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto.getProcessRemarks());
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
@@ -308,7 +308,7 @@ public class InsReportAoDelegator {
     }
 
     private List<SelectOption> getProcessingDecision(String status) {
-        if(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(status)){
+        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK.equals(status)){
             List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
             SelectOption so1 = new SelectOption("submit", "Give Clarification");
             riskLevelResult.add(so1);

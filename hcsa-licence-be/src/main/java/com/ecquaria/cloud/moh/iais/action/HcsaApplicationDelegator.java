@@ -301,7 +301,6 @@ public class HcsaApplicationDelegator {
                 && RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())){
 
         }else{
-//            nextStageList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK, "Internal Route Back"));
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROLLBACK, "Internal Route Back"));
         }
         //62761
@@ -686,21 +685,21 @@ public class HcsaApplicationDelegator {
         String roleId=result[3];
 
         if(HcsaConsts.ROUTING_STAGE_ASO.equals(satageId)){
-            rollBack(bpc,HcsaConsts.ROUTING_STAGE_ASO,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_ASO,wrkGpId,userId);
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_ASO,ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK,RoleConsts.USER_ROLE_ASO,wrkGpId,userId);
         }else if(HcsaConsts.ROUTING_STAGE_PSO.equals(satageId)){
-            rollBack(bpc,HcsaConsts.ROUTING_STAGE_PSO,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_PSO,wrkGpId,userId);
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_PSO,ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK,RoleConsts.USER_ROLE_PSO,wrkGpId,userId);
         }else if(HcsaConsts.ROUTING_STAGE_INS.equals(satageId)){
             if(RoleConsts.USER_ROLE_AO1.equals(roleId)){
-                rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO1,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_AO1,wrkGpId,userId);
+                rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO1,ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK,RoleConsts.USER_ROLE_AO1,wrkGpId,userId);
             }else{
-                rollBack(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_INSPECTIOR,wrkGpId,userId);
+                rollBack(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK,RoleConsts.USER_ROLE_INSPECTIOR,wrkGpId,userId);
             }
         }else if(HcsaConsts.ROUTING_STAGE_AO1.equals(satageId)){
-            rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO1,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_AO1,wrkGpId,userId);
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO1,ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK,RoleConsts.USER_ROLE_AO1,wrkGpId,userId);
         }else if(HcsaConsts.ROUTING_STAGE_AO2.equals(satageId)){
-            rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO2,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_AO2,wrkGpId,userId);
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO2,ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK,RoleConsts.USER_ROLE_AO2,wrkGpId,userId);
         }else if(HcsaConsts.ROUTING_STAGE_AO3.equals(satageId)){
-            rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_AO3,wrkGpId,userId);
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK,RoleConsts.USER_ROLE_AO3,wrkGpId,userId);
         }
         log.debug(StringUtil.changeForLog("the do routeBack end ...."));
     }

@@ -94,7 +94,7 @@ public class InsReportDelegator {
             }
         }
         String appStatus = applicationViewDto.getApplicationDto().getStatus();
-        if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION.equals(appStatus)||ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(appStatus)){
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION.equals(appStatus)||ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK.equals(appStatus)){
             initRecommendation(correlationId,applicationViewDto,bpc);
         }
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
@@ -154,7 +154,7 @@ public class InsReportDelegator {
             applicationDto.setFastTracking(true);
         }
 
-        if(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(status)){
+        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK.equals(status)){
             insRepService.routTastToRoutBack(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto.getProcessRemarks());
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
@@ -360,7 +360,7 @@ public class InsReportDelegator {
     }
 
     private List<SelectOption> getProcessingDecision(String status) {
-        if(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(status)){
+        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK.equals(status)){
             List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
             SelectOption so1 = new SelectOption("submit", "Give Clarification");
             riskLevelResult.add(so1);

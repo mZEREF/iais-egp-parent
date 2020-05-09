@@ -728,7 +728,7 @@ public class InterInboxDelegator {
         List<SelectOption> applicationStatusSelectList = IaisCommonUtils.genNewArrayList();
         applicationStatusSelectList.add(new SelectOption("All", "All"));
         applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_DRAFT, "Draft"));
-        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK, "Rollback"));
+        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK, "Rollback"));
         applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_APPROVED, "Approved"));
         applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING, "Pending"));
         ParamUtil.setRequestAttr(request, "appStatusSelect", applicationStatusSelectList);
