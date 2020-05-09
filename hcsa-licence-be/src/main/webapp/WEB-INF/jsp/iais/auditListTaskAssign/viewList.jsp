@@ -39,8 +39,6 @@
                                     <th width="30%">Address</th>
                                     <th width="10%">Service Name</th>
                                     <th width="15%">Audit Type</th>
-                                    <th>TCU Audit Due Date
-                                    </th>
                                     <c:if test="${ISTUC}">
                                         <th>TCU Audit Due Date
                                         </th>
@@ -77,7 +75,6 @@
                                                 <input name="${id}auditType" id="${id}auditType" type="hidden" value="${item.auditType}">
                                             </c:if>
                                         </td>
-                                        <td><fmt:formatDate value="${item.tcuDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                         <c:if test="${ISTUC}">
                                             <td><fmt:formatDate value="${item.tcuDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                         </c:if>
