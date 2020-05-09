@@ -1304,12 +1304,8 @@ public class LicenceApproveBatchjobTest {
                     for(PremisesGroupDto premisesGroupDto : premisesGroupDtos){
                         PremisesDto premisesDto = premisesGroupDto.getPremisesDto();
                         LicDocumentRelationDto licDocumentRelationDto = new LicDocumentRelationDto();
-                        DocumentDto documentDto = new DocumentDto();
-                        documentDto.setDocName(appGrpPrimaryDocDto.getDocName());
-                        documentDto.setDocSize(appGrpPrimaryDocDto.getDocSize());
-                        documentDto.setFileRepoId(appGrpPrimaryDocDto.getFileRepoId());
-                        documentDto.setSubmitDt(appGrpPrimaryDocDto.getSubmitDt());
-                        documentDto.setSubmitBy(appGrpPrimaryDocDto.getSubmitBy());
+                        DocumentDto documentDto = MiscUtil.transferEntityDto(appGrpPrimaryDocDto,DocumentDto.class);
+                        documentDto.setId(null);
                         licDocumentRelationDto.setDocumentDto(documentDto);
 
                         LicDocumentDto licDocumentDto = new LicDocumentDto();
@@ -1332,12 +1328,8 @@ public class LicenceApproveBatchjobTest {
         if(appSvcDocDtos != null){
            for (AppSvcDocDto appSvcDocDto : appSvcDocDtos){
                LicDocumentRelationDto licDocumentRelationDto = new LicDocumentRelationDto();
-               DocumentDto documentDto = new DocumentDto();
-               documentDto.setDocName(appSvcDocDto.getDocName());
-               documentDto.setDocSize(appSvcDocDto.getDocSize());
-               documentDto.setFileRepoId(appSvcDocDto.getFileRepoId());
-               documentDto.setSubmitDt(appSvcDocDto.getSubmitDt());
-               documentDto.setSubmitBy(appSvcDocDto.getSubmitBy());
+               DocumentDto documentDto = MiscUtil.transferEntityDto(appSvcDocDto,DocumentDto.class);
+               documentDto.setId(null);
                licDocumentRelationDto.setDocumentDto(documentDto);
                LicDocumentDto licDocumentDto = new LicDocumentDto();
                licDocumentDto.setSvcDocId(appSvcDocDto.getSvcDocId());
@@ -1407,8 +1399,8 @@ public class LicenceApproveBatchjobTest {
             licenceDto.setOriginLicenceId(originLicenceDto.getId());
             licenceDto.setMigrated(originLicenceDto.isMigrated());
             licenceDto.setLicenceNo(originLicenceDto.getLicenceNo());
-            licenceDto.setVersion(originLicenceDto.getVersion()+1);
             licenceDto.setFeeRetroNeeded(originLicenceDto.isFeeRetroNeeded());
+            licenceDto.setVersion(originLicenceDto.getVersion()+1);
             licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
             if(applicationGroupDto!=null){
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
