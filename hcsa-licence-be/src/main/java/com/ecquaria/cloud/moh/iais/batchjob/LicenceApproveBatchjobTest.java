@@ -432,6 +432,27 @@ public class LicenceApproveBatchjobTest {
         return result;
     }
 
+    private void addDocumentToList(List<PremisesGroupDto> premisesGroupDtos, List<LicDocumentRelationDto> licDocumentRelationDtos){
+        log.info(StringUtil.changeForLog("The addDocumentToList start ..."));
+        log.info(StringUtil.changeForLog("The addDocumentToList licDocumentRelationDtos.size() is-->:"+licDocumentRelationDtos.size()));
+        if(!IaisCommonUtils.isEmpty(premisesGroupDtos)){
+            log.info(StringUtil.changeForLog("The addDocumentToList premisesGroupDtos.size() is-->:"+premisesGroupDtos.size()));
+            for(PremisesGroupDto premisesGroupDto : premisesGroupDtos){
+                List<LicDocumentRelationDto> licDocumentRelationDtoList = premisesGroupDto.getLicDocumentRelationDtos();
+                if(!IaisCommonUtils.isEmpty(licDocumentRelationDtoList)){
+                    log.info(StringUtil.changeForLog("The addDocumentToList licDocumentRelationDtoList.size() is-->:"+licDocumentRelationDtoList.size()));
+                    for (LicDocumentRelationDto licDocumentRelationDto : licDocumentRelationDtoList){
+                        if(!isExist(licDocumentRelationDtos,licDocumentRelationDto.getDocumentDto().getFileRepoId())){
+                            licDocumentRelationDtos.add(licDocumentRelationDto);
+                        }
+                    }
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("The addDocumentToList licDocumentRelationDtos.size() is-->:"+licDocumentRelationDtos.size()));
+        log.info(StringUtil.changeForLog("The addDocumentToList end ..."));
+    }
+
     private String addPremisesGroupDtos(List<PremisesGroupDto> allPremisesGroupDtos,List<PremisesGroupDto> premisesGroupDtos,
                                       ApplicationListDto applicationListDto){
         log.info(StringUtil.changeForLog("The allPremisesGroupDtos start ..."));
@@ -524,10 +545,6 @@ public class LicenceApproveBatchjobTest {
         Integer isPostInspNeeded = isPostInspNeeded(applicationGroupDto);
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is -->:"+isPostInspNeeded));
 
-        //create licence group fee
-//        LicFeeGroupDto licFeeGroupDto = getLicFeeGroupDto(applicationGroupDto.getAmount().toString());
-//        licenceGroupDto.setLicFeeGroupDto(licFeeGroupDto);
-
         LicenseeDto oldLicenseeDto = getOrganizationIdBylicenseeId(applicationGroupDto.getLicenseeId());
         //get organizationId
         String organizationId = oldLicenseeDto.getOrganizationId();
@@ -607,32 +624,7 @@ public class LicenceApproveBatchjobTest {
                     List<PremisesGroupDto> premisesGroupDtos1 = getPremisesGroupDto(applicationLicenceDto,appGrpPremisesEntityDtos,appPremisesCorrelationDtos,appSvcPremisesScopeDtos,
                             appSvcPremisesScopeAllocationDtos, hcsaServiceDto,organizationId,isPostInspNeeded);
                     if(!IaisCommonUtils.isEmpty(premisesGroupDtos1)){
-//                        PremisesGroupDto premisesGroupDto = premisesGroupDtos1.get(0);
-//                        if(premisesGroupDto.isHasError()){
-//                            errorMessage = premisesGroupDto.getErrorMessage();
-//                            break;
-//                        }
                         premisesGroupDtos.addAll(premisesGroupDtos1);
-                    }
-                    //RFC for premises: Generate partPremises group Licence
-                    ApplicationDto applicationDto = applicationListDto.getApplicationDto();
-                    String appType = applicationDto.getApplicationType();
-                    log.info(StringUtil.changeForLog("The generateGroupLicence appType is -->:"+appType));
-                    boolean isPartPremises = applicationDto.isPartPremises();
-                    log.info(StringUtil.changeForLog("The generateGroupLicence isPartPremises is -->:"+isPartPremises));
-                    if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) && isPartPremises){
-                       String everyOriginLicenceId = applicationDto.getOriginLicenceId();
-                        log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is -->:"+everyOriginLicenceId));
-                       if(!StringUtil.isEmpty(everyOriginLicenceId)){
-                           List<PremisesGroupDto> premisesGroupDtoList = licenceService.getPremisesGroupDtoByOriginLicenceId(everyOriginLicenceId);
-                           String msg = addPremisesGroupDtos(premisesGroupDtos,premisesGroupDtoList,applicationListDto);
-                           if(!StringUtil.isEmpty(msg)){
-                               errorMessage = msg;
-                               break;
-                           }
-                       }else{
-                           log.error(StringUtil.changeForLog("This Appno do not have the OriginLicenceId -- >" +applicationDto.getApplicationNo()));
-                       }
                     }
                     //create key_personnel key_personnel_ext lic_key_personnel
                     List<AppGrpPersonnelDto> appGrpPersonnelDtos = applicationListDto.getAppGrpPersonnelDtos();
@@ -646,7 +638,10 @@ public class LicenceApproveBatchjobTest {
                         }
                         personnelsDtos.addAll(personnelsDto1s);
                     }
-
+                    //RFC for premises: Generate partPremises group Licence
+                    ApplicationDto applicationDto = applicationListDto.getApplicationDto();
+                    String appType = applicationDto.getApplicationType();
+                    log.info(StringUtil.changeForLog("The generateGroupLicence appType is -->:"+appType));
                     if(applicationDto != null){
                         String applicationNo = applicationDto.getApplicationNo();
                         String loginUrl = "#";
@@ -664,7 +659,6 @@ public class LicenceApproveBatchjobTest {
                         }
                     }
 
-
                     //create the lic_app_correlation
                     LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
                     licAppCorrelationDto.setApplicationId(applicationListDto.getApplicationDto().getId());
@@ -681,12 +675,25 @@ public class LicenceApproveBatchjobTest {
                     //do not need create in the Dto
                     //todo:lic_base_specified_correlation
                     //
+                    //part premises
+                    boolean isPartPremises = applicationDto.isPartPremises();
+                    log.info(StringUtil.changeForLog("The generateGroupLicence isPartPremises is -->:"+isPartPremises));
+                    if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) && isPartPremises){
+                        String everyOriginLicenceId = applicationDto.getOriginLicenceId();
+                        log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is -->:"+everyOriginLicenceId));
+                        if(!StringUtil.isEmpty(everyOriginLicenceId)){
+                            List<PremisesGroupDto> premisesGroupDtoList = licenceService.getPremisesGroupDtoByOriginLicenceId(everyOriginLicenceId);
+                            String msg = addPremisesGroupDtos(premisesGroupDtos,premisesGroupDtoList,applicationListDto);
+                            if(!StringUtil.isEmpty(msg)){
+                                errorMessage = msg;
+                                break;
+                            }
+                            addDocumentToList(premisesGroupDtoList,licDocumentRelationDtos);
+                        }else{
+                            log.error(StringUtil.changeForLog("This Appno do not have the OriginLicenceId -- >" +applicationDto.getApplicationNo()));
+                        }
+                    }
                 }
-                //create LicFeeGroupItemDto
-//                List<LicFeeGroupItemDto> licFeeGroupItemDtos = IaisCommonUtils.genNewArrayList();
-//                LicFeeGroupItemDto licFeeGroupItemDto = new LicFeeGroupItemDto();
-//                licFeeGroupItemDtos.add(licFeeGroupItemDto);
-//                superLicDto.setLicFeeGroupItemDtos(licFeeGroupItemDtos);
 
                 //create LicSvcSpecificPersonnelDto
                 List<AppSvcPersonnelDto> appSvcPersonnelDtos = applicationListDtos.get(0).getAppSvcPersonnelDtos();
@@ -972,25 +979,6 @@ public class LicenceApproveBatchjobTest {
         return result;
     }
 
-
-//    private  int getYearLength(AppPremisesRecommendationDto appPremisesRecommendationDto){
-//        log.debug(StringUtil.changeForLog("The getYearLength is start ..."));
-//        int yearLength = 1;
-//        if(appPremisesRecommendationDto!=null){
-//            String chrono = appPremisesRecommendationDto.getChronoUnit();
-//            if(AppConsts.LICENCE_PERIOD_YEAR.equals(chrono)){
-//                yearLength = appPremisesRecommendationDto.getRecomInNumber();
-//            }else if(AppConsts.LICENCE_PERIOD_MONTH.equals(chrono)){
-//                yearLength = appPremisesRecommendationDto.getRecomInNumber()/12;
-//            }else{
-//                log.debug(StringUtil.changeForLog("The getYearLength chrono is not Year ..."));
-//            }
-//        }else{
-//            log.error(StringUtil.changeForLog("The getYearLength appPremisesRecommendationDto is null ..."));
-//        }
-//        log.debug(StringUtil.changeForLog("The getYearLength is end ..."));
-//        return yearLength;
-//    }
     private boolean isApplicaitonReject(AppPremisesRecommendationDto appPremisesRecommendationDto){
         boolean result = false;
         if(appPremisesRecommendationDto!=null){
