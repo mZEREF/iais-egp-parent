@@ -544,6 +544,9 @@ public class LicenceApproveBatchjobTest {
         ApplicationGroupDto applicationGroupDto = applicationLicenceDto.getApplicationGroupDto();
         Integer isPostInspNeeded = isPostInspNeeded(applicationGroupDto);
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is -->:"+isPostInspNeeded));
+        String appType = applicationGroupDto.getAppType();
+        log.debug(StringUtil.changeForLog("The appType is -->:"+appType));
+        licenceGroupDto.setAppType(appType);
 
         LicenseeDto oldLicenseeDto = getOrganizationIdBylicenseeId(applicationGroupDto.getLicenseeId());
         //get organizationId
@@ -640,8 +643,6 @@ public class LicenceApproveBatchjobTest {
                     }
                     //RFC for premises: Generate partPremises group Licence
                     ApplicationDto applicationDto = applicationListDto.getApplicationDto();
-                    String appType = applicationDto.getApplicationType();
-                    log.info(StringUtil.changeForLog("The generateGroupLicence appType is -->:"+appType));
                     if(applicationDto != null){
                         String applicationNo = applicationDto.getApplicationNo();
                         String loginUrl = "#";
@@ -818,11 +819,9 @@ public class LicenceApproveBatchjobTest {
         ApplicationGroupDto applicationGroupDto = applicationLicenceDto.getApplicationGroupDto();
         Integer isPostInspNeeded = isPostInspNeeded(applicationGroupDto);
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is -->:"+isPostInspNeeded));
-
-        //create licence group fee
-//        LicFeeGroupDto licFeeGroupDto = getLicFeeGroupDto(applicationGroupDto.getAmount().toString());
-//        licenceGroupDto.setLicFeeGroupDto(licFeeGroupDto);
-
+        String appType = applicationGroupDto.getAppType();
+        log.debug(StringUtil.changeForLog("The appType is -->:"+appType));
+        licenceGroupDto.setAppType(appType);
         LicenseeDto oldLicenseeDto = getOrganizationIdBylicenseeId(applicationGroupDto.getLicenseeId());
         //get organizationId
         String organizationId = oldLicenseeDto.getOrganizationId();
@@ -901,7 +900,7 @@ public class LicenceApproveBatchjobTest {
                 if(isPostInspNeeded == Integer.parseInt(AppConsts.YES)){
                     sendEmailInspection(licenceDto);
                 }
-                String appType = applicationDto.getApplicationType();
+
                 String applicationNo = applicationDto.getApplicationNo();
                 String loginUrl = "#";
                 //new application send email
@@ -929,11 +928,7 @@ public class LicenceApproveBatchjobTest {
                 licAppCorrelationDto.setApplicationId(applicationDto.getId());
                 licAppCorrelationDtos.add(licAppCorrelationDto);
                 superLicDto.setLicAppCorrelationDtos(licAppCorrelationDtos);
-                //create LicFeeGroupItemDto
-//                List<LicFeeGroupItemDto> licFeeGroupItemDtos = IaisCommonUtils.genNewArrayList();
-//                LicFeeGroupItemDto licFeeGroupItemDto = new LicFeeGroupItemDto();
-//                licFeeGroupItemDtos.add(licFeeGroupItemDto);
-//                superLicDto.setLicFeeGroupItemDtos(licFeeGroupItemDtos);
+
                 //create the document and lic_document from the primary doc.
                 List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = applicationListDto.getAppGrpPrimaryDocDtos();
                 List<AppSvcDocDto> appSvcDocDtos = applicationListDto.getAppSvcDocDtos();
