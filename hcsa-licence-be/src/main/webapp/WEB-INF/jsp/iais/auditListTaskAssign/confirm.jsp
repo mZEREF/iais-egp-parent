@@ -40,7 +40,7 @@
                                     <c:if test="${ISTUC}"> <th>
                                         TCU Audit Due Date
                                     </th></c:if>
-                                    <th>Inspector</th>
+                                    <th>Assign task to Inspector</th>
                                     <th>Select for Audit</th>
                                 </tr>
                                 </thead>

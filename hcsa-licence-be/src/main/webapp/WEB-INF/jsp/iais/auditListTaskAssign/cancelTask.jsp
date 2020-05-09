@@ -32,7 +32,7 @@
                                     <th>Address</th>
                                     <th>Service Name</th>
                                     <th>Audit Type</th>
-                                    <th>Inspector</th>
+                                    <th>Assign task to Inspector</th>
                                     <th>Status</th>
                                     <th>Select for Cancellation</th>
                                     <th>Resaons for Cancellation</th>

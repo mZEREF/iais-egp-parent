@@ -31,7 +31,7 @@
                                 <th>Address</th>
                                 <th>Service Name</th>
                                 <th>Audit Type</th>
-                                <th>Inspector</th>
+                                <th>Assign task to Inspector</th>
                                 <th>Cancel Reason</th>
                                 <th>Select for Audit</th>
                                 <th>Reason</th>

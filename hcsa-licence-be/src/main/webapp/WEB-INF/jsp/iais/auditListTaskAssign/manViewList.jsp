@@ -26,7 +26,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
-                        <h2>${modulename}</h2>
+                        <h2>Search Results - HCIs and Services</h2>
                         <div class="table-gp">
                             <table class="table">
                                 <thead>
@@ -71,16 +71,16 @@
                             </table>
                             <div class="table-footnote">
                             </div>
-                            <iais:action style="text-align:right;">
-                                <button class="btn btn-secondary" id="clearbtn" type="button"
-                                        onclick="javascript:cancel();">
-                                    Cancel
-                                </button>
-                                <button class="btn btn-primary next" type="button" onclick="javascript:addToAudit();;">
-                                    Add to Audit List
-                                </button>
-                            </iais:action>
                         </div>
+                        <iais:action style="text-align:right;">
+                            <button class="btn btn-secondary" id="clearbtn" type="button"
+                                    onclick="javascript:cancel();">
+                                Cancel
+                            </button>
+                            <button class="btn btn-primary next" type="button" onclick="javascript:addToAudit();;">
+                             ADD INTO MANUAL AUDIT LIST
+                            </button>
+                        </iais:action>
                     </div>
 
                 </div>

@@ -29,13 +29,13 @@
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th>HCI Code</th>
-                                        <th>HCI Name</th>
-                                        <th>Address</th>
-                                        <th>Service Name</th>
-                                        <th>Audit Type</th>
-                                        <th>Inspector</th>
-                                        <th>Select for Audit</th>
+                                        <th width="10%">HCI Code</th>
+                                        <th width="10%">HCI Name</th>
+                                        <th  width="30%">Address</th>
+                                        <th  width="10%">Service Name</th>
+                                        <th  width="15%">Audit Type</th>
+                                        <th width="19%">Assign task to Inspector</th>
+                                        <th width="6%">Select for Audit</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -51,11 +51,11 @@
                                        <c:if test="${item.addAuditList}">
                                         <tr>
                                             <c:set var="id" value="${status.index}"></c:set>
-                                            <td><c:out value="${item.hclCode}"/></td>
-                                            <td><c:out value="${item.hclName}"/></td>
-                                            <td><c:out value="${item.address}"/></td>
-                                            <td><c:out value="${item.svcName}"/></td>
-                                            <td><c:if test="${ !item.audited}">
+                                            <td width="10%"><c:out value="${item.hclCode}"/></td>
+                                            <td  width="10%"><c:out value="${item.hclName}"/></td>
+                                            <td  width="30%"><c:out value="${item.address}"/></td>
+                                            <td width="10%"><c:out value="${item.svcName}"/></td>
+                                            <td width="15%"><c:if test="${ !item.audited}">
                                                 <iais:select name="${id}auditType" options="aduitTypeOp"
                                                              firstOption="Please Select" value="${item.auditType}"></iais:select>
                                                 <c:set value="error_${id}adtype" var="erradtype"/>
@@ -67,7 +67,7 @@
                                                     <input name="${id}auditType" id="${id}auditType" type="hidden" value="${item.auditType}">
                                                 </c:if>
                                             </td>
-                                            <td>
+                                            <td width="19%">
                                                 <c:if test="${!item.audited}">
                                                     <iais:select  name="${id}insOp" options="inspectors${item.workGroupId}" value="${item.inspectorId}"   firstOption="Please Select"></iais:select>
                                                     <c:set value="error_${id}insp" var="errboth"/>
@@ -79,7 +79,7 @@
                                                     <input name="${id}insOp" id="${id}insOp" type="hidden" value="<iais:mask name="${id}insOp" value="${item.inspectorId}"/>">
                                                 </c:if>
                                             </td>
-                                            <td>
+                                            <td width="6%">
                                                 <input name="<c:out value="${id}"/>selectForAd" id="<c:out value="${id}"/>selectForAd" type="checkbox" value="ad" <c:if test="${item.selectedForAudit}">checked</c:if>/>
                                                 <br/>
                                                 <c:set value="error_${id}select" var="errselect"/>
