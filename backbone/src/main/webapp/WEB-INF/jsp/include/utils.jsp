@@ -71,4 +71,8 @@
     function sortRecords(sortFieldName,sortType){
         SOP.Crud.cfxSubmit("mainForm","sortRecords",sortFieldName,sortType);
     }
+
+    backLastPageId.onclick = (function () {
+        SOP.Crud.cfxSubmit("mainForm", "doBack");
+    });
 </script>

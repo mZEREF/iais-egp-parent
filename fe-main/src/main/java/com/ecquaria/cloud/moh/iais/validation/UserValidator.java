@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class UserValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
-        FeUserDto dto = (FeUserDto) ParamUtil.getSessionAttr(request, "user");
+        FeUserDto dto = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
             if (dto.getIdentityNo() != null && !StringUtil.isEmpty(dto.getIdentityNo())) {
                 boolean b = SgNoValidator.validateFin(dto.getIdentityNo());
                 boolean b1 = SgNoValidator.validateNric(dto.getIdentityNo());
