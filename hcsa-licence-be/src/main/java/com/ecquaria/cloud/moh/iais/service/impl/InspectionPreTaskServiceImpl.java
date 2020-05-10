@@ -381,60 +381,62 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     @Override
     public List<InspectionHistoryShowDto> getInspectionHistory(String originLicenceId) {
         List<InspectionHistoryShowDto> inspectionHistoryShowDtos = IaisCommonUtils.genNewArrayList();
-        List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(originLicenceId).getEntity();
-        if(!IaisCommonUtils.isEmpty(licAppCorrelationDtos)){
-            int index = 0;
-            for(LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos){
-                if(index <= 1){
-                    InspectionHistoryShowDto inspectionHistoryShowDto = new InspectionHistoryShowDto();
-                    String appId = licAppCorrelationDto.getApplicationId();
-                    LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(originLicenceId).getEntity();
-                    Date licStartDate = licenceDto.getStartDate();
-                    Date licEndDate = licenceDto.getExpiryDate();
-                    if(licStartDate != null && licEndDate != null){
-                        String startDateStr = Formatter.formatDateTime(licStartDate, "dd/MM/yyyy");
-                        String endDateStr = Formatter.formatDateTime(licEndDate, "dd/MM/yyyy");
-                        String licPeriod = startDateStr + " - " + endDateStr;
-                        inspectionHistoryShowDto.setLicencePeriod(licPeriod);
+        if(!StringUtil.isEmpty(originLicenceId)) {
+            List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(originLicenceId).getEntity();
+            if (!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
+                int index = 0;
+                for (LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos) {
+                    if (index <= 1) {
+                        InspectionHistoryShowDto inspectionHistoryShowDto = new InspectionHistoryShowDto();
+                        String appId = licAppCorrelationDto.getApplicationId();
+                        LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(originLicenceId).getEntity();
+                        Date licStartDate = licenceDto.getStartDate();
+                        Date licEndDate = licenceDto.getExpiryDate();
+                        if (licStartDate != null && licEndDate != null) {
+                            String startDateStr = Formatter.formatDateTime(licStartDate, "dd/MM/yyyy");
+                            String endDateStr = Formatter.formatDateTime(licEndDate, "dd/MM/yyyy");
+                            String licPeriod = startDateStr + " - " + endDateStr;
+                            inspectionHistoryShowDto.setLicencePeriod(licPeriod);
+                        }
+                        ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+                        //get service name
+                        String serviceId = applicationDto.getServiceId();
+                        HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+                        inspectionHistoryShowDto.setServiceName(hcsaServiceDto.getSvcName());
+                        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
+                        //get task refNo. (appPremCorrId)
+                        String taskRefNo = appPremisesCorrelationDto.getId();
+                        //get inspection date
+                        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskRefNo, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                        //get remarks
+                        AppPremisesRecommendationDto appPremisesRecommendationDto2 = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskRefNo, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+                        String remark = StringUtil.viewHtml(appPremisesRecommendationDto2.getRemarks());
+                        //get group premises and address
+                        AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(taskRefNo);
+                        String hciCode = StringUtil.viewHtml(appGrpPremisesDto.getHciCode());
+                        String hciName = appGrpPremisesDto.getHciName();
+                        String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
+                        inspectionHistoryShowDto.setHciCode(hciCode);
+                        if (StringUtil.isEmpty(hciName)) {
+                            inspectionHistoryShowDto.setHciNameAddress(address);
+                        } else {
+                            String hciNameAddress = hciName + " / " + address;
+                            inspectionHistoryShowDto.setHciNameAddress(hciNameAddress);
+                        }
+                        //get inspectors and leads
+                        inspectionHistoryShowDto = getInspectorAndLeadByRefNo(taskRefNo, inspectionHistoryShowDto);
+                        //get risk lvl
+                        HcsaRiskInspectionComplianceDto hcsaRiskInspectionComplianceDto = getRiskLevelByRefNo(taskRefNo, hcsaServiceDto.getSvcCode());
+                        String riskLvl = "-";
+                        if (hcsaRiskInspectionComplianceDto != null) {
+                            riskLvl = hcsaRiskInspectionComplianceDto.getRiskRating();
+                        }
+                        inspectionHistoryShowDto.setComplianceRisk(riskLvl);
+                        inspectionHistoryShowDto.setRemark(remark);
+                        inspectionHistoryShowDto.setInspDate(appPremisesRecommendationDto.getRecomInDate());
+                        inspectionHistoryShowDtos.add(inspectionHistoryShowDto);
+                        index++;
                     }
-                    ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
-                    //get service name
-                    String serviceId = applicationDto.getServiceId();
-                    HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
-                    inspectionHistoryShowDto.setServiceName(hcsaServiceDto.getSvcName());
-                    AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
-                    //get task refNo. (appPremCorrId)
-                    String taskRefNo = appPremisesCorrelationDto.getId();
-                    //get inspection date
-                    AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskRefNo, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-                    //get remarks
-                    AppPremisesRecommendationDto appPremisesRecommendationDto2 = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskRefNo, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-                    String remark = StringUtil.viewHtml(appPremisesRecommendationDto2.getRemarks());
-                    //get group premises and address
-                    AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(taskRefNo);
-                    String hciCode = StringUtil.viewHtml(appGrpPremisesDto.getHciCode());
-                    String hciName = appGrpPremisesDto.getHciName();
-                    String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
-                    inspectionHistoryShowDto.setHciCode(hciCode);
-                    if(StringUtil.isEmpty(hciName)){
-                        inspectionHistoryShowDto.setHciNameAddress(address);
-                    } else {
-                        String hciNameAddress = hciName + " / " + address;
-                        inspectionHistoryShowDto.setHciNameAddress(hciNameAddress);
-                    }
-                    //get inspectors and leads
-                    inspectionHistoryShowDto = getInspectorAndLeadByRefNo(taskRefNo, inspectionHistoryShowDto);
-                    //get risk lvl
-                    HcsaRiskInspectionComplianceDto hcsaRiskInspectionComplianceDto = getRiskLevelByRefNo(taskRefNo, hcsaServiceDto.getSvcCode());
-                    String riskLvl = "-";
-                    if(hcsaRiskInspectionComplianceDto != null){
-                        riskLvl = hcsaRiskInspectionComplianceDto.getRiskRating();
-                    }
-                    inspectionHistoryShowDto.setComplianceRisk(riskLvl);
-                    inspectionHistoryShowDto.setRemark(remark);
-                    inspectionHistoryShowDto.setInspDate(appPremisesRecommendationDto.getRecomInDate());
-                    inspectionHistoryShowDtos.add(inspectionHistoryShowDto);
-                    index++;
                 }
             }
         }
