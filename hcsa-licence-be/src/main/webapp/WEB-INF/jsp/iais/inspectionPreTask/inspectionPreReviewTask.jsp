@@ -70,6 +70,7 @@
 
                         <div class="tab-pane" id="tabDocuments" role="tabpanel">
                           <%@ include file="../inspectionncList/tabDocuments.jsp" %>
+                          <br>
                           <div class="alert alert-info" role="alert">
                             <strong>
                               <h4>Past Inspection Detail</h4>

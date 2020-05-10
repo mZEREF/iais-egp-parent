@@ -410,7 +410,12 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskRefNo, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
                         //get remarks
                         AppPremisesRecommendationDto appPremisesRecommendationDto2 = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskRefNo, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-                        String remark = StringUtil.viewHtml(appPremisesRecommendationDto2.getRemarks());
+                        String remark;
+                        if(appPremisesRecommendationDto2 != null) {
+                            remark = StringUtil.viewHtml(appPremisesRecommendationDto2.getRemarks());
+                        } else {
+                            remark = "-";
+                        }
                         //get group premises and address
                         AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(taskRefNo);
                         String hciCode = StringUtil.viewHtml(appGrpPremisesDto.getHciCode());
@@ -429,11 +434,13 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                         HcsaRiskInspectionComplianceDto hcsaRiskInspectionComplianceDto = getRiskLevelByRefNo(taskRefNo, hcsaServiceDto.getSvcCode());
                         String riskLvl = "-";
                         if (hcsaRiskInspectionComplianceDto != null) {
-                            riskLvl = hcsaRiskInspectionComplianceDto.getRiskRating();
+                            riskLvl = StringUtil.viewHtml(hcsaRiskInspectionComplianceDto.getRiskRating());
                         }
                         inspectionHistoryShowDto.setComplianceRisk(riskLvl);
                         inspectionHistoryShowDto.setRemark(remark);
-                        inspectionHistoryShowDto.setInspDate(appPremisesRecommendationDto.getRecomInDate());
+                        if(appPremisesRecommendationDto != null){
+                            inspectionHistoryShowDto.setInspDate(appPremisesRecommendationDto.getRecomInDate());
+                        }
                         inspectionHistoryShowDtos.add(inspectionHistoryShowDto);
                         index++;
                     }
