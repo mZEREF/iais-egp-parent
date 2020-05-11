@@ -162,7 +162,7 @@ public class InspectionCreTaskByInspDateDelegator {
             taskDtoList.add(taskDto);
             ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-            createAppPremisesRoutingHistory(intranet, applicationDto.getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),null, InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION, RoleConsts.USER_ROLE_INSPECTIOR, HcsaConsts.ROUTING_STAGE_INP, taskDto.getWkGrpId());
+            createAppPremisesRoutingHistory(intranet, applicationDto.getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),null, InspectionConstants.PROCESS_DECI_PENDING_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR, HcsaConsts.ROUTING_STAGE_INP, taskDto.getWkGrpId());
         }
         taskService.createTasks(taskDtoList);
     }
