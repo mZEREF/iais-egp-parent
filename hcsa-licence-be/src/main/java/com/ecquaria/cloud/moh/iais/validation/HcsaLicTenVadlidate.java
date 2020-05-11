@@ -90,13 +90,13 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
 
     private void sortVad(List<SubLicenceTenureDto> subList, Map<String, String> errMap, String svcCode) {
         boolean ltSortFlag = doLtsort(subList);
-        if(!ltSortFlag){
-            errMap.put(svcCode+"ltsort","Please sort in chronological order.");
-        }
+        /*if(!ltSortFlag){
+          errMap.put(svcCode+"ltsort","Please sort in chronological order.");
+        }*/
         boolean maxSortFlag = doMaxSortList(subList);
-        if(!maxSortFlag){
-            errMap.put(svcCode+"maxsort","Please follow the order from small to large");
-        }
+        /*if(!maxSortFlag){
+           errMap.put(svcCode+"maxsort","Please follow the order from small to large");
+        }*/
         boolean minSortFlag = doMinSortList(subList);
         if(ltSortFlag&&maxSortFlag&&minSortFlag){
             doMaxAndMinSort(subList,errMap,svcCode);

@@ -35,6 +35,8 @@ public class HcsaGolbalValidate implements CustomizeValidator {
                 doComVad(temp,errMap);
                 dateVad(errMap, temp);
             }
+        }else{
+            errMap.put("All","please do some change");
         }
         return errMap;
     }

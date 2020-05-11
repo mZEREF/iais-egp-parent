@@ -28,116 +28,118 @@
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
                         <h2>Global Risk Configuration</h2>
+                        <div>
+                        <table  >
+                            <thead>
+                            <tr>
+                                <th  width ="5%"><span>Service Name</span></th>
+                                <th width ="10%"><span>Maximum Licence Tenure</span></th>
+                                <th  width ="5%"><span>Last Inspection was more than (X Years)</span></th>
+                                <th width ="10%"><span>Eligible for auto renewal</span></th>
+                                <th width ="13%"><span>Type of Inspection Required(New)</span></th>
+                                <th width ="10%"><span>Pre/Post Licensing Inspection(New)</span></th>
+                                <th width ="13%"><span>Type of Inspection Required(Renew)</span></th>
+                                <th width ="10%"><span>Pre/Post Licensing Inspection(Renew)</span></th>
+                                <th width ="12%"><span>Effective Start Date</span></th>
+                                <th width ="12%"><span>Effective End Date</span></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <span class="error-msg" id="error_All" name="iaisErrorMsg"></span>
+                            <c:forEach var="go" items="${golbalShowDto.goalbalTotalList}" varStatus="status">
+                                <tr>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${go.totalEdit}">
+                                                <p><strong>${go.serviceName}</strong></p>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <p>${go.serviceName}</p>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td>
+                                        <iais:select name="${go.serviceCode}maxLic" options="yearSelectOptions" firstOption="Please Select" value="${go.doMaxLic}"></iais:select>
+                                    </td>
+                                    <td>
+                                        <input type="text" maxlength="2" style="width: 60px" id="<c:out value="${go.serviceCode}"/>doLast" name="<c:out value="${go.serviceCode}"/>doLast"value="<c:out value="${go.doLastInspection}"></c:out>">
+                                    </td>
+                                    <td>
 
+                                        <c:set var="svc" value="${go.serviceCode}"></c:set>
+                                        <iais:select name="${svc}autoreop" options="autoRenewOp" firstOption="Please Select" value="${go.doAutoRenew}"></iais:select>
+
+                                    </td>
+                                    <td>
+                                        <iais:select name="${svc}newinpTypeOps" options="inpTypeOp" firstOption="Please Select" value="${go.donewInspectType}"></iais:select>
+
+                                    </td>
+                                    <td>
+                                        <iais:select name="${svc}newPreOrPostOps" options="PreOrPostOp" firstOption="Please Select" value="${go.donewIsPreInspect}"></iais:select>
+
+                                    </td>
+                                    <td>
+                                        <iais:select name="${svc}renewinpTypeOps" options="inpTypeOp" firstOption="Please Select" value="${go.dorenewInspectType}"></iais:select>
+
+                                    </td>
+                                    <td>
+                                        <iais:select name="${svc}renewPreOrPostOps" options="PreOrPostOp" firstOption="Please Select" value="${go.dorenewIsPreInspect}"></iais:select>
+
+                                    </td>
+                                    <td>
+                                        <iais:datePicker id = "${go.serviceCode}instartdate" name = "${go.serviceCode}instartdate" value="${go.doEffectiveDate}"></iais:datePicker>
+
+                                    </td>
+                                    <td>
+                                        <iais:datePicker id = "${go.serviceCode}inenddate" name = "${go.serviceCode}inenddate" value="${go.doEndDate}"></iais:datePicker>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <c:set value = "error_${go.serviceCode}maxl" var = "maxl"/>
+                                        <span class="error-msg" id="<c:out value="${maxl}"/>" name="iaisErrorMsg"></span>
+                                    </td>
+                                    <td>
+                                        <c:set value = "error_${go.serviceCode}last" var = "last"/>
+                                        <span class="error-msg" id="<c:out value="${last}"/>" name="iaisErrorMsg"></span>
+                                    </td>
+                                    <td>
+                                        <c:set value = "error_${go.serviceCode}auto" var = "auto"/>
+                                        <span class="error-msg" id="<c:out value="${auto}"/>" name="iaisErrorMsg"></span>
+                                    </td>
+                                    <td>
+                                        <c:set value = "error_${go.serviceCode}newit" var = "newit"/>
+                                        <span class="error-msg" id="<c:out value="${newit}"/>" name="iaisErrorMsg"></span>
+                                    </td>
+                                    <td>
+                                        <c:set value = "error_${go.serviceCode}newpp" var = "newpp"/>
+                                        <span class="error-msg" id="<c:out value="${newpp}"/>" name="iaisErrorMsg"></span>
+                                    </td>
+                                    <td>
+                                        <c:set value = "error_${go.serviceCode}renewit" var = "renewit"/>
+                                        <span class="error-msg" id="<c:out value="${renewit}"/>" name="iaisErrorMsg"></span>
+                                    </td>
+                                    <td>
+                                        <c:set value = "error_${go.serviceCode}renewpp" var = "renewpp"/>
+                                        <span class="error-msg" id="<c:out value="${renewpp}"/>" name="iaisErrorMsg"></span>
+                                    </td>
+                                    <td>
+                                        <c:set value = "error_${go.serviceCode}inEffDate" var = "inEffDate"/>
+                                        <span class="error-msg" id="<c:out value="${inEffDate}"/>" name="iaisErrorMsg"></span>
+                                    </td>
+                                    <td>
+                                        <c:set value = "error_${go.serviceCode}inEndDate" var = "inEndDate"/>
+                                        <span class="error-msg" id="<c:out value="${inEndDate}"/>" name="iaisErrorMsg"></span>
+                                    </td>
+                                </tr>
+
+                            </c:forEach>
+                            </tbody>
+                        </table>
+                        </div>
                             <div class="table-gp">
-                                <table>
-                                    <thead>
-                                    <tr>
-                                        <th><span>Service Name</span></th>
-                                        <th><span>Maximum<br> Licence Tenure</span></th>
-                                        <th><span>Last Inspection<br> was more than (X Years)</span></th>
-                                        <th><span>Eligible<br> for <br>auto renewal</span></th>
-                                        <th><span>Type of<br> Inspection Required(New)</span></th>
-                                        <th><span>Pre/Post<br> Licensing Inspection(New)</span></th>
-                                        <th><span>Type of <br>Inspection Required(Renew)</span></th>
-                                        <th><span>Pre/Post <br>Licensing Inspection(Renew)</span></th>
-                                        <th><span>Effective Start Date</span></th>
-                                        <th><span>Effective End Date</span></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <c:forEach var="go" items="${golbalShowDto.goalbalTotalList}" varStatus="status">
-                                        <tr>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${go.totalEdit}">
-                                                        <p><strong>${go.serviceName}</strong></p>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <p>${go.serviceName}</p>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <iais:select name="${go.serviceCode}maxLic" options="yearSelectOptions" firstOption="Please Select" value="${go.doMaxLic}"></iais:select>
-                                            </td>
-                                            <td>
-                                                <input type="text" maxlength="2" style="width: 60px" id="<c:out value="${go.serviceCode}"/>doLast" name="<c:out value="${go.serviceCode}"/>doLast"value="<c:out value="${go.doLastInspection}"></c:out>">
-
-                                            </td>
-                                            <td>
-                                                <c:set var="svc" value="${go.serviceCode}"></c:set>
-                                                <iais:select name="${svc}autoreop" options="autoRenewOp" firstOption="Please Select" value="${go.doAutoRenew}"></iais:select>
-
-                                            </td>
-                                            <td>
-                                                <iais:select name="${svc}newinpTypeOps" options="inpTypeOp" firstOption="Please Select" value="${go.donewInspectType}"></iais:select>
-
-                                            </td>
-                                            <td>
-                                                <iais:select name="${svc}newPreOrPostOps" options="PreOrPostOp" firstOption="Please Select" value="${go.donewIsPreInspect}"></iais:select>
-
-                                            </td>
-                                            <td>
-                                                <iais:select name="${svc}renewinpTypeOps" options="inpTypeOp" firstOption="Please Select" value="${go.dorenewInspectType}"></iais:select>
-
-                                            </td>
-                                            <td>
-                                                <iais:select name="${svc}renewPreOrPostOps" options="PreOrPostOp" firstOption="Please Select" value="${go.dorenewIsPreInspect}"></iais:select>
-
-                                            </td>
-                                            <td>
-                                                <iais:datePicker id = "${go.serviceCode}instartdate" name = "${go.serviceCode}instartdate" value="${go.doEffectiveDate}"></iais:datePicker>
-
-                                            </td>
-                                            <td>
-                                                <iais:datePicker id = "${go.serviceCode}inenddate" name = "${go.serviceCode}inenddate" value="${go.doEndDate}"></iais:datePicker>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>
-                                                <c:set value = "error_${go.serviceCode}maxl" var = "maxl"/>
-                                                <span class="error-msg" id="<c:out value="${maxl}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td>
-                                                <c:set value = "error_${go.serviceCode}last" var = "last"/>
-                                                <span class="error-msg" id="<c:out value="${last}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td>
-                                                <c:set value = "error_${go.serviceCode}auto" var = "auto"/>
-                                                <span class="error-msg" id="<c:out value="${auto}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td>
-                                                <c:set value = "error_${go.serviceCode}newit" var = "newit"/>
-                                                <span class="error-msg" id="<c:out value="${newit}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td>
-                                                <c:set value = "error_${go.serviceCode}newpp" var = "newpp"/>
-                                                <span class="error-msg" id="<c:out value="${newpp}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td>
-                                                <c:set value = "error_${go.serviceCode}renewit" var = "renewit"/>
-                                                <span class="error-msg" id="<c:out value="${renewit}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td>
-                                                <c:set value = "error_${go.serviceCode}renewpp" var = "renewpp"/>
-                                                <span class="error-msg" id="<c:out value="${renewpp}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td>
-                                                <c:set value = "error_${go.serviceCode}inEffDate" var = "inEffDate"/>
-                                                <span class="error-msg" id="<c:out value="${inEffDate}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td>
-                                                <c:set value = "error_${go.serviceCode}inEndDate" var = "inEndDate"/>
-                                                <span class="error-msg" id="<c:out value="${inEndDate}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                        </tr>
-
-                                    </c:forEach>
-                                    </tbody>
-                                </table>
                                 <div class="table-footnote">
                                 </div>
                             </div>
