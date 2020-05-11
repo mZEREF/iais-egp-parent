@@ -149,7 +149,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
 
     public void preBasicSearch(BaseProcessClass bpc)  {
-        log.info("=======>>>>>preBasicSearch>>>>>>>>>>>>>>>>requestForInformation");
+        log.info("=======>>>>>preBasicSearch>>>>>>>>>>>>>>>>OnlineEnquiries");
 
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,"SearchResult", null);
@@ -380,7 +380,7 @@ public class OfficerOnlineEnquiriesDelegator {
     }
 
     public void doBasicSearch(BaseProcessClass bpc) {
-        log.info("=======>>>>>doBasicSearch>>>>>>>>>>>>>>>>requestForInformation");
+        log.info("=======>>>>>doBasicSearch>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request=bpc.request;
 
 
@@ -428,7 +428,7 @@ public class OfficerOnlineEnquiriesDelegator {
         ParamUtil.setRequestAttr(request,"servicePersonnelRoleOption", servicePersonnelRoleOption);
     }
     public void preSearchLicence(BaseProcessClass bpc) {
-        log.info("=======>>>>>preSearchLicence>>>>>>>>>>>>>>>>requestForInformation");
+        log.info("=======>>>>>preSearchLicence>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request = bpc.request;
         preSelectOption(request);
         // 		preSearchLicence->OnStepProcess
@@ -436,7 +436,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
 
     public void doSearchLicence(BaseProcessClass bpc) throws ParseException {
-        log.info("=======>>>>>doSearchLicence>>>>>>>>>>>>>>>>requestForInformation");
+        log.info("=======>>>>>doSearchLicence>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request = bpc.request;
         preSelectOption(request);
         ParamUtil.setSessionAttr(request,"SearchResult", null);
@@ -828,7 +828,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
 
     public void doSearchLicenceAfter(BaseProcessClass bpc) {
-        log.info("=======>>>>>doSearchLicenceAfter>>>>>>>>>>>>>>>>requestForInformation");
+        log.info("=======>>>>>doSearchLicenceAfter>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request=bpc.request;
         try{
             String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
@@ -856,7 +856,7 @@ public class OfficerOnlineEnquiriesDelegator {
     }
 
     public void callCessation(BaseProcessClass bpc) {
-        log.info("=======>>>>>callCessation>>>>>>>>>>>>>>>>requestForInformation");
+        log.info("=======>>>>>callCessation>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request=bpc.request;
         List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(request, "licIds");
         ParamUtil.setSessionAttr(request,"licIds", (Serializable) licenceIds);
@@ -865,21 +865,21 @@ public class OfficerOnlineEnquiriesDelegator {
     }
 
     public void preLicDetails(BaseProcessClass bpc) {
-        log.info("=======>>>>>preLicDetails>>>>>>>>>>>>>>>>requestForInformation");
+        log.info("=======>>>>>preLicDetails>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request=bpc.request;
         onlineEnquiriesService.setLicInfo(request);
         // 		preLicDetails->OnStepProcess
     }
 
     public void preInspReport(BaseProcessClass bpc) {
-        log.info("=======>>>>>preInspReport>>>>>>>>>>>>>>>>requestForInformation");
+        log.info("=======>>>>>preInspReport>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request=bpc.request;
         onlineEnquiriesService.preInspReport(request);
         // 		preAppInfo->OnStepProcess
     }
 
     public void preAppDetails(BaseProcessClass bpc) {
-        log.info("=======>>>>>preAppInfo>>>>>>>>>>>>>>>>requestForInformation");
+        log.info("=======>>>>>preAppInfo>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request=bpc.request;
         onlineEnquiriesService.setAppInfo(request);
     }

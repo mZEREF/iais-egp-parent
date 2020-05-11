@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.MohUenDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UenDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -20,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
 import java.util.List;
@@ -67,13 +69,43 @@ public class UenManagementServiceImpl implements UenManagementService {
     }
 
     @Override
-    public boolean generatesMohIssuedUen(MohUenDto mohUenDto) throws IOException, TemplateException {
+    public boolean generatesMohIssuedUen(BaseProcessClass bpc, MohUenDto mohUenDto) throws IOException, TemplateException {
         MohUenDto mohUenDto1= uenManagementClient.generatesMohIssuedUen(mohUenDto).getEntity();
         //等ACRA api
-        String templateId="AC65C90C-3564-EA11-BE7F-000C29F371DC";
+        sendUenEmail(bpc,"registrationUen");
+        return false;
+    }
+
+    @Override
+    public void sendUenEmail(BaseProcessClass bpc, String active) throws IOException, TemplateException {
+        String licenceId= (String) ParamUtil.getSessionAttr(bpc.request,"licenceId");
+        String uenNo=(String) ParamUtil.getSessionAttr(bpc.request,"uenNo");
+        switch (active){
+            case "registration":sendRegistrationEmail(licenceId,uenNo);break;
+            case "registrationUen":sendRegistrationUenEmail(licenceId,uenNo);break;
+            case "deRegistered":sendDeRegisteredEmail(licenceId,uenNo);break;
+            default:break;
+        }
+
+    }
+
+    private void sendRegistrationEmail(String licenceId,String uenNo) throws IOException, TemplateException {
+        String templateId="D03B3C73-2893-EA11-BE7A-000C29D29DB0";
+        sendUenEmails(licenceId, uenNo, templateId);
+    }
+    private void sendRegistrationUenEmail(String licenceId,String uenNo) throws IOException, TemplateException {
+        String templateId="D03B3C73-2893-EA11-BE7A-000C29D29DB0";
+        sendUenEmails(licenceId, uenNo, templateId);
+    }
+    private void sendDeRegisteredEmail(String licenceId,String uenNo) throws IOException, TemplateException {
+        String templateId="7ED3CCAC-2893-EA11-BE7A-000C29D29DB0";
+        sendUenEmails(licenceId, uenNo, templateId);
+    }
+
+    private void sendUenEmails(String licenceId, String uenNo, String templateId) throws IOException, TemplateException {
         MsgTemplateDto rfiEmailTemplateDto = systemAdminClient.getMsgTemplate(templateId).getEntity();
-        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        map.put("UEN Number",StringUtil.viewHtml(mohUenDto1.getUenNo()));
+        Map<String,Object> map= IaisCommonUtils.genNewHashMap();
+        map.put("UEN Number", StringUtil.viewHtml(uenNo));
         map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
         String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
         try{
@@ -82,7 +114,7 @@ public class UenManagementServiceImpl implements UenManagementService {
             emailDto.setSubject(rfiEmailTemplateDto.getTemplateName());
             emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
             List<String> licenseeIds= IaisCommonUtils.genNewArrayList();
-            licenseeIds.add(mohUenDto.getId());
+            licenseeIds.add(licenceId);
             List<String> emailAddress = emailHelper.getEmailAddressListByLicenseeId(licenseeIds);
             emailDto.setReceipts(emailAddress);
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -92,6 +124,6 @@ public class UenManagementServiceImpl implements UenManagementService {
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
-        return false;
     }
+
 }
