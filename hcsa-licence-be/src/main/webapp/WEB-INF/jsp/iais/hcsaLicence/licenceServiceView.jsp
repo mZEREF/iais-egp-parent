@@ -904,21 +904,6 @@
                                         </div>
                                         <div class="row">
                                           <div class="col-md-6">
-                                           Email Address
-                                          </div>
-                                          <div class="col-md-6">
-                                            modelan@gmail.com
-                                          </div>
-                                        </div>
-                                        <div class="row">
-                                          <div class="col-md-6">
-                                            <label>Authorised Person 2</label>
-                                          </div>
-                                          <div class="col-md-6">
-                                          </div>
-                                        </div>
-                                        <div class="row">
-                                          <div class="col-md-6">
                                             name
                                           </div>
                                           <div class="col-md-6">
