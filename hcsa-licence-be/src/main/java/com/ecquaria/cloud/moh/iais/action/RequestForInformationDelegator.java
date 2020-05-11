@@ -792,7 +792,7 @@ public class RequestForInformationDelegator {
                 dueDate =calendar.getTime();
             }
             licPremisesReqForInfoDto.setDueDateSubmission(dueDate);
-            officerRemarks.append(rfiTitle).append(" ");
+            officerRemarks.append(rfiTitle).append(' ');
             licPremisesReqForInfoDto.setLicPremId(licPremId);
             if("information".equals(decision)){
                 officerRemarks.append(" |Information");
@@ -839,7 +839,7 @@ public class RequestForInformationDelegator {
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             licPremisesReqForInfoDto1.setAction("create");
-            log.info("=======>>>>>Create Lic Request for Information reqInfoId "+licPremisesReqForInfoDto1.getReqInfoId());
+            log.info(StringUtil.changeForLog("=======>>>>>Create Lic Request for Information reqInfoId "+licPremisesReqForInfoDto1.getReqInfoId()));
             try{
                 gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1,
                         signature.date(), signature.authorization(), signature2.date(), signature2.authorization());
@@ -1029,24 +1029,24 @@ public class RequestForInformationDelegator {
     }
 
     public static String generateDropDownHtml(Map<String, String> premisesOnSiteAttr, List<SelectOption> selectOptionList, String firestOption, String checkedVal){
-        StringBuffer sBuffer = new StringBuffer();
+        StringBuilder sBuffer = new StringBuilder();
         sBuffer.append("<select ");
         for(Map.Entry<String, String> entry : premisesOnSiteAttr.entrySet()){
-            sBuffer.append(entry.getKey()+"=\""+entry.getValue()+"\" ");
+            sBuffer.append(entry.getKey()).append("=\"").append(entry.getValue()).append("\" ");
         }
         sBuffer.append(" >");
         if(!StringUtil.isEmpty(firestOption)){
-            sBuffer.append("<option value=\"\">"+ firestOption +"</option>");
+            sBuffer.append("<option value=\"\">").append(firestOption).append("</option>");
         }
         for(SelectOption sp:selectOptionList){
             if(!StringUtil.isEmpty(checkedVal)){
                 if(checkedVal.equals(sp.getValue())){
-                    sBuffer.append("<option selected=\"selected\" value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+                    sBuffer.append("<option selected=\"selected\" value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
                 }else{
-                    sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+                    sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
                 }
             }else{
-                sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+                sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
             }
         }
         sBuffer.append("</select>");
@@ -1055,14 +1055,14 @@ public class RequestForInformationDelegator {
         if(!StringUtil.isEmpty(classNameValue)){
             className =  classNameValue;
         }
-        sBuffer.append("<div class=\"nice-select "+className+"\" tabindex=\"0\">");
+        sBuffer.append("<div class=\"nice-select ").append(className).append("\" tabindex=\"0\">");
         if(!StringUtil.isEmpty(checkedVal)){
-            sBuffer.append("<span selected=\"selected\" class=\"current\">"+ checkedVal +"</span>");
+            sBuffer.append("<span selected=\"selected\" class=\"current\">").append(checkedVal).append("</span>");
         }else{
             if(!StringUtil.isEmpty(firestOption)){
-                sBuffer.append("<span class=\"current\">"+firestOption+"</span>");
+                sBuffer.append("<span class=\"current\">").append(firestOption).append("</span>");
             }else{
-                sBuffer.append("<span class=\"current\">"+selectOptionList.get(0).getText()+"</span>");
+                sBuffer.append("<span class=\"current\">").append(selectOptionList.get(0).getText()).append("</span>");
             }
         }
         sBuffer.append("<ul class=\"list mCustomScrollbar _mCS_2 mCS_no_scrollbar\">")
@@ -1072,23 +1072,23 @@ public class RequestForInformationDelegator {
         if(!StringUtil.isEmpty(checkedVal)){
             for(SelectOption kv:selectOptionList){
                 if(checkedVal.equals(kv.getValue())){
-                    sBuffer.append("<li selected=\"selected\" data-value=\""+kv.getValue()+"\" class=\"option selected\">"+kv.getText()+"</li>");
+                    sBuffer.append("<li selected=\"selected\" data-value=\"").append(kv.getValue()).append("\" class=\"option selected\">").append(kv.getText()).append("</li>");
                 }else{
-                    sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+                    sBuffer.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append("</li>");
                 }
             }
         }else if(!StringUtil.isEmpty(firestOption)){
-            sBuffer.append("<li data-value=\"\" class=\"option selected\">"+firestOption+"</li>");
+            sBuffer.append("<li data-value=\"\" class=\"option selected\">").append(firestOption).append("</li>");
             for(SelectOption kv:selectOptionList){
-                sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+                sBuffer.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append("</li>");
             }
         }else{
             for(int i = 0;i<selectOptionList.size();i++){
                 SelectOption kv = selectOptionList.get(i);
                 if(i == 0){
-                    sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option selected\">"+kv.getText()+"</li>");
+                    sBuffer.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option selected\">").append(kv.getText()).append("</li>");
                 }else{
-                    sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+                    sBuffer.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append("</li>");
                 }
             }
         }

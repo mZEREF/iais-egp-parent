@@ -46,11 +46,11 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -89,11 +89,10 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
     @Value("${iais.syncFileTracking.shared.path}")
     private     String sharedPath;
-    private     String download;
-    private     String backups;
-    private     String fileFormat=".text";
-    private     String compressPath;
-    private     String downZip;
+    private     String download= sharedPath+File.separator+File.separator+FOLDER;
+    private     String backups=sharedPath+File.separator+"backupsRec"+File.separator;
+    private     String compressPath=sharedPath+File.separator+"compress";
+    private     String downZip=sharedPath+File.separator+"compress";
     @Autowired
     private GenerateIdClient generateIdClient;
     @Autowired
@@ -348,7 +347,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                 if(!file.exists()){
                     file.mkdirs();
                 }
-                os=new FileOutputStream(compressPath+File.separator+fileName+File.separator+zipEntry.getName());
+                os=java.nio.file.Files.newOutputStream(Paths.get(compressPath + File.separator + fileName + File.separator + zipEntry.getName()));
                 bos=new BufferedOutputStream(os);
                 InputStream is=zipFile.getInputStream(zipEntry);
                 bis=new BufferedInputStream(is);
@@ -402,7 +401,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     @Override
     public boolean download( ProcessFileTrackDto processFileTrackDto,String fileName,String refId,String submissionId) {
 
-        Boolean flag=false;
+        boolean flag=false;
         File file =new File(downZip+File.separator+fileName+File.separator+"userRecFile");
         if(!file.exists()){
             file.mkdirs();
@@ -410,8 +409,9 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
         File[] files = file.listFiles();
         for(File  filzz:files){
+            String fileFormat = ".text";
             if(filzz.isFile() &&filzz.getName().endsWith(fileFormat)){
-                try (FileInputStream fileInputStream =new FileInputStream(filzz);
+                try (FileInputStream fileInputStream = (FileInputStream) Files.newInputStream(filzz.toPath());
                      ByteArrayOutputStream by=new ByteArrayOutputStream();) {
 
                     int count=0;
@@ -421,9 +421,9 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         by.write(size,0,count);
                         count= fileInputStream.read(size);
                     }
-                    Boolean aBoolean = fileToDto(by.toString(),processFileTrackDto,submissionId);
+                    boolean aBoolean = fileToDto(by.toString(),processFileTrackDto,submissionId);
                     flag=aBoolean;
-                    if(aBoolean&&processFileTrackDto!=null){
+                    if(aBoolean){
                         changeStatus(processFileTrackDto);
                         saveFileRepo( fileName, submissionId,refId);
                     }
@@ -435,7 +435,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
         return flag;
     }
-    private Boolean fileToDto(String str,ProcessFileTrackDto processFileTrackDto,String submissionId){
+    private boolean fileToDto(String str,ProcessFileTrackDto processFileTrackDto,String submissionId){
         LicPremisesReqForInfoDto licPremisesReqForInfoDto = JsonUtil.parseToObject(str, LicPremisesReqForInfoDto.class);
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
         licPremisesReqForInfoDto.setAuditTrailDto(intranet);
@@ -525,10 +525,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     @Override
     public void delete() {
-        download= sharedPath+File.separator+File.separator+FOLDER;
-        backups=sharedPath+File.separator+"backupsRec"+File.separator;
-        compressPath=sharedPath+File.separator+"compress";
-        downZip=sharedPath+File.separator+"compress";
+
         File file =new File(download);
         File b=new File(backups);
         File c=new File(compressPath);
@@ -539,7 +536,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             b.mkdirs();
         }
 
-        if(!file.mkdirs()){
+        if(!file.exists()){
             file.mkdirs();
         }
 

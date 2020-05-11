@@ -480,7 +480,7 @@ public class OfficerOnlineEnquiriesDelegator {
         List<String> svcNames=IaisCommonUtils.genNewArrayList();
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
-        int[] count={0,0,0,0,0};
+        Integer[] count={0,0,0,0,0};
         if(ParamUtil.getString(request,"hciChk")!=null){
             count[0]=1;
             if(!StringUtil.isEmpty(hciCode)){
@@ -602,8 +602,8 @@ public class OfficerOnlineEnquiriesDelegator {
             }
 
         }
-        if (Arrays.equals(count, new int[]{0, 0, 0, 0, 0})) {
-            count= new int[]{1, 2, 3, 4, 5};
+        if (Arrays.equals(count, new Integer[]{0, 0, 0, 0, 0})) {
+            count= new Integer[]{1, 2, 3, 4, 5};
         }
         ParamUtil.setSessionAttr(request,"choose",count);
         if(count[0]==1||count[1]==2||count[4]==5){

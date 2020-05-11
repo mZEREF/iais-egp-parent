@@ -23,10 +23,10 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.zip.CRC32;
@@ -45,11 +45,11 @@ import java.util.zip.ZipFile;
 public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeService {
     @Value("${iais.syncFileTracking.shared.path}")
     private     String sharedPath;
-    private     String download;
-    private     String backups;
+    private     String download= sharedPath+File.separator+File.separator+FOLDER;
+    private     String backups=sharedPath+File.separator+"backupsAudit"+File.separator;
     private     String fileFormat=".text";
-    private     String compressPath;
-    private     String downZip;
+    private     String compressPath=sharedPath+File.separator+"compress";
+    private     String downZip=sharedPath+File.separator+"compress";
     private static final String FOLDER="folder";
     @Autowired
     private GenerateIdClient generateIdClient;
@@ -62,10 +62,6 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
 
     @Override
     public void info() {
-        download= sharedPath+File.separator+File.separator+FOLDER;
-        backups=sharedPath+File.separator+"backupsAudit"+File.separator;
-        compressPath=sharedPath+File.separator+"compress";
-        downZip=sharedPath+File.separator+"compress";
         File file =new File(download);
         File b=new File(backups);
         File c=new File(compressPath);
@@ -157,7 +153,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                 if(!file.exists()){
                     file.mkdirs();
                 }
-                os=new FileOutputStream(compressPath+File.separator+fileName+File.separator+zipEntry.getName());
+                os=java.nio.file.Files.newOutputStream(Paths.get(compressPath + File.separator + fileName + File.separator + zipEntry.getName()));
                 bos=new BufferedOutputStream(os);
                 InputStream is=zipFile.getInputStream(zipEntry);
                 bis=new BufferedInputStream(is);
@@ -211,7 +207,6 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
     @Override
     public void download(ProcessFileTrackDto processFileTrackDto, String fileName, String refId, String submissionId) {
 
-        Boolean flag=false;
         File file =new File(downZip+File.separator+fileName+File.separator+"userRecFile");
         if(!file.exists()){
             file.mkdirs();
@@ -220,7 +215,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
         File[] files = file.listFiles();
         for(File  filzz:files){
             if(filzz.isFile() &&filzz.getName().endsWith(fileFormat)){
-                try (FileInputStream fileInputStream =new FileInputStream(filzz)){
+                try (FileInputStream fileInputStream = (FileInputStream) java.nio.file.Files.newInputStream(filzz.toPath())){
                     ByteArrayOutputStream by=new ByteArrayOutputStream();
                     int count=0;
                     byte [] size=new byte[1024];

@@ -470,10 +470,10 @@ public class InspectReviseNcEmailDelegator {
             int i=0;
             for (NcAnswerDto ncAnswerDto:ncAnswerDtos
             ) {
-                stringBuilder.append("<tr><td>"+ ++i);
-                stringBuilder.append(TD+StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
-                stringBuilder.append(TD+StringUtil.viewHtml(ncAnswerDto.getClause()));
-                stringBuilder.append(TD+StringUtil.viewHtml(ncAnswerDto.getRemark()));
+                stringBuilder.append("<tr><td>").append(++i);
+                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
+                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getClause()));
+                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
                 stringBuilder.append("</td></tr>");
             }
             map.put("NC_DETAILS",stringBuilder.toString());

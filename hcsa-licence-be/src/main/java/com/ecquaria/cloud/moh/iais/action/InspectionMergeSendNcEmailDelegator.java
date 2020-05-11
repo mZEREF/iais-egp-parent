@@ -188,7 +188,7 @@ public class InspectionMergeSendNcEmailDelegator {
         InspectionEmailTemplateDto inspectionEmailTemplateDto = (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(bpc.request,INS_EMAIL_DTO);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
         String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        log.debug("*******************crudAction-->:" + crudAction);
+        log.info(StringUtil.changeForLog("*******************crudAction-->:" + crudAction));
     }
 
     public void previewEmail(BaseProcessClass bpc){
