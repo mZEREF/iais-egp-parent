@@ -15,14 +15,14 @@
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" id="hiddenIndex" name="hiddenIndex" value="" />
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <div class="col-xl-12">
+        <div class="col-xl-12" style="margin-left: 10%;margin-right: 10%">
             <div class="col-sm-5 col-md-1">
-                <label class="control-label" for="psnType">Roles: </label>
+                <label class="control-label" for="psnType">Roles:</label>
             </div>
-            <div class="col-sm-5 col-md-2">
+            <div class="col-sm-5 col-md-3">
                 <iais:select name="psnTypes" id="psnType" value="${psnType}" options="PersonnelRoleList" firstOption="All" onchange="doSearch()"></iais:select>
             </div>
-            <div class="col-sm-5 col-md-6">
+            <div class="col-sm-5 col-md-5">
             </div>
             <div class="col-sm-5 col-md-3">
                 <div class="col-md-11">
@@ -30,7 +30,7 @@
                 </div>
             </div>
         </div>
-        <div class="row col-xs-12 ">
+        <div class="row" style="margin-left: 10%;margin-right: 10%">
             <div class="col-xs-12">
                 <div class="table-gp">
                     <iais:pagination param="PersonnelSearchParam" result="PersonnelSearchResult"/>
@@ -49,13 +49,8 @@
                     <c:forEach var="personnelist" items="${PersonnelListMap}" varStatus="status">
                         <c:set var="onePersonnel" value="${personnelist.value.get(0)}"></c:set>
                         <tr class="personnel">
-<%--                            <td>--%>
-<%--                                <p class="visible-xs visible-sm table-row-title">Code Category</p>--%>
-<%--                                <p><c:out--%>
-<%--                                        value="${(status.index + 1) + (PersonnelSearchParam.pageNo - 1) * PersonnelSearchParam.pageSize}"/></p>--%>
-<%--                            </td>--%>
                             <td>
-                                <p><a  class="personnel"><c:out value="${onePersonnel.psnName}"/></a></p>
+                                <p><a class="personnel"><c:out value="${onePersonnel.psnName}"/></a></p>
                                 <input type="hidden" class="statusIndex" name="statusIndex" value="${status.index}" />
                                 <input type="hidden" class="personnelNo" name="personnelNo${status.index}" value="<iais:mask name="personnelNo${status.index}" value="${onePersonnel.idNo}" />"/>
                             </td>

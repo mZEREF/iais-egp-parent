@@ -36,24 +36,20 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -93,25 +89,17 @@ public class InsRepServiceImpl implements InsRepService {
     @Autowired
     private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
     @Autowired
-    private AppPremisesCorrClient appPremisesCorrClient;
-    @Autowired
     AppInspectionStatusClient appInspectionStatusClient;
     @Autowired
     private ComSystemAdminClient comSystemAdminClient;
     @Autowired
-    private TaskOrganizationClient taskOrganizationClient;
-    @Autowired
     private ApplicationService applicationService;
-    @Autowired
-    private FillupChklistService fillupChklistService;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     private ApplicationViewService applicationViewService;
     @Autowired
     private EventBusHelper eventBusHelper;
-    @Autowired
-    private GenerateIdClient generateIdClient;
     @Autowired
     private ApplicationGroupService applicationGroupService;
 
@@ -292,9 +280,9 @@ public class InsRepServiceImpl implements InsRepService {
             inspectionReportDto.setInspectypeRemarks("-");
         }
         inspectionReportDto.setServiceName(svcName);
-        inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
-        inspectionReportDto.setHciName(appInsRepDto.getHciName());
-        inspectionReportDto.setHciAddress(appInsRepDto.getHciAddress());
+        inspectionReportDto.setHciCode(applicationViewDto.getHciCode());
+        inspectionReportDto.setHciName(applicationViewDto.getHciName());
+        inspectionReportDto.setHciAddress(applicationViewDto.getHciAddress());
         inspectionReportDto.setReasonForVisit(reasonForVisit);
         inspectionReportDto.setInspectionDate(inspectionDate);
         inspectionReportDto.setInspectionStartTime(inspectionStartTime);

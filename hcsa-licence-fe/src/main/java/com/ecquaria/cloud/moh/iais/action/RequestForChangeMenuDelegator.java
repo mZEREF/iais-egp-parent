@@ -430,8 +430,8 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the preparePersonnel start ...."));
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
-        SearchResult personnelSearchResult = (SearchResult)ParamUtil.getSessionAttr(bpc.request, "PersonnelSearchResult");
-        if(personnelSearchResult!=null){
+        List<String> psnTypes1 = (List<String>)ParamUtil.getSessionAttr(bpc.request, "psnTypes");
+        if(psnTypes1!=null&&psnTypes1.size()==1){
             List<String> psnTypes = (List<String>)ParamUtil.getSessionAttr(bpc.request, "psnTypes");
             SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, true, filterParameter);
             SqlHelper.builderInSql(searchParam, "T2.PSN_TYPE", "psnType",psnTypes);
@@ -451,11 +451,10 @@ public class RequestForChangeMenuDelegator {
             List<SelectOption> personelRoles = getPsnType();
             ParamUtil.setRequestAttr(bpc.request, "PersonnelRoleList", personelRoles);
             ParamUtil.setSessionAttr(bpc.request, RfcConst.PERSONNELLISTMAP, (Serializable) personnelListMap);
-            ParamUtil.setRequestAttr(bpc.request, "PersonnelSearchResult", personnelSearchResult);
+            ParamUtil.setRequestAttr(bpc.request, "PersonnelSearchResult", searchResult);
             ParamUtil.setSessionAttr(bpc.request, "PersonnelSearchParam", searchParam);
             return;
         }
-
 
         SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, filterParameter, true);
         searchParam.addFilter("licenseeId", licenseeId, true);
@@ -512,7 +511,7 @@ public class RequestForChangeMenuDelegator {
      */
     public void personnleSearch(BaseProcessClass bpc) {
         log.info("search================????>>>>>");
-        String psnType = ParamUtil.getRequestString(bpc.request, "psnTypes");
+        String psnType = ParamUtil.getString(bpc.request, "psnTypes");
         //ParamUtil.setRequestAttr(bpc.request, "psnTypes", psnTypes);
         List<String> psnTypes = IaisCommonUtils.genNewArrayList();
         if(StringUtil.isEmpty(psnType)){
@@ -522,13 +521,6 @@ public class RequestForChangeMenuDelegator {
         }else {
             psnTypes.add(psnType);
         }
-
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, true, filterParameter);
-        SqlHelper.builderInSql(searchParam, "T2.PSN_TYPE", "psnType",psnTypes);
-        QueryHelp.setMainSql("applicationPersonnelQuery", "appPersonnelQuery", searchParam);
-        SearchResult searchResult = requestForChangeService.psnDoQuery(searchParam);
-        ParamUtil.setSessionAttr(bpc.request, "PersonnelSearchParam", searchParam);
-        ParamUtil.setSessionAttr(bpc.request, "PersonnelSearchResult", searchResult);
         ParamUtil.setSessionAttr(bpc.request, "psnType", psnType);
         ParamUtil.setSessionAttr(bpc.request, "psnTypes", (Serializable) psnTypes);
     }
@@ -562,8 +554,10 @@ public class RequestForChangeMenuDelegator {
         String idNo = ParamUtil.getMaskedString(bpc.request,"personnelNo"+hiddenIndex);
         Map<String,List<PersonnelListQueryDto>> personnelListMap  = (Map<String, List<PersonnelListQueryDto>>) ParamUtil.getSessionAttr(bpc.request,RfcConst.PERSONNELLISTMAP);
         List<PersonnelListQueryDto> personnelEditList = personnelListMap.get(idNo);
-        ParamUtil.setSessionAttr(bpc.request,RfcConst.PERSONNELEDITLIST, (Serializable) personnelEditList);
         log.debug(StringUtil.changeForLog("the do doPersonnelList end ...."));
+        if(StringUtil.isEmpty(idNo)){
+            personnelEditList = (List<PersonnelListQueryDto>) ParamUtil.getSessionAttr(bpc.request, RfcConst.PERSONNELEDITLIST);
+        }
         List<SelectOption> idTypeSelectList = NewApplicationHelper.getIdTypeSelOp();
         ParamUtil.setRequestAttr(bpc.request, ClinicalLaboratoryDelegator.DROPWOWN_IDTYPESELECT, idTypeSelectList);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.PERSONNELEDITLIST, (Serializable) personnelEditList);
@@ -590,18 +584,18 @@ public class RequestForChangeMenuDelegator {
         personnelListQueryDto.setDesignation(designation);
         personnelListQueryDto.setProfessionType(professionType);
         personnelListQueryDto.setProfessionRegnNo(professionRegnNo);
-        for (PersonnelListQueryDto item : personnelEditList) {
-            String licenceId = item.getLicenceId();
-            if (!StringUtil.isEmpty(licenceId)) {
-                List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(licenceId);
-                if (!IaisCommonUtils.isEmpty(applicationDtos)) {
-                    ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preAck");
-                    ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is  ongoing application for the licence");
-                    return;
-                }
-            }
-        }
+//        for (PersonnelListQueryDto item : personnelEditList) {
+//            String licenceId = item.getLicenceId();
+//            if (!StringUtil.isEmpty(licenceId)) {
+//                List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(licenceId);
+//                if (!IaisCommonUtils.isEmpty(applicationDtos)) {
+//                    ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
+//                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preAck");
+//                    ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is ongoing application for the licence");
+//                    return;
+//                }
+//            }
+//        }
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         if (StringUtil.isEmpty(email)) {
             errMap.put("emailAddr", "UC_CHKLMD001_ERR001");
@@ -627,9 +621,9 @@ public class RequestForChangeMenuDelegator {
             errMap.put("professionRegnNo", "UC_CHKLMD001_ERR001");
         }
         if (!errMap.isEmpty()) {
-            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preparePersonnelEdit");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "false");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+            ParamUtil.setSessionAttr(bpc.request, RfcConst.PERSONNELEDITLIST, (Serializable) personnelEditList);
             return;
         }
         List<String> licenceIds = IaisCommonUtils.genNewArrayList();
@@ -638,25 +632,20 @@ public class RequestForChangeMenuDelegator {
         }
         List<AppSubmissionDto> appSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(licenceIds,null);
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-        List<String> names = IaisCommonUtils.genNewArrayList();
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
             if (appSubmissionDto != null) {
                 appSubmissionDto.setLicenseeId(licenseeId);
-                // from draft,rfi
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-                if (appSvcRelatedInfoDtoList != null && appSvcRelatedInfoDtoList.size() > 0) {
-                    for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
-                        if (!StringUtil.isEmpty(appSvcRelatedInfoDto.getServiceName())) {
-                            names.add(appSvcRelatedInfoDto.getServiceName());
-                        }
-                    }
-                }
+                String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+                String svcId = hcsaServiceDto.getId();
+                String svcCode = hcsaServiceDto.getSvcCode();
+                appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
+                appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
             }
         }
-        List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceByNames(names);
-        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
             NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
@@ -685,6 +674,7 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto = setPersonnelDate(appSubmissionDto, personnelListQueryDto);
         }
         requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "true");
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit end ...."));
     }
 
