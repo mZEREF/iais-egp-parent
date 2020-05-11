@@ -161,6 +161,14 @@ public class AppConfigClientFallback implements AppConfigClient{
     }
 
     @Override
+    public FeignResponseEntity<List<ChecklistConfigDto>> getChecklistConfigByIds(List<String> ids) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelation(String serviceId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

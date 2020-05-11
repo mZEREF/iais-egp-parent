@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
-import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfDeclSyncDataDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
@@ -65,8 +65,10 @@ public interface FeEicGatewayClient {
                                          @RequestHeader("authorization") String authorization,
                                          @RequestHeader("date-Secondary") String dateSec,
                                          @RequestHeader("authorization-Secondary") String authorizationSec);
+
+
     @PostMapping(value = "/v1/self-decl-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<IaisApiResult<AppPremisesSelfDeclChklDto>> routeSelfDeclData(@RequestBody FeSelfDeclSyncDataDto selfDeclSyncDataDto,
+    FeignResponseEntity<IaisApiResult<AppPremisesSelfDeclChklDto>> routeSelfAssessment(@RequestBody FeSelfAssessmentSyncDataDto selfDeclSyncDataDto,
                                                                                      @RequestHeader("date") String date,
                                                                                      @RequestHeader("authorization") String authorization,
                                                                                      @RequestHeader("date-Secondary") String dateSec,

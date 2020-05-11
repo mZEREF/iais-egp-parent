@@ -52,14 +52,11 @@
       <div class="col-xs-12 col-md-11">
         <div class="text-right">
           <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
+          <a class="btn btn-primary" id="crud_search_export" href="${pageContext.request.contextPath}/audit-trail-file"  onclick="$('#crud_search_export').attr('class', 'btn btn-primary disabled')" value="doQuery" href="#">Export Audit Trail</a>
           <a class="btn btn-primary" id="crud_search_button" value="doQuery" href="#">Search</a>
         </div>
       </div>
     </div>
-    <%--
-    <button class="btn btn-lg btn-login-search" type="button" value="doQuery" style="background:#2199E8; color: white" >Search</button>
-
-    <button class="btn btn-lg btn-login-clear" type="button"  style="background:#2199E8; color: white" >Clear</button>--%>
   </iais:action>
 
 </iais:section>
@@ -165,13 +162,6 @@
 
           </div>
           <br><br>
-
-
-
-            <div class="text-right text-center-mobile">
-              <a class="btn btn-primary" id="crud_search_export" href="${pageContext.request.contextPath}/audit-trail-file">Export</a>
-            </div>
-
 
         </div>
       </div>

@@ -24,7 +24,7 @@ public final class SelfChecklistHelper {
     private SelfChecklistHelper(){}
 
     public static List<PremCheckItem> loadPremisesQuestion(final ChecklistConfigDto configDto, final String address){
-        return loadPremisesQuestion(configDto, false, address);
+        return loadPremisesQuestion(configDto, false);
     }
 
     /**
@@ -68,7 +68,7 @@ public final class SelfChecklistHelper {
      * @Param: []
      * @return:
      **/
-    public static List<PremCheckItem> loadPremisesQuestion(final ChecklistConfigDto configDto, final boolean isSubType,final  String address){
+    public static List<PremCheckItem> loadPremisesQuestion(final ChecklistConfigDto configDto, final boolean isSubType){
         List<PremCheckItem> premCheckItemList = IaisCommonUtils.genNewArrayList();
         List<ChecklistSectionDto> checklistSectionDtos = configDto.getSectionDtos();
         if (!IaisCommonUtils.isEmpty(checklistSectionDtos)){
@@ -87,7 +87,6 @@ public final class SelfChecklistHelper {
                         premCheckItem.setRegulation(checklistItemDto.getRegulationClauseNo());
                         premCheckItem.setAnswerKey(UUID.randomUUID().toString());
                         premCheckItem.setChecklistItem(checklistItemDto.getChecklistItem());
-                        premCheckItem.setAddress(address);
                         premCheckItem.setChecklistItemId(checklistItemDto.getItemId());
                         premCheckItemList.add(premCheckItem);
                     }

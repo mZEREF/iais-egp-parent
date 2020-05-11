@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
-import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfDeclSyncDataDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
@@ -56,7 +56,7 @@ public class FeEicGatewayClientFallback implements FeEicGatewayClient{
     }
 
     @Override
-    public FeignResponseEntity<IaisApiResult<AppPremisesSelfDeclChklDto>> routeSelfDeclData(FeSelfDeclSyncDataDto selfDeclSyncDataDto, String date, String authorization, String dateSec, String authorizationSec) {
+    public FeignResponseEntity<IaisApiResult<AppPremisesSelfDeclChklDto>> routeSelfAssessment(FeSelfAssessmentSyncDataDto selfDeclSyncDataDto, String date, String authorization, String dateSec, String authorizationSec) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

@@ -4,18 +4,30 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclSubmitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealPageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -81,20 +93,24 @@ public interface ApplicationClient  {
     @GetMapping(path = "/iais-application/application-premises-by-app-id/{applicationId}")
     FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppGroId(@PathVariable("applicationId") String applicationId);
 
-    @PostMapping(path = "/iais-self-declaration/self-decl", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> saveAllSelfDecl(@RequestBody SelfDeclSubmitDto selfDeclSubmitDto);
+    @GetMapping(path = "/iais-application/application-premises-by-corr-id/{corrId}")
+    FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesByCorrId(@PathVariable("corrId") String corrId);
 
-    @GetMapping(path = "/iais-self-declaration/group/correlation/has-self-decl/{groupId}/record")
-    FeignResponseEntity<Boolean> hasSelfDeclRecord(@PathVariable(value = "groupId") String groupId);
+    @PostMapping(path = "/iais-self-assessment/self-assessment/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> saveAllSelfAssessment(@RequestBody List<SelfAssessment> selfAssessmentList);
 
-    @GetMapping(path = "/iais-self-declaration/correlation/self-decl/{correlationId}")
+    @GetMapping(path = "/iais-self-assessment/group/correlation/has-self-decl/{groupId}/record")
+    FeignResponseEntity<Boolean> hasSubmittedSelfAssessment(@PathVariable(value = "groupId") String groupId);
+
+    @GetMapping(path = "/iais-self-assessment/correlation/self-assessment/{correlationId}")
     FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> getAppPremisesSelfDeclByCorrelationId(@PathVariable(value = "correlationId") String correlationId);
 
     @PutMapping(path = "/iais-self-declaration/correlation/self-decl/inactive", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> inActiveLastVersionByGroupId(@RequestBody  List<String> lastVersionId);
 
-    @GetMapping(path = "/iais-self-declaration/self-decl/{id}")
-    FeignResponseEntity<String> getPremisesSelfDeclChklJson(String selfDeclId);
+    @GetMapping(path = "/iais-self-assessment/self-assessment/answer-data/{groupId}")
+    FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> getAppPremisesSelfDeclChklListByGroupId(@PathVariable(value = "groupId") String groupId);
+
 
     @GetMapping(path = "/iais-application/application/correlations/{appid}")
     FeignResponseEntity<List<AppPremisesCorrelationDto>> listAppPremisesCorrelation(@PathVariable(name = "appid") String appId);
@@ -127,8 +143,6 @@ public interface ApplicationClient  {
     @PostMapping(value = "/iais-inspection-fe/appncdocs", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> saveAppNcDoc(@RequestBody List<AppPremPreInspectionNcDocDto> dtoList);
-
-
 
     @PutMapping(value = "/iais-inspection-fe/appncdoc", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
