@@ -311,12 +311,7 @@ public class KpiColourByWorkDaysBatchJob {
         String subStage = "";
         if(appInspectionStatusDto != null) {
             String status = appInspectionStatusDto.getStatus();
-            //todo
-            if (status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_PRE) ||
-                    status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_APPOINTMENT_INSPECTION_DATE )||
-                    status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_RE_APPOINTMENT_INSPECTION_DATE) ||
-                    status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_INSPECTION_DATE) ||
-                    status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_SPECIFIC_INSP_DATE)) {
+            if (status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_PRE)) {
                 subStage = HcsaConsts.ROUTING_STAGE_PRE;
             } else if (status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY)) {
                 subStage = HcsaConsts.ROUTING_STAGE_INP;
