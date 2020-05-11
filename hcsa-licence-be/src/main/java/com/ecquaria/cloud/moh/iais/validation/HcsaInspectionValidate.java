@@ -191,9 +191,9 @@ public class HcsaInspectionValidate implements CustomizeValidator {
             if("C".equals(level)){
                 errMap.put(serviceCode+"caEffDate","Effective Date is mandatory");
             }else if("I".equals(level)){
-                errMap.put(serviceCode+"caEffDate","Effective Date is mandatory");
-            }else if("A".equals(level)){
                 errMap.put(serviceCode+"miEffDate","Effective Date is mandatory");
+            }else if("A".equals(level)){
+                errMap.put(serviceCode+"mjEffDate","Effective Date is mandatory");
             }
         }else{
             try {
@@ -222,7 +222,6 @@ public class HcsaInspectionValidate implements CustomizeValidator {
             try {
                 Formatter.parseDate(strEndDate);
             }catch (Exception e){
-                vadFlag = false;
                 if("C".equals(level)){
                     errMap.put(serviceCode+"caEndDate","Date Format Error");
                 }else if("I".equals(level)){
@@ -356,7 +355,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         try {
             if(!StringUtil.isEmpty(inLeftMod)){
                 inLeftModNum = Integer.parseInt(inLeftMod);
-                if(inLeftModNum -1 != inRightLowNum){
+                if(inLeftModNum -1 != inRightLowNum  && inLeftModNum  !=  inRightLowNum){
                     if("C".equals(level)){
                         if(caRightLowNumFlag){
                             errMap.put(serviceCode + "caRightLowCaseCounth", "ERR0015");

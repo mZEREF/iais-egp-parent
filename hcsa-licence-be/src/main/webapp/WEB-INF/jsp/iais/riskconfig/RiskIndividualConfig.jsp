@@ -40,8 +40,6 @@
                                         <th>Minimum Number of NCs</th>
                                         <th>Maximum Number of NCs</th>
                                         <th>Compliance Risk</th>
-                                        <th></th>
-
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -49,8 +47,6 @@
                                     <c:forEach var="fin" items="${inShowDto.inspectionDtoList}" varStatus="status">
                                         <tr>
                                             <td>
-                                                <c:set value = "error_${fin.svcCode}both" var = "errboth"/>
-                                                <span class="error-msg" id="<c:out value="${errboth}"/>" name="iaisErrorMsg"></span>
                                                 <c:choose>
                                                     <c:when test="${fin.caEdit}">
                                                         <p><strong>${fin.serviceName}</strong></p>
@@ -65,12 +61,8 @@
                                                 <p>Critical</p>
                                             </td>
                                             <td><iais:datePicker id = "${fin.svcCode}castartdate" name = "${fin.svcCode}castartdate" value="${fin.doCaEffectiveDate}"></iais:datePicker>
-                                                <c:set value = "error_${fin.svcCode}caEffDate" var = "caEffdate"/>
-                                                <span class="error-msg" id="<c:out value="${caEffdate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td><iais:datePicker id = "${fin.svcCode}caenddate" name = "${fin.svcCode}caenddate" value="${fin.doCaEndDate}"></iais:datePicker>
-                                                <c:set value = "error_${fin.svcCode}caEndDate" var = "caEnddate"/>
-                                                <span class="error-msg" id="<c:out value="${caEnddate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;">
@@ -79,24 +71,22 @@
                                                 </div>
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doCaLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>caleftmod" name = "<c:out value="${fin.svcCode}"/>caleftmod" maxlength="2"value="${fin.doCaLeftModCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doCaLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>caleftmod" name = "<c:out value="${fin.svcCode}"/>caleftmod" maxlength="2"value="${fin.doCaLeftModCounth == null ? 0 : fin.doCaLeftModCounth}" onchange="doChangeMc('${fin.svcCode}','C',true)">
                                                 </div>
-                                                    <c:set value = "error_${fin.svcCode}caLeftModCaseCounth" var = "caleftmod"/>
-                                                    <span class="error-msg" id="<c:out value="${caleftmod}"/>" name="iaisErrorMsg"></span>
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doCaLeftHighCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>calefthigh" name = "<c:out value="${fin.svcCode}"/>calefthigh" maxlength="2"value="${fin.doCaLeftHighCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doCaLeftHighCountherr}">red</c:if>" readonly id="<c:out value="${fin.svcCode}"/>calefthigh" name = "<c:out value="${fin.svcCode}"/>calefthigh" maxlength="2"value="${fin.doCaLeftHighCounth == null ? 1 : fin.doCaLeftHighCounth }">
                                                 </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text"  style="color: <c:if test="${fin.doCaRightLowCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>carightlow" name = "<c:out value="${fin.svcCode}"/>carightlow"  maxlength="3" value="${fin.doCaRightLowCounth}">
+                                                    <input type="text"  style="color: <c:if test="${fin.doCaRightLowCountherr}">red</c:if>" readonly id="<c:out value="${fin.svcCode}"/>carightlow" name = "<c:out value="${fin.svcCode}"/>carightlow"  maxlength="3" value="${fin.doCaRightLowCounth  == null ? 0 : fin.doCaRightLowCounth}">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doCaRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>carightmod" name = "<c:out value="${fin.svcCode}"/>carightmod"  maxlength="3"value="${fin.doCaRightModCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doCaRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>carightmod" name = "<c:out value="${fin.svcCode}"/>carightmod"  maxlength="3"value="${fin.doCaRightModCounth  == null ? 0 : fin.doCaRightModCounth}" onchange="doChangeMc('${fin.svcCode}','C',false)">
                                                 </div>
 
                                                 </div>
@@ -109,14 +99,21 @@
                                                 <div style="width: 100px;margin-top: 45px;">Moderate</div>
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
-                                            <td>
-
-                                                <c:set value = "error_${fin.svcCode}caLeftHighCaseCounth" var = "calefthigh"/>
-                                                <span class="error-msg" id="<c:out value="${calefthigh}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.svcCode}caRightLowCaseCounth" var = "carightlow"/>
-                                                <span class="error-msg" id="<c:out value="${carightlow}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.svcCode}caRightModCaseCounth" var = "carightmod"/>
-                                                <span class="error-msg" id="<c:out value="${carightmod}"/>" name="iaisErrorMsg"></span>
+                                        </tr>
+                                        <tr>
+                                            <td  colspan="7">
+                                            <c:set value = "error_${fin.svcCode}caEffDate" var = "caEffdate"/>
+                                            <span class="error-msg" id="<c:out value="${caEffdate}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.svcCode}caEndDate" var = "caEnddate"/>
+                                            <span class="error-msg" id="<c:out value="${caEnddate}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.svcCode}caLeftModCaseCounth" var = "caleftmod"/>
+                                            <span class="error-msg" id="<c:out value="${caleftmod}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.svcCode}caLeftHighCaseCounth" var = "calefthigh"/>
+                                            <span class="error-msg" id="<c:out value="${calefthigh}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.svcCode}caRightLowCaseCounth" var = "carightlow"/>
+                                            <span class="error-msg" id="<c:out value="${carightlow}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.svcCode}caRightModCaseCounth" var = "carightmod"/>
+                                            <span class="error-msg" id="<c:out value="${carightmod}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                         </tr>
                                         <tr>
@@ -136,36 +133,33 @@
 
                                             </td>
                                             <td><iais:datePicker id = "${fin.svcCode}mjstartdate" name = "${fin.svcCode}mjstartdate" value="${fin.doMjEffectiveDate}"></iais:datePicker>
-                                                <c:set value = "error_${fin.svcCode}mjEffDate" var = "mjEffDate"/>
-                                                <span class="error-msg" id="<c:out value="${mjEffDate}"/>" name="iaisErrorMsg"></span>
+
                                             </td>
                                             <td><iais:datePicker id = "${fin.svcCode}mjenddate" name = "${fin.svcCode}mjenddate" value="${fin.doMjEndDate}"></iais:datePicker>
-                                                <c:set value = "error_${fin.svcCode}mjEndDate" var = "mjEndDate"/>
-                                                <span class="error-msg" id="<c:out value="${mjEndDate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
                                                     <input type="text" disabled readonly maxlength="2" value="0">
                                                 </div></div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMjLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjleftmod" name = "<c:out value="${fin.svcCode}"/>mjleftmod"  maxlength="2"value="${fin.doMjLeftModCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doMjLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjleftmod" name = "<c:out value="${fin.svcCode}"/>mjleftmod"  maxlength="2"value="${fin.doMjLeftModCounth == null ? 0 : fin.doMjLeftModCounth}" onchange="doChangeMc('${fin.svcCode}','Ma',true)">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMjLeftHighCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjlefthigh" name = "<c:out value="${fin.svcCode}"/>mjlefthigh"  maxlength="2"value="${fin.doMjLeftHighCounth}">
+                                                    <input type="text" readonly  style="color: <c:if test="${fin.doMjLeftHighCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjlefthigh" name = "<c:out value="${fin.svcCode}"/>mjlefthigh"  maxlength="2"value="${fin.doMjLeftHighCounth == null ? 1 : fin.doMjLeftHighCounth}">
                                                 </div>
 
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMjRightLowCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjrightlow" name = "<c:out value="${fin.svcCode}"/>mjrightlow" maxlength="3" value="${fin.doMjRightLowCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doMjRightLowCountherr}">red</c:if>" readonly  id="<c:out value="${fin.svcCode}"/>mjrightlow" name = "<c:out value="${fin.svcCode}"/>mjrightlow" maxlength="3" value="${fin.doMjRightLowCounth == null ? 0 :fin.doMjRightLowCounth}">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMjRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjrightlmod" name = "<c:out value="${fin.svcCode}"/>mjrightmod" maxlength="3"value="${fin.doMjRightModCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doMjRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjrightlmod" name = "<c:out value="${fin.svcCode}"/>mjrightmod" maxlength="3"value="${fin.doMjRightModCounth == null ? 0 : fin.doMjRightModCounth}" onchange="doChangeMc('${fin.svcCode}','Ma',false)">
                                                 </div>
 
                                                 </div>
@@ -178,18 +172,23 @@
                                                 <div style="width: 100px;margin-top: 45px;">Moderate</div>
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
-                                            <td>
-                                                <c:set value = "error_${fin.svcCode}mjRightLowCaseCounth" var = "mjrightlow"/>
-                                                <span class="error-msg" id="<c:out value="${mjrightlow}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.svcCode}mjLeftModCaseCounth" var = "mjleftmod"/>
-                                                <span class="error-msg" id="<c:out value="${mjleftmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.svcCode}mjRightModCaseCounth" var = "mjrightmod"/>
-                                                <span class="error-msg" id="<c:out value="${mjrightmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.svcCode}mjLeftHighCaseCounth" var = "mjlefthigh"/>
-                                                <span class="error-msg" id="<c:out value="${mjlefthigh}"/>" name="iaisErrorMsg"></span>
+                                        </tr>
+                                        <tr>
+                                            <td  colspan="7">
+                                            <c:set value = "error_${fin.svcCode}mjEffDate" var = "mjEffDate"/>
+                                            <span class="error-msg" id="<c:out value="${mjEffDate}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.svcCode}mjEndDate" var = "mjEndDate"/>
+                                            <span class="error-msg" id="<c:out value="${mjEndDate}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.svcCode}mjRightLowCaseCounth" var = "mjrightlow"/>
+                                            <span class="error-msg" id="<c:out value="${mjrightlow}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.svcCode}mjLeftModCaseCounth" var = "mjleftmod"/>
+                                            <span class="error-msg" id="<c:out value="${mjleftmod}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.svcCode}mjRightModCaseCounth" var = "mjrightmod"/>
+                                            <span class="error-msg" id="<c:out value="${mjrightmod}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.svcCode}mjLeftHighCaseCounth" var = "mjlefthigh"/>
+                                            <span class="error-msg" id="<c:out value="${mjlefthigh}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                         </tr>
-
                                         <tr>
                                             <td>
                                                 <c:choose>
@@ -206,36 +205,32 @@
                                                 <p>Minor</p>
                                             </td>
                                             <td><iais:datePicker id = "${fin.svcCode}mistartdate" name = "${fin.svcCode}mistartdate" value="${fin.doMiEffectiveDate}"></iais:datePicker>
-                                                <c:set value = "error_${fin.svcCode}miEffDate" var = "miEffDate"/>
-                                                <span class="error-msg" id="<c:out value="${miEffDate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td><iais:datePicker id = "${fin.svcCode}mienddate" name = "${fin.svcCode}mienddate" value="${fin.doMiEndDate}"></iais:datePicker>
-                                                <c:set value = "error_${fin.svcCode}miEndDate" var = "miEndDate"/>
-                                                <span class="error-msg" id="<c:out value="${miEndDate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
                                                     <input type="text" disabled readonly maxlength="2" value="0">
                                                 </div></div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMiLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mileftmod" name = "<c:out value="${fin.svcCode}"/>mileftmod"  maxlength="2"value="${fin.doMiLeftModCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doMiLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mileftmod" name = "<c:out value="${fin.svcCode}"/>mileftmod"  maxlength="2"value="${fin.doMiLeftModCounth == null ? 0 : fin.doMiLeftModCounth}" onchange="doChangeMc('${fin.svcCode}','Mi',true)">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMiLeftHighCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>milefthigh" name = "<c:out value="${fin.svcCode}"/>milefthigh"  maxlength="2"value="${fin.doMiLeftHighCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doMiLeftHighCountherr}">red</c:if>" readonly  id="<c:out value="${fin.svcCode}"/>milefthigh" name = "<c:out value="${fin.svcCode}"/>milefthigh"  maxlength="2"value="${fin.doMiLeftHighCounth == null ? 1 : fin.doMiLeftHighCounth}">
                                                 </div>
 
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMiRightLowCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mirightlow" name = "<c:out value="${fin.svcCode}"/>mirightlow" maxlength="3" value="${fin.doMiRightLowCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doMiRightLowCountherr}">red</c:if>"  readonly id="<c:out value="${fin.svcCode}"/>mirightlow" name = "<c:out value="${fin.svcCode}"/>mirightlow" maxlength="3" value="${fin.doMiRightLowCounth == null ? 0 :fin.doMiRightLowCounth}">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMiRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mirightlmod" name = "<c:out value="${fin.svcCode}"/>mirightmod" maxlength="3"value="${fin.doMiRightModCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.doMiRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mirightlmod" name = "<c:out value="${fin.svcCode}"/>mirightmod" maxlength="3"value="${fin.doMiRightModCounth == null ? 0 : fin.doMiRightModCounth}" onchange="doChangeMc('${fin.svcCode}','Mi',false)" >
                                                 </div>
 
                                                 </div>
@@ -248,15 +243,21 @@
                                                 <div style="width: 100px;margin-top: 45px;">Moderate</div>
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
-                                            <td>
-                                                <c:set value = "error_${fin.svcCode}mjRightLowCaseCounth" var = "mjrightlow"/>
-                                                <span class="error-msg" id="<c:out value="${mjrightlow}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.svcCode}mjLeftModCaseCounth" var = "mjleftmod"/>
-                                                <span class="error-msg" id="<c:out value="${mjleftmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.svcCode}mjRightModCaseCounth" var = "mjrightmod"/>
-                                                <span class="error-msg" id="<c:out value="${mjrightmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.svcCode}mjLeftHighCaseCounth" var = "mjlefthigh"/>
-                                                <span class="error-msg" id="<c:out value="${mjlefthigh}"/>" name="iaisErrorMsg"></span>
+                                        </tr>
+                                        <tr>
+                                            <td  colspan="7">
+                                            <c:set value = "error_${fin.svcCode}miEffDate" var = "miEffDate"/>
+                                            <span class="error-msg" id="<c:out value="${miEffDate}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.svcCode}miEndDate" var = "miEndDate"/>
+                                            <span class="error-msg" id="<c:out value="${miEndDate}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.svcCode}mjRightLowCaseCounth" var = "mjrightlow"/>
+                                            <span class="error-msg" id="<c:out value="${mjrightlow}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.svcCode}mjLeftModCaseCounth" var = "mjleftmod"/>
+                                            <span class="error-msg" id="<c:out value="${mjleftmod}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.svcCode}mjRightModCaseCounth" var = "mjrightmod"/>
+                                            <span class="error-msg" id="<c:out value="${mjrightmod}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.svcCode}mjLeftHighCaseCounth" var = "mjlefthigh"/>
+                                            <span class="error-msg" id="<c:out value="${mjlefthigh}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -287,5 +288,67 @@
 
     function doBack(){
         SOP.Crud.cfxSubmit("mainForm","backToMenu");
+    }
+    function  doChangeMc(svcCode,name,left) {
+        var  moId = "#"+svcCode;
+        var id = "#"+svcCode;
+      if("C" == name){
+          if(left){
+              moId +="caleftmod";
+              id  += "carightlow";
+          }else {
+              moId +="carightmod";
+              id  += "calefthigh";
+          }
+          doChangeVal( moId,id,left);
+      }else if ("Ma" == name){
+          if(left){
+              moId +="mjleftmod";
+              id  += "mjrightlow";
+          }else {
+              moId +="mjrightlmod";
+              id  += "mjlefthigh";
+          }
+          doChangeVal( moId,id,left);
+      }else if("Mi" == name){
+          if(left){
+              moId +="mileftmod";
+              id  += "mirightlow";
+          }else {
+              moId +="mirightlmod";
+              id  += "milefthigh";
+          }
+          doChangeVal( moId,id,left);
+      }
+
+    }
+
+    function doChangeVal(moId,id,left) {
+        if(left){
+
+            var   moIdVal =  $(moId).val();
+            if(moIdVal != null && moIdVal != ""){
+                try{
+                    var reg = /^[0-9]*$/;
+                    if( reg.test(moIdVal) && parseInt(moIdVal) != 0 ){
+                        $(id).val(parseInt(moIdVal)-1);
+                    }else if( reg.test(moIdVal) &&parseInt(moIdVal) == 0 ){
+                        $(id).val(0);
+                    }
+
+                }catch (e) {
+                }
+            }
+        }else {
+            var   moIdVal =  $(moId).val();
+            if(moIdVal != null && moIdVal != ""){
+                try{
+                    var reg = /^[0-9]*$/;
+                    if( reg.test(moIdVal) && parseInt(moIdVal) <= 98)
+                        $(id).val(parseInt(moIdVal)+1);
+                }catch (e) {
+                }
+            }
+        }
     }
 </script>
