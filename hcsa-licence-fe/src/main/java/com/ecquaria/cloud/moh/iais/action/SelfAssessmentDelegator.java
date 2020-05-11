@@ -73,14 +73,14 @@ public class SelfAssessmentDelegator {
                 if ("rfi".equals(action)){
                     selfAssessmentList = selfAssessmentService.receiveSelfAssessmentRfiByCorrId("D0490B54-2C90-EA11-BE7A-000C29D29DB0");
                 }else {
-                    boolean hasSubmitted = selfAssessmentService.hasSubmittedSelfAssessment("43FAE68F-2990-EA11-BE7A-000C29D29DB0");
+                    /*boolean hasSubmitted = selfAssessmentService.hasSubmittedSelfAssessment("43FAE68F-2990-EA11-BE7A-000C29D29DB0");
                     if (hasSubmitted) {
                         ParamUtil.setSessionAttr(bpc.request, "hasSubmitted", "Y");
                         ParamUtil.setSessionAttr(bpc.request, "hasSubmittedMsg", "You have submitted self decl. Please do not submit again");
                         selfAssessmentList = selfAssessmentService.receiveSubmittedSelfAssessmentDataByGroupId("43FAE68F-2990-EA11-BE7A-000C29D29DB0");
-                    }else {
+                    }else {*/
                         selfAssessmentList = selfAssessmentService.receiveSelfAssessmentByGroupId("43FAE68F-2990-EA11-BE7A-000C29D29DB0");
-                    }
+                    /*}*/
                 }
 
         }

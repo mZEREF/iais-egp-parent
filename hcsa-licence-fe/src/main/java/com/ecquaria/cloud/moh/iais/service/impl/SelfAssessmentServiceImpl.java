@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
@@ -12,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
@@ -22,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.SelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
@@ -56,9 +53,6 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Autowired
     private AppConfigClient appConfigClient;
-
-    @Autowired
-    private FeEmailClient feEmailClient;
 
     @Autowired
     private FeEicGatewayClient gatewayClient;
@@ -341,14 +335,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             }
         }
 
-
-
         return retData;
-    }
-
-    @Override
-    public Boolean hasSubmittedSelfAssessment(String groupId) {
-        return applicationClient.hasSubmittedSelfAssessment(groupId).getEntity();
     }
 
     @Override
@@ -387,10 +374,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Override
     public void changePendingSelfAssMtStatus(String groupId) {
-        ApplicationGroupDto groupDto = new ApplicationGroupDto();
+        /*ApplicationGroupDto groupDto = new ApplicationGroupDto();
         groupDto.setId(groupId);
         groupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        groupDto.setPendingSubmitSelfAssMt(ApplicationConsts.SUBMITTED_SELF_ASSESSMENT);
-        applicationClient.doUpDate(groupDto);
+        applicationClient.doUpDate(groupDto);*/
     }
 }

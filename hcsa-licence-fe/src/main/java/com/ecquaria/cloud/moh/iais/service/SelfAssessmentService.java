@@ -17,8 +17,6 @@ public interface SelfAssessmentService {
 
     List<SelfAssessment> receiveSelfAssessmentRfiByCorrId(String corrId);
 
-    Boolean hasSubmittedSelfAssessment(String groupId);
-
     Boolean saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList);
 
     void changePendingSelfAssMtStatus(String groupId);

@@ -99,9 +99,6 @@ public interface ApplicationClient  {
     @PostMapping(path = "/iais-self-assessment/self-assessment/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> saveAllSelfAssessment(@RequestBody List<SelfAssessment> selfAssessmentList);
 
-    @GetMapping(path = "/iais-self-assessment/group/correlation/has-self-decl/{groupId}/record")
-    FeignResponseEntity<Boolean> hasSubmittedSelfAssessment(@PathVariable(value = "groupId") String groupId);
-
     @GetMapping(path = "/iais-self-assessment/correlation/self-assessment/{correlationId}")
     FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> getAppPremisesSelfDeclByCorrelationId(@PathVariable(value = "correlationId") String correlationId);
 

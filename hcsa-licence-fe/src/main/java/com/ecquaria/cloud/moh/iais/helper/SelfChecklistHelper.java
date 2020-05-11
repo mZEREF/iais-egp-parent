@@ -29,40 +29,6 @@ public final class SelfChecklistHelper {
 
     /**
      * @Author yichen
-     * @Description: rfi reload
-     * @Date: 15:34 2020/4/28
-     * @Param: []
-     * @return:
-     **/
-    public static void reloadPremisesQuestion(final LinkedHashMap<String, List<PremCheckItem>> eachPremQuestion, final AppPremisesSelfDeclChklDto selfDecl, final boolean isSubtype){
-        List<PremCheckItem> premCheckItemList;
-
-        if (eachPremQuestion.containsKey(selfDecl.getAppPremCorreId())){
-            premCheckItemList = eachPremQuestion.get(selfDecl.getAppPremCorreId());
-        }else {
-            premCheckItemList = IaisCommonUtils.genNewArrayList();
-        }
-
-        String answerJson = selfDecl.getAnswer();
-        List<Map<String, Object>> answerList = JsonUtil.parseToObject(answerJson, List.class);
-        List<QuestionAnswer> questionAnswers = JsonUtil.transferListContent(answerList, QuestionAnswer.class);
-        questionAnswers.forEach(question -> {
-            PremCheckItem premCheckItem = new PremCheckItem();
-            premCheckItem.setChecklistItem(question.getChecklistItem());
-            premCheckItem.setRegulation(question.getRegulation());
-            premCheckItem.setConfigId(selfDecl.getChkLstConfId());
-            premCheckItem.setChecklistItemId(question.getChecklistItemId());
-            premCheckItem.setAnswerKey(UUID.randomUUID().toString());
-            premCheckItem.setAnswer(question.getAnswer());
-            premCheckItem.setSubType(isSubtype);
-            premCheckItemList.add(premCheckItem);
-        });
-
-        eachPremQuestion.put(selfDecl.getAppPremCorreId(), premCheckItemList);
-    }
-
-    /**
-     * @Author yichen
      * @Description: new
      * @Date: 15:34 2020/4/28
      * @Param: []
