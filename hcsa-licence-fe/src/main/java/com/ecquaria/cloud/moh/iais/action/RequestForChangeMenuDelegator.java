@@ -137,7 +137,7 @@ public class RequestForChangeMenuDelegator {
                 action = "prePremisesEdit";
             }
         }
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, action);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, action);
         log.debug(StringUtil.changeForLog("the prepare end ...."));
     }
 
@@ -155,12 +155,12 @@ public class RequestForChangeMenuDelegator {
         if ("dosubmit".equals(switchValue)) {
             Object rfi = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
             if (rfi != null) {
-
-
-                ParamUtil.setRequestAttr(bpc.request, "switch", switchValue);
-                log.debug(StringUtil.changeForLog("the controlSwitch end ...."));
+                switchValue = "doRfi";
             }
         }
+
+        ParamUtil.setRequestAttr(bpc.request, "switch", switchValue);
+        log.debug(StringUtil.changeForLog("the controlSwitch end ...."));
     }
     /**
      * @param bpc
@@ -308,58 +308,60 @@ public class RequestForChangeMenuDelegator {
      * @Decription doPremisesList
      *//*
      */
-public void doPremisesList(BaseProcessClass bpc) throws CloneNotSupportedException {
-    log.debug(StringUtil.changeForLog("the do doPremisesList start ...."));
-    String crudActionType = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
-    if (StringUtil.isEmpty(crudActionType)) {
-        crudActionType = "back";
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, crudActionType);
-        return;
-    }
-    String crud_action_type = bpc.request.getParameter("crud_action_type");
-    String index = ParamUtil.getString(bpc.request, "hiddenIndex");
-    String licId = ParamUtil.getMaskedString(bpc.request, "licId" + index);
-    String premId = ParamUtil.getMaskedString(bpc.request, "premisesId" + index);
-    PremisesListQueryDto premisesListQueryDto = new PremisesListQueryDto();
-    AppSubmissionDto appSubmissionDto = null;
-    String status = "";
-    if (!StringUtil.isEmpty(licId) && !StringUtil.isEmpty(premId)) {
-        List<PremisesListQueryDto> premisesListQueryDtos = (List<PremisesListQueryDto>) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS);
-        if (!IaisCommonUtils.isEmpty(premisesListQueryDtos)) {
-            premisesListQueryDto = getPremisesListQueryDto(premisesListQueryDtos, licId, premId);
-            if (premisesListQueryDto != null) {
-                appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(premisesListQueryDto.getLicenceId(), null);
-                List<String> names = IaisCommonUtils.genNewArrayList();
-                if (appSubmissionDto != null) {
+    public void doPremisesList(BaseProcessClass bpc) throws CloneNotSupportedException {
+        log.debug(StringUtil.changeForLog("the do doPremisesList start ...."));
+        String crudActionType = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if (StringUtil.isEmpty(crudActionType)) {
+            crudActionType = "back";
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
+            return;
+     }
+        String crud_action_type = bpc.request.getParameter("crud_action_type");
+        String index = ParamUtil.getString(bpc.request, "hiddenIndex");
+        String licId = ParamUtil.getMaskedString(bpc.request, "licId" + index);
+        String premId = ParamUtil.getMaskedString(bpc.request, "premisesId" + index);
+        PremisesListQueryDto premisesListQueryDto = new PremisesListQueryDto();
+        AppSubmissionDto appSubmissionDto = null;
+        String status = "";
+        if (!StringUtil.isEmpty(licId) && !StringUtil.isEmpty(premId)) {
+            List<PremisesListQueryDto> premisesListQueryDtos = (List<PremisesListQueryDto>) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS);
+            if (!IaisCommonUtils.isEmpty(premisesListQueryDtos)) {
+                premisesListQueryDto = getPremisesListQueryDto(premisesListQueryDtos, licId, premId);
+                if (premisesListQueryDto != null) {
+                    appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(premisesListQueryDto.getLicenceId(), null);
+                    List<String> names = IaisCommonUtils.genNewArrayList();
+                    if (appSubmissionDto != null) {
                     // from draft,rfi
-                    List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-                    if (appSvcRelatedInfoDtoList != null && appSvcRelatedInfoDtoList.size() > 0) {
-                        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
-                            if (!StringUtil.isEmpty(appSvcRelatedInfoDto.getServiceName())) {
-                                names.add(appSvcRelatedInfoDto.getServiceName());
+                        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+                        if (appSvcRelatedInfoDtoList != null && appSvcRelatedInfoDtoList.size() > 0) {
+                            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
+                                if (!StringUtil.isEmpty(appSvcRelatedInfoDto.getServiceName())) {
+                                    names.add(appSvcRelatedInfoDto.getServiceName());
+                                }
                             }
                         }
                     }
+                    if (!IaisCommonUtils.isEmpty(names)) {
+                        List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceByNames(names);
+                        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+                        NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
+                    }
+                    status = premisesListQueryDto.getLicenceStatus();
                 }
-                if (!IaisCommonUtils.isEmpty(names)) {
-                    List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceByNames(names);
-                    ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
-                    NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
-                }
-                status = premisesListQueryDto.getLicenceStatus();
             }
         }
-    }
 
-    if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)) {
-        ParamUtil.setRequestAttr(bpc.request, "Error_Status", "licence status is not active");
-        if ("doPage".equals(crud_action_type)) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesList");
-        } else if ("doSearch".equals(crud_action_type)) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesList");
-        } else if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)) {
+        if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)) {
             ParamUtil.setRequestAttr(bpc.request, "Error_Status", "licence status is not active");
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesList");
+            if ("doPage".equals(crud_action_type)) {
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesList");
+            } else if ("doSearch".equals(crud_action_type)) {
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesList");
+            } else if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)) {
+                ParamUtil.setRequestAttr(bpc.request, "Error_Status", "licence status is not active");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesList");
+            }
+
         }
 
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
@@ -369,9 +371,8 @@ public void doPremisesList(BaseProcessClass bpc) throws CloneNotSupportedExcepti
 
         //ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, crudActionType);
         log.debug(StringUtil.changeForLog("the do doPremisesList end ...."));
-    }
 
-}
+    }
     /**
      * @param bpc
      * @Decription doPremisesEdit
@@ -398,7 +399,7 @@ public void doPremisesList(BaseProcessClass bpc) throws CloneNotSupportedExcepti
 
         if (errorMap.size() > 0) {
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "prePremisesEdit");
             return;
         }
         bpc.request.setAttribute("selectLicence",selectLicence);
