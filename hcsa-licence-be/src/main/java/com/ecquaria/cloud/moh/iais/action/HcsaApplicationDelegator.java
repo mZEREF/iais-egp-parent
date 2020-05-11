@@ -259,30 +259,7 @@ public class HcsaApplicationDelegator {
         String roleId = taskDto.getRoleId();
         log.debug(StringUtil.changeForLog("the do prepareData get the appPremisesRecommendationDto"));
         log.debug(StringUtil.changeForLog("the do prepareData roleId -->:"+roleId));
-        AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
-        if(appPremisesRecommendationDto != null){
-            Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
-            String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
-            String codeDesc = "";
-            String recommendationOnlyShow = "";
-            if(recomInNumber == null || recomInNumber == 0){
-                recommendationOnlyShow = "Reject";
-            }else{
-                codeDesc = MasterCodeUtil.getCodeDesc(chronoUnit);
-                recommendationOnlyShow = recomInNumber + " " + codeDesc;
-            }
-            //PSO 0062307
-            if(RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId)){
-                //pso back fill
-                checkRecommendationDropdownValue(recomInNumber,chronoUnit,codeDesc,applicationViewDto,bpc);
-            }
-            Date recomInDate = appPremisesRecommendationDto.getRecomInDate();
-            String recomInDateOnlyShow = Formatter.formatDateTime(recomInDate,Formatter.DATE);
-            ParamUtil.setRequestAttr(bpc.request, "recomInDateOnlyShow",recomInDateOnlyShow);
-            if(RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId)){
-                ParamUtil.setRequestAttr(bpc.request, "recommendationOnlyShow",recommendationOnlyShow);
-            }
-        }
+
 
         List<SelectOption> nextStageList = IaisCommonUtils.genNewArrayList();
         nextStageList.add(new SelectOption("", "Please Select"));
@@ -1522,11 +1499,12 @@ public class HcsaApplicationDelegator {
         AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
         TaskDto taskDto = taskService.getTaskById(taskId);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
-
+        String roleId = "";
         //set internal marks fill back
         String correlationId = "";
         if(taskDto != null){
             correlationId = taskDto.getRefNo();
+            roleId = taskDto.getRoleId();
         }else{
             throw new IaisRuntimeException("The Task Id  is Error !!!");
         }
@@ -1538,8 +1516,37 @@ public class HcsaApplicationDelegator {
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
 
-        //Licence Start Date back fill
         AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
+        if(appPremisesRecommendationDto != null){
+            Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
+            String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
+            String codeDesc = "";
+            String recommendationOnlyShow = "";
+            if(recomInNumber == null || recomInNumber == 0){
+                recommendationOnlyShow = "Reject";
+                //set DMS decision value
+                if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
+                    ParamUtil.setRequestAttr(bpc.request,"selectDecisionValue","decisionReject");
+                }
+            }else{
+                codeDesc = MasterCodeUtil.getCodeDesc(chronoUnit);
+                recommendationOnlyShow = recomInNumber + " " + codeDesc;
+            }
+            //PSO 0062307
+            if(RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId)){
+                //pso back fill
+                checkRecommendationDropdownValue(recomInNumber,chronoUnit,codeDesc,applicationViewDto,bpc);
+            }
+            Date recomInDate = appPremisesRecommendationDto.getRecomInDate();
+            String recomInDateOnlyShow = Formatter.formatDateTime(recomInDate,Formatter.DATE);
+            ParamUtil.setRequestAttr(bpc.request, "recomInDateOnlyShow",recomInDateOnlyShow);
+            if(RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId)){
+                ParamUtil.setRequestAttr(bpc.request, "recommendationOnlyShow",recommendationOnlyShow);
+            }
+        }
+
+        //Licence Start Date back fill
+        //AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
         if(appPremisesRecommendationDto != null && appPremisesRecommendationDto.getRecomInDate() != null){
             Date recomInDate = appPremisesRecommendationDto.getRecomInDate();
             String date = Formatter.formatDateTime(recomInDate,Formatter.DATE);

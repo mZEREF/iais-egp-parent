@@ -122,6 +122,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
      */
     private void checkRecommendationOtherDropdown(Map<String, String> errMap,String recommendationStr,HttpServletRequest request){
         if("other".equals(recommendationStr)){
+            ParamUtil.setRequestAttr(request,"selectDecisionValue",DECISION_APPROVAL);
+            ParamUtil.setRequestAttr(request,"recommendationStr","other");
             String number = ParamUtil.getString(request,"number");
             if(StringUtil.isEmpty(number)){
                 errMap.put("recomInNumber","The field is mandatory.");
