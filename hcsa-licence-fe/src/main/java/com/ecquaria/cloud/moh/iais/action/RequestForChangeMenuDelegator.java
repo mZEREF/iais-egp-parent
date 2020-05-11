@@ -301,7 +301,6 @@ public class RequestForChangeMenuDelegator {
         }
         String premisesId = premisesListQueryDto.getPremisesId();
         List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByPremisesId(premisesId);
-        licenceDtoList.addAll(licenceDtoList);
         bpc.request.setAttribute("licenceDtoList",licenceDtoList);
         appSubmissionDto.setAppGrpPremisesDtoList(reloadPremisesDtoList);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
