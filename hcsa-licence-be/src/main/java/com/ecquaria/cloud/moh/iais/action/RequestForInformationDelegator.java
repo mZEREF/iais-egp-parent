@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspecti
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
@@ -54,6 +55,7 @@ import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.LicInspNcEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
@@ -128,6 +130,8 @@ public class RequestForInformationDelegator {
     OnlineEnquiriesService onlineEnquiriesService;
     @Autowired
     private SystemParamConfig systemParamConfig;
+    @Autowired
+    InspectionRectificationProService inspectionRectificationProService;
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
@@ -435,8 +439,15 @@ public class RequestForInformationDelegator {
         reqForInfoSearchListDto.setUnitNo(rfiApplicationQueryDto.getUnitNo());
         reqForInfoSearchListDto.setStreetName(rfiApplicationQueryDto.getStreetName());
         reqForInfoSearchListDto.setFloorNo(rfiApplicationQueryDto.getFloorNo());
-        String riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getRiskLevel()}).get(0).getText();
-        if(StringUtil.isEmpty(riskLevel)){
+        String riskLevel;
+        try {
+            List<ChecklistItemDto> checklistItemDtos=inspectionRectificationProService.getQuesAndClause( rfiApplicationQueryDto.getAppCorrId());
+            if(checklistItemDtos.size()!=0){
+                riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{checklistItemDtos.get(0).getRiskLevel()}).get(0).getText();
+            }else {
+                riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getRiskLevel()}).get(0).getText();
+            }
+        }catch (Exception e){
             riskLevel="-";
         }
         reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);

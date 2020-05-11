@@ -61,6 +61,7 @@ import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
@@ -100,7 +101,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private OrganizationClient organizationClient;
-
+    @Autowired
+    InspectionRectificationProService inspectionRectificationProService;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
@@ -233,9 +235,15 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 }
 
                 List<AdhocChecklistItemDto> adhocChecklistItemDtos=applicationClient.getAdhocByAppPremCorrId(appPremisesCorrelationDto.getId()).getEntity();
-                complianceHistoryDto.setRiskTag(adhocChecklistItemDtos.get(0).getRiskLvl());
+                List<ChecklistItemDto> checklistItemDtos=inspectionRectificationProService.getQuesAndClause( appPremisesCorrelationDto.getId());
+                String riskLvl = MasterCodeUtil.retrieveOptionsByCodes(new String[]{checklistItemDtos.get(0).getRiskLevel()}).get(0).getText();
+                if(adhocChecklistItemDtos.size()!=0){
+                    riskLvl = MasterCodeUtil.retrieveOptionsByCodes(new String[]{adhocChecklistItemDtos.get(0).getRiskLvl()}).get(0).getText();
+                }
+                complianceHistoryDto.setRiskTag(riskLvl);
             }catch (Exception e){
                 log.error(e.getMessage(), e);
+                complianceHistoryDto.setRiskTag("-");
             }
             try{
                 List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();

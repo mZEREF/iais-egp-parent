@@ -113,8 +113,6 @@
                                 <iais:sortableHeader needSort="false"  field="SERVICE_NAME" value="Service Name"/>
                                 <iais:sortableHeader needSort="false"  field="Licence_Period" value="Licence Period"/>
                                 <iais:sortableHeader needSort="false"  field="Licence_Status" value="Licence Status"/>
-                                <iais:sortableHeader needSort="false"  field="past_compliance_history" value="Past Compliance History"/>
-                                <iais:sortableHeader needSort="false"  field="current_risk_tagging" value="Current Risk Tagging"/>
                                 <iais:sortableHeader needSort="false" field="" value="Action"/>
                             </tr>
                             </thead>
@@ -153,9 +151,6 @@
                                             <td><c:out value="${pool.serviceName}"/></td>
                                             <td><fmt:formatDate value="${pool.startDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" />-<fmt:formatDate value="${pool.expiryDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
                                             <td><c:out value="${pool.licenceStatus}"/></td>
-                                            <td><c:out value="${pool.pastComplianceHistory}"/></td>
-                                            <td><c:out value="${pool.currentRiskTagging}"/></td>
-
                                             <td>
                                                 <c:if test="${pool.licenceStatus=='Active'}">
                                                     <iais:action style="text-align:right;">
