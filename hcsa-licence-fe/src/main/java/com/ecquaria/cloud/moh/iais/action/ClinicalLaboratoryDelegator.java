@@ -1367,7 +1367,7 @@ public class ClinicalLaboratoryDelegator {
                 if(StringUtil.isEmpty(name)){
                     errorMap.put("name"+i,"UC_CHKLMD001_ERR001");
                 }
-                String quaification = appSvcPersonnelDtos.get(i).getQuaification();
+                String quaification = appSvcPersonnelDtos.get(i).getQualification();
                 if(StringUtil.isEmpty(quaification)){
                     errorMap.put("qualification"+i,"UC_CHKLMD001_ERR001");
                 }
@@ -1399,7 +1399,7 @@ public class ClinicalLaboratoryDelegator {
                     String name = appSvcPersonnelDtos.get(i).getName();
                     String designation = appSvcPersonnelDtos.get(i).getDesignation();
                     String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
-                    String qualification = appSvcPersonnelDtos.get(i).getQuaification();
+                    String qualification = appSvcPersonnelDtos.get(i).getQualification();
 
                     if(StringUtil.isEmpty(name)){
                         errorMap.put("name"+i,"UC_CHKLMD001_ERR001");
@@ -1422,7 +1422,7 @@ public class ClinicalLaboratoryDelegator {
                 if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)){
                     String name = appSvcPersonnelDtos.get(i).getName();
                     String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
-                    String quaification = appSvcPersonnelDtos.get(i).getQuaification();
+                    String quaification = appSvcPersonnelDtos.get(i).getQualification();
                     if(StringUtil.isEmpty(name)){
                         errorMap.put("name"+i,"UC_CHKLMD001_ERR001");
                     }
@@ -1776,7 +1776,7 @@ public class ClinicalLaboratoryDelegator {
 
                 appSvcPersonnelDto.setDesignation(designation);
                 appSvcPersonnelDto.setName(name);
-                appSvcPersonnelDto.setQuaification(qualification);
+                appSvcPersonnelDto.setQualification(qualification);
                 appSvcPersonnelDto.setWrkExpYear(wrkExpYear);
                 appSvcPersonnelDto.setProfRegNo(professionalRegnNo);
                 appSvcPersonnelDtos.add(appSvcPersonnelDto);

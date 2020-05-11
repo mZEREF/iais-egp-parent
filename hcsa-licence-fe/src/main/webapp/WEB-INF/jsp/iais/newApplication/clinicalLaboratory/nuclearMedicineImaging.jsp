@@ -144,7 +144,7 @@
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-7">
-                                      <iais:input maxLength="100" type="text" name="qualification"  value="${appSvcPersonnelDto.quaification}"></iais:input>
+                                      <iais:input maxLength="100" type="text" name="qualification"  value="${appSvcPersonnelDto.qualification}"></iais:input>
                                       <span class="error-msg" name="iaisErrorMsg" id="error_qualification${status.index}"></span>
                                     </div>
                                   </div>
@@ -358,8 +358,7 @@
 
   var doEdit = function () {
       $('#edit').click(function () {
-          $('input[type="text"]').prop('disabled',false);
-          $('div.nice-select').removeClass('disabled');
+          unDisabledPage();
           $('#isEditHiddenVal').val('1');
           $('#edit-content').addClass('hidden');
           $('.addListBtn').removeClass('hidden');

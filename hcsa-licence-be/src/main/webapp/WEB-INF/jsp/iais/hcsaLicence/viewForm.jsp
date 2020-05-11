@@ -618,10 +618,10 @@
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification</p>
                         </td>
                         <td>
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].quaification}
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}
                             <wrms:value width="7">
-                              <span class="newVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].quaification}" style="display: none"><label></label></span>
-                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.quaification}" style="display: none"><label><c:out value="${appSvcPersonnelDtoList.quaification}"/></label></span>
+                              <span class="newVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}" style="display: none"><label></label></span>
+                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.qualification}" style="display: none"><label><c:out value="${appSvcPersonnelDtoList.qualification}"/></label></span>
                             </wrms:value>
                           </p>
                         </td>
@@ -683,11 +683,11 @@
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification</p>
                         </td>
                         <td>
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].quaification}
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}
 
                             <wrms:value width="7">
-                              <span class="newVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].quaification}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].quaification}"/></label></span>
-                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.quaification}" style="display: none"><label><c:out value="${appSvcPersonnelDtoList.quaification}"/></label></span>
+                              <span class="newVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}"/></label></span>
+                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.qualification}" style="display: none"><label><c:out value="${appSvcPersonnelDtoList.qualification}"/></label></span>
                             </wrms:value>
 
                           </p>
@@ -738,10 +738,10 @@
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification</p>
                         </td>
                         <td>
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].quaification}
+                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}
                             <wrms:value width="7">
-                              <span class="newVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].quaification}" style="display: none"><label></label></span>
-                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.quaification}" style="display: none"><label><c:out value="${appSvcPersonnelDtoList.quaification}"/></label></span>
+                              <span class="newVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}" style="display: none"><label></label></span>
+                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.qualification}" style="display: none"><label><c:out value="${appSvcPersonnelDtoList.qualification}"/></label></span>
                             </wrms:value>
                           </p>
                         </td>

@@ -56,7 +56,7 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification </p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.quaification}</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.qualification}</p>
                     </td>
                   </tr>
                   <tr>
@@ -99,7 +99,7 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification </p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.quaification}</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.qualification}</p>
                     </td>
                   </tr>
                   <tr>
@@ -133,7 +133,7 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification </p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.quaification}</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${appSvcPersonnelDtoList.qualification}</p>
                     </td>
                   </tr>
                   <tr>

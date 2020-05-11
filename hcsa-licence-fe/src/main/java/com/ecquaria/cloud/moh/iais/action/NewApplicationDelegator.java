@@ -1770,6 +1770,8 @@ public class NewApplicationDelegator {
                 premisesSel = premisesSelect[i];
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])){
                 premisesSel = conPremisesSelect[i];
+            }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType[i])){
+                premisesSel = offSitePremisesSelect[i];
             }
             String appType = appSubmissionDto.getAppType();
             if(!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
@@ -1788,6 +1790,15 @@ public class NewApplicationDelegator {
                         appGrpPremisesDtoList.add(appGrpPremisesDto);
                     }
                     continue;
+                }
+            }else{
+                //set hciCode
+                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+                for(AppGrpPremisesDto premDto:appGrpPremisesDtos){
+                    if(!StringUtil.isEmpty(premisesIndexNo[i]) && premisesIndexNo[i].equals(premDto.getPremisesIndexNo())){
+                        appGrpPremisesDto.setHciCode(premDto.getHciCode());
+                        break;
+                    }
                 }
             }
 
@@ -2183,7 +2194,7 @@ public class NewApplicationDelegator {
                 String name = appSvcPersonnelDtos.get(i).getName();
                 String designation = appSvcPersonnelDtos.get(i).getDesignation();
                 String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
-                String qualification = appSvcPersonnelDtos.get(i).getQuaification();
+                String qualification = appSvcPersonnelDtos.get(i).getQualification();
 
                 if(StringUtil.isEmpty(name)){
                     map.put("name"+i,"UC_CHKLMD001_ERR001");
@@ -2211,7 +2222,7 @@ public class NewApplicationDelegator {
             if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)){
                 String name = appSvcPersonnelDtos.get(i).getName();
                 String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
-                String quaification = appSvcPersonnelDtos.get(i).getQuaification();
+                String quaification = appSvcPersonnelDtos.get(i).getQualification();
                 if(StringUtil.isEmpty(name)){
                     map.put("name"+i,"UC_CHKLMD001_ERR001");
                     flag=true;
