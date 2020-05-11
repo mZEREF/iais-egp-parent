@@ -469,7 +469,9 @@
                           <div class="panel-collapse collapse" id="collapsePrimaryDocuments"  role="tabpanel" aria-labelledby="PrimaryDocuments">
                             <div class="panel-body">
                               <p class="text-right">
-                                <input class="form-check-input" id="primaryCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="primary">
+                                <c:if test="${rfi=='rfi'}">
+                                  <input class="form-check-input" id="primaryCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="primary">
+                                </c:if>
                               </p>
                               <div class="elemClass-1561088919456">
                                 <div  class="page section control  container-s-1" style="margin: 10px 0px">
