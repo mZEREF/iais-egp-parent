@@ -19,15 +19,15 @@ import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.AduitSystemGenerateValidate;
 import com.ecquaria.cloud.moh.iais.validation.AuditAssginListValidate;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-
 import com.ecquaria.cloud.moh.iais.validation.AuditCancelTaskValidate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: jiahao
@@ -107,7 +107,7 @@ public class AuditSystemListDelegator {
         dto.setTypeOfRisk(riskType);
         dto.setGenerateNumString(genNum);
         if (!StringUtil.isEmpty(genNum) && StringUtil.stringIsFewDecimal(genNum,null))
-            dto.setGenerateNum(Integer.parseInt(genNum));
+            dto.setGenerateNum(Integer.valueOf(genNum));
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, dto);
         List<AuditTaskDataFillterDto> auditTaskDataDtos = auditSystemPotitalListService.getSystemPotentailAdultList(dto);
         auditSystemListService.getInspectors(auditTaskDataDtos);

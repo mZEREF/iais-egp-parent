@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.action;
 
-import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
@@ -21,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.HcsaConfigPageDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -30,8 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -502,8 +498,8 @@ public class ConfigServiceDelegator {
 
                 if (!StringUtil.isEmpty(workloadManhours)) {
                     try {
-                        hcsaSvcSpecificStageWorkloadDto.setManhourCount(Integer.parseInt(workloadManhours));
-                        hcsaConfigPageDto.setManhours(Integer.parseInt(workloadManhours));
+                        hcsaSvcSpecificStageWorkloadDto.setManhourCount(Integer.valueOf(workloadManhours));
+                        hcsaConfigPageDto.setManhours(Integer.valueOf(workloadManhours));
                     }catch (NumberFormatException e){
                         hcsaSvcSpecificStageWorkloadDto.setManhourCount(-1);
                         hcsaConfigPageDto.setManhours(-1);

@@ -1,17 +1,14 @@
 package com.ecquaria.cloud.moh.iais.filter;
 
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.owasp.validator.html.AntiSamy;
+import org.owasp.validator.html.CleanResults;
+import org.owasp.validator.html.Policy;
+import org.owasp.validator.html.PolicyException;
+import org.springframework.stereotype.Component;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -21,12 +18,16 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import lombok.extern.slf4j.Slf4j;
-import org.owasp.validator.html.AntiSamy;
-import org.owasp.validator.html.CleanResults;
-import org.owasp.validator.html.Policy;
-import org.owasp.validator.html.PolicyException;
-import org.springframework.stereotype.Component;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * AntiSamyFilter
@@ -46,7 +47,7 @@ public class AntiSamyFilter implements Filter {
     private static final List<String> xmlParams;
 
     static {
-        xmlParams = Arrays.asList(new String[] {"messageContent"});
+        xmlParams = Collections.singletonList("messageContent");
     }
 
     public AntiSamyFilter() {
@@ -118,8 +119,8 @@ public class AntiSamyFilter implements Filter {
                 String potentiallyDirtyParameter = (String)obj;
                 String strClean =filterString(potentiallyDirtyParameter);
                 if (log.isDebugEnabled()) {
-                    log.debug("dirtyValue:" + name + " = " +potentiallyDirtyParameter);
-                    log.debug("cleanValue:" + name + " = " + strClean);
+                    log.debug(StringUtil.changeForLog("dirtyValue:" + name + " = " +potentiallyDirtyParameter));
+                    log.debug(StringUtil.changeForLog("cleanValue:" + name + " = " + strClean));
                 }
             }else if (ATTR_MULTIPART_PARAMS.equals(name)) {
                 Hashtable newParam = new Hashtable<String, Vector<String>>();
@@ -159,7 +160,7 @@ public class AntiSamyFilter implements Filter {
             List<String> newValues = new ArrayList<String>(originalValues.length);
             if (escInputMap.get(name)!=null) {
                 if (log.isDebugEnabled()) {
-                    log.debug("escape paramName: " + name);
+                    log.debug(StringUtil.changeForLog("escape paramName: " + name));
                 }
                 return originalValues;
             }else {
@@ -171,8 +172,8 @@ public class AntiSamyFilter implements Filter {
                     String strClean =filterString(value);
                     newValues.add(strClean);
                     if (log.isDebugEnabled()) {
-                        log.debug("originalValue: " + name + "[" + i + "]=" + value);
-                        log.debug("cleanValue: " + name + "[" + i + "]=" +  strClean);
+                        log.debug(StringUtil.changeForLog("originalValue: " + name + "[" + i + "]=" + value));
+                        log.debug(StringUtil.changeForLog("cleanValue: " + name + "[" + i + "]=" +  strClean));
                     }
                     i++;
                 }
@@ -196,18 +197,18 @@ public class AntiSamyFilter implements Filter {
         public String getParameter(String name) {
             String potentiallyDirtyParameter = super.getParameter(name);
             if (log.isDebugEnabled()) {
-                log.debug("originalValue [" + name + "]= " +potentiallyDirtyParameter);
+                log.debug(StringUtil.changeForLog("originalValue [" + name + "]= " +potentiallyDirtyParameter));
             }
             String strClean = null;
             if (escInputMap.get(name)!=null) {
                 if (log.isDebugEnabled()) {
-                    log.debug("escape paramName: " + name);
+                    log.debug(StringUtil.changeForLog("escape paramName: " + name));
                 }
                 return potentiallyDirtyParameter;
             }else {
                 strClean =filterString(potentiallyDirtyParameter);
                 if (log.isDebugEnabled()) {
-                    log.debug("cleanValue [" + name + "]= " + strClean);
+                    log.debug(StringUtil.changeForLog("cleanValue [" + name + "]= " + strClean));
                 }
             }
             return strClean;
@@ -236,7 +237,7 @@ public class AntiSamyFilter implements Filter {
                 String tmpDirty = potentiallyDirtyParameter;
                 CleanResults cr = antiSamy.scan(tmpDirty, AntiSamy.DOM);
                 if (cr.getNumberOfErrors() > 0) {
-                    log.warn("antisamy encountered problem with input: " + cr.getErrorMessages());
+                    log.warn(StringUtil.changeForLog("antisamy encountered problem with input: " + cr.getErrorMessages()));
                 }
                 String strClean = cr.getCleanHTML();
                 return strClean;

@@ -175,18 +175,19 @@ public class ApptReSchedulingInspDateDelegator {
             }
             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String sub_date = sdf2.format(sub_date1);
+            StringBuilder subDate = new StringBuilder();
+            subDate.append(sdf2.format(sub_date1)) ;
             if(!StringUtil.isEmpty(hours)) {
                 for(SelectOption so : hoursOption){
                     if(hours.equals(so.getValue())){
-                        sub_date = sub_date + " " + so.getText() + ":00";
+                        subDate.append(" ").append(so.getText()).append(":00");
                     }
                 }
             } else {
-                sub_date = sub_date + " " + ":00:00";
+                subDate.append( " " + ":00:00");
             }
             try {
-                specificDate = sdf3.parse(sub_date);
+                specificDate = sdf3.parse(subDate.toString());
             } catch (ParseException e) {
                 log.error(e.getMessage(), e);
             }

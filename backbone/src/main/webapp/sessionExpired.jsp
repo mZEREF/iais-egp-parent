@@ -12,10 +12,11 @@
 
 <link rel="stylesheet" href="<%=EngineHelper.getResourcePath() %>/_statics/login/css/screen.css" type="text/css"/>
 <link rel="shortcut icon" href="<%=EngineHelper.getResourcePath() %>/_statics/images/ecq.gif" type="image/x-icon" />
+<!DOCTYPE html>
 <html>
 <workdesk:i18nMeta />
     <head>
-    </head>
+		<title></title></head>
     <body class="login-smc">
 	
     <br>

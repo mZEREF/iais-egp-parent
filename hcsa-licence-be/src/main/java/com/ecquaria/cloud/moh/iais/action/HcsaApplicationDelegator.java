@@ -1486,7 +1486,7 @@ public class HcsaApplicationDelegator {
 
         String applicationType = applicationDto.getApplicationType();
         if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
-            Map<String,Object> map=new HashMap<>();
+            Map<String,Object> map=IaisCommonUtils.genNewHashMap();
             List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
             MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate("5B9EADD2-F27D-EA11-BE82-000C29F371DC").getEntity();
             map.put("applicationNumber",applicationDto.getApplicationNo());

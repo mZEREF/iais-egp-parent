@@ -157,7 +157,7 @@ public class BackendInboxDelegator {
         ParamUtil.setRequestAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
         ParamUtil.setRequestAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
         String swithtype = (String)ParamUtil.getRequestAttr(bpc.request, "SearchSwitchType");
-        if(swithtype == null || swithtype ==""){
+        if(swithtype == null || "".equals(swithtype)){
             ParamUtil.setRequestAttr(bpc.request, "SearchSwitchType","search");
         }
     }
@@ -515,7 +515,7 @@ public class BackendInboxDelegator {
             StringBuilder sb = new StringBuilder("(");
             int i =0;
             for (TaskDto item: commPools) {
-                sb.append(":itemKey" + i).append(",");
+                sb.append(":itemKey").append(i).append(',');
                 i++;
             }
             String inSql = sb.substring(0, sb.length() - 1) + ")";
@@ -546,8 +546,9 @@ public class BackendInboxDelegator {
                 searchParamAjax.removeFilter("application_type");
             }
             if(!StringUtil.isEmpty(hci_code)){
-                searchParamGroup.addFilter("hci_code", hci_code.trim(),true);
-                searchParamAjax.addFilter("hci_code", hci_code.trim(),true);
+                String trim=hci_code.trim();
+                searchParamGroup.addFilter("hci_code", trim,true);
+                searchParamAjax.addFilter("hci_code", trim,true);
             }else{
                 searchParamGroup.removeFilter("hci_code");
                 searchParamAjax.removeFilter("hci_code");
@@ -634,13 +635,13 @@ public class BackendInboxDelegator {
         String url = dto.getProcessUrl();
         sb.append(request.getServerName());
         if (!url.startsWith("/")) {
-            sb.append("/");
+            sb.append('/');
         }
         sb.append(url);
-        if (url.indexOf("?") >= 0) {
-            sb.append("&");
+        if (url.indexOf('?') >= 0) {
+            sb.append('&');
         } else {
-            sb.append("?");
+            sb.append('?');
         }
         sb.append("taskId=").append(MaskUtil.maskValue("taskId", dto.getId()));
         return RedirectUtil.changeUrlToCsrfGuardUrlUrl(sb.toString(), request);
@@ -695,7 +696,7 @@ public class BackendInboxDelegator {
         log.debug(StringUtil.changeForLog("the do routeToDMS end ...."));
     }
 
-    private void rollBack(TaskDto taskDto,ApplicationViewDto applicationViewDto,BaseProcessClass bpc,String stageId,String appStatus,String roleId ,String wrkGpId,String userId) throws FeignException, CloneNotSupportedException {
+    private void rollBack(TaskDto taskDto,ApplicationViewDto applicationViewDto,BaseProcessClass bpc,String stageId,String appStatus,String roleId ,String wrkGpId,String userId) throws  CloneNotSupportedException {
         //get the user for this applicationNo
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();

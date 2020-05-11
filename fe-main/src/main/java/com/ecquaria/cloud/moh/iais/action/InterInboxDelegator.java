@@ -13,14 +13,25 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.*;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.InboxConst;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
-import com.ecquaria.cloud.submission.client.App;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -425,9 +436,9 @@ public class InterInboxDelegator {
                     String licenseNo = errorMap.get("errorMessage");
                     if(!StringUtil.isEmpty(licenseNo)){
                         if(StringUtil.isEmpty(errorMessage.toString())){
-                            errorMessage.append(tmp + licenseNo);
+                            errorMessage.append(tmp).append(licenseNo);
                         }else{
-                            errorMessage.append(", " + licenseNo);
+                            errorMessage.append(", ").append(licenseNo);
                         }
                     }
                     result = false;

@@ -200,7 +200,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
 
 
             if (!StringUtil.isEmpty(workGroupId)){
-                log.info("Wrk Group Id ======>" + workGroupId);
+                log.info(StringUtil.changeForLog("Wrk Group Id ======>" + workGroupId));
                 String workingGroupName=applicationViewService.getWrkGrpName(workGroupId);
                 if (!StringUtil.isEmpty(workingGroupName)){
                     applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setWorkingGroup(workingGroupName);

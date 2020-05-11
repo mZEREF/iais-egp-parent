@@ -90,8 +90,8 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
     @Override
     public void saveFile(String data)  {
-
-        String s = FileUtil.genMd5FileChecksum(data.getBytes());
+        byte[] fileData=data.getBytes();
+        String s = FileUtil.genMd5FileChecksum(fileData);
         File file = MiscUtil.generateFile(download+File.separator, s+fileFormat);
         File groupPath=new File(download+File.separator);
 
@@ -100,8 +100,8 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         try (FileOutputStream fileInputStream = (FileOutputStream) java.nio.file.Files.newOutputStream(backupFile.toPath());
              FileOutputStream fileOutputStream = (FileOutputStream) java.nio.file.Files.newOutputStream(file.toPath());){
 
-            fileOutputStream.write(data.getBytes());
-            fileInputStream.write(data.getBytes());
+            fileOutputStream.write(fileData);
+            fileInputStream.write(fileData);
 
         } catch (Exception e) {
 

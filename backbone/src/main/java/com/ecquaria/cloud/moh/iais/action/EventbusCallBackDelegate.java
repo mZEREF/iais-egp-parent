@@ -13,14 +13,15 @@ import com.ecquaria.cloud.moh.iais.helper.RedisCacheHelper;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.kafka.GlobalConstants;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * EventbusCallBackDelegate
@@ -104,7 +105,7 @@ public class EventbusCallBackDelegate {
                     "com.ecquaria.cloud.moh.iais.service.impl.AppealApplicaionServiceImpl",
                     "updateFEAppealApplicationDto");
         } else if(EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION.equals(operation)) {
-            log.info("eventRefNum ****"+eventRefNum);
+            log.info(StringUtil.changeForLog("eventRefNum ****"+eventRefNum));
             log.info("send task callback *****");
             invokeMethod(submissionId,eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.LicenceFileDownloadServiceImpl",

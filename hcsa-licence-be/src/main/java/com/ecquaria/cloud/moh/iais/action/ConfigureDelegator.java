@@ -12,12 +12,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.ConfigureService;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -123,7 +124,7 @@ public class ConfigureDelegator {
                     hcsaSvcSpecificStageWorkloadDto.setId(item.getId());
                 }
                 hcsaSvcSpecificStageWorkloadDto.setAppType(item.getAppType());
-                hcsaSvcSpecificStageWorkloadDto.setManhourCount(Integer.parseInt(manhour));
+                hcsaSvcSpecificStageWorkloadDto.setManhourCount(Integer.valueOf(manhour));
                 hcsaSvcSpecificStageWorkloadDto.setServiceId(item.getServiceId());
                 hcsaSvcSpecificStageWorkloadDto.setStageId(item.getStageId());
                 hcsaSvcSpecificStageWorkloadDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
