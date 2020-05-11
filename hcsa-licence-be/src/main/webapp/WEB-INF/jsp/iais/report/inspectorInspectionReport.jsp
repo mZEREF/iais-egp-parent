@@ -137,7 +137,7 @@
                                                                         <iais:value width="10">
                                                                             <p>
                                                                                 <c:choose>
-                                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST019' || applicationViewDto.applicationDto.status=='APST020'}">
+                                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST019'}">
                                                                                         <input class="form-check-input" id="fastTracking"
                                                                                         <c:if test="${applicationViewDto.applicationDto.fastTracking}">
                                                                                                checked disabled

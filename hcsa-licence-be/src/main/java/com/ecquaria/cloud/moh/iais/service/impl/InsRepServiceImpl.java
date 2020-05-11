@@ -513,12 +513,11 @@ public class InsRepServiceImpl implements InsRepService {
         String subStage = getSubStage(appPremisesCorrelationId,taskKey);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
-        String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
+        String groupId = hcsaSvcStageWorkingGroupDto1.getGroupId();
         List<TaskDto> taskDtos = prepareTaskToAo1(taskDto, applicationDto, hcsaSvcStageWorkingGroupDto2);
         taskService.createTasks(taskDtos);
-        String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
-        createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
-        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, appPremisesRecommendationDto.getProcessRemarks(), null, RoleConsts.USER_ROLE_AO1, groupId2, subStage);
+        createAppPremisesRoutingHistory(applicationNo, status, taskKey, appPremisesRecommendationDto.getProcessRemarks(), InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId, subStage);
+        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId, subStage);
     }
 
     @Override
@@ -531,7 +530,7 @@ public class InsRepServiceImpl implements InsRepService {
         updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT);
         completedTask(taskDto);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
-        String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
+        String groupId = hcsaSvcStageWorkingGroupDto1.getGroupId();
         String subStage = getSubStage(appPremisesCorrelationId,taskKey);
         if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType)||ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK.equals(applicationType)){
             updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_APPEAL_APPROVE);
@@ -545,15 +544,13 @@ public class InsRepServiceImpl implements InsRepService {
                 applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 applicationGroupService.updateApplicationGroup(applicationGroupDto);
             }
-            createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId1, subStage);
+            createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
         }else {
             updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
             List<TaskDto> taskDtos = prepareTaskToAo2(taskDto, serviceId, applicationDto);
             taskService.createTasks(taskDtos);
-            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_AO2,applicationDto);
-            String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
-            createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId1, subStage);
-            createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO2, groupId2, null);
+            createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
+            createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO2, groupId, null);
         }
 
     }
@@ -569,14 +566,12 @@ public class InsRepServiceImpl implements InsRepService {
         completedTask(taskDto);
         String subStage = getSubStage(appPremisesCorrelationId,taskKey);
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
-        String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
+        String groupId = hcsaSvcStageWorkingGroupDto1.getGroupId();
         String userId = getRobackUserId(applicationNo, taskKey);
         List<TaskDto> taskDtos = prepareBackTaskList(taskDto,userId);
         taskService.createTasks(taskDtos);
-        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS,applicationDto);
-        String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
-        createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
-        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId2, subStage);
+        createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId, subStage);
+        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId, subStage);
     }
 
     @Override
