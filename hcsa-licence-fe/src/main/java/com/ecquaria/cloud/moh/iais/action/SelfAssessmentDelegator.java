@@ -6,8 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.SelfAssessmentConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -47,6 +47,8 @@ public class SelfAssessmentDelegator {
         AuditTrailHelper.auditFunction("Hcsa Application", "Self desc");
 
         ParamUtil.setSessionAttr(bpc.request, "selfAssessmentMap", null);
+        ParamUtil.setSessionAttr(bpc.request, "hasSubmitted", null);
+        ParamUtil.setSessionAttr(bpc.request, "hasSubmittedMsg", null);
         ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_QUERY_ATTR, null);
         ParamUtil.setSessionAttr(bpc.request,SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION, null);
     }
@@ -57,32 +59,26 @@ public class SelfAssessmentDelegator {
      * @Decription preLoad
      */
     public void preLoad(BaseProcessClass bpc) {
-        String groupId = "99E1370B-CC90-EA11-BE82-000C29F371DC";
-        String action = "rfi";
+        //String action = "";
+        //String groupId = "43FAE68F-2990-EA11-BE7A-000C29D29DB0";
 
-        if (StringUtils.isEmpty(groupId)){
-            log.info("can not find group id");
-            return;
-        }
-
+        String action = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
         List<SelfAssessment> selfAssessmentList = (List<SelfAssessment>) ParamUtil.getSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_QUERY_ATTR);
-        log.info(StringUtil.changeForLog("assign to self decl group id ==>>>>> " + groupId));
-
         if(IaisCommonUtils.isEmpty(selfAssessmentList)){
+            if ("rfi".equals(action)){
+                String corrId = "D0490B54-2C90-EA11-BE7A-000C29D29DB0";
+                selfAssessmentList = selfAssessmentService.receiveSelfAssessmentRfiByCorrId(corrId);
             }else {
-                if ("rfi".equals(action)){
-                    selfAssessmentList = selfAssessmentService.receiveSelfAssessmentRfiByCorrId("D0490B54-2C90-EA11-BE7A-000C29D29DB0");
+                String groupId = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
+                boolean hasSubmitted = selfAssessmentService.hasSubmittedSelfAssMt(groupId);
+                if (hasSubmitted) {
+                    ParamUtil.setSessionAttr(bpc.request, "hasSubmitted", "Y");
+                    ParamUtil.setSessionAttr(bpc.request, "hasSubmittedMsg", "You have submitted self decl. Please do not submit again");
+                    selfAssessmentList = selfAssessmentService.receiveSubmittedSelfAssessmentDataByGroupId(groupId);
                 }else {
-                    /*boolean hasSubmitted = selfAssessmentService.hasSubmittedSelfAssessment("43FAE68F-2990-EA11-BE7A-000C29D29DB0");
-                    if (hasSubmitted) {
-                        ParamUtil.setSessionAttr(bpc.request, "hasSubmitted", "Y");
-                        ParamUtil.setSessionAttr(bpc.request, "hasSubmittedMsg", "You have submitted self decl. Please do not submit again");
-                        selfAssessmentList = selfAssessmentService.receiveSubmittedSelfAssessmentDataByGroupId("43FAE68F-2990-EA11-BE7A-000C29D29DB0");
-                    }else {*/
-                        selfAssessmentList = selfAssessmentService.receiveSelfAssessmentByGroupId("43FAE68F-2990-EA11-BE7A-000C29D29DB0");
-                    /*}*/
+                    selfAssessmentList = selfAssessmentService.receiveSelfAssessmentByGroupId(groupId);
                 }
-
+            }
         }
 
         Map<String, Integer> detailIndexMap = IaisCommonUtils.genNewHashMap();
@@ -167,6 +163,7 @@ public class SelfAssessmentDelegator {
             for (int i = 0; i < selfAssessmentList.size(); i++){
                 boolean fullPower = hasFillUpAnswer(selfAssessmentList.get(i)).booleanValue();
                 if (!fullPower){
+                    //confirm with mingde , no error msg will be displayed
                     errorMap.put("noFillUpItemError" + i++, "X");
                 }
             }

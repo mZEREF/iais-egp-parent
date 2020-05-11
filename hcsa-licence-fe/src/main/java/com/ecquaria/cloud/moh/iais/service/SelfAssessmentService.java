@@ -19,5 +19,7 @@ public interface SelfAssessmentService {
 
     Boolean saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList);
 
+    Boolean hasSubmittedSelfAssMt(String groupId);
+
     void changePendingSelfAssMtStatus(String groupId);
 }

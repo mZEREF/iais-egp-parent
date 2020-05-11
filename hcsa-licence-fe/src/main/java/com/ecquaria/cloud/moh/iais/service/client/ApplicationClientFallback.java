@@ -549,6 +549,22 @@ public class ApplicationClientFallback implements ApplicationClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<Integer> getApplicationSelfAssMtStatus(String groupId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<ApplicationDto>> updateApplicationList(List<ApplicationDto> applicationDtoList) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 
     @Override
     public FeignResponseEntity<List<ApplicationDto>> getAppByLicIdAndExcludeNew(String licenceId) {

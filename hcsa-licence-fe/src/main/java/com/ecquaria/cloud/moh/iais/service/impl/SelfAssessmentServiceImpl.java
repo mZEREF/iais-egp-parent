@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
@@ -26,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeEmailClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -37,7 +37,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * @Author: yichen
@@ -156,6 +155,15 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             List<AppPremisesSelfDeclChklDto> entity = result.getEntity();
             SelfAssessment selfAssessment = new SelfAssessment();
             List<SelfAssessmentConfig> selfAssessmentConfigList = IaisCommonUtils.genNewArrayList();
+
+            FeignResponseEntity<AppGrpPremisesDto> fetchPremisesResult = applicationClient.getAppGrpPremisesByCorrId(corrId);
+            if (HttpStatus.SC_OK == fetchPremisesResult.getStatusCode()){
+                AppGrpPremisesDto appGrpPremises = fetchPremisesResult.getEntity();
+                String address = MiscUtil.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(),
+                        appGrpPremises.getBuildingName(), appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
+                selfAssessment.setPremises(address);
+            }
+
             selfAssessmentConfigList.add(new SelfAssessmentConfig());
             for (AppPremisesSelfDeclChklDto ent : entity){
                 String answerJson = ent.getAnswer();
@@ -175,26 +183,21 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
                             if (selfAssessmentConfigMap.containsKey(svcCode)){
                                 selfAssessmentConfig = selfAssessmentConfigMap.get(svcCode);
-                            }else {
-                                selfAssessmentConfig = new SelfAssessmentConfig();
-                            }
-
-                            if (!StringUtils.isEmpty(checklistConfigDto.getSvcSubType())){
-                                selfAssessmentConfig.setHasSubtype(true);
-                            }
-
-                            selfAssessmentConfig.setCommon(false);
-                            selfAssessmentConfig.setSvcName(svcName);
-
-                            if (selfAssessmentConfig.getQuestion() != null){
                                 selfAssessmentConfig.getQuestion().addAll(answerData);
                             }else {
-                                selfAssessmentConfig.setQuestion(answerData);
-                            }
+                                selfAssessmentConfig = new SelfAssessmentConfig();
+                                selfAssessmentConfig.setCommon(false);
+                                selfAssessmentConfig.setSvcName(svcName);
 
-                            selfAssessmentConfig.setConfigId(checklistConfigDto.getId());
-                            selfAssessmentConfigList.add(selfAssessmentConfig);
-                            selfAssessmentConfigMap.put(svcCode, selfAssessmentConfig);
+                                if (!StringUtils.isEmpty(checklistConfigDto.getSvcSubType())){
+                                    selfAssessmentConfig.setHasSubtype(true);
+                                }
+
+                                selfAssessmentConfig.setQuestion(answerData);
+                                selfAssessmentConfig.setConfigId(checklistConfigDto.getId());
+                                selfAssessmentConfigList.add(selfAssessmentConfig);
+                                selfAssessmentConfigMap.put(svcCode, selfAssessmentConfig);
+                            }
                         }
                     }else {
                         SelfAssessmentConfig selfAssessmentConfig = new SelfAssessmentConfig();
@@ -206,8 +209,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                     }
                 }
             }
+
             selfAssessment.setSelfAssessmentConfig(selfAssessmentConfigList);
-            selfAssessment.setCanEdit(true);
+            selfAssessment.setCanEdit(false);
             selfAssessment.setCorrId(corrId);
             rfiData.add(selfAssessment);
         }
@@ -232,110 +236,24 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Override
     public List<SelfAssessment> receiveSubmittedSelfAssessmentDataByGroupId(String groupId) {
-        List<SelfAssessment> rfiData = IaisCommonUtils.genNewArrayList();
-        List<AppPremisesSelfDeclChklDto> selfDeclChklDtoList = applicationClient.getAppPremisesSelfDeclChklListByGroupId(groupId).getEntity();
-        TreeMap<String, List<AppPremisesSelfDeclChklDto>> premisesSelfChecklistMap = classifiyToEachAddress(selfDeclChklDtoList);
-
-        for (Map.Entry<String, List<AppPremisesSelfDeclChklDto>> entry : premisesSelfChecklistMap.entrySet()){
-            String corrId = entry.getKey();
-            SelfAssessment selfAssessment = new SelfAssessment();
-            FeignResponseEntity<AppGrpPremisesDto> fetchPremisesResult = applicationClient.getAppGrpPremisesByCorrId(corrId);
-            if (HttpStatus.SC_OK == fetchPremisesResult.getStatusCode()){
-                AppGrpPremisesDto appGrpPremises = fetchPremisesResult.getEntity();
-                String address = MiscUtil.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(),
-                        appGrpPremises.getBuildingName(), appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
-                selfAssessment.setPremises(address);
-            }
-
-            selfAssessment.setCanEdit(true);
-            selfAssessment.setCorrId(corrId);
-            List<SelfAssessmentConfig> selfAssessmentConfigList = IaisCommonUtils.genNewArrayList();
-            Map<String, SelfAssessmentConfig> selfAssessmentConfigMap = classifyToConfig(selfAssessment, entry);
-            for (Map.Entry<String,SelfAssessmentConfig> entry1 : selfAssessmentConfigMap.entrySet()){
-                selfAssessmentConfigList.add(entry1.getValue());
-            }
-
-            selfAssessment.setSelfAssessmentConfig(selfAssessmentConfigList);
-            rfiData.add(selfAssessment);
+        List<SelfAssessment> viewData = IaisCommonUtils.genNewArrayList();
+        List<ApplicationDto> appList = applicationClient.listApplicationByGroupId(groupId).getEntity();
+        if (IaisCommonUtils.isEmpty(appList)) {
+            return viewData;
         }
 
-        return rfiData;
-    }
-
-    private Map<String, SelfAssessmentConfig> classifyToConfig(SelfAssessment selfAssessment, Map.Entry<String, List<AppPremisesSelfDeclChklDto>> entry){
-        Map<String, SelfAssessmentConfig> selfAssessmentConfigMap = IaisCommonUtils.genNewHashMap();
-        List<AppPremisesSelfDeclChklDto> premisesChecklist = entry.getValue();
-        for (AppPremisesSelfDeclChklDto selfDeclChklDto : premisesChecklist){
-            String answerJson = selfDeclChklDto.getAnswer();
-            String checklistConfigId = selfDeclChklDto.getChkLstConfId();
-            List<PremCheckItem> answerData = JsonUtil.parseToList(answerJson, PremCheckItem.class);
-
-            FeignResponseEntity<ChecklistConfigDto> fetchConfigResult = appConfigClient.getChecklistConfigById(checklistConfigId);
-            if (HttpStatus.SC_OK == fetchConfigResult.getStatusCode()){
-                ChecklistConfigDto checklistConfigDto = fetchConfigResult.getEntity();
-                if (!checklistConfigDto.isCommon()){
-                    String svcCode = checklistConfigDto.getSvcCode();
-                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(svcCode);
-                    if (hcsaServiceDto != null){
-                        String svcName = hcsaServiceDto.getSvcName();
-                        selfAssessment.setSvcName(svcName);
-                        selfAssessment.setSvcId(hcsaServiceDto.getId());
-                        SelfAssessmentConfig selfAssessmentConfig;
-                        if (selfAssessmentConfigMap.containsKey(svcCode)){
-                            selfAssessmentConfig = selfAssessmentConfigMap.get(svcCode);
-
-                        }else {
-                            selfAssessmentConfig = new SelfAssessmentConfig();
-                        }
-                        if (!StringUtils.isEmpty(checklistConfigDto.getSvcSubType())){
-                            selfAssessmentConfig.setHasSubtype(true);
-                        }
-
-                        selfAssessmentConfig.setCommon(false);
-                        selfAssessmentConfig.setSvcName(svcName);
-
-                        if (selfAssessmentConfig.getQuestion() != null){
-                            selfAssessmentConfig.getQuestion().addAll(answerData);
-                        }else {
-                            selfAssessmentConfig.setQuestion(answerData);
-                        }
-
-                        selfAssessmentConfig.setConfigId(checklistConfigDto.getId());
-
-                        selfAssessmentConfigMap.put(svcCode, selfAssessmentConfig);
-                    }
-                }else {
-                    SelfAssessmentConfig selfAssessmentConfig = new SelfAssessmentConfig();
-                    selfAssessmentConfig.setCommon(true);
-                    selfAssessmentConfig.setQuestion(answerData);
-                    selfAssessmentConfig.setConfigId(checklistConfigDto.getId());
-                    selfAssessmentConfigMap.put("common", selfAssessmentConfig);
-                }
-
-
+        for(ApplicationDto app : appList){
+           String appId = app.getId();
+            List<AppPremisesCorrelationDto>  correlationList = applicationClient.listAppPremisesCorrelation(appId).getEntity();
+            for (AppPremisesCorrelationDto correlationDto : correlationList) {
+                String corrId = correlationDto.getId();
+                List<SelfAssessment> dataByCorrId = receiveSelfAssessmentRfiByCorrId(corrId);
+                dataByCorrId.forEach(i -> viewData.add(i));
             }
         }
 
-        return selfAssessmentConfigMap;
-    }
 
-
-    private TreeMap<String, List<AppPremisesSelfDeclChklDto>> classifiyToEachAddress(List<AppPremisesSelfDeclChklDto> answerData){
-        TreeMap<String, List<AppPremisesSelfDeclChklDto>> retData = new TreeMap<>();
-        for (AppPremisesSelfDeclChklDto s : answerData){
-            String corrId = s.getAppPremCorreId();
-            if (retData.containsKey(corrId)){
-                List<AppPremisesSelfDeclChklDto> data = retData.get(corrId);
-                data.add(s);
-                retData.put(corrId, data);
-            }else {
-                List<AppPremisesSelfDeclChklDto> data = IaisCommonUtils.genNewArrayList();
-                data.add(s);
-                retData.put(corrId, data);
-            }
-        }
-
-        return retData;
+        return viewData;
     }
 
     @Override
@@ -373,10 +291,25 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     }
 
     @Override
+    public Boolean hasSubmittedSelfAssMt(String groupId) {
+        FeignResponseEntity<Integer> result = applicationClient.getApplicationSelfAssMtStatus(groupId);
+        if (HttpStatus.SC_OK == result.getStatusCode()){
+            if (ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT == result.getEntity().intValue()){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
     public void changePendingSelfAssMtStatus(String groupId) {
-        /*ApplicationGroupDto groupDto = new ApplicationGroupDto();
-        groupDto.setId(groupId);
-        groupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        applicationClient.doUpDate(groupDto);*/
+        List<ApplicationDto> appList = applicationClient.listApplicationByGroupId(groupId).getEntity();
+        if (IaisCommonUtils.isEmpty(appList)) {
+            return;
+        }
+
+        appList.forEach(i -> i.setSelfAssMtFlag(ApplicationConsts.SUBMITTED_SELF_ASSESSMENT));
+
+        applicationClient.updateApplicationList(appList);
     }
 }
