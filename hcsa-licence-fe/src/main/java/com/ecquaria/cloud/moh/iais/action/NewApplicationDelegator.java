@@ -2676,7 +2676,7 @@ public class NewApplicationDelegator {
         String type = ParamUtil.getString(bpc.request, "type");
         log.info(StringUtil.changeForLog("The type is -->:"+type));
         if(!StringUtil.isEmpty(licenceId) && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
-            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId,"");
+            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
             if(appSubmissionDto != null){
                 appSubmissionDto.setNeedEditController(true);
                 AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
