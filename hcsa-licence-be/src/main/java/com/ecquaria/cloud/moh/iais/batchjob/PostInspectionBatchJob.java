@@ -76,7 +76,7 @@ public class PostInspectionBatchJob {
         map.forEach((insGrpId, licIds) -> {
             String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
             Double amount = 0.0;
-            List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds,"").getEntity();
+            List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
             for(AppSubmissionDto entity : appSubmissionDtoList){
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.getAppSvcRelatedInfoDtoList();
                 String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();

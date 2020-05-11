@@ -114,7 +114,7 @@ public class WithOutRenewalDelegator {
         String firstSvcName = "";
         List<String> serviceNameTitleList = IaisCommonUtils.genNewArrayList();
         List<String> serviceNameList = IaisCommonUtils.genNewArrayList();
-        List<AppSubmissionDto> appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList,"");
+        List<AppSubmissionDto> appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = IaisCommonUtils.genNewArrayList();
         List<Map<String,List<AppSvcDisciplineAllocationDto>>> reloadDisciplineAllocationMapList = IaisCommonUtils.genNewArrayList();
         List<List<AppSvcPrincipalOfficersDto>> principalOfficersDtosList = IaisCommonUtils.genNewArrayList();

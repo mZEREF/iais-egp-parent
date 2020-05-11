@@ -129,7 +129,7 @@ public class LicenceViewServiceDelegator {
                     bpc.request.setAttribute("oldLicenceDto",oldLicenceDto);
                 }
 
-                List<AppSubmissionDto> entity = hcsaLicenceClient.getAppSubmissionDtos(list,"").getEntity();
+                List<AppSubmissionDto> entity = hcsaLicenceClient.getAppSubmissionDtos(list).getEntity();
                 if(!entity.isEmpty()){
                     List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.get(0).getAppSvcRelatedInfoDtoList();
                     if(appSvcRelatedInfoDtoList!=null&&!appSvcRelatedInfoDtoList.isEmpty()){

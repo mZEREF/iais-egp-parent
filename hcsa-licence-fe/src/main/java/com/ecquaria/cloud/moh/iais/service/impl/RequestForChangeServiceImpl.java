@@ -76,8 +76,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId,String hciCode) {
-        return licenceClient.getAppSubmissionDto(licenceId,hciCode).getEntity();
+    public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId) {
+        return licenceClient.getAppSubmissionDto(licenceId).getEntity();
     }
 
     @Override
@@ -141,8 +141,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public List<AppSubmissionDto> getAppSubmissionDtoByLicenceIds(List<String> licenceIds,String hciCode) {
-        return licenceClient.getAppSubmissionDtos(licenceIds,hciCode).getEntity();
+    public List<AppSubmissionDto> getAppSubmissionDtoByLicenceIds(List<String> licenceIds) {
+        return licenceClient.getAppSubmissionDtos(licenceIds).getEntity();
     }
 
     @Override

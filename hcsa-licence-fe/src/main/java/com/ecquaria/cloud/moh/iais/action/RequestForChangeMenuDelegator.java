@@ -25,7 +25,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -35,7 +34,14 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -328,7 +334,7 @@ public class RequestForChangeMenuDelegator {
             if (!IaisCommonUtils.isEmpty(premisesListQueryDtos)) {
                 premisesListQueryDto = getPremisesListQueryDto(premisesListQueryDtos, licId, premId);
                 if (premisesListQueryDto != null) {
-                    appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(premisesListQueryDto.getLicenceId(), null);
+                    appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(premisesListQueryDto.getLicenceId());
                     List<String> names = IaisCommonUtils.genNewArrayList();
                     if (appSubmissionDto != null) {
                     // from draft,rfi
@@ -628,7 +634,7 @@ public class RequestForChangeMenuDelegator {
         for (PersonnelListQueryDto item : personnelEditList) {
             licenceIds.add(item.getLicenceId());
         }
-        List<AppSubmissionDto> appSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(licenceIds,null);
+        List<AppSubmissionDto> appSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(licenceIds);
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
@@ -896,7 +902,7 @@ public class RequestForChangeMenuDelegator {
                 String appGrpNo = requestForChangeService.getApplicationGroupNumber(appType);
                 LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
                 boolean grpLic = licenceDto.isGrpLic();
-                AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string, hciCode);
+                AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string);
                 appSubmissionService.transform(appSubmissionDtoByLicenceId,appSubmissionDto.getLicenseeId());
                 appSubmissionDtoByLicenceId.setAmount(total);
                 appSubmissionDtoByLicenceId.setAppGrpNo(appGrpNo);

@@ -193,7 +193,7 @@ public class CessationServiceImpl implements CessationService {
         String licenseeId = loginContext.getLicenseeId();
         for(AppCessationDto appCessationDto : appCessationDtos){
             String licId = appCessationDto.getLicId();
-            AppSubmissionDto appSubmissionDto = licenceClient.getAppSubmissionDto(licId,"").getEntity();
+            AppSubmissionDto appSubmissionDto = licenceClient.getAppSubmissionDto(licId).getEntity();
             transform(appSubmissionDto,licenseeId);
             AppSubmissionDto entity = applicationClient.saveSubmision(appSubmissionDto).getEntity();
             AppSubmissionDto appSubmissionDtoSave = applicationClient.saveApps(entity).getEntity();

@@ -21,7 +21,7 @@ import java.util.List;
 public interface RequestForChangeService {
     List<PremisesListQueryDto> getPremisesList(String licenseeId);
 
-    AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId,String hciCode);
+    AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId);
 
     List<ApplicationDto> getAppByLicIdAndExcludeNew(String licenceId);
 
@@ -41,7 +41,7 @@ public interface RequestForChangeService {
 
     List<PersonnelListQueryDto> getLicencePersonnelListQueryDto(String licenseeId);
 
-    List<AppSubmissionDto> getAppSubmissionDtoByLicenceIds(List<String> licenceIds,String hciCode);
+    List<AppSubmissionDto> getAppSubmissionDtoByLicenceIds(List<String> licenceIds);
 
     List<AppSubmissionDto> saveAppsBySubmissionDtos(List<AppSubmissionDto> appSubmissionDtos);
 
