@@ -27,8 +27,7 @@
                                 <br/>
                                 <h2>Payment Summary</h2>
                                 <p >
-                                    Total amount due:
-                                    <c:out value="${AppSubmissionDto.amountStr}"></c:out>
+                                    Total amount due:$${dAmount}
                                 </p>
                                 <table class="table">
                                     <thead>
@@ -56,22 +55,6 @@
                                                     <p><c:out value="${appSubmissionDto.amountStr}"></c:out></p>
                                                 </td>
                                             </tr>
-                                    </c:forEach>
-                                    <c:forEach var="svc" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}">
-                                        <tr>
-                                            <td>
-                                                <p><c:out value="${svc.serviceName}"></c:out></p>
-                                            </td>
-                                            <td>
-                                                <p>Amendment</p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${AppSubmissionDto.appGrpNo}"></c:out></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${AppSubmissionDto.amountStr}"></c:out></p>
-                                            </td>
-                                        </tr>
                                     </c:forEach>
 
                                     </tbody>

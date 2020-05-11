@@ -17,6 +17,7 @@
         </c:choose>
         <c:set var="premValue" value="${status.index}"/>
         <div class="col-xs-12">
+
             <div class="form-horizontal">
                 <div><strong class="app-font-size-22 premHeader">Premises ${status.index+1}</strong>
                     <c:if test="${!status.first && requestInformationConfig==null && 'APTY004' !=AppSubmissionDto.appType && 'APTY005' !=AppSubmissionDto.appType}">
@@ -28,6 +29,8 @@
                     </c:if>
                 </div>
             </div>
+
+
             <div class="form-horizontal">
                 <div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType}">hidden</c:if> >
                     <label class="col-xs-12 col-md-4 control-label error-msg-type" for="premisesType">What is your premises type ? <span class="mandatory">*</span></label>
@@ -127,6 +130,7 @@
                         </c:choose>
                     </iais:value>
                 </iais:row>
+
 
                 <iais:row>
                     <div class="col-xs-12 col-md-4 "></div>
@@ -836,8 +840,7 @@
 
     var cl = function(){
         $("select[name='onSiteAddressType']").change(function () {
-            var addressTypeVal = $(this).val();
-            var $addrTypeContent = $(this).closest('div.premContent');
+
             if('ADDTY001'==$(this).val()){
                 if( $(this).parent().parent().next().children("label").children().length<1){
                     $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
@@ -891,8 +894,6 @@
             $(this).parent().parent().next().next().next().children("label").children().remove();
         }
         $("select[name='conveyanceAddrType']").change(function () {
-            var $addrTypeContent = $(this).closest('div.premContent');
-
             if('ADDTY001'==$( this).val()){
                 if( $(this).parent().parent().next().children("label").children().length<1){
                     $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
@@ -907,7 +908,6 @@
         });
 
         $("select[name='offSiteAddrType']").change(function () {
-            var $addrTypeContent = $(this).closest('div.premContent');
 
             if('ADDTY001'==$( this).val()){
                 if( $(this).parent().parent().next().children("label").children().length<1){
@@ -922,8 +922,49 @@
             }
         });
     }
+    $("select[name='onSiteAddressType']").change(function () {
 
+        if('ADDTY001'==$(this).val()){
+            if( $(this).parent().parent().next().children("label").children().length<1){
+                $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
+                $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
+                $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
+            }
+        }else if('ADDTY002'==$( this).val()) {
+            $(this).parent().parent().next().children("label").children().remove();
+            $(this).parent().parent().next().next().children("label").children().remove();
+            $(this).parent().parent().next().next().next().children("label").children().remove();
+        }
 
+    });
 
+    $("select[name='conveyanceAddrType']").change(function () {
+        if('ADDTY001'==$( this).val()){
+            if( $(this).parent().parent().next().children("label").children().length<1){
+                $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
+                $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
+                $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
+            }
+        }else if('ADDTY002'==$( this).val()) {
+            $(this).parent().parent().next().children("label").children().remove();
+            $(this).parent().parent().next().next().children("label").children().remove();
+            $(this).parent().parent().next().next().next().children("label").children().remove();
+        }
+    });
+
+    $("select[name='offSiteAddrType']").change(function () {
+
+        if('ADDTY001'==$( this).val()){
+            if( $(this).parent().parent().next().children("label").children().length<1){
+                $(this).parent().parent().next().children("label").append("<span class=\"mandatory\">*</span>");
+                $(this).parent().parent().next().next().children("label").append("<span class=\"mandatory\">*</span>");
+                $(this).parent().parent().next().next().next().children("label").append("<span class=\"mandatory\">*</span>");
+            }
+        }else if('ADDTY002'==$( this).val()) {
+            $(this).parent().parent().next().children("label").children().remove();
+            $(this).parent().parent().next().next().children("label").children().remove();
+            $(this).parent().parent().next().next().next().children("label").children().remove();
+        }
+    });
 </script>
 
