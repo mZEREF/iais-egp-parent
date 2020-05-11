@@ -366,7 +366,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
                 AuditTaskDataFillterDto fDto = transferDtoToFiltterDto(temp, score);
                 dtoList.add(fDto);
             }
-            if (score != 0d) {
+            if (score != null && score.equals(0d)) {
                 dtoList.sort((AuditTaskDataFillterDto d1, AuditTaskDataFillterDto d2) -> d1.getScore().compareTo(d2.getScore()));
             }
         }
@@ -383,7 +383,11 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
                 AuditTaskDataFillterDto fDto = transferDtoToFiltterDto(temp, score);
                 dtoList.add(fDto);
             }
-            dtoList.sort((AuditTaskDataFillterDto d1, AuditTaskDataFillterDto d2) -> d1.getScore().compareTo(d2.getScore()));
+            try {
+                dtoList.sort((AuditTaskDataFillterDto d1, AuditTaskDataFillterDto d2) -> d1.getScore().compareTo(d2.getScore()));
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }
         }
         return dtoList;
     }
@@ -392,6 +396,8 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         AuditTaskDataFillterDto fDto = getAuditTaskDataFillterDto(dto,true,false);
         if (score != null) {
             fDto.setScore(score);
+        }else {
+            fDto.setScore(0d);
         }
         fDto.setAddress(dto.getAddress());
         fDto.setId(dto.getId());

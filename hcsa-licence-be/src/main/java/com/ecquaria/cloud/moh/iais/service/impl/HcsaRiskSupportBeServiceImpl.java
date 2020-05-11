@@ -52,7 +52,11 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
     public HcsaLastInspectionDto getLastAndSecLastInpection( List<InspectionInfoDto> infoList) {//use
         HcsaLastInspectionDto lastInspection = new HcsaLastInspectionDto();
         if(infoList!=null && !infoList.isEmpty()){
-            infoList.sort((InspectionInfoDto i1,InspectionInfoDto i2)->i2.getCreateDate().compareTo(i1.getCreateDate()));
+            try {
+                infoList.sort((InspectionInfoDto i1,InspectionInfoDto i2)->i2.getCreateDate().compareTo(i1.getCreateDate()));
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }
             if(infoList.size()>=2){
                 lastInspection.setLastInspectionDate(infoList.get(0).getCreateDate());
                 lastInspection.setSecondLastInspectionDate(infoList.get(1).getCreateDate());
@@ -81,7 +85,12 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
                 List<AppPremisesCorrelationDto> appPremCorrList = fillUpCheckListGetAppClient.getAppPremiseseCorrDto(appId).getEntity();
                 if (appPremCorrList != null && !appPremCorrList.isEmpty()) {
                     for (AppPremisesCorrelationDto appprem : appPremCorrList) {
-                        AppPremisesRecommendationDto appPremCorrDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appprem.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+                        AppPremisesRecommendationDto appPremCorrDto = null;
+                        try {
+                            appPremCorrDto =  fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appprem.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+                        }catch (Exception e){
+                            log.error(e.getMessage(),e);
+                            }
                         if(appPremCorrDto!=null){
                             appPremisesRecommendationDtoList.add(appPremCorrDto);
                             info.setAppId(appId);

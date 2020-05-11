@@ -51,7 +51,7 @@
                                 <span class="error-msg" id="error_selectedOne" name="iaisErrorMsg"></span>
                                 <c:if test="${empty auditTaskDataDtos}">
                                     <tr>
-                                        <td colspan="7">
+                                        <td colspan="7" align="center">
                                             <iais:message key="ACK018" escape="true"/>
                                         </td>
                                     </tr>
