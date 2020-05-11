@@ -183,8 +183,8 @@
 
                                                     <div id="recommendationDropdown">
                                                         <iais:row>
-                                                            <div id="recommendationFieldTrue" class="hidden"><iais:field value="${applicationViewDto.applicationDto.applicationType == 'APTY001' ? 'Recommended Licence Period' : 'Recommendation'}" required="true"/></div>
-                                                            <div id="recommendationFieldFalse"><iais:field value="${applicationViewDto.applicationDto.applicationType == 'APTY001' ? 'Recommended Licence Period' : 'Recommendation'}" required="false"/></div>
+                                                            <div id="recommendationFieldTrue" class="hidden"><iais:field value="${recommendationShowName}" required="true"/></div>
+                                                            <div id="recommendationFieldFalse"><iais:field value="${recommendationShowName}" required="false"/></div>
                                                             <iais:value width="10">
                                                                 <c:choose>
                                                                     <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || applicationViewDto.applicationDto.status=='APST014' || (applicationViewDto.applicationDto.status == 'APST057' && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC') || (applicationViewDto.applicationDto.status == 'APST057' && taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC')}">
@@ -402,10 +402,26 @@
         }
     }
 
+    //check DMS decision value
+    $("[name='decisionValues']").change(function selectChange() {
+        var selectValue = $("[name='decisionValues']").val();
+        if(selectValue == "decisionReject"){
+            $('#recommendationDropdown').addClass('hidden');
+        }else if(selectValue == "decisionApproval"){
+            $('#recommendationDropdown').removeClass('hidden');
+        }
+    });
+
     function DMSCheck(){
         if('${applicationViewDto.applicationDto.status}' == 'APST014'){
                 $('#recommendationFieldTrue').removeClass('hidden');
                 $('#recommendationFieldFalse').addClass('hidden');
+            var selectValue = $("[name='decisionValues']").val();
+            if(selectValue == "decisionReject"){
+                $('#recommendationDropdown').addClass('hidden');
+            }else if(selectValue == "decisionApproval"){
+                $('#recommendationDropdown').removeClass('hidden');
+            }
         }
     }
 
@@ -506,11 +522,7 @@
         }
     });
 
-    //check decision value
-    // $("[name='decisionValues']").change(function selectChange() {
-    //     //var selectValue = $("[name='decisionValues']").val();
-    //     DMSCheck();
-    // });
+
 
 
     $('#verifiedDropdown').change(function verifiedChange() {

@@ -266,7 +266,7 @@ public class HcsaApplicationDelegator {
             String codeDesc = "";
             String recommendationOnlyShow = "";
             if(recomInNumber == null || recomInNumber == 0){
-                recommendationOnlyShow = "reject";
+                recommendationOnlyShow = "Reject";
             }else{
                 codeDesc = MasterCodeUtil.getCodeDesc(chronoUnit);
                 recommendationOnlyShow = recomInNumber + " " + codeDesc;
@@ -279,7 +279,9 @@ public class HcsaApplicationDelegator {
             Date recomInDate = appPremisesRecommendationDto.getRecomInDate();
             String recomInDateOnlyShow = Formatter.formatDateTime(recomInDate,Formatter.DATE);
             ParamUtil.setRequestAttr(bpc.request, "recomInDateOnlyShow",recomInDateOnlyShow);
-            ParamUtil.setRequestAttr(bpc.request, "recommendationOnlyShow",recommendationOnlyShow);
+            if(RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId)){
+                ParamUtil.setRequestAttr(bpc.request, "recommendationOnlyShow",recommendationOnlyShow);
+            }
         }
 
         List<SelectOption> nextStageList = IaisCommonUtils.genNewArrayList();
@@ -349,6 +351,8 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         //check inspection
         checkShowInspection(bpc,applicationViewDto,taskDto,applicationViewDto.getNewAppPremisesCorrelationDto().getOldCorrelationId());
+        //set recommendation show name
+        checkRecommendationShowName(bpc,applicationViewDto);
 
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
@@ -361,6 +365,7 @@ public class HcsaApplicationDelegator {
      */
     public void chooseStage(BaseProcessClass bpc) throws ParseException {
         log.debug(StringUtil.changeForLog("the do chooseStage start ...."));
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         //do upload file
         String doDocument = ParamUtil.getString(bpc.request,"uploadFile");
         String interalFileId = ParamUtil.getString(bpc.request,"interalFileId");
@@ -382,6 +387,14 @@ public class HcsaApplicationDelegator {
             String appPremCorreId=taskDto.getRefNo();
             //save recommendation
             String recommendationStr = ParamUtil.getString(bpc.request,"recommendation");
+            boolean isDMS = ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus());
+            String decisionValues = ParamUtil.getString(bpc.request, "decisionValues");
+            boolean isRejectDMS = "decisionReject".equals(decisionValues);
+            if(isDMS){
+                if(isRejectDMS){
+                    recommendationStr = "reject";
+                }
+            }
             String dateStr = ParamUtil.getDate(bpc.request, "tuc");
             String dateTimeShow = ParamUtil.getString(bpc.request,"dateTimeShow");
             if(StringUtil.isEmpty(recommendationStr)){
@@ -433,7 +446,7 @@ public class HcsaApplicationDelegator {
 
             //62875
             String stage = ParamUtil.getString(bpc.request,"nextStage");
-            ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+
             if(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) &&
                     ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
                 if(!StringUtil.isEmpty(stage)){
@@ -455,6 +468,15 @@ public class HcsaApplicationDelegator {
             String reply=ParamUtil.getString(bpc.request,"nextStageReplys");
             if(!StringUtil.isEmpty(reply)){
                 nextStage=reply;
+            }
+
+            //DMS to end
+            if(isDMS){
+                if(isRejectDMS){
+                    nextStage = "PROCREJ";
+                }else{
+                    nextStage = "PROCAP";
+                }
             }
 
             log.debug(StringUtil.changeForLog("the nextStage is -->:"+nextStage));
@@ -651,8 +673,9 @@ public class HcsaApplicationDelegator {
         if(application != null){
             String appNo =  application.getApplicationNo();
             log.info(StringUtil.changeForLog("The appNo is -->:"+appNo));
+            //HcsaConsts.ROUTING_STAGE_INS
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =  appPremisesRoutingHistoryService.
-                    getAppPremisesRoutingHistoryForCurrentStage(appNo,HcsaConsts.ROUTING_STAGE_INS);
+                    getAppPremisesRoutingHistoryForCurrentStage(appNo,"14848A70-820B-EA11-BE7D-000C29F371DC",RoleConsts.USER_ROLE_INSPECTIOR);
             if(appPremisesRoutingHistoryDto == null){
                 appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.
                         getAppPremisesRoutingHistoryForCurrentStage(appNo,HcsaConsts.ROUTING_STAGE_ASO);
@@ -1037,6 +1060,16 @@ public class HcsaApplicationDelegator {
     //private methods
     //*************************************
 
+    private void checkRecommendationShowName(BaseProcessClass bpc,ApplicationViewDto applicationViewDto){
+        String recommendationShowName = "Recommendation";
+        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
+            recommendationShowName = "Licence Tenure Period";
+        }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
+            recommendationShowName = "Recommended Licence Period";
+        }
+        ParamUtil.setSessionAttr(bpc.request,"recommendationShowName",recommendationShowName);
+    }
+
     private void checkShowInspection(BaseProcessClass bpc,ApplicationViewDto applicationViewDto,TaskDto taskDto,String correlationId){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =  appPremisesRoutingHistoryService.
                             getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS);
@@ -1174,7 +1207,9 @@ public class HcsaApplicationDelegator {
             }
         }
         recommendationSelectOption.add(new SelectOption("other","Other"));
-        recommendationSelectOption.add(new SelectOption("reject","Reject"));
+        if(!ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
+            recommendationSelectOption.add(new SelectOption("reject","Reject"));
+        }
         return recommendationSelectOption;
     }
 

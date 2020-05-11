@@ -58,16 +58,16 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }else{
                 if(DECISION_APPROVAL.equals(decisionValue)){
                     if(StringUtil.isEmpty(recommendationStr)){
-                        errMap.put("recommendation","Please key in recommendation");
+                        errMap.put("recommendation","The field is mandatory.");
                     }else if(RECOMMENDATION_REJECT.equals(recommendationStr)){
                         errMap.put("recommendation","The value of recommendation cannot be 'Reject'.");
                     }
                 }else if(DECISION_REJECT.equals(decisionValue)){
-                    if(StringUtil.isEmpty(recommendationStr)){
-                        errMap.put("recommendation","Please key in recommendation");
-                    }else if(!RECOMMENDATION_REJECT.equals(recommendationStr)){
-                        errMap.put("recommendation","The value of recommendation must be 'Reject'.");
-                    }
+//                    if(StringUtil.isEmpty(recommendationStr)){
+//                        errMap.put("recommendation","Please key in recommendation");
+//                    }else if(!RECOMMENDATION_REJECT.equals(recommendationStr)){
+//                        errMap.put("recommendation","The value of recommendation must be 'Reject'.");
+//                    }
                 }
                 ParamUtil.setRequestAttr(request,"selectDecisionValue",decisionValue);
             }
