@@ -45,4 +45,5 @@ public interface AppSubmissionService {
     void transform(AppSubmissionDto appSubmissionDto,String licenseeId);
     void saveAppsubmission(AppSubmissionDto appSubmissionDto );
     boolean compareAndSendEmail(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto);
+    void setDraftNo(AppSubmissionDto appSubmissionDto);
 }

@@ -568,6 +568,19 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return isAuto;
     }
 
+    @Override
+    public void setDraftNo(AppSubmissionDto appSubmissionDto) {
+        String appType=null;
+        if(appSubmissionDto!=null){
+             appType = appSubmissionDto.getAppType();
+        }
+        if(appType!=null){
+            String draft = systemAdminClient.draftNumber(appType).getEntity();
+            appSubmissionDto.setDraftNo(draft);
+        }
+
+    }
+
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             return appSvcRelatedInfoDtos.get(0);

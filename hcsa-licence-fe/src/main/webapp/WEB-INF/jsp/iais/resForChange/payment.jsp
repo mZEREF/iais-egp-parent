@@ -40,6 +40,23 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <c:forEach items="${appSubmissionDtos}" var="appSubmissionDto">
+
+                                            <tr>
+                                                <td>
+                                                    <p><c:out value="${appSubmissionDto.appSvcRelatedInfoDtoList[0].serviceName}"></c:out></p>
+                                                </td>
+                                                <td>
+                                                    <p>Amendment</p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${appSubmissionDto.appGrpNo}"></c:out></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${appSubmissionDto.amountStr}"></c:out></p>
+                                                </td>
+                                            </tr>
+                                    </c:forEach>
                                     <c:forEach var="svc" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}">
                                         <tr>
                                             <td>
@@ -72,7 +89,7 @@
 
 
 <script>
-    $('#previewAndSub').click(function () {
+    $('#proceed').click(function () {
         doSubmitForm('prePayment','', '');
     });
 

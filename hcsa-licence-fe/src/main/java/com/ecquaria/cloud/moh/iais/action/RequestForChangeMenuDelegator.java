@@ -152,7 +152,7 @@ public class RequestForChangeMenuDelegator {
         if (StringUtil.isEmpty(switchValue)) {
             switchValue = "loading";
         }
-        if ("dosubmit".equals(switchValue)) {
+        if ("doSubmit".equals(switchValue)) {
             Object rfi = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
             if (rfi != null) {
                 switchValue = "doRfi";
@@ -399,13 +399,11 @@ public class RequestForChangeMenuDelegator {
 
         if (errorMap.size() > 0) {
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "prePremisesEdit");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
             return;
         }
         bpc.request.setAttribute("selectLicence",selectLicence);
-        ParamUtil.setRequestAttr(bpc.request,RfcConst.SWITCH_VALUE,"doSubmit");
-        ParamUtil.setSessionAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
-        ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "dosubmit");
+        ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "doSubmit");
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
         //test
         //ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
@@ -834,11 +832,11 @@ public class RequestForChangeMenuDelegator {
             if (!IaisCommonUtils.isEmpty(applicationDtos)) {
                 ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
                 ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is  ongoing application for the licence");
-                return;
+              /*  return;*/
             }
         }
-
-        if(selectLicence!=null){
+        List<AppSubmissionDto> appSubmissionDtos=IaisCommonUtils.genNewArrayList();
+      /*  if(selectLicence!=null){
             for(String string : selectLicence){
                 AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string, hciCode);
                 if(appSubmissionDtoByLicenceId!=null){
@@ -855,11 +853,18 @@ public class RequestForChangeMenuDelegator {
                             }
                         }
                     }
-                    appSubmissionService.saveAppsubmission(appSubmissionDtoByLicenceId);
+                    //draft no
+                    String draftNo = appSubmissionDtoByLicenceId.getDraftNo();
+                    if(StringUtil.isEmpty(draftNo)){
+                        appSubmissionService.setDraftNo(appSubmissionDtoByLicenceId);
+                    }
+                  *//*  appSubmissionService.saveAppsubmission(appSubmissionDtoByLicenceId);
+                    ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
+                    ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
+                    return;*//*
                 }
             }
-        }
-
+        }*/
         String appType = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
         if (!StringUtil.isEmpty(appSubmissionDto.getAppType())) {
             appType = appSubmissionDto.getAppType();
@@ -883,10 +888,58 @@ public class RequestForChangeMenuDelegator {
         }
         amendmentFeeDto.setChangeInLocation(!isSame);
         //
+        if(selectLicence!=null) {
+            for (String string : selectLicence) {
+                FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
+                Double total = feeDto.getTotal();
 
-        FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
+                String appGrpNo = requestForChangeService.getApplicationGroupNumber(appType);
+                LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
+                boolean grpLic = licenceDto.isGrpLic();
+                AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string, hciCode);
+                appSubmissionService.transform(appSubmissionDtoByLicenceId,appSubmissionDto.getLicenseeId());
+                appSubmissionDtoByLicenceId.setAmount(total);
+                appSubmissionDtoByLicenceId.setAppGrpNo(appGrpNo);
+                appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
+                PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
+                if (preOrPostInspectionResultDto == null) {
+                    appSubmissionDtoByLicenceId.setPreInspection(true);
+                    appSubmissionDtoByLicenceId.setRequirement(true);
+                } else {
+                    appSubmissionDtoByLicenceId.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
+                    appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
+                }
+                appSubmissionService.setRiskToDto(appSubmissionDto);
+
+                appSubmissionDtoByLicenceId.setAutoRfc(isSame);
+                //update status
+        /*  LicenceDto licenceDto = new LicenceDto();
+            licenceDto.setId(appSubmissionDto.getLicenceId());
+            licenceDto.setStatus(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+            requestForChangeService.upDateLicStatus(licenceDto);*/
+
+                AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+                appEditSelectDto.setPremisesListEdit(true);
+                appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
+                appSubmissionDtoByLicenceId.setChangeSelectDto(appEditSelectDto);
+                //save data
+                appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                appSubmissionDtoByLicenceId.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
+                String draftNo = appSubmissionDtoByLicenceId.getDraftNo();
+                if(StringUtil.isEmpty(draftNo)){
+                    appSubmissionService.setDraftNo(appSubmissionDtoByLicenceId);
+                }
+                List<ApplicationDto> applicationDtos = appSubmissionDtoByLicenceId.getApplicationDtos();
+                for(ApplicationDto applicationDto : applicationDtos){
+                    applicationDto.setGrpLic(grpLic);
+                }
+                appSubmissionDto = appSubmissionService.submitRequestChange(appSubmissionDtoByLicenceId, bpc.process);
+                appSubmissionDtos.add(appSubmissionDtoByLicenceId);
+            }
+        }
+      /*  FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         if (feeDto != null) {
-            appSubmissionDto.setAmount(feeDto.getTotal());
+            appSubmissionDto.setAmount(totalDouble);
         }
         //judge is the preInspection
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
@@ -902,10 +955,10 @@ public class RequestForChangeMenuDelegator {
 
         appSubmissionDto.setAutoRfc(isSame);
         //update status
-       /* LicenceDto licenceDto = new LicenceDto();
+       *//* LicenceDto licenceDto = new LicenceDto();
         licenceDto.setId(appSubmissionDto.getLicenceId());
         licenceDto.setStatus(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-        requestForChangeService.upDateLicStatus(licenceDto);*/
+        requestForChangeService.upDateLicStatus(licenceDto);*//*
 
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         appEditSelectDto.setPremisesListEdit(true);
@@ -914,10 +967,14 @@ public class RequestForChangeMenuDelegator {
         //save data
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
-
+        String draftNo = appSubmissionDto.getDraftNo();
+        if(StringUtil.isEmpty(draftNo)){
+            appSubmissionService.setDraftNo(appSubmissionDto);
+        }
         appSubmissionDto = appSubmissionService.submitRequestChange(appSubmissionDto, bpc.process);
-
+*/
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos",(Serializable)appSubmissionDtos);
         if (isSame) {
             ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
         } else {

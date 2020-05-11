@@ -316,4 +316,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return licenceClient.getPremises(searchParam).getEntity();
     }
 
+    @Override
+    public LicenceDto getLicenceById(String licenceId) {
+        return licenceClient.getLicBylicId(licenceId).getEntity();
+    }
+
 }

@@ -36,14 +36,6 @@
                   </div>
                 </div>
                 <div class="form-check col-sm-12">
-                  <input  class="form-check-input other-lic"  type="radio" name="otherLicence" value = "1" aria-invalid="false">
-                  <label class="form-check-label" ><span class="check-circle"></span>Edit Address</label>
-                </div>
-                <div class="form-check col-sm-12">
-                  <input  class="form-check-input other-lic"  type="radio" name="otherLicence" value = "2" aria-invalid="false">
-                  <label class="form-check-label" ><span class="check-circle"></span>Edit Premises Name</label>
-                </div>
-                <div class="form-check col-sm-12">
                   <ul>
                     <li>You may also apply the same changes to other licences associated with these premises.</li>
                     <li>Please note that payment is required for each affected licence.</li>

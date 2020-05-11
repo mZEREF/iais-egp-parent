@@ -59,4 +59,5 @@ public interface RequestForChangeService {
     List<LicenceDto> getLicenceDtoByPremisesId(String premisesId);
 
     SearchResult<PremisesListQueryDto> searchPreInfo(SearchParam searchParam);
+    LicenceDto getLicenceById(String licenceId);
 }

@@ -9,6 +9,11 @@
 <webui:setLayout name="iais-internet"/>
     <%@include file="dashboard.jsp"%>
     <%@include file="../common/dashboard.jsp" %>
+    <style>
+      .col-xs-12.col-md-8.text-right>.nav{
+        margin-right: 20%;
+      }
+    </style>
 <div class="tab-pane" id="tabApp" role="tabpanel">
   <form class="form-inline" method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -17,12 +22,7 @@
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
 
-    <div class="row col-xs-11">
-    <div class="col-xs-12" style="margin-left: 3%">
-
-    </div>
-  </div>
-  <div class="tab-search col-xs-11" style="margin-left: 3%;margin-top:1%">
+  <div class="tab-search col-xs-11" style="margin-left: 10%;margin-top:1%">
     <div class="form-group">
       <label class="control-label" for="premType">Type</label>
       <div class="col-xs-12 col-md-8 col-lg-9" id="premTypeDiv">
@@ -37,12 +37,12 @@
     </div>
 
   </div>
-  <div class="row col-xs-11 " style="margin-left: 3%">
+  <div class="row col-xs-11 " style="margin-left: 10%">
     <div class="col-xs-12">
       <div class="table-gp">
         <span class="error-msg"><c:out value="${Error_Status}"/></span>
-        <table class="table">
-          <iais:pagination param="PremisesSearchParam" result="PremisesSearchResult"/>
+        <table class="table" style="margin-right: 20%">
+          <iais:pagination  param="PremisesSearchParam" result="PremisesSearchResult"/>
           <thead>
             <tr>
             <th>Address</th>
@@ -76,7 +76,7 @@
 
   <div class="row col-xs-11 ">
     <div class="col-xs-12">
-      <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
+      <a class="back" style="margin-left: 10%" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
     </div>
   </div>
 
