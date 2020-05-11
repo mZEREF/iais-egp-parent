@@ -29,7 +29,7 @@
       <div class="col-xs-12 col-sm-10">
         <div class="text-right text-center-mobile">
 
-          <a class="btn btn-secondary" href="#" id="cancel">Cancel</a>
+          <a class="back" id="back" href="/main-web/eservice/INTERNET/MohKPIAndReminder"><em class="fa fa-angle-left"></em> Back</a>
 
         </div>
       </div>
