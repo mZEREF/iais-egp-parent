@@ -407,8 +407,10 @@
         var selectValue = $("[name='decisionValues']").val();
         if(selectValue == "decisionReject"){
             $('#recommendationDropdown').addClass('hidden');
+            $('#recommendationOtherDropdown').addClass('hidden');
         }else if(selectValue == "decisionApproval"){
             $('#recommendationDropdown').removeClass('hidden');
+            $('#recommendationOtherDropdown').removeClass('hidden');
         }
     });
 
@@ -419,8 +421,10 @@
             var selectValue = $("[name='decisionValues']").val();
             if(selectValue == "decisionReject"){
                 $('#recommendationDropdown').addClass('hidden');
+                $('#recommendationOtherDropdown').addClass('hidden');
             }else if(selectValue == "decisionApproval"){
                 $('#recommendationDropdown').removeClass('hidden');
+                $('#recommendationOtherDropdown').removeClass('hidden');
             }
         }
     }
