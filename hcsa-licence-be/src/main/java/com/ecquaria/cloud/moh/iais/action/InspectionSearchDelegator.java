@@ -365,6 +365,9 @@ public class InspectionSearchDelegator {
                 String appPremCorrId = inspectionTaskPoolListDto.getTaskDto().getRefNo();
                 ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appPremCorrId);
                 ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+                if(StringUtil.isEmpty(inspectionTaskPoolListDto.getTaskDto().getUserId())){
+                    inspectionTaskPoolListDto.setEditHoursFlag(AppConsts.COMMON_POOL);
+                }
             }
             if(!(IaisCommonUtils.isEmpty(inspectionTaskPoolListDto.getInspectorOption()))){
                 inspectionTaskPoolListDto.setInspectorFlag(AppConsts.TRUE);
@@ -388,7 +391,13 @@ public class InspectionSearchDelegator {
         InspectionTaskPoolListDto inspectionTaskPoolListDto = getValueFromPage(bpc);
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))){
-            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionTaskPoolListDto,"create");
+            String propertyName;
+            if(AppConsts.COMMON_POOL.equals(inspectionTaskPoolListDto.getEditHoursFlag())) {
+                propertyName = AppConsts.COMMON_POOL;
+            } else {
+                propertyName = "create";
+            }
+            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionTaskPoolListDto, propertyName);
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

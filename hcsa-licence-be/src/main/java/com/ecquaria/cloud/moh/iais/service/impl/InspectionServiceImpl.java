@@ -48,7 +48,6 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -153,13 +152,23 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void routingTaskByPool(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools, String internalRemarks) {
         TaskDto taskDto = getTaskDtoByPool(commPools, inspectionTaskPoolListDto);
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         //create history, update application, update/create inspection status
         assignTaskForInspectors(inspectionTaskPoolListDto, commPools, internalRemarks, applicationDto, taskDto, applicationViewDto);
+        if(!StringUtil.isEmpty(inspectionTaskPoolListDto.getInspManHours())){
+            //create inspManHours recommendation
+            AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+            appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
+            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appPremisesRecommendationDto.setVersion(1);
+            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR);
+            appPremisesRecommendationDto.setRecomDecision(inspectionTaskPoolListDto.getInspManHours());
+            appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+        }
     }
 
     @Override
@@ -308,9 +317,6 @@ public class InspectionServiceImpl implements InspectionService {
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
         TaskDto taskDto = taskService.getTaskById(taskId);
-        if(StringUtil.isEmpty(taskDto.getUserId())){
-            inspectionTaskPoolListDto.setEditHoursFlag(AppConsts.COMMON_POOL);
-        }
         List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
         List<String> leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);
         Set<String> leadNameSet = new HashSet<>(leadName);

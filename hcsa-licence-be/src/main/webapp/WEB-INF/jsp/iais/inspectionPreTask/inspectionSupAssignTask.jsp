@@ -30,102 +30,128 @@
               </div>
               <iais:body >
                 <iais:section title="" id = "assign_Task">
-                  <iais:row>
-                    <iais:field value="Application Number"/>
-                    <iais:value width="7">
-                      <p>
-                        <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService" target="_blank">
-                          <u><c:out value="${inspectionTaskPoolListDto.applicationNo}"/></u>
-                        </a>
-                      </p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Application Type"/>
-                    <iais:value width="7">
-                      <p><label><iais:code code="${inspectionTaskPoolListDto.applicationType}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Application Status"/>
-                    <iais:value width="7">
-                      <p><label><iais:code code="${inspectionTaskPoolListDto.applicationStatus}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="HCI Code"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.hciCode}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="HCI Name / Address"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.hciName}"/></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Service Name"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.serviceName}"/></label></p>
-                    </iais:value>
-                  </iais:row>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Application Number</label>
+                    </div>
+                    <div class="col-md-6">
+                      <a style="font-size: 16px" href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService" target="_blank">
+                        <u><c:out value="${inspectionTaskPoolListDto.applicationNo}"/></u>
+                      </a>
+                    </div>
+                  </div>
+                  <p></p>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Application Status</label>
+                    </div>
+                    <div class="col-md-6">
+                      <span style="font-size: 16px"><iais:code code="${inspectionTaskPoolListDto.applicationStatus}"/></span>
+                    </div>
+                  </div>
+                  <p></p>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">HCI Code</label>
+                    </div>
+                    <div class="col-md-6">
+                     <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.hciCode}"/></span>
+                    </div>
+                  </div>
+                  <p></p>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">HCI Code</label>
+                    </div>
+                    <div class="col-md-6">
+                      <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.hciCode}"/></span>
+                    </div>
+                  </div>
+                  <p></p>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">HCI Name / Address</label>
+                    </div>
+                    <div class="col-md-6">
+                      <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.hciName}"/></span>
+                    </div>
+                  </div>
+                  <p></p>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Service Name</label>
+                    </div>
+                    <div class="col-md-6">
+                      <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.serviceName}"/></span>
+                    </div>
+                  </div>
+                  <p></p>
                   <c:if test="${'common' eq inspectionTaskPoolListDto.editHoursFlag}">
                     <div class="row">
                       <div class="col-md-2">
-                        <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
+                        <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)<span style="color: red"> *</span></label>
                       </div>
-                      <div class="col-md-6">
+                      <div class="col-md-1">
                         <input type="text" maxlength="3" name="inspManHours" value="${inspectionTaskPoolListDto.inspManHours}"/>
                       </div>
                     </div>
                   </c:if>
-                  <iais:row>
-                    <iais:field value="Submission Date"/>
-                    <iais:value width="7">
-                      <p><label><fmt:formatDate value='${inspectionTaskPoolListDto.submitDt}' pattern='dd/MM/yyyy' /></label></p>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="${groupRoleFieldDto.groupLeadName}"/>
-                    <iais:value width="7">
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Submission Date</label>
+                    </div>
+                    <div class="col-md-6">
+                      <span style="font-size: 16px"><fmt:formatDate value='${inspectionTaskPoolListDto.submitDt}' pattern='dd/MM/yyyy' /></span>
+                    </div>
+                  </div>
+                  <p></p>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px"><c:out value="${groupRoleFieldDto.groupLeadName}"/></label>
+                    </div>
+                    <div class="col-md-6">
                       <c:forEach var="lead" items="${inspectionTaskPoolListDto.inspectorLeads}">
-                        <p><label><c:out value="${lead}"/></label></p>
+                        <span style="font-size: 16px"><c:out value="${lead}"/></span>
                       </c:forEach>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="${groupRoleFieldDto.groupMemBerName}" required="true"/>
-                    <iais:value width="10">
+                    </div>
+                  </div>
+                  <p></p>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px"><c:out value="${groupRoleFieldDto.groupMemBerName}"/><span style="color: red"> *</span></label>
+                    </div>
+                    <div class="col-md-6">
                       <c:if test="${'true' == inspectionTaskPoolListDto.inspectorFlag}">
                         <c:if test="${inspectionTaskPoolListDto.inspectorCheck == null}">
                           <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}" var="name">
-                            <p><input type="checkbox" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"/>
-                              <label><c:out value="${name.text}"/></label></p>
+                            <input type="checkbox" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"/>
+                              <span style="font-size: 16px"><c:out value="${name.text}"/></span><p></p>
                           </c:forEach>
                         </c:if>
                         <c:if test="${inspectionTaskPoolListDto.inspectorCheck != null}">
                           <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}" var="name">
-                            <p><input type="checkbox" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"
+                            <input type="checkbox" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"
                                     <c:forEach items="${inspectionTaskPoolListDto.inspectorCheck}" var="checkName">
                                       <c:if test="${name.value eq checkName.value}">checked="checked"</c:if>
                                     </c:forEach>
-                            /><label><c:out value="${name.text}"/></label></p>
+                            /><span style="font-size: 16px"><c:out value="${name.text}"/></span><p></p>
                           </c:forEach>
                         </c:if>
-                        <br><span class="error-msg" name="iaisErrorMsg" id="error_inspectorCheck"></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_inspectorCheck"></span><p></p>
                       </c:if>
                       <c:if test="${'false' == inspectionTaskPoolListDto.inspectorFlag}">
-                        <p><label>-</label></p>
+                        <span style="font-size: 16px">-</span><p></p>
                       </c:if>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Inspection Type"/>
-                    <iais:value width="7">
-                      <p><label><c:out value="${inspectionTaskPoolListDto.inspectionTypeName}"/></label></p>
-                    </iais:value>
-                  </iais:row>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Inspection Type</label>
+                    </div>
+                    <div class="col-md-6">
+                      <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.inspectionTypeName}"/></span>
+                    </div>
+                  </div>
                   <iais:action >
                     <a class="back" id="Back" onclick="javascript:doInspectionSupAssignTaskBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                     <c:if test="${'true' == inspectionTaskPoolListDto.inspectorFlag}">
