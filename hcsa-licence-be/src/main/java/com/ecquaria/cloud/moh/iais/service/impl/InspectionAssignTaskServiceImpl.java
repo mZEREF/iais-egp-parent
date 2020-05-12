@@ -467,6 +467,17 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         TaskDto taskDto = getTaskDtoByPool(commPools, inspecTaskCreAndAssDto);
         ApplicationViewDto applicationViewDto = searchByAppCorrId(inspecTaskCreAndAssDto.getAppCorrelationId());
         assignTaskForInspectors(commPools, inspecTaskCreAndAssDto, applicationViewDto, internalRemarks, taskDto);
+        if(!StringUtil.isEmpty(inspecTaskCreAndAssDto.getInspManHours())){
+            //create inspManHours recommendation
+            AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+            appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
+            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appPremisesRecommendationDto.setVersion(1);
+            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR);
+            appPremisesRecommendationDto.setRecomDecision(inspecTaskCreAndAssDto.getInspManHours());
+            appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+        }
     }
 
     private TaskDto getTaskDtoByPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
@@ -578,7 +589,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             otherRole = curRole;
         }
         if (!StringUtil.isEmpty(leadRole)) {
-            if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(curRole)) {
+            if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(leadRole)) {
                 groupLeadName = MasterCodeUtil.getCodeDesc(RoleConsts.USER_MASTER_INSPECTION_LEAD);
             } else {
                 groupLeadName = MasterCodeUtil.getCodeDesc(leadRole);

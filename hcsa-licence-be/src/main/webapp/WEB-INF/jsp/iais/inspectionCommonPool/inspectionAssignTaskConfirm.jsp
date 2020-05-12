@@ -34,85 +34,102 @@
                       <label style="font-size: 16px">Application Number</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px">
+                      <span style="font-size: 16px">
                         <c:out value="${inspecTaskCreAndAssDto.applicationNo}"/>
-                      </label>
+                      </span>
                     </div>
                   </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">Application Type</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><iais:code code="${inspecTaskCreAndAssDto.applicationType}"/></label>
+                      <span style="font-size: 16px"><iais:code code="${inspecTaskCreAndAssDto.applicationType}"/></span>
                     </div>
                   </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">Application Status</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><iais:code code="${inspecTaskCreAndAssDto.applicationStatus}"/></label>
+                      <span style="font-size: 16px"><iais:code code="${inspecTaskCreAndAssDto.applicationStatus}"/></span>
                     </div>
                   </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">HCI Code</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.hciCode}"/></label>
+                      <span style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.hciCode}"/></span>
                     </div>
                   </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">HCI Name / Address</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.hciName}"/></label>
+                      <span style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.hciName}"/></span>
                     </div>
                   </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">Service Name</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.serviceName}"/></label>
+                      <span style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.serviceName}"/></span>
                     </div>
                   </div>
+                  <p></p>
+                  <c:if test="${'BROADCAST' ne iais_Login_User_Info_Attr.curRoleId}">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
+                      </div>
+                      <div class="col-md-6">
+                        <span style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.inspManHours}"/></span>
+                      </div>
+                    </div>
+                    <p></p>
+                  </c:if>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">Submission Date</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><fmt:formatDate value='${inspecTaskCreAndAssDto.submitDt}' pattern='dd/MM/yyyy' /></label>
+                      <span style="font-size: 16px"><fmt:formatDate value='${inspecTaskCreAndAssDto.submitDt}' pattern='dd/MM/yyyy' /></span>
                     </div>
                   </div>
-                  <c:if test="${inspecTaskCreAndAssDto.inspectionLeads != null}">
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label style="font-size: 16px">Lead</label>
-                      </div>
-                      <div class="col-md-6">
-                        <c:if test="${!empty inspecTaskCreAndAssDto.inspectionLeads}">
-                          <c:forEach var="lead" items="${inspecTaskCreAndAssDto.inspectionLeads}">
-                            <span style="font-size: 16px"><c:out value="${lead}"/></span>
-                          </c:forEach>
-                        </c:if>
-                        <c:if test="${empty inspecTaskCreAndAssDto.inspectionLeads}">
-                          <span style="font-size: 16px"><c:out value="-"/></span>
-                        </c:if>
-                      </div>
+                  <p></p>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px"><c:out value="${groupRoleFieldDto.groupLeadName}"/></label>
                     </div>
-                  </c:if>
+                    <div class="col-md-6">
+                      <c:if test="${!empty inspecTaskCreAndAssDto.inspectionLeads}">
+                        <c:forEach var="lead" items="${inspecTaskCreAndAssDto.inspectionLeads}">
+                          <span style="font-size: 16px"><c:out value="${lead}"/></span>
+                        </c:forEach>
+                      </c:if>
+                      <c:if test="${empty inspecTaskCreAndAssDto.inspectionLeads}">
+                        <span style="font-size: 16px"><c:out value="-"/></span>
+                      </c:if>
+                    </div>
+                  </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">Inspection Type</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.inspectionTypeName}"/></label>
+                      <span style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.inspectionTypeName}"/></span>
                     </div>
                   </div>
-                  <br>
+                  <p></p>
                   <iais:action >
                     <a class="back" id="Back" onclick="javascript:doInspectionAssignTaskConfirmBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionAssignTaskConfirmSubmit()">Submit</button>

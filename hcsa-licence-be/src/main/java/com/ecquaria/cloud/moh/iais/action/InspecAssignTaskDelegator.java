@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -15,10 +16,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -196,9 +200,22 @@ public class InspecAssignTaskDelegator {
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(InspectionConstants.SWITCH_ACTION_CONFIRM.equals(actionValue)){
             inspecTaskCreAndAssDto = getValueFromPage(bpc);
-            ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+            if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_INSPECTIOR.equals(loginContext.getCurRoleId())){
+                ValidationResult validationResult = WebValidationHelper.validateProperty(inspecTaskCreAndAssDto, AppConsts.COMMON_POOL);
+                if (validationResult.isHasErrors()) {
+                    Map<String, String> errorMap = validationResult.retrieveAll();
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                    ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+                } else {
+                    ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.TRUE);
+                }
+            } else {
+                ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+            }
         } else if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue)){
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         } else {
@@ -211,6 +228,10 @@ public class InspecAssignTaskDelegator {
     public InspecTaskCreAndAssDto getValueFromPage(BaseProcessClass bpc) {
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_INSPECTIOR.equals(loginContext.getCurRoleId())){
+            String inspManHours = ParamUtil.getRequestString(bpc.request, "inspManHours");
+            inspecTaskCreAndAssDto.setInspManHours(inspManHours);
+        }
         SelectOption so = new SelectOption(loginContext.getUserId(), "text");
         List<SelectOption> inspectorCheckList = IaisCommonUtils.genNewArrayList();
         inspectorCheckList.add(so);
