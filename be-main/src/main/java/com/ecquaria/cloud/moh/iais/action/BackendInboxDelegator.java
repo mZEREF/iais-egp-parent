@@ -296,10 +296,21 @@ public class BackendInboxDelegator {
                     log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
                     successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
                 }else if(RoleConsts.USER_ROLE_AO3.equals(loginContext.getCurRoleId())){
+                    //judge the final status is Approve or Reject.
+                    AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
+                    if(appPremisesRecommendationDto!=null){
+                        Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
+                        if(null != recomInNumber && recomInNumber == 0){
+                            successStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
+                        }else{
+                            successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
+                        }
+                    }
                     log.debug(StringUtil.changeForLog("the do approve start ...."));
-                    routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_APPROVED,null,applicationViewDto,taskDto);
+                    routingTask(bpc,null,successStatus,null,applicationViewDto,taskDto);
                     log.debug(StringUtil.changeForLog("the do approve end ...."));
-                    successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
+
+
                 }
             }
             //update commPools
@@ -428,12 +439,12 @@ public class BackendInboxDelegator {
             List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
             applicationDtoList = removeFastTracking(applicationDtoList);
             boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
-                    ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                    appStatus);
             if(isAllSubmit || applicationDto.isFastTracking()){
                 //update application Group status
                 ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                 broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
-                applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                applicationGroupDto.setStatus(appStatus);
                 applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
             }
