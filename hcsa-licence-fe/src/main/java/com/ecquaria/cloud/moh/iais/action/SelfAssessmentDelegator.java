@@ -61,41 +61,39 @@ public class SelfAssessmentDelegator {
      * @Decription preLoad
      */
     public void preLoad(BaseProcessClass bpc) {
-
         String action = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
 
-        List<SelfAssessment> selfAssessmentList = (List<SelfAssessment>) ParamUtil.getSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_QUERY_ATTR);
-        if (IaisCommonUtils.isEmpty(selfAssessmentList)) {
-            if (SelfAssessmentConstant.SELF_ASSESSMENT_RFI_ACTION.equals(action)) {
-                String corrId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
-                if (StringUtil.isEmpty(corrId)) {
-                    log.debug("the corrId id is null");
-                    return;
-                }
+        List<SelfAssessment> selfAssessmentList;
+        boolean hasSubmitted;
+        if (SelfAssessmentConstant.SELF_ASSESSMENT_RFI_ACTION.equals(action)){
+            String corrId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
+            if (StringUtil.isEmpty(corrId)) {
+                log.debug("the corrId id is null");
+                return;
+            }
 
-                boolean hasSubmitted = selfAssessmentService.hasSubmittedSelfAssMtRfiByCorrId(corrId).booleanValue();
-                if (hasSubmitted) {
-                    ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_FLAG, "Y");
-                    ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_ERROR_MSG, MessageUtil.getMessageDesc("ACK026"));
-                }
+            hasSubmitted = selfAssessmentService.hasSubmittedSelfAssMtRfiByCorrId(corrId).booleanValue();
+            if (hasSubmitted) {
+                ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_FLAG, "Y");
+                ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_ERROR_MSG, MessageUtil.getMessageDesc("ACK026"));
+            }
 
-                selfAssessmentList = selfAssessmentService.receiveSelfAssessmentRfiByCorrId(corrId);
+            selfAssessmentList = selfAssessmentService.receiveSelfAssessmentRfiByCorrId(corrId);
+        }else {
+            String groupId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
+
+            if (StringUtil.isEmpty(groupId)) {
+                log.debug("the group id is null");
+                return;
+            }
+
+            hasSubmitted = selfAssessmentService.hasSubmittedSelfAssMtByGroupId(groupId).booleanValue();
+            if (hasSubmitted) {
+                ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_FLAG, "Y");
+                ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_ERROR_MSG, MessageUtil.getMessageDesc("ACK026"));
+                selfAssessmentList = selfAssessmentService.receiveSubmittedSelfAssessmentDataByGroupId(groupId);
             } else {
-                String groupId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
-
-                if (StringUtil.isEmpty(groupId)) {
-                    log.debug("the group id is null");
-                    return;
-                }
-
-                boolean hasSubmitted = selfAssessmentService.hasSubmittedSelfAssMtByGroupId(groupId).booleanValue();
-                if (hasSubmitted) {
-                    ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_FLAG, "Y");
-                    ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_ERROR_MSG, MessageUtil.getMessageDesc("ACK026"));
-                    selfAssessmentList = selfAssessmentService.receiveSubmittedSelfAssessmentDataByGroupId(groupId);
-                } else {
-                    selfAssessmentList = selfAssessmentService.receiveSelfAssessmentByGroupId(groupId);
-                }
+                selfAssessmentList = selfAssessmentService.receiveSelfAssessmentByGroupId(groupId);
             }
         }
 

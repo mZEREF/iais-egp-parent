@@ -324,6 +324,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         for (Integer i : status){
             if (ApplicationConsts.SUBMITTED_RFI_SELF_ASSESSMENT == i){
                 submitted = false;
+                break;
             }
         }
 
