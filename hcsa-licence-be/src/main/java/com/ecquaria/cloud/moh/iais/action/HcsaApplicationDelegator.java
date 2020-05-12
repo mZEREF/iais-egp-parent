@@ -315,6 +315,9 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "nextStages", (Serializable)nextStageList);
 
         List<SelectOption> nextStageReplyList = IaisCommonUtils.genNewArrayList();
+        if(!ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
+            nextStageReplyList.add(new SelectOption("", "Please Select"));
+        }
         nextStageReplyList.add(new SelectOption("PROCREP", "Give Clarification"));
         ParamUtil.setSessionAttr(bpc.request, "nextStageReply", (Serializable)nextStageReplyList);
 
@@ -1160,8 +1163,8 @@ public class HcsaApplicationDelegator {
 
     private List<SelectOption> getRecommendationOtherDropdown(){
         List<SelectOption> recommendationOtherSelectOption = IaisCommonUtils.genNewArrayList();
-        recommendationOtherSelectOption.add(new SelectOption(RiskConsts.YEAR, "Year"));
-        recommendationOtherSelectOption.add(new SelectOption(RiskConsts.MONTH, "Month"));
+        recommendationOtherSelectOption.add(new SelectOption(RiskConsts.YEAR, "Year(s)"));
+        recommendationOtherSelectOption.add(new SelectOption(RiskConsts.MONTH, "Month(s)"));
         return recommendationOtherSelectOption;
     }
 
@@ -1183,7 +1186,7 @@ public class HcsaApplicationDelegator {
                 recommendationSelectOption.add(new SelectOption(count + " " + dateType, recommTime));
             }
         }
-        recommendationSelectOption.add(new SelectOption("other","Other"));
+        recommendationSelectOption.add(new SelectOption("other","Others"));
         if(!ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
             recommendationSelectOption.add(new SelectOption("reject","Reject"));
         }

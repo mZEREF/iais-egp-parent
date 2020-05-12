@@ -383,19 +383,6 @@
         }
     });
 
-    <%--function DMSCheck(){--%>
-    <%--    var decisionValue = $("[name='decisionValues']").val();--%>
-    <%--    if('${applicationViewDto.applicationDto.status}' == 'APST014'){--%>
-    <%--        if(decisionValue == 'decisionApproval'){--%>
-    <%--            $('#recommendationFieldTrue').removeClass('hidden');--%>
-    <%--            $('#recommendationFieldFalse').addClass('hidden');--%>
-    <%--        }else{--%>
-    <%--            $('#recommendationFieldTrue').addClass('hidden');--%>
-    <%--            $('#recommendationFieldFalse').removeClass('hidden');--%>
-    <%--        }--%>
-    <%--    }--%>
-    <%--}--%>
-
     function checkInspectionShow(){
         if('${isShowInspection}' == 'N'){
             $('#ApplicationViewInspection').css('display', 'none');
@@ -404,28 +391,25 @@
 
     //check DMS decision value
     $("[name='decisionValues']").change(function selectChange() {
+        checkRecommendationDMS();
+    });
+
+    function checkRecommendationDMS(){
         var selectValue = $("[name='decisionValues']").val();
         if(selectValue == "decisionReject"){
             $('#recommendationDropdown').addClass('hidden');
             $('#recommendationOtherDropdown').addClass('hidden');
         }else if(selectValue == "decisionApproval"){
             $('#recommendationDropdown').removeClass('hidden');
-            $('#recommendationOtherDropdown').removeClass('hidden');
+            checkRecommendationOtherDropdown();
         }
-    });
+    }
 
     function DMSCheck(){
         if('${applicationViewDto.applicationDto.status}' == 'APST014'){
                 $('#recommendationFieldTrue').removeClass('hidden');
                 $('#recommendationFieldFalse').addClass('hidden');
-            var selectValue = $("[name='decisionValues']").val();
-            if(selectValue == "decisionReject"){
-                $('#recommendationDropdown').addClass('hidden');
-                $('#recommendationOtherDropdown').addClass('hidden');
-            }else if(selectValue == "decisionApproval"){
-                $('#recommendationDropdown').removeClass('hidden');
-                $('#recommendationOtherDropdown').removeClass('hidden');
-            }
+            checkRecommendationDMS();
         }
     }
 
