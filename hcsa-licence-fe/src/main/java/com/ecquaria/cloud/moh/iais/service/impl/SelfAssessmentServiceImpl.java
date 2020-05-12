@@ -1,11 +1,16 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -15,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -28,13 +34,19 @@ import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -266,6 +278,36 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
         return viewData;
     }
+
+   /* private void sendNotificationToInspector(List<String> correlationId) throws IOException, TemplateException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("corrData", correlationId);
+        jsonObject.put("status", Arrays.asList(TaskConsts.TASK_STATUS_PENDING, TaskConsts.TASK_STATUS_READ, TaskConsts.TASK_STATUS_COMPLETED));
+        jsonObject.put("roleId", RoleConsts.USER_ROLE_INSPECTIOR);
+
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        List<String> emailAddress = gatewayClient.getEmailByCorrelationIdAndStatusAndRole(jsonObject.toString(), signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
+
+        Map<String,Object> map = new HashMap(1);
+        map.put("APPLICANT_NAME", StringUtil.viewHtml("Yi chen"));
+        map.put("DETAILS", StringUtil.viewHtml("test"));
+        map.put("A_HREF", StringUtil.viewHtml(""));
+        map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
+        MsgTemplateDto entity = emailHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SELF_DECL_ID);
+        String messageContent = entity.getMessageContent();
+        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+
+
+        EmailDto emailDto = new EmailDto();
+        emailDto.setContent(templateMessageByContent);
+        emailDto.setSubject("Self-Assessment submission for Application Number");
+        emailDto.setSender("yichen_guo@ecquaria.com");
+        emailDto.setReceipts(emailAddress);
+
+        feEmailClient.sendNotification(emailDto);
+    }*/
 
     @Override
     public Boolean saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList) {
