@@ -13,7 +13,7 @@ import static org.junit.Assert.assertNotNull;
 public class FilterParameterTest {
 
     @Spy
-    FilterParameter entity = new FilterParameter();
+    FilterParameter entity = new FilterParameter.Builder().build();
 
     @Test
     public void testGetterSetter() {
