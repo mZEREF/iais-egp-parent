@@ -30,7 +30,7 @@ public class InspDateSvcHoursValidate implements CustomizeValidator {
         Pattern pattern = compile("[0-9]*");
         boolean hoursFlag = pattern.matcher(manHours).matches();
         if(!hoursFlag){
-            errMap.put("inspManHours", "UC_INSP_ERR0009");
+            errMap.put("inspManHours", "ERR0013");
         }
         return errMap;
     }
