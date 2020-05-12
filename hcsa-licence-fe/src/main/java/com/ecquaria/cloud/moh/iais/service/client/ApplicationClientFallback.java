@@ -550,7 +550,7 @@ public class ApplicationClientFallback implements ApplicationClient {
     }
 
     @Override
-    public FeignResponseEntity<Integer> getApplicationSelfAssMtStatus(String groupId) {
+    public FeignResponseEntity<Integer> getApplicationSelfAssMtStatusByGroupId(String groupId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

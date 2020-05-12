@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
@@ -74,6 +73,12 @@ public class SelfAssessmentDelegator {
                     return;
                 }
 
+                boolean hasSubmitted = selfAssessmentService.hasSubmittedSelfAssMtRfiByCorrId(corrId).booleanValue();
+                if (hasSubmitted) {
+                    ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_FLAG, "Y");
+                    ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_ERROR_MSG, MessageUtil.getMessageDesc("ACK026"));
+                }
+
                 selfAssessmentList = selfAssessmentService.receiveSelfAssessmentRfiByCorrId(corrId);
             } else {
                 String groupId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
@@ -83,10 +88,10 @@ public class SelfAssessmentDelegator {
                     return;
                 }
 
-                boolean hasSubmitted = selfAssessmentService.hasSubmittedSelfAssMt(groupId).booleanValue();
+                boolean hasSubmitted = selfAssessmentService.hasSubmittedSelfAssMtByGroupId(groupId).booleanValue();
                 if (hasSubmitted) {
                     ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_FLAG, "Y");
-                    ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_ERROR_MSG, "You have submitted self decl. Please do not submit again");
+                    ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_ERROR_MSG, MessageUtil.getMessageDesc("ACK026"));
                     selfAssessmentList = selfAssessmentService.receiveSubmittedSelfAssessmentDataByGroupId(groupId);
                 } else {
                     selfAssessmentList = selfAssessmentService.receiveSelfAssessmentByGroupId(groupId);

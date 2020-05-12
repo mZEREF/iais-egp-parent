@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @Author: yichen
@@ -280,7 +281,6 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 log.info(StringUtil.changeForLog("encounter failure when self decl send notification" + e.getMessage()));
             }*/
 
-
             try {
                 //route to be
                 HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -300,14 +300,34 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     }
 
     @Override
-    public Boolean hasSubmittedSelfAssMt(String groupId) {
-        FeignResponseEntity<Integer> result = applicationClient.getApplicationSelfAssMtStatus(groupId);
+    public Boolean hasSubmittedSelfAssMtByGroupId(String groupId) {
+        FeignResponseEntity<Integer> result = applicationClient.getApplicationSelfAssMtStatusByGroupId(groupId);
         if (HttpStatus.SC_OK == result.getStatusCode()){
             if (ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT == result.getEntity().intValue()){
                 return false;
             }
         }
         return true;
+    }
+
+    @Override
+    public Boolean hasSubmittedSelfAssMtRfiByCorrId(String corrId) {
+        List<ApplicationDto> appList = applicationClient.getPremisesApplicationsByCorreId(corrId).getEntity();
+        if (IaisCommonUtils.isEmpty(appList)) {
+            return true;
+        }
+
+        boolean submitted = true;
+        List<Integer> status = appList.stream()
+                .map(ApplicationDto::getSelfAssMtFlag).collect(Collectors.toList());
+
+        for (Integer i : status){
+            if (ApplicationConsts.SUBMITTED_RFI_SELF_ASSESSMENT == i){
+                submitted = false;
+            }
+        }
+
+        return submitted;
     }
 
     @Override
