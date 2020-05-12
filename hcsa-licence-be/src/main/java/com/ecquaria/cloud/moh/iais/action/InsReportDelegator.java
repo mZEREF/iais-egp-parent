@@ -65,7 +65,7 @@ public class InsReportDelegator {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
     }
 
-    public void inspectionReportInit(BaseProcessClass bpc) {
+    public void inspectionReportInit(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the inspectionReportInit start ...."));
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", null);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
@@ -80,10 +80,10 @@ public class InsReportDelegator {
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
         if (insRepDto == null) {
             insRepDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
-            InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
-            insRepDto.setReportedBy(inspectorUser.getReportedBy());
-            insRepDto.setReportNoteBy(inspectorUser.getReportNoteBy());
-            insRepDto.setInspectors(inspectorUser.getInspectors());
+//            InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
+//            insRepDto.setReportedBy(inspectorUser.getReportedBy());
+//            insRepDto.setReportNoteBy(inspectorUser.getReportNoteBy());
+//            insRepDto.setInspectors(inspectorUser.getInspectors());
         }
         AppPremisesRecommendationDto accRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPECTYPE).getEntity();
         if(accRecommendationDto!=null){
@@ -288,6 +288,8 @@ public class InsReportDelegator {
             String engage = "on";
             initRecommendationDto.setEngageEnforcement(engage);
             initRecommendationDto.setEngageEnforcementRemarks(remarks);
+        }else {
+
         }
         if (riskRecommendationDto != null) {
             String riskLevel = riskRecommendationDto.getRecomDecision();
@@ -310,22 +312,19 @@ public class InsReportDelegator {
         String engageEnforcementRemarks = appPremisesRecommendationDto3.getRemarks();
         if (!StringUtil.isEmpty(engageEnforcementRemarks)) {
             appPremisesRecommendationDto3.setRemarks(engageEnforcementRemarks);
-            insRepService.updateengageRecommendation(appPremisesRecommendationDto3);
         }else {
             appPremisesRecommendationDto3.setRemarks(null);
-            insRepService.updateengageRecommendation(appPremisesRecommendationDto3);
         }
+        insRepService.updateengageRecommendation(appPremisesRecommendationDto3);
         String riskLevel = appPremisesRecommendationDto4.getRecomDecision();
         if (!StringUtil.isEmpty(riskLevel)) {
             insRepService.updateRiskRecommendation(appPremisesRecommendationDto4);
         }
         String followRemarks = appPremisesRecommendationDto5.getRemarks();
-        if (!StringUtil.isEmpty(followRemarks)) {
-            insRepService.updateFollowRecommendation(appPremisesRecommendationDto5);
-        }else {
+        if (StringUtil.isEmpty(followRemarks)) {
             appPremisesRecommendationDto5.setRemarks(null);
-            insRepService.updateFollowRecommendation(appPremisesRecommendationDto5);
         }
+        insRepService.updateFollowRecommendation(appPremisesRecommendationDto5);
     }
 
     private List<SelectOption> getChronoOption() {

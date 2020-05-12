@@ -392,7 +392,7 @@
                             <p>Recommendation <strong style="color:#ff0000;"> *</strong></p>
                         </td>
                             <td class="col-xs-4">
-                                <iais:select name="recommendation" options="recommendationOption" firstOption="Please Select" value="${appPremisesRecommendationDto.recommendation}" onchange="javascirpt:changeRecommendation(this.value);"/>
+                                <iais:select id="recommendation" name="recommendation" options="recommendationOption" firstOption="Please Select" value="${appPremisesRecommendationDto.recommendation}" onchange="javascirpt:changeRecommendation(this.value);"/>
                             </td>
                         <td class="col-xs-4"></td>
                     </tr>
@@ -412,7 +412,7 @@
                         </td>
                         <td class="col-xs-4">
                             <input id=recomInNumber type="text" name="number" maxlength="2" value="${appPremisesRecommendationDto.recomInNumber}">
-                            <iais:select id="chronoUnit" name="chrono" options="chronoOption" firstOption="Please Select" value="${appPremisesRecommendationDto.chronoUnit}"/>
+                            <iais:select id="chronoUnit" name="chrono" options="chronoOption" value="${appPremisesRecommendationDto.chronoUnit}"/>
                             <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
                             <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
                         </td>

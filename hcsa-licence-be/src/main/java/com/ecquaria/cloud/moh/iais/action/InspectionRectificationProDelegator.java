@@ -37,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloudfeign.FeignException;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -378,7 +379,7 @@ public class InspectionRectificationProDelegator {
      * @param bpc
      * @throws
      */
-    public void InspectorProRectificationView(BaseProcessClass bpc){
+    public void InspectorProRectificationView(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the InspectorProRectificationView start ...."));
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);

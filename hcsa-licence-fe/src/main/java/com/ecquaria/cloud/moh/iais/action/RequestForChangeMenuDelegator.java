@@ -656,6 +656,11 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setAppGrpNo(appGroupNo);
             appSubmissionDto.setAmount(0.0);
             appSubmissionDto.setAutoRfc(true);
+            appSubmissionDto.setAutoRfc(true);
+            String draftNo = appSubmissionDto.getDraftNo();
+            if(StringUtil.isEmpty(draftNo)){
+                appSubmissionService.setDraftNo(appSubmissionDto);
+            }
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
                 for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {

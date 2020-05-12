@@ -62,7 +62,7 @@ public class InsReportAoDelegator {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
     }
 
-    public void AoInit(BaseProcessClass bpc) {
+    public void AoInit(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the inspectionReportInit start ...."));
         ParamUtil.setSessionAttr(bpc.request, INSREPDTO, null);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
@@ -76,10 +76,10 @@ public class InsReportAoDelegator {
         AuditTrailHelper.auditFunctionWithAppNo("Inspection Report", "AO1 process Report",
                 applicationViewDto.getApplicationDto().getApplicationNo());
         InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
-        InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto,applicationViewDto);
-        insRepDto.setInspectors(inspectorAo.getInspectors());
-        insRepDto.setReportNoteBy(inspectorAo.getReportNoteBy());
-        insRepDto.setReportedBy(inspectorAo.getReportedBy());
+//        InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto,applicationViewDto);
+//        insRepDto.setInspectors(inspectorAo.getInspectors());
+//        insRepDto.setReportNoteBy(inspectorAo.getReportNoteBy());
+//        insRepDto.setReportedBy(inspectorAo.getReportedBy());
         initAoRecommendation(correlationId,bpc);
 
         String infoClassTop = "active";

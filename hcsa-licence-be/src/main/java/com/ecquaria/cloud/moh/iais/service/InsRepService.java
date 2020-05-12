@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface InsRepService {
 
-    InspectionReportDto getInsRepDto (TaskDto taskDto, ApplicationViewDto applicationViewDto , LoginContext loginContext);
+    InspectionReportDto getInsRepDto (TaskDto taskDto, ApplicationViewDto applicationViewDto , LoginContext loginContext) throws FeignException;
 
     void saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     void updateengageRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);

@@ -180,7 +180,7 @@
                                 <p>Report Noted By</p>
                             </td>
                             <td class="col-xs-4">
-                                <p><c:out value="${insRepDto.reportedBy}"/></p>
+                                <p><c:out value="${insRepDto.reportNoteBy}"/></p>
                             </td>
                             <td class="col-xs-4"/>
                         </tr>
