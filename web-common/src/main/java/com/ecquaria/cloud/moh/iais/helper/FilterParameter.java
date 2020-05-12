@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.dto;
+package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import lombok.Getter;
