@@ -137,7 +137,7 @@
                                                     </div>
                                                     <div id="verifiedDropdown" class="hidden">
                                                         <iais:row>
-                                                            <iais:field value="Verified" required="true"/>
+                                                            <iais:field value="Verified" required="false"/>
                                                             <iais:value width="10">
                                                                 <iais:select name="verified"
                                                                              options="verifiedValues"
