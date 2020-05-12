@@ -161,4 +161,8 @@ public interface OrganizationClient {
 
     @GetMapping(value = "/iais-task/kpi-task-col")
     FeignResponseEntity<List<TaskDto>> getKpiTaskByStatus();
+
+    @RequestMapping(value = "/iais-orguser-be/intranet-user-role-list/{userAccId}",method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<OrgUserRoleDto>> getUserRoleByUserAccId(@RequestParam("userAccId") String userAccId);
 }
