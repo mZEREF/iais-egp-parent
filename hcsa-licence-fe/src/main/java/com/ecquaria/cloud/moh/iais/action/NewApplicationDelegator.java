@@ -868,26 +868,6 @@ public class NewApplicationDelegator {
         }
         String oldDraftNo=(String)bpc.request.getSession().getAttribute(SELECT_DRAFT_NO);
         appSubmissionDto.setOldDraftNo(oldDraftNo);
-
-        /*if(!StringUtil.isEmpty(crud_action_additional)){
-            if("cancelSaveDraft".equals(crud_action_additional)){
-                String oldDraftNo=(String)bpc.request.getSession().getAttribute(SELECT_DRAFT_NO);
-                bpc.request.setAttribute("DraftNumber",oldDraftNo);
-              *//*  jumpYeMian(bpc.request,bpc.response);*//*
-
-                try {
-                    doStart(bpc);
-                } catch (CloneNotSupportedException e) {
-                    log.error(e.getMessage(), e);
-                }
-                return;
-            }else {
-                log.info("crud_action_additional draftNo-----"+crud_action_additional);
-                appSubmissionDto.setOldDraftNo(crud_action_additional);
-                bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
-            }
-
-        }*/
         appSubmissionDto.setStepColor(strList);
         Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
         String personMapStr = JsonUtil.parseToJson(personMap);
@@ -1053,6 +1033,45 @@ public class NewApplicationDelegator {
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
 
         boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
+        //is need to pay ?
+        boolean premiseIsChange = compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
+        if(premiseIsChange){
+            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+            if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                    appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                }
+            }
+        }
+        //change personnel
+        AppSubmissionDto changePerson=oldAppSubmissionDto;
+        changePerson.setAppSvcRelatedInfoDtoList(appSubmissionDto.getAppSvcRelatedInfoDtoList());
+        changePerson.setAutoRfc(Boolean.TRUE);
+        String changePersonDraftNo = changePerson.getDraftNo();
+        if(StringUtil.isEmpty(changePersonDraftNo)){
+            String draftNo = appSubmissionService.getDraftNo(changePerson.getAppType());
+            changePerson.setDraftNo(draftNo);
+        }
+        changePerson.setAmount(0.0);
+        changePerson.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+        changePerson.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
+        String appGrpNo = requestForChangeService.getApplicationGroupNumber(changePerson.getAppType());
+        changePerson.setAppGrpNo(appGrpNo);
+        changePerson.setIsNeedNewLicNo(AppConsts.YES);
+        appSubmissionService.transform(changePerson,appSubmissionDto.getLicenseeId());
+        PreOrPostInspectionResultDto preOrPostInspectionResultDto1 = appSubmissionService.judgeIsPreInspection(changePerson);
+        if (preOrPostInspectionResultDto1 == null) {
+            changePerson.setPreInspection(Boolean.TRUE);
+            changePerson.setRequirement(Boolean.TRUE);
+        } else {
+            changePerson.setPreInspection(preOrPostInspectionResultDto1.isPreInspection());
+            changePerson.setRequirement(preOrPostInspectionResultDto1.isRequirement());
+        }
+        appSubmissionService.setRiskToDto(changePerson);
+        changePerson.setAppEditSelectDto(appEditSelectDto);
+        changePerson.setChangeSelectDto(appEditSelectDto);
+
+
         if(!IaisCommonUtils.isEmpty(applicationDtos)){
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
             ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");

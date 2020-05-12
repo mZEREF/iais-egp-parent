@@ -738,6 +738,7 @@ public class RequestForChangeMenuDelegator {
     /**
      * @param bpc
      * @Decription jumpBank
+     * @Decription jumpBank
      */
     public void jumpBank(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do jumpBank start ...."));
@@ -858,17 +859,10 @@ public class RequestForChangeMenuDelegator {
 
         //amount
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
-        amendmentFeeDto.setChangeInLicensee(false);
-        amendmentFeeDto.setChangeInHCIName(false);
+        amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
+        amendmentFeeDto.setChangeInHCIName(Boolean.FALSE);
         boolean isSame = compareLocation(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
-        if (isSame) {
-            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-            if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
-                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                    appGrpPremisesDto.setNeedNewLicNo(false);
-                }
-            }
-        }
+
         amendmentFeeDto.setChangeInLocation(!isSame);
         //
         if(selectLicence!=null) {
@@ -881,14 +875,22 @@ public class RequestForChangeMenuDelegator {
                 boolean grpLic = licenceDto.isGrpLic();
                 AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string);
                 appSubmissionService.transform(appSubmissionDtoByLicenceId,appSubmissionDto.getLicenseeId());
+                if (isSame) {
+                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
+                    if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+                        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                            appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                        }
+                    }
+                }
                 appSubmissionDtoByLicenceId.setAmount(total);
-                appSubmissionDtoByLicenceId.setAppSvcRelatedInfoDtoList(appSubmissionDto.getAppSvcRelatedInfoDtoList());
+                appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appSubmissionDto.getAppGrpPremisesDtoList());
                 appSubmissionDtoByLicenceId.setAppGrpNo(appGrpNo);
                 appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
-                PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
+                PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDtoByLicenceId);
                 if (preOrPostInspectionResultDto == null) {
-                    appSubmissionDtoByLicenceId.setPreInspection(true);
-                    appSubmissionDtoByLicenceId.setRequirement(true);
+                    appSubmissionDtoByLicenceId.setPreInspection(Boolean.TRUE);
+                    appSubmissionDtoByLicenceId.setRequirement(Boolean.TRUE);
                 } else {
                     appSubmissionDtoByLicenceId.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
                     appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
@@ -903,7 +905,7 @@ public class RequestForChangeMenuDelegator {
             requestForChangeService.upDateLicStatus(licenceDto);*/
 
                 AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-                appEditSelectDto.setPremisesListEdit(true);
+                appEditSelectDto.setPremisesListEdit(Boolean.TRUE);
                 appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
                 appSubmissionDtoByLicenceId.setChangeSelectDto(appEditSelectDto);
                 //save data
