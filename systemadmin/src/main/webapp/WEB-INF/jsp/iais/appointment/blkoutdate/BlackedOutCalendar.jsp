@@ -31,28 +31,28 @@
       <iais:row>
         <iais:field value="Working Group" required="true"/>
         <iais:value width="18">
-          <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  onchange="doSearch()" options = "wrlGrpNameOpt" value="${shortName}" ></iais:select>
+          <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  onchange="doSearch()" options = "wrlGrpNameOpt" value="${param.wrlGrpNameOpt}" ></iais:select>
         </iais:value>
       </iais:row>
       <div class="clearRow">
         <iais:row>
           <iais:field value="Year."/>
           <iais:value width="18">
-            <iais:select name="dropYearOpt" id="dropYearOpt"  options = "dropYearOpt" firstOption="Please Select" value="${dropYear}" ></iais:select>
+            <iais:select name="dropYearOpt" id="dropYearOpt"  options = "dropYearOpt" firstOption="Please Select" value="${param.dropYearOpt}" ></iais:select>
           </iais:value>
         </iais:row>
 
         <iais:row>
           <iais:field value="Blacked Out Date Start"/>
           <iais:value width="18">
-            <iais:datePicker id = "startDate" name = "startDate"  value="${startDate}"></iais:datePicker>
+            <iais:datePicker id = "startDate" name = "startDate"  value="${param.startDate}"></iais:datePicker>
           </iais:value>
         </iais:row>
 
         <iais:row>
           <iais:field value="Blacked Out Date End"/>
           <iais:value width="18">
-            <iais:datePicker id = "endDate" name = "endDate"  value="${endDate}"></iais:datePicker>
+            <iais:datePicker id = "endDate" name = "endDate"  value="${param.endDate}"></iais:datePicker>
           </iais:value>
         </iais:row>
 
@@ -60,7 +60,7 @@
           <iais:field value="Status"/>
           <iais:value width="18">
             <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                         firstOption="Please Select" filterValue="CMSTAT002,CMSTAT004" value="${status}"></iais:select>
+                         firstOption="Please Select" filterValue="CMSTAT002,CMSTAT004" value="${param.status}"></iais:select>
           </iais:value>
         </iais:row>
       </div>
@@ -114,8 +114,8 @@
                               <fmt:formatDate value="${blackDateAttr.startDate}" pattern="yyyy"></fmt:formatDate>
                             </td>
 
-                            <td><fmt:formatDate value="${blackDateAttr.startDate}" pattern="MM/dd/yyyy"/></td>
-                            <td><fmt:formatDate value="${blackDateAttr.endDate}" pattern="MM/dd/yyyy"/></td>
+                            <td><fmt:formatDate value="${blackDateAttr.startDate}" pattern="dd/MM/yyyy"/></td>
+                            <td><fmt:formatDate value="${blackDateAttr.endDate}" pattern="dd/MM/yyyy"/></td>
 
                             <td>${blackDateAttr.desc}</td>
                             <td><iais:code code="${blackDateAttr.status}"></iais:code></td>

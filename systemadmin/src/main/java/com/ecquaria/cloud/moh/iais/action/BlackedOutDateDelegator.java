@@ -14,10 +14,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -216,27 +216,22 @@ public class BlackedOutDateDelegator {
 
         if (!StringUtils.isEmpty(groupName)){
             blackQuery.addFilter("shortName", groupName, true);
-            ParamUtil.setRequestAttr(request, "shortName", groupName);
         }
 
         if (!StringUtils.isEmpty(dropYear)){
-            ParamUtil.setRequestAttr(request, "dropYear", dropYear);
             blackQuery.addFilter("startDate", dropYear + "-01-01", true);
             blackQuery.addFilter("endDate", dropYear + "-12-31", true);
         }
 
         if (!StringUtils.isEmpty(startDate)){
-            ParamUtil.setRequestAttr(request, "startDate", startDate);
             blackQuery.addFilter("bkStartDate", startDate, true);
         }
 
         if (!StringUtils.isEmpty(endDate)){
-            ParamUtil.setRequestAttr(request, "endDate", endDate);
             blackQuery.addFilter("bkEndDate", endDate, true);
         }
 
         if (!StringUtils.isEmpty(status)){
-            ParamUtil.setRequestAttr(request, "status", status);
             blackQuery.addFilter("status", status, true);
         }
     }
