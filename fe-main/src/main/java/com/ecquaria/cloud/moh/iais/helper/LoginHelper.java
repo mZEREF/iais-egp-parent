@@ -20,8 +20,6 @@ public final class LoginHelper {
     public static final String MAIN_WEB_URL = "/main-web/";
     public static final String CORPPASS_URL = "/main-web/eservice/INTERNET/FE_Landing/1/croppass";
 
-    private LoginHelper(){}
-
     public static void initUserInfo(HttpServletRequest request, HttpServletResponse response, User user){
         SessionManager.getInstance(request).imitateLogin(user, true, true);
         SessionManager.getInstance(request).initSopLoginInfo(request);
@@ -42,4 +40,7 @@ public final class LoginHelper {
 
     }
 
+    private LoginHelper() {
+        throw new IllegalStateException("Utility class");
+    }
 }
