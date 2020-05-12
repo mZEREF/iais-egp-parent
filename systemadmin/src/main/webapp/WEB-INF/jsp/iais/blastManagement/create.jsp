@@ -17,13 +17,11 @@
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
     <form class="form-horizontal" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+        <input type="hidden" id="crud_action_type_value" name="crud_action_type_value" value="">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
                     <div class="intranet-content">
-                        <div class="bg-title">
-                            <h2>New Blast Management List</h2>
-                        </div>
                             <c:choose>
                                 <c:when test="${empty edit.getMode() || 'Email'.equals(edit.getMode())}">
                                     <ul class="progress-tracker" id="emailFlow" >
@@ -102,6 +100,7 @@
                         <div class="row">
                             <div class="col-xs-11 col-sm-11">
                                 <div class="text-right text-center-mobile">
+                                    <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
                                     <button id="saveDis" type="button" class="btn btn-primary">Write Message</button>
                                 </div>
                             </div>
@@ -117,8 +116,14 @@
 
 <script type="text/javascript">
     $('#saveDis').click(function () {
+        $("#crud_action_type_value").val("next")
         SOP.Crud.cfxSubmit("mainForm");
     });
+
+    $("#back").click(function () {
+        $("#crud_action_type_value").val("back")
+        SOP.Crud.cfxSubmit("mainForm");
+    })
 
     function changeFlow(mode) {
         if(mode == "SMS"){

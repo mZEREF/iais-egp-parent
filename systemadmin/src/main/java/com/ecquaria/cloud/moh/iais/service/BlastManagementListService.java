@@ -29,4 +29,5 @@ public interface BlastManagementListService {
     String getMessageId();
     void sendEmail(EmailDto emailDto, Map<String, byte[]> attachments);
     List<OrgUserDto> retrieveOrgUserAccount(List<String> ids);
+    Boolean checkUse(List<String> disList);
 }

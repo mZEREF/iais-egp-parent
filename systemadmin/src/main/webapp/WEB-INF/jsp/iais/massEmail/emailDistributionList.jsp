@@ -32,20 +32,27 @@
                                     <input type="text" name="distributionName" id="distributionName" maxlength="500" value="${distributionName}"/>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-xs-12 col-md-4 control-label" >Recipients Role</label>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:select name="role" options="roleSelection" id="role"
-                                                 firstOption="Please Select" value="${role}"></iais:select>
-                                </div>
+                            <div class="form-group" >
+                                <iais:field value="Service"/>
+                                <iais:value>
+                                    <iais:value width="10">
+                                        <iais:select name="service" id="service" options="serviceSelection"
+                                                     firstOption="Please Select"  value="${service}"></iais:select>
+                                    </iais:value>
+                                </iais:value>
+                                <span id="error_service" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
-                            <div class="form-group">
-                                <label class="col-xs-12 col-md-4 control-label" >Service</label>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:select name="service" options="serviceSelection" id="service"
-                                                 firstOption="Please Select" value="${service}"></iais:select>
-                                </div>
+
+                            <div class="form-group" id="serviceDivByrole">
+                                <iais:field value="Distribution List" />
+                                <iais:value>
+                                    <div class="col-xs-8 col-sm-6 col-md-5">
+                                        <iais:select name="role" options="roleSelection" value="${role}" firstOption="Please Select" disabled=""></iais:select>
+                                        <span id="error_role" name="iaisErrorMsg" class="error-msg"></span>
+                                    </div>
+                                </iais:value>
                             </div>
+
                         </div>
                         <div class="application-tab-footer">
                             <div class="row">
@@ -145,14 +152,38 @@ function addList() {
     SOP.Crud.cfxSubmit("mainForm","create");
 }
 function deleteList() {
-    if ($("input:checkbox:checked").length > 0) {
-        if(confirm('Are you sure you want to delete this item?')){
-            SOP.Crud.cfxSubmit("mainForm", "delete")
-        }
-    } else {
-        alert('Please select record for deletion.');
-    }
+    checkUse();
+}
+function checkUse() {
+    var deleteDis=new Array();
+    $.each($('input:checkbox:checked'),function(){
+        deleteDis.push($(this).val());
+    });
+    $.ajax({
+        data:{
+            checkboxlist:deleteDis
+        },
+        traditional: true,
+        type:"POST",
+        dataType: 'json',
+        url:'/system-admin-web/emailAjax/checkUse.do',
+        error:function(data){
 
+        },
+        success:function(data){
+            if(data.res == 'true'){
+                alert('The distribution list cannot be deleted as it is still in used by other mass email or sms blast.')
+            }else{
+                if ($("input:checkbox:checked").length > 0) {
+                    if(confirm('Are you sure you want to delete this item?')){
+                        SOP.Crud.cfxSubmit("mainForm", "delete")
+                    }
+                } else {
+                    alert('Please select record for deletion.');
+                }
+            }
+        }
+    });
 }
 function edit(id) {
     $("#editDistribution").val(id);
@@ -170,5 +201,25 @@ function clearSearch(){
     $("#service option:first").prop("selected", 'selected');
     $("#searchCondition .current").text("Please Select");
 }
+
+$("#service").change(function () {
+    $.ajax({
+        data:{
+            serviceCode:$(this).children('option:selected').val()
+        },
+        type:"POST",
+        dataType: 'json',
+        url:'/system-admin-web/emailAjax/recipientsRoles.do',
+        error:function(data){
+
+        },
+        success:function(data){
+            var html = '<label class="col-xs-4 col-md-4 control-label" >Distribution List</label><div class="col-xs-8 col-sm-6 col-md-5">';
+            html += data.roleSelect;
+            html += ' <span id="error_role" name="iaisErrorMsg" class="error-msg"></span></div>';
+            $("#serviceDivByrole").html(html);
+        }
+    });
+})
 
 </script>

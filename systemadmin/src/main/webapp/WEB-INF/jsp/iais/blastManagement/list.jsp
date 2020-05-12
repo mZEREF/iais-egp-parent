@@ -25,7 +25,7 @@
                         <h2>Blast Management</h2>
                     </div>
                     <div class="row">
-                        <div class="form-horizontal">
+                        <div class="form-horizontal" id="searchCondition">
                             <div class="form-group">
                                 <label class="col-xs-12 col-md-4 control-label">Message Name</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
@@ -42,8 +42,22 @@
                                 <label class="col-xs-12 col-md-4 control-label">Scheduled Send Date To</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:datePicker id="end" name="end" value="${end}"/>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_errDate" ></span>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-4 control-label">Mode of Delivery</label>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <iais:select id="modeDelivery" name="modeDelivery" options="mode" value="${modeDelivery}" firstOption="Please Select" ></iais:select>
+                                </div>
+                            </div>
+                            <div class="form-group" id="distributiondiv">
+                                <label class="col-xs-12 col-md-4 control-label">Distribution List</label>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <iais:select id="distributionList" name="distributionList" options="distribution" firstOption="Please Select" value="${distributionList}"></iais:select>
+                                </div>
+                            </div>
+
                         </div>
                         <div class="application-tab-footer">
                             <div class="row">
@@ -69,7 +83,7 @@
                                 <th>Distribution Name</th>
                                 <th>Mode of Delivery</th>
                                 <th>Scheduled Send date</th>
-                                <th>Actual send date</th>
+                                <th>Actual Send date</th>
                                 <th>Attachment</th>
                                 <th>Status</th>
                                 <th>Edit</th>
@@ -84,6 +98,7 @@
                                             <!--No Record!!-->
                                         </td>
                                     </tr>
+                                    <input hidden id="rows" value="0">
                                 </c:when>
                                 <c:otherwise>
                                     <c:forEach var="item" items="${blastSearchResult.rows}" varStatus="status">
@@ -122,6 +137,7 @@
                                             </td>
                                         </tr>
                                     </c:forEach>
+                                    <input hidden id="rows" value="1">
                                 </c:otherwise>
                             </c:choose>
                             </tbody>
@@ -134,9 +150,9 @@
             <div class="row">
                 <div class="col-xs-11 col-md-11">
                     <div class="text-right">
-                        <a class="btn btn-primary" id="addlist" onclick="addList()">Add Blast Management</a>
+                        <a class="btn btn-primary" id="addlist" onclick="addList()">Add New Blast Management</a>
                         <a class="btn btn-primary" id="delete" onclick="deleteList()">Delete</a>
-                        <a class="btn btn-primary" href="${pageContext.request.contextPath}/file-repo" title="Download">Download Excel</a>
+                        <a class="btn btn-primary" href="${pageContext.request.contextPath}/file-repo" title="Download">Download</a>
                     </div>
                 </div>
             </div>
@@ -184,5 +200,29 @@
         $('input[name="msgName"]').val("");
         $('input[name="start"]').val("");
         $('input[name="end"]').val("");
+        $("#modeDelivery option:first").prop("selected", 'selected');
+        $("#distributionList option:first").prop("selected", 'selected');
+        $("#searchCondition .current").text("Please Select");
     }
+
+    $("#modeDelivery").change(function () {
+        $.ajax({
+            data:{
+                modeDelivery:$(this).children('option:selected').val()
+            },
+            type:"POST",
+            dataType: 'json',
+            url:'/system-admin-web/emailAjax/distributionList.do',
+            error:function(data){
+
+            },
+            success:function(data){
+                var html = '<label class="col-xs-12 col-md-4 control-label">Distribution List</label><div class="col-xs-8 col-sm-6 col-md-5">';
+                html += data.distributionSelect;
+                html += ' </div>';
+                $("#distributiondiv").html(html);
+
+            }
+        });
+    })
 </script>

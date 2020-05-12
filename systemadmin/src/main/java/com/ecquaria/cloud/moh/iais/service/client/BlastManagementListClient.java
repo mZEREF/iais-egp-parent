@@ -47,4 +47,7 @@ public interface BlastManagementListClient {
     @PostMapping(value = "/iais-emails/setSchedule",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> setSchedule(@RequestBody BlastManagementDto blastManagementDto);
 
+    @PostMapping(value = "/iais-emails/checkUse",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Boolean> checkUse(@RequestBody List<String> disList);
+
 }

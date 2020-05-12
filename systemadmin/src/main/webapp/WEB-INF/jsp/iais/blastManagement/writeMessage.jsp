@@ -19,9 +19,6 @@
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
                     <div class="intranet-content">
-                        <div class="bg-title">
-                            <h2>New Blast Management List</h2>
-                        </div>
                         <ul class="progress-tracker">
                             <li class="tracker-item active">Fill in Message Details</li>
                             <li class="tracker-item active">Write Message</li>
@@ -63,7 +60,7 @@
                         <div class="row">
                             <div class="col-xs-11 col-sm-11">
                                 <div class="text-right">
-                                    <a class="btn btn-primary" id="back" >Back</a>
+                                    <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
                                     <a class="btn btn-primary" id="saveDis" >Continue</a>
                                 </div>
                             </div>

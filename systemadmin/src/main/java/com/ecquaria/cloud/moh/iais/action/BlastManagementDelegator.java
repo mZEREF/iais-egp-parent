@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
-import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -79,14 +78,13 @@ public class BlastManagementDelegator {
     DistributionListService distributionListService;
 
     private BlastManagementDto blastManagementDto = new BlastManagementDto();
+    String searchmode = "";
     public void start(BaseProcessClass bpc){
         searchParam = new SearchParam(BlastManagementListDto.class.getName());
         searchParam.setPageSize(10);
         searchParam.setPageNo(1);
         searchParam.setSort("ID", SearchParam.ASCENDING);
         AuditTrailHelper.auditFunction("blastManagement", "BlastManagementDelegator");
-        ParamUtil.setRequestAttr(bpc.request, "firstOption", "Please Select");
-        ParamUtil.setRequestAttr(bpc.request, "firstValue", " ");
     }
     /**
      * doPrepare
@@ -106,6 +104,9 @@ public class BlastManagementDelegator {
                 item.setActual(getDate(item.getActual()));
             }
         }
+
+        getDistribution(bpc,searchmode);
+        setModeSelection(bpc);
         ParamUtil.setRequestAttr(bpc.request,"blastSearchResult",searchResult);
         ParamUtil.setRequestAttr(bpc.request,"blastSearchParam",searchParam);
 
@@ -179,26 +180,43 @@ public class BlastManagementDelegator {
         String msgName = ParamUtil.getRequestString(bpc.request,"msgName");
         String start = ParamUtil.getRequestString(bpc.request,"start");
         String end = ParamUtil.getRequestString(bpc.request,"end");
-        searchParam.getParams().clear();
-        searchParam.getFilters().clear();
-        searchParam.setPageNo(1);
-        if(!StringUtil.isEmpty(descriptionSwitch)){
-            searchParam.addFilter("description", "%" + descriptionSwitch + "%",true);
-        }
-        if(!StringUtil.isEmpty(msgName)){
-            searchParam.addFilter("msgName",  "%" +msgName + "%",true);
-        }
-        if(!StringUtil.isEmpty(start)){
-            searchParam.addFilter("start",  start,true);
-        }
-        if(!StringUtil.isEmpty(end)){
-            String enddate = end + " 23:59:59";
-            searchParam.addFilter("end",  enddate,true);
+        String mode = ParamUtil.getRequestString(bpc.request,"modeDelivery");
+        String distribution = ParamUtil.getRequestString(bpc.request,"distributionList");
+        if(start != null && end !=null && start.compareTo(end)>0){
+            Map<String,String> err = new HashMap<>();
+            err.put("errDate","Start Date cannot be later than End Date");
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(err));
+        }else{
+            searchParam.getParams().clear();
+            searchParam.getFilters().clear();
+            searchParam.setPageNo(1);
+            if(!StringUtil.isEmpty(descriptionSwitch)){
+                searchParam.addFilter("description", "%" + descriptionSwitch + "%",true);
+            }
+            if(!StringUtil.isEmpty(msgName)){
+                searchParam.addFilter("msgName",  "%" +msgName + "%",true);
+            }
+            if(!StringUtil.isEmpty(start)){
+                searchParam.addFilter("start",  start,true);
+            }
+            if(!StringUtil.isEmpty(mode)){
+                searchmode = mode;
+                searchParam.addFilter("mode",  mode,true);
+            }
+            if(!StringUtil.isEmpty(distribution)){
+                searchParam.addFilter("distribution",  distribution,true);
+            }
+            if(!StringUtil.isEmpty(end)){
+                String enddate = end + " 23:59:59";
+                searchParam.addFilter("end",  enddate,true);
+            }
+            ParamUtil.setRequestAttr(bpc.request,"distributionList",distribution);
         }
         ParamUtil.setRequestAttr(bpc.request,"descriptionSwitch",descriptionSwitch);
         ParamUtil.setRequestAttr(bpc.request,"msgName",msgName);
         ParamUtil.setRequestAttr(bpc.request,"start",start);
         ParamUtil.setRequestAttr(bpc.request,"end",end);
+        ParamUtil.setRequestAttr(bpc.request,"modeDelivery",mode);
     }
 
     public void switchBackFill(BaseProcessClass bpc){
@@ -331,7 +349,7 @@ public class BlastManagementDelegator {
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(err));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
         }else{
-            getDistribution(bpc);
+            getDistribution(bpc,blastManagementDto.getMode());
             String emailAddress = StringUtils.join(blastManagementDto.getEmailAddress(),"\n");
             ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
@@ -350,7 +368,7 @@ public class BlastManagementDelegator {
     public void selectRecipients(BaseProcessClass bpc){
         String distribution = ParamUtil.getString(bpc.request, "distribution");
         if(distribution == null){
-            getDistribution(bpc);
+            getDistribution(bpc,blastManagementDto.getMode());
             Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
             errMap.put("distribution","Please select distribution list for mass email.");
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
@@ -394,19 +412,6 @@ public class BlastManagementDelegator {
         return null;
     }
 
-    public void auditTrial(BaseProcessClass bpc){
-        String id =  ParamUtil.getString(bpc.request, "editBlast");
-        SearchParam auditSearchParam = new SearchParam(EmailAuditTrailDto.class.getName());
-        auditSearchParam.setSort("history_id", SearchParam.ASCENDING);
-//        if(!StringUtil.isEmpty(id)){
-        auditSearchParam.addFilter("refNum", "6F4FAB70-D32E-EA11-BE7D-000C29F371DC",true);
-//        }
-        CrudHelper.doPaging(auditSearchParam,bpc.request);
-        QueryHelp.setMainSql("systemAdmin", "audit",auditSearchParam);
-        SearchResult<EmailAuditTrailDto> searchResult = blastManagementListService.auditList(auditSearchParam);
-        ParamUtil.setRequestAttr(bpc.request,"SearchResult",searchResult);
-    }
-
     @GetMapping(value = "/file-repo")
     public @ResponseBody
     void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -443,6 +448,11 @@ public class BlastManagementDelegator {
                 }
             }
             file = ExcelWriter.exportExcel(blastManagementListDtos, BlastManagementListDto.class, "Blast_Management_Upload_Template");
+        }else{
+            BlastManagementListDto blastManagementListDto = new BlastManagementListDto();
+            List<BlastManagementListDto> blastManagementListDtos = IaisCommonUtils.genNewArrayList();
+            blastManagementListDto.setCreateDt("");
+            file = ExcelWriter.exportExcel(blastManagementListDtos, BlastManagementListDto.class, "Blast_Management_Upload_Template");
         }
 
         if(file != null){
@@ -462,24 +472,20 @@ public class BlastManagementDelegator {
         return date.substring(0,index);
     }
 
-    private void getDistribution(BaseProcessClass bpc){
-        List<DistributionListWebDto> distributionListDtos = distributionListService.getDistributionList(blastManagementDto.getMode());
+    private void getDistribution(BaseProcessClass bpc,String mode){
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
-        if(blastManagementDto.getDistributionId() != null){
-            selectOptions.add(new SelectOption(blastManagementDto.getDistributionId(),blastManagementDto.getDistributionName()));
-        }else{
-            selectOptions.add(new SelectOption("","Please Select"));
-        }
-
-        for (DistributionListWebDto item :distributionListDtos
-        ) {
-            selectOptions.add(new SelectOption(item.getId(),item.getDisname()));
+        if(mode !=null){
+            List<DistributionListWebDto> distributionListDtos = distributionListService.getDistributionList(mode);
+            for (DistributionListWebDto item :distributionListDtos
+            ) {
+                selectOptions.add(new SelectOption(item.getId(),item.getDisname()));
+            }
         }
         ParamUtil.setRequestAttr(bpc.request, "distribution",  (Serializable) selectOptions);
     }
 
     public void writeSms(BaseProcessClass bpc){
-        getDistribution(bpc);
+        getDistribution(bpc,blastManagementDto.getMode());
         ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
     }
 

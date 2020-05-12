@@ -77,7 +77,7 @@
                                                 <p><c:out value="${item.name}"/></p>
                                             </td>
                                             <td>
-                                                <p><c:out value="${item.designation}"/></p>
+                                                <p><iais:code code="${item.designation}"/></p>
                                             </td>
                                             <td>
                                                 <c:choose>

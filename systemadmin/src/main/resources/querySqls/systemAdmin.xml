@@ -390,6 +390,8 @@
             <#if id??> AND T1.ID =:id</#if>
             <#if description??> AND DISTRIBUTION_NAME like :description</#if>
             <#if msgName??> AND MSG_NAME like :msgName</#if>
+            <#if mode??> AND T1.DELIVERY_MODE = :mode</#if>
+            <#if distribution??> AND DISTRIBUTION_ID = :distribution</#if>
             <#if start??> AND T1.SCHEDULE_SEND_DATE > CONVERT(datetime, :start, 103)</#if>
             <#if end??> AND T1.SCHEDULE_SEND_DATE < CONVERT(datetime, :end, 103)</#if>
         ]]>

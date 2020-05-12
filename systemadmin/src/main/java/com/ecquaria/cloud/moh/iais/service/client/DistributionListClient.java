@@ -37,5 +37,4 @@ public interface DistributionListClient {
     @PostMapping(value = "/iais-emails/getDistributionListById", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<DistributionListWebDto> getDistributionListById(@RequestParam("id") String id);
 
-
 }

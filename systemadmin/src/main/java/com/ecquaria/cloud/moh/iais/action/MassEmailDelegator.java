@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
@@ -45,27 +46,29 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MassEmailDelegator {
 
-    private SearchParam searchParam;
     private static final String BASE_SERVICE = "SVTP001";
     private static final String SPECIFIED_SERVICE = "SVTP003";
     private static final String EMAIL = "Email";
     private static final String SMS = "SMS";
+    private static final String SEARCHPARAM = "massEmailSearchParam";
     @Autowired
     DistributionListService distributionListService;
 
     public void start(BaseProcessClass bpc){
-        searchParam = new SearchParam(DistributionListDto.class.getName());
+        SearchParam searchParam = new SearchParam(DistributionListDto.class.getName());
         searchParam.setPageSize(10);
         searchParam.setPageNo(1);
         searchParam.setSort("CREATED_DT", SearchParam.DESCENDING);
         searchParam.addFilter("status", AppConsts.COMMON_STATUS_ACTIVE,true);
-        AuditTrailHelper.auditFunction("distrribution", "distrribution");
+        AuditTrailHelper.auditFunction("MassEmail", "MassEmailDelegator");
+        setSearchparam(bpc,searchParam);
     }
     /**
      * doPrepare
      * @param bpc
      */
     public void prepare(BaseProcessClass bpc){
+        SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doPaging(searchParam,bpc.request);
         QueryHelp.setMainSql("systemAdmin", "queryMassDistributionList",searchParam);
         SearchResult<DistributionListDto> searchResult = distributionListService.distributionList(searchParam);
@@ -73,7 +76,6 @@ public class MassEmailDelegator {
         searchRole(bpc);
         ParamUtil.setRequestAttr(bpc.request,"distributionSearchResult",searchResult);
         ParamUtil.setRequestAttr(bpc.request,"distributionSearchParam",searchParam);
-
     }
 
     /**
@@ -84,7 +86,13 @@ public class MassEmailDelegator {
         setServiceSelect(bpc);
         ParamUtil.setSessionAttr(bpc.request,"distribution",null);
         setModeSelection(bpc);
-        setRoleSelection(bpc,"");
+        String service =  ParamUtil.getString(bpc.request, "service");
+        if(service == null){
+            setRoleSelection(bpc,"");
+        }else{
+            setRoleSelection(bpc,HcsaServiceCacheHelper.getServiceByCode(service).getId());
+        }
+
     }
 
     /**
@@ -101,8 +109,13 @@ public class MassEmailDelegator {
 
         DistributionListWebDto distributionListDto = new DistributionListWebDto();
         if(email != null){
-            List<String> emaillist = Arrays.asList(email.split("\r\n"));
-            distributionListDto.setEmailAddress(emaillist);
+            List<String> rnemaillist = Arrays.asList(email.split("\r\n"));
+            List<String> commaemaillist = Arrays.asList(email.split(","));
+            if(rnemaillist.size() > commaemaillist.size() ){
+                distributionListDto.setEmailAddress(rnemaillist);
+            }else{
+                distributionListDto.setEmailAddress(commaemaillist);
+            }
         }
         if(id != null)
         {
@@ -112,11 +125,12 @@ public class MassEmailDelegator {
         distributionListDto.setDisname(name);
         distributionListDto.setMode(mode);
         distributionListDto.setRole(role);
+        distributionListDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         ParamUtil.setSessionAttr(bpc.request,"distribution",distributionListDto);
         ValidationResult validationResult = WebValidationHelper.validateProperty(distributionListDto, "save");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
-            String emailAddress = StringUtils.join(distributionListDto.getEmailAddress(),"\n");
+            String emailAddress = StringUtils.join(distributionListDto.getEmailAddress(),"\r\n");
             ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
@@ -146,6 +160,7 @@ public class MassEmailDelegator {
      * @param bpc
      */
     public void search(BaseProcessClass bpc){
+        SearchParam searchParam = getSearchParam(bpc);
         String distributionName = ParamUtil.getRequestString(bpc.request,"distributionName");
         String role = ParamUtil.getString(bpc.request, "role");
         String service = ParamUtil.getString(bpc.request, "service");
@@ -171,6 +186,7 @@ public class MassEmailDelegator {
             service = null;
         }
         setServiceSelect(bpc);
+        setSearchparam(bpc,searchParam);
         ParamUtil.setRequestAttr(bpc.request,"distributionName",distributionName);
         ParamUtil.setRequestAttr(bpc.request,"role",role);
         ParamUtil.setRequestAttr(bpc.request,"service",service);
@@ -223,7 +239,7 @@ public class MassEmailDelegator {
 
     private void setRoleSelection(BaseProcessClass bpc, String service){
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
-        if(!StringUtils.isEmpty(service)){
+        if(service != null && !StringUtils.isEmpty(service)){
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = distributionListService.roleByServiceId(service,AppConsts.COMMON_STATUS_ACTIVE);
             for (HcsaSvcPersonnelDto item:hcsaSvcPersonnelDtoList
             ) {
@@ -264,5 +280,13 @@ public class MassEmailDelegator {
                     break;
         }
         return roleName;
+    }
+
+    private SearchParam getSearchParam(BaseProcessClass bpc){
+        return (SearchParam) ParamUtil.getSessionAttr(bpc.request,SEARCHPARAM);
+    }
+
+    private void setSearchparam(BaseProcessClass bpc,SearchParam searchParam){
+        ParamUtil.setSessionAttr(bpc.request,SEARCHPARAM,searchParam);
     }
 }

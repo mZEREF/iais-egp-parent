@@ -74,4 +74,12 @@ public class BlastManagementListClientFallback implements BlastManagementListCli
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<Boolean> checkUse(List<String> disList) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 }

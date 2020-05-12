@@ -101,4 +101,9 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
     public String getMessageId(){
         return systemClient.messageID().getEntity();
     }
+
+    @Override
+    public Boolean checkUse(List<String> disList){
+        return blastManagementListClient.checkUse(disList).getEntity();
+    }
 }

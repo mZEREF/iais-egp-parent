@@ -9,9 +9,9 @@
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
     <form class="form-horizontal" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
+        <input type="hidden" name="crud_action_additional" value="">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -82,14 +82,17 @@
                     <div class="application-tab-footer">
                         <div class="row">
                             <div class="col-xs-11 col-sm-11">
-                                <div class="text-right text-center-mobile"><button id="saveDis" type="button" class="btn btn-primary">SAVE</button></div>
+                                <div class="text-right text-center-mobile">
+                                    <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
+                                    <button id="saveDis" type="button" class="btn btn-primary">SAVE</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <input hidden name="distributionId" value="${distribution.getId()}">
+        <input hidden name="distributionId" value="<iais:mask name="distributionId" value="${distribution.getId()}"/> ">
     </form>
     <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 </div>
@@ -98,8 +101,12 @@
 
 <script type="text/javascript">
     $('#saveDis').click(function(){
-        SOP.Crud.cfxSubmit("mainForm");
+        SOP.Crud.cfxSubmit("mainForm","save");
     });
+
+    $("#back").click(function () {
+        SOP.Crud.cfxSubmit("mainForm","back");
+    })
 
     $("#service").change(function () {
         $.ajax({
@@ -113,7 +120,7 @@
 
             },
             success:function(data){
-                var html = '<label class="col-xs-4 col-md-4 control-label" >Recipients Roles<span style="color: red"> *</span></label><div class="col-xs-8 col-sm-6 col-md-5">';
+                var html = '<label class="col-xs-4 col-md-4 control-label" >Distribution List<span style="color: red"> *</span></label><div class="col-xs-8 col-sm-6 col-md-5">';
                 html += data.roleSelect;
                 html += ' <span id="error_role" name="iaisErrorMsg" class="error-msg"></span></div>';
                 $("#serviceDivByrole").html(html);

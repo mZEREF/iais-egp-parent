@@ -5,9 +5,12 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +37,12 @@ public class emailAjaxController {
 
     @Autowired
     private DistributionListService distributionListService;
+
+    @Autowired
+    private BlastManagementListService blastManagementListService;
     @RequestMapping(value = "recipientsRoles.do", method = RequestMethod.POST)
     public @ResponseBody
-    Map<String, String> appGroup(HttpServletRequest request, HttpServletResponse response) {
+    Map<String, String> recipientsRoles(HttpServletRequest request, HttpServletResponse response) {
         String serviceCode = request.getParameter("serviceCode");
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(serviceCode);
         Map<String, String> result = new HashMap<>();
@@ -55,6 +61,44 @@ public class emailAjaxController {
         String roleSelectStr = generateDropDownHtml(roleAttr, selectOptions, "Please Select", null);
 
         result.put("roleSelect",roleSelectStr);
+        return result;
+    }
+
+    @RequestMapping(value = "distributionList.do", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, String> distributionList(HttpServletRequest request, HttpServletResponse response) {
+        String serviceCode = request.getParameter("serviceCode");
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(serviceCode);
+        Map<String, String> result = new HashMap<>();
+        Map<String,String> distributionAttr = IaisCommonUtils.genNewHashMap();
+        distributionAttr.put("class", "distributionList");
+        distributionAttr.put("id", "distributionList");
+        distributionAttr.put("name", "distributionList");
+        distributionAttr.put("style", "display: none;");
+        List<SelectOption> selectOptions = getDistribution(request);
+        String distributionSelect = generateDropDownHtml(distributionAttr, selectOptions, "Please Select", null);
+
+        result.put("distributionSelect",distributionSelect);
+        return result;
+    }
+
+    @RequestMapping(value = "checkUse.do", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, String> checkUse(HttpServletRequest request, HttpServletResponse response) {
+        String[] disString = ParamUtil.getMaskedStrings(request, "checkboxlist");
+
+        Map<String, String> result = new HashMap<>();
+        List<String> disList = IaisCommonUtils.genNewArrayList();
+        for (String item: disString
+             ) {
+            disList.add(item);
+        }
+
+        if(blastManagementListService.checkUse(disList)){
+            result.put("res",AppConsts.TRUE);
+        }else{
+            result.put("res",AppConsts.FALSE);
+        }
         return result;
     }
 
@@ -78,6 +122,18 @@ public class emailAjaxController {
                 break;
         }
         return roleName;
+    }
+
+    private List<SelectOption> getDistribution(HttpServletRequest request){
+        String mode = request.getParameter("modeDelivery");
+        List<DistributionListWebDto> distributionListDtos = distributionListService.getDistributionList(mode);
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+
+        for (DistributionListWebDto item :distributionListDtos
+        ) {
+            selectOptions.add(new SelectOption(item.getId(),item.getDisname()));
+        }
+        return selectOptions;
     }
 
     private String generateDropDownHtml(Map<String, String> premisesOnSiteAttr, List<SelectOption> selectOptionList, String firestOption, String checkedVal){

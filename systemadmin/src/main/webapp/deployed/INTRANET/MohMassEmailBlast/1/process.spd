@@ -114,14 +114,14 @@
     <JavaCode defClass="" executor="" methodName="step4_OnStepProcess_0" name="step4_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="CreateBeforeFill" x="290" y="360">
+  <AutomaticStep defClass="" executor="" icon="" name="CreateBeforeFill" x="290" y="290">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="createBeforeFill_OnStepProcess_0" name="createBeforeFill_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="EditBeforeFill" x="520" y="360">
+  <AutomaticStep defClass="" executor="" icon="" name="EditBeforeFill" x="530" y="290">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -136,7 +136,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="fill" stageIndicator="" x="410" y="360">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="fill" stageIndicator="" x="410" y="290">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -198,9 +198,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Search" style="oblique">
    <position>{(660,240)(240,120)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/FillMessage" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/fill" style="rectanular">
-   <position>{(430,380)(420,460)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/AuditTrial" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(490,120)(760,240)}</position>
@@ -278,34 +275,43 @@
    <position>{(820,760)(820,670)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/CreateBeforeFill" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Create" style="rectanular">
-   <position>{(330,240)(310,380)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/fill" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/CreateBeforeFill" style="rectanular">
-   <position>{(310,380)(430,380)}</position>
+   <position>{(330,240)(310,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/EditBeforeFill" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Edit" style="rectanular">
-   <position>{(550,240)(540,380)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/fill" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/EditBeforeFill" style="rectanular">
-   <position>{(540,380)(430,380)}</position>
+   <position>{(550,240)(550,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/CreateBeforeFill" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(240,760)(310,380)}</position>
+   <position>{(240,760)(310,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/EditBeforeFill" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(240,760)(540,380)}</position>
+   <position>{(240,760)(550,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/CreateBeforeFill" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
-   <position>{(430,580)(310,380)}</position>
+   <position>{(430,580)(310,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/EditBeforeFill" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
-   <position>{(430,580)(540,380)}</position>
+   <position>{(430,580)(550,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/CreateBeforeFill" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
-   <position>{(820,670)(310,380)}</position>
+   <position>{(820,670)(310,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/EditBeforeFill" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
-   <position>{(820,670)(540,380)}</position>
+   <position>{(820,670)(550,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
+   <position>{(430,390)(240,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/fill" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/EditBeforeFill" style="oblique">
+   <position>{(550,310)(430,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/fill" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/CreateBeforeFill" style="oblique">
+   <position>{(310,310)(430,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch6" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/fill" style="rectanular">
+   <position>{(430,310)(430,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/FillMessage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch6" style="rectanular">
+   <position>{(430,390)(420,460)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -349,6 +355,11 @@
    <SwitchCase component="/Steps/AutomaticStep/Prepare" value="&quot;save&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/CreateBeforeFill" value="&quot;createBack&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/EditBeforeFill" value="&quot;editBack&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_value" name="Switch6" x="410" y="370">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/Prepare" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/FillMessage" value="&quot;next&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

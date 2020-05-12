@@ -88,4 +88,5 @@ public class DistributionListServiceImpl implements DistributionListService {
     public List<HcsaSvcPersonnelDto> roleByServiceId(String serviceId,String status){
         return hcsaConfigClient.getServiceType(serviceId,status).getEntity();
     }
+
 }
