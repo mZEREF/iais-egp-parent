@@ -29,9 +29,27 @@
                   <span>Supervisor Assignment Pool</span>
                 </h2>
               </div>
+              <div class="intranet-content">
+                <div class="form-horizontal">
+                  <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Role</label>
+                    <div class="col-xs-8 col-sm-6 col-md-5">
+                      <iais:select name="supervisorRoleId" options="superPoolRoleIds" id="supervisorPoolRole" value="${poolRoleCheckDto.checkCurRole}"></iais:select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-10 col-md-12">
+                  <div class="components">
+                    <a class="btn btn-secondary" data-toggle="collapse"
+                       data-target="#superPoolSearch">Filter</a>
+                  </div>
+                </div>
+              </div>
               <iais:body >
                 <iais:section title="" id = "supPoolList">
-                  <div id = "superPoolSearch">
+                  <div id = "superPoolSearch" class="collapse">
                     <iais:row>
                       <iais:field value="Application No."/>
                       <iais:value width="18">
@@ -74,11 +92,11 @@
                         <iais:select name="memberName" options="memberOption" firstOption="Please Select" value="${groupRoleFieldDto.checkUser}" ></iais:select>
                       </iais:value>
                     </iais:row>
+                    <iais:action style="text-align:right;">
+                      <button class="btn btn-secondary" type="button" onclick="javascript:doInspectorSearchTaskClear()">Clear</button>
+                      <button class="btn btn-primary" type="button" onclick="javascript:doInspectorSearchTaskSearch()">Search</button>
+                    </iais:action>
                   </div>
-                  <iais:action style="text-align:right;">
-                    <button class="btn btn-secondary" type="button" onclick="javascript:doInspectorSearchTaskClear()">Clear</button>
-                    <button class="btn btn-primary" type="button" onclick="javascript:doInspectorSearchTaskSearch()">Search</button>
-                  </iais:action>
                 </iais:section>
                 <iais:pagination  param="supTaskSearchParam" result="supTaskSearchResult"/>
                 <div class="table-gp">
@@ -166,6 +184,10 @@
         inspectorSearchTaskSubmit('search');
     }
 
+    $("#supervisorPoolRole").change(function() {
+        doInspectorSearchTaskSearch();
+    });
+
     function jumpToPagechangePage(){
         showWaiting();
         inspectorSearchTaskSubmit('page');
@@ -202,7 +224,7 @@
                             '<thead>' +
                             '<tr>';
 
-                        html += '<th width="12.5%">Application No</th>' +
+                        html += '<th width="12.5%">Application No.</th>' +
                             '<th width="12.5%">Application Status</th>' +
                             '<th width="12.5%">HCI Code</th>' +
                             '<th width="25%">HCI Name / Address</th>' +
@@ -214,7 +236,7 @@
                             '<tbody>';
                         for (var i = 0; i < res.rowCount; i++) {
                             html += '<tr>';
-                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a onclick="javascript:doInspectorSearchTaskAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].appNo + '</a></p></td>' +
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doInspectorSearchTaskAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].appNo + '</a></p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].appStatus + '<p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">HCI Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">HCI Name / Address</p><p>' + res.rows[i].hciAddress + '</p></td>' +

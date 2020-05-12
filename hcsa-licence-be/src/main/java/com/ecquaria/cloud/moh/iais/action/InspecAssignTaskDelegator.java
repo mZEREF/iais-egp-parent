@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
@@ -20,15 +21,16 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Process: MohInspectionAllotTaskInspector
@@ -80,6 +82,8 @@ public class InspecAssignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
         ParamUtil.setSessionAttr(bpc.request, "sub_date2", null);
+        ParamUtil.setSessionAttr(bpc.request, "poolRoleCheckDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "commonPoolRoleIds", null);
     }
 
     /**
@@ -94,6 +98,9 @@ public class InspecAssignTaskDelegator {
         SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
         if(searchResult == null || IaisCommonUtils.isEmpty(searchResult.getRows())){
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            PoolRoleCheckDto poolRoleCheckDto = new PoolRoleCheckDto();
+            poolRoleCheckDto = inspectionAssignTaskService.getRoleOptionByKindPool(loginContext, AppConsts.COMMON_POOL, poolRoleCheckDto);
+            List<SelectOption> commonPoolRoleIds = poolRoleCheckDto.getRoleOptions();
             GroupRoleFieldDto groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
             //get task by user workGroupId
             List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
@@ -113,6 +120,9 @@ public class InspecAssignTaskDelegator {
             searchResult = inspectionAssignTaskService.getAddressByResult(searchResult);
             ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
             ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
+            ParamUtil.setSessionAttr(bpc.request, "commonPoolRoleIds", (Serializable) commonPoolRoleIds);
+            ParamUtil.setSessionAttr(bpc.request, "poolRoleCheckDto", poolRoleCheckDto);
+            ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
         }
         List<SelectOption> appTypeOption = inspectionAssignTaskService.getAppTypeOption();
 
@@ -257,16 +267,25 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorSearch(BaseProcessClass bpc) throws ParseException {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorSearch start ...."));
         SearchParam searchParam = getSearchParam(bpc, true);
-        List<TaskDto> commPools = (List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
+        PoolRoleCheckDto poolRoleCheckDto = (PoolRoleCheckDto)ParamUtil.getSessionAttr(bpc.request, "poolRoleCheckDto");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String application_no = ParamUtil.getRequestString(bpc.request, "application_no");
         String application_type = ParamUtil.getRequestString(bpc.request, "application_type");
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
         String sub_date2 = ParamUtil.getRequestString(bpc.request, "sub_date");
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
-
+        String roleIdCheck = ParamUtil.getRequestString(bpc.request, "commonRoleId");
+        Map<String, String> roleMap = poolRoleCheckDto.getRoleMap();
+        String roleId = getCheckRoleIdByMap(roleIdCheck, roleMap);
+        loginContext.setCurRoleId(roleId);
+        if(!StringUtil.isEmpty(roleId)){
+            poolRoleCheckDto.setCheckCurRole(roleIdCheck);
+            ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
+        }
+        List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
         List<String> appCorrId_list = inspectionAssignTaskService.getAppCorrIdListByPool(commPools);
-
+        GroupRoleFieldDto groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
         StringBuilder sb = new StringBuilder("(");
         for(int i = 0; i < appCorrId_list.size(); i++){
             sb.append(":appCorrId" + i).append(",");
@@ -301,6 +320,21 @@ public class InspecAssignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "sub_date2", sub_date2);
         ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
+        ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
+        ParamUtil.setSessionAttr(bpc.request, "poolRoleCheckDto", poolRoleCheckDto);
+    }
+
+    private String getCheckRoleIdByMap(String roleIdCheck, Map<String, String> roleMap) {
+        String roleId = "";
+        if(roleMap != null && !StringUtil.isEmpty(roleIdCheck)){
+            roleId = roleMap.get(roleIdCheck);
+            if(!StringUtil.isEmpty(roleId)){
+                return roleId;
+            } else {
+                return "";
+            }
+        }
+        return roleId;
     }
 
     /**

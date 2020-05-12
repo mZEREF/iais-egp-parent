@@ -93,9 +93,14 @@
                         <label style="font-size: 16px">Lead</label>
                       </div>
                       <div class="col-md-6">
-                        <c:forEach var="lead" items="${inspecTaskCreAndAssDto.inspectionLeads}">
-                          <label style="font-size: 16px"><c:out value="${lead}"/></label>
-                        </c:forEach>
+                        <c:if test="${!empty inspecTaskCreAndAssDto.inspectionLeads}">
+                          <c:forEach var="lead" items="${inspecTaskCreAndAssDto.inspectionLeads}">
+                            <span style="font-size: 16px"><c:out value="${lead}"/></span>
+                          </c:forEach>
+                        </c:if>
+                        <c:if test="${empty inspecTaskCreAndAssDto.inspectionLeads}">
+                          <span style="font-size: 16px"><c:out value="-"/></span>
+                        </c:if>
                       </div>
                     </div>
                   </c:if>

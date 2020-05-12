@@ -30,8 +30,27 @@
                 <span>Common Pool</span>
               </h2>
             </div>
-            <iais:body >
+            <div class="intranet-content">
+              <div class="form-horizontal">
+                <div class="form-group">
+                  <label class="col-xs-12 col-md-4 control-label">Role</label>
+                  <div class="col-xs-8 col-sm-6 col-md-5">
+                    <iais:select name="commonRoleId" options="commonPoolRoleIds" id="commonPoolRole" value="${poolRoleCheckDto.checkCurRole}"></iais:select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-10 col-md-12">
+                <div class="components">
+                  <a class="btn btn-secondary" data-toggle="collapse"
+                     data-target="#commonPool">Filter</a>
+                </div>
+              </div>
+            </div>
+            <iais:body>
               <iais:section title="" id = "demoList">
+                <div id="commonPool" class="collapse">
                   <iais:row>
                     <iais:field value="Application No."/>
                     <iais:value width="18">
@@ -74,7 +93,8 @@
                     <button class="btn btn-secondary" type="button" onclick="javascript:doInspectionCommonPoolClear()">Clear</button>
                     <button class="btn btn-primary" type="button" onclick="javascript:doInspectionCommonPoolSearch()">Search</button>
                   </iais:action>
-                </iais:section>
+                </div>
+              </iais:section>
               <iais:pagination  param="cPoolSearchParam" result="cPoolSearchResult"/>
               <div class="table-gp">
                 <table class="table">
@@ -148,15 +168,22 @@
         $('input[name="service_name"]').val("");
         $('input[name="sub_date"]').val("");
     }
+
     function inspectionCommonPoolSubmit(action){
         $("[name='inspectionPoolType']").val(action);
         var mainPoolForm = document.getElementById('mainPoolForm');
         mainPoolForm.submit();
     }
+
+    $("#commonPoolRole").change(function() {
+        doInspectionCommonPoolSearch();
+    });
+
     function doInspectionCommonPoolSearch() {
         showWaiting();
         inspectionCommonPoolSubmit('search');
     }
+
     function jumpToPagechangePage(){
         showWaiting();
         inspectionCommonPoolSubmit('page');
@@ -176,6 +203,7 @@
         }
         return false;
     }
+
     var dividajaxlist = [];
     function commonPoolByGroupId(applicationGroupNo, divid) {
       if (!isInArray(dividajaxlist,divid)) {
@@ -194,7 +222,7 @@
                   '<thead>' +
                   '<tr>';
 
-              html += '<th width="17%">Application No</th>' +
+              html += '<th width="17%">Application No.</th>' +
                   '<th width="17%">Service</th>' +
                   '<th width="17%">Application Status</th>' +
                   '<th width="17%">HCI Code</th>' +
@@ -204,7 +232,7 @@
                   '<tbody>';
               for (var i = 0; i < res.rowCount; i++) {
                 html += '<tr>';
-                  html += '<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a onclick="javascript:doInspectionCommonPoolAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>' +
+                  html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doInspectionCommonPoolAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>' +
                       '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
                       '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].appStatus + '</p></td>' +
                       '<td><p class="visible-xs visible-sm table-row-title">HCI Code</p><p>' + res.rows[i].hciCode + '</p></td>' +

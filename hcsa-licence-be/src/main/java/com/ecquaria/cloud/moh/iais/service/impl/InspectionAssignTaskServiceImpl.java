@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
@@ -46,6 +47,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -84,10 +86,10 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public List<TaskDto> getCommPoolByGroupWordId(LoginContext loginContext) {
-        /*List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
+        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         String curRole = loginContext.getCurRoleId();
         Set<String> workGrpIds = loginContext.getWrkGrpIds();
-        if (workGrpIds == null || workGrpIds.size() <= 0) {
+        if (IaisCommonUtils.isEmpty(workGrpIds) || StringUtil.isEmpty(curRole)) {
             return null;
         }
         List<String> workGrpIdList = new ArrayList<>(workGrpIds);
@@ -97,18 +99,8 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     taskDtoList.add(tDto);
                 }
             }
-        }*/
-        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
-        Set<String> workGrpIds = loginContext.getWrkGrpIds();
-        if(workGrpIds == null || workGrpIds.size() <= 0){
-            return null;
         }
-        List<String> workGrpIdList = new ArrayList<>(workGrpIds);
-        for(String workGrpId:workGrpIdList){
-            for(TaskDto tDto:taskService.getCommPoolByGroupWordId(workGrpId)){
-                taskDtoList.add(tDto);
-            }
-        }
+
         return taskDtoList;
     }
 
@@ -197,6 +189,86 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             }
         }
         inspecTaskCreAndAssDto.setInspectionLeads(leadNames);
+    }
+
+    @Override
+    public PoolRoleCheckDto getRoleOptionByKindPool(LoginContext loginContext, String poolName, PoolRoleCheckDto poolRoleCheckDto) {
+        List<String> roles = new ArrayList<>(loginContext.getRoleIds());
+        if(!IaisCommonUtils.isEmpty(roles)){
+            String curRole = loginContext.getCurRoleId();
+            if(AppConsts.COMMON_POOL.equals(poolName)){
+                //set common option an current role
+                poolRoleCheckDto = commonCurRoleAndOption(roles, curRole, poolRoleCheckDto);
+            } else if(AppConsts.SUPERVISOR_POOL.equals(poolName)){
+                //set supervisor option an current role
+                poolRoleCheckDto = superCurRoleAndOption(roles, curRole, poolRoleCheckDto);
+            }
+        } else {
+            List<SelectOption> roleOptions = IaisCommonUtils.genNewArrayList();
+            SelectOption so = new SelectOption("", "Please Select");
+            roleOptions.add(so);
+            poolRoleCheckDto.setRoleOptions(roleOptions);
+        }
+        //set current role in loginContext
+        Map<String, String> roleMap = poolRoleCheckDto.getRoleMap();
+        String checkCurRole = poolRoleCheckDto.getCheckCurRole();
+        if(roleMap != null && !StringUtil.isEmpty(checkCurRole)){
+            String role = roleMap.get(checkCurRole);
+            if(!StringUtil.isEmpty(role)){
+                loginContext.setCurRoleId(role);
+            }
+        }
+        return poolRoleCheckDto;
+    }
+
+    private PoolRoleCheckDto superCurRoleAndOption(List<String> roles, String curRole, PoolRoleCheckDto poolRoleCheckDto) {
+        List<SelectOption> roleOptions = IaisCommonUtils.genNewArrayList();
+        Map<String, String> roleMap = IaisCommonUtils.genNewHashMap();
+        int index = 0;
+        String curCheckRole = "";
+        for(String role : roles){
+            //set lead role
+            if(role.contains(RoleConsts.USER_LEAD)) {
+                SelectOption so = new SelectOption(index + "", role);
+                roleOptions.add(so);
+                roleMap.put(index + "", role);
+                //set current role check key
+                if (role.equals(curRole)) {
+                    curCheckRole = index + "";
+                }
+                index++;
+            }
+        }
+        if(StringUtil.isEmpty(curCheckRole)){
+            curCheckRole = "0";
+        }
+        poolRoleCheckDto.setCheckCurRole(curCheckRole);
+        poolRoleCheckDto.setRoleOptions(roleOptions);
+        poolRoleCheckDto.setRoleMap(roleMap);
+        return poolRoleCheckDto;
+    }
+
+    private PoolRoleCheckDto commonCurRoleAndOption(List<String> roles, String curRole, PoolRoleCheckDto poolRoleCheckDto) {
+        List<SelectOption> roleOptions = IaisCommonUtils.genNewArrayList();
+        Map<String, String> roleMap = IaisCommonUtils.genNewHashMap();
+        int index = 0;
+        for(String role : roles){
+            SelectOption so = new SelectOption(index + "", role);
+            roleOptions.add(so);
+            roleMap.put(index + "", role);
+            //set current role check key
+            if(role.equals(curRole)){
+                poolRoleCheckDto.setCheckCurRole(index + "");
+            }
+            index++;
+        }
+        //set default role check key
+        if(StringUtil.isEmpty(curRole)){
+            poolRoleCheckDto.setCheckCurRole("0");
+        }
+        poolRoleCheckDto.setRoleOptions(roleOptions);
+        poolRoleCheckDto.setRoleMap(roleMap);
+        return poolRoleCheckDto;
     }
 
 
