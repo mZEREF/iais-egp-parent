@@ -276,6 +276,7 @@
             where T1.SRC_SYSTEM_ID = T2.ID
             AND T1.STATUS in ('CMSTAT001','CMSTAT003')
             <#if shortName??> AND T1.GROUP_SHORT_NAME = :shortName</#if>
+            <#if desc??> and charindex(:desc, T1.[DESC]) >0</#if>
             <#if startDate??> AND T1.START_DATE >= :startDate</#if>
             <#if endDate??> AND T1.END_DATE <= :endDate</#if>
             <#if status??> AND T1.STATUS = :status</#if>

@@ -209,6 +209,7 @@ public class BlackedOutDateDelegator {
         String groupName = ParamUtil.getString(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT);
         String dropYear = ParamUtil.getString(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT);
         String startDate = ParamUtil.getString(request, "startDate");
+        String desc = ParamUtil.getString(request, "desc");
         String endDate = ParamUtil.getString(request, "endDate");
         String status = ParamUtil.getString(request, "status");
 
@@ -229,6 +230,11 @@ public class BlackedOutDateDelegator {
 
         if (!StringUtils.isEmpty(endDate)){
             blackQuery.addFilter("bkEndDate", endDate, true);
+        }
+
+
+        if (!StringUtils.isEmpty(desc)){
+            blackQuery.addFilter("desc", desc, true);
         }
 
         if (!StringUtils.isEmpty(status)){

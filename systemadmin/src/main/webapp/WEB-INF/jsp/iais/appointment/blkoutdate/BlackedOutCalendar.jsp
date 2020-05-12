@@ -8,7 +8,6 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
@@ -53,6 +52,13 @@
           <iais:field value="Blacked Out Date End"/>
           <iais:value width="18">
             <iais:datePicker id = "endDate" name = "endDate"  value="${param.endDate}"></iais:datePicker>
+          </iais:value>
+        </iais:row>
+
+        <iais:row>
+          <iais:field value="Blacked Out Date Description"/>
+          <iais:value width="18">
+            <input type="text" max="255" name="desc"  value="${param.desc}">
           </iais:value>
         </iais:row>
 
