@@ -153,6 +153,7 @@
                       <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.inspectionTypeName}"/></span>
                     </div>
                   </div>
+                  <p></p>
                   <iais:action >
                     <a class="back" id="Back" onclick="javascript:doInspectionSupAssignTaskBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                     <c:if test="${'true' == inspectionTaskPoolListDto.inspectorFlag}">

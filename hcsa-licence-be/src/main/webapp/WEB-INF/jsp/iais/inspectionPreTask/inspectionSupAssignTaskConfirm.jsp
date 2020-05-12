@@ -34,7 +34,7 @@
                       <label style="font-size: 16px">Application Number</label>
                     </div>
                     <div class="col-md-6">
-                      <span><c:out value="${inspectionTaskPoolListDto.applicationNo}"/></span>
+                      <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.applicationNo}"/></span>
                     </div>
                   </div>
                   <p></p>
@@ -89,7 +89,7 @@
                         <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
                       </div>
                       <div class="col-md-6">
-                        <span><c:out value="${inspectionTaskPoolListDto.inspManHours}"/></span>
+                        <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.inspManHours}"/></span>
                       </div>
                     </div>
                     <p></p>
@@ -116,11 +116,11 @@
                   <p></p>
                   <div class="row">
                     <div class="col-md-2">
-                      <label style="font-size: 16px"><c:out value="${groupRoleFieldDto.groupMemBerName}"/><span style="color: red"> *</span></label>
+                      <label style="font-size: 16px"><c:out value="${groupRoleFieldDto.groupMemBerName}"/></label>
                     </div>
                     <div class="col-md-6">
                       <c:forEach items="${inspectionTaskPoolListDto.inspectorCheck}" var="name">
-                        <span><c:out value="${name.text}"/></span>
+                        <span style="font-size: 16px"><c:out value="${name.text}"/></span>
                       </c:forEach>
                     </div>
                   </div>
@@ -133,6 +133,7 @@
                       <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.inspectionTypeName}"/></span>
                     </div>
                   </div>
+                  <p></p>
                   <iais:action>
                     <a class="back" id="Back" onclick="javascript:doInspectionSupAssignTaskConfirmBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionSupAssignTaskConfirmSubmit()">Submit</button>
