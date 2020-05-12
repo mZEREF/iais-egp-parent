@@ -97,7 +97,7 @@ public interface AppConfigClient {
     @GetMapping(path = "/iais-hcsa-checklist/config/{id}")
     FeignResponseEntity<ChecklistConfigDto> getChecklistConfigById(@PathVariable(value = "id") String configId);
 
-    @GetMapping(path = "/iais-hcsa-checklist/config/{ids}")
+    @GetMapping(path = "/iais-hcsa-checklist/config/{ids}/list")
     FeignResponseEntity<List<ChecklistConfigDto>> getChecklistConfigByIds(@PathVariable(value = "ids")  List<String> ids);
 
     @RequestMapping(path = "/iais-hcsa-service/subtype-subsumed/{svcId}",method = RequestMethod.GET)
