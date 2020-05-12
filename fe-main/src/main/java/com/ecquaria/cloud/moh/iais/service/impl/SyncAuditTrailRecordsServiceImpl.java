@@ -80,12 +80,10 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         download = sharedPath +fileName;
         backups = sharedPath + "backupsAudit";
         //if path is not exists create path
-        File fileRepPath=new File(download+File.separator+"files");
-        if(!fileRepPath.exists()){
-            fileRepPath.mkdirs();
-        }
+        File fileRepPath = MiscUtil.generateFile(download, "files");
+        MiscUtil.checkDirs(fileRepPath);
 
-        AuditTrailEntityEventDto auditTrailEntityEventDto=new AuditTrailEntityEventDto();
+        AuditTrailEntityEventDto auditTrailEntityEventDto = new AuditTrailEntityEventDto();
         auditTrailEntityEventDto.setEventRefNo(System.currentTimeMillis()+"");
         auditTrailEntityEventDto.setAuditTrailEntityDtos(auditTrailDtos);
         return JsonUtil.parseToJson(auditTrailEntityEventDto);
@@ -99,7 +97,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
         String s = FileUtil.genMd5FileChecksum(data.getBytes());
         File file = MiscUtil.generateFile(download+File.separator, s+fileFormat);
-        File groupPath=new File(download+File.separator);
+        File groupPath=MiscUtil.generateFile(sharedPath, fileName);
 
         MiscUtil.checkDirs(groupPath);
         File backupFile = MiscUtil.generateFile(backups, file.getName());
@@ -130,9 +128,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         log.info("------------ start compress() -----------------------");
         long l=   System.currentTimeMillis();
         File c= new File(backups+File.separator);
-        if(!c.exists()){
-            c.mkdirs();
-        }
+        MiscUtil.checkDirs(c);
         try (OutputStream is=new FileOutputStream(backups+File.separator+ l+ AppServicesConsts.ZIP_NAME);
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
@@ -159,7 +155,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                 zipFile(zos,f);
             }
         } else {
-            try  (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));){
+            try  (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))){
 
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))));
                 int count ;
@@ -234,30 +230,26 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                 }
             }
         }
-        {
-            File[] files = filePath.listFiles((dir, name) -> {
-                if (name.endsWith(fileFormat)) {
-                    return true;
-                }
-                return false;
-            });
-            for(File f:files){
-                if(f.exists()&&f.isFile()){
-                    MiscUtil.deleteFile(f);
-                }
+        File[] files = filePath.listFiles((dir, name) -> {
+            if (name.endsWith(fileFormat)) {
+                return true;
+            }
+            return false;
+        });
+        for(File f:files){
+            if(f.exists()&&f.isFile()){
+                MiscUtil.deleteFile(f);
             }
         }
-        {
-            File[] files = file.listFiles((dir, name) -> {
-                if (name.endsWith(fileFormat)) {
-                    return true;
-                }
-                return false;
-            });
-            for(File f:files){
-                if(f.exists()&&f.isFile()){
-                    MiscUtil.deleteFile(f);
-                }
+        files = file.listFiles((dir, name) -> {
+            if (name.endsWith(fileFormat)) {
+                return true;
+            }
+            return false;
+        });
+        for(File f:files){
+            if(f.exists()&&f.isFile()){
+                MiscUtil.deleteFile(f);
             }
         }
     }
