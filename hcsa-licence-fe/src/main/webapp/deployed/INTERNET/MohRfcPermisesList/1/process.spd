@@ -121,6 +121,13 @@
     <JavaCode defClass="" executor="" methodName="doSearch_OnStepProcess_0" name="doSearch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="dashboard" x="1110" y="-20">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="dashboard_OnStepProcess_0" name="dashboard_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="premisesList" stageIndicator="" x="550" y="20">
@@ -248,6 +255,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSubmit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(910,150)(810,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/dashboard" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ack" style="oblique">
+   <position>{(1020,-110)(1130,0)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

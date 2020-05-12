@@ -55,6 +55,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -698,19 +699,6 @@ public class RequestForChangeMenuDelegator {
 
     public void PrepareAckPage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareAckPage start ...."));
-        String[] licenceNames = bpc.request.getParameterValues("licenceName");
-        if (licenceNames != null) {
-            for (String string : licenceNames) {
-                if (string.startsWith("G")) {
-
-
-                } else if (string.startsWith("L")) {
-
-
-                }
-
-            }
-        }
 
         log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
@@ -728,12 +716,6 @@ public class RequestForChangeMenuDelegator {
      */
     public void prePayment(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do prePayment start ...."));
-   /*     AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
-        if (!StringUtil.isEmpty(appSubmissionDto.getAmount())) {
-            DecimalFormat decimalFormat = new DecimalFormat("###,###");
-            String amountStr = "$" + decimalFormat.format(appSubmissionDto.getAmount());
-            appSubmissionDto.setAmountStr(amountStr);
-        }*/
         Double dAmount=0.0;
        List<AppSubmissionDto> appSubmissionDtos=( List<AppSubmissionDto>)  ParamUtil.getSessionAttr(bpc.request,"appSubmissionDtos");
         for(AppSubmissionDto every : appSubmissionDtos){
@@ -745,7 +727,7 @@ public class RequestForChangeMenuDelegator {
                 every.setAmountStr(amountStr);
             }
         }
-        bpc.request.setAttribute("dAmount",dAmount);
+        bpc.request.getSession().setAttribute("dAmount",dAmount);
         log.debug(StringUtil.changeForLog("the do prePayment end ...."));
     }
 
@@ -760,22 +742,22 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
             return;
         }
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
-
+        List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request,"appSubmissionDtos");
+        bpc.request.getSession().setAttribute("payMethod",payMethod);
         if ("Credit".equals(payMethod)) {
             String backUrl = "hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/doPayment";
             StringBuffer url = new StringBuffer();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/payment-web/eservice/INTERNET/PaymentRequest")
-                    .append("?amount=").append(MaskUtil.maskValue("amount", String.valueOf(appSubmissionDto.getAmount())))
+                    .append("?amount=").append(MaskUtil.maskValue("amount", String.valueOf(appSubmissionDtos.get(0).getAmount())))
                     .append("&payMethod=").append(MaskUtil.maskValue("payMethod", payMethod))
-                    .append("&reqNo=").append(MaskUtil.maskValue("reqNo", appSubmissionDto.getAppGrpNo()))
+                    .append("&reqNo=").append(MaskUtil.maskValue("reqNo", appSubmissionDtos.get(0).getAppGrpNo()))
                     .append("&backUrl=").append(MaskUtil.maskValue("backUrl", backUrl));
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
             return;
         } else if ("GIRO".equals(payMethod)) {
-            String appGrpId = appSubmissionDto.getAppGrpId();
+            String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO);
@@ -816,14 +798,17 @@ public class RequestForChangeMenuDelegator {
                 log.info("credit card payment success");
                 switchValue = "ack";
                 //update status
-                AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
-                String appGrpId = appSubmissionDto.getAppGrpId();
+                List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>)  ParamUtil.getSessionAttr(bpc.request,"appSubmissionDtos");
+                String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
                 appGrp.setId(appGrpId);
                 appGrp.setPmtRefNo(pmtRefNo);
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
+                bpc.request.setAttribute("createDate",new Date());
             }
+
+            bpc.request.setAttribute("pmtRefNo",pmtRefNo);
         }
 
 
@@ -832,10 +817,17 @@ public class RequestForChangeMenuDelegator {
     }
 
 
-    /**//**//**//**
-     * @param bpc
-     * @Decription doSubmit
-     */
+
+    public void dashboard(BaseProcessClass bpc){
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        try {
+            bpc.response.sendRedirect(tokenUrl);
+        } catch (IOException e) {
+            log.error(e.getMessage(),e);
+        }
+    }
     public void doSubmit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
         List<String> selectLicence=(List<String>) bpc.request.getAttribute("selectLicence");
@@ -876,16 +868,17 @@ public class RequestForChangeMenuDelegator {
         amendmentFeeDto.setChangeInLocation(!isSame);
         //
         if(selectLicence!=null) {
+            String appGrpNo = requestForChangeService.getApplicationGroupNumber(appType);
             for (String string : selectLicence) {
                 FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
                 Double total = feeDto.getTotal();
 
-                String appGrpNo = requestForChangeService.getApplicationGroupNumber(appType);
                 LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
                 boolean grpLic = licenceDto.isGrpLic();
                 AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string);
                 appSubmissionService.transform(appSubmissionDtoByLicenceId,appSubmissionDto.getLicenseeId());
                 appSubmissionDtoByLicenceId.setAmount(total);
+                appSubmissionDtoByLicenceId.setAppSvcRelatedInfoDtoList(appSubmissionDto.getAppSvcRelatedInfoDtoList());
                 appSubmissionDtoByLicenceId.setAppGrpNo(appGrpNo);
                 appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
                 PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
@@ -900,7 +893,7 @@ public class RequestForChangeMenuDelegator {
 
                 appSubmissionDtoByLicenceId.setAutoRfc(isSame);
                 //update status
-        /*  LicenceDto licenceDto = new LicenceDto();
+         /*  LicenceDto licenceDto = new LicenceDto();
             licenceDto.setId(appSubmissionDto.getLicenceId());
             licenceDto.setStatus(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
             requestForChangeService.upDateLicStatus(licenceDto);*/
@@ -918,48 +911,16 @@ public class RequestForChangeMenuDelegator {
                 }
                 appSubmissionDtoByLicenceId.setGroupLic(grpLic);
 
-                appSubmissionDto = appSubmissionService.submitRequestChange(appSubmissionDtoByLicenceId, bpc.process);
                 appSubmissionDtos.add(appSubmissionDtoByLicenceId);
             }
+            List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos);
+            appSubmissionDtos.get(0).setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
+            for(AppSubmissionDto every : appSubmissionDtos1){
+                every.setAmount(appSubmissionDtos.get(0).getAmount());
+            }
+            ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos",(Serializable)appSubmissionDtos1);
         }
-      /*  FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
-        if (feeDto != null) {
-            appSubmissionDto.setAmount(totalDouble);
-        }
-        //judge is the preInspection
-        PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
-        if (preOrPostInspectionResultDto == null) {
-            appSubmissionDto.setPreInspection(true);
-            appSubmissionDto.setRequirement(true);
-        } else {
-            appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
-            appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
-        }
-        //set Risk Score
-        appSubmissionService.setRiskToDto(appSubmissionDto);
 
-        appSubmissionDto.setAutoRfc(isSame);
-        //update status
-       *//* LicenceDto licenceDto = new LicenceDto();
-        licenceDto.setId(appSubmissionDto.getLicenceId());
-        licenceDto.setStatus(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-        requestForChangeService.upDateLicStatus(licenceDto);*//*
-
-        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-        appEditSelectDto.setPremisesListEdit(true);
-        appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
-        appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-        //save data
-        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
-        String draftNo = appSubmissionDto.getDraftNo();
-        if(StringUtil.isEmpty(draftNo)){
-            appSubmissionService.setDraftNo(appSubmissionDto);
-        }
-        appSubmissionDto = appSubmissionService.submitRequestChange(appSubmissionDto, bpc.process);
-*/
-      /*  ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);*/
-        ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos",(Serializable)appSubmissionDtos);
         if (isSame) {
             ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
         } else {
