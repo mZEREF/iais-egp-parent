@@ -2056,7 +2056,7 @@ public class NewApplicationDelegator {
 
         }
 
-        if(flag){
+        if(!flag){
             documentMap.put("common","UC_CHKLMD001_ERR001");
         }
 
