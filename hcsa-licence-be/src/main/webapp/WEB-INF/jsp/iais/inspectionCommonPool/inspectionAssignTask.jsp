@@ -35,11 +35,11 @@
                       <label style="font-size: 16px">Application Number</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px">
+                      <span style="font-size: 16px">
                         <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService" target="_blank">
                           <u><c:out value="${inspecTaskCreAndAssDto.applicationNo}"/></u>
                         </a>
-                      </label>
+                      </span>
                     </div>
                   </div>
                   <div class="row">
@@ -47,7 +47,7 @@
                       <label style="font-size: 16px">Application Type</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><iais:code code="${inspecTaskCreAndAssDto.applicationType}"/></label>
+                      <span style="font-size: 16px"><iais:code code="${inspecTaskCreAndAssDto.applicationType}"/></span>
                     </div>
                   </div>
                   <div class="row">
@@ -55,7 +55,7 @@
                       <label style="font-size: 16px">Application Status</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><iais:code code="${inspecTaskCreAndAssDto.applicationStatus}"/></label>
+                      <span style="font-size: 16px"><iais:code code="${inspecTaskCreAndAssDto.applicationStatus}"/></span>
                     </div>
                   </div>
                   <div class="row">
@@ -63,7 +63,7 @@
                       <label style="font-size: 16px">HCI Code</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.hciCode}"/></label>
+                      <span style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.hciCode}"/></span>
                     </div>
                   </div>
                   <div class="row">
@@ -71,7 +71,7 @@
                       <label style="font-size: 16px">HCI Name / Address</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.hciName}"/></label>
+                      <span style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.hciName}"/></span>
                     </div>
                   </div>
                   <div class="row">
@@ -79,7 +79,15 @@
                       <label style="font-size: 16px">Service Name</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.serviceName}"/></label>
+                      <span style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.serviceName}"/></span>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text" maxlength="3" name="inspManHours" value="${inspecTaskCreAndAssDto.inspManHours}"/>
                     </div>
                   </div>
                   <div class="row">
@@ -87,7 +95,7 @@
                       <label style="font-size: 16px">Submission Date</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><fmt:formatDate value='${inspecTaskCreAndAssDto.submitDt}' pattern='dd/MM/yyyy' /></label>
+                      <span style="font-size: 16px"><fmt:formatDate value='${inspecTaskCreAndAssDto.submitDt}' pattern='dd/MM/yyyy' /></span>
                     </div>
                   </div>
                   <c:if test="${inspecTaskCreAndAssDto.inspectionLeads != null}">
@@ -112,7 +120,7 @@
                       <label style="font-size: 16px">Inspection Type</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.inspectionTypeName}"/></label>
+                      <span style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.inspectionTypeName}"/></span>
                     </div>
                   </div>
                   <br>
