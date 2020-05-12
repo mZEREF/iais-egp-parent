@@ -65,6 +65,16 @@
                       <p><label><c:out value="${inspectionTaskPoolListDto.serviceName}"/></label></p>
                     </iais:value>
                   </iais:row>
+                  <c:if test="${'common' eq inspectionTaskPoolListDto.editHoursFlag}">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
+                      </div>
+                      <div class="col-md-6">
+                        <p><span><c:out value="${inspectionTaskPoolListDto.inspManHours}"/></span></p>
+                      </div>
+                    </div>
+                  </c:if>
                   <iais:row>
                     <iais:field value="Submission Date"/>
                     <iais:value width="7">

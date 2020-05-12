@@ -308,6 +308,9 @@ public class InspectionServiceImpl implements InspectionService {
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
         TaskDto taskDto = taskService.getTaskById(taskId);
+        if(StringUtil.isEmpty(taskDto.getUserId())){
+            inspectionTaskPoolListDto.setEditHoursFlag(AppConsts.COMMON_POOL);
+        }
         List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
         List<String> leadName = getWorkGroupLeadsByGroupId(taskDto.getWkGrpId(), orgUserDtos);
         Set<String> leadNameSet = new HashSet<>(leadName);

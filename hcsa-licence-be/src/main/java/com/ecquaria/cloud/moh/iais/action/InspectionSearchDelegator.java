@@ -406,6 +406,11 @@ public class InspectionSearchDelegator {
     public InspectionTaskPoolListDto getValueFromPage(BaseProcessClass bpc) {
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto)ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
         String[] nameValue = ParamUtil.getStrings(bpc.request,"inspectorCheck");
+        String editHoursFlag = inspectionTaskPoolListDto.getEditHoursFlag();
+        if(AppConsts.COMMON_POOL.equals(editHoursFlag)){
+            String inspManHours = ParamUtil.getRequestString(bpc.request, "inspManHours");
+            inspectionTaskPoolListDto.setInspManHours(inspManHours);
+        }
         if(nameValue == null || nameValue.length <= 0) {
             inspectionTaskPoolListDto.setInspectorCheck(null);
         } else {
