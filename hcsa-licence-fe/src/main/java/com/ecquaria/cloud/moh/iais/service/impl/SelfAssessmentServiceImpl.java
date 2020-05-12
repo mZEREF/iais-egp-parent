@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @Author: yichen
@@ -93,7 +94,6 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             String svcName = hcsaServiceDto.getSvcName();
             String type = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.SELF_ASSESSMENT);
             String module = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.NEW);
-
 
             ChecklistConfigDto serviceConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module).getEntity();
 
@@ -164,15 +164,31 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 selfAssessment.setPremises(address);
             }
 
-            selfAssessmentConfigList.add(new SelfAssessmentConfig());
+            selfAssessmentConfigList.add(null);
             for (AppPremisesSelfDeclChklDto ent : entity){
                 String answerJson = ent.getAnswer();
                 List<PremCheckItem> answerData = JsonUtil.parseToList(answerJson, PremCheckItem.class);
+
+                //set unique key
+                answerData.forEach(i -> i.setAnswerKey(UUID.randomUUID().toString()));
+
                 String checklistConfigId = ent.getChkLstConfId();
                 FeignResponseEntity<ChecklistConfigDto> fetchConfigResult = appConfigClient.getChecklistConfigById(checklistConfigId);
                 if (HttpStatus.SC_OK == fetchConfigResult.getStatusCode()) {
                     ChecklistConfigDto checklistConfigDto = fetchConfigResult.getEntity();
-                    if (!checklistConfigDto.isCommon()) {
+
+                    boolean isCommonChecklistConfig = checklistConfigDto.isCommon();
+                    if (isCommonChecklistConfig) {
+                        SelfAssessmentConfig selfAssessmentConfig = new SelfAssessmentConfig();
+                        selfAssessmentConfig.setCommon(true);
+                        selfAssessmentConfig.setQuestion(answerData);
+                        selfAssessmentConfig.setConfigId(checklistConfigDto.getId());
+                        selfAssessmentConfig.setVersion(ent.getVersion());
+
+                        selfAssessmentConfigMap.put("common", selfAssessmentConfig);
+                        //the first config always common checklist config
+                        selfAssessmentConfigList.set(0, selfAssessmentConfig);
+                    }else {
                         String svcCode = checklistConfigDto.getSvcCode();
                         HcsaServiceDto serviceInfo = HcsaServiceCacheHelper.getServiceByCode(svcCode);
                         if (serviceInfo != null) {
@@ -181,37 +197,31 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                             selfAssessment.setSvcId(serviceInfo.getId());
                             SelfAssessmentConfig selfAssessmentConfig;
 
-                            if (selfAssessmentConfigMap.containsKey(svcCode)){
+                            if (selfAssessmentConfigMap.containsKey(svcCode)) {
                                 selfAssessmentConfig = selfAssessmentConfigMap.get(svcCode);
                                 selfAssessmentConfig.getQuestion().addAll(answerData);
-                            }else {
+                            } else {
                                 selfAssessmentConfig = new SelfAssessmentConfig();
                                 selfAssessmentConfig.setCommon(false);
                                 selfAssessmentConfig.setSvcName(svcName);
 
-                                if (!StringUtils.isEmpty(checklistConfigDto.getSvcSubType())){
+                                if (!StringUtils.isEmpty(checklistConfigDto.getSvcSubType())) {
                                     selfAssessmentConfig.setHasSubtype(true);
                                 }
 
+                                selfAssessmentConfig.setVersion(ent.getVersion());
                                 selfAssessmentConfig.setQuestion(answerData);
                                 selfAssessmentConfig.setConfigId(checklistConfigDto.getId());
                                 selfAssessmentConfigList.add(selfAssessmentConfig);
                                 selfAssessmentConfigMap.put(svcCode, selfAssessmentConfig);
                             }
                         }
-                    }else {
-                        SelfAssessmentConfig selfAssessmentConfig = new SelfAssessmentConfig();
-                        selfAssessmentConfig.setCommon(true);
-                        selfAssessmentConfig.setQuestion(answerData);
-                        selfAssessmentConfig.setConfigId(checklistConfigDto.getId());
-                        selfAssessmentConfigMap.put("common", selfAssessmentConfig);
-                        selfAssessmentConfigList.set(0, selfAssessmentConfig);
                     }
                 }
             }
 
             selfAssessment.setSelfAssessmentConfig(selfAssessmentConfigList);
-            selfAssessment.setCanEdit(false);
+            selfAssessment.setCanEdit(true);
             selfAssessment.setCorrId(corrId);
             rfiData.add(selfAssessment);
         }
@@ -277,7 +287,6 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 
                 FeSelfAssessmentSyncDataDto selfDeclSyncDataDto = new FeSelfAssessmentSyncDataDto();
-                //selfDeclSubmitDto.setLastVersionIds(lastVersionIds);
                 selfDeclSyncDataDto.setFeSyncData(result.getEntity());
 
                 gatewayClient.routeSelfAssessment(selfDeclSyncDataDto, signature.date(), signature.authorization(),
@@ -303,12 +312,17 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Override
     public void changePendingSelfAssMtStatus(String groupId) {
+        changePendingSelfAssMtStatus(groupId, ApplicationConsts.SUBMITTED_SELF_ASSESSMENT);
+    }
+
+    @Override
+    public void changePendingSelfAssMtStatus(String groupId, Integer selfAssMtFlag) {
         List<ApplicationDto> appList = applicationClient.listApplicationByGroupId(groupId).getEntity();
         if (IaisCommonUtils.isEmpty(appList)) {
             return;
         }
 
-        appList.forEach(i -> i.setSelfAssMtFlag(ApplicationConsts.SUBMITTED_SELF_ASSESSMENT));
+        appList.forEach(i -> i.setSelfAssMtFlag(selfAssMtFlag));
 
         applicationClient.updateApplicationList(appList);
     }

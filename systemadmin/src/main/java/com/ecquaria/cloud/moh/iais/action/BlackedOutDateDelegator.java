@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
@@ -335,11 +336,11 @@ public class BlackedOutDateDelegator {
         switch (ans){
             case 0:
                 appointmentService.createBlackedOutCalendar(blackoutDateDto);
-                ParamUtil.setRequestAttr(request,"ackMsg", "You have successfully create a block-out date.");
+                ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.getMessageDesc("ACK023"));
                 break;
             case 1:
                 appointmentService.updateBlackedOutCalendar(blackoutDateDto);
-                ParamUtil.setRequestAttr(request,"ackMsg", "You have successfully update a block-out date.");
+                ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.getMessageDesc("ACK024"));
                 break;
             default:
         }

@@ -255,8 +255,8 @@ public interface ApplicationClient  {
     @GetMapping(value = "/appeal/appeal-eligibility")
     FeignResponseEntity<Boolean> isAppealEligibility(@RequestParam("id") String id);
 
-    @GetMapping(value = "/iais-self-assessment/self-assessment/{groupId}/status/")
-    FeignResponseEntity<Integer> getApplicationSelfAssMtStatus(@PathVariable("groupId") String groupId);
+    @GetMapping(value = "/iais-self-assessment/self-assessment/{groupId}/status/", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Integer> getApplicationSelfAssMtStatus(@PathVariable(value = "groupId") String groupId);
 
     @PutMapping(value = "/iais-application/batch-update/application", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> updateApplicationList(@RequestBody List<ApplicationDto> applicationDtoList);

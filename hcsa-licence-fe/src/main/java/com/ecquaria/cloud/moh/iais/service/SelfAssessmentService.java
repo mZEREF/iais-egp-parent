@@ -22,4 +22,5 @@ public interface SelfAssessmentService {
     Boolean hasSubmittedSelfAssMt(String groupId);
 
     void changePendingSelfAssMtStatus(String groupId);
+    void changePendingSelfAssMtStatus(String groupId, Integer selfAssMtFlag);
 }

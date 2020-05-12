@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
@@ -209,7 +210,7 @@ public class PrefDateRangePeriodDelegator {
 
         Boolean result = periodService.savePrefInspPeriod(period);
         if (result){
-	        ParamUtil.setRequestAttr(request,"ackMsg", "You have successfully update a block-out period.");
+	        ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.getMessageDesc("ACK022"));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             return;
         }else {

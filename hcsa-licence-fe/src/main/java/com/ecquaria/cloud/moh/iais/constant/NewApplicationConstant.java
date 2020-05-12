@@ -11,6 +11,7 @@ public class NewApplicationConstant {
     public static final String NEW_PSN = "newOfficer";
 
     public static final String SESSION_PARAM_APPLICATION_GROUP_ID = "appGroupId";
+    public static final String SESSION_SELF_DECL_RFI_CORR_ID = "selfDeclRfiCorrId";
     public static final String SESSION_SELF_DECL_ACTION = "selfDeclAction";
 
 }
