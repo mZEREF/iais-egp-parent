@@ -28,7 +28,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -54,11 +53,12 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
-    private String fileName = "userRecFile";
-    private String download = sharedPath +fileName;
+    private String download;
+    private String fileName;
     private String fileFormat = ".text";
-    private String backups = sharedPath + "backupsAudit";
+    private String backups;
 
+    private Boolean flag=true;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -76,6 +76,9 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
     @Override
     public String getData(List<AuditTrailEntityDto> auditTrailDtos) {
+        fileName = "userRecFile";
+        download = sharedPath +fileName;
+        backups = sharedPath + "backupsAudit";
         //if path is not exists create path
         File fileRepPath=new File(download+File.separator+"files");
         if(!fileRepPath.exists()){
@@ -90,18 +93,22 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
     @Override
     public void saveFile(String data)  {
-        byte[] fileData=data.getBytes();
-        String s = FileUtil.genMd5FileChecksum(fileData);
+        fileName = "userRecFile";
+        download = sharedPath + fileName;
+        backups = sharedPath + "backupsAudit";
+
+        String s = FileUtil.genMd5FileChecksum(data.getBytes());
         File file = MiscUtil.generateFile(download+File.separator, s+fileFormat);
         File groupPath=new File(download+File.separator);
 
         MiscUtil.checkDirs(groupPath);
         File backupFile = MiscUtil.generateFile(backups, file.getName());
-        try (FileOutputStream fileInputStream = (FileOutputStream) java.nio.file.Files.newOutputStream(backupFile.toPath());
-             FileOutputStream fileOutputStream = (FileOutputStream) java.nio.file.Files.newOutputStream(file.toPath());){
 
-            fileOutputStream.write(fileData);
-            fileInputStream.write(fileData);
+        try (FileOutputStream fileInputStream = new FileOutputStream(backups+File.separator+file.getName());
+             FileOutputStream fileOutputStream  =new FileOutputStream(file);){
+
+            fileOutputStream.write(data.getBytes());
+            fileInputStream.write(data.getBytes());
 
         } catch (Exception e) {
 
@@ -126,7 +133,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         if(!c.exists()){
             c.mkdirs();
         }
-        try (OutputStream is=java.nio.file.Files.newOutputStream(Paths.get(backups + File.separator + l + AppServicesConsts.ZIP_NAME));
+        try (OutputStream is=new FileOutputStream(backups+File.separator+ l+ AppServicesConsts.ZIP_NAME);
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
 
@@ -152,7 +159,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                 zipFile(zos,f);
             }
         } else {
-            try  (BufferedInputStream bis = new BufferedInputStream(java.nio.file.Files.newInputStream(file.toPath()));){
+            try  (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));){
 
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))));
                 int count ;
@@ -172,6 +179,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
     private void rename(String fileNamesss)  {
         log.info("--------------rename start ---------------------");
+        flag = true;
         File zipFile =new File(backups);
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
@@ -182,7 +190,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                 return false;
             });
             for(File file:files){
-                try (FileInputStream is= (FileInputStream) java.nio.file.Files.newInputStream(file.toPath());
+                try (FileInputStream is=new FileInputStream(file);
                      ByteArrayOutputStream by=new ByteArrayOutputStream();){
 
                     int count=0;
@@ -202,6 +210,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                     String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,"backupsAudit" + File.separator+fileNamesss+AppServicesConsts.ZIP_NAME);
                     if(!s1.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
+                        flag=false;
                         break;
                     }
                 } catch (IOException e) {

@@ -27,7 +27,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.zip.CRC32;
@@ -52,10 +51,12 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     private FileRepositoryClient fileRepositoryClient;
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
-    private String fileName = "userRecFile";
-    private String download = sharedPath + fileName;
+    private String download;
+    private String fileName;
     private String fileFormat = ".text";
-    private String backups = sharedPath + "backupsRec";
+    private String backups;
+
+    private Boolean flag=true;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -85,22 +86,22 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
     @Override
     public void saveFile(String data) throws IOException {
+        fileName = "userRecFile";
+        download = sharedPath + fileName;
+        backups = sharedPath + "backupsRec";
 
         String s = FileUtil.genMd5FileChecksum(data.getBytes());
         File file=MiscUtil.generateFile(download+File.separator, s+fileFormat);
         if(!file.exists()){
-            boolean createFlag = file.createNewFile();
-            if (!createFlag) {
-                log.error("Create File fail");
-            }
+            file.createNewFile();
         }
         File groupPath=new File(download+File.separator);
 
         if(!groupPath.exists()){
             groupPath.mkdirs();
         }
-        try (FileOutputStream fileInputStream = (FileOutputStream) java.nio.file.Files.newOutputStream(Paths.get(backups + File.separator + file.getName()));
-             FileOutputStream fileOutputStream  = (FileOutputStream) java.nio.file.Files.newOutputStream(file.toPath());){
+        try (FileOutputStream fileInputStream = new FileOutputStream(backups+File.separator+file.getName());
+             FileOutputStream fileOutputStream  =new FileOutputStream(file);){
 
             fileOutputStream.write(data.getBytes());
             fileInputStream.write(data.getBytes());
@@ -112,6 +113,9 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
     @Override
     public String getData(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
+        fileName = "userRecFile";
+        download = sharedPath +fileName;
+        backups = sharedPath + "backupsRec";
         //if path is not exists create path
         File fileRepPath=new File(download+File.separator+"files");
         if(!fileRepPath.exists()){
@@ -122,7 +126,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
             byte[] entity = fileRepositoryClient.getFileFormDataBase(licPremisesReqForInfoDto.getFileRepoId()).getEntity();
             File file = MiscUtil.generateFile(download + File.separator + "files",
                     licPremisesReqForInfoDto.getFileRepoId() + "@" + licPremisesReqForInfoDto.getDocName());
-            try (FileOutputStream outputStream= (FileOutputStream) java.nio.file.Files.newOutputStream(file.toPath());){
+            try (FileOutputStream outputStream=new FileOutputStream(file);){
                 outputStream.write(entity);
             } catch (Exception e) {
                 log.error(e.getMessage(),e);
@@ -149,7 +153,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         if(!c.exists()){
             c.mkdirs();
         }
-        try (OutputStream is=java.nio.file.Files.newOutputStream(Paths.get(backups + File.separator + l + ".zip"));
+        try (OutputStream is=new FileOutputStream(backups+File.separator+ l+".zip");
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
             log.info(StringUtil.changeForLog("------------zip file name is"+backups+File.separator+ l+".zip"+"--------------------"));
@@ -174,7 +178,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                 zipFile(zos,f);
             }
         } else {
-            try  ( BufferedInputStream bis = new BufferedInputStream(java.nio.file.Files.newInputStream(file.toPath()));){
+            try  ( BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));){
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))));
                 int count ;
                 byte [] b =new byte[1024];
@@ -193,6 +197,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
     private void rename(String fileNamesss,String licPreId)  {
         log.info("--------------rename start ---------------------");
+        flag = true;
         File zipFile =new File(backups);
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
@@ -203,7 +208,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                 return false;
             });
             for(File file:files){
-                try (FileInputStream is= (FileInputStream) java.nio.file.Files.newInputStream(file.toPath());
+                try (FileInputStream is=new FileInputStream(file);
                      ByteArrayOutputStream by=new ByteArrayOutputStream();){
                     int count=0;
                     byte [] size=new byte[1024];
@@ -224,6 +229,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                     String s1 = saveFileName(fileNamesss+".zip","backupsRec" + File.separator+fileNamesss+".zip",licPreId);
                     if(!s1.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
+                        flag=false;
                         break;
                     }
                 } catch (IOException e) {
