@@ -207,7 +207,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                     boolean renameTo = file.renameTo(curFile);
                     log.info(StringUtil.changeForLog("----------- new zip file name is"
                             + backups + File.separator + fileNamesss+AppServicesConsts.ZIP_NAME + " " + renameTo));
-                    String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,"backupsAudit" + File.separator+fileNamesss+AppServicesConsts.ZIP_NAME);
+                    String s1 = saveFileName(fileNamesss+AppServicesConsts.ZIP_NAME,"backupsAudit" + File.separator+fileNamesss+AppServicesConsts.ZIP_NAME);
                     if(!s1.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
                         flag=false;
