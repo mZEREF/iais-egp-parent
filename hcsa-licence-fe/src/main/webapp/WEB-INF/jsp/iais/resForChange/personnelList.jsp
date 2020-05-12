@@ -37,7 +37,6 @@
                     <table class="table">
                     <thead>
                     <tr>
-<%--                        <th>No.</th>--%>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Mobile</th>

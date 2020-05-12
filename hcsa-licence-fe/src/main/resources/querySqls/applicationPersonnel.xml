@@ -2,7 +2,7 @@
 <sqls catalog="applicationPersonnelQuery">
     <sql key = "appPersonnelQuery" remarks = "Query Application Data by condition">
         <![CDATA[
-                select T3.ID,T1.ID as licence_id,T1.STATUS,T1.SVC_NAME,
+                select T3.ID,T1.ID as licence_id,T1.STATUS,T1.SVC_NAME,T1.LICENCE_NO,
                 T3.NAME,T3.ID_NO,T3.EMAIL_ADDR,T3.MOBILE_NO,T3.DESIGNATION,T3.SALUTATION,T3.ID_TYPE,
                 T2.PSN_TYPE,
                  T4.PROFESSION_TYPE,T4.PROF_REG_NO
@@ -18,7 +18,7 @@
                   T1.LICENCE_NO =lic.LICENCE_NO order by VERSION desc )
                   UNION
                   select
-                  T3.ID,T1.ID as licence_id,T1.STATUS,T1.SVC_NAME,
+                  T3.ID,T1.ID as licence_id,T1.STATUS,T1.SVC_NAME,T1.LICENCE_NO,
                   T3.NAME,T3.ID_NO,T3.EMAIL_ADDR,T3.MOBILE_NO,T3.DESIGNATION,T3.SALUTATION,T3.ID_TYPE,
                   T2.PSN_TYPE,
                   '' PROFESSION_TYPE,'' PROF_REG_NO
