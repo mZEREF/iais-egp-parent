@@ -33,7 +33,7 @@
                 <iais:field value="Type of System Parameter:"   required="true"/>
                 <div class="col-md-3">
                     <iais:select name="domainType" id="domainType"
-                                 firstOption="Please select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE" value="${domainType}"></iais:select>
+                                 firstOption="Please select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE" value="${param.domainType}"></iais:select>
                     <span id="error_domainType" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
@@ -41,7 +41,7 @@
             <div class="form-group">
                 <iais:field value="Module:"  />
                 <div class="col-md-3">
-                    <iais:select name="module" id="module"  codeCategory = "CATE_ID_SYSTEM_PARAMETER_MODULE" firstOption="Please select" value="${module}"></iais:select>
+                    <iais:select name="module" id="module"  codeCategory = "CATE_ID_SYSTEM_PARAMETER_MODULE" firstOption="Please select" value="${param.module}"></iais:select>
                     <span id="error_module" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
 
@@ -50,7 +50,7 @@
             <div class="form-group">
                 <iais:field value="Parameter Description:"  />
                 <div class="col-md-3">
-                    <input id="description" name="description" maxlength="500" type="text" value="${description}">
+                    <input id="description" name="description" maxlength="500" type="text" value="${param.description}">
                     <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
@@ -59,7 +59,7 @@
                 <iais:field value="Status:"  />
                 <div class="col-md-3">
                     <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                                 firstOption="Please Select" filterValue="CMSTAT002,CMSTAT004" value="${status}"></iais:select>
+                                 firstOption="Please Select" filterValue="CMSTAT002,CMSTAT004" value="${param.status}"></iais:select>
                 </div>
                 <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
             </div>
