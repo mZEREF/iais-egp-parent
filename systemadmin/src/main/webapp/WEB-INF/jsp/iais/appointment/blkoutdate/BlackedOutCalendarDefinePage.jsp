@@ -43,16 +43,21 @@
 
 
     <div class="form-horizontal">
-      <c:if test="${switchPageAction == 'create'}">
-        <div class="form-group">
-            <iais:field value="Working Group" required="true"></iais:field>
-            <div class="col-md-5">
-              <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt" options="wrlGrpNameOpt"
-                           firstOption="Please Select" value="${shortName}"></iais:select>
-              <br><br>  <br><br><span id="error_shortName" name="iaisErrorMsg" class="error-msg"></span>
-            </div>
-        </div>
-      </c:if>
+        <c:choose>
+            <c:when test="${switchPageAction == 'create'}">
+                <div class="form-group">
+                    <iais:field value="Working Group" required="true"></iais:field>
+                    <div class="col-md-5">
+                        <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt" options="wrlGrpNameOpt"
+                                     firstOption="Please Select" value="${shortName}"></iais:select>
+                        <br><br>  <br><br><span id="error_shortName" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <input name="wrlGrpNameOpt" hidden="hidden" value="${shortName}">
+            </c:otherwise>
+        </c:choose>
 
       <div class="form-group">
             <iais:field value="Blacked Out Date Start :" required="true"></iais:field>
