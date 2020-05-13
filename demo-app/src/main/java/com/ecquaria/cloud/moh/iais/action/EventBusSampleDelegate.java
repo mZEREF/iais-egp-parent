@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -24,8 +23,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Slf4j
 public class EventBusSampleDelegate {
 
-    @Autowired
-    private SubmissionClient submissionClient;
     @Autowired
     private SampleClient sampleClient;
     @Autowired
