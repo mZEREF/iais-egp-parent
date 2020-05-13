@@ -649,6 +649,7 @@ public class RequestForChangeMenuDelegator {
                 appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
             }
         }
+        List<AppSubmissionDto> appSubmissionDtos1 = IaisCommonUtils.genNewArrayList();
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
             NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
@@ -678,9 +679,10 @@ public class RequestForChangeMenuDelegator {
             //set Risk Score
             appSubmissionService.setRiskToDto(appSubmissionDto);
             appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            appSubmissionDto = setPersonnelDate(appSubmissionDto, personnelListQueryDto);
+            AppSubmissionDto appSubmissionDto1 = setPersonnelDate(appSubmissionDto, personnelListQueryDto);
+            appSubmissionDtos1.add(appSubmissionDto1);
         }
-        requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos);
+        requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "true");
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit end ...."));
     }
@@ -815,13 +817,9 @@ public class RequestForChangeMenuDelegator {
 
             bpc.request.setAttribute("pmtRefNo",pmtRefNo);
         }
-
-
         ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, switchValue);
         log.debug(StringUtil.changeForLog("the do doPayment end ...."));
     }
-
-
 
     public void dashboard(BaseProcessClass bpc){
         StringBuilder url = new StringBuilder();
@@ -833,6 +831,7 @@ public class RequestForChangeMenuDelegator {
             log.error(e.getMessage(),e);
         }
     }
+
     public void doSubmit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
         List<String> selectLicence=(List<String>) bpc.request.getAttribute("selectLicence");
@@ -896,7 +895,6 @@ public class RequestForChangeMenuDelegator {
                     appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
                 }
                 appSubmissionService.setRiskToDto(appSubmissionDto);
-
                 appSubmissionDtoByLicenceId.setAutoRfc(isSame);
                 //update status
          /*  LicenceDto licenceDto = new LicenceDto();
@@ -916,7 +914,6 @@ public class RequestForChangeMenuDelegator {
                     appSubmissionService.setDraftNo(appSubmissionDtoByLicenceId);
                 }
                 appSubmissionDtoByLicenceId.setGroupLic(grpLic);
-
                 appSubmissionDtos.add(appSubmissionDtoByLicenceId);
             }
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos);
@@ -932,12 +929,8 @@ public class RequestForChangeMenuDelegator {
         } else {
             ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
         }
-
-
         log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
-
     }
-
 
     private AmendmentFeeDto getAmendmentFeeDto(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto){
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
@@ -948,6 +941,7 @@ public class RequestForChangeMenuDelegator {
         amendmentFeeDto.setChangeInLocation(!changeLocation);
         return amendmentFeeDto;
     }
+
     private boolean compareHciName(List<AppGrpPremisesDto> appGrpPremisesDtos,List<AppGrpPremisesDto> oldAppGrpPremisesDtos){
         int length = appGrpPremisesDtos.size();
         int oldLength = oldAppGrpPremisesDtos.size();
@@ -999,7 +993,6 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do doRequestForInformationSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.OLDAPPSUBMISSIONDTO);
-
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
@@ -1013,8 +1006,6 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do doRequestForInformationSubmit end ...."));
     }
 
-
-
     private PremisesListQueryDto getPremisesListQueryDto(List<PremisesListQueryDto> premisesListQueryDtos, String liceId, String premId) {
         PremisesListQueryDto result = null;
         for (PremisesListQueryDto premisesListQueryDto : premisesListQueryDtos) {
@@ -1027,8 +1018,6 @@ public class RequestForChangeMenuDelegator {
         }
         return result;
     }
-
-
 
     private AppGrpPremisesDto getAppGrpPremisesDtoFromAppGrpPremisesDtoList(List<AppGrpPremisesDto> appGrpPremisesDtoList, String premType, String premHciOrConvName) {
         AppGrpPremisesDto result = null;
@@ -1044,7 +1033,6 @@ public class RequestForChangeMenuDelegator {
         return result;
     }
 
-
     private String getPremisesVal(AppGrpPremisesDto appGrpPremisesDto) {
         String premisesVal = "";
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
@@ -1054,7 +1042,6 @@ public class RequestForChangeMenuDelegator {
         }
         return premisesVal;
     }
-
 
     private String getPremisesVal(PremisesListQueryDto premisesListQueryDto) {
         String premisesVal = "";
@@ -1066,9 +1053,7 @@ public class RequestForChangeMenuDelegator {
         return premisesVal;
     }
 
-
-      private AppGrpPremisesDto genAppGrpPremisesDto(PremisesListQueryDto premisesListQueryDto, HttpServletRequest request) {
-
+    private AppGrpPremisesDto genAppGrpPremisesDto(PremisesListQueryDto premisesListQueryDto, HttpServletRequest request) {
         AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
         String premisesType = premisesListQueryDto.getPremisesType();
         appGrpPremisesDto.setPremisesType(premisesType);
@@ -1111,8 +1096,6 @@ public class RequestForChangeMenuDelegator {
         return appGrpPremisesDto;
     }
 
-
-
     private boolean compareLocation(PremisesListQueryDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto) {
         String oldAddress = premisesListQueryDto.getAddress();
         String newAddress = appGrpPremisesDto.getAddress();
@@ -1122,9 +1105,7 @@ public class RequestForChangeMenuDelegator {
         return true;
     }
 
-
     private AppSubmissionDto setPersonnelDate(AppSubmissionDto appSubmissionDto, PersonnelListQueryDto personnelListQueryDto) {
-
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
@@ -1133,12 +1114,9 @@ public class RequestForChangeMenuDelegator {
                     if (personnelListQueryDto.getIdNo().equals(appSvcCgoDto.getIdNo())) {
                         appSvcCgoDto.setEmailAddr(personnelListQueryDto.getEmailAddr());
                         appSvcCgoDto.setMobileNo(personnelListQueryDto.getMobileNo());
-
                     }
                 }
             }
-
-
             List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
             if (!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)) {
                 for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
@@ -1147,15 +1125,11 @@ public class RequestForChangeMenuDelegator {
                         appSvcPrincipalOfficersDto.setMobileNo(personnelListQueryDto.getMobileNo());
                         appSvcPrincipalOfficersDto.setDesignation(personnelListQueryDto.getDesignation());
                     }
-
                 }
             }
-
-
         }
         return appSubmissionDto;
     }
-
 
     private void requestForInformation(BaseProcessClass bpc,String appNo) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
