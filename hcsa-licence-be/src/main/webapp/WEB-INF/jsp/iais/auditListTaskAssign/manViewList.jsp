@@ -33,11 +33,11 @@
                                 <tr>
                                     <th></th>
                                     <th>Service Name</th>
-                                    <th>Postal Code/Region </th>
+                                    <th>Postal Code</th>
                                     <th>Last Inspection done before(Start) </th>
                                     <th>Last Inspection done before(End) </th>
                                     <th>Results of last Compliance</th>
-                                    <th>Hcsa Service Code</th>
+                                    <th>HCSA Service Code</th>
                                     <th>HCI Code</th>
                                     <th>Premises Type</th>
                                     <th>Type of Risk</th>
