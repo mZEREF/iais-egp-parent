@@ -683,7 +683,7 @@ public class BackendInboxDelegator {
      * @param bpc
      * @throws
      */
-    private void routeToDMS(BaseProcessClass bpc,ApplicationViewDto applicationViewDto,TaskDto taskDto) throws FeignException, CloneNotSupportedException {
+    private void routeToDMS(BaseProcessClass bpc,ApplicationViewDto applicationViewDto,TaskDto taskDto) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do routeToDMS start ...."));
         ApplicationDto application = applicationViewDto.getApplicationDto();
         if(application != null){
