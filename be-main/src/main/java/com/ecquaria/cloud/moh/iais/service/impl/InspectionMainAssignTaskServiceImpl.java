@@ -192,6 +192,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
         for(TaskDto tDto:commPools){
             if(tDto.getId().equals(inspecTaskCreAndAssDto.getTaskId())){
                 taskDto = tDto;
+                break;
             }
         }
         return taskDto;
