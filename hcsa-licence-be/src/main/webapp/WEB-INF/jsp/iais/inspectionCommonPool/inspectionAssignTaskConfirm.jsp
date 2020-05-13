@@ -91,7 +91,12 @@
                         <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
                       </div>
                       <div class="col-md-6">
-                        <span style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.inspManHours}"/></span>
+                        <c:if test="${!empty inspecTaskCreAndAssDto.inspManHours}">
+                          <span style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.inspManHours}"/></span>
+                        </c:if>
+                        <c:if test="${empty inspecTaskCreAndAssDto.inspManHours}">
+                          <span style="font-size: 16px"><c:out value="-"/></span>
+                        </c:if>
                       </div>
                     </div>
                     <p></p>
