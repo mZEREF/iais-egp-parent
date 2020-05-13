@@ -15,15 +15,15 @@
                         <iais:pagination  param="MsgTemplateSearchParam" result="MsgTemplateSearchResult"/>
                             <thead>
                             <tr>
-                                <iais:sortableHeader needSort="false" field="subject" value="S/N"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true" field="message_type" value="Message Type"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true" field="template_name" value="Template Name"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true" field="delivery_mode" value="Delivery Mode"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false" field="process" value="Process"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false" field="delivery_mode" value="To Recipient"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false" field="delivery_mode" value="CC Recipient"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true" field="effective_from" value="Effective Start Date"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true" field="effective_to" value="Effective End Date"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false" field="subject" value="S/N"/>
+                                <iais:sortableHeader needSort="true" field="message_type" value="Message Type"/>
+                                <iais:sortableHeader needSort="true" field="template_name" value="Template Name"/>
+                                <iais:sortableHeader needSort="true" field="delivery_mode" value="Delivery Mode"/>
+                                <iais:sortableHeader needSort="true" field="process" value="Process"/>
+                                <iais:sortableHeader needSort="true" field="delivery_mode" value="To Recipients"/>
+                                <iais:sortableHeader needSort="true" field="delivery_mode" value="CC Recipients"/>
+                                <iais:sortableHeader needSort="true" field="effective_from" value="Effective Start Date"/>
+                                <iais:sortableHeader needSort="true" field="effective_to" value="Effective End Date"/>
                                 <th>Action</th>
                             </tr>
                             </thead>
@@ -32,7 +32,7 @@
                             <c:when test="${empty MsgTemplateSearchResult.rows}">
                                 <tr>
                                     <td colspan="12">
-                                        <iais:message key="ACK018" escape="true"></iais:message>
+                                        <iais:message key="ACK018" escape="true"/>
                                     </td>
                                 </tr>
                             </c:when>
@@ -61,11 +61,11 @@
                                         <p>${msgTemplateResult.process}</p>
                                     </td>
                                     <td>
-                                        <p class="visible-xs visible-sm table-row-title">To Recipient</p>
+                                        <p class="visible-xs visible-sm table-row-title">To Recipients</p>
                                         <p>${msgTemplateResult.recipient}</p>
                                     </td>
                                     <td>
-                                        <p class="visible-xs visible-sm table-row-title">CC Recipient</p>
+                                        <p class="visible-xs visible-sm table-row-title">CC Recipients</p>
                                         <p>${msgTemplateResult.recipient}</p>
                                     </td>
                                     <td>

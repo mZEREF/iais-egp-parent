@@ -61,6 +61,11 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     }
 
     @Override
+    public List<MasterCodeCategoryDto> getAllCodeCategory() {
+        return masterCodeClient.getAllMasterCodeCategory().getEntity();
+    }
+
+    @Override
     public MasterCodeCategoryDto saveMasterCodeCategory(MasterCodeCategoryDto masterCodeCategoryDto) {
         return masterCodeClient.saveMasterCodeCategory(masterCodeCategoryDto).getEntity();
     }

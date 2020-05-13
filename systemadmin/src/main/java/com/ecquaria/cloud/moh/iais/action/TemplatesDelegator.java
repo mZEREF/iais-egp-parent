@@ -215,7 +215,7 @@ public class TemplatesDelegator {
             }else{
                 templateMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
                 templateMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
-                ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.TEMPLATE_DATE_ERR_MSG, "Date Submitted From cannot be later than Date Submitted To");
+                ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.TEMPLATE_DATE_ERR_MSG, "Effective Start Date cannot be later than Effective End Date");
             }
         }else{
             if (!StringUtil.isEmpty(templateStartDate)){

@@ -1,25 +1,6 @@
 <form method="post" id="MasterCodeFileForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
-    <div class="row">
-        <div class="col-xs-2 col-md-2">
-            <div class="components">
-                <a class="btn btn-primary" onclick="doCreate()">Create</a>
-            </div>
-        </div>
-        <div class="col-xs-2 col-md-2">
-            <div class="components">
-                <a class="btn btn-primary" href="${pageContext.request.contextPath}/master-code-file">Download</a>
-            </div>
-        </div>
-        <div class="col-xs-2 col-md-2">
-            <div class="file-upload-gp">
-                <input id="selectedFile" name="selectedFile" type="file" style="display: none;"
-                       aria-label="selectedFile1">
-                <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
-            </div>
-        </div>
-    </div>
     <div class="row clearMC">
         <div class="filter-box form-horizontal">
             <div class="form-group">

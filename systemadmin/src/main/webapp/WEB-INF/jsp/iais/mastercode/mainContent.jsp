@@ -33,7 +33,7 @@
                                 <c:when test="${empty MasterCodeSearchResult.rows}">
                                     <tr>
                                         <td colspan="12">
-                                            <iais:message key="ACK018" escape="true"></iais:message>
+                                            <iais:message key="ACK018" escape="true"/>
                                         </td>
                                     </tr>
                                 </c:when>
@@ -85,6 +85,9 @@
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Action</p>
+                                                <c:if test="${masterCodeResult.level != 5}">
+                                                    <button type="button" class="btn btn-default btn-sm" onclick="doCreateCategory('${masterCodeResult.masterCodeId}')">Create</button>
+                                                </c:if>
                                                 <button type="button" class="btn btn-default btn-sm" onclick="doEdit('${masterCodeResult.masterCodeId}')">Edit</button>
                                                 <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal">Delete</button>
                                             </td>
@@ -116,6 +119,15 @@
                             </c:choose>
                             </tbody>
                         </table>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12 text-right">
+                                <a class="btn btn-primary" href="${pageContext.request.contextPath}/master-code-file">Download</a>
+                                <input id="selectedFile" name="selectedFile" type="file" style="display: none;"
+                                       aria-label="selectedFile1">
+                                <a class="btn btn-file-upload btn-primary" href="#">Upload</a>
+                                <a class="btn btn-primary" onclick="doCreate()">Create New Code Category</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

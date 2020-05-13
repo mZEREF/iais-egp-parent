@@ -36,7 +36,7 @@
     }
 
     function doCreate(){
-        submit('doCreate');
+        submit('doCreateCode');
     }
     function jumpToPagechangePage() {
         submit('changePage');
@@ -61,5 +61,10 @@
         $("#codeStatus option:first").prop("selected", 'selected').val("Please Select");
         $(".clearMC .current").text("Please Select");
     });
+
+    function doCreateCategory(mcId) {
+        $("[name='crud_action_value']").val(mcId);
+        submit('createCode');
+    }
 
 </script>
