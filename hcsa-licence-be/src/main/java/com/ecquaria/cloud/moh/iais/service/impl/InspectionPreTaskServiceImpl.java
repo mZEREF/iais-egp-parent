@@ -359,11 +359,11 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             createTask.setTaskType(compTask.getTaskType());
             createTask.setWkGrpId(compTask.getWkGrpId());
             createTask.setUserId(checkUserId);
+            createTask.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
             createTask.setDateAssigned(new Date());
             createTask.setRoleId(stageKey);
             createTask.setAuditTrailDto(auditTrailDto);
             createTask.setProcessUrl(TaskConsts.TASK_PROCESS_URL_MAIN_FLOW);
-            taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
             taskDtoList.add(createTask);
         }
         taskService.createTasks(taskDtoList);
@@ -509,6 +509,12 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                 hcsaRiskInspectionComplianceDto.setSvcCode(serviceCode);
                 hcsaRiskInspectionComplianceDto = hcsaConfigClient.getHcsaRiskInspectionComplianceDto(hcsaRiskInspectionComplianceDto).getEntity();
             }
+        } else {
+            hcsaRiskInspectionComplianceDto.setSvcCode(serviceCode);
+            hcsaRiskInspectionComplianceDto.setNcCountThCritical(0);
+            hcsaRiskInspectionComplianceDto.setNcCountThMajor(0);
+            hcsaRiskInspectionComplianceDto.setNcCountThMinor(0);
+            hcsaRiskInspectionComplianceDto = hcsaConfigClient.getHcsaRiskInspectionComplianceDto(hcsaRiskInspectionComplianceDto).getEntity();
         }
         return hcsaRiskInspectionComplianceDto;
     }

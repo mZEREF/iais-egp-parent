@@ -120,7 +120,7 @@
                                               <c:out value="-"/>
                                             </c:if>
                                           </td>
-                                          <td><c:out value="${inspHistory.complianceRisk}"/></td>
+                                          <td><iais:code code="${inspHistory.complianceRisk}"/></td>
                                           <td>
                                             <c:if test="${!empty inspHistory.inspLeads}">
                                               <c:forEach var="inspLead" items="${inspHistory.inspLeads}">
@@ -297,7 +297,7 @@
                                               <c:if test="${name.value eq checkName.value}">checked="checked"</c:if>
                                             </c:forEach>
                                       />
-                                      <span><c:out value="${name.text}"/></span>
+                                      <span style="font-size: 16px"><c:out value="${name.text}"/></span>
                                     </p>
                                   </c:forEach>
                                 </c:if>
