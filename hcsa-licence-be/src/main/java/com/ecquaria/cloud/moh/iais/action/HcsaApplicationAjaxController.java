@@ -119,8 +119,10 @@ public class HcsaApplicationAjaxController{
             appIntranetDocDto.setUrl(url);
             InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
             appIntranetDocDto.setFileSn((serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? 999:fileSizes);
+            appIntranetDocDto.setIsUpload(true);
             appIntranetDocDtos.add( appIntranetDocDto);
             applicationViewDto.setAppIntranetDocDtoList(appIntranetDocDtos);
+            applicationViewDto.setIsUpload(true);
             ParamUtil.setSessionAttr(request,"applicationViewDto",(Serializable) applicationViewDto);
             //call back upload file succeeded
             if( !StringUtil.isEmpty( appIntranetDocDto.getId())){
@@ -152,6 +154,14 @@ public class HcsaApplicationAjaxController{
             }
             if(appIntranetDocDe!= null)
             appIntranetDocDtos.remove( appIntranetDocDe);
+            boolean isUpload = false;
+            for(AppIntranetDocDto appIntranetDocDto : appIntranetDocDtos){
+                if(appIntranetDocDto.getIsUpload() != null && appIntranetDocDto.getIsUpload()){
+                    isUpload = true;
+                    break;
+                }
+            }
+            applicationViewDto.setIsUpload(isUpload);
             ParamUtil.setSessionAttr(request,"applicationViewDto",(Serializable) applicationViewDto);
             InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
             map.put("fileSn", (serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? -1 : appIntranetDocDtos.size());
