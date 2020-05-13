@@ -209,6 +209,7 @@ public class MasterCodeDelegator {
         String categoryDescription = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_CATEGORY);
         String codeDescription = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_DESCRIPTION);
         String codeStatus = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_STATUS);
+        String filterValue = ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE);
         String codeStartDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM)),
                 SystemAdminBaseConstants.DATE_FORMAT);
         String codeEndDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO)),
@@ -229,6 +230,11 @@ public class MasterCodeDelegator {
             masterCodeMap.put(MasterCodeConstants.MASTER_CODE_DESCRIPTION,"%"+codeDescription+"%");
         }else{
             masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_DESCRIPTION);
+        }
+        if(!StringUtil.isEmpty(filterValue)){
+            masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE,"%"+filterValue+"%");
+        }else{
+            masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE);
         }
         if (!StringUtil.isEmpty(codeStartDate)){
             masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,codeStartDate);

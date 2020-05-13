@@ -23,6 +23,15 @@
             </div>
             <div class="form-group">
                 <iais:value>
+                    <%String filterValue = request.getParameter("filterValue")==null?"":request.getParameter("filterValue");%>
+                    <label class="col-xs-4 col-md-4 control-label">Filter Value</label>
+                    <div class="col-xs-8 col-sm-8 col-md-8">
+                        <input id="filterValue" type="text" name="filterValue" value="<%=filterValue%>" maxlength="50">
+                    </div>
+                </iais:value>
+            </div>
+            <div class="form-group">
+                <iais:value>
                     <%String esd = request.getParameter("esd")==null?"":request.getParameter("esd");%>
                     <label class="col-xs-4 col-md-4 control-label" for="esd">Effective Start Date.</label>
                     <div class="col-xs-8 col-sm-8 col-md-8">

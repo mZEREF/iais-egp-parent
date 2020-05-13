@@ -19,11 +19,11 @@
                                 <th>Code Category</th>
                                 <th>Code Value</th>
                                 <th>Code Description</th>
+                                <th>Filter Value</th>
                                 <th>Sequence</th>
                                 <th>Status</th>
                                 <th>Effective Start Date</th>
                                 <th>Effective End Date</th>
-                                <th>Remarks</th>
                                 <th>Version</th>
                                 <th>Action</th>
                             </tr>
@@ -57,6 +57,10 @@
                                                 <p>${masterCodeResult.codeDescription}</p>
                                             </td>
                                             <td>
+                                                <p class="visible-xs visible-sm table-row-title">Filter Value</p>
+                                                <p>${masterCodeResult.filterValue}</p>
+                                            </td>
+                                            <td>
                                                 <p class="visible-xs visible-sm table-row-title">Sequence</p>
                                                 <p>${masterCodeResult.sequence}</p>
                                             </td>
@@ -74,10 +78,6 @@
                                                 <p class="visible-xs visible-sm table-row-title">Effective End Date</p>
                                                 <p><fmt:formatDate value="${masterCodeResult.effectiveEndDate}"
                                                                    pattern="dd/MM/yyyy"/></p>
-                                            </td>
-                                            <td>
-                                                <p class="visible-xs visible-sm table-row-title">Remarks</p>
-                                                <p>${masterCodeResult.remarks}</p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Version</p>

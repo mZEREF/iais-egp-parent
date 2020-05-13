@@ -8,6 +8,7 @@
                    (SELECT category_description FROM cm_master_code_category where code_category = mc.code_category) as code_category,
                    code_value,
                    code_description,
+                   filter_value,
                    sequence,
                    remarks,
                    status,
@@ -19,6 +20,7 @@
             <#if id??> AND CHARINDEX(:id, ACM.master_code_id) >0</#if>
             <#if codeCategory??> AND ACM.code_category LIKE :codeCategory</#if>
             <#if codeDescription??> AND ACM.code_description LIKE :codeDescription</#if>
+            <#if filterValue??> AND ACM.filter_value LIKE :filterValue</#if>
             <#if esd??> AND ACM.effective_from > :esd</#if>
             <#if eed??> AND ACM.effective_to < :eed</#if>
             <#if codeStatus??> AND ACM.status = :codeStatus</#if>
