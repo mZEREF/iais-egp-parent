@@ -33,11 +33,11 @@ public interface InspectionPreTaskService {
     /**
       * @author: shicheng
       * @Date 2019/12/9
-      * @Param: null
+      * @Param: appType
       * @return: List<SelectOption>
       * @Descripation: get Processing Decision Option
       */
-    List<SelectOption> getProcessDecOption(String appStatus);
+    List<SelectOption> getProcessDecOption(String appType);
 
     /**
       * @author: shicheng

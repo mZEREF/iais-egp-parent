@@ -146,9 +146,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     @Override
-    public List<SelectOption> getProcessDecOption(String appStatus) {
+    public List<SelectOption> getProcessDecOption(String appType) {
         String[] processDecArr;
-        if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appStatus)) {
+        if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)) {
             processDecArr = new String[]{InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
         } else {
             processDecArr = new String[]{InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION,

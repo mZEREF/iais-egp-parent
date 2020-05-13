@@ -118,14 +118,17 @@ public class InspectionPreDelegator {
         String appStatus = applicationDto.getStatus();
         inspectionPreTaskDto.setAppStatus(appStatus);
         //get process decision
-        List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption(appStatus);
-        //get Request For Information
-        List<SelectOption> rfiCheckOption = inspectionPreTaskService.getRfiCheckOption();
-        //set stage and userId map
-        inspectionPreTaskDto = inspectionPreTaskService.getPreInspRbOption(applicationDto.getApplicationNo(), inspectionPreTaskDto);
-        List<SelectOption> preInspRbOption = inspectionPreTaskDto.getPreInspRbOption();
-        inspectionPreTaskDto.setPreInspRfiOption(rfiCheckOption);
-        inspectionPreTaskDto.setPreInspRbOption(preInspRbOption);
+        List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption(applicationDto.getApplicationType());
+        if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationDto.getApplicationType())) {
+            //get Request For Information
+            List<SelectOption> rfiCheckOption = inspectionPreTaskService.getRfiCheckOption();
+            //set stage and userId map
+            inspectionPreTaskDto = inspectionPreTaskService.getPreInspRbOption(applicationDto.getApplicationNo(), inspectionPreTaskDto);
+            List<SelectOption> preInspRbOption = inspectionPreTaskDto.getPreInspRbOption();
+            inspectionPreTaskDto.setPreInspRfiOption(rfiCheckOption);
+            inspectionPreTaskDto.setPreInspRbOption(preInspRbOption);
+            ParamUtil.setSessionAttr(bpc.request, "preInspRbOption", (Serializable) preInspRbOption);
+        }
         //adhocChecklist
         List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
         //Self-Checklist
@@ -149,7 +152,6 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
-        ParamUtil.setSessionAttr(bpc.request, "preInspRbOption", (Serializable) preInspRbOption);
         ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONDTO, applicationDto);
         ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO, applicationViewDto);
     }
