@@ -69,14 +69,22 @@
                                             <td><c:out value="${txnRefNo}"/></td>
                                         </c:if>
                                         <td><c:out value="${txnDt}"/></td>
-                                        <td><c:out value="${AppSubmissionDto.amountStr}"/></td>
+                                        <td><c:if test="${AppSubmissionDto.amountStr==null}">NA</c:if>
+                                            <c:if test="${AppSubmissionDto.amountStr!=null}">
+                                                <c:out value="${AppSubmissionDto.amountStr}"/>
+                                            </c:if>
+                                         </td>
                                         <td>
                                             <c:choose>
                                                 <c:when test="${'Credit'==AppSubmissionDto.paymentMethod}">
                                                     Credit Card
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <c:out value="${AppSubmissionDto.paymentMethod}"/>
+                                                    <c:if test="${AppSubmissionDto.paymentMethod==null}">NA</c:if>
+                                                    <c:if test="${AppSubmissionDto.paymentMethod!=null}">
+                                                        <c:out value="${AppSubmissionDto.paymentMethod}"/>
+                                                    </c:if>
+
                                                 </c:otherwise>
                                             </c:choose>
                                         </td>

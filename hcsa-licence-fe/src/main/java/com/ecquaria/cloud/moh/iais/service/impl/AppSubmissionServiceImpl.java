@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
@@ -579,6 +580,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             appSubmissionDto.setDraftNo(draft);
         }
 
+    }
+
+    @Override
+    public void saveAppGrpMisc(AppGroupMiscDto appGroupMiscDto) {
+        applicationClient.saveAppGroupMiscDto(appGroupMiscDto);
     }
 
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){

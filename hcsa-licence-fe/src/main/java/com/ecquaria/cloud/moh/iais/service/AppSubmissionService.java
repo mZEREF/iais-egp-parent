@@ -46,4 +46,5 @@ public interface AppSubmissionService {
     void saveAppsubmission(AppSubmissionDto appSubmissionDto );
     boolean compareAndSendEmail(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto);
     void setDraftNo(AppSubmissionDto appSubmissionDto);
+    void  saveAppGrpMisc(AppGroupMiscDto appGroupMiscDto);
 }

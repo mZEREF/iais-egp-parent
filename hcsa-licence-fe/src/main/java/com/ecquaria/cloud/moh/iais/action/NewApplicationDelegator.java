@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
@@ -1066,14 +1067,13 @@ public class NewApplicationDelegator {
 
         boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
         //is need to pay ?
-        boolean premiseIsChange = compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
-        if(premiseIsChange){
-            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-            if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
-                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                    appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
-                }
-            }
+
+
+        if(!IaisCommonUtils.isEmpty(applicationDtos)){
+            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
+            ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
+            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, MessageUtil.getMessageDesc("ERRRFC001"));
+            return ;
         }
         //change personnel
         AppSubmissionDto changePerson=oldAppSubmissionDto;
@@ -1102,14 +1102,12 @@ public class NewApplicationDelegator {
         appSubmissionService.setRiskToDto(changePerson);
         changePerson.setAppEditSelectDto(appEditSelectDto);
         changePerson.setChangeSelectDto(appEditSelectDto);
+        AppSubmissionDto changePersonAppSubmissionDto =
+                appSubmissionService.submitRequestChange(changePerson, bpc.process);
+        //notification
+        String grpId = changePersonAppSubmissionDto.getAppGrpId();
 
 
-        if(!IaisCommonUtils.isEmpty(applicationDtos)){
-            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
-            ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
-            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, MessageUtil.getMessageDesc("ERRRFC001"));
-            return ;
-        }
         appSubmissionDto.setAutoRfc(isAutoRfc);
         String draftNo = appSubmissionDto.getDraftNo();
         if(StringUtil.isEmpty(draftNo)){
@@ -1134,18 +1132,23 @@ public class NewApplicationDelegator {
         double amount = feeDto.getTotal();
         log.info(StringUtil.changeForLog("the amount is -->:") + amount);
         appSubmissionDto.setAmount(amount);
+
         //judge is the preInspection
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
         if (preOrPostInspectionResultDto == null) {
-            appSubmissionDto.setPreInspection(true);
-            appSubmissionDto.setRequirement(true);
+            appSubmissionDto.setPreInspection(Boolean.TRUE);
+            appSubmissionDto.setRequirement(Boolean.TRUE);
         } else {
             appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
             appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
         }
         //set Risk Score
         appSubmissionService.setRiskToDto(appSubmissionDto);
-
+        if(0.0==amount){
+            appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+            appSubmissionDto.setCreatAuditAppStatus(null);
+        }
+        appSubmissionDto.setIsNeedNewLicNo(AppConsts.YES);
         appSubmissionDto = appSubmissionService.submitRequestChange(appSubmissionDto, bpc.process);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         String isrfiSuccess = "N";
@@ -1154,13 +1157,22 @@ public class NewApplicationDelegator {
             String appGrpId = appSubmissionDto.getAppGrpId();
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
-            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-            serviceConfigService.updatePaymentStatus(appGrp);
+            if(0.0!=amount){
+                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                serviceConfigService.updatePaymentStatus(appGrp);
+            }
             isrfiSuccess = "Y";
             ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE,"The request for change save success");
         }
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess",isrfiSuccess);
-
+        String grpId1 = appSubmissionDto.getAppGrpId();
+        AppGroupMiscDto appGroupMiscDto=new AppGroupMiscDto();
+        //notification
+        appGroupMiscDto.setAppGrpId(grpId);
+        appGroupMiscDto.setMiscValue(grpId1);
+        appGroupMiscDto.setMiscType(ApplicationConsts.APP_GROUP_MISC_TYPE_AMEND_GROUP_ID);
+        appGroupMiscDto.setStatus(appSubmissionDto.getAppType());
+        appSubmissionService.saveAppGrpMisc(appGroupMiscDto);
 
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
@@ -1330,12 +1342,16 @@ public class NewApplicationDelegator {
      */
     public void prepareAckPage(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do prepareAckPage start ...."));
-
+        String txnRefNo=(String)bpc.request.getSession().getAttribute("txnDt");
+        if(StringUtil.isEmpty(txnRefNo)){
+            String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
+            ParamUtil.setSessionAttr(bpc.request,"txnDt",txnDt);
+        }
         log.info(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 
     /**
-     * StartStep: prepareJump
+     * StartStep: prepareJumpv
      *
      * @param bpc
      * @throws

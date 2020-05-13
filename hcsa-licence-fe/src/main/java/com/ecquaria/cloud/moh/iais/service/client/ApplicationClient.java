@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealPageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
@@ -260,4 +261,6 @@ public interface ApplicationClient  {
 
     @PutMapping(value = "/iais-application/batch-update/application", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> updateApplicationList(@RequestBody List<ApplicationDto> applicationDtoList);
+    @PostMapping(value = "/iais-application/app-group-misc-dto",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppGroupMiscDto> saveAppGroupMiscDto(@RequestBody AppGroupMiscDto appGroupMiscDto);
 }
