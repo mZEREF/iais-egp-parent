@@ -129,19 +129,18 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-
-        return  applicationClient.saveDraft(appSubmissionDto).getEntity();
+        return applicationClient.saveDraft(appSubmissionDto).getEntity();
     }
 
     @Override
     public String getDraftNo(String appType) {
-        return   systemAdminClient.draftNumber(appType).getEntity();
+        return systemAdminClient.draftNumber(appType).getEntity();
     }
 
     @Override
     public String getGroupNo(String appType) {
 
-        return   systemAdminClient.applicationNumber(appType).getEntity();
+        return systemAdminClient.applicationNumber(appType).getEntity();
     }
 
     @Override
@@ -258,7 +257,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             riskAcceptiionDtos.add(riskAcceptiionDto);
         }
 
-        return     appConfigClient.recommendIsPreInspection(recommendInspectionDto).getEntity();
+        return appConfigClient.recommendIsPreInspection(recommendInspectionDto).getEntity();
     }
 
     @Override
@@ -271,9 +270,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             riskAcceptiionDto.setApptype(appSubmissionDto.getAppType());
             riskAcceptiionDtoList.add(riskAcceptiionDto);
         }
-
         List<RiskResultDto> riskResultDtoList = appConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
-
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
             String serviceCode = appSvcRelatedInfoDto.getServiceCode();
             RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList,serviceCode);
@@ -297,7 +294,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList,String serviceCode){
         RiskResultDto result = null;
         if(riskResultDtoList == null || StringUtil.isEmpty(serviceCode)){
-            return result;
+            return null;
         }
         for(RiskResultDto riskResultDto : riskResultDtoList){
             if(serviceCode.equals(riskResultDto.getSvcCode())){

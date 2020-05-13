@@ -80,7 +80,7 @@ public interface ApplicationClient  {
 
     @PostMapping(path = "/iais-submission/draft",
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppSubmissionDto>  saveDraft(@RequestBody AppSubmissionDto appSubmissionDto );
+    FeignResponseEntity<AppSubmissionDto> saveDraft(@RequestBody AppSubmissionDto appSubmissionDto );
 
     @PostMapping(path = "/iais-submission", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveSubmision(@RequestBody AppSubmissionDto appSubmissionDto);
