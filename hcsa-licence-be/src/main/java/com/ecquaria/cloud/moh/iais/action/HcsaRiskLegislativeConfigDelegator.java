@@ -10,11 +10,13 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskLegislativeService;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskService;
+import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.HcsaLegislativeValidate;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +52,7 @@ public class HcsaRiskLegislativeConfigDelegator {
     public void prepare(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the PreConfig start ...."));
         HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,"yearSelectOptions",(Serializable)LicenceUtil.getRiskYearsForGlobalRisk());
     }
 
     public void confirm(BaseProcessClass bpc) {

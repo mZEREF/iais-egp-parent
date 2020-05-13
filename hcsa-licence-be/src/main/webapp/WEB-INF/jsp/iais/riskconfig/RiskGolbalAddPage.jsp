@@ -28,18 +28,17 @@
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
                         <h2>Global Risk Configuration</h2>
-                        <div style="overflow-x: auto;overflow-y:hidden;">
-                        <table  width = "125%" >
+                        <div class="table-gp">
+                        <table class="table">
                             <thead>
                             <tr>
                                 <th  width ="5%"><span>Service Name</span></th>
-                                <th width ="10%"><span>Maximum Licence Tenure</span></th>
-                                <th  width ="5%"><span>Last Inspection was more than (X Years)</span></th>
+                                <th width ="8%"><span>Maximum Licence Tenure (X Years)</span></th>
+                                <th  width ="8%"><span>Last Inspection was more than (X Years)</span></th>
                                 <th width ="10%"><span>Eligible for auto renewal</span></th>
-                                <th width ="13%"><span>Type of Inspection Required(New)</span></th>
-                                <th width ="10%"><span>Pre/Post Licensing Inspection(New)</span></th>
-                                <th width ="13%"><span>Type of Inspection Required(Renew)</span></th>
-                                <th width ="10%"><span>Pre/Post Licensing Inspection(Renew)</span></th>
+                                <th  width ="5%"><span>Application Type</span></th>
+                                <th width ="14%"><span>Type of Inspection Required</span></th>
+                                <th width ="10%"><span>Pre/Post Licensing Inspection</span></th>
                                 <th width ="12%"><span>Effective Start Date</span></th>
                                 <th width ="12%"><span>Effective End Date</span></th>
                             </tr>
@@ -59,10 +58,10 @@
                                         </c:choose>
                                     </td>
                                     <td>
-                                        <iais:select name="${go.serviceCode}maxLic" options="yearSelectOptions" firstOption="Please Select" value="${go.doMaxLic}"></iais:select>
+                                        <iais:select name="${go.serviceCode}maxLic" options="yearSelectOptions" firstOption="-" value="${go.doMaxLic}"></iais:select>
                                     </td>
                                     <td>
-                                        <input type="text" maxlength="2" style="width: 60px" id="<c:out value="${go.serviceCode}"/>doLast" name="<c:out value="${go.serviceCode}"/>doLast"value="<c:out value="${go.doLastInspection}"></c:out>">
+                                        <iais:select name="${go.serviceCode}doLast" id="${go.serviceCode}doLast" options="yearSelectOptions" firstOption="-" value="${go.doLastInspection}"></iais:select>
                                     </td>
                                     <td>
 
@@ -70,20 +69,13 @@
                                         <iais:select name="${svc}autoreop" options="autoRenewOp" firstOption="Please Select" value="${go.doAutoRenew}"></iais:select>
 
                                     </td>
+                                    <td> New Application</td>
                                     <td>
                                         <iais:select name="${svc}newinpTypeOps" options="inpTypeOp" firstOption="Please Select" value="${go.donewInspectType}"></iais:select>
 
                                     </td>
                                     <td>
                                         <iais:select name="${svc}newPreOrPostOps" options="PreOrPostOp" firstOption="Please Select" value="${go.donewIsPreInspect}"></iais:select>
-
-                                    </td>
-                                    <td>
-                                        <iais:select name="${svc}renewinpTypeOps" options="inpTypeOp" firstOption="Please Select" value="${go.dorenewInspectType}"></iais:select>
-
-                                    </td>
-                                    <td>
-                                        <iais:select name="${svc}renewPreOrPostOps" options="PreOrPostOp" firstOption="Please Select" value="${go.dorenewIsPreInspect}"></iais:select>
 
                                     </td>
                                     <td>
@@ -96,40 +88,34 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td></td>
+                                    <td></td> <td></td>   <td></td> <td></td> <td> Renewal </td>
                                     <td>
+                                        <iais:select name="${svc}renewinpTypeOps" options="inpTypeOp" firstOption="Please Select" value="${go.dorenewInspectType}"></iais:select>
+                                    </td>
+                                    <td>
+                                        <iais:select name="${svc}renewPreOrPostOps" options="PreOrPostOp" firstOption="Please Select" value="${go.dorenewIsPreInspect}"></iais:select>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="9">
                                         <c:set value = "error_${go.serviceCode}maxl" var = "maxl"/>
                                         <span class="error-msg" id="<c:out value="${maxl}"/>" name="iaisErrorMsg"></span>
-                                    </td>
-                                    <td>
                                         <c:set value = "error_${go.serviceCode}last" var = "last"/>
                                         <span class="error-msg" id="<c:out value="${last}"/>" name="iaisErrorMsg"></span>
-                                    </td>
-                                    <td>
                                         <c:set value = "error_${go.serviceCode}auto" var = "auto"/>
                                         <span class="error-msg" id="<c:out value="${auto}"/>" name="iaisErrorMsg"></span>
-                                    </td>
-                                    <td>
                                         <c:set value = "error_${go.serviceCode}newit" var = "newit"/>
                                         <span class="error-msg" id="<c:out value="${newit}"/>" name="iaisErrorMsg"></span>
-                                    </td>
-                                    <td>
                                         <c:set value = "error_${go.serviceCode}newpp" var = "newpp"/>
                                         <span class="error-msg" id="<c:out value="${newpp}"/>" name="iaisErrorMsg"></span>
-                                    </td>
-                                    <td>
                                         <c:set value = "error_${go.serviceCode}renewit" var = "renewit"/>
                                         <span class="error-msg" id="<c:out value="${renewit}"/>" name="iaisErrorMsg"></span>
-                                    </td>
-                                    <td>
                                         <c:set value = "error_${go.serviceCode}renewpp" var = "renewpp"/>
                                         <span class="error-msg" id="<c:out value="${renewpp}"/>" name="iaisErrorMsg"></span>
-                                    </td>
-                                    <td>
                                         <c:set value = "error_${go.serviceCode}inEffDate" var = "inEffDate"/>
                                         <span class="error-msg" id="<c:out value="${inEffDate}"/>" name="iaisErrorMsg"></span>
-                                    </td>
-                                    <td>
                                         <c:set value = "error_${go.serviceCode}inEndDate" var = "inEndDate"/>
                                         <span class="error-msg" id="<c:out value="${inEndDate}"/>" name="iaisErrorMsg"></span>
                                     </td>
@@ -139,25 +125,23 @@
                             </tbody>
                         </table>
                         </div>
-                            <div class="table-gp">
                                 <div class="table-footnote">
                                 </div>
+                        <div>
+                            <div style="float:left"> <span><a href="javascript:void(0);" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a></span></div>
+                            <div style="float:right">
+                                <button class="btn btn-primary next" type="button" onclick="javascript:doNext();">Submit</button>
                             </div>
                         </div>
-
-                    <div>
-                        <div style="float:left"> <span><a href="javascript:void(0);" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a></span></div>
-                        <div style="float:right">
-                            <button class="btn btn-primary next" type="button" onclick="javascript:doNext();">Submit</button>
                         </div>
-                    </div>
+
                 </div>
             </div>
         </div>
 
     </div>
 </form>
-<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+<%@ include file="validationForRisk.jsp" %>
 <script type="text/javascript">
     function doNext() {
         SOP.Crud.cfxSubmit("mainForm","next");

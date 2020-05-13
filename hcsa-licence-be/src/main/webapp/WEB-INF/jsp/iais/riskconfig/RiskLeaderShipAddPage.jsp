@@ -29,13 +29,12 @@
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
                         <h2>Leadership and Governance Risk Configuration</h2>
-                        <div class="gray-content-box">
                             <div class="table-gp">
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th  width="8%" >Service Name</th>
-                                        <th  width="8%">Threshold</th>
+                                        <th  width="10%" >Service Name</th>
+                                        <th  width="10%">Threshold  (X Years)</th>
                                         <th>Source</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
@@ -61,7 +60,8 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <p><input type="text" id="<c:out value="${lea.svcCode}"/>inthershold" name="<c:out value="${lea.svcCode}"/>inthershold"value="<c:out value="${lea.adThershold}"></c:out>">
+                                                <p>
+                                                    <iais:select name="${lea.svcCode}inthershold" id="${lea.svcCode}inthershold" options="yearSelectOptions" firstOption="-" value="${lea.adThershold}"></iais:select>
                                                 </p>
                                                 <c:set value = "error_${lea.svcCode}inThershold" var = "inther"/>
                                                 <span class="error-msg" id="<c:out value="${inther}"/>" name="iaisErrorMsg"></span>
@@ -112,7 +112,7 @@
 
                                         </tr>
                                         <tr>
-                                            <td colspan="7">
+                                            <td colspan="8">
                                                 <c:set value = "error_${lea.svcCode}inRightLowCaseCounth" var = "inrightlow"/>
                                                 <span class="error-msg" id="<c:out value="${inrightlow}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${lea.svcCode}inLeftModCaseCounth" var = "inleftmod"/>
@@ -182,7 +182,7 @@
 
 
                                         </tr>
-                                        <tr> <td colspan="7">
+                                        <tr> <td colspan="8">
                                             <c:set value = "error_${lea.svcCode}prRightLowCaseCounth" var = "prrightlow"/>
                                             <span class="error-msg" id="<c:out value="${prrightlow}"/>" name="iaisErrorMsg"></span>
                                             <c:set value = "error_${lea.svcCode}prLeftModCaseCounth" var = "prleftmod"/>
@@ -198,14 +198,14 @@
                                 <div class="table-footnote">
                                 </div>
                             </div>
+                        <div>
+                            <div style="float:left"> <span><a href="javascript:void(0);" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a></span></div>
+                            <div style="float:right">
+                                <button class="btn btn-primary next" type="button" onclick="javascript:doNext();">Submit</button>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <div style="float:left"> <span><a href="javascript:void(0);" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a></span></div>
-                        <div style="float:right">
-                            <button class="btn btn-primary next" type="button" onclick="javascript:doNext();">Submit</button>
                         </div>
-                    </div>
+
                 </div>
             </div>
         </div>

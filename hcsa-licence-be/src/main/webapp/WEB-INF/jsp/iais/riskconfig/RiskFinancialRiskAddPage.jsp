@@ -28,13 +28,12 @@
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
                         <h2>Financial Scheme Audit Risk Configuration</h2>
-                        <div class="gray-content-box">
                             <div class="table-gp">
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th width="8%">Service Name</th>
-                                        <th width="8%">Threshold</th>
+                                        <th width="10%">Service Name</th>
+                                        <th width="10%">Threshold (X Years)</th>
                                         <th>Source</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
@@ -190,7 +189,7 @@
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
                                         </tr>
-                                        <tr>  <td>
+                                        <tr>  <td colspan="8">
                                             <c:set value = "error_${fin.serviceCode}prRightLowCaseCounth" var = "prrightlow"/>
                                             <span class="error-msg" id="<c:out value="${prrightlow}"/>" name="iaisErrorMsg"></span>
                                             <c:set value = "error_${fin.serviceCode}prLeftModCaseCounth" var = "prleftmod"/>
@@ -206,13 +205,14 @@
                                 <div class="table-footnote">
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div>
                         <div style="float:left"> <span><a href="javascript:void(0);" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a></span></div>
                         <div style="float:right">
                             <button class="btn btn-primary next" type="button" onclick="javascript:doNext();">Submit</button>
                         </div>
+                    </div>
+                        </div>
+
+
                     </div>
                 </div>
             </div>

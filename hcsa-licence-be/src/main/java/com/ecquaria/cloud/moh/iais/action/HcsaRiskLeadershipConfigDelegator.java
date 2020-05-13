@@ -10,12 +10,14 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskLeaderShipService;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskService;
+import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.HcsaLeadershipValidate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +54,7 @@ public class HcsaRiskLeadershipConfigDelegator {
         HttpServletRequest request = bpc.request;
         RiskLeaderShipShowDto leaderShowDto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, "leaderShowDto");
         ParamUtil.setSessionAttr(request, "leaderShowDto", leaderShowDto);
+        ParamUtil.setSessionAttr(request,"yearSelectOptions",(Serializable)LicenceUtil.getRiskYearsForGlobalRisk());
 
     }
 

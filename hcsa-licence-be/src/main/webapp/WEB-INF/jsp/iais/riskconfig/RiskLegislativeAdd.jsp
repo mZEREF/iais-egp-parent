@@ -28,17 +28,16 @@
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
                         <h2>Legislative Breaches Risk Configuration</h2>
-                        <div class="gray-content-box">
                             <div class="table-gp">
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th >Service Name</th>
-                                        <th  >Threshold</th>
+                                        <th width="10%">Service Name</th>
+                                        <th width="10%">Threshold  (X Years)</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
-                                        <th>Minimum Number of Cases</th>
-                                        <th>Maximum Number of Cases</th>
+                                        <th  width="10%">Minimum Number of Cases</th>
+                                        <th  width="10%">Maximum Number of Cases</th>
                                         <th>Risk Rating</th>
                                     </tr>
                                     </thead>
@@ -57,7 +56,8 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <p><input type="text" id="<c:out value="${leg.svcCode}"/>inthershold" name="<c:out value="${leg.svcCode}"/>inthershold"value="<c:out value="${leg.doThershold}"></c:out>">
+                                                <p>
+                                                    <iais:select name="${leg.svcCode}inthershold" id="${leg.svcCode}inthershold" options="yearSelectOptions" firstOption="-" value="${leg.doThershold}"></iais:select>
                                                 </p>
                                                 <c:set value = "error_${leg.svcCode}inThershold" var = "inther"/>
                                                 <span class="error-msg" id="<c:out value="${inther}"/>" name="iaisErrorMsg"></span>
@@ -124,14 +124,13 @@
                                 <div class="table-footnote">
                                 </div>
                             </div>
+                        <div>
+                            <div style="float:left"> <span><a href="javascript:void(0);" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a></span></div>
+                            <div style="float:right">
+                                <button class="btn btn-primary next" type="button" onclick="javascript:doNext();">Submit</button>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <div style="float:left"> <span><a href="javascript:void(0);" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a></span></div>
-                        <div style="float:right">
-                            <button class="btn btn-primary next" type="button" onclick="javascript:doNext();">Submit</button>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>

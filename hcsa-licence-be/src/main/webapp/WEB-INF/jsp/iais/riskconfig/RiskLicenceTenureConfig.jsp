@@ -232,7 +232,7 @@
         </div>
     </div>
 </form>
-<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+<%@ include file="validationForRisk.jsp" %>
 <script type="text/javascript">
     function doNext() {
         SOP.Crud.cfxSubmit("mainForm","next");

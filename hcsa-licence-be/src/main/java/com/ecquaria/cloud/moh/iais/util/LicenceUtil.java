@@ -107,10 +107,10 @@ public class LicenceUtil {
 
     public static List<SelectOption> getRiskYearsForGlobalRisk(){
         List<SelectOption> selectOptions;
-            String dateTypeText =  MasterCodeUtil.getCodeDesc(RiskConsts.YEAR);
+           // String dateTypeText =  MasterCodeUtil.getCodeDesc(RiskConsts.YEAR);
             selectOptions = new ArrayList<>(5);
             for(int i = 1;i<6;i++)
-                selectOptions.add(new SelectOption(String.valueOf(i),i + " " + dateTypeText));
+                selectOptions.add(new SelectOption(String.valueOf(i),String.valueOf(i)));
         return selectOptions;
     }
     /**

@@ -28,7 +28,6 @@
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
                         <h2>Risk Weightage Configuration</h2>
-                        <div class="gray-content-box">
                             <div class="table-gp">
                                 <table class="table">
                                     <thead>
@@ -104,21 +103,21 @@
                                 <div class="table-footnote">
                                 </div>
                             </div>
+                        <div>
+                            <div style="float:left"> <span><a href="javascript:void(0);" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a></span></div>
+                            <div style="float:right">
+                                <button class="btn btn-primary next" type="button" onclick="javascript:doNext();">Submit</button>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <div style="float:left"> <span><a href="javascript:void(0);" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a></span></div>
-                        <div style="float:right">
-                            <button class="btn btn-primary next" type="button" onclick="javascript:doNext();">Submit</button>
                         </div>
-                    </div>
+
                 </div>
             </div>
         </div>
 
     </div>
 </form>
-<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+<%@ include file="validationForRisk.jsp" %>
 <script type="text/javascript">
     function doNext() {
         SOP.Crud.cfxSubmit("mainForm","next");
