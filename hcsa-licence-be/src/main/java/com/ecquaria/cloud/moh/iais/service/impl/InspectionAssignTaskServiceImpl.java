@@ -95,8 +95,10 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         List<String> workGrpIdList = new ArrayList<>(workGrpIds);
         for (String workGrpId : workGrpIdList) {
             for (TaskDto tDto : taskService.getCommPoolByGroupWordId(workGrpId)) {
-                if (tDto.getRoleId().equals(curRole)) {
-                    taskDtoList.add(tDto);
+                if(tDto.getRoleId() != null) {
+                    if (tDto.getRoleId().equals(curRole)) {
+                        taskDtoList.add(tDto);
+                    }
                 }
             }
         }
