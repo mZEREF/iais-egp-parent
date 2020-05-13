@@ -75,7 +75,8 @@ public class InterInboxDelegator {
             .clz(InboxAppQueryDto.class)
             .searchAttr(InboxConst.APP_PARAM)
             .resultAttr(InboxConst.APP_RESULT)
-            .sortField("CREATED_DT").sortType(InboxConst.DESCENDING).build();
+            .sortField("CREATED_DT")
+            .sortType(InboxConst.DESCENDING).build();
 
     private FilterParameter inboxParameter = new FilterParameter.Builder()
             .clz(InboxQueryDto.class)
@@ -88,7 +89,8 @@ public class InterInboxDelegator {
             .clz(InboxLicenceQueryDto.class)
             .searchAttr(InboxConst.LIC_PARAM)
             .resultAttr(InboxConst.LIC_RESULT)
-            .sortField("START_DATE").sortType(InboxConst.DESCENDING).build();
+            .sortField("START_DATE")
+            .sortType(InboxConst.DESCENDING).build();
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException, ParseException {
         clearSessionAttr(bpc.request);
