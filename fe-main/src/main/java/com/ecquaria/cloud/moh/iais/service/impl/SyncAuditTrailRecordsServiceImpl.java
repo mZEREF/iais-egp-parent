@@ -58,7 +58,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
     private String fileFormat = ".text";
     private String backups;
 
-    private Boolean flag=true;
+    private boolean flag = true;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
