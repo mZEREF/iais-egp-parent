@@ -58,6 +58,24 @@
                                                     </div>
                                                 </c:forEach>
                                             </div>
+                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && requestInformationConfig == null}">
+                                                <div class="row">
+                                                    <div class="col-xs-5">
+                                                        Please indicate an effective date of change for your licence information to be updated.The date of change will be effected on the indicated date or approval date, whichever is the later date
+                                                    </div>
+                                                    <div class="col-xs-7">
+                                                        <iais:datePicker cssClass="rfcEffectiveDate" name="rfcEffectiveDate" value="${AppSubmissionDto.effectiveDateStr}" />
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-5">
+                                                    </div>
+                                                    <div class="col-xs-7">
+                                                        <span class="error-msg" name="iaisErrorMsg" id="error_rfcEffectiveDate"></span>
+                                                    </div>
+                                                </div>
+                                                <br/>
+                                            </c:if>
                                             <c:if test="${GroupLicenceConfig != null && AppSubmissionDto.appType == 'APTY002' && !AppSubmissionDto.onlySpecifiedSvc && requestInformationConfig == null}">
                                                 <div class="form-check">
                                                     <input class="form-check-input" id="groupLicence" type="checkbox" <c:if test="${AppSubmissionDto.groupLic}">checked="checked"</c:if> name="isGroupLic" aria-invalid="false" value="1">
@@ -68,11 +86,6 @@
                                                 <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" value="1" aria-invalid="false" <c:if test="${AppSubmissionDto.userAgreement}">checked="checked"</c:if> >
                                                 <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span>I hereby certify that the information I provided is all correct and accurate</label>
                                             </div>
-                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && requestInformationConfig == null}">
-                                                <div class="form-check">
-
-                                                </div>
-                                            </c:if>
                                             <div>
                                                 <span id="error_fieldMandatory"  class="error-msg"></span>
                                             </div>
@@ -102,6 +115,7 @@
             </div>
         </div>
     </div>
+    <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
 <%--<c:if test="${ not empty selectDraftNo}">
     <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>

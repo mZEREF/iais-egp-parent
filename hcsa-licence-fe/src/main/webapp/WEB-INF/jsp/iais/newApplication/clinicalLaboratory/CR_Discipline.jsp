@@ -142,8 +142,22 @@
                                 <td >
                                   <c:choose>
                                     <c:when test="${needTextArea}">
+                                      <c:set var="otherScope" value=""/>
+                                      <c:forEach var="svcScope" items="${svcLaboratoryDisciplinesDto}" >
+                                        <c:choose>
+                                          <c:when test="${appGrpPremisesDto.premisesIndexNo == svcScope.premiseVal}">
+                                            <c:forEach var="svcChkLst" items="${svcScope.appSvcChckListDtoList}">
+                                              <c:if test="${'Please indicate' == svcChkLst.chkName}">
+                                                <c:set var="otherScope" value="${svcChkLst.otherScopeName}"/>
+                                              </c:if>
+                                            </c:forEach>
+                                          </c:when>
+                                          <c:otherwise>
+                                          </c:otherwise>
+                                        </c:choose>
+                                      </c:forEach>
                                       <input type="hidden" name="needTextArea" value="1"/>
-                                      <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" cols="45" <c:if test="${!checkStat}">disabled</c:if> >${appGrpPremisesDto.otherScopeName}</textarea>
+                                      <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" cols="45" <c:if test="${!checkStat}">disabled</c:if> >${otherScope}</textarea>
                                       <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError${status.index}"></span>
                                     </c:when>
                                     <c:otherwise>

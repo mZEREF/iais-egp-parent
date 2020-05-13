@@ -80,7 +80,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -89,6 +91,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Pattern;
+
+import static java.util.regex.Pattern.compile;
 
 /**
  * egator
@@ -472,8 +477,6 @@ public class NewApplicationDelegator {
                 appEditSelectDto.setPremisesEdit(true);
                 appSubmissionDto.setChangeSelectDto(appEditSelectDto);
             }
-
-
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
         String crud_action_value = ParamUtil.getString(bpc.request, "crud_action_value");
@@ -741,6 +744,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doPreview start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String isGroupLic = ParamUtil.getString(bpc.request,"isGroupLic");
+        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         if(!appSubmissionDto.isOnlySpecifiedSvc() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
             if(!StringUtil.isEmpty(isGroupLic) && AppConsts.YES.equals(isGroupLic)){
                 appSubmissionDto.setGroupLic(true);
@@ -754,7 +758,35 @@ public class NewApplicationDelegator {
         }else{
             appSubmissionDto.setUserAgreement(false);
         }
+        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) && requestInformationConfig == null){
+            String effectiveDateStr = ParamUtil.getString(bpc.request,"rfcEffectiveDate");
+            if(!StringUtil.isEmpty(effectiveDateStr)) {
+                appSubmissionDto.setEffectiveDateStr(effectiveDateStr);
+                String configDateSize = MasterCodeUtil.getCodeDesc("EFFDATE");
+                LocalDate effectiveDate = LocalDate.parse(effectiveDateStr, DateTimeFormatter.ofPattern(Formatter.DATE));
+                LocalDate today = LocalDate.now();
+                LocalDate configDate = LocalDate.now().plusDays(Integer.parseInt(configDateSize));
+                if(effectiveDate.isBefore(today)){
+                    errorMap.put("rfcEffectiveDate","ERRRFC008");
+                }else if(effectiveDate.isAfter(configDate)){
+                    String errorMsg = MessageUtil.getMessageDesc("ERRRFC007");
+                    errorMsg = errorMsg.replace("<date>",configDate.toString());
+                    errorMap.put("rfcEffectiveDate",errorMsg);
+                }
+                String rfcEffectiveDateErr = errorMap.get("rfcEffectiveDate");
+                if(StringUtil.isEmpty(rfcEffectiveDateErr)){
+                    Date effDate = DateUtil.parseDate(effectiveDateStr, Formatter.DATE);
+                    appSubmissionDto.setEffectiveDate(effDate);
+                }
+            }
+        }
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
+        if(!errorMap.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
+            return;
+        }
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
 
@@ -3075,6 +3107,20 @@ public class NewApplicationDelegator {
                                     errorMap.put("unitNo"+i, "UC_CHKLMD001_ERR001");
                                 }
                             }
+                            String floorNoErr = errorMap.get("floorNo"+i);
+                            String floorNo = appGrpPremisesDtoList.get(i).getFloorNo();
+                            if(StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)){
+                                Pattern pattern = compile("[0-9]*");
+                                boolean noFlag =  pattern.matcher(floorNo).matches();
+                                if (noFlag) {
+                                    int floorNum = Integer.parseInt(floorNo);
+                                    if (10 > floorNum) {
+                                        floorNo = "0" + floorNum;
+                                        appGrpPremisesDtoList.get(i).setFloorNo(floorNo);
+                                    }
+                                }
+
+                            }
                             if(!empty&&!empty1&&!empty2){
                                 stringBuilder.append(appGrpPremisesDtoList.get(i).getFloorNo())
                                         .append(appGrpPremisesDtoList.get(i).getBlkNo())
@@ -3269,6 +3315,20 @@ public class NewApplicationDelegator {
                                 }
 
                             }
+                            String floorNoErr = errorMap.get("conveyanceFloorNo"+i);
+                            String floorNo = appGrpPremisesDtoList.get(i).getConveyanceFloorNo();
+                            if(StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)){
+                                Pattern pattern = compile("[0-9]*");
+                                boolean noFlag =  pattern.matcher(floorNo).matches();
+                                if (noFlag) {
+                                    int floorNum = Integer.parseInt(floorNo);
+                                    if (10 > floorNum) {
+                                        floorNo = "0" + floorNum;
+                                        appGrpPremisesDtoList.get(i).setConveyanceFloorNo(floorNo);
+                                    }
+                                }
+
+                            }
                             if(!empty&&!empty1&&!empty2){
                                 stringBuilder.append(appGrpPremisesDtoList.get(i).getConveyanceFloorNo())
                                         .append(appGrpPremisesDtoList.get(i).getConveyanceBlockNo())
@@ -3339,6 +3399,20 @@ public class NewApplicationDelegator {
                                 if (empty2) {
                                     errorMap.put("offSiteUnitNo"+i, "UC_CHKLMD001_ERR001");
                                 }
+                            }
+                            String floorNoErr = errorMap.get("offSiteFloorNo"+i);
+                            String floorNo = appGrpPremisesDtoList.get(i).getOffSiteFloorNo();
+                            if(StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)){
+                                Pattern pattern = compile("[0-9]*");
+                                boolean noFlag =  pattern.matcher(floorNo).matches();
+                                if (noFlag) {
+                                    int floorNum = Integer.parseInt(floorNo);
+                                    if (10 > floorNum) {
+                                        floorNo = "0" + floorNum;
+                                        appGrpPremisesDtoList.get(i).setOffSiteFloorNo(floorNo);
+                                    }
+                                }
+
                             }
                             if(!empty&&!empty1&&!empty2){
                                 stringBuilder.append(appGrpPremisesDtoList.get(i).getFloorNo())

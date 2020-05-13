@@ -182,6 +182,7 @@ public class ClinicalLaboratoryDelegator {
                         }
                     }
                 }
+                ParamUtil.setRequestAttr(bpc.request,"svcLaboratoryDisciplinesDto",appSvcLaboratoryDisciplinesDtoList);
             }
         }
         ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadChkLstMap);
