@@ -335,6 +335,17 @@ public class InterInboxDelegator {
             }else{
                 ParamUtil.setRequestAttr(request,InboxConst.LIC_DATE_ERR_MSG, "Licence Start Date From cannot be later than Licence Start Date To");
             }
+        }else{
+            if(!StringUtil.isEmpty(fStartDate)){
+                licSearchMap.put("fStartDate",fStartDate);
+            }else{
+                licSearchMap.remove("fStartDate");
+            }
+            if(!StringUtil.isEmpty(eStartDate)){
+                licSearchMap.put("eStartDate",eStartDate);
+            }else{
+                licSearchMap.remove("eStartDate");
+            }
         }
         if (licfExpiryDate != null && liceExpiryDate != null){
             if (licfExpiryDate.before(liceExpiryDate)){
@@ -350,6 +361,17 @@ public class InterInboxDelegator {
                 }
             }else{
                 ParamUtil.setRequestAttr(request,InboxConst.LIC_EXPIRY_ERR_MSG, "Licence Expiry Date From cannot be later than Licence Expiry Date To");
+            }
+        }else{
+            if(!StringUtil.isEmpty(fExpiryDate)){
+                licSearchMap.put("fExpiryDate",fExpiryDate);
+            }else{
+                licSearchMap.remove("fExpiryDate");
+            }
+            if(!StringUtil.isEmpty(eExpiryDate)){
+                licSearchMap.put("eExpiryDate",eExpiryDate);
+            }else{
+                licSearchMap.remove("eExpiryDate");
             }
         }
         licenceParameter.setFilters(licSearchMap);
@@ -569,6 +591,17 @@ public class InterInboxDelegator {
                 }
             }else{
                 ParamUtil.setRequestAttr(request,InboxConst.APP_DATE_ERR_MSG, "Date Submitted From cannot be later than Date Submitted To");
+            }
+        }else{
+            if(!StringUtil.isEmpty(createDtStart)){
+                appSearchMap.put("createDtStart",createDtStart);
+            }else{
+                appSearchMap.remove("createDtStart");
+            }
+            if(!StringUtil.isEmpty(createDtEnd)){
+                appSearchMap.put("createDtEnd",createDtEnd);
+            }else{
+                appSearchMap.remove("createDtEnd");
             }
         }
         appParameter.setFilters(appSearchMap);

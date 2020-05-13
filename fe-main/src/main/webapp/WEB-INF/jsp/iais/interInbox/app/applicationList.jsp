@@ -153,7 +153,7 @@
                                             <iais:select name="draftAction" cssClass="draftAction" id="draftAction" options="selectDraftApplication" firstOption="Select"/>
                                         </c:when>
                                         <c:when test="${app.status == 'APST038' || (app.status == 'APST007' && app.applicationType == 'APTY006') || (app.status == 'APST007' && app.applicationType == 'APTY001')}">
-                                            <iais:select options="noAction" name="noAction" cssClass="noAction" firstOption="Select"/>
+                                            <p>N/A</p>
                                         </c:when>
                                         <c:when test="${app.status == 'APST006' || app.status == 'APST005'}">
                                             <iais:select name="appAoRAction" cssClass="appAoRAction" id="appAoRAction" options="selectApproveOrRejectSelectList" firstOption="Select"/>
