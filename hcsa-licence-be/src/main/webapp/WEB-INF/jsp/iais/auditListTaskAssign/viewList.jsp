@@ -36,9 +36,9 @@
                                 <tr>
                                     <th width="10%">HCI Code</th>
                                     <th width="10%">HCI Name</th>
-                                    <th width="30%">Address</th>
+                                    <th width="26%">Address</th>
                                     <th width="10%">Service Name</th>
-                                    <th width="15%">Audit Type</th>
+                                    <th width="19%">Audit Type</th>
                                     <c:if test="${ISTUC}">
                                         <th>TCU Audit Due Date
                                         </th>
@@ -51,7 +51,7 @@
                                 <span class="error-msg" id="error_selectedOne" name="iaisErrorMsg"></span>
                                 <c:if test="${empty auditTaskDataDtos}">
                                     <tr>
-                                        <td colspan="7" align="center">
+                                        <td colspan="${ISTUC ? 8 : 9}" align="center">
                                             <iais:message key="ACK018" escape="true"/>
                                         </td>
                                     </tr>
