@@ -48,6 +48,67 @@ import java.util.Set;
 @Service
 @Slf4j
 public class InspectionMainServiceImpl implements InspectionMainService {
+    private static final String[] PSO_STATUS = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
+            ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
+    };
+
+    private static final String[] ASO_STATUS = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_DMS_APPROVAL,
+            ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
+            ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE,
+    };
+
+    private static final String[] AO1_STATUS = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_AO1_SUPPORT,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW,
+    };
+
+    private static final String[] AO2_STATUS = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_AO2_SUPPORT,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
+    };
+
+    private static final String[] AO3_STATUS = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,
+    };
+
+    private static final String[] BOARDCAST_STATUS = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
+    };
+
+    private static final String[] INSP_LEADER_STATUS = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_DMS_APPROVAL,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,
+    };
+
+    private static final String[] INSP_STATUS = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_DMS_APPROVAL,
+    };
+
+    private static final String[] DEFAULT_STATUS = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,
+    };
+
     @Autowired
     private InspectionTaskMainClient inspectionTaskClient;
 
@@ -91,78 +152,35 @@ public class InspectionMainServiceImpl implements InspectionMainService {
         switch (role){
             case RoleConsts.USER_ROLE_PSO_LEAD:
             case RoleConsts.USER_ROLE_PSO:
-                statusStrs = new String[]{
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
-                        ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
-                };
+                statusStrs = PSO_STATUS;
                 break;
             case RoleConsts.USER_ROLE_ASO_LEAD:
             case RoleConsts.USER_ROLE_ASO:
-                statusStrs = new String[]{
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_DMS_APPROVAL,
-                        ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
-                        ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE,
-                };
+                statusStrs = ASO_STATUS;
                 break;
             case RoleConsts.USER_ROLE_AO1_LEAD:
             case RoleConsts.USER_ROLE_AO1:
-                statusStrs = new String[]{
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_AO1_SUPPORT,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW,
-                };
+                statusStrs = AO1_STATUS;
                 break;
             case RoleConsts.USER_ROLE_AO2_LEAD:
             case RoleConsts.USER_ROLE_AO2:
-                statusStrs = new String[]{
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_AO2_SUPPORT,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
-                };
+                statusStrs = AO2_STATUS;
                 break;
             case RoleConsts.USER_ROLE_AO3_LEAD:
             case RoleConsts.USER_ROLE_AO3:
-                statusStrs = new String[]{
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,
-                };
+                statusStrs = AO3_STATUS;
                 break;
             case RoleConsts.USER_ROLE_BROADCAST:
-                statusStrs = new String[]{
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
-                };
+                statusStrs = BOARDCAST_STATUS;
                 break;
             case RoleConsts.USER_ROLE_INSPECTION_LEAD:
-                statusStrs = new String[]{
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_DMS_APPROVAL,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,
-                };
+                statusStrs = INSP_LEADER_STATUS;
                 break;
             case RoleConsts.USER_ROLE_INSPECTIOR:
-                statusStrs = new String[]{
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_DMS_APPROVAL,
-                };
+                statusStrs = INSP_STATUS;
                 break;
             default:
-                statusStrs = new String[]{
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,
-                };
+                statusStrs = DEFAULT_STATUS;
                 break;
         }
 
