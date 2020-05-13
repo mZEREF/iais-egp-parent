@@ -117,9 +117,15 @@ public class InspectionPreDelegator {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appStatus = applicationDto.getStatus();
         inspectionPreTaskDto.setAppStatus(appStatus);
-        List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption();
+        //get process decision
+        List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption(appStatus);
+        //get Request For Information
         List<SelectOption> rfiCheckOption = inspectionPreTaskService.getRfiCheckOption();
+        //set stage and userId map
+        inspectionPreTaskDto = inspectionPreTaskService.getPreInspRbOption(applicationDto.getApplicationNo(), inspectionPreTaskDto);
+        List<SelectOption> preInspRbOption = inspectionPreTaskDto.getPreInspRbOption();
         inspectionPreTaskDto.setPreInspRfiOption(rfiCheckOption);
+        inspectionPreTaskDto.setPreInspRbOption(preInspRbOption);
         //adhocChecklist
         List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
         //Self-Checklist
@@ -143,6 +149,7 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
+        ParamUtil.setSessionAttr(bpc.request, "preInspRbOption", (Serializable) preInspRbOption);
         ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONDTO, applicationDto);
         ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO, applicationViewDto);
     }
@@ -160,21 +167,13 @@ public class InspectionPreDelegator {
         String preInspecRemarks = ParamUtil.getString(bpc.request,"preInspecRemarks");
         String processDec = ParamUtil.getRequestString(bpc.request,"selectValue");
         String preInspecComments = ParamUtil.getRequestString(bpc.request,"preInspecComments");
+        String checkRbStage = ParamUtil.getRequestString(bpc.request,"checkRbStage");
         String[] preInspRfiCheckStr = ParamUtil.getStrings(bpc.request,"preInspRfiCheck");
         List<String> preInspRfiCheck = getPreInspListByArray(preInspRfiCheckStr);
         inspectionPreTaskDto.setPreInspRfiCheck(preInspRfiCheck);
         inspectionPreTaskDto.setReMarks(preInspecRemarks);
-
-        if(InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY.equals(processDec)){
-            inspectionPreTaskDto.setSelectValue(processDec);
-        } else if(InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(processDec)){
-            inspectionPreTaskDto.setSelectValue(processDec);
-        } else if(InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO.equals(processDec)){
-            inspectionPreTaskDto.setSelectValue(processDec);
-            inspectionPreTaskDto.setPreInspecComments(preInspecComments);
-        } else {
-            inspectionPreTaskDto.setSelectValue(null);
-        }
+        //set value with processDec
+        inspectionPreTaskDto = setValidateValue(processDec, checkRbStage, inspectionPreTaskDto, preInspecComments);
 
         if(InspectionConstants.SWITCH_ACTION_APPROVE.equals(actionValue)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"create");
@@ -214,6 +213,30 @@ public class InspectionPreDelegator {
 
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "actionValue", actionValue);
+    }
+
+    private InspectionPreTaskDto setValidateValue(String processDec, String checkRbStage, InspectionPreTaskDto inspectionPreTaskDto, String preInspecComments) {
+        if(InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY.equals(processDec)){
+            inspectionPreTaskDto.setSelectValue(processDec);
+        } else if(InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(processDec)){
+            inspectionPreTaskDto.setSelectValue(processDec);
+        } else if(InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO.equals(processDec)){
+            if(!StringUtil.isEmpty(checkRbStage)){
+                String userId = inspectionPreTaskDto.getStageUserIdMap().get(checkRbStage);
+                if(!StringUtil.isEmpty(userId)){
+                    inspectionPreTaskDto.setCheckRbStage(checkRbStage);
+                } else {
+                    inspectionPreTaskDto.setCheckRbStage(null);
+                }
+            } else {
+                inspectionPreTaskDto.setCheckRbStage(null);
+            }
+            inspectionPreTaskDto.setSelectValue(processDec);
+            inspectionPreTaskDto.setPreInspecComments(preInspecComments);
+        } else {
+            inspectionPreTaskDto.setSelectValue(null);
+        }
+        return inspectionPreTaskDto;
     }
 
     private List<String> getPreInspListByArray(String[] preInspRfiCheckStr) {

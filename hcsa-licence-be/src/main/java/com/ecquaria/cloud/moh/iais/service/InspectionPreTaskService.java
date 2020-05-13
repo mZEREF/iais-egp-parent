@@ -37,7 +37,7 @@ public interface InspectionPreTaskService {
       * @return: List<SelectOption>
       * @Descripation: get Processing Decision Option
       */
-    List<SelectOption> getProcessDecOption();
+    List<SelectOption> getProcessDecOption(String appStatus);
 
     /**
       * @author: shicheng
@@ -102,4 +102,13 @@ public interface InspectionPreTaskService {
       * @Descripation: get Inspection History(past two) By licenceId
       */
     List<InspectionHistoryShowDto> getInspectionHistory(String originLicenceId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/5/13
+      * @Param: applicationNo
+      * @return: InspectionPreTaskDto
+      * @Descripation: get history stage with appNo
+      */
+    InspectionPreTaskDto getPreInspRbOption(String applicationNo, InspectionPreTaskDto inspectionPreTaskDto);
 }

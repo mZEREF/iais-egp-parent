@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionComplianceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
@@ -145,10 +146,15 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     @Override
-    public List<SelectOption> getProcessDecOption() {
-        String[] processDecArr = new String[]{InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION,
-                                              InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO,
-                                              InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
+    public List<SelectOption> getProcessDecOption(String appStatus) {
+        String[] processDecArr;
+        if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appStatus)) {
+            processDecArr = new String[]{InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
+        } else {
+            processDecArr = new String[]{InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION,
+                    InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO,
+                    InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
+        }
         List<SelectOption> processDecOption = MasterCodeUtil.retrieveOptionsByCodes(processDecArr);
         return processDecOption;
     }
@@ -324,15 +330,10 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
         String applicationNo = applicationDto.getApplicationNo();
-        String userId = loginContext.getUserId();
         //routing
-        //get history
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto;
-        String subStage;
-        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNoAndStageId(applicationNo, HcsaConsts.ROUTING_STAGE_PSO).getEntity();
-        if(appPremisesRoutingHistoryDto == null){
-            appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNoAndStageId(applicationNo, HcsaConsts.ROUTING_STAGE_ASO).getEntity();
-        }
+        //get check stage
+        String stageKey = inspectionPreTaskDto.getCheckRbStage();
+        String checkUserId = inspectionPreTaskDto.getStageUserIdMap().get(stageKey);
         //update task
         taskDto.setSlaDateCompleted(new Date());
         taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
@@ -340,7 +341,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         taskDto.setAuditTrailDto(auditTrailDto);
         taskService.updateTask(taskDto);
         //create task
-        TaskDto compTask = getCompletedTaskByHistory(taskDto, appPremisesRoutingHistoryDto.getActionby());
+        TaskDto compTask = getCompletedTaskByHistory(taskDto, checkUserId);
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         if(compTask != null){
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
@@ -357,9 +358,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             createTask.setTaskKey(compTask.getTaskKey());
             createTask.setTaskType(compTask.getTaskType());
             createTask.setWkGrpId(compTask.getWkGrpId());
-            createTask.setUserId(userId);
+            createTask.setUserId(checkUserId);
             createTask.setDateAssigned(new Date());
-            createTask.setRoleId(appPremisesRoutingHistoryDto.getActionby());
+            createTask.setRoleId(stageKey);
             createTask.setAuditTrailDto(auditTrailDto);
             createTask.setProcessUrl(TaskConsts.TASK_PROCESS_URL_MAIN_FLOW);
             taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
@@ -448,6 +449,36 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             }
         }
         return inspectionHistoryShowDtos;
+    }
+
+    @Override
+    public InspectionPreTaskDto getPreInspRbOption(String applicationNo, InspectionPreTaskDto inspectionPreTaskDto) {
+        List<SelectOption> preInspRbOption = IaisCommonUtils.genNewArrayList();
+        Map<String, String> userIdMap = IaisCommonUtils.genNewHashMap();
+        //get history
+        AppPremisesRoutingHistoryDto asoHistory = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNoAndStageId(applicationNo, HcsaConsts.ROUTING_STAGE_ASO).getEntity();
+        AppPremisesRoutingHistoryDto psoHistory = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNoAndStageId(applicationNo, HcsaConsts.ROUTING_STAGE_PSO).getEntity();
+        if(psoHistory != null){
+            HcsaSvcRoutingStageDto asoStageDto = hcsaConfigClient.getHcsaSvcRoutingStageById(HcsaConsts.ROUTING_STAGE_ASO).getEntity();
+            HcsaSvcRoutingStageDto psoStageDto = hcsaConfigClient.getHcsaSvcRoutingStageById(HcsaConsts.ROUTING_STAGE_PSO).getEntity();
+            String asoUserId = asoHistory.getActionby();
+            String psoUserId = psoHistory.getActionby();
+            SelectOption asoSo = new SelectOption(RoleConsts.USER_ROLE_ASO, asoStageDto.getStageName());
+            SelectOption psoSo = new SelectOption(RoleConsts.USER_ROLE_PSO, psoStageDto.getStageName());
+            preInspRbOption.add(asoSo);
+            preInspRbOption.add(psoSo);
+            userIdMap.put(RoleConsts.USER_ROLE_ASO, asoUserId);
+            userIdMap.put(RoleConsts.USER_ROLE_PSO, psoUserId);
+        } else {
+            HcsaSvcRoutingStageDto asoStageDto = hcsaConfigClient.getHcsaSvcRoutingStageById(HcsaConsts.ROUTING_STAGE_ASO).getEntity();
+            String asoUserId = asoHistory.getActionby();
+            SelectOption asoSo = new SelectOption(RoleConsts.USER_ROLE_ASO, asoStageDto.getStageName());
+            preInspRbOption.add(asoSo);
+            userIdMap.put(RoleConsts.USER_ROLE_ASO, asoUserId);
+        }
+        inspectionPreTaskDto.setPreInspRbOption(preInspRbOption);
+        inspectionPreTaskDto.setStageUserIdMap(userIdMap);
+        return inspectionPreTaskDto;
     }
 
     private HcsaRiskInspectionComplianceDto getRiskLevelByRefNo(String taskRefNo, String serviceCode) {

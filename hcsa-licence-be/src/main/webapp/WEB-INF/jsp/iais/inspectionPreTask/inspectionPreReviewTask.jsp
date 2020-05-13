@@ -280,6 +280,12 @@
                                 <iais:select name="selectValue" options="processDecOption" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectionPreTaskChange(this.value)"></iais:select>
                               </iais:value>
                             </iais:row>
+                            <iais:row id="rbCheckStage">
+                              <iais:field value="Internal Route Back" required="true"/>
+                              <iais:value width="7">
+                                <iais:select name="checkRbStage" options="preInspRbOption" value="${inspectionPreTaskDto.checkRbStage}"></iais:select>
+                              </iais:value>
+                            </iais:row>
                             <iais:row id="rfiCheckBox">
                               <iais:field value="Request For Information" required="true"/>
                               <iais:value width="7">
@@ -408,8 +414,13 @@
         var selectValue = $("#processDec").val();
         if("REDECI001" == selectValue){
             $("#rfiCheckBox").show();
+            $("#rbCheckStage").hide();
+        } else if("REDECI021" == selectValue){
+            $("#rfiCheckBox").hide();
+            $("#rbCheckStage").show();
         } else {
             $("#rfiCheckBox").hide();
+            $("#rbCheckStage").hide();
         }
     });
 
@@ -461,8 +472,13 @@
         $("#processDec").val(value);
         if("REDECI001" == value){
             $("#rfiCheckBox").show();
+            $("#rbCheckStage").hide();
+        } else if("REDECI021" == value){
+            $("#rfiCheckBox").hide();
+            $("#rbCheckStage").show();
         } else {
             $("#rfiCheckBox").hide();
+            $("#rbCheckStage").hide();
         }
     }
 
