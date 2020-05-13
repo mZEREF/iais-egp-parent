@@ -230,7 +230,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         try {
             if(!StringUtil.isEmpty(inLeftMod)&&inrightflag){
                 inLeftModNum = Integer.parseInt(inLeftMod);
-                if(inLeftModNum -1 != inRightLowNum){
+                if(inLeftModNum -1 != inRightLowNum && inLeftModNum != inRightLowNum){
                     errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0015");
                 }
             }

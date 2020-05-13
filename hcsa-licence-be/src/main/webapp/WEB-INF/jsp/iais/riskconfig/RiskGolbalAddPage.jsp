@@ -28,8 +28,8 @@
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
                         <h2>Global Risk Configuration</h2>
-                        <div>
-                        <table  >
+                        <div style="overflow-x: auto;overflow-y:hidden;">
+                        <table  width = "125%" >
                             <thead>
                             <tr>
                                 <th  width ="5%"><span>Service Name</span></th>

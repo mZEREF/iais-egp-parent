@@ -154,7 +154,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         if(!StringUtil.isEmpty(inRightMod)){
             try {
                 inRightModNum = Integer.parseInt(inRightMod);
-                if(inRightModNum<0 || inRightModNum >999){
+                if(inRightModNum<0 || inRightModNum >99){
                     if(isIn){
                         errMap.put(serviceCode+"inRightModCaseCounth","ERR0013");
                         fdto.setInRightModCaseCountherr(true);
@@ -277,7 +277,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         try {
             if(!StringUtil.isEmpty(inLeftMod)){
                 inLeftModNum = Integer.parseInt(inLeftMod);
-                if(inLeftModNum -1 != inRightLowNum){
+                if(inLeftModNum -1 != inRightLowNum && inLeftModNum != inRightLowNum){
                     if(isIn){
                         if(inRightLowNumFlag){
                             errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0015");

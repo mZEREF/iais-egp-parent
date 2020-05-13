@@ -76,24 +76,25 @@
                                                     <input type="text" disabled readonly maxlength="2" value="0">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inleftmod" name = "<c:out value="${leg.svcCode}"/>inleftmod" maxlength="2"value="${leg.doLeftModCaseCounth}">
+                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inleftmod" name = "<c:out value="${leg.svcCode}"/>inleftmod" maxlength="2"value="${leg.doLeftModCaseCounth == null ? 0 : leg.doLeftModCaseCounth}"
+                                                           onchange="doChangeMc('${leg.svcCode}',true)">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inlefthigh" name = "<c:out value="${leg.svcCode}"/>inlefthigh" maxlength="2"value="${leg.doLeftHighCaseCounth}">
+                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inlefthigh" readonly name = "<c:out value="${leg.svcCode}"/>inlefthigh" maxlength="2"value="${leg.doLeftHighCaseCounth == null ? 1 : leg.doLeftHighCaseCounth}">
                                                 </div>
 
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inrightlow" name = "<c:out value="${leg.svcCode}"/>inrightlow"  maxlength="3" value="${leg.doRightLowCaseCounth}">
+                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inrightlow"  readonly name = "<c:out value="${leg.svcCode}"/>inrightlow"  maxlength="3" value="${leg.doRightLowCaseCounth == null ? 0 : leg.doRightLowCaseCounth}">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inrightmod" name = "<c:out value="${leg.svcCode}"/>inrightmod"  maxlength="3"value="${leg.doRightModCaseCounth}">
+                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inrightmod" name = "<c:out value="${leg.svcCode}"/>inrightmod"  maxlength="3"value="${leg.doRightModCaseCounth == null ? 0 : leg.doRightModCaseCounth}"   onchange="doChangeMc('${leg.svcCode}',false)">
                                                 </div>
 
                                                 </div>
@@ -138,6 +139,7 @@
     </div>
 </form>
 <%@ include file="validationForRisk.jsp" %>
+<%@ include file="RiskModerateChange.jsp" %>
 <script type="text/javascript">
     function doNext() {
         SOP.Crud.cfxSubmit("mainForm","next");
@@ -145,5 +147,17 @@
 
     function doBack(){
         SOP.Crud.cfxSubmit("mainForm","backToMenu");
+    }
+    function  doChangeMc(svcCode,left) {
+        var  moId = "#"+svcCode;
+        var id = "#"+svcCode;
+        if(left){
+            moId +="inleftmod";
+            id  += "inrightlow";
+        }else {
+            moId +="inrightmod";
+            id  += "inlefthigh";
+        }
+        doChangeVal( moId,id,left);
     }
 </script>

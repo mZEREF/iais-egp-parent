@@ -41,7 +41,6 @@
                                         <th>Minimum Number of Cases</th>
                                         <th>Maximum Number of Cases</th>
                                         <th>Risk Rating</th>
-                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -83,24 +82,25 @@
                                                     <input type="text" disabled readonly maxlength="2" value="0">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.inLeftModCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inleftmod" name = "<c:out value="${fin.serviceCode}"/>inleftmod" maxlength="2"value="${fin.inLeftModCaseCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.inLeftModCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inleftmod" name = "<c:out value="${fin.serviceCode}"/>inleftmod" maxlength="2"value="${fin.inLeftModCaseCounth ==null ? 0 : fin.inLeftModCaseCounth}"
+                                                           onchange="doChangeMc('${fin.serviceCode}','I',true)">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.inLeftHighCaseCounterr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inlefthigh" name = "<c:out value="${fin.serviceCode}"/>inlefthigh" maxlength="2"value="${fin.inLeftHighCaseCount}">
+                                                    <input type="text" style="color: <c:if test="${fin.inLeftHighCaseCounterr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inlefthigh" readonly name = "<c:out value="${fin.serviceCode}"/>inlefthigh" maxlength="2"value="${fin.inLeftHighCaseCount ==null ? 1 : fin.inLeftHighCaseCount}">
                                                 </div>
 
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text"  style="color: <c:if test="${fin.inRightLowCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inrightlow" name = "<c:out value="${fin.serviceCode}"/>inrightlow"  maxlength="3" value="${fin.inRightLowCaseCounth}">
+                                                    <input type="text"  style="color: <c:if test="${fin.inRightLowCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inrightlow" readonly name = "<c:out value="${fin.serviceCode}"/>inrightlow"  maxlength="3" value="${fin.inRightLowCaseCounth ==null ? 0 : fin.inRightLowCaseCounth}">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.inRightModCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inrightmod" name = "<c:out value="${fin.serviceCode}"/>inrightmod"  maxlength="3"value="${fin.inRightModCaseCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.inRightModCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inrightmod" name = "<c:out value="${fin.serviceCode}"/>inrightmod"  maxlength="3"value="${fin.inRightModCaseCounth == null ? 0 : fin.inRightModCaseCounth}"    onchange="doChangeMc('${fin.serviceCode}','I',false)">
                                                 </div>
 
                                                 </div>
@@ -158,24 +158,25 @@
                                                     <input type="text" disabled readonly maxlength="2" value="0">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.prLeftModCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prleftmod" name = "<c:out value="${fin.serviceCode}"/>prleftmod"  maxlength="2"value="${fin.prLeftModCaseCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.prLeftModCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prleftmod" name = "<c:out value="${fin.serviceCode}"/>prleftmod"  maxlength="2"value="${fin.prLeftModCaseCounth == null ? 0 : fin.prLeftModCaseCounth}"
+                                                           onchange="doChangeMc('${fin.serviceCode}','P',true)">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.prLeftHighCaseCounterr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prlefthigh" name = "<c:out value="${fin.serviceCode}"/>prlefthigh"  maxlength="2"value="${fin.prLeftHighCaseCount}">
+                                                    <input type="text" style="color: <c:if test="${fin.prLeftHighCaseCounterr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prlefthigh" readonly name = "<c:out value="${fin.serviceCode}"/>prlefthigh"  maxlength="2"value="${fin.prLeftHighCaseCount == null ? 1 : fin.prLeftHighCaseCount}">
                                                 </div>
 
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.prRightLowCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prrightlow" name = "<c:out value="${fin.serviceCode}"/>prrightlow" maxlength="3" value="${fin.prRightLowCaseCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.prRightLowCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prrightlow"  readonly name = "<c:out value="${fin.serviceCode}"/>prrightlow" maxlength="3" value="${fin.prRightLowCaseCounth == null ? 0 : fin.prRightLowCaseCounth}">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.prRightModCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prrightlmod" name = "<c:out value="${fin.serviceCode}"/>prrightmod" maxlength="3"value="${fin.prRightModCaseCounth}">
+                                                    <input type="text" style="color: <c:if test="${fin.prRightModCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prrightlmod" name = "<c:out value="${fin.serviceCode}"/>prrightmod" maxlength="3"value="${fin.prRightModCaseCounth == null ? 0 : fin.prRightModCaseCounth}"   onchange="doChangeMc('${fin.serviceCode}','P',false)">
                                                 </div>
 
                                                 </div>
@@ -220,6 +221,7 @@
     </div>
 </form>
 <%@ include file="validationForRisk.jsp" %>
+<%@ include file="RiskModerateChange.jsp" %>
 <script type="text/javascript">
     function doNext() {
         SOP.Crud.cfxSubmit("mainForm","next");
@@ -227,5 +229,29 @@
 
     function doBack(){
         SOP.Crud.cfxSubmit("mainForm","backToMenu");
+    }
+
+    function  doChangeMc(svcCode,name,left) {
+        var  moId = "#"+svcCode;
+        var id = "#"+svcCode;
+        if("I" == name){
+            if(left){
+                moId +="inleftmod";
+                id  += "inrightlow";
+            }else {
+                moId +="inrightmod";
+                id  += "inlefthigh";
+            }
+            doChangeVal( moId,id,left);
+        }else if ("P" == name){
+            if(left){
+                moId +="prleftmod";
+                id  += "prrightlow";
+            }else {
+                moId +="prrightlmod";
+                id  += "prlefthigh";
+            }
+            doChangeVal( moId,id,left);
+        }
     }
 </script>
