@@ -31,15 +31,13 @@ import com.ecquaria.cloud.moh.iais.service.client.BelicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Shicheng
@@ -126,7 +124,8 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
             List<SelectOption> inspectorCheckList = inspecTaskCreAndAssDto.getInspectorCheck();
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             for(TaskDto td:commPools) {
-                if (td.getId().equals(inspecTaskCreAndAssDto.getTaskId())) {
+                if (td.getId().equals(inspecTaskCreAndAssDto.getTaskId())
+                        && !IaisCommonUtils.isEmpty(inspectorCheckList)) {
                     td.setUserId(inspectorCheckList.get(0).getValue());
                     td.setDateAssigned(new Date());
                     td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -169,7 +168,6 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void routingTaskByCommonPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks) {
         TaskDto taskDto = getTaskDtoByPool(commPools, inspecTaskCreAndAssDto);
         ApplicationViewDto applicationViewDto = searchByAppNo(inspecTaskCreAndAssDto.getApplicationNo());
