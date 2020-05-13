@@ -1,12 +1,10 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.BroadcastMainService;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +25,8 @@ public class BroadcastMainServiceImpl implements BroadcastMainService {
 
 
     @Autowired
-    private GenerateIdClient generateIdClient;
-    @Autowired
     private EventBusHelper eventBusHelper;
-    @Autowired
-    private SystemParamConfig systemParamConfig;
-    
+
     @Override
     public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto,Process process,String submissionId) {
         SubmitResp submitResp = eventBusHelper.submitAsyncRequest(broadcastOrganizationDto, submissionId,
