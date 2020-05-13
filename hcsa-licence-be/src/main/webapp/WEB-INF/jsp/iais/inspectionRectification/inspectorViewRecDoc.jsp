@@ -37,79 +37,88 @@
                       <label style="font-size: 16px">Inspection Date</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><fmt:formatDate value='${inspectionReportDto.inspectionDate}' pattern='dd/MM/yyyy' /></label>
+                      <span style="font-size: 16px"><fmt:formatDate value='${inspectionReportDto.inspectionDate}' pattern='dd/MM/yyyy' /></span>
                     </div>
                   </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">Inspection Start Time</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><c:out value="${inspectionReportDto.inspectionStartTime}"/></label>
+                      <span style="font-size: 16px"><c:out value="${inspectionReportDto.inspectionStartTime}"/></span>
                     </div>
                   </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">Inspection End Time</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><c:out value="${inspectionReportDto.inspectionEndTime}"/></label>
+                      <span style="font-size: 16px"><c:out value="${inspectionReportDto.inspectionEndTime}"/></span>
                     </div>
                   </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">Inspector Lead</label>
                     </div>
                     <div class="col-md-6">
                       <c:forEach var = "insepctionLead" items = "${inspectionReportDto.inspectorLeads}">
-                        <label style="font-size: 16px"><c:out value="${insepctionLead}"/></label>
+                        <span style="font-size: 16px"><c:out value="${insepctionLead}"/></span>
                       </c:forEach>
                     </div>
                   </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">Inspection Officer (s)</label>
                     </div>
                     <div class="col-md-6">
                       <c:forEach var = "insepctor" items = "${inspectionReportDto.inspectors}">
-                        <label style="font-size: 16px"><c:out value="${insepctor}"/></label>
+                        <span style="font-size: 16px"><c:out value="${insepctor}"/></span>
                       </c:forEach>
                     </div>
                   </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">Other Inspection Officers</label>
                     </div>
                     <div class="col-md-6">
                       <c:forEach var = "otherInsepctor" items = "${inspectionReportDto.inspectOffices}">
-                        <label style="font-size: 16px"><c:out value="${otherInsepctor}"/></label>
+                        <span style="font-size: 16px"><c:out value="${otherInsepctor}"/></span>
                       </c:forEach>
                     </div>
                   </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">No. of Non-Compliance</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><c:out value="${inspectionReportDto.ncCount}"/></label>
+                      <span style="font-size: 16px"><c:out value="${inspectionReportDto.ncCount}"/></span>
                     </div>
                   </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">Remarks</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><c:out value="${inspectionReportDto.taskRemarks}"/></label>
+                      <span style="font-size: 16px"><c:out value="${inspectionReportDto.taskRemarks}"/></span>
                     </div>
                   </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">Best Practices</label>
                     </div>
                     <div class="col-md-6">
-                      <label style="font-size: 16px"><c:out value="${inspectionReportDto.bestPractice}"/></label>
+                      <span style="font-size: 16px"><c:out value="${inspectionReportDto.bestPractice}"/></span>
                     </div>
                   </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">Letter written to Licensee</label>
@@ -123,10 +132,11 @@
                         </div>
                       </c:if>
                       <c:if test="${fileRepoDto == null}">
-                        <label style="font-size: 16px">-</label>
+                        <span style="font-size: 16px">-</span>
                       </c:if>
                     </div>
                   </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">TCU</label>
@@ -135,20 +145,21 @@
                       <input type="checkbox" name="inspectorCheck" disabled id="inspectorCheck" <c:if test="${'Yes' eq inspectionReportDto.markedForAudit}">checked="checked"</c:if>/>
                     </div>
                   </div>
+                  <p></p>
                   <div class="row">
                     <div class="col-md-2">
                       <label style="font-size: 16px">TCU Date</label>
                     </div>
                     <div class="col-md-6">
                       <c:if test="${inspectionReportDto.tcuDate != null}">
-                        <label style="font-size: 16px"><fmt:formatDate value='${inspectionReportDto.tcuDate}' pattern='dd/MM/yyyy' /></label>
+                        <span style="font-size: 16px"><fmt:formatDate value='${inspectionReportDto.tcuDate}' pattern='dd/MM/yyyy' /></span>
                       </c:if>
                       <c:if test="${inspectionReportDto.tcuDate == null}">
-                        <label style="font-size: 16px">-</label>
+                        <span style="font-size: 16px">-</span>
                       </c:if>
                     </div>
                   </div>
-                  <br>
+                  <p></p>
                   <iais:action >
                     <a class="back" id="Back" onclick="javascript:doInspRecCheckListBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspRecCheckListView()">View Checklist</button>
