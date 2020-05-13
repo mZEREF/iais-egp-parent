@@ -19,7 +19,7 @@
             <input type="hidden" name="interalFileId" id="interalFileId"/>
             <input type="hidden" name="dateTimeShow" value="${recomInDateOnlyShow}"/>
             <input type="hidden" name="recommendationShow" value="${recommendationOnlyShow}"/>
-            <c:set var="isAoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST062'}"/>
+            <c:set var="isAoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST062' || applicationViewDto.applicationDto.status == 'APST065' || applicationViewDto.applicationDto.status == 'APST066' || applicationViewDto.applicationDto.status == 'APST067'}"/>
             <c:set var="isPsoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST063'}"/>
             <c:set var="isInspectorRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST064'}"/>
             <c:set var="isRouteBackStatus" value="${isInspectorRouteBackStatus || isAoRouteBackStatus || isPsoRouteBackStatus}"/>
@@ -67,31 +67,35 @@
                                         <div class="col-xs-12">
                                             <div class="table-gp">
                                                 <iais:section title="">
-                                                    <iais:row>
-                                                        <iais:field value="Current Status" required="false"/>
-                                                        <iais:value width="10"><p>${applicationViewDto.currentStatus}</p></iais:value>
-                                                    </iais:row>
+                                                    <div>
+                                                        <iais:row>
+                                                            <iais:field value="Current Status" required="false"/>
+                                                            <iais:value width="10"><p>${applicationViewDto.currentStatus}</p></iais:value>
+                                                        </iais:row>
+                                                    </div>
                                                     <%--<div>--%>
-                                                    <iais:row>
-                                                        <iais:field value="Internal Remarks" required="false"  width="12"/>
-                                                        <iais:value width="10">
-                                                            <div class="input-group">
-                                                                <div class="ax_default text_area">
-                                                                        <textarea id="internalRemarksId"
-                                                                                  name="internalRemarks" cols="70"
-                                                                                  rows="7" maxlength="300">${internalRemarks}</textarea>
-                                                                    <span id="error_internalRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                                                    <div>
+                                                        <iais:row>
+                                                            <iais:field value="Internal Remarks" required="false"  width="12"/>
+                                                            <iais:value width="10">
+                                                                <div class="input-group">
+                                                                    <div class="ax_default text_area">
+                                                                            <textarea id="internalRemarksId"
+                                                                                      name="internalRemarks" cols="70"
+                                                                                      rows="7" maxlength="300">${internalRemarks}</textarea>
+                                                                        <span id="error_internalRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </iais:value>
-                                                    </iais:row>
+                                                            </iais:value>
+                                                        </iais:row>
+                                                    </div>
                                                     <%--</div>--%>
                                                     <div id="processingDecision">
                                                         <iais:row>
                                                             <iais:field value="Processing Decision" required="true"/>
                                                             <%String nextStage = request.getParameter("nextStage");%>
                                                             <iais:value width="10">
-                                                                <iais:select name="nextStage" id="nextStage"
+                                                                <iais:select cssClass="nextStage" name="nextStage" id="nextStage"
                                                                              options="nextStages"
                                                                              value="<%=nextStage%>"></iais:select>
                                                             </iais:value>
@@ -103,7 +107,7 @@
                                                                 <iais:field value="Processing Decision" required="true"/>
                                                                 <%--                                                                <%String selectNextStageReply = request.getParameter("selectNextStageReply");%>--%>
                                                                 <iais:value width="10">
-                                                                    <iais:select name="nextStageReplys" id="nextStageReply"
+                                                                    <iais:select cssClass="nextStageReplys" name="nextStageReplys" id="nextStageReply"
                                                                                  options="nextStageReply"
                                                                                  value="${selectNextStageReply}"></iais:select>
                                                                 </iais:value>
@@ -117,7 +121,7 @@
                                                             <iais:row>
                                                                 <iais:field value="Processing Decision" required="true"/>
                                                                 <iais:value width="10">
-                                                                    <iais:select name="decisionValues" id="decisionValues"
+                                                                    <iais:select cssClass="decisionValues" name="decisionValues" id="decisionValues"
                                                                                  firstOption="Please Select"
                                                                                  options="decisionValues"
                                                                                  value="${selectDecisionValue}"></iais:select>
@@ -129,7 +133,7 @@
                                                         <iais:row>
                                                             <iais:field value="Route Back To" required="true"/>
                                                             <iais:value width="10">
-                                                                <select name="rollBack" class="nice-select input-large">
+                                                                <select name="rollBack" class="nice-select input-large rollBack">
                                                                     <option value="">Please Select</option>
                                                                     <c:forEach items="${applicationViewDto.rollBack}"
                                                                                var="rollBack">
@@ -144,7 +148,7 @@
                                                         <iais:row>
                                                             <iais:field value="Verified" required="false"/>
                                                             <iais:value width="10">
-                                                                <iais:select name="verified"
+                                                                <iais:select cssClass="verified" name="verified"
                                                                              options="verifiedValues"
                                                                              value="${selectVerified}"></iais:select>
                                                                 <span id="error_verified" name="iaisErrorMsg" class="error-msg"></span>
@@ -193,7 +197,7 @@
                                                             <iais:value width="10">
                                                                 <c:choose>
                                                                     <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || applicationViewDto.applicationDto.status=='APST014' || (isRouteBackStatus && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC') || (isRouteBackStatus && taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC')}">
-                                                                        <iais:select name="recommendation"
+                                                                        <iais:select cssClass="recommendation" name="recommendation"
                                                                                      options="recommendationDropdown"
                                                                                      firstOption="Please Select"
                                                                                      value="${recommendationStr}"></iais:select>
@@ -214,7 +218,7 @@
                                                                 <%--                                                                <%String otherChrono = request.getParameter("chrono");%>--%>
                                                                 <input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" id=recomInNumber type="text" name="number" maxlength="2" value="${otherNumber}">
                                                                 <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
-                                                                <iais:select id="chronoUnit" name="chrono" options="recommendationOtherDropdown" value="${otherChrono}"/>
+                                                                <iais:select cssClass="chrono" id="chronoUnit" name="chrono" options="recommendationOtherDropdown" value="${otherChrono}"/>
                                                                 <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
                                                             </iais:value>
                                                         </iais:row>
@@ -226,7 +230,7 @@
                                                             <iais:value width="10">
                                                                 <p>
                                                                     <c:choose>
-                                                                        <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
+                                                                        <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || (isRouteBackStatus && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC') || (isRouteBackStatus && taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC')}">
                                                                             <input class="form-check-input" id="fastTracking"
                                                                             <c:if test="${applicationViewDto.applicationDto.fastTracking}">
                                                                                    checked disabled
@@ -356,7 +360,7 @@
             // $('#ApplicationViewInspection').css('display', 'none');
             // $('#recommendationDropdown').removeClass('hidden');
         }
-        if ('${applicationViewDto.applicationDto.status}' == 'APST062' ||  '${applicationViewDto.applicationDto.status}' == 'APST013' ||  '${applicationViewDto.applicationDto.status}' == 'APST063' ||  '${applicationViewDto.applicationDto.status}' == 'APST064') {
+        if ('${applicationViewDto.applicationDto.status}' == 'APST062' ||  '${applicationViewDto.applicationDto.status}' == 'APST013' ||  '${applicationViewDto.applicationDto.status}' == 'APST063' ||  '${applicationViewDto.applicationDto.status}' == 'APST064' || '${applicationViewDto.applicationDto.status}' == 'APST065' || '${applicationViewDto.applicationDto.status}' == 'APST066' || '${applicationViewDto.applicationDto.status}' == 'APST067') {
             $('#processingDecision').addClass('hidden');
             // $('#recommendationDropdown').addClass('hidden');
             $('#replytr').removeClass('hidden');
@@ -520,7 +524,7 @@
     //route back status verify
     function routeBackCheck(){
         //AO route back to
-        if('${applicationViewDto.applicationDto.status}' == 'APST062'){
+        if(${isAoRouteBackStatus}){
             $('#recommendationFieldTrue').removeClass('hidden');
             $('#recommendationFieldFalse').addClass('hidden');
         }

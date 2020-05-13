@@ -689,9 +689,15 @@ public class HcsaApplicationDelegator {
 
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         String userRoleId = taskDto.getRoleId();
-        String routeBackStatus = ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK;
+        String routeBackStatus = ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO;
         if(RoleConsts.USER_ROLE_AO1.equals(userRoleId) || RoleConsts.USER_ROLE_AO2.equals(userRoleId) || RoleConsts.USER_ROLE_AO3.equals(userRoleId)){
-            routeBackStatus = ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK;
+            if(HcsaConsts.ROUTING_STAGE_ASO.equals(satageId)){
+                routeBackStatus = ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO;
+            }else if(HcsaConsts.ROUTING_STAGE_PSO.equals(satageId)){
+                routeBackStatus = ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO;
+            }else if(HcsaConsts.ROUTING_STAGE_INS.equals(satageId)){
+                routeBackStatus = ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR;
+            }
         }else if(RoleConsts.USER_ROLE_PSO.equals(userRoleId)){
             routeBackStatus = ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK;
         }else if(RoleConsts.USER_ROLE_INSPECTIOR.equals(userRoleId)){

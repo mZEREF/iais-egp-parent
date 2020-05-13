@@ -84,7 +84,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }else{
                 ParamUtil.setRequestAttr(request,"selectNextStageReply",nextStageReplys);
                 //AO route back to
-                if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK.equals(status)){
+                if(isAoRouteBackStatus(status)){
                     if(StringUtil.isEmpty(recommendationStr)){
                         errMap.put("recommendation","Please key in recommendation");
                     }
@@ -161,7 +161,24 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     //verify route back status
     private boolean isRouteBackStatus(String status){
         boolean flag = false;
-        if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK.equals(status) || ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK.equals(status) || ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK.equals(status)){
+        if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)
+                || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO.equals(status)
+                || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO.equals(status)
+                || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)
+                || ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK.equals(status)
+                || ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK.equals(status)){
+            flag = true;
+        }
+        return flag;
+    }
+
+    //verify AO route back status
+    private boolean isAoRouteBackStatus(String status){
+        boolean flag = false;
+        if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)
+                || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO.equals(status)
+                || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO.equals(status)
+                || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)){
             flag = true;
         }
         return flag;
