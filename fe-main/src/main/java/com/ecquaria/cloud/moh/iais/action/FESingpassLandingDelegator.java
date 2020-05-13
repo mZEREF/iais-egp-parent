@@ -18,24 +18,19 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.rbac.user.User;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.rbac.user.User;
+import sop.webflow.rt.api.BaseProcessClass;
 
 @Delegator(value = "singpassLandingDelegator")
 @Slf4j
 public class FESingpassLandingDelegator {
     private static final String NRIC = "nric";
-
-    @Value("${iais.singpass.login.callback.url}")
-    private String singpassCallBackUrl;
 
     @Autowired
     private OrgUserManageService orgUserManageService;
