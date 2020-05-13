@@ -265,6 +265,7 @@ public class WithOutRenewalDelegator {
             groupId = appSubmissionDtos.get(0).getAppGrpId();
             amount = appSubmissionDtos.get(0).getAmount();
             licenseeId = appSubmissionDtos.get(0).getLicenseeId();
+            appSubmissionDtos.get(0).setOldAppSubmissionDto(appSubmissionDtos.get(0));
         }
         String result = ParamUtil.getMaskedString(bpc.request,"result");
         if (!StringUtil.isEmpty(result)) {

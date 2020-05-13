@@ -808,7 +808,7 @@ public class NewApplicationDelegator {
         }
         if(!StringUtil.isEmpty(pmtMethod) && "GIRO".equals(pmtMethod)){
             switch2 = "ack";
-            String txnDt = DateUtil.formatDate(new Date(), "yyyy-MM-dd");
+            String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
             ParamUtil.setSessionAttr(bpc.request,"txnDt",txnDt);
         }
         String result = ParamUtil.getMaskedString(bpc.request,"result");
@@ -1172,7 +1172,7 @@ public class NewApplicationDelegator {
         appGroupMiscDto.setMiscValue(grpId1);
         appGroupMiscDto.setMiscType(ApplicationConsts.APP_GROUP_MISC_TYPE_AMEND_GROUP_ID);
         appGroupMiscDto.setStatus(appSubmissionDto.getAppType());
-        appSubmissionService.saveAppGrpMisc(appGroupMiscDto);
+     /*   appSubmissionService.saveAppGrpMisc(appGroupMiscDto);*/
 
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
