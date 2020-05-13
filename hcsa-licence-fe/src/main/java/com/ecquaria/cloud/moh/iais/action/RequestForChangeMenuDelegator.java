@@ -575,6 +575,11 @@ public class RequestForChangeMenuDelegator {
      */
     public void doPersonnelEdit(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit start ...."));
+        String actionType = ParamUtil.getRequestString(bpc.request, "actionType");
+        if("back".equals(actionType)){
+            ParamUtil.setRequestAttr(bpc.request, "action_type", "back");
+            return;
+        }
         List<PersonnelListQueryDto> personnelEditList = (List<PersonnelListQueryDto>) ParamUtil.getSessionAttr(bpc.request, RfcConst.PERSONNELEDITLIST);
         String email = ParamUtil.getString(bpc.request, "emailAddress");
         String mobile = ParamUtil.getString(bpc.request, "mobileNo");
@@ -624,7 +629,7 @@ public class RequestForChangeMenuDelegator {
             errMap.put("professionRegnNo", "UC_CHKLMD001_ERR001");
         }
         if (!errMap.isEmpty()) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "false");
+            ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             ParamUtil.setSessionAttr(bpc.request, RfcConst.PERSONNELEDITLIST, (Serializable) personnelEditList);
             return;
@@ -682,10 +687,17 @@ public class RequestForChangeMenuDelegator {
             AppSubmissionDto appSubmissionDto1 = setPersonnelDate(appSubmissionDto, personnelListQueryDto);
             appSubmissionDtos1.add(appSubmissionDto1);
         }
-        requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "true");
+        //requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
+        ParamUtil.setRequestAttr(bpc.request, "action_type", "ack");
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit end ...."));
     }
+
+    public void personnleAckBack(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do personnleAckBack start ...."));
+        ParamUtil.setRequestAttr(bpc.request, "action_type", "back");
+        log.debug(StringUtil.changeForLog("the do personnleAckBack end ...."));
+    }
+
 
 
     /**

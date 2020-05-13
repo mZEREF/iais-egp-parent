@@ -47,7 +47,7 @@
                             <tr>
                                 <th>${pmtRefNo}</th>
                                 <th><fmt:formatDate value="${createDate}" pattern="dd/MM/yyyy"></fmt:formatDate></th>
-                                <th>$${dAmount}</th>
+                                <th>${dAmount}</th>
                                 <th>${payMethod}</th>
                             </tr>
                             </tbody>

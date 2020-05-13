@@ -12,19 +12,14 @@
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type_form_value" value="">
     <input type="hidden" name="crud_action_type_value" value="">
-
     <%@include file="dashboard.jsp" %>
     <%@include file="../common/dashboard.jsp" %>
-    <%--Validation fields Start--%>
-    <input type="hidden" name="paramController" id="paramController"
-           value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
+    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
     <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
-    <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
-    <%--Validation fields End--%>
+    <input type="hidden" name="actionType" id="actionType" value=""/>
 
     <div class="main-content">
         <div class="container">
-
             <div class="col-xs-12">
                 <div class="tab-gp steps-tab">
                     <div class="tab-content">
@@ -33,19 +28,49 @@
                         <input type="hidden" id="premTypeVal" value="${appGrpPremisesDto.premisesType}"/>
                         <div class="row" id="mainPrem">
                             <div class="col-xs-12">
+                                <br/>
+                                <br/>
                                 <div>
-                                    <br/>
-                                    <br/>
-                                </div>
-                                <div class="form-horizontal">
-                                    <h3><c:out value="${onePersonnel.psnName}"/>,<c:out value="${onePersonnel.idNo}"/>(<c:out value="${onePersonnel.idType}"/>)</h3>
+                                    <p style="font-size: 3rem"><c:out value="${onePersonnel.psnName}"/>,<c:out value="${onePersonnel.idNo}"/>(<c:out value="${onePersonnel.idType}"/>)</p>
                                     <h4>Changes made will be applied to all licences associated with this personnel. Please note that payment is required for each affected licence.</h4>
                                 </div>
-                                <div class="form-horizontal"></div>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_licenceStatus"></span>
-                                <div>
-                                </div>
-                                <div class="">
+                                <br/>
+                                <table class="table">
+                                    <thead>
+                                    <tr style="font-size: 2rem">
+                                        <th>Licence</th>
+                                        <th>Licence No.</th>
+                                        <th>Roles</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <c:forEach items="${PersonnelEditList}" var="personnel">
+                                        <tr>
+                                            <td>
+                                                <p><c:out value="${personnel.svcId}"></c:out></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out value="${personnel.licenceNo}"></c:out></p>
+                                            </td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${'CGO'==personnel.psnType}">
+                                                        <p>Clinical Governance Officer</p>
+                                                    </c:when>
+                                                    <c:when test="${'PO'==personnel.psnType}">
+                                                        <p>Principal Officer</p>
+                                                    </c:when>
+                                                    <c:when test="${'DPO'==personnel.psnType}">
+                                                        <p>Deputy Principal Officer</p>
+                                                    </c:when>
+                                                </c:choose>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                    </tbody>
+                                </table>
+                                <br/>
                                     <div class="form-horizontal">
                                         <iais:row>
                                             <iais:field value="Name " width="12"/>
@@ -86,8 +111,6 @@
                                             </iais:value>
                                             <span class="error-msg" name="iaisErrorMsg" id="error_professionRegnNor"></span>
                                         </iais:row>
-
-
                                         <iais:row>
                                             <iais:field value="Email " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -105,7 +128,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         <div class="row">
                             <div class="col-xs-12 col-sm-6 ">
                                 <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
@@ -120,8 +142,6 @@
                     </div>
                 </div>
             </div>
-
-        <%--Validation Field--%>
             <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
         </div>
     </div>
@@ -131,16 +151,16 @@
 <script>
     $(document).ready(function () {
         $('#previewAndSub').click(function () {
-            doSubmitForm('preAck','', '');
+            $("#menuListForm").submit();
         });
-
         $('#back').click(function () {
-            doBack('prePersonnelList');
+            $("[name='actionType']").val("back");
+            $("#menuListForm").submit();
         });
-
         $('.idTypeSel').addClass('disabled');
         $('.salutationSel').addClass('disabled');
     });
+
 
 
 </script>

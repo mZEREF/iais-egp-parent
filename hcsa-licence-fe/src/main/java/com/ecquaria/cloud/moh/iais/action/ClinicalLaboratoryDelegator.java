@@ -581,11 +581,9 @@ public class ClinicalLaboratoryDelegator {
     public void doGovernanceOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-            if(RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
-                    || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
+            if(RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action) || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
                 return;
             }
         }
@@ -599,19 +597,16 @@ public class ClinicalLaboratoryDelegator {
         log.debug("isGetDataFromPage:"+isGetDataFromPage);
         if(isGetDataFromPage) {
             List<AppSvcCgoDto> appSvcCgoDtoList = genAppSvcCgoDto(bpc.request);
-
             //do validate
             Map<String, String> errList = IaisCommonUtils.genNewHashMap();
             String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
             AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
             currentSvcRelatedDto.setAppSvcCgoDtoList(appSvcCgoDtoList);
-
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
             String crud_action_additional = bpc.request.getParameter("nextStep");
             if ("next".equals(crud_action_additional)) {
                 List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST);
                 errList = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList);
-
                 if (appSubmissionDto.isNeedEditController()) {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_GOVERNANCE_OFFICERS);
@@ -621,7 +616,6 @@ public class ClinicalLaboratoryDelegator {
                     appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                 }
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
-
                 HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
                 if(errList.isEmpty()){
@@ -634,16 +628,13 @@ public class ClinicalLaboratoryDelegator {
                     if(allChecked.isEmpty()){
                         coMap.put("information","information");
                     }
-
                 }else {
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.GOVERNANCEOFFICERS);
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errList));
                     coMap.put("information","");
+                    return;
                 }
                 bpc.request.getSession().setAttribute("coMap",coMap);
-            }
-            if (!errList.isEmpty()) {
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.GOVERNANCEOFFICERS);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errList));
-                return;
             }
         }
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers end ...."));
@@ -1037,7 +1028,6 @@ public class ClinicalLaboratoryDelegator {
                 mandatory = hcsaSvcPersonnelDto.getMandatoryCount();
             }
         }
-
         //reload
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         List<AppSvcPersonnelDto> appSvcPersonnelDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
@@ -1047,13 +1037,9 @@ public class ClinicalLaboratoryDelegator {
             }
             ParamUtil.setRequestAttr(bpc.request, "AppSvcPersonnelDtoList", appSvcPersonnelDtos);
         }
-
         ParamUtil.setRequestAttr(bpc.request, "ServicePersonnelMandatory", mandatory);
-
-
         List<SelectOption> personnelTypeSel = genPersonnelTypeSel(currentSvcCode);
         ParamUtil.setRequestAttr(bpc.request, SERVICEPERSONNELTYPE, personnelTypeSel);
-
 
         List<SelectOption> designation = genPersonnelDesignSel(currentSvcCode);
         ParamUtil.setSessionAttr(bpc.request, "NuclearMedicineImagingDesignation", (Serializable) designation);
@@ -1078,13 +1064,10 @@ public class ClinicalLaboratoryDelegator {
             isRfi = true;
         }
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
-
-
         if(isGetDataFromPage){
             Map<String ,String >errorMap=IaisCommonUtils.genNewHashMap();
             String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
             String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
-
             List<AppSvcPersonnelDto> appSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
             List<String> personnelTypeList = IaisCommonUtils.genNewArrayList();
@@ -1092,10 +1075,7 @@ public class ClinicalLaboratoryDelegator {
             for(SelectOption sp:personnelTypeSel){
                 personnelTypeList.add(sp.getValue());
             }
-
             appSvcPersonnelDtos = genAppSvcPersonnelDtoList(bpc.request, personnelTypeList,currentSvcCod);
-
-
             appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(appSvcPersonnelDtos);
 
        /* if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)){
@@ -1109,7 +1089,6 @@ public class ClinicalLaboratoryDelegator {
         }*/
 
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
-
             String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
             if(!StringUtil.isEmpty(nextStep)){
                 doValidatetionServicePerson(errorMap,appSvcPersonnelDtos,currentSvcCod);
@@ -1121,7 +1100,6 @@ public class ClinicalLaboratoryDelegator {
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
             }
             HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
-
             Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
             if(errorMap.isEmpty()&&allChecked.isEmpty()){
                 coMap.put("information","information");
@@ -1135,8 +1113,6 @@ public class ClinicalLaboratoryDelegator {
                 return;
             }
         }
-
-
         log.debug(StringUtil.changeForLog("the do doServicePersonnel end ...."));
     }
 
@@ -1454,8 +1430,7 @@ public class ClinicalLaboratoryDelegator {
     private List<AppSvcCgoDto> genAppSvcCgoDto(HttpServletRequest request){
         ParamUtil.setSessionAttr(request, ERRORMAP_GOVERNANCEOFFICERS,null);
         List<AppSvcCgoDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
-        AppSvcCgoDto appSvcCgoDto = null;
-
+        AppSvcCgoDto appSvcCgoDto;
         String[] assignSelect = ParamUtil.getStrings(request, "assignSelect");
         int size = 0 ;
         if(assignSelect != null && assignSelect.length>0){
@@ -1572,7 +1547,6 @@ public class ClinicalLaboratoryDelegator {
         if(appSubmissionDto == null){
             appSubmissionDto = new AppSubmissionDto();
         }
-
         return appSubmissionDto;
     }
     private void doValidateDisciplineAllocation(Map<String ,String> map, List<AppSvcDisciplineAllocationDto> daList,HttpServletRequest request){
