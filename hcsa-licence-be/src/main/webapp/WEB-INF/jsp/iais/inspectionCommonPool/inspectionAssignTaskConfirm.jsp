@@ -85,7 +85,7 @@
                     </div>
                   </div>
                   <p></p>
-                  <c:if test="${'BROADCAST' ne iais_Login_User_Info_Attr.curRoleId}">
+                  <c:if test="${'INSPECTOR' eq iais_Login_User_Info_Attr.curRoleId || 'INSPECTOR_LEAD' eq iais_Login_User_Info_Attr.curRoleId}">
                     <div class="row">
                       <div class="col-md-2">
                         <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
