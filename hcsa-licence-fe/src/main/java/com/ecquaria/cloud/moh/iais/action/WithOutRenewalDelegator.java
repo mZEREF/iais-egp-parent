@@ -265,7 +265,8 @@ public class WithOutRenewalDelegator {
             groupId = appSubmissionDtos.get(0).getAppGrpId();
             amount = appSubmissionDtos.get(0).getAmount();
             licenseeId = appSubmissionDtos.get(0).getLicenseeId();
-            appSubmissionDtos.get(0).setOldAppSubmissionDto(appSubmissionDtos.get(0));
+            bpc.request.getSession().setAttribute("oldAppSubmissionDto",appSubmissionDtos.get(0));
+
         }
         String result = ParamUtil.getMaskedString(bpc.request,"result");
         if (!StringUtil.isEmpty(result)) {
@@ -335,7 +336,7 @@ public class WithOutRenewalDelegator {
         }
         Double total = 0d;
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
-            AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+            AppSubmissionDto oldAppSubmissionDto  =(AppSubmissionDto)bpc.request.getSession().getAttribute("oldAppSubmissionDto");
             AppSubmissionDto premisesSubmissionDto =  oldAppSubmissionDto;
             AppSubmissionDto personnelSubmissionDto = oldAppSubmissionDto;
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();

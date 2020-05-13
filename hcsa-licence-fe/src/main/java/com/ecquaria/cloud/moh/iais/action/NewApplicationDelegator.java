@@ -1172,7 +1172,7 @@ public class NewApplicationDelegator {
         appGroupMiscDto.setMiscValue(grpId1);
         appGroupMiscDto.setMiscType(ApplicationConsts.APP_GROUP_MISC_TYPE_AMEND_GROUP_ID);
         appGroupMiscDto.setStatus(appSubmissionDto.getAppType());
-     /*   appSubmissionService.saveAppGrpMisc(appGroupMiscDto);*/
+        appSubmissionService.saveAppGrpMisc(appGroupMiscDto);
 
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
@@ -2101,31 +2101,29 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList  = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>)   request.getSession().getAttribute(COMMONHCSASVCDOCCONFIGDTO);
-        Boolean flag =false;
-        if(commonHcsaSvcDocConfigList==null){
-            return;
-        }
-        for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto : commonHcsaSvcDocConfigList) {
-            Boolean isMandatory = hcsaSvcDocConfigDto.getIsMandatory();
-            String id = hcsaSvcDocConfigDto.getId();
+        for(HcsaSvcDocConfigDto comm : commonHcsaSvcDocConfigList){
+            String name = "common"+comm.getId();
+
+            Boolean isMandatory = comm.getIsMandatory();
             if(isMandatory&&appGrpPrimaryDocDtoList==null||isMandatory&&appGrpPrimaryDocDtoList.isEmpty()){
-                documentMap.put("common","UC_CHKLMD001_ERR001");
-            }else if(isMandatory&&appGrpPrimaryDocDtoList!=null){
+                documentMap.put(name, "UC_CHKLMD001_ERR001");
+            }else if(isMandatory&&!appGrpPrimaryDocDtoList.isEmpty()){
+                Boolean flag=false;
                 for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
-                    String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
-                    if(id.equals(svcDocId)){
+                    String svcComDocId = appGrpPrimaryDocDto.getSvcComDocId();
+                    if(comm.getId().equals(svcComDocId)){
                         flag=true;
+                        break;
                     }
-
                 }
-
+                if(!flag){
+                    documentMap.put(name, "UC_CHKLMD001_ERR001");
+                }
             }
 
         }
 
-        if(!flag){
-            documentMap.put("common","UC_CHKLMD001_ERR001");
-        }
+
 
     }
 
