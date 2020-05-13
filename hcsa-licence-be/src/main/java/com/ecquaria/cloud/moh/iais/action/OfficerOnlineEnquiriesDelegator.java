@@ -143,6 +143,13 @@ public class OfficerOnlineEnquiriesDelegator {
                 ParamUtil.setSessionAttr(request,"isASO",1);
             }
         }
+        Integer isCease= (Integer) ParamUtil.getRequestAttr(request,"isCease");
+        if(isCease!=null&&isCease==1){
+            ParamUtil.setSessionAttr(request,"cease",1);
+        }
+        else {
+            ParamUtil.setSessionAttr(request,"cease",0);
+        }
         ParamUtil.setSessionAttr(request,SEARCH_NO,null);
         ParamUtil.setSessionAttr(request,"id",null);
         ParamUtil.setSessionAttr(request, "licenceNo", null);

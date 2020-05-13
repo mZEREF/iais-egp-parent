@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -20,13 +22,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
@@ -87,6 +92,18 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     HcsaChklClient hcsaChklClient;
     @Autowired
     private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+    @Autowired
+    private BeEicGatewayClient gatewayClient;
+
     @Value("${iais.syncFileTracking.shared.path}")
     private     String sharedPath;
     private     String download;
@@ -478,7 +495,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         fileItem = new DiskFileItem("selectedFile", Files.probeContentType(f.toPath()),
                                 false, fileName.toString(), (int) f.length(), f.getParentFile());
                     } catch (IOException e) {
-                        e.printStackTrace();
                         log.error(e.getMessage(),e);
                     }
 //                    try ( InputStream input = new FileInputStream(f);){
@@ -543,6 +559,38 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         if(!file.exists()){
             file.mkdirs();
         }
-
     }
+
+
+    @Override
+    public LicPremisesReqForInfoDto createFeRfiLicDto(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
+        EicRequestTrackingDto trackDto = getLicEicRequestTrackingDtoByRefNo(licPremisesReqForInfoDto.getEventRefNo());
+        eicCallFeRfiLic(licPremisesReqForInfoDto);
+        trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+        updateLicEicRequestTrackingDto(trackDto);
+
+        return licPremisesReqForInfoDto;
+    }
+
+    public void eicCallFeRfiLic(LicPremisesReqForInfoDto licPremisesReqForInfoDto1) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        log.info(StringUtil.changeForLog("=======>>>>>"+licPremisesReqForInfoDto1.getAction()+" Lic Request for Information reqInfoId "+licPremisesReqForInfoDto1.getReqInfoId()));
+
+        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1,
+                signature.date(), signature.authorization(), signature2.date(), signature2.authorization());
+    }
+
+
+
+    @Override
+    public EicRequestTrackingDto updateLicEicRequestTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto) {
+        return hcsaLicenceClient.updateLicEicRequestTracking(licEicRequestTrackingDto).getEntity();
+    }
+
+
+    public EicRequestTrackingDto getLicEicRequestTrackingDtoByRefNo(String refNo) {
+        return hcsaLicenceClient.getLicEicRequestTrackingDto(refNo).getEntity();
+    }
+
 }

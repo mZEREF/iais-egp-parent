@@ -413,20 +413,25 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         inspectionReportDto.setRectifiedWithinKPI("Yes");
         //Date time
         Date inspectionDate = null;
-        String inspectionStartTime = null;
-        String inspectionEndTime = null;
-        List<AppPremisesRecommendationDto> appPreRecommentdationDtoStart = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME).getEntity();
-        List<AppPremisesRecommendationDto> appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-        List<AppPremisesRecommendationDto> appPreRecommentdationDtoEnd = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME).getEntity();
-        if(appPreRecommentdationDtoDate!=null){
-            inspectionDate = appPreRecommentdationDtoDate.get(indexNo).getRecomInDate();
+        String inspectionStartTime = "-";
+        String inspectionEndTime = "-";
+        try{
+            List<AppPremisesRecommendationDto> appPreRecommentdationDtoStart = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME).getEntity();
+            List<AppPremisesRecommendationDto> appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+            List<AppPremisesRecommendationDto> appPreRecommentdationDtoEnd = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME).getEntity();
+            if(appPreRecommentdationDtoDate!=null){
+                inspectionDate = appPreRecommentdationDtoDate.get(indexNo).getRecomInDate();
+            }
+            if(appPreRecommentdationDtoStart!=null){
+                inspectionStartTime = appPreRecommentdationDtoStart.get(indexNo).getRecomDecision();
+            }
+            if(appPreRecommentdationDtoEnd!=null){
+                inspectionEndTime = appPreRecommentdationDtoEnd.get(indexNo).getRecomDecision();
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
         }
-        if(appPreRecommentdationDtoStart!=null){
-            inspectionStartTime = appPreRecommentdationDtoStart.get(indexNo).getRecomDecision();
-        }
-        if(appPreRecommentdationDtoEnd!=null){
-            inspectionEndTime = appPreRecommentdationDtoEnd.get(indexNo).getRecomDecision();
-        }
+
         AppPremisesRecommendationDto rectiDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSPECTYPE).getEntity();
         if(rectiDto!=null){
             String inspectypeRemarks = rectiDto.getRemarks();

@@ -93,7 +93,10 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         String s = FileUtil.genMd5FileChecksum(data.getBytes());
         File file=MiscUtil.generateFile(download+File.separator, s+fileFormat);
         if(!file.exists()){
-            file.createNewFile();
+            boolean createFlag = file.createNewFile();
+            if (!createFlag) {
+                log.error("Create File fail");
+            }
         }
         File groupPath=new File(download+File.separator);
 

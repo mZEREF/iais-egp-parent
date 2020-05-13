@@ -3,23 +3,22 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
@@ -41,19 +40,10 @@ public class SendsReminderToReplyRfiBatchjob {
     RequestForInformationService requestForInformationService;
     @Autowired
     InspEmailService inspEmailService;
-    @Autowired
-    private BeEicGatewayClient gatewayClient;
+
     @Autowired
     EmailClient emailClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
 
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
     public void start(BaseProcessClass bpc){
         logAbout("start");
     }
@@ -103,10 +93,24 @@ public class SendsReminderToReplyRfiBatchjob {
         cal.add(Calendar.DAY_OF_MONTH, RequestForInformationConstants.REMIND_INTERVAL_DAY);
         licPremisesReqForInfoDto.setDueDateSubmission(cal.getTime());
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         licPremisesReqForInfoDto1.setAction("update");
-        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+
+        EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
+        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        Date now = new Date();
+        eicRequestTrackingDto.setActionClsName("com.ecquaria.cloud.moh.iais.service.RequestForInformationServiceImpl");
+        eicRequestTrackingDto.setActionMethod("eicCallFeRfiLic");
+        eicRequestTrackingDto.setModuleName("hcsa-licence-web-intranet");
+        eicRequestTrackingDto.setDtoClsName(LicPremisesReqForInfoDto.class.getName());
+        eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(licPremisesReqForInfoDto));
+        eicRequestTrackingDto.setProcessNum(1);
+        eicRequestTrackingDto.setFirstActionAt(now);
+        eicRequestTrackingDto.setLastActionAt(now);
+        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+        eicRequestTrackingDto.setRefNo(System.currentTimeMillis()+"");
+        licPremisesReqForInfoDto.setEventRefNo(eicRequestTrackingDto.getRefNo());
+        requestForInformationService.updateLicEicRequestTrackingDto(eicRequestTrackingDto);
+        requestForInformationService.createFeRfiLicDto(licPremisesReqForInfoDto);
 
     }
     private void logAbout(String methodName){

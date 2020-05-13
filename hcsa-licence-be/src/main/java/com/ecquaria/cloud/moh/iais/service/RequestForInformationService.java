@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -27,7 +28,8 @@ public interface RequestForInformationService {
     SearchResult<RfiLicenceQueryDto> licenceDoQuery(SearchParam searchParam);
     List<String> getSvcNamesByType();
     LicPremisesReqForInfoDto updateLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
-
+    LicPremisesReqForInfoDto createFeRfiLicDto(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
+    EicRequestTrackingDto updateLicEicRequestTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto);
     LicPremisesReqForInfoDto createLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
     List<LicPremisesReqForInfoDto> searchLicPremisesReqForInfo(String licPremId);
     LicPremisesReqForInfoDto getLicPreReqForInfo(String id);
