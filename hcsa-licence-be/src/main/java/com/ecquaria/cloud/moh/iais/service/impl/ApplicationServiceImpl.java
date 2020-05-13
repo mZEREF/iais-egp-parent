@@ -259,6 +259,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
                 messageNo,applicationDto.getServiceId(),templateMessageByContent, applicationViewDto.getApplicationGroupDto().getLicenseeId(),IaisEGPHelper.getCurrentAuditTrailDto());
+        HashMap<String,String> mapParam = IaisCommonUtils.genNewHashMap();
+        mapParam.put("appNo",applicationDto.getApplicationNo());
+        interMessageDto.setMaskParams(mapParam);
         inboxMsgService.saveInterMessage(interMessageDto);
         //new application send email
         String applicationType = applicationDto.getApplicationType();
