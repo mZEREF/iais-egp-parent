@@ -30,7 +30,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator(value = "singpassLandingDelegator")
 @Slf4j
 public class FESingpassLandingDelegator {
-    private static final String NRIC = "nric";
 
     @Autowired
     private OrgUserManageService orgUserManageService;
