@@ -135,9 +135,9 @@ public class FeAdminManageDelegate {
             feUserDto.setUserDomain(AppConsts.DOMAIN_INTERNET);
             feUserDto.setOrgId(organizationId);
             if("active".equals(active)){
-                feUserDto.setAvailable(true);
+                feUserDto.setAvailable(Boolean.TRUE);
             }else{
-                feUserDto.setAvailable(false);
+                feUserDto.setAvailable(Boolean.FALSE);
             }
             if("admin".equals(role)){
                 feUserDto.setUserRole(RoleConsts.USER_ROLE_ORG_ADMIN);
