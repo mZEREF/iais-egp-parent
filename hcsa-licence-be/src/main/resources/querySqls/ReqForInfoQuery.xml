@@ -222,14 +222,14 @@
                                 </p>
                                 <p>
                                     <label class="col-xs-9 col-md-4 control-label" >Licence No.</label>
-                                    <label col-xs-11 col-sm-4 col-md-5>
-                                        &nbsp<input type="text" style="width:170%; font-weight:normal;" maxlength="30" name="licenceNoindexRfi" style=" font-weight:normal;" ><span id="error_licenceNoindexRfi" name="iaisErrorMsg" class="error-msg" ></span>
+                                    <label >
+                                        (rfiLicSelect) <span id="error_licenceNoindexRfi" name="iaisErrorMsg" class="error-msg" ></span>
                                     </label>
                                 </p>
                                 <p>
 
                                     <label class="col-xs-9 col-md-4 control-label" >Due Date</label>
-                                    <label col-xs-11 col-sm-4 col-md-5>
+                                    <label >
                                         <div class="form-group">
                                             <div class=" col-xs-7 col-sm-4 col-md-5">
                                                 <input type="text" autocomplete="off" class="date_picker form-control due-date" name="Due_dateindexRfi" id="-66613756688199" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_Due_dateindexRfi" name="iaisErrorMsg" class="error-msg" ></span>

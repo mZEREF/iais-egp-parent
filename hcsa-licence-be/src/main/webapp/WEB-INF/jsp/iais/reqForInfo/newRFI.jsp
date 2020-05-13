@@ -56,14 +56,15 @@
                                                     </label>
                                                 </p>
                                                 <p>
-                                                    <label class="col-xs-9 col-md-4 control-label" >Licence No.</label>
-                                                    <label col-xs-11 col-sm-4 col-md-5>
-                                                        <input type="text" value="${newRfi.licenceNo}" style="width:170%; font-weight:normal;" maxlength="30" name="licenceNo${status.index}" style=" font-weight:normal;" ><span id="error_licenceNo${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
+                                                    <label class="col-xs-9 col-md-4 control-label" >Licence No.<strong style="color:#ff0000;">*</strong></label>
+                                                    <label >
+                                                        <iais:select name="licenceNo${status.index}" options="salutationLicList" firstOption="Please Select" value="${newRfi.licenceNo}"></iais:select>
+                                                        <span id="error_licenceNo${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
                                                     </label>
                                                 </p>
                                                 <p>
                                                     <label class="col-xs-9 col-md-4 control-label" >Due Date<strong style="color:#ff0000;">*</strong></label>
-                                                    <label col-xs-11 col-sm-4 col-md-5>
+                                                    <label >
                                                         <iais:datePicker value="${newRfi.date}"  name="Due_date${status.index}"></iais:datePicker>
                                                         <span id="error_Due_date${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
                                                     </label>

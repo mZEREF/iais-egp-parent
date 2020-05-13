@@ -73,7 +73,7 @@
             </div>
         </div>
         <iais:action style="text-align:left;">
-            <a  onclick="javascript:doBack()">< Back</a>
+            <a href="/hcsa-licence-web/eservice/INTRANET/MohOnlineEnquiries" style="margin-bottom: 1%;margin-left: 1%"><em class="fa fa-angle-left"></em> Back</a>
         </iais:action>
     </div>
 </form>
@@ -81,10 +81,6 @@
     function doNew(){
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "new");
-    }
-    function doBack(){
-        showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doView(reqInfoId) {
         showWaiting();

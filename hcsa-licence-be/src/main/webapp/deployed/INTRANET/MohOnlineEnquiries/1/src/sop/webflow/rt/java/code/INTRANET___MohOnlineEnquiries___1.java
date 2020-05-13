@@ -66,6 +66,11 @@ public class INTRANET___MohOnlineEnquiries___1 extends BaseProcessClass {
 	// 		preInspReport->OnStepProcess
 	}
 
+	public void callReqForInfo_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "callReqForInfo", this);
+	// 		callReqForInfo->OnStepProcess
+	}
+
 
 
 }

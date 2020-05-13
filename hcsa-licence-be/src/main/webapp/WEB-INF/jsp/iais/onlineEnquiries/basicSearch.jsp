@@ -257,6 +257,8 @@
 
     <iais:action style="text-align:right;">
         <a class="btn btn-secondary" onclick="$(this).attr('class', 'btn btn-secondary disabled')" href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>
+        <button type="button" class="btn btn-primary ReqForInfoBtn" disabled
+                onclick="javascript:doReqForInfo();">ReqForInfo</button>
         <c:if test="${cease==1}">
             <button type="button" class="btn btn-primary CeaseBtn" disabled
                     onclick="javascript:doCessation();">Cease</button>
@@ -279,7 +281,11 @@
             ;
         }
         ;
-
+        if (checkOne) {
+            $('.ReqForInfoBtn').prop('disabled',false);
+        } else {
+            $('.ReqForInfoBtn').prop('disabled',true);
+        }
         if (checkOne&&isAso==="1") {
             $('.CeaseBtn').prop('disabled',false);
         } else {
@@ -339,12 +345,14 @@
     function checkAll(isAso) {
         if ($('#checkboxAll').is(':checked')) {
             $("input[name='appIds']").attr("checked", "true");
+            $('.ReqForInfoBtn').prop('disabled',false);
             if(isAso==="1"){
                 $('.CeaseBtn').prop('disabled',false);
             }
         } else {
             $("input[name='appIds']").removeAttr("checked");
             $('.CeaseBtn').prop('disabled',true);
+            $('.ReqForInfoBtn').prop('disabled',true);
         }
     }
 
@@ -355,12 +363,9 @@
         chk.each(function(){
             dropIds.push($(this).val());
         });
-
         var flog=false;
         for(var i=0;i<dropIds.length;i++){
-
             var str=dropIds[i].split('|')[1];
-
             if(str=='1'){
                 flog=true;
             }
@@ -370,6 +375,28 @@
         }
         else {
             $("#selectDecisionMsg").show();
+            dismissWaiting();
+        }
+    }
+
+    function doReqForInfo() {
+        showWaiting();
+        var chk=$("[name='appIds']:checked");
+        var dropIds = new Array();
+        chk.each(function(){
+            dropIds.push($(this).val());
+        });
+        var flog=false;
+        for(var i=0;i<dropIds.length;i++){
+            var str=dropIds[i].split('|')[1];
+            if(str=='1'){
+                flog=true;
+            }
+        }
+        if(flog){
+            SOP.Crud.cfxSubmit("mainForm", "reqForInfo");
+        }
+        else {
             dismissWaiting();
         }
 

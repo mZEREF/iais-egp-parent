@@ -3,53 +3,34 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.NewRfiPageListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
@@ -82,9 +63,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -139,23 +120,16 @@ public class RequestForInformationDelegator {
     FillupChklistService fillupChklistService;
     @Autowired
     EmailClient emailClient;
-    private final String RFI_QUERY="ReqForInfoQuery";
-    FilterParameter licenceParameter = new FilterParameter.Builder()
-            .clz(RfiLicenceQueryDto.class)
-            .searchAttr("licParam")
-            .resultAttr("licResult")
-            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(10).build();
 
-    FilterParameter applicationParameter = new FilterParameter.Builder()
-            .clz(RfiApplicationQueryDto.class)
-            .searchAttr("appParam")
-            .resultAttr("appResult")
-            .sortField("application_no").pageNo(1).pageSize(10).sortType(SearchParam.ASCENDING).build();
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         AuditTrailHelper.auditFunction("RequestForInformation Management", "RequestForInformation Config");
+
+        List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(request, "licIds");
+        List<LicPremisesDto> licPremisesDtos=hcsaLicenceClient.getPremisesByLicIds(licenceIds).getEntity();
+        ParamUtil.setSessionAttr(request,"licPremisesDtos", (Serializable) licPremisesDtos);
         ParamUtil.setSessionAttr(request,"id",null);
         ParamUtil.setSessionAttr(request, "licenceNo", null);
         ParamUtil.setSessionAttr(request, "reqInfoId", null);
@@ -164,519 +138,30 @@ public class RequestForInformationDelegator {
     }
 
 
-    public void preSearchLic(BaseProcessClass bpc) {
-        log.info("=======>>>>>preBasicSearch>>>>>>>>>>>>>>>>requestForInformation");
-        HttpServletRequest request=bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        String searchNo= ParamUtil.getString(request,"search_no");
-        Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
-
-        if (!StringUtil.isEmpty(searchNo)) {
-            filters.put("licence_no", searchNo);
-        }
-        licenceParameter.setFilters(filters);
-
-        SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
-
-        CrudHelper.doPaging(licParam,bpc.request);
-
-        QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
-        if (licParam != null) {
-            SearchResult<RfiLicenceQueryDto> licResult = requestForInformationService.licenceDoQuery(licParam);
-
-            if(!StringUtil.isEmpty(licResult)){
-                SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
-                searchListDtoSearchResult.setRowCount(licResult.getRowCount());
-                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
-                for (RfiLicenceQueryDto rfiLicenceQueryDto:licResult.getRows()
-                ) {
-                    ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
-                    String licStatus= MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiLicenceQueryDto.getLicenceStatus()}).get(0).getText();
-                    reqForInfoSearchListDto.setLicenceId(rfiLicenceQueryDto.getId());
-                    reqForInfoSearchListDto.setLicenceStatus(licStatus);
-                    reqForInfoSearchListDto.setLicenceNo(rfiLicenceQueryDto.getLicenceNo());
-                    reqForInfoSearchListDto.setAppId(rfiLicenceQueryDto.getAppId());
-                    reqForInfoSearchListDto.setServiceName(rfiLicenceQueryDto.getServiceName());
-                    reqForInfoSearchListDto.setStartDate(rfiLicenceQueryDto.getStartDate());
-                    reqForInfoSearchListDto.setExpiryDate(rfiLicenceQueryDto.getExpiryDate());
-                    List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiLicenceQueryDto.getId()).getEntity();
-                    reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
-                    reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
-                    List<String> addressList = IaisCommonUtils.genNewArrayList();
-                    for (PremisesDto premisesDto:premisesDtoList
-                    ) {
-                        addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
-                        reqForInfoSearchListDto.setAddress(addressList);
-                    }
-                    reqForInfoSearchListDto.setLicenseeId(rfiLicenceQueryDto.getLicenseeId());
-                    List<LicPremisesDto> licPremisesDtos=hcsaLicenceClient.getLicPremListByLicId(rfiLicenceQueryDto.getId()).getEntity();
-                    reqForInfoSearchListDto.setLicPremId(licPremisesDtos.get(0).getId());
-                    LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiLicenceQueryDto.getLicenseeId());
-                    reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
-                    reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
-
-                }
-                searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
-                ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
-            }
-        }
-        ParamUtil.setRequestAttr(request,"SearchParam", licParam);
-        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
-        ParamUtil.setSessionAttr(request, "search_no",searchNo);
-        // 		preLicSearch->OnStepProcess
-    }
-
-
-    public void preSearch(BaseProcessClass bpc) {
-        log.info("=======>>>>>preSearch>>>>>>>>>>>>>>>>requestForInformation");
-        HttpServletRequest request=bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        String searchNo= ParamUtil.getString(request,"search_no");
-        Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
-
-        if (!StringUtil.isEmpty(searchNo)) {
-            filters.put("appNo", searchNo);
-        }
-
-        applicationParameter.setFilters(filters);
-        SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
-        CrudHelper.doPaging(appParam,bpc.request);
-        QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
-        if (appParam != null) {
-            SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
-
-            if(!StringUtil.isEmpty(appResult)){
-                SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
-                searchListDtoSearchResult.setRowCount(appResult.getRowCount());
-                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
-                for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
-                ) {
-
-                    if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
-                        filters.put("app_id", rfiApplicationQueryDto.getId());
-                    }
-                    licenceParameter.setFilters(filters);
-                    SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
-                    QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
-                    SearchResult<RfiLicenceQueryDto> licResult =requestForInformationService.licenceDoQuery(licParam);
-                    if(licResult.getRowCount()!=0) {
-                        for (RfiLicenceQueryDto lic:licResult.getRows()
-                        ) {
-                            ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
-
-                            rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
-                            String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
-                            reqForInfoSearchListDto.setLicenceStatus(licStatus);
-                            reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
-                            //reqForInfoSearchListDto.setServiceName(lic.getServiceName());
-                            reqForInfoSearchListDto.setStartDate(lic.getStartDate());
-                            reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
-                            List<LicPremisesDto> licPremisesDtos=hcsaLicenceClient.getLicPremListByLicId(lic.getId()).getEntity();
-                            reqForInfoSearchListDto.setLicPremId(licPremisesDtos.get(0).getId());
-                            reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
-                        }
-                    }
-                    else {
-                        ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
-                        rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
-                        reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
-                    }
-                }
-                searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
-                ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
-            }
-        }
-
-        ParamUtil.setRequestAttr(request,"SearchParam", appParam);
-
-        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
-        ParamUtil.setSessionAttr(request, "search_no",searchNo);
-        // 		preBasicSearch->OnStepProcess
-    }
-
-
-    public void preSearchLicence(BaseProcessClass bpc) {
-        log.info("=======>>>>>preSearchLicence>>>>>>>>>>>>>>>>requestForInformation");
-        HttpServletRequest request = bpc.request;
-        List<SelectOption> licSvcTypeOption =requestForInformationService.getLicSvcTypeOption();
-        List<SelectOption> licStatusOption = requestForInformationService.getLicStatusOption();
-
-        ParamUtil.setRequestAttr(request,"licSvcTypeOption", licSvcTypeOption);
-        ParamUtil.setRequestAttr(request,"licStatusOption", licStatusOption);
-        // 		preSearchLicence->OnStepProcess
-    }
-
-    public void preSearchApplication(BaseProcessClass bpc) {
-        log.info("=======>>>>>preSearchApplication>>>>>>>>>>>>>>>>requestForInformation");
-        HttpServletRequest request = bpc.request;
-        List<SelectOption> appTypeOption = requestForInformationService.getAppTypeOption();
-        List<SelectOption> appStatusOption =requestForInformationService.getAppStatusOption();
-        ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
-        ParamUtil.setRequestAttr(request,"appStatusOption", appStatusOption);
-
-        // 		preSearchApplication->OnStepProcess
-    }
-
-    public void doSearchApplication(BaseProcessClass bpc) throws ParseException {
-        log.info("=======>>>>>doSearchApplication>>>>>>>>>>>>>>>>requestForInformation");
-        HttpServletRequest request = bpc.request;
-        List<SelectOption> appTypeOption = requestForInformationService.getAppTypeOption();
-        List<SelectOption> appStatusOption =requestForInformationService.getAppStatusOption();
-
-
-        String applicationNo = ParamUtil.getString(bpc.request, "application_no");
-
-        String applicationType = ParamUtil.getString(bpc.request, "application_type");
-        String status = ParamUtil.getString(bpc.request, "application_status");
-        String subDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
-                SystemAdminBaseConstants.DATE_FORMAT);
-        String toDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
-                SystemAdminBaseConstants.DATE_FORMAT);
-
-        Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
-
-        if(!StringUtil.isEmpty(applicationNo)){
-            filters.put("appNo", applicationNo);
-        }
-        if(!StringUtil.isEmpty(applicationType)){
-            filters.put("appType", applicationType);
-        }
-        if(!StringUtil.isEmpty(status)){
-            if(status.equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)){
-                status=ApplicationConsts.APPLICATION_STATUS_APPROVED;
-            }
-            filters.put("appStatus", status);
-        }
-        if(!StringUtil.isEmpty(subDate)){
-            filters.put("subDate", subDate);
-        }
-        if(!StringUtil.isEmpty(toDate)){
-            filters.put("toDate",toDate);
-        }
-        applicationParameter.setFilters(filters);
-        SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
-        CrudHelper.doPaging(appParam,bpc.request);
-        QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
-        if (appParam != null) {
-            SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
-
-            if(!StringUtil.isEmpty(appResult)){
-                SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
-                searchListDtoSearchResult.setRowCount(appResult.getRowCount());
-                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
-                for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
-                ) {
-                    Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
-                    if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
-                        filter.put("app_id", rfiApplicationQueryDto.getId());
-                    }
-                    licenceParameter.setFilters(filter);
-                    SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
-                    QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
-                    SearchResult<RfiLicenceQueryDto> licResult =requestForInformationService.licenceDoQuery(licParam);
-                    if(licResult.getRowCount()!=0) {
-                        for (RfiLicenceQueryDto lic:licResult.getRows()
-                        ) {
-                            ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
-                            rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
-                            String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
-                            reqForInfoSearchListDto.setLicenceStatus(licStatus);
-                            reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
-                            //reqForInfoSearchListDto.setServiceName(lic.getServiceName());
-                            reqForInfoSearchListDto.setStartDate(lic.getStartDate());
-                            reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
-                            List<LicPremisesDto> licPremisesDtos=hcsaLicenceClient.getLicPremListByLicId(lic.getId()).getEntity();
-                            reqForInfoSearchListDto.setLicPremId(licPremisesDtos.get(0).getId());
-                            reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
-                        }
-                    }
-                    else {
-                        ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
-                        rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
-                        reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
-                    }
-                }
-                searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
-                ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
-            }
-        }
-        if(!StringUtil.isEmpty(subDate)){
-            appParam.getFilters().put("subDate",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
-                    AppConsts.DEFAULT_DATE_FORMAT));
-        }
-        if(!StringUtil.isEmpty(toDate)){
-            appParam.getFilters().put("toDate",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
-                    AppConsts.DEFAULT_DATE_FORMAT));
-        }
-        ParamUtil.setRequestAttr(request,"SearchParam", appParam);
-        ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
-        ParamUtil.setRequestAttr(request,"appStatusOption", appStatusOption);
-        // 		doSearchApplication->OnStepProcess
-    }
-
-    private void rfiApplicationQueryDtoToReqForInfoSearchListDto(RfiApplicationQueryDto rfiApplicationQueryDto,ReqForInfoSearchListDto reqForInfoSearchListDto){
-        reqForInfoSearchListDto.setAppId(rfiApplicationQueryDto.getId());
-        String appType= MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getApplicationType()}).get(0).getText();
-        reqForInfoSearchListDto.setAppCorrId(rfiApplicationQueryDto.getAppCorrId());
-        reqForInfoSearchListDto.setApplicationType(appType);
-        reqForInfoSearchListDto.setApplicationNo(rfiApplicationQueryDto.getApplicationNo());
-        reqForInfoSearchListDto.setApplicationStatus(rfiApplicationQueryDto.getApplicationStatus());
-        reqForInfoSearchListDto.setServiceName(rfiApplicationQueryDto.getSvcId());
-        reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getHciCode());
-        reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getHciName());
-        reqForInfoSearchListDto.setBlkNo(rfiApplicationQueryDto.getBlkNo());
-        reqForInfoSearchListDto.setBuildingName(rfiApplicationQueryDto.getBuildingName());
-        reqForInfoSearchListDto.setUnitNo(rfiApplicationQueryDto.getUnitNo());
-        reqForInfoSearchListDto.setStreetName(rfiApplicationQueryDto.getStreetName());
-        reqForInfoSearchListDto.setFloorNo(rfiApplicationQueryDto.getFloorNo());
-        String riskLevel;
-        try {
-            List<ChecklistItemDto> checklistItemDtos=inspectionRectificationProService.getQuesAndClause( rfiApplicationQueryDto.getAppCorrId());
-            if(checklistItemDtos.size()!=0){
-                riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{checklistItemDtos.get(0).getRiskLevel()}).get(0).getText();
-            }else {
-                riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getRiskLevel()}).get(0).getText();
-            }
-        }catch (Exception e){
-            riskLevel="-";
-        }
-        reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
-        try{
-            List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-            if(appPremisesRecommendationDtos.size()>=1){
-                reqForInfoSearchListDto.setLastComplianceHistory("Full");
-                RequestForInformationDelegator.setSearchListComplianceHistory(rfiApplicationQueryDto, reqForInfoSearchListDto, insepctionNcCheckListService, fillupChklistService);
-            }
-            else {
-                reqForInfoSearchListDto.setLastComplianceHistory("-");
-            }
-        }catch (Exception e){
-            reqForInfoSearchListDto.setLastComplianceHistory("-");
-        }
-
-        log.debug(StringUtil.changeForLog("licenseeId start ...."+rfiApplicationQueryDto.getLicenseeId()));
-        if(rfiApplicationQueryDto.getLicenseeId()!=null){
-            reqForInfoSearchListDto.setLicenseeId(rfiApplicationQueryDto.getLicenseeId());
-            try {
-                LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiApplicationQueryDto.getLicenseeId());
-                reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
-            } catch (Exception e) {
-
-            }
-        }
-
-    }
-
-    static void setSearchListComplianceHistory(RfiApplicationQueryDto rfiApplicationQueryDto, ReqForInfoSearchListDto reqForInfoSearchListDto, InsepctionNcCheckListService insepctionNcCheckListService, FillupChklistService fillupChklistService) {
-        List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = insepctionNcCheckListService.getNcItemDtoByAppCorrId(rfiApplicationQueryDto.getAppCorrId());
-        if(appPremisesPreInspectionNcItemDtos.size()!=0){
-            for (AppPremisesPreInspectionNcItemDto nc:appPremisesPreInspectionNcItemDtos
-            ) {
-                if(nc.getIsRecitfied()==0){
-                    reqForInfoSearchListDto.setLastComplianceHistory("Partial");
-                }
-            }
-        }
-        AdCheckListShowDto adCheckListShowDto = fillupChklistService.getAdhoc(rfiApplicationQueryDto.getAppCorrId());
-        if(adCheckListShowDto!=null){
-            List<AdhocNcCheckItemDto> adItemList = adCheckListShowDto.getAdItemList();
-            if(adItemList!=null && !adItemList.isEmpty()){
-                for(AdhocNcCheckItemDto temp:adItemList){
-                    if(temp.getRectified()){
-                        reqForInfoSearchListDto.setLastComplianceHistory("Partial");
-                    }
-                }
-            }
-        }
-    }
-
-    public void doSearchLicence(BaseProcessClass bpc) throws ParseException {
-        log.info("=======>>>>>doSearchLicence>>>>>>>>>>>>>>>>requestForInformation");
-        HttpServletRequest request = bpc.request;
-        List<SelectOption> licSvcTypeOption =requestForInformationService.getLicSvcTypeOption();
-        List<SelectOption> licStatusOption = requestForInformationService.getLicStatusOption();
-
-
-
-        String licenceNo = ParamUtil.getString(bpc.request, "licence_no");
-
-        String serviceLicenceType = ParamUtil.getString(bpc.request, "service_licence_type");
-        String licenceStatus = ParamUtil.getString(bpc.request, "licence_status");
-        String subDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
-                SystemAdminBaseConstants.DATE_FORMAT);
-        String toDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
-                SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
-        Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
-
-        if(!StringUtil.isEmpty(licenceNo)){
-            filters.put("licence_no", licenceNo);
-        }
-        if(!StringUtil.isEmpty(licenceStatus)){
-            filters.put("licence_status", licenceStatus);
-        }
-        if(!StringUtil.isEmpty(subDate)){
-            filters.put("start_date", subDate);
-        }
-        if(!StringUtil.isEmpty(toDate)){
-            filters.put("expiry_date", toDate);
-        }
-        if(!StringUtil.isEmpty(serviceLicenceType)){
-            List<String> svcNames= new ArrayList<>(0);
-            svcNames.add(serviceLicenceType);
-            filters.put("svc_names",svcNames);
-        }
-        licenceParameter.setFilters(filters);
-
-        SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
-
-        CrudHelper.doPaging(licParam,bpc.request);
-
-        QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
-        if (licParam != null) {
-            SearchResult<RfiLicenceQueryDto> licResult = requestForInformationService.licenceDoQuery(licParam);
-
-            if(!StringUtil.isEmpty(licResult)){
-                SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
-                searchListDtoSearchResult.setRowCount(licResult.getRowCount());
-                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
-                for (RfiLicenceQueryDto rfiLicenceQueryDto:licResult.getRows()
-                ) {
-                    ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
-                    reqForInfoSearchListDto.setLicenceId(rfiLicenceQueryDto.getId());
-                    String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiLicenceQueryDto.getLicenceStatus()}).get(0).getText();
-                    reqForInfoSearchListDto.setLicenceStatus(licStatus);
-                    reqForInfoSearchListDto.setLicenceNo(rfiLicenceQueryDto.getLicenceNo());
-                    reqForInfoSearchListDto.setAppId(rfiLicenceQueryDto.getAppId());
-                    reqForInfoSearchListDto.setServiceName(rfiLicenceQueryDto.getServiceName());
-                    reqForInfoSearchListDto.setStartDate(rfiLicenceQueryDto.getStartDate());
-                    reqForInfoSearchListDto.setExpiryDate(rfiLicenceQueryDto.getExpiryDate());
-                    List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(rfiLicenceQueryDto.getId()).getEntity();
-                    reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
-                    reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
-                    List<String> addressList = IaisCommonUtils.genNewArrayList();
-                    for (PremisesDto premisesDto:premisesDtoList
-                    ) {
-                        addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
-                        reqForInfoSearchListDto.setAddress(addressList);
-                    }
-                    reqForInfoSearchListDto.setLicenseeId(rfiLicenceQueryDto.getLicenseeId());
-                    List<LicPremisesDto> licPremisesDtos=hcsaLicenceClient.getLicPremListByLicId(rfiLicenceQueryDto.getId()).getEntity();
-                    reqForInfoSearchListDto.setLicPremId(licPremisesDtos.get(0).getId());
-                    LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiLicenceQueryDto.getLicenseeId());
-                    reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
-                    reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
-
-                }
-                searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
-                ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
-            }
-            if(!StringUtil.isEmpty(subDate)){
-                licParam.getFilters().put("start_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
-                        AppConsts.DEFAULT_DATE_FORMAT));
-            }
-            if(!StringUtil.isEmpty(toDate)){
-                licParam.getFilters().put("expiry_date",Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
-                        AppConsts.DEFAULT_DATE_FORMAT));
-            }
-            if(!StringUtil.isEmpty(serviceLicenceType)){
-                licParam.getFilters().put("licSvcName",serviceLicenceType);
-            }
-        }
-        ParamUtil.setRequestAttr(request,"SearchParam", licParam);
-        ParamUtil.setRequestAttr(request,"serviceLicenceType",serviceLicenceType);
-        ParamUtil.setRequestAttr(request,"licSvcTypeOption", licSvcTypeOption);
-        ParamUtil.setRequestAttr(request,"licStatusOption", licStatusOption);
-        // 		doSearchLicence->OnStepProcess
-    }
-
-    public void doSearchLicenceAfter(BaseProcessClass bpc) {
-        log.info("=======>>>>>doSearchLicenceAfter>>>>>>>>>>>>>>>>requestForInformation");
-        HttpServletRequest request=bpc.request;
-        try {
-            String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
-            ParamUtil.setSessionAttr(request,"id",id);
-        }catch (Exception e){
-            log.error(e.getMessage(), e);
-        }
-
-        // 		doSearchLicenceAfter->OnStepProcess
-    }
-    public void preRfi(BaseProcessClass bpc) {
-        log.info("=======>>>>>preRfi>>>>>>>>>>>>>>>>requestForInformation");
-        HttpServletRequest request=bpc.request;
-        String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        ParamUtil.setSessionAttr(request,"id",id);
-        // 		doSearchLicenceAfter->OnStepProcess
-    }
-
-    public void doSearchApplicationAfter(BaseProcessClass bpc) {
-        log.info("=======>>>>>doSearchApplicationAfter>>>>>>>>>>>>>>>>requestForInformation");
-        HttpServletRequest request=bpc.request;
-        try {
-            String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
-            ParamUtil.setSessionAttr(request,"id",id);
-        }catch (Exception e){
-            log.error(e.getMessage(), e);
-        }
-
-// 		doSearchApplicationAfter->OnStepProcess
-    }
-
-    public void preAppInfo(BaseProcessClass bpc) {
-        log.info("=======>>>>>preAppInfo>>>>>>>>>>>>>>>>requestForInformation");
-        HttpServletRequest request=bpc.request;
-        onlineEnquiriesService.setAppInfo(request);
-        // 		preAppInfo->OnStepProcess
-    }
-
-
-
-    public void preLicInfo(BaseProcessClass bpc) {
-        log.info("=======>>>>>preLicInfo>>>>>>>>>>>>>>>>requestForInformation");
-        HttpServletRequest request=bpc.request;
-        onlineEnquiriesService.setLicInfo(request);
-        // 		preAppInfo->OnStepProcess
-    }
-
-    public void preInspReport(BaseProcessClass bpc) {
-        log.info("=======>>>>>preInspReport>>>>>>>>>>>>>>>>requestForInformation");
-        HttpServletRequest request=bpc.request;
-        onlineEnquiriesService.preInspReport(request);
-        // 		preAppInfo->OnStepProcess
-    }
 
     public void preReqForInfo(BaseProcessClass bpc) {
         log.info("=======>>>>>preReqForInfo>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String  licPremId = (String) ParamUtil.getSessionAttr(request,"id");
-        List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licPremId);
-        for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
-        ) {
-            OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licPreRfi.getLicenseeId()).getEntity();
-            if(organizationLicDto.getLicenseeEntityDto()!=null){
-                licPreRfi.setEmail(Arrays.toString(organizationLicDto.getLicenseeEntityDto().getOfficeEmailAddr()));
+        List<LicPremisesDto> licPremisesDtos = (List<LicPremisesDto>) ParamUtil.getSessionAttr(request,"licPremisesDtos");
+        List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoLists=IaisCommonUtils.genNewArrayList();
+        for(LicPremisesDto licPremisesDto:licPremisesDtos){
+            List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licPremisesDto.getId());
+            for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
+            ) {
+                OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licPreRfi.getLicenseeId()).getEntity();
+                if(organizationLicDto.getLicenseeEntityDto()!=null){
+                    licPreRfi.setEmail(Arrays.toString(organizationLicDto.getLicenseeEntityDto().getOfficeEmailAddr()));
+                }
             }
+            licPremisesReqForInfoDtoLists.addAll(licPremisesReqForInfoDtoList);
         }
 
+
         ParamUtil.setRequestAttr(request, "isValid", "Y");
-//        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
 
-//        String userId = loginContext.getUserId();
-//        ParamUtil.setRequestAttr(request, "isValid", "N");
-//        try{
-//            List<String> userIds=requestForInformationService.getActionBysByLicPremCorrId(licPremId);
-//            for (String id:userIds
-//            ) {
-//                if (userId.equals(id)){
-//                    ParamUtil.setRequestAttr(request, "isValid", "Y");
-//                }
-//            }
-//        }catch (Exception e){
-//            log.error(e.getMessage(), e);
-//        }
 
-        if(!licPremisesReqForInfoDtoList.isEmpty()) {
-            for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
+        if(!licPremisesReqForInfoDtoLists.isEmpty()) {
+            for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoLists
             ) {
                 try {
                     licPreRfi.setEmail(IaisEGPHelper.getLicenseeEmailAddrs(licPreRfi.getLicenseeId()).get(0));
@@ -692,7 +177,7 @@ public class RequestForInformationDelegator {
             ParamUtil.setSessionAttr(request, "licenceNo", "");
         }
 
-        ParamUtil.setRequestAttr(request,"licPreReqForInfoDtoList", licPremisesReqForInfoDtoList);
+        ParamUtil.setRequestAttr(request,"licPreReqForInfoDtoList", licPremisesReqForInfoDtoLists);
 
 //        List<SelectOption> selectOptions=MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.REQUEST_FOR_SUPPORTING_DOCUMENTS,RequestForInformationConstants.REQUEST_FOR_INFORMATION,RequestForInformationConstants.OTHERS});
 //        ParamUtil.setRequestAttr(request,"selectOptions", selectOptions);
@@ -743,12 +228,21 @@ public class RequestForInformationDelegator {
         selectOption1.setText("Request for Information");
         salutationList.add(selectOption1);
         ParamUtil.setRequestAttr(bpc.request, "salutationList", salutationList);
+        List<LicPremisesDto> licPremisesDtos = (List<LicPremisesDto>) ParamUtil.getSessionAttr(request,"licPremisesDtos");
+        List<SelectOption> salutationLicList= IaisCommonUtils.genNewArrayList();
+        for(LicPremisesDto licPremisesDto:licPremisesDtos){
+            SelectOption selectLicOption=new SelectOption();
+            selectLicOption.setValue(licPremisesDto.getId());
+            LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(licPremisesDto.getLicenceId()).getEntity();
+            selectLicOption.setText(licenceDto.getLicenceNo());
+            salutationLicList.add(selectLicOption);
+        }
+        ParamUtil.setRequestAttr(bpc.request, "salutationLicList", salutationLicList);
         // 		preNewRfi->OnStepProcess
     }
     public void doCreateRequest(BaseProcessClass bpc) throws ParseException, IOException, TemplateException {
         log.info("=======>>>>>doCreateRequest>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String licPremId = (String) ParamUtil.getSessionAttr(request, "id");
         String[] lengths=ParamUtil.getStrings(request,"lengths");
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
 
@@ -763,7 +257,8 @@ public class RequestForInformationDelegator {
 
         for (String len:lengths
         ) {
-            String decision=ParamUtil.getString(request, "decision"+len);
+            String decision = ParamUtil.getString(request, "decision"+len);
+            String licPremId = ParamUtil.getString(request, "licenceNo"+len);
             String date= ParamUtil.getString(request, "Due_date"+len);
             String rfiTitle=ParamUtil.getString(request, "rfiTitle"+len);
             String reqType=ParamUtil.getString(request,"reqType"+len);
@@ -1061,6 +556,21 @@ public class RequestForInformationDelegator {
         rfiSelect.put("style", "display: none;");
         String salutationSelectStr = generateDropDownHtml(rfiSelect, salutationList,"Please Select", null);
         sql = sql.replace("(rfiSelect)", salutationSelectStr);
+
+        List<LicPremisesDto> licPremisesDtos = (List<LicPremisesDto>) ParamUtil.getSessionAttr(request,"licPremisesDtos");
+        List<SelectOption> salutationLicList= IaisCommonUtils.genNewArrayList();
+        for(LicPremisesDto licPremisesDto:licPremisesDtos){
+            SelectOption selectLicOption=new SelectOption();
+            selectLicOption.setValue(licPremisesDto.getId());
+            LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(licPremisesDto.getLicenceId()).getEntity();
+            selectLicOption.setText(licenceDto.getLicenceNo());
+            salutationLicList.add(selectLicOption);
+        }
+        Map<String,String> rfiLicSelect = IaisCommonUtils.genNewHashMap();
+        rfiLicSelect.put("name", "licenceNo"+length);
+        rfiLicSelect.put("style", "display: none;");
+        String salutationLicSelectStr = generateDropDownHtml(rfiSelect, salutationLicList,"Please Select", null);
+        sql = sql.replace("(rfiLicSelect)", salutationLicSelectStr);
 
         sql=sql.replaceAll("indexRfi",length);
 

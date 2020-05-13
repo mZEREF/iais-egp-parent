@@ -78,6 +78,19 @@
     <JavaCode defClass="" executor="" methodName="preInspReport_OnStepProcess_0" name="preInspReport_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="callReqForInfo" x="1100" y="350">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="callReqForInfo_OnStepProcess_0" name="callReqForInfo_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="ReqForInfo" processname="MohRequestForInformation" project="INTRANET" version="-1" x="1240" y="430">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="BasicSearchPage" stageIndicator="" x="400" y="220">
@@ -162,7 +175,7 @@
    <position>{(1060,250)(1060,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
-   <position>{(1105,70)(560,120)}</position>
+   <position>{(1080,40)(560,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preBasicSearch" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
    <position>{(560,120)(270,120)}</position>
@@ -207,16 +220,28 @@
    <position>{(1020,380)(1120,460)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch4" linkstyle="Direct" name="" sourceName="/Pages/WebPage/licDetailsPage" style="oblique">
-   <position>{(1060,120)(1105,70)}</position>
+   <position>{(1060,120)(1080,40)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preInspReport" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
-   <position>{(1105,70)(1245,70)}</position>
+   <position>{(1080,40)(1220,40)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/InspReportPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preInspReport" style="oblique">
-   <position>{(1245,70)(1245,280)}</position>
+   <position>{(1220,40)(1220,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preLicDetails" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspReportPage" style="rectanular">
-   <position>{(1245,280)(1060,250)}</position>
+   <position>{(1220,250)(1060,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/callReqForInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(920,250)(1120,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/ReqForInfo" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/callReqForInfo" style="oblique">
+   <position>{(1120,370)(1260,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Branches/BranchSource/Branch3" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(280,250)(485,530)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicenceAfter" linkstyle="Rectangle" name="" sourceName="/Branches/BranchSource/Branch3" style="rectanular">
+   <position>{(485,530)(880,380)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -233,6 +258,7 @@
    <SwitchCase component="/Steps/AutomaticStep/doSearchLicence" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preAppDetails" value="&quot;appDetails&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/callCessation" value="&quot;cessation&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/callReqForInfo" value="&quot;reqForInfo&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preBasicSearch" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="260" y="230">
    <Description/>
@@ -241,8 +267,9 @@
    <SwitchCase component="/Steps/AutomaticStep/doSearchLicenceAfter" value="&quot;details&quot;"/>
    <SwitchCase component="/Branches/BranchSource/Branch1" value="&quot;appDetails&quot;"/>
    <SwitchCase component="/Branches/BranchSource/Branch2" value="&quot;cessation&quot;"/>
+   <SwitchCase component="/Branches/BranchSource/Branch3" value="&quot;reqForInfo&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="1060" y="20">
+  <Switch defClass="" defaultComponent="/Merges/Merge/Merge1" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="1060" y="20">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/preInspReport" value="&quot;report&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;"/>
@@ -253,6 +280,9 @@
    <Description/>
   </BranchSource>
   <BranchSource defClass="" executor="" icon="" name="Branch2" x="350" y="420">
+   <Description/>
+  </BranchSource>
+  <BranchSource defClass="" executor="" icon="" name="Branch3" x="440" y="480">
    <Description/>
   </BranchSource>
  </Branches>

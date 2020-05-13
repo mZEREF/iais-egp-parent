@@ -22,41 +22,6 @@ public class INTRANET___MohRequestForInformation___1 extends BaseProcessClass {
 	// 		Start->OnStepProcess
 	}
 
-	public void preSearchLicence_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preSearchLicence", this); 
-	// 		preSearchLicence->OnStepProcess
-	}
-
-	public void preSearchApplication_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preSearchApplication", this); 
-	// 		preSearchApplication->OnStepProcess
-	}
-
-	public void doSearchApplication_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doSearchApplication", this); 
-	// 		doSearchApplication->OnStepProcess
-	}
-
-	public void doSearchLicence_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doSearchLicence", this); 
-	// 		doSearchLicence->OnStepProcess
-	}
-
-	public void doSearchLicenceAfter_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doSearchLicenceAfter", this); 
-	// 		doSearchLicenceAfter->OnStepProcess
-	}
-
-	public void doSearchApplicationAfter_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doSearchApplicationAfter", this); 
-	// 		doSearchApplicationAfter->OnStepProcess
-	}
-
-	public void preAppInfo_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preAppInfo", this);
-	// 		preAppInfo->OnStepProcess
-	}
-
 	public void preReqForInfo_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "preReqForInfo", this);
 	// 		preReqForInfo->OnStepProcess
@@ -90,31 +55,6 @@ public class INTRANET___MohRequestForInformation___1 extends BaseProcessClass {
 	public void doUpdate_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "doUpdate", this);
 	// 		doUpdate->OnStepProcess
-	}
-
-	public void preLicInfo_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preLicInfo", this);
-	// 		preLicInfo->OnStepProcess
-	}
-
-	public void preSearch_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preSearch", this);
-	// 		preSearch->OnStepProcess
-	}
-
-	public void preSearchLic_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preSearchLic", this);
-	// 		preSearchLic->OnStepProcess
-	}
-
-	public void preInspReport_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preInspReport", this);
-	// 		preInspReport->OnStepProcess
-	}
-
-	public void preRfi_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preRfi", this);
-	// 		preRfi->OnStepProcess
 	}
 
 	

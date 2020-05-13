@@ -9,11 +9,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
@@ -24,11 +27,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -183,7 +186,6 @@ public class OfficerOnlineEnquiriesDelegator {
             count=5;
         }
         Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
-        //List<String> svcNames=IaisCommonUtils.genNewArrayList();
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
         if(searchNo!=null) {
@@ -198,18 +200,9 @@ public class OfficerOnlineEnquiriesDelegator {
                     filter.put("hciName", searchNo);
                     break;
                 case 5:
-                    //svcNames=IaisCommonUtils.genNewArrayList();
                     filter.put("personnelName", searchNo);
                     serviceParameter.setFilters(filter);
-//                    SearchParam serviceParam = SearchResultHelper.getSearchParam(request, serviceParameter,true);
-//                    QueryHelp.setMainSql(RFI_QUERY,"serviceQuery",serviceParam);
-//                    if (!serviceParam.getFilters().isEmpty()) {
-//                        SearchResult<HcsaSvcQueryDto> serviceParamResult = onlineEnquiriesService.searchSvcNamesParam(serviceParam);
-//                        for (HcsaSvcQueryDto r:serviceParamResult.getRows()
-//                        ) {
-//                            svcNames.add(r.getServiceName());
-//                        }
-//                    }
+
                     break;
                 case 4:
                     licenseeIds=IaisCommonUtils.genNewArrayList();
@@ -253,9 +246,6 @@ public class OfficerOnlineEnquiriesDelegator {
                         if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
                             filter.put("app_id", rfiApplicationQueryDto.getId());
                         }
-//                        if(svcNames.size()!=0){
-//                            filter.put("svc_names", svcNames);
-//                        }
                         licenceParameter.setFilters(filter);
                         SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
                         licParam.setPageNo(0);
@@ -292,9 +282,6 @@ public class OfficerOnlineEnquiriesDelegator {
         }
         else if(count==3||count==4){
             SearchResultHelper.doPage(request,licenceParameter);
-//            if(svcNames.size()!=0){
-//                filter.put("svc_names", svcNames);
-//            }
             licenceParameter.setFilters(filter);
             SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
             CrudHelper.doPaging(licParam,bpc.request);
@@ -823,7 +810,26 @@ public class OfficerOnlineEnquiriesDelegator {
             }
             if(appPremisesRecommendationDtos.size()>=1){
                 reqForInfoSearchListDto.setLastComplianceHistory("Full");
-                RequestForInformationDelegator.setSearchListComplianceHistory(rfiApplicationQueryDto, reqForInfoSearchListDto, insepctionNcCheckListService, fillupChklistService);
+                List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = insepctionNcCheckListService.getNcItemDtoByAppCorrId(rfiApplicationQueryDto.getAppCorrId());
+                if(appPremisesPreInspectionNcItemDtos.size()!=0){
+                    for (AppPremisesPreInspectionNcItemDto nc:appPremisesPreInspectionNcItemDtos
+                    ) {
+                        if(nc.getIsRecitfied()==0){
+                            reqForInfoSearchListDto.setLastComplianceHistory("Partial");
+                        }
+                    }
+                }
+                AdCheckListShowDto adCheckListShowDto = fillupChklistService.getAdhoc(rfiApplicationQueryDto.getAppCorrId());
+                if(adCheckListShowDto!=null){
+                    List<AdhocNcCheckItemDto> adItemList = adCheckListShowDto.getAdItemList();
+                    if(adItemList!=null && !adItemList.isEmpty()){
+                        for(AdhocNcCheckItemDto temp:adItemList){
+                            if(temp.getRectified()){
+                                reqForInfoSearchListDto.setLastComplianceHistory("Partial");
+                            }
+                        }
+                    }
+                }
             }else {
                 reqForInfoSearchListDto.setLastComplianceHistory("-");
             }
@@ -881,6 +887,16 @@ public class OfficerOnlineEnquiriesDelegator {
 
         // 		callCessation->OnStepProcess
     }
+
+    public void callReqForInfo(BaseProcessClass bpc) {
+        log.info("=======>>>>>callReqForInfo>>>>>>>>>>>>>>>>OnlineEnquiries");
+        HttpServletRequest request=bpc.request;
+        List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(request, "licIds");
+        ParamUtil.setSessionAttr(request,"licIds", (Serializable) licenceIds);
+
+        // 		callReqForInfo->OnStepProcess
+    }
+
 
     public void preLicDetails(BaseProcessClass bpc) {
         log.info("=======>>>>>preLicDetails>>>>>>>>>>>>>>>>OnlineEnquiries");
