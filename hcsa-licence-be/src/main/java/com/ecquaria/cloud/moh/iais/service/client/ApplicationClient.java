@@ -218,4 +218,10 @@ public interface ApplicationClient {
     FeignResponseEntity<AppSubmissionForAuditDto>  getAppSubmissionForAuditDto(@RequestParam("appGroupNo") String appGroupNo);
     @GetMapping(value = "/iais-application-be/application-group-no-by-RefNo",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getRefNoByRefNo(@RequestParam ("RefNo")String RefNo);
+
+    @GetMapping(value = "/iais-group-misc/NotificateApplicationDtos",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<NotificateApplicationDto>> getNotificateApplicationDtos() ;
+
+    @PutMapping(path = "/iais-group-misc",produces = { MediaType.APPLICATION_JSON_VALUE },consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<NotificateApplicationDto> updateNotificateApplicationDto(@RequestBody NotificateApplicationDto notificateApplicationDto);
 }

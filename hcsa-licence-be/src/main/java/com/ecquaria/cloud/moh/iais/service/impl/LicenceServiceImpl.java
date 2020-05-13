@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGrpDto;
@@ -229,6 +230,11 @@ public class LicenceServiceImpl implements LicenceService {
     @Override
     public List<PremisesGroupDto> getPremisesGroupDtoByOriginLicenceId(String originLicenceId) {
         return hcsaLicenceClient.getPremisesGroupDtos(originLicenceId).getEntity();
+    }
+
+    @Override
+    public List<LicAppCorrelationDto> getLicAppCorrelationDtosByApplicationIds(List<String> appIds) {
+        return hcsaLicenceClient.getLicAppCorrelationDtosByApplicationIds(appIds).getEntity();
     }
 
 
