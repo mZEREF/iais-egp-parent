@@ -33,6 +33,9 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         String date = ParamUtil.getDate(request, "tuc");
         if(!StringUtil.isEmpty(date)){
             ParamUtil.setRequestAttr(request,"date",date);
+        }else{
+            date = ParamUtil.getString(request,"dateTimeShow");
+            ParamUtil.setRequestAttr(request,"recomInDateOnlyShow",date);
         }
 
         String recommendationStr = ParamUtil.getString(request,"recommendation");
@@ -41,6 +44,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         }else{
             //recommendationShow
             recommendationStr = ParamUtil.getString(request,"recommendationShow");
+            ParamUtil.setRequestAttr(request,"recommendationOnlyShow",recommendationStr);
         }
 
         //verified recommendation other dropdown
@@ -73,12 +77,18 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }
         }
 
-        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK.equals(status) || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
+        if(isRouteBackStatus(status) || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
             String nextStageReplys = ParamUtil.getRequestString(request, "nextStageReplys");
             if(StringUtil.isEmpty(nextStageReplys)){
                 errMap.put("nextStageReplys","The field is mandatory.");
             }else{
                 ParamUtil.setRequestAttr(request,"selectNextStageReply",nextStageReplys);
+                //AO route back to
+                if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK.equals(status)){
+                    if(StringUtil.isEmpty(recommendationStr)){
+                        errMap.put("recommendation","Please key in recommendation");
+                    }
+                }
             }
         }else{
             String nextStage = ParamUtil.getRequestString(request, "nextStage");
@@ -146,6 +156,15 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     public boolean isNumeric(String string){
         Pattern pattern = Pattern.compile("[0-9]*");
         return pattern.matcher(string).matches();
+    }
+
+    //verify route back status
+    private boolean isRouteBackStatus(String status){
+        boolean flag = false;
+        if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK.equals(status) || ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK.equals(status) || ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK.equals(status)){
+            flag = true;
+        }
+        return flag;
     }
 
 }

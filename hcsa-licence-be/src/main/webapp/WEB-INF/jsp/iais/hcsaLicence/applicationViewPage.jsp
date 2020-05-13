@@ -19,6 +19,10 @@
             <input type="hidden" name="interalFileId" id="interalFileId"/>
             <input type="hidden" name="dateTimeShow" value="${recomInDateOnlyShow}"/>
             <input type="hidden" name="recommendationShow" value="${recommendationOnlyShow}"/>
+            <c:set var="isAoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST062'}"/>
+            <c:set var="isPsoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST063'}"/>
+            <c:set var="isInspectorRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST064'}"/>
+            <c:set var="isRouteBackStatus" value="${isInspectorRouteBackStatus || isAoRouteBackStatus || isPsoRouteBackStatus}"/>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
@@ -93,7 +97,7 @@
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
-                                                    <c:if test="${applicationViewDto.applicationDto.status == 'APST057' || applicationViewDto.applicationDto.status == 'APST014' || applicationViewDto.applicationDto.status == 'APST013'}">
+                                                    <c:if test="${isRouteBackStatus || applicationViewDto.applicationDto.status == 'APST014' || applicationViewDto.applicationDto.status == 'APST013'}">
                                                         <div id="replytr" class="hidden">
                                                             <iais:row>
                                                                 <iais:field value="Processing Decision" required="true"/>
@@ -114,6 +118,7 @@
                                                                 <iais:field value="Processing Decision" required="true"/>
                                                                 <iais:value width="10">
                                                                     <iais:select name="decisionValues" id="decisionValues"
+                                                                                 firstOption="Please Select"
                                                                                  options="decisionValues"
                                                                                  value="${selectDecisionValue}"></iais:select>
                                                                 </iais:value>
@@ -168,7 +173,7 @@
                                                                 <iais:field value="Licence Start Date" required="false"/>
                                                                 <iais:value width="10">
                                                                     <c:choose>
-                                                                        <c:when test="${applicationViewDto.applicationDto.status=='APST007' || (applicationViewDto.applicationDto.status == 'APST057' && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC')}">
+                                                                        <c:when test="${applicationViewDto.applicationDto.status=='APST007' || (isRouteBackStatus && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC')}">
                                                                             <iais:datePicker id="licenceStartDate" name="tuc"
                                                                                              value="${date}"></iais:datePicker>
                                                                         </c:when>
@@ -187,7 +192,7 @@
                                                             <div id="recommendationFieldFalse"><iais:field value="${recommendationShowName}" required="false"/></div>
                                                             <iais:value width="10">
                                                                 <c:choose>
-                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || applicationViewDto.applicationDto.status=='APST014' || (applicationViewDto.applicationDto.status == 'APST057' && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC') || (applicationViewDto.applicationDto.status == 'APST057' && taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC')}">
+                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || applicationViewDto.applicationDto.status=='APST014' || (isRouteBackStatus && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC') || (isRouteBackStatus && taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC')}">
                                                                         <iais:select name="recommendation"
                                                                                      options="recommendationDropdown"
                                                                                      firstOption="Please Select"
@@ -351,7 +356,7 @@
             // $('#ApplicationViewInspection').css('display', 'none');
             // $('#recommendationDropdown').removeClass('hidden');
         }
-        if ('${applicationViewDto.applicationDto.status}' == 'APST057' ||  '${applicationViewDto.applicationDto.status}' == 'APST013') {
+        if ('${applicationViewDto.applicationDto.status}' == 'APST062' ||  '${applicationViewDto.applicationDto.status}' == 'APST013' ||  '${applicationViewDto.applicationDto.status}' == 'APST063' ||  '${applicationViewDto.applicationDto.status}' == 'APST064') {
             $('#processingDecision').addClass('hidden');
             // $('#recommendationDropdown').addClass('hidden');
             $('#replytr').removeClass('hidden');
@@ -374,6 +379,8 @@
         DMSCheck();
         checkRecommendationOtherDropdown();
         checkInspectionShow();
+        //route back
+        routeBackCheck();
 
         if('APTY006' == '${applicationViewDto.applicationDto.applicationType}' && 'APST007' == '${applicationViewDto.applicationDto.status}'){
             $('#recommendationDropdown').addClass('hidden');
@@ -509,6 +516,15 @@
             $('#rfiSelect').hide();
         }
     });
+
+    //route back status verify
+    function routeBackCheck(){
+        //AO route back to
+        if('${applicationViewDto.applicationDto.status}' == 'APST062'){
+            $('#recommendationFieldTrue').removeClass('hidden');
+            $('#recommendationFieldFalse').addClass('hidden');
+        }
+    }
 
 
 

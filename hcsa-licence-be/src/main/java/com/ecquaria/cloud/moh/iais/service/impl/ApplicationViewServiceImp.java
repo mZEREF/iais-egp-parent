@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
@@ -13,13 +12,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingS
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 
@@ -46,8 +43,6 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     private InspectionTaskClient inspectionTaskClient;
-    @Autowired
-    private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
     @Override
     public ApplicationViewDto searchByCorrelationIdo(String correlationId) {
         //return applicationClient.getAppViewByNo(appNo).getEntity();
@@ -139,37 +134,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         applicationViewDto.setApplicationType(applicationType);
         String serviceType = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getServiceId());
         applicationViewDto.setServiceType(serviceType);
-
-
         String status = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus());
-
-        //set status role back display name
-        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK.equals(applicationViewDto.getApplicationDto().getStatus())){
-            String appStatusTemp = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
-            AppPremisesRoutingHistoryDto historyDto = null;
-            try {
-                historyDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(
-                        applicationViewDto.getApplicationDto().getApplicationNo(), appStatusTemp);
-                String actionby = historyDto.getActionby();
-                if(!StringUtil.isEmpty(actionby)){
-                    List<OrgUserRoleDto> orgUserRoleDtoList = organizationClient.getUserRoleByUserAccId(actionby).getEntity();
-                    if(!IaisCommonUtils.isEmpty(orgUserRoleDtoList)){
-                        String roleName = orgUserRoleDtoList.get(0).getRoleName();
-                        //AO route back
-                        if(RoleConsts.USER_ROLE_AO1.equals(roleName) || RoleConsts.USER_ROLE_AO2.equals(roleName) || RoleConsts.USER_ROLE_AO3.equals(roleName)){
-                            status = "Pending Internal Clarification";
-                        }else if(RoleConsts.USER_ROLE_ASO.equals(roleName)){
-                            status = "Professional Screening Officer Enquire";
-                        }else if(RoleConsts.USER_ROLE_INSPECTIOR.equals(roleName)){
-                            status = "Inspector Enquire";
-                        }
-                    }
-                }
-            }catch (Exception e){
-                log.error(StringUtil.changeForLog("first do main flow ,have no two history"));
-            }
-        }
-
         applicationViewDto.setCurrentStatus(status);
 //        if(!StringUtil.isEmpty(applicationViewDto.getSubmissionDate()))
 //        applicationViewDto.setSubmissionDate(IaisEGPHelper.parseToString(IaisEGPHelper.parseToDate( applicationViewDto.getSubmissionDate(),"yyyy-MM-dd hh:mm"),"yyyy-MM-dd"));
@@ -194,14 +159,10 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
             }
             applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setActionby(username);
             String statusUpdate=MasterCodeUtil.getCodeDesc(applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getAppStatus());
-            String RollBackStatusDecision = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK);
             applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setAppStatus(statusUpdate);
             String workGroupId = applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getWrkGrpId();
             String processDecision = applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getProcessDecision();
             if(processDecision==null){
-                if(RollBackStatusDecision.equals(statusUpdate)){
-                    statusUpdate = status;
-                }
                 applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setProcessDecision(statusUpdate);
             }else{
                 String codeDesc = StringUtil.isEmpty(MasterCodeUtil.getCodeDesc(processDecision)) ? processDecision : MasterCodeUtil.getCodeDesc(processDecision);
