@@ -180,11 +180,11 @@ public class ApptReSchedulingInspDateDelegator {
             if(!StringUtil.isEmpty(hours)) {
                 for(SelectOption so : hoursOption){
                     if(hours.equals(so.getValue())){
-                        subDate.append(" ").append(so.getText()).append(":00");
+                        subDate.append(' ').append(so.getText()).append(":00");
                     }
                 }
             } else {
-                subDate.append( " " + ":00:00");
+                subDate.append(' ').append(":00:00");
             }
             try {
                 specificDate = sdf3.parse(subDate.toString());
