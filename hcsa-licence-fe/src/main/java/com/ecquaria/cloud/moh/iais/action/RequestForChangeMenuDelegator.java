@@ -856,7 +856,7 @@ public class RequestForChangeMenuDelegator {
             if (!IaisCommonUtils.isEmpty(applicationDtos)) {
                 ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
                 ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is  ongoing application for the licence");
-             /*   return;*/
+                return;
             }
         }
         List<AppSubmissionDto> appSubmissionDtos=IaisCommonUtils.genNewArrayList();
