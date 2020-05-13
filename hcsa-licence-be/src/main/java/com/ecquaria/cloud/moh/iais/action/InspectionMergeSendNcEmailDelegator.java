@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -15,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
@@ -32,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
+import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
@@ -79,6 +82,8 @@ public class InspectionMergeSendNcEmailDelegator {
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     EmailClient emailClient;
+    @Autowired
+    private InboxMsgService inboxMsgService;
     @Autowired
     FillupChklistService fillupChklistService;
     @Autowired
@@ -407,11 +412,24 @@ public class InspectionMergeSendNcEmailDelegator {
 
             }
             try {
+                String licenseeId=applicationViewDto.getApplicationGroupDto().getLicenseeId();
+                InterMessageDto interMessageDto = new InterMessageDto();
+                interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+                interMessageDto.setSubject(inspectionEmailTemplateDto.getSubject());
+                interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
+                String mesNO = inboxMsgService.getMessageNo();
+                interMessageDto.setRefNo(mesNO);
+                interMessageDto.setService_id(applicationViewDto.getApplicationDto().getServiceId());
+                interMessageDto.setMsgContent(inspectionEmailTemplateDto.getMessageContent());
+                interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
+                interMessageDto.setUserId(licenseeId);
+                interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                inboxMsgService.saveInterMessage(interMessageDto);
+
                 EmailDto emailDto=new EmailDto();
                 emailDto.setContent(inspectionEmailTemplateDto.getMessageContent());
                 emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
                 emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-                String licenseeId=applicationViewDto.getApplicationGroupDto().getLicenseeId();
                 emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                 emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
                 String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
