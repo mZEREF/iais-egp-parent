@@ -335,6 +335,13 @@ public class WithOutRenewalDelegator {
         }
         Double total = 0d;
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
+            AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+            AppSubmissionDto premisesSubmissionDto =  oldAppSubmissionDto;
+            AppSubmissionDto personnelSubmissionDto = oldAppSubmissionDto;
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            premisesSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
+            personnelSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
             FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
             appSubmissionDto.setLicenseeId(licenseeId);
             //set fee detail
@@ -354,14 +361,14 @@ public class WithOutRenewalDelegator {
         }
         String totalStr = Formatter.formatCurrency(total);
         //do app submit
-        ApplicationGroupDto applicationGroupDto = appSubmissionService.createApplicationDataByWithOutRenewal(renewDto);
-        //set group no.
-        for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
-            appSubmissionDto.setAppGrpNo(applicationGroupDto.getGroupNo());
-            appSubmissionDto.setAppGrpId(applicationGroupDto.getId());
-        }
+//        ApplicationGroupDto applicationGroupDto = appSubmissionService.createApplicationDataByWithOutRenewal(renewDto);
+//        //set group no.
+//        for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
+//            appSubmissionDto.setAppGrpNo(applicationGroupDto.getGroupNo());
+//            appSubmissionDto.setAppGrpId(applicationGroupDto.getId());
+//        }
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
-        ParamUtil.setRequestAttr(bpc.request,"applicationGroupDto",applicationGroupDto);
+        //ParamUtil.setRequestAttr(bpc.request,"applicationGroupDto",applicationGroupDto);
         ParamUtil.setSessionAttr(bpc.request,"totalStr",totalStr);
         ParamUtil.setSessionAttr(bpc.request,"totalAmount",total);
         //has app submit

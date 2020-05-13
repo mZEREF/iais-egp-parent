@@ -687,7 +687,7 @@ public class RequestForChangeMenuDelegator {
             AppSubmissionDto appSubmissionDto1 = setPersonnelDate(appSubmissionDto, personnelListQueryDto);
             appSubmissionDtos1.add(appSubmissionDto1);
         }
-        //requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
+        requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
         ParamUtil.setRequestAttr(bpc.request, "action_type", "ack");
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit end ...."));
     }
