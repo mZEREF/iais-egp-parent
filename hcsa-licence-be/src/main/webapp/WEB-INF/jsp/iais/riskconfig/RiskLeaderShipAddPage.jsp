@@ -34,15 +34,14 @@
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th>Service Name</th>
-                                        <th>Threshold</th>
+                                        <th  width="8%" >Service Name</th>
+                                        <th  width="8%">Threshold</th>
                                         <th>Source</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
                                         <th>Minimum Number of Cases</th>
                                         <th>Maximum Number of Cases</th>
                                         <th>Risk Rating</th>
-                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -110,7 +109,10 @@
                                                 <div style="width: 100px;margin-top: 45px;">Moderate</div>
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
-                                            <td>
+
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7">
                                                 <c:set value = "error_${lea.svcCode}inRightLowCaseCounth" var = "inrightlow"/>
                                                 <span class="error-msg" id="<c:out value="${inrightlow}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${lea.svcCode}inLeftModCaseCounth" var = "inleftmod"/>
@@ -177,18 +179,19 @@
                                                 <div style="width: 100px;margin-top: 45px;">Moderate</div>
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
-                                            <td>
-                                                <c:set value = "error_${lea.svcCode}prRightLowCaseCounth" var = "prrightlow"/>
-                                                <span class="error-msg" id="<c:out value="${prrightlow}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${lea.svcCode}prLeftModCaseCounth" var = "prleftmod"/>
-                                                <span class="error-msg" id="<c:out value="${prleftmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${lea.svcCode}prRightModCaseCounth" var = "prrightmod"/>
-                                                <span class="error-msg" id="<c:out value="${prrightmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${lea.svcCode}prLeftHighCaseCounth" var = "prlefthigh"/>
-                                                <span class="error-msg" id="<c:out value="${prlefthigh}"/>" name="iaisErrorMsg"></span>
-                                            </td>
+
 
                                         </tr>
+                                        <tr> <td colspan="7">
+                                            <c:set value = "error_${lea.svcCode}prRightLowCaseCounth" var = "prrightlow"/>
+                                            <span class="error-msg" id="<c:out value="${prrightlow}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${lea.svcCode}prLeftModCaseCounth" var = "prleftmod"/>
+                                            <span class="error-msg" id="<c:out value="${prleftmod}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${lea.svcCode}prRightModCaseCounth" var = "prrightmod"/>
+                                            <span class="error-msg" id="<c:out value="${prrightmod}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${lea.svcCode}prLeftHighCaseCounth" var = "prlefthigh"/>
+                                            <span class="error-msg" id="<c:out value="${prlefthigh}"/>" name="iaisErrorMsg"></span>
+                                        </td></tr>
                                     </c:forEach>
                                     </tbody>
                                 </table>

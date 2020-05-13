@@ -33,8 +33,8 @@
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th>Service Name</th>
-                                        <th>Threshold</th>
+                                        <th width="8%">Service Name</th>
+                                        <th width="8%">Threshold</th>
                                         <th>Source</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
@@ -113,17 +113,17 @@
                                                 <div style="width: 100px;margin-top: 45px;">Moderate</div>
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
-                                            <td>
-                                                <c:set value = "error_${fin.serviceCode}inRightLowCaseCounth" var = "inrightlow"/>
-                                                <span class="error-msg" id="<c:out value="${inrightlow}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.serviceCode}inLeftModCaseCounth" var = "inleftmod"/>
-                                                <span class="error-msg" id="<c:out value="${inleftmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.serviceCode}inRightModCaseCounth" var = "inrightmod"/>
-                                                <span class="error-msg" id="<c:out value="${inrightmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.serviceCode}inLeftHighCaseCounth" var = "inlefthigh"/>
-                                                <span class="error-msg" id="<c:out value="${inlefthigh}"/>" name="iaisErrorMsg"></span>
-                                            </td>
                                         </tr>
+                                        <tr>        <td colspan="7">
+                                            <c:set value = "error_${fin.serviceCode}inRightLowCaseCounth" var = "inrightlow"/>
+                                            <span class="error-msg" id="<c:out value="${inrightlow}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.serviceCode}inLeftModCaseCounth" var = "inleftmod"/>
+                                            <span class="error-msg" id="<c:out value="${inleftmod}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.serviceCode}inRightModCaseCounth" var = "inrightmod"/>
+                                            <span class="error-msg" id="<c:out value="${inrightmod}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.serviceCode}inLeftHighCaseCounth" var = "inlefthigh"/>
+                                            <span class="error-msg" id="<c:out value="${inlefthigh}"/>" name="iaisErrorMsg"></span>
+                                        </td></tr>
                                         <tr>
                                             <td>
                                                 <c:choose>
@@ -189,17 +189,17 @@
                                                 <div style="width: 100px;margin-top: 45px;">Moderate</div>
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
-                                            <td>
-                                                <c:set value = "error_${fin.serviceCode}prRightLowCaseCounth" var = "prrightlow"/>
-                                                <span class="error-msg" id="<c:out value="${prrightlow}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.serviceCode}prLeftModCaseCounth" var = "prleftmod"/>
-                                                <span class="error-msg" id="<c:out value="${prleftmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.serviceCode}prRightModCaseCounth" var = "prrightmod"/>
-                                                <span class="error-msg" id="<c:out value="${prrightmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.serviceCode}prLeftHighCaseCounth" var = "prlefthigh"/>
-                                                <span class="error-msg" id="<c:out value="${prlefthigh}"/>" name="iaisErrorMsg"></span>
-                                            </td>
                                         </tr>
+                                        <tr>  <td>
+                                            <c:set value = "error_${fin.serviceCode}prRightLowCaseCounth" var = "prrightlow"/>
+                                            <span class="error-msg" id="<c:out value="${prrightlow}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.serviceCode}prLeftModCaseCounth" var = "prleftmod"/>
+                                            <span class="error-msg" id="<c:out value="${prleftmod}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.serviceCode}prRightModCaseCounth" var = "prrightmod"/>
+                                            <span class="error-msg" id="<c:out value="${prrightmod}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.serviceCode}prLeftHighCaseCounth" var = "prlefthigh"/>
+                                            <span class="error-msg" id="<c:out value="${prlefthigh}"/>" name="iaisErrorMsg"></span>
+                                        </td></tr>
                                     </c:forEach>
                                     </tbody>
                                 </table>

@@ -33,8 +33,8 @@
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th>Service Name</th>
-                                        <th>Impact of Non Compliance (NC) on Patient Safety</th>
+                                        <th  width="8%">Service Name</th>
+                                        <th  width="15%">Impact of Non Compliance (NC) on Patient Safety</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
                                         <th>Minimum Number of NCs</th>

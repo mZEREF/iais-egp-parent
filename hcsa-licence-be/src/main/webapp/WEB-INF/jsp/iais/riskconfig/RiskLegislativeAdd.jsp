@@ -33,14 +33,13 @@
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th>Service Name</th>
-                                        <th>Threshold</th>
+                                        <th >Service Name</th>
+                                        <th  >Threshold</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
                                         <th>Minimum Number of Cases</th>
                                         <th>Maximum Number of Cases</th>
                                         <th>Risk Rating</th>
-                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -107,17 +106,18 @@
                                                 <div style="width: 100px;margin-top: 45px;">Moderate</div>
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
-                                            <td>
-                                                <c:set value = "error_${leg.svcCode}inRightLowCaseCounth" var = "inrightlow"/>
-                                                <span class="error-msg" id="<c:out value="${inrightlow}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${leg.svcCode}inLeftModCaseCounth" var = "inleftmod"/>
-                                                <span class="error-msg" id="<c:out value="${inleftmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${leg.svcCode}inRightModCaseCounth" var = "inrightmod"/>
-                                                <span class="error-msg" id="<c:out value="${inrightmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${leg.svcCode}inLeftHighCaseCounth" var = "inlefthigh"/>
-                                                <span class="error-msg" id="<c:out value="${inlefthigh}"/>" name="iaisErrorMsg"></span>
-                                            </td>
+
                                         </tr>
+                                        <tr> <td colspan="7">
+                                            <c:set value = "error_${leg.svcCode}inRightLowCaseCounth" var = "inrightlow"/>
+                                            <span class="error-msg" id="<c:out value="${inrightlow}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${leg.svcCode}inLeftModCaseCounth" var = "inleftmod"/>
+                                            <span class="error-msg" id="<c:out value="${inleftmod}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${leg.svcCode}inRightModCaseCounth" var = "inrightmod"/>
+                                            <span class="error-msg" id="<c:out value="${inrightmod}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${leg.svcCode}inLeftHighCaseCounth" var = "inlefthigh"/>
+                                            <span class="error-msg" id="<c:out value="${inlefthigh}"/>" name="iaisErrorMsg"></span>
+                                        </td></tr>
                                     </c:forEach>
                                     </tbody>
                                 </table>

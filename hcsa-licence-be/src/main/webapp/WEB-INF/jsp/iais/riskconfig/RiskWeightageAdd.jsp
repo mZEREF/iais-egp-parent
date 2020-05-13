@@ -39,9 +39,8 @@
                                         <th>Financial Scheme Audit</th>
                                         <th>Leadership And Governance</th>
                                         <th>Legislative Breaches</th>
-                                        <th>Effective Start Date</th>
-                                        <th>Effective End Date</th>
-                                        <th></th>
+                                        <th width="15%">Effective Start Date</th>
+                                        <th width="15%">Effective End Date</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -94,11 +93,11 @@
                                                 <c:set value = "error_${leg.serviceCode}inEndDate" var = "inEndDate"/>
                                                 <span class="error-msg" id="<c:out value="${inEndDate}"/>" name="iaisErrorMsg"></span>
                                             </td>
-                                            <td>
-                                                <c:set value = "error_${leg.serviceCode}totalw" var = "totalw"/>
-                                                <span class="error-msg" id="<c:out value="${totalw}"/>" name="iaisErrorMsg"></span>
-                                            </td>
                                         </tr>
+                                        <tr>    <td colspan="8">
+                                            <c:set value = "error_${leg.serviceCode}totalw" var = "totalw"/>
+                                            <span class="error-msg" id="<c:out value="${totalw}"/>" name="iaisErrorMsg"></span>
+                                        </td></tr>
                                     </c:forEach>
                                     </tbody>
                                 </table>
