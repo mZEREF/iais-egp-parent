@@ -26,7 +26,7 @@
             </div>
             <div class="col-sm-5 col-md-3">
                 <div class="col-md-11">
-                    <input type="text" placeholder="Search Your Keywords"/>
+                    <input type="text" name="personName" value="${personName}" placeholder="Search Your Keywords"/>
                 </div>
             </div>
         </div>
@@ -62,17 +62,22 @@
                             </td>
                             <td>
                                 <c:forEach var="personnel" items="${personnelist.value}">
+                                    <c:forEach var="psnType" items="${personnel.psnTypes}">
                                     <c:choose>
-                                        <c:when test="${'CGO'==personnel.psnType}">
+                                        <c:when test="${'CGO'==psnType}">
                                             <p>Clinical Governance Officer</p>
                                         </c:when>
-                                        <c:when test="${'PO'==personnel.psnType}">
+                                        <c:when test="${'PO'==psnType}">
                                             <p>Principal Officer</p>
                                         </c:when>
-                                        <c:when test="${'DPO'==personnel.psnType}">
+                                        <c:when test="${'DPO'==psnType}">
+                                            <p>Deputy Principal Officer</p>
+                                        </c:when>
+                                        <c:when test="${'MAP'==MedAlert}">
                                             <p>Deputy Principal Officer</p>
                                         </c:when>
                                     </c:choose>
+                                    </c:forEach>
                                 </c:forEach>
                             </td>
                         </tr>
@@ -81,11 +86,7 @@
                     </table>
                 </div>
             </div>
-            <div class="col-xs-12 text-center">
-                <a class="btn btn-secondary" id="" >Download the List</a></div>
-            </div>
         </div>
-
         <div class="row col-xs-11 ">
             <div class="col-xs-12">
                 <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
