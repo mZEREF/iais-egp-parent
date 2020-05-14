@@ -263,7 +263,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                     MessageConstants.MESSAGE_INBOX_URL_REQUEST_SELF_CHECKLIST + taskDto.getRefNo() +
                     "&selfDeclAction=rfi";
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-            maskParams.put("appPremCorrId", taskDto.getRefNo());
+            maskParams.put("selfDeclRfiCorrId", taskDto.getRefNo());
             MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
             Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
             map.put("APPLICANT_NAME",licenseeDto.getName());
