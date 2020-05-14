@@ -224,33 +224,36 @@
                                                         </iais:row>
                                                     </div>
 
-                                                    <div class="fastTrack">
-                                                        <iais:row>
-                                                            <iais:field value="Fast Tracking?" required="false"/>
-                                                            <iais:value width="10">
-                                                                <p>
-                                                                    <c:choose>
-                                                                        <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || (isRouteBackStatus && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC') || (isRouteBackStatus && taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC')}">
-                                                                            <input class="form-check-input" id="fastTracking"
-                                                                            <c:if test="${applicationViewDto.applicationDto.fastTracking}">
-                                                                                   checked disabled
-                                                                            </c:if>
-                                                                                   type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
-                                                                            <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
-                                                                        </c:when>
-                                                                        <c:otherwise>
-                                                                            <input class="form-check-input" disabled
-                                                                            <c:if test="${applicationViewDto.applicationDto.fastTracking}">
-                                                                                   checked
-                                                                            </c:if>
-                                                                                   id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
-                                                                            <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
-                                                                        </c:otherwise>
-                                                                    </c:choose>
-                                                                </p>
-                                                            </iais:value>
-                                                        </iais:row>
-                                                    </div>
+                                                    <%--application type != appeal --%>
+                                                    <c:if test="${applicationViewDto.applicationDto.applicationType != 'APTY001'}">
+                                                        <div class="fastTrack">
+                                                            <iais:row>
+                                                                <iais:field value="Fast Tracking?" required="false"/>
+                                                                <iais:value width="10">
+                                                                    <p>
+                                                                        <c:choose>
+                                                                            <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || (isRouteBackStatus && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC') || (isRouteBackStatus && taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC')}">
+                                                                                <input class="form-check-input" id="fastTracking"
+                                                                                <c:if test="${applicationViewDto.applicationDto.fastTracking}">
+                                                                                       checked disabled
+                                                                                </c:if>
+                                                                                       type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
+                                                                                <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
+                                                                            </c:when>
+                                                                            <c:otherwise>
+                                                                                <input class="form-check-input" disabled
+                                                                                <c:if test="${applicationViewDto.applicationDto.fastTracking}">
+                                                                                       checked
+                                                                                </c:if>
+                                                                                       id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
+                                                                                <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
+                                                                            </c:otherwise>
+                                                                        </c:choose>
+                                                                    </p>
+                                                                </iais:value>
+                                                            </iais:row>
+                                                        </div>
+                                                    </c:if>
 
                                                     <div id="rfiSelect">
                                                         <iais:row>

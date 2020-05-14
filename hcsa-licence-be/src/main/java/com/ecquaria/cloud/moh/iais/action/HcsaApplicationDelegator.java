@@ -527,9 +527,6 @@ public class HcsaApplicationDelegator {
                 }else if(RoleConsts.USER_ROLE_AO2.equals(roleId) && RoleConsts.USER_ROLE_AO3.equals(verified)){
                     //AO2 -> AO3
                     successInfo = MessageCodeKey.ACK007;
-                }else if(RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS.equals(verified)){
-                    //AO3 DMS
-                    successInfo = MessageCodeKey.ACK011;
                 }
             }else if(!StringUtil.isEmpty(rollBack)){
                 //roll back
@@ -544,6 +541,9 @@ public class HcsaApplicationDelegator {
                     //AO3
                     successInfo = MessageCodeKey.ACK012;
                 }
+            }else if(RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS.equals(nextStage)){
+                //AO3 DMS
+                successInfo = MessageCodeKey.ACK011;
             }
         }
 
