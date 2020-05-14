@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.client.EicClientFallback;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -21,7 +20,7 @@ import java.util.Map;
  * @date 2020/4/17 17:03
  */
 @FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
-        fallback = EicClientFallback.class)
+        fallback = FeAppEicClientFallback.class)
 public interface FeAppEicClient {
     @GetMapping(path = "/eicTracking/{moduleName}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<EicRequestTrackingDto>> getPendingRecords(@PathVariable("moduleName") String moduleName);
