@@ -378,9 +378,9 @@ public class FillupChklistDelegator {
                 temp.setAdAnswer(answer);
                 temp.setRemark(remark);
                 if("No".equals(answer)&&!StringUtil.isEmpty(rec)){
-                    temp.setRectified(true);
+                    temp.setRectified(Boolean.TRUE);
                 }else{
-                    temp.setRectified(false);
+                    temp.setRectified(Boolean.FALSE);
                 }
             }
         }
