@@ -1,17 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
@@ -20,9 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -34,22 +26,13 @@ import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import com.ecquaria.sz.commons.util.MsgUtil;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -157,89 +140,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         return selfAssessmentList;
     }
 
-
     @Override
     public List<SelfAssessment> receiveSelfAssessmentRfiByCorrId(String corrId) {
-        List<SelfAssessment> rfiData = IaisCommonUtils.genNewArrayList();
-        Map<String, SelfAssessmentConfig> selfAssessmentConfigMap = IaisCommonUtils.genNewHashMap();
-
-        FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> result = applicationClient.getAppPremisesSelfDeclByCorrelationId(corrId);
-        if(HttpStatus.SC_OK == result.getStatusCode()){
-            List<AppPremisesSelfDeclChklDto> entity = result.getEntity();
-            SelfAssessment selfAssessment = new SelfAssessment();
-            List<SelfAssessmentConfig> selfAssessmentConfigList = IaisCommonUtils.genNewArrayList();
-
-            FeignResponseEntity<AppGrpPremisesDto> fetchPremisesResult = applicationClient.getAppGrpPremisesByCorrId(corrId);
-            if (HttpStatus.SC_OK == fetchPremisesResult.getStatusCode()){
-                AppGrpPremisesDto appGrpPremises = fetchPremisesResult.getEntity();
-                String address = MiscUtil.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(),
-                        appGrpPremises.getBuildingName(), appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
-                selfAssessment.setPremises(address);
-            }
-
-            selfAssessmentConfigList.add(null);
-            for (AppPremisesSelfDeclChklDto ent : entity){
-                String answerJson = ent.getAnswer();
-                List<PremCheckItem> answerData = JsonUtil.parseToList(answerJson, PremCheckItem.class);
-
-                //set unique key
-                answerData.forEach(i -> i.setAnswerKey(UUID.randomUUID().toString()));
-
-                String checklistConfigId = ent.getChkLstConfId();
-                FeignResponseEntity<ChecklistConfigDto> fetchConfigResult = appConfigClient.getChecklistConfigById(checklistConfigId);
-                if (HttpStatus.SC_OK == fetchConfigResult.getStatusCode()) {
-                    ChecklistConfigDto checklistConfigDto = fetchConfigResult.getEntity();
-
-                    boolean isCommonChecklistConfig = checklistConfigDto.isCommon();
-                    if (isCommonChecklistConfig) {
-                        SelfAssessmentConfig selfAssessmentConfig = new SelfAssessmentConfig();
-                        selfAssessmentConfig.setCommon(true);
-                        selfAssessmentConfig.setQuestion(answerData);
-                        selfAssessmentConfig.setConfigId(checklistConfigDto.getId());
-                        selfAssessmentConfig.setVersion(ent.getVersion());
-
-                        selfAssessmentConfigMap.put("common", selfAssessmentConfig);
-                        //the first config always common checklist config
-                        selfAssessmentConfigList.set(0, selfAssessmentConfig);
-                    }else {
-                        String svcCode = checklistConfigDto.getSvcCode();
-                        HcsaServiceDto serviceInfo = HcsaServiceCacheHelper.getServiceByCode(svcCode);
-                        if (serviceInfo != null) {
-                            String svcName = serviceInfo.getSvcName();
-                            selfAssessment.setSvcName(svcName);
-                            selfAssessment.setSvcId(serviceInfo.getId());
-                            SelfAssessmentConfig selfAssessmentConfig;
-
-                            if (selfAssessmentConfigMap.containsKey(svcCode)) {
-                                selfAssessmentConfig = selfAssessmentConfigMap.get(svcCode);
-                                selfAssessmentConfig.getQuestion().addAll(answerData);
-                            } else {
-                                selfAssessmentConfig = new SelfAssessmentConfig();
-                                selfAssessmentConfig.setCommon(false);
-                                selfAssessmentConfig.setSvcName(svcName);
-
-                                if (!StringUtils.isEmpty(checklistConfigDto.getSvcSubType())) {
-                                    selfAssessmentConfig.setHasSubtype(true);
-                                }
-
-                                selfAssessmentConfig.setVersion(ent.getVersion());
-                                selfAssessmentConfig.setQuestion(answerData);
-                                selfAssessmentConfig.setConfigId(checklistConfigDto.getId());
-                                selfAssessmentConfigList.add(selfAssessmentConfig);
-                                selfAssessmentConfigMap.put(svcCode, selfAssessmentConfig);
-                            }
-                        }
-                    }
-                }
-            }
-
-            selfAssessment.setSelfAssessmentConfig(selfAssessmentConfigList);
-            selfAssessment.setCanEdit(true);
-            selfAssessment.setCorrId(corrId);
-            rfiData.add(selfAssessment);
-        }
-
-        return rfiData;
+        return SelfChecklistHelper.receiveSelfAssessmentDataByCorrId(corrId);
     }
 
     private List<String> getServiceSubTypeName(String correlationId){
