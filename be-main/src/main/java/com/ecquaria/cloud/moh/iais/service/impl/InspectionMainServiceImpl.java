@@ -276,6 +276,7 @@ public class InspectionMainServiceImpl implements InspectionMainService {
         for(TaskDto tDto:commPools){
             if(tDto.getId().equals(inspectionTaskPoolListDto.getTaskId())){
                 taskDto = tDto;
+                break;
             }
         }
         return taskDto;
