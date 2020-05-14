@@ -205,7 +205,7 @@ public class InspectionPreDelegator {
                 ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
             }
         } else if(InspectionConstants.SWITCH_ACTION_REQUEST_INFORMATION.equals(actionValue)){
-            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"recrfi");
+            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"prerfi");
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

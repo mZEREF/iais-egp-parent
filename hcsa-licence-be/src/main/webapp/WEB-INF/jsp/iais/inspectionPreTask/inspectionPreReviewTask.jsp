@@ -294,7 +294,7 @@
                                     <p>
                                       <input type="checkbox" name="preInspRfiCheck" id = "${name.value}PreInspRfiCheck"  value="<c:out value="${name.value}"/>"
                                             <c:forEach items="${inspectionPreTaskDto.preInspRfiCheck}" var="checkName">
-                                              <c:if test="${name.value eq checkName.value}">checked="checked"</c:if>
+                                              <c:if test="${name.value eq checkName}">checked="checked"</c:if>
                                             </c:forEach>
                                       />
                                       <span style="font-size: 16px"><c:out value="${name.text}"/></span>
@@ -408,7 +408,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
         var actionValue = $("#actionValue").val();
-        if(actionValue == "edit"){
+        if(actionValue == "edit" || actionValue == "request" || actionValue == "routeB"){
             inspectionPreTaskJump();
         }
         var selectValue = $("#processDec").val();
