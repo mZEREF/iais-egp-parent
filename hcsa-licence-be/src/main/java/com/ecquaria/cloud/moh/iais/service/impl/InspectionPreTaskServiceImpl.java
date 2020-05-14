@@ -257,11 +257,10 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             interMessageDto.setRefNo(mesNO);
             interMessageDto.setService_id(applicationDto1.getServiceId());
             String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
-                    MessageConstants.MESSAGE_INBOX_URL_REQUEST_SELF_CHECKLIST + applicationGroupDto.getId() +
+                    MessageConstants.MESSAGE_INBOX_URL_REQUEST_SELF_CHECKLIST + taskDto.getRefNo() +
                     "&selfDeclAction=rfi";
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
             maskParams.put("appPremCorrId", taskDto.getRefNo());
-            maskParams.put("selfDeclAction", "rfi");
             MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
             Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
             map.put("APPLICANT_NAME",licenseeDto.getName());

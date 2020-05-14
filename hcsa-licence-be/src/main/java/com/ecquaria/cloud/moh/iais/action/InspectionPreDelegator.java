@@ -8,9 +8,11 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionHistoryShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -114,12 +116,14 @@ public class InspectionPreDelegator {
         if(inspectionPreTaskDto == null){
             inspectionPreTaskDto = new InspectionPreTaskDto();
         }
+        //get application info show
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appStatus = applicationDto.getStatus();
         inspectionPreTaskDto.setAppStatus(appStatus);
         //get process decision
         List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption(applicationDto.getApplicationType());
+        //Audit application doesn't do back and rfi
         if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationDto.getApplicationType())) {
             //get Request For Information
             List<SelectOption> rfiCheckOption = inspectionPreTaskService.getRfiCheckOption();
@@ -133,20 +137,9 @@ public class InspectionPreDelegator {
         //adhocChecklist
         List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
         //Self-Checklist
-        BeSelfChecklistHelper.receiveSelfAssessmentDataByCorrId(taskDto.getRefNo());
-        Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> mapInDto = inspectionPreTaskService.getSelfCheckListByCorrId(taskDto.getRefNo());
-        InspectionFillCheckListDto inspectionFillCheckListDto = new InspectionFillCheckListDto();
-        List<InspectionFillCheckListDto> ifcDtos = IaisCommonUtils.genNewArrayList();
-        if(mapInDto != null) {
-            for (Map.Entry<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> entry : mapInDto.entrySet()) {
-                inspectionFillCheckListDto = entry.getKey();
-                ifcDtos = entry.getValue();
-            }
-        }
-        ParamUtil.setSessionAttr(bpc.request,"commonDto",inspectionFillCheckListDto);
-        ParamUtil.setSessionAttr(bpc.request,"serListDto123", (Serializable) ifcDtos);
-
-        //Inspection Checklist
+        List<SelfAssessment> selfAssessments = BeSelfChecklistHelper.receiveSelfAssessmentDataByCorrId(taskDto.getRefNo());
+        setPreInspSelfChecklistInfo(selfAssessments, bpc);
+        //Inspection history
         List<InspectionHistoryShowDto> inspectionHistoryShowDtos = inspectionPreTaskService.getInspectionHistory(applicationDto.getOriginLicenceId());
 
         ParamUtil.setSessionAttr(bpc.request, "inspectionHistoryShowDtos", (Serializable) inspectionHistoryShowDtos);
@@ -156,6 +149,24 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
         ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONDTO, applicationDto);
         ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO, applicationViewDto);
+    }
+
+    private void setPreInspSelfChecklistInfo(List<SelfAssessment> selfAssessments, BaseProcessClass bpc) {
+        if(!IaisCommonUtils.isEmpty(selfAssessments)){
+            //one refNo(appPremCorrId) --> one SelfAssessment
+            List<SelfAssessmentConfig> selfAssessmentConfigs = selfAssessments.get(0).getSelfAssessmentConfig();
+            if(!IaisCommonUtils.isEmpty(selfAssessments)) {
+                for(SelfAssessmentConfig selfAssessmentConfig : selfAssessmentConfigs){
+                    if(selfAssessmentConfig.isCommon()){
+                        PremCheckItem premCheckItem = selfAssessmentConfig.getQuestion().get(0);
+                        ParamUtil.setSessionAttr(bpc.request, "commonDto", premCheckItem);
+                    } else {
+                        List<PremCheckItem> premCheckItems = selfAssessmentConfig.getQuestion();
+                        ParamUtil.setSessionAttr(bpc.request, "serListDto123", (Serializable) premCheckItems);
+                    }
+                }
+            }
+        }
     }
 
     /**
