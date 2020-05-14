@@ -72,6 +72,7 @@ public class ConfigureDelegator {
         for(HcsaSvcRoutingStageDto sn : stageNames){
             if(sn.getStageCode().equals(stageValue)){
                 stageId = sn.getId();
+                break;
             }
         }
         hcsaSvcStageWorkloadDtoList = configureService.serviceInStage(stageValue);
