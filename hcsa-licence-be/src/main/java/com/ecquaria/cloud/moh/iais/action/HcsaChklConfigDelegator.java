@@ -428,7 +428,7 @@ public class HcsaChklConfigDelegator {
             }
 
         } catch (ParseException e) {
-            log.error("when add section item of config has error " + e.getMessage());
+            log.error("when add section item of config has error ", e);
         }
 
     }
