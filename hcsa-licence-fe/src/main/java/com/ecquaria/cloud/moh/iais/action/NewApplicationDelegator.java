@@ -2701,13 +2701,12 @@ public class NewApplicationDelegator {
                     });
                     ParamUtil.setSessionAttr(bpc.request,PERSONSELECTMAP, (Serializable) personMap);
                 }
-            }
-
-            ParamUtil.setSessionAttr(bpc.request,DRAFTCONFIG,"test");
-            if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){
-                ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-            }else{
-                ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
+                if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){
+                    ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+                }else{
+                    ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
+                }
+                ParamUtil.setSessionAttr(bpc.request,DRAFTCONFIG,"test");
             }
             bpc.request.getSession().setAttribute(SELECT_DRAFT_NO,null);
         }
