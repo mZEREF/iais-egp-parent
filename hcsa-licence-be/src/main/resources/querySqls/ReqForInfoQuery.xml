@@ -200,7 +200,7 @@
                         <div class="panel-body">
                             <div class="form-group">
                                 <p>
-                                <label class="col-xs-9 col-md-4 control-label">Select Category</label>
+                                <label class="col-xs-9 col-md-4 control-label">Select Category<strong style="color:#ff0000;">*</strong></label>
                                 <div class=" col-xs-11 col-sm-4 col-md-5">
                                     (rfiSelect)
                                 </div>
@@ -215,20 +215,21 @@
                             <br>
                             <div class="form-group">
                                 <p>
-                                    <label class="col-xs-9 col-md-4 control-label" >Title</label>
+                                    <label class="col-xs-9 col-md-4 control-label" >Title<strong style="color:#ff0000;">*</strong></label>
                                     <label >
                                         <textarea id="rfiTitleindexRfi" maxlength="500" rows="8" cols="95" style=" font-weight:normal;" name="rfiTitleindexRfi" ></textarea><span id="error_rfiTitleindexRfi" name="iaisErrorMsg" class="error-msg" ></span>
                                     </label>
                                 </p>
                                 <p>
-                                    <label class="col-xs-9 col-md-4 control-label" >Licence No.</label>
+                                    <label class="col-xs-9 col-md-4 control-label" >Licence No.<strong style="color:#ff0000;">*</strong></label>
                                     <label >
-                                        (rfiLicSelect) <span id="error_licenceNoindexRfi" name="iaisErrorMsg" class="error-msg" ></span>
+                                        <div class=" col-xs-7 col-sm-4 col-md-5">
+                                            (rfiLicSelect) <span id="error_licenceNoindexRfi" name="iaisErrorMsg" class="error-msg" ></span>
+                                        </div>
                                     </label>
                                 </p>
                                 <p>
-
-                                    <label class="col-xs-9 col-md-4 control-label" >Due Date</label>
+                                    <label class="col-xs-9 col-md-4 control-label" >Due Date<strong style="color:#ff0000;">*</strong></label>
                                     <label >
                                         <div class="form-group">
                                             <div class=" col-xs-7 col-sm-4 col-md-5">

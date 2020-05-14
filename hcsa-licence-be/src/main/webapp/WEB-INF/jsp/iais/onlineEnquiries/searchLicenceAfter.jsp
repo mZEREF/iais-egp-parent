@@ -494,7 +494,7 @@
                                             <td class="form-check" onclick="javascript:controlCease('${isASO}')">
                                                 <c:if test="${pool.licenceStatus!='Lapsed'&&pool.licenceStatus!='Ceased'&&pool.licenceStatus!='Expired'}">
                                                     <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
-                                                            name="appIds" value="${pool.appId}|${pool.isCessation}|${pool.licenceId}"   >
+                                                            name="appIds" value="${pool.appId}|${pool.isCessation}|${pool.licenceId}|${pool.licenceStatus}"   >
                                                     <label class="form-check-label" for="licence${status.index + 1}"><span
                                                             class="check-square"></span>
                                                     </label>
@@ -718,8 +718,8 @@
         });
         var flog=false;
         for(var i=0;i<dropIds.length;i++){
-            var str=dropIds[i].split('|')[1];
-            if(str=='1'){
+            var str=dropIds[i].split('|')[3];
+            if(str=='Active'){
                 flog=true;
             }
         }

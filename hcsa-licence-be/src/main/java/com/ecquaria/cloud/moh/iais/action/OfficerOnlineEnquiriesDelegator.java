@@ -863,12 +863,16 @@ public class OfficerOnlineEnquiriesDelegator {
 
         String [] appIds=ParamUtil.getStrings(request,"appIds");
         List<String> licIds=IaisCommonUtils.genNewArrayList();
-
+        List<String> licRfiIds=IaisCommonUtils.genNewArrayList();
         try{
             for(int i=0;i<appIds.length;i++){
                 String is=appIds[i].split("\\|")[1];
+                String isActive=appIds[i].split("\\|")[3];
                 if("1".equals(is)){
                     licIds.add(appIds[i].split("\\|")[2]);
+                }
+                if("Active".equals(isActive)){
+                    licRfiIds.add(appIds[i].split("\\|")[2]);
                 }
             }
         }catch (Exception e){
@@ -876,6 +880,7 @@ public class OfficerOnlineEnquiriesDelegator {
         }
 
         ParamUtil.setSessionAttr(request,"licIds", (Serializable) licIds);
+        ParamUtil.setSessionAttr(request,"licRfiIds", (Serializable) licRfiIds);
         // 		doSearchLicenceAfter->OnStepProcess
     }
 

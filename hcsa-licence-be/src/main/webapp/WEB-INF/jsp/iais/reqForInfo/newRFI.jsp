@@ -52,15 +52,16 @@
                                                 <p>
                                                     <label class="col-xs-9 col-md-4 control-label" >Title<strong style="color:#ff0000;">*</strong></label>
                                                     <label >
-                                                        <textarea id="rfiTitle${status.index}"  maxlength="500" rows="8" cols="95"  name="rfiTitle${status.index}" >${newRfi.rfiTitle}</textarea><span id="error_rfiTitle${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
+                                                        <textarea id="rfiTitle${status.index}"  maxlength="500" rows="8" cols="80"  name="rfiTitle${status.index}" >${newRfi.rfiTitle}</textarea>
+                                                        <span id="error_rfiTitle${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
                                                     </label>
                                                 </p>
                                                 <p>
                                                     <label class="col-xs-9 col-md-4 control-label" >Licence No.<strong style="color:#ff0000;">*</strong></label>
                                                     <label >
                                                         <iais:select name="licenceNo${status.index}" options="salutationLicList" firstOption="Please Select" value="${newRfi.licenceNo}"></iais:select>
-                                                        <span id="error_licenceNo${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
                                                     </label>
+                                                    <span id="error_licenceNo${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
                                                 </p>
                                                 <p>
                                                     <label class="col-xs-9 col-md-4 control-label" >Due Date<strong style="color:#ff0000;">*</strong></label>
@@ -92,11 +93,7 @@
                         <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit('${licenceNo}')">Submit</button>
                     </iais:action>
                     <iais:row >
-                        <div class="col-sm-9" style="display: none" id="isAlert">
-                            <p style="color:#ff0000;">
-                                Licence is still pending Applicant's input.Please do not submit any new Requset For Information.
-                            </p>
-                        </div>
+                        <span id="error_LicencePending" name="iaisErrorMsg" class="error-msg" ></span>
                     </iais:row>
                 </div>
             </div>
@@ -119,15 +116,10 @@
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
-    function doSubmit(licenceNo) {
+    function doSubmit() {
 
-        if(licenceNo!=""){
-            $("#isAlert").show();
-        }
-        else {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "submit");
-        }
+        showWaiting();
+        SOP.Crud.cfxSubmit("mainForm", "submit");
 
     }
 

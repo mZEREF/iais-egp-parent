@@ -127,7 +127,13 @@ public class RequestForInformationDelegator {
         HttpServletRequest request=bpc.request;
         AuditTrailHelper.auditFunction("RequestForInformation Management", "RequestForInformation Config");
 
-        List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(request, "licIds");
+        List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(request, "licRfiIds");
+        if(licenceIds.size()==0){
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTRANET/MohOnlineEnquiries");
+            IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
+        }
         List<LicPremisesDto> licPremisesDtos=hcsaLicenceClient.getPremisesByLicIds(licenceIds).getEntity();
         ParamUtil.setSessionAttr(request,"licPremisesDtos", (Serializable) licPremisesDtos);
         ParamUtil.setSessionAttr(request,"id",null);
@@ -156,7 +162,6 @@ public class RequestForInformationDelegator {
             licPremisesReqForInfoDtoLists.addAll(licPremisesReqForInfoDtoList);
         }
 
-
         ParamUtil.setRequestAttr(request, "isValid", "Y");
 
 
@@ -168,13 +173,7 @@ public class RequestForInformationDelegator {
                 }catch (Exception e){
                     licPreRfi.setEmail("-");
                 }
-                if(StringUtil.isEmpty(licPreRfi.getUserReply())){
-                    ParamUtil.setSessionAttr(request, "licenceNo", licPreRfi.getLicenceNo());
-                }
             }
-        }
-        else {
-            ParamUtil.setSessionAttr(request, "licenceNo", "");
         }
 
         ParamUtil.setRequestAttr(request,"licPreReqForInfoDtoList", licPremisesReqForInfoDtoLists);
@@ -227,7 +226,7 @@ public class RequestForInformationDelegator {
         selectOption1.setValue("information");
         selectOption1.setText("Request for Information");
         salutationList.add(selectOption1);
-        ParamUtil.setRequestAttr(bpc.request, "salutationList", salutationList);
+        ParamUtil.setSessionAttr(bpc.request, "salutationList", (Serializable) salutationList);
         List<LicPremisesDto> licPremisesDtos = (List<LicPremisesDto>) ParamUtil.getSessionAttr(request,"licPremisesDtos");
         List<SelectOption> salutationLicList= IaisCommonUtils.genNewArrayList();
         for(LicPremisesDto licPremisesDto:licPremisesDtos){
@@ -237,7 +236,7 @@ public class RequestForInformationDelegator {
             selectLicOption.setText(licenceDto.getLicenceNo());
             salutationLicList.add(selectLicOption);
         }
-        ParamUtil.setRequestAttr(bpc.request, "salutationLicList", salutationLicList);
+        ParamUtil.setSessionAttr(bpc.request, "salutationLicList", (Serializable) salutationLicList);
         // 		preNewRfi->OnStepProcess
     }
     public void doCreateRequest(BaseProcessClass bpc) throws ParseException, IOException, TemplateException {
@@ -245,7 +244,6 @@ public class RequestForInformationDelegator {
         HttpServletRequest request=bpc.request;
         String[] lengths=ParamUtil.getStrings(request,"lengths");
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
-
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         errorMap=validate(request);
         if (!errorMap.isEmpty()) {
@@ -321,59 +319,56 @@ public class RequestForInformationDelegator {
             HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
             mapPrem.put("licenseeId",licenseeId);
 
-            try{
-                EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
-                eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                Date now = new Date();
-                eicRequestTrackingDto.setActionClsName("com.ecquaria.cloud.moh.iais.service.RequestForInformationServiceImpl");
-                eicRequestTrackingDto.setActionMethod("eicCallFeRfiLic");
-                eicRequestTrackingDto.setModuleName("hcsa-licence-web-intranet");
-                eicRequestTrackingDto.setDtoClsName(LicPremisesReqForInfoDto.class.getName());
-                eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(licPremisesReqForInfoDto1));
-                eicRequestTrackingDto.setProcessNum(1);
-                eicRequestTrackingDto.setFirstActionAt(now);
-                eicRequestTrackingDto.setLastActionAt(now);
-                eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-                eicRequestTrackingDto.setRefNo(System.currentTimeMillis()+"");
-                licPremisesReqForInfoDto1.setEventRefNo(eicRequestTrackingDto.getRefNo());
-                licPremisesReqForInfoDto1.setAction("create");
-                requestForInformationService.updateLicEicRequestTrackingDto(eicRequestTrackingDto);
-                requestForInformationService.createFeRfiLicDto(licPremisesReqForInfoDto1);
+            EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
+            eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            Date now = new Date();
+            eicRequestTrackingDto.setActionClsName("com.ecquaria.cloud.moh.iais.service.RequestForInformationServiceImpl");
+            eicRequestTrackingDto.setActionMethod("eicCallFeRfiLic");
+            eicRequestTrackingDto.setModuleName("hcsa-licence-web-intranet");
+            eicRequestTrackingDto.setDtoClsName(LicPremisesReqForInfoDto.class.getName());
+            eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(licPremisesReqForInfoDto1));
+            eicRequestTrackingDto.setProcessNum(1);
+            eicRequestTrackingDto.setFirstActionAt(now);
+            eicRequestTrackingDto.setLastActionAt(now);
+            eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+            eicRequestTrackingDto.setRefNo(System.currentTimeMillis()+"");
+            licPremisesReqForInfoDto1.setEventRefNo(eicRequestTrackingDto.getRefNo());
+            licPremisesReqForInfoDto1.setAction("create");
+            requestForInformationService.updateLicEicRequestTrackingDto(eicRequestTrackingDto);
+            requestForInformationService.createFeRfiLicDto(licPremisesReqForInfoDto1);
 
-                //send message to FE user.
-                InterMessageDto interMessageDto = new InterMessageDto();
-                interMessageDto.setMaskParams(mapPrem);
-                interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-                List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
-                ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
-                String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",applicationDto.getApplicationNo());
-                interMessageDto.setSubject(subject);
-                interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
-                String mesNO = inboxMsgService.getMessageNo();
-                interMessageDto.setRefNo(mesNO);
-                HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
-                interMessageDto.setService_id(svcDto.getId());
-                interMessageDto.setMsgContent(mesContext);
-                interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-                interMessageDto.setUserId(licenseeId);
-                interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                inboxMsgService.saveInterMessage(interMessageDto);
-                log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
+            //send message to FE user.
+            InterMessageDto interMessageDto = new InterMessageDto();
+            interMessageDto.setMaskParams(mapPrem);
+            interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+            List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
+            ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
+            String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",applicationDto.getApplicationNo());
+            interMessageDto.setSubject(subject);
+            interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
+            String mesNO = inboxMsgService.getMessageNo();
+            interMessageDto.setRefNo(mesNO);
+            HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
+            interMessageDto.setService_id(svcDto.getId());
+            interMessageDto.setMsgContent(mesContext);
+            interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
+            interMessageDto.setUserId(licenseeId);
+            interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            inboxMsgService.saveInterMessage(interMessageDto);
+            log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
 
-                try {
-                    EmailDto emailDto=new EmailDto();
-                    emailDto.setContent(mesContext);
-                    emailDto.setSubject(rfiEmailTemplateDto.getSubject());
-                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-                    emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-                    emailDto.setClientQueryCode(licPremId);
-                    String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
-                }catch (Exception e){
-                    log.error(e.getMessage(), e);
-                }
+            try {
+                EmailDto emailDto=new EmailDto();
+                emailDto.setContent(mesContext);
+                emailDto.setSubject(rfiEmailTemplateDto.getSubject());
+                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                emailDto.setClientQueryCode(licPremId);
+                String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
             }catch (Exception e){
-                requestForInformationService.deleteLicPremisesReqForInfo(licPremisesReqForInfoDto1.getReqInfoId());
+                log.error(e.getMessage(), e);
             }
+
         }
 //        if(lengths.length>=1){
 //            requestForInformationService.clarificationApplicationUpdateByLicPremId(licPremId);
@@ -502,7 +497,20 @@ public class RequestForInformationDelegator {
             String rfiTitle=ParamUtil.getString(request, "rfiTitle"+len);
             if(rfiTitle==null){
                 errMap.put("rfiTitle"+len,"ERR0010");
-
+            }
+            String licenceNo=ParamUtil.getString(request, "licenceNo"+len);
+            if(licenceNo==null|| "Please Select".equals(licenceNo)){
+                errMap.put("licenceNo"+len,"ERR0010");
+            }else {
+                List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licenceNo);
+                if(!licPremisesReqForInfoDtoList.isEmpty()) {
+                    for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
+                    ) {
+                        if(StringUtil.isEmpty(licPreRfi.getUserReply())){
+                            errMap.put("LicencePending","Licence is still pending Applicant's input.Please do not submit any new Requset For Information.");
+                        }
+                    }
+                }
             }
         }
 
@@ -569,7 +577,7 @@ public class RequestForInformationDelegator {
         Map<String,String> rfiLicSelect = IaisCommonUtils.genNewHashMap();
         rfiLicSelect.put("name", "licenceNo"+length);
         rfiLicSelect.put("style", "display: none;");
-        String salutationLicSelectStr = generateDropDownHtml(rfiSelect, salutationLicList,"Please Select", null);
+        String salutationLicSelectStr = generateDropDownHtml(rfiLicSelect, salutationLicList,"Please Select", null);
         sql = sql.replace("(rfiLicSelect)", salutationLicSelectStr);
 
         sql=sql.replaceAll("indexRfi",length);
