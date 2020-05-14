@@ -41,11 +41,10 @@
                                                                           data-toggle="tab">Processing</a></li>
                         </ul>
                         <div class="tab-content">
-                            <%--info page--%>
+                        <%--info page--%>
                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
                                 <%@include file="applicationInfo.jsp" %>
                             </div>
-
                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
                                 <%@include file="/WEB-INF/jsp/iais/inspectionncList/tabDocuments.jsp"%>
                             </div>
@@ -55,6 +54,8 @@
                             </div>
                             <%--         Inspection end                       --%>
                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
+                                <span id="error_document" name="iaisErrorMsg" class="error-msg"></span>
+                                <br/><br/>
                                 <div class="alert alert-info" role="alert">
                                     <strong>
                                         <h4>Processing Status Update</h4>

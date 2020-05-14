@@ -1552,6 +1552,10 @@ public class HcsaApplicationDelegator {
             }else{
                 codeDesc = MasterCodeUtil.getCodeDesc(chronoUnit);
                 recommendationOnlyShow = recomInNumber + " " + codeDesc;
+                //set DMS decision value
+                if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
+                    ParamUtil.setRequestAttr(bpc.request,"selectDecisionValue","decisionApproval");
+                }
             }
             //PSO 0062307
             if(RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId)){

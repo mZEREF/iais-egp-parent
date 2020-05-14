@@ -124,12 +124,26 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 }
             }
         }
+
+        checkIsUploadDMS(applicationViewDto,errMap,status);
+
         return errMap;
     }
 
     /**
      * private method
      */
+    private void checkIsUploadDMS(ApplicationViewDto applicationViewDto, Map<String, String> errMap, String status){
+        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
+            if(applicationViewDto != null){
+                if((applicationViewDto.getIsUpload() == null) || !applicationViewDto.getIsUpload()){
+                    errMap.put("document","DMS's reply email is mandatory to be uploaded");
+                }
+            }
+        }
+    }
+
+
     private void checkRecommendationOtherDropdown(Map<String, String> errMap,String recommendationStr,HttpServletRequest request){
         if("other".equals(recommendationStr)){
             ParamUtil.setRequestAttr(request,"selectDecisionValue",DECISION_APPROVAL);
