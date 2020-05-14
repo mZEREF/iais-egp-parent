@@ -161,7 +161,7 @@ public class TemplatesDelegator {
             if (msgTemplateDto.getEffectiveFrom() != null && msgTemplateDto.getEffectiveTo() !=null){
                 if(!msgTemplateDto.getEffectiveFrom().before(msgTemplateDto.getEffectiveTo())){
                     validationResult.setHasErrors(true);
-                    errorMap.put("effectiveTo","Effective Start Date cannot be later than End Date");
+                    errorMap.put("effectiveTo","Effective Start Date cannot be later than Effective End Date");
                 }
             }
             if (contentSize>8000) {
