@@ -37,4 +37,6 @@ public interface OrgUserManageService {
     void updateEgpUser(FeUserDto feUserDto);
 
     OrganizationDto findOrganizationByUen(String uen);
+
+    void updateUserBe(OrganizationDto organizationDto);
 }

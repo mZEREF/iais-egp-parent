@@ -110,7 +110,10 @@
                         </table>
                         <div class="application-tab-footer">
                             <div class="row">
-                                <div class="col-xs-11 col-md-11">
+                                <div class="col-xs-2 col-sm-2">
+                                    <div><a id="back" style="padding-left: 90px;"><em class="fa fa-angle-left"></em> Back</a></div>
+                                </div>
+                                <div class="col-xs-9 col-md-9">
                                     <div class="text-right">
                                         <button class="btn btn-primary" id="savebtn"
                                                 onclick="javascript:create()">Create</button>
@@ -133,6 +136,9 @@
         console.log(id);
         SOP.Crud.cfxSubmit("mainForm", "edit" , id);
     }
+    $("#back").click(function () {
+        SOP.Crud.cfxSubmit("mainForm", "back");
+    })
     function doActive(id,targetStatus){
         $.post(
             '/main-web/feAdmin/active.do',

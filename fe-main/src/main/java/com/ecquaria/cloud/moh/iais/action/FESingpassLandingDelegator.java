@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
@@ -151,7 +150,7 @@ public class FESingpassLandingDelegator {
                 organizationDto.setUenNo(feUserDto.getUenNo());
                 organizationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
-                feUserDto.setIdType(MasterCodeUtil.getCodeDesc(OrganizationConstants.ID_TYPE_NRIC));
+                feUserDto.setIdType(idType);
                 organizationDto.setFeUserDto(feUserDto);
 
                 OrganizationDto postCreateOrg = orgUserManageService.createSingpassAccount(organizationDto);

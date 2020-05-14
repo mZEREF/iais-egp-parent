@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -38,7 +39,6 @@ import java.util.Map;
 public class FeAdminManageDelegate {
     @Autowired
     private OrgUserManageServiceImpl orgUserManageService;
-    private static String organizationId ;
     /**
      * StartStep: doStart
      *
@@ -60,39 +60,56 @@ public class FeAdminManageDelegate {
     public void preparePage(BaseProcessClass bpc) {
         log.debug("****preparePage Process ****");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        organizationId = loginContext.getOrgId();
-        SearchParam searchParam = new SearchParam(FeUserQueryDto.class.getName());
-        searchParam.setSort("ID", SearchParam.ASCENDING);
-        searchParam.addFilter("orgid",organizationId,true);
-        QueryHelp.setMainSql("interInboxQuery", "feUserList",searchParam);
-        SearchResult<FeUserQueryDto> feAdminQueryDtoSearchResult = orgUserManageService.getFeUserList(searchParam);
-        for (FeUserQueryDto item:feAdminQueryDtoSearchResult.getRows()
-             ) {
-            item.setSalutation(MasterCodeUtil.getCodeDesc(item.getSalutation()));
-            item.setIdType(MasterCodeUtil.getCodeDesc(item.getIdType()));
-            item.setDesignation(MasterCodeUtil.getCodeDesc(item.getDesignation()));
+        if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)){
+            String organizationId = loginContext.getOrgId();
+            SearchParam searchParam = new SearchParam(FeUserQueryDto.class.getName());
+            searchParam.setSort("ID", SearchParam.ASCENDING);
+            searchParam.addFilter("orgid",organizationId,true);
+            QueryHelp.setMainSql("interInboxQuery", "feUserList",searchParam);
+            SearchResult<FeUserQueryDto> feAdminQueryDtoSearchResult = orgUserManageService.getFeUserList(searchParam);
+            for (FeUserQueryDto item:feAdminQueryDtoSearchResult.getRows()
+            ) {
+                item.setSalutation(MasterCodeUtil.getCodeDesc(item.getSalutation()));
+                item.setIdType(MasterCodeUtil.getCodeDesc(item.getIdType()));
+                item.setDesignation(MasterCodeUtil.getCodeDesc(item.getDesignation()));
+            }
+            CrudHelper.doPaging(searchParam,bpc.request);
+            ParamUtil.setRequestAttr(bpc.request, "feAdmin",feAdminQueryDtoSearchResult);
+            ParamUtil.setRequestAttr(bpc.request, "feAdminSearchParam",searchParam);
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);
+        }else{
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.FALSE);
         }
-        CrudHelper.doPaging(searchParam,bpc.request);
-        ParamUtil.setRequestAttr(bpc.request, "feAdmin",feAdminQueryDtoSearchResult);
-        ParamUtil.setRequestAttr(bpc.request, "feAdminSearchParam",searchParam);
-
     }
 
     public void create(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("*******************create"));
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String organizationId = loginContext.getOrgId();
         OrganizationDto organizationDto = orgUserManageService.getOrganizationById(organizationId);
         FeUserDto accountDto = new FeUserDto();
         accountDto.setUenNo(organizationDto.getUenNo());
-        ParamUtil.setSessionAttr(bpc.request,"user", accountDto);
+        accountDto.setOrgId(organizationId);
+
+        ParamUtil.setSessionAttr(bpc.request,"inter_user_attr", accountDto);
         ParamUtil.setSessionAttr(bpc.request,"canEditFlag", "Y");
     }
 
     public void edit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("*******************edit"));
-        String userId = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
-
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String userId ;
+        String isAdmin ;
+        if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)){
+            userId = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+            isAdmin = "1";
+        }else{
+            userId = loginContext.getUserId();
+            isAdmin = "0";
+        }
         FeUserDto feUserDto = orgUserManageService.getUserAccount(userId);
-        ParamUtil.setSessionAttr(bpc.request,"user",feUserDto);
+        ParamUtil.setSessionAttr(bpc.request,"inter_user_attr",feUserDto);
+        ParamUtil.setSessionAttr(bpc.request,"isAdmin",isAdmin);
         ParamUtil.setSessionAttr(bpc.request,"canEditFlag", "N");
     }
 
@@ -106,8 +123,15 @@ public class FeAdminManageDelegate {
     public void editValidation(BaseProcessClass bpc) {
         String action = ParamUtil.getString(bpc.request,"action");
         if("cancel".equals(action)){
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)){
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "success");
+            }else{
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
+            }
+
         }else{
+
             log.debug(StringUtil.changeForLog("*******************insertDatabase end"));
             String name = ParamUtil.getString(bpc.request,"name");
             String salutation = ParamUtil.getString(bpc.request,"salutation");
@@ -120,31 +144,39 @@ public class FeAdminManageDelegate {
             String active = ParamUtil.getString(bpc.request,"active");
             String role = ParamUtil.getString(bpc.request,"role");
 
-            FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, "user");
+            FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, "inter_user_attr");
             if(feUserDto.getIdType() == null){
                 feUserDto.setIdType(idType);
             }
+            if(feUserDto.getUserId() == null){
+                if(feUserDto.getUenNo() != null){
+                    feUserDto.setUserId(feUserDto.getUenNo() + "_" + idNo);
+                }else{
+                    feUserDto.setUserId(idNo);
+                }
+            }
+            if(feUserDto.getIdentityNo() == null){
+                feUserDto.setIdentityNo(idNo);
+            }
             feUserDto.setDisplayName(name);
-            feUserDto.setUserId(name);
             feUserDto.setSalutation(salutation);
-            feUserDto.setIdentityNo(idNo);
             feUserDto.setDesignation(designation);
             feUserDto.setMobileNo(mobileNo);
             feUserDto.setOfficeTelNo(officeNo);
             feUserDto.setEmail(email);
-            feUserDto.setUserDomain(AppConsts.DOMAIN_INTERNET);
-            feUserDto.setOrgId(organizationId);
+            feUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
+            feUserDto.setAvailable(true);
             if("active".equals(active)){
-                feUserDto.setAvailable(Boolean.TRUE);
+                feUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             }else{
-                feUserDto.setAvailable(Boolean.FALSE);
+                feUserDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             }
             if("admin".equals(role)){
                 feUserDto.setUserRole(RoleConsts.USER_ROLE_ORG_ADMIN);
             }else{
                 feUserDto.setUserRole(RoleConsts.USER_ROLE_ORG_USER);
             }
-            ParamUtil.setSessionAttr(bpc.request, "user", feUserDto);
+            ParamUtil.setSessionAttr(bpc.request, "inter_user_attr", feUserDto);
             ValidationResult validationResult = WebValidationHelper.validateProperty(feUserDto, "edit");
 
             if (validationResult.isHasErrors()){
@@ -152,13 +184,24 @@ public class FeAdminManageDelegate {
                 Map<String,String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
 
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.FALSE);
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "back");
             }else{
                 Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
                 successMap.put("save","suceess");
                 orgUserManageService.editUserAccount(feUserDto);
                 orgUserManageService.updateEgpUser(feUserDto);
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);
+                //update be user
+                OrganizationDto organizationById = orgUserManageService.getOrganizationById(feUserDto.getOrgId());
+                OrganizationDto organizationDto = new OrganizationDto();
+                organizationDto.setDoMain(feUserDto.getUserDomain());
+                organizationDto.setFeUserDto(feUserDto);
+                organizationDto.setOrgType(organizationById.getOrgType());
+                organizationDto.setStatus(organizationById.getStatus());
+                organizationDto.setUenNo(organizationById.getUenNo());
+                organizationDto.setId(organizationById.getId());
+                String json = JsonUtil.parseToJson(organizationDto);
+                orgUserManageService.updateUserBe(organizationDto);
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "success");
             }
         }
     }

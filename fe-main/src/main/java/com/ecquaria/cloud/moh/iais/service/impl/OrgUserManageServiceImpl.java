@@ -165,6 +165,20 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
+    public void updateUserBe(OrganizationDto organizationDto){
+        try {
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            eicGatewayFeMainClient.syncAccountDataFormFe(organizationDto, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog("encounter failure when sync account data to be"));
+            log.error(e.getMessage(), e);
+        }
+
+    }
+
+    @Override
     public FeUserDto getUserByNricAndUen(String uen, String nric) {
         return feUserClient.getUserByNricAndUen(uen, nric).getEntity();
     }

@@ -23,7 +23,14 @@
                                 <h1>Create HCSA Internet User Account</h1>
                             </c:when>
                             <c:otherwise>
-                                <h1>Edit HCSA Internet User Account</h1>
+                                <c:choose>
+                                    <c:when test="${'1'.equals(isAdmin)}">
+                                        <h1>Edit HCSA Internet User Account</h1>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <h1>Particulars Form</h1>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:otherwise>
                         </c:choose>
 
@@ -43,37 +50,39 @@
                         <div class="col-xs-12">
                             <div class="new-premise-form-conveyance">
                                 <div class="form-horizontal">
-                                    <%@include file="../../common/userForm.jsp"%>
-                                    <iais:row>
-                                        <iais:field value="Is Administrator" width="11"/>
-                                        <div class="col-md-3">
-                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="admin" name="role" <c:if test="${user.userRole=='ORG_ADMIN'}">checked</c:if>></div>
-                                            <label class="col-md-2 control-label" >Yes</label>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="user" name="role" <c:if test="${user.userRole!='ORG_ADMIN'}">checked</c:if>></div>
-                                            <label class="col-md-2 control-label" >No</label>
-                                        </div>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Is Active" width="11"/>
-                                        <div class="col-md-3">
-                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="active" name="active" <c:if test="${user.available}">checked</c:if>></div>
-                                            <label class="col-md-2 control-label" >Yes</label>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="inactive" name="active" <c:if test="${!user.available}">checked</c:if>></div>
-                                            <label class="col-md-2 control-label" >No</label>
-                                        </div>
-                                    </iais:row>
+                                    <%@include file="/WEB-INF/jsp/iais/common/userForm.jsp"%>
+                                    <c:choose>
+                                        <c:when test="${isAdmin.equals('1')}">
+                                            <iais:row>
+                                                <iais:field value="Is Administrator" width="11"/>
+                                                <div class="col-md-3">
+                                                    <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="admin" name="role" <c:if test="${inter_user_attr.userRole=='ORG_ADMIN'}">checked</c:if>></div>
+                                                    <label class="col-md-2 control-label" >Yes</label>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="user" name="role" <c:if test="${inter_user_attr.userRole!='ORG_ADMIN'}">checked</c:if>></div>
+                                                    <label class="col-md-2 control-label" >No</label>
+                                                </div>
+                                            </iais:row>
+                                            <iais:row>
+                                                <iais:field value="Is Active" width="11"/>
+                                                <div class="col-md-3">
+                                                    <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="active" name="active" <c:if test="${inter_user_attr.status == 'CMSTAT001'}">checked</c:if>></div>
+                                                    <label class="col-md-2 control-label" >Yes</label>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="inactive" name="active" <c:if test="${inter_user_attr.status != 'CMSTAT001'}">checked</c:if>></div>
+                                                    <label class="col-md-2 control-label" >No</label>
+                                                </div>
+                                            </iais:row>
+                                        </c:when>
+                                    </c:choose>
                                     <div class="application-tab-footer">
                                         <div class="row">
-                                            <div class="col-xs-11 col-md-11">
-                                                <div class="text-right col-xs-1 col-md-1">
-                                                    <a align="left" class="back" href="#" onclick="cancel()"><em class="fa fa-angle-left"></em> Back</a></div>
-                                                <div class="text-right col-xs-10 col-md-10">
-                                                    <button class="btn btn-primary" id="savebtn" onclick="javascript:save()">Save</button>
-                                                </div>
+                                            <div class="col-xs-2 col-md-2">
+                                                <a   style="padding-left: 90px;" align="left" class="back" href="#" onclick="cancel()"><em class="fa fa-angle-left"></em> Back</a></div>
+                                            <div class="text-right col-xs-9 col-md-9">
+                                                <button class="btn btn-primary" id="savebtn" onclick="javascript:save()">Save</button>
                                             </div>
                                         </div>
                                     </div>
