@@ -55,6 +55,9 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         String status = applicationViewDto.getApplicationDto().getStatus();
         //DMS recommendation
         if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
+            //verify upload file
+            checkIsUploadDMS(applicationViewDto,errMap);
+
             String decisionValue = ParamUtil.getString(request,"decisionValues");
 
             if(StringUtil.isEmpty(decisionValue)){
@@ -74,8 +77,6 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
 //                    }
                 }
                 ParamUtil.setRequestAttr(request,"selectDecisionValue",decisionValue);
-                //verify upload file
-                checkIsUploadDMS(applicationViewDto,errMap);
             }
         }
 
