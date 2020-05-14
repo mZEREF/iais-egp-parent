@@ -240,12 +240,16 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                 applicationDto.setSelfAssMtFlag(2);
             }
             applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
+            if(!StringUtil.isEmpty(selfRfiDecision)){
+                applicationDto1.setSelfAssMtFlag(2);
+            }
             applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             applicationService.updateFEApplicaiton(applicationDto1);
             applicationViewDto.setApplicationDto(applicationDto1);
         } else {
             applicationDto.setSelfAssMtFlag(2);
             applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
+            applicationDto1.setSelfAssMtFlag(2);
             applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             applicationService.updateFEApplicaiton(applicationDto1);
             applicationViewDto.setApplicationDto(applicationDto1);
