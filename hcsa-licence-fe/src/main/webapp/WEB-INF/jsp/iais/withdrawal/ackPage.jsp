@@ -18,8 +18,8 @@
                     <div class="internet-content">
                         <div class="bg-title">
                             <div class="row">
-                                <h2>Acknowledgement</h2>
-                                <span>This is to acknowledge that you have submitted a withdrawal request for ${appNo}</span>
+                                <div style="font-size:3rem">Acknowledgement</div>
+                                <span style="font-size:2rem">You have submitted a Withdrawal Application Request</span>
                             </div>
                         </div>
                         <div class="row" style="padding-top: 10px">

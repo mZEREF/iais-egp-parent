@@ -47,21 +47,22 @@
                     </div>
 
                     <div id="reason"
-                         <c:if test="${withdrawDtoView.withdrawnReason != 'WDR005' || withdrawDtoView.withdrawnReason== null}">hidden</c:if>></div>
-                    <div class="row">
-                        <div class="center-content">
-                            <label class="col-md-4" style="font-size:3rem">Any supporting remarks</label>
+                         <c:if test="${withdrawDtoView.withdrawnReason != 'WDR005' || withdrawDtoView.withdrawnReason== null}">hidden</c:if>>
+                        <div class="row">
+                            <div class="center-content">
+                                <label class="col-md-4" style="font-size:3rem">Any supporting remarks</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="center-content">
-                            <div class="col-md-6">
-                                <div class="file-upload-gp">
+                        <div class="row">
+                            <div class="center-content">
+                                <div class="col-md-6">
+                                    <div class="file-upload-gp">
                                             <textarea name="withdrawnRemarks" cols="90" rows="15" id="withdrawnRemarks"
                                                       title="content"
                                                       maxlength="500">${withdrawDtoView.withdrawnRemarks}</textarea>
+                                    </div>
+                                    <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
-                                <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                     </div>
@@ -107,7 +108,7 @@
             </div>
         </div>
     </form>
-    <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
+    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
 <script type="text/javascript">
     $(function () {
@@ -115,7 +116,7 @@
         if (reason == "WDR005") {
             $("#reason").show();
         }
-        if (${file_upload_withdraw != null}) {
+        if (${file_upload_withdraw != null && file_upload_withdraw != ""}) {
             $("#delFile").removeAttr("hidden");
         }
     });
