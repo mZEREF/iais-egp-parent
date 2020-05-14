@@ -17,10 +17,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubT
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.FeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.SelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -75,7 +75,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
         //common data
         ChecklistConfigDto common = appConfigClient.getMaxVersionCommonConfig().getEntity();
-        List<PremCheckItem> commonQuestion = SelfChecklistHelper.loadPremisesQuestion(common, false);
+        List<PremCheckItem> commonQuestion = FeSelfChecklistHelper.loadPremisesQuestion(common, false);
 
         SelfAssessmentConfig commonConfig = new SelfAssessmentConfig();
         commonConfig.setConfigId(common.getId());
@@ -119,13 +119,13 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 svcConfig.setSvcCode(serviceConfig.getSvcCode());
                 svcConfig.setSvcName(serviceConfig.getSvcName());
 
-                List<PremCheckItem> serviceQuestion = SelfChecklistHelper.loadPremisesQuestion(serviceConfig, false);
+                List<PremCheckItem> serviceQuestion = FeSelfChecklistHelper.loadPremisesQuestion(serviceConfig, false);
                 List<String> serviceSubtypeName = getServiceSubTypeName(corrId);
                 for(String subTypeName : serviceSubtypeName){
                     ChecklistConfigDto subTypeConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module, subTypeName).getEntity();
                     if (subTypeConfig != null){
                         svcConfig.setHasSubtype(true);
-                        List<PremCheckItem> subTypeQuestion = SelfChecklistHelper.loadPremisesQuestion(subTypeConfig, true);
+                        List<PremCheckItem> subTypeQuestion = FeSelfChecklistHelper.loadPremisesQuestion(subTypeConfig, true);
                         serviceQuestion.addAll(subTypeQuestion);
                     }
                 }
@@ -142,7 +142,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Override
     public List<SelfAssessment> receiveSelfAssessmentRfiByCorrId(String corrId) {
-        return SelfChecklistHelper.receiveSelfAssessmentDataByCorrId(corrId);
+        return FeSelfChecklistHelper.receiveSelfAssessmentDataByCorrId(corrId);
     }
 
     private List<String> getServiceSubTypeName(String correlationId){

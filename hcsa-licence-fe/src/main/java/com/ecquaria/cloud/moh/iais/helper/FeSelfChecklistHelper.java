@@ -1,9 +1,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.moh.iais.client.HcsaServiceClient;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
-import com.ecquaria.cloud.moh.iais.common.dto.application.QuestionAnswer;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -21,9 +19,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -35,8 +31,8 @@ import java.util.UUID;
  **/
 
 @Slf4j
-public final class SelfChecklistHelper {
-    private SelfChecklistHelper(){}
+public final class FeSelfChecklistHelper {
+    private FeSelfChecklistHelper(){}
 
     /**
      * @Author yichen
