@@ -2101,6 +2101,9 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList  = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>)   request.getSession().getAttribute(COMMONHCSASVCDOCCONFIGDTO);
+        if(commonHcsaSvcDocConfigList==null){
+            return;
+        }
         for(HcsaSvcDocConfigDto comm : commonHcsaSvcDocConfigList){
             String name = "common"+comm.getId();
 
