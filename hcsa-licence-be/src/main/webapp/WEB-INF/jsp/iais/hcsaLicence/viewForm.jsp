@@ -22,23 +22,6 @@
     margin: 0 0 0px;
   }
 
-
-  .compareTdStyle {
-    display: inline;
-    padding: 5px 18px 5px 43px;
-    line-height: 1;
-    color: #53ab27;
-    text-align: left;
-    vertical-align: middle;
-    border-radius: 50px;
-    font-size: 100%;
-    background-image: url("../img/mark.png");
-    background-repeat: no-repeat;
-    background-attachment: none;
-    background-position: 7% 50%;
-    background-color: #e4fbdb;
-  }
-
 </style>
 <div class="panel-main-content">
   <input style="display: none" value="${NOT_VIEW}" id="view">

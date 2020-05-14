@@ -1017,33 +1017,6 @@
   </div>
 </form>
 <style>
-  /*.compareTdStyle {*/
-  /*  display: inline;*/
-  /*  padding: .2em .6em .3em;*/
-  /*  line-height: 1;*/
-  /*  color: #000;*/
-  /*  text-align: center;*/
-  /*  vertical-align: baseline;*/
-  /*  border-radius: .5em;*/
-  /*  font-size: 100%;*/
-  /*  background-color: #FF0*/
-  /*}*/
-
-  .compareTdStyle {
-    display: inline;
-    padding: 5px 18px 5px 43px;
-    line-height: 1;
-    color: #53ab27;
-    text-align: left;
-    vertical-align: middle;
-    border-radius: 50px;
-    font-size: 100%;
-    background-image: url("../img/mark.png");
-    background-repeat: no-repeat;
-    background-attachment: none;
-    background-position: 7% 50%;
-    background-color: #e4fbdb;
-  }
 
   *{
     word-wrap: break-word
