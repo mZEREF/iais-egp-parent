@@ -54,8 +54,6 @@ public class SelfAssessmentDelegator {
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION, null);
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR, null);
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_CAN_EDIT_ANSWER_FLAG, null);
-
-        ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID, "16EA99E3-B695-EA11-BE7A-000C29D29DB0");
     }
 
     /**
@@ -68,7 +66,7 @@ public class SelfAssessmentDelegator {
         List<SelfAssessment> selfAssessmentList;
         boolean hasSubmitted;
         if (SelfAssessmentConstant.SELF_ASSESSMENT_RFI_ACTION.equals(action)){
-            String corrId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
+            String corrId = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
             if (StringUtil.isEmpty(corrId)) {
                 log.debug("the corrId id is null");
                 return;

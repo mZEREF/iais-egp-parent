@@ -21,14 +21,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
@@ -54,10 +52,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESSAGE;
 
@@ -458,7 +453,6 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setSessionAttr(bpc.request, "PersonnelSearchParam", searchParam);
             return;
         }
-
         SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, filterParameter, true);
         searchParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("applicationPersonnelQuery", "appPersonnelQuery", searchParam);
@@ -468,15 +462,30 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, "PersonnelSearchResult", searchResult);
         }
         List<PersonnelListQueryDto> licenseeKeyApptPersonDtoList = searchResult.getRows();
-        Map<String, List<PersonnelListQueryDto>> personnelListMap = IaisCommonUtils.genNewHashMap();
+        Map<String, List<PersonnelListDto>> personnelListMap = IaisCommonUtils.genNewHashMap();
+        //List<PersonnelListDto> personnelListDtos = IaisCommonUtils.genNewArrayList();
         for (PersonnelListQueryDto personnelListQueryDto : licenseeKeyApptPersonDtoList) {
+            String licenceNo = personnelListQueryDto.getLicenceNo();
+            String psnType = personnelListQueryDto.getPsnType();
+            PersonnelListDto personnelListDto = transform(personnelListQueryDto);
             String idNo = personnelListQueryDto.getIdNo();
-            List<PersonnelListQueryDto> personnelListQueryDtos = personnelListMap.get(idNo);
-            if (IaisCommonUtils.isEmpty(personnelListQueryDtos)) {
-                personnelListQueryDtos = IaisCommonUtils.genNewArrayList();
+            List<PersonnelListDto> personnelListDtos = personnelListMap.get(idNo);
+            if(IaisCommonUtils.isEmpty(personnelListDtos)){
+                personnelListDtos = IaisCommonUtils.genNewArrayList();
+                personnelListDtos.add(personnelListDto);
+                personnelListMap.put(idNo, personnelListDtos);
+            }else {
+                for (PersonnelListDto dto : personnelListDtos){
+                    if(licenceNo.equals(dto.getLicenceNo())){
+                        dto.getPsnTypes().add(psnType);
+                    }else {
+                        List<PersonnelListDto> listDtos = IaisCommonUtils.genNewArrayList();
+                        listDtos.addAll(personnelListDtos);
+                        listDtos.add(personnelListDto);
+                        personnelListMap.put(idNo, listDtos);
+                    }
+                }
             }
-            personnelListQueryDtos.add(personnelListQueryDto);
-            personnelListMap.put(idNo, personnelListQueryDtos);
         }
         List<SelectOption> personelRoles = getPsnType();
         ParamUtil.setRequestAttr(bpc.request, "PersonnelRoleList", personelRoles);
@@ -485,6 +494,14 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do preparePersonnelList end ...."));
         log.debug(StringUtil.changeForLog("the preparePersonnel end ...."));
     }
+    private PersonnelListDto transform(PersonnelListQueryDto personnelListQueryDto){
+        PersonnelListDto personnelListDto = MiscUtil.transferEntityDto(personnelListQueryDto, PersonnelListDto.class);
+        List<String> list = IaisCommonUtils.genNewArrayList();
+        list.add(personnelListQueryDto.getPsnType());
+        personnelListDto.setPsnTypes(list);
+        return personnelListDto;
+    }
+
 
     private List<SelectOption> getPsnType() {
         List<SelectOption> personelRoles = IaisCommonUtils.genNewArrayList();
@@ -521,6 +538,7 @@ public class RequestForChangeMenuDelegator {
             psnTypes.add("PO");
             psnTypes.add("DPO");
             psnTypes.add("CGO");
+            psnTypes.add("MAP");
         }else {
             psnTypes.add(psnType);
         }
