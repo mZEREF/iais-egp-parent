@@ -49,7 +49,7 @@ public class OrgUserAccountSampleServiceImpl implements OrgUserAccountSampleServ
     @Override
     public void deleteOrgUserAccountsById(String id) {
         OrgUserAccountSampleDto orgUserAccountDto = new OrgUserAccountSampleDto();
-        orgUserAccountDto.setId(Integer.valueOf(Integer.parseInt(id)));
+        orgUserAccountDto.setId(Integer.valueOf(id));
         orgUserAccountDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 //        RestApiUtil.delete(RestApiUrlConsts.SAMPLE_SERVICE,orgUserAccountDto);
     }
