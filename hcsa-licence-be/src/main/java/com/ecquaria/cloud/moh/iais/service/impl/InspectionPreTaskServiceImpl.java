@@ -233,14 +233,18 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         ApplicationDto applicationDto1;
         //app rfi
         if(!StringUtil.isEmpty(appRfiDecision)){
+            String preInspecComments = inspectionPreTaskDto.getPreInspecComments();
+            applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId,
+                    licenseeDto, loginContext, preInspecComments);
+            if(!StringUtil.isEmpty(selfRfiDecision)){
+                applicationDto.setSelfAssMtFlag(2);
+            }
             applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
             applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             applicationService.updateFEApplicaiton(applicationDto1);
             applicationViewDto.setApplicationDto(applicationDto1);
-            String preInspecComments = inspectionPreTaskDto.getPreInspecComments();
-            applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId,
-                    licenseeDto, loginContext, preInspecComments);
         } else {
+            applicationDto.setSelfAssMtFlag(2);
             applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
             applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             applicationService.updateFEApplicaiton(applicationDto1);
