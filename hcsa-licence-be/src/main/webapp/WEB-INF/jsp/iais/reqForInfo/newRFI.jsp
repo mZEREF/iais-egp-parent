@@ -34,20 +34,22 @@
                                     <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                                         <div class="panel-body">
                                             <div class="form-group">
-                                                <p>
-                                                    <label class="col-xs-9 col-md-4 control-label">Select Category<strong style="color:#ff0000;">*</strong></label>
-                                                <div class=" col-xs-11 col-sm-4 col-md-5">
-                                                <iais:select name="decision${status.index}" options="salutationList" firstOption="Please Select" value="${newRfi.decision}"></iais:select>
-                                                </div>
-                                                <div class=" col-xs-11 col-sm-4 col-md-3">
-                                                    <div class="form-check removeRfiBtn">
-                                                        <div class="fa fa-times-circle text-danger"></div>
+                                                <div class="row">
+                                                    <label class="col-xs-9 col-md-4 control-label"> Select Category<strong style="color:#ff0000;">*</strong></label>
+                                                    <div class=" col-xs-11 col-sm-4 col-md-5">
+                                                        <iais:select name="decision${status.index}" options="salutationList" firstOption="Please Select" value="${newRfi.decision}"></iais:select>
+                                                    </div>
+                                                    <div class=" col-xs-11 col-sm-4 col-md-3">
+                                                        <div class="form-check removeRfiBtn">
+                                                            <div class="fa fa-times-circle text-danger"></div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                </p>
                                             </div>
-                                            <span class="error-msg" name="iaisErrorMsg" id="error_rfiSelect${status.index}"></span>
-                                            <br>
+                                            <div class="row">
+                                                <label class="col-xs-9 col-md-4 control-label" ></label><span class="error-msg" name="iaisErrorMsg" id="error_rfiSelect${status.index}"></span>
+                                            </div>
+
                                             <div class="form-group">
                                                 <p>
                                                     <label class="col-xs-9 col-md-4 control-label" >Title<strong style="color:#ff0000;">*</strong></label>
@@ -56,18 +58,20 @@
                                                         <span id="error_rfiTitle${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
                                                     </label>
                                                 </p>
-                                                <p>
-                                                    <label class="col-xs-9 col-md-4 control-label" >Licence No.<strong style="color:#ff0000;">*</strong></label>
-                                                    <label >
+                                                <div class="row">
+                                                    <label class="col-xs-9 col-md-4 control-label" > Licence No.<strong style="color:#ff0000;">*</strong></label>
+                                                    <div class=" col-xs-7 col-sm-4 col-md-5">
                                                         <iais:select name="licenceNo${status.index}" options="salutationLicList" firstOption="Please Select" value="${newRfi.licenceNo}"></iais:select>
-                                                    </label>
-                                                    <span id="error_licenceNo${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
-                                                </p>
+                                                        <span id="error_licenceNo${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
+                                                    </div>
+                                                </div>
                                                 <p>
                                                     <label class="col-xs-9 col-md-4 control-label" >Due Date<strong style="color:#ff0000;">*</strong></label>
                                                     <label >
-                                                        <iais:datePicker value="${newRfi.date}"  name="Due_date${status.index}"></iais:datePicker>
-                                                        <span id="error_Due_date${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
+                                                        <div class=" col-xs-7 col-sm-4 col-md-5">
+                                                            <iais:datePicker value="${newRfi.date}"  name="Due_date${status.index}"></iais:datePicker>
+                                                            <span id="error_Due_date${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
+                                                        </div>
                                                     </label>
                                                 </p>
                                                 <p>
