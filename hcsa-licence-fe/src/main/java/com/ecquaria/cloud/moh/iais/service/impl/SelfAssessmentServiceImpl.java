@@ -2,10 +2,12 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
@@ -14,12 +16,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
@@ -277,19 +281,49 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     }
 
     @Override
-    public void changePendingSelfAssMtStatus(String groupId) {
-        changePendingSelfAssMtStatus(groupId, ApplicationConsts.SUBMITTED_SELF_ASSESSMENT);
-    }
+    public void changePendingSelfAssMtStatus(String value, Boolean isGroupId) {
+        log.info(StringUtil.changeForLog("changePendingSelfAssMtStatus =====>>" + value + "isGroupId" + isGroupId));
+        List<ApplicationDto> appList;
+        if (isGroupId){
+            appList = applicationClient.listApplicationByGroupId(value).getEntity();
+        }else {
+            appList = applicationClient.getPremisesApplicationsByCorreId(value).getEntity();
+        }
 
-    @Override
-    public void changePendingSelfAssMtStatus(String groupId, Integer selfAssMtFlag) {
-        List<ApplicationDto> appList = applicationClient.listApplicationByGroupId(groupId).getEntity();
         if (IaisCommonUtils.isEmpty(appList)) {
             return;
         }
 
-        appList.forEach(i -> i.setSelfAssMtFlag(selfAssMtFlag));
+        boolean appSubmitToBeNotYet = false;
+        for (ApplicationDto i : appList){
+            if (ApplicationConsts.APPLICATION_STATUS_RFI_ONLY_SELF_CHECKLIST
+                    .equals(i.getApplicationType())){
+                appSubmitToBeNotYet = true;
+            }
+
+            i.setSelfAssMtFlag(ApplicationConsts.SUBMITTED_SELF_ASSESSMENT);
+        }
 
         applicationClient.updateApplicationList(appList);
+
+        //rfi solution
+        //when the application does not return to be,  need to create a task
+        boolean rfiSolution = isGroupId == true ? false : true;
+        if (rfiSolution && appSubmitToBeNotYet){
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+
+            ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
+            TaskDto taskDto = new TaskDto();
+            taskDto.setRefNo(value);
+            taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
+            taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            apptFeConfirmDateDto.setTaskDto(taskDto);
+
+            log.info("create fe reply task start");
+            gatewayClient.createFeReplyTask(apptFeConfirmDateDto, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
+            log.info("create fe reply task end");
+        }
     }
 }

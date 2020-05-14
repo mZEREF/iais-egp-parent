@@ -186,9 +186,14 @@ public class SelfAssessmentDelegator {
             } else {
                 boolean successSubmit = selfAssessmentService.saveAllSelfAssessment(selfAssessmentList).booleanValue();
                 if (successSubmit) {
-                    String groupId = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
-                    selfAssessmentService.changePendingSelfAssMtStatus(groupId);
-
+                    String action = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
+                    if (SelfAssessmentConstant.SELF_ASSESSMENT_RFI_ACTION.equals(action)){
+                        String corrId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
+                        selfAssessmentService.changePendingSelfAssMtStatus(corrId, false);
+                    }else {
+                        String groupId = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
+                        selfAssessmentService.changePendingSelfAssMtStatus(groupId, true);
+                    }
                     ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.getMessageDesc("ACK025"));
                 }
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
