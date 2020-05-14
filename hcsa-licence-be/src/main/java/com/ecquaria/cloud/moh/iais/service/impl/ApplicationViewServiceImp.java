@@ -81,6 +81,14 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     }
 
     @Override
+    public List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId,String type) {
+
+        return   hcsaConfigClient.getStageName(serviceId,stageId,type).getEntity();
+
+
+    }
+
+    @Override
     public OrgUserDto getUserById(String userId) {
         return organizationClient.retrieveOrgUserAccountById(userId).getEntity();
     }

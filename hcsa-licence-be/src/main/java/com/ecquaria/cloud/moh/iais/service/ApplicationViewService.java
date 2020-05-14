@@ -24,6 +24,8 @@ public interface ApplicationViewService {
 
     List<HcsaSvcRoutingStageDto> getStage(String serviceId,String stageId);
 
+    List<HcsaSvcRoutingStageDto> getStage(String serviceId,String stageId,String appType);
+
     OrgUserDto getUserById(String userId);
 
     String getWrkGrpName(String id);
