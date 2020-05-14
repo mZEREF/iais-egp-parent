@@ -25,12 +25,18 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
 
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         String internalRemarks = ParamUtil.getRequestString(request, "internalRemarks");
+        String date = ParamUtil.getDate(request, "tuc");
+        String recommendationStr = ParamUtil.getString(request,"recommendation");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
+        String status = applicationViewDto.getApplicationDto().getStatus();
+
+
         if(StringUtil.isEmpty(internalRemarks)){
             //errMap.put("internalRemarks","The field is mandatory.");
         }else{
             ParamUtil.setRequestAttr(request,"internalRemarks",internalRemarks);
         }
-        String date = ParamUtil.getDate(request, "tuc");
+
         if(!StringUtil.isEmpty(date)){
             ParamUtil.setRequestAttr(request,"date",date);
         }else{
@@ -38,7 +44,6 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             ParamUtil.setRequestAttr(request,"recomInDateOnlyShow",date);
         }
 
-        String recommendationStr = ParamUtil.getString(request,"recommendation");
         if(!StringUtil.isEmpty(recommendationStr)){
             ParamUtil.setRequestAttr(request,"recommendationStr",recommendationStr);
         }else{
@@ -51,8 +56,6 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         //0063971
         checkRecommendationOtherDropdown(errMap,recommendationStr,request);
 
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
-        String status = applicationViewDto.getApplicationDto().getStatus();
         //DMS recommendation
         if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
             //verify upload file
