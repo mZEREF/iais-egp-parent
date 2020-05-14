@@ -25,7 +25,7 @@ public interface LicEicClient {
     @GetMapping(path = "/eicTracking/{moduleName}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<EicRequestTrackingDto>> getPendingRecords(@PathVariable("moduleName") String moduleName);
 
-    @GetMapping(path = "/eicTracking/{moduleName}/eic-request", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/eicTracking/{referenceNumber}/eic-ref-num", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<EicRequestTrackingDto> getPendingRecordByReferenceNumber(@PathVariable("referenceNumber") String referenceNumber);
 
     @PutMapping(path = "/eicTracking", consumes = MediaType.APPLICATION_JSON_VALUE)

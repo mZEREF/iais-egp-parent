@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.client.LicEicClient;
+import com.ecquaria.cloud.moh.iais.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
@@ -63,7 +63,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     private FeEicGatewayClient gatewayClient;
 
     @Autowired
-    LicEicClient licEicClient;
+    AppEicClient appEicClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -271,9 +271,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             eicRequestTrackingDto.setProcessNum(0);
             eicRequestTrackingDto.setFirstActionAt(now);
             eicRequestTrackingDto.setLastActionAt(now);
-            licEicClient.saveEicTrack(eicRequestTrackingDto);
+            appEicClient.saveEicTrack(eicRequestTrackingDto);
             try {
-                FeignResponseEntity<EicRequestTrackingDto> fetchResult =  licEicClient.getPendingRecordByReferenceNumber(refNo);
+                FeignResponseEntity<EicRequestTrackingDto> fetchResult =  appEicClient.getPendingRecordByReferenceNumber(refNo);
                 if (HttpStatus.SC_OK == fetchResult.getStatusCode()){
                     EicRequestTrackingDto entity = fetchResult.getEntity();
                     if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
@@ -282,7 +282,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                         eicRequestTrackingDto.setFirstActionAt(now);
                         eicRequestTrackingDto.setLastActionAt(now);
                         eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                        licEicClient.saveEicTrack(eicRequestTrackingDto);
+                        appEicClient.saveEicTrack(eicRequestTrackingDto);
                     }
                 }
             }catch (Exception e){
