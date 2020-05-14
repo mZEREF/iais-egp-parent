@@ -25,14 +25,15 @@ import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.InboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -228,5 +229,22 @@ public class InboxServiceImpl implements InboxService {
         }
 
         return auditTrailDto;
+    }
+
+    @Override
+    public Map<String, String> checkRfcStatus(String licenceId) {
+        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+        List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
+        if(!IaisCommonUtils.isEmpty(apps)){
+            for(ApplicationDto applicationDto:apps){
+                if(!ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus()) &&
+                        !ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus()) &&
+                        !ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(applicationDto.getStatus())){
+                    errorMap.put("errorMessage","There is already a pending application for this licence");
+                    break;
+                }
+            }
+        }
+        return errorMap;
     }
 }

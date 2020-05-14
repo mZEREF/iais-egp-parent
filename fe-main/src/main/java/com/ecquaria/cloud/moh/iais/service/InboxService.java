@@ -35,4 +35,5 @@ public interface InboxService {
     List<InboxMsgMaskDto> getInboxMaskEntity(String msgId);
     List<PremisesDto> getPremisesByLicId(String licenceId);
     AuditTrailDto getLastLoginInfo(String loginUserId);
+    public Map<String,String> checkRfcStatus(String licenceId);
 }
