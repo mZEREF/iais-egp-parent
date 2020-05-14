@@ -126,10 +126,13 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
             for(TaskDto td:commPools) {
                 if (td.getId().equals(inspecTaskCreAndAssDto.getTaskId())
                         && !IaisCommonUtils.isEmpty(inspectorCheckList)) {
-                    td.setUserId(inspectorCheckList.get(0).getValue());
-                    td.setDateAssigned(new Date());
-                    td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    updateTask(td);
+                    SelectOption firstOpt = inspectorCheckList.get(0);
+                    if (firstOpt != null) {
+                        td.setUserId(inspectorCheckList.get(0).getValue());
+                        td.setDateAssigned(new Date());
+                        td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                        updateTask(td);
+                    }
                     inspectorCheckList.remove(0);
                     createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
                     ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
