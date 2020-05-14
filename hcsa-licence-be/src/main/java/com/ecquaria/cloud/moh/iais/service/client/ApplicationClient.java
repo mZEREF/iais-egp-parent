@@ -224,4 +224,7 @@ public interface ApplicationClient {
 
     @PutMapping(path = "/iais-group-misc",produces = { MediaType.APPLICATION_JSON_VALUE },consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<NotificateApplicationDto> updateNotificateApplicationDto(@RequestBody NotificateApplicationDto notificateApplicationDto);
+
+    @GetMapping(path = "/iais-self-assessment-be/correlation/self-assessment/{correlationId}")
+    FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> getAppPremisesSelfDeclByCorrelationId(@PathVariable(value = "correlationId") String correlationId);
 }

@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.BeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
@@ -132,6 +133,7 @@ public class InspectionPreDelegator {
         //adhocChecklist
         List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
         //Self-Checklist
+        BeSelfChecklistHelper.receiveSelfAssessmentDataByCorrId(taskDto.getRefNo());
         Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> mapInDto = inspectionPreTaskService.getSelfCheckListByCorrId(taskDto.getRefNo());
         InspectionFillCheckListDto inspectionFillCheckListDto = new InspectionFillCheckListDto();
         List<InspectionFillCheckListDto> ifcDtos = IaisCommonUtils.genNewArrayList();

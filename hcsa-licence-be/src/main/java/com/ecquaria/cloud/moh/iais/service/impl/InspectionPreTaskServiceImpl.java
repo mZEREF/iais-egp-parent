@@ -206,10 +206,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
         String applicationNo = applicationDto.getApplicationNo();
         createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskDto.getTaskKey(), reMarks, InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION, RoleConsts.USER_ROLE_INSPECTIOR, taskDto.getWkGrpId(), null);
-        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
-        applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        applicationService.updateFEApplicaiton(applicationDto1);
-        applicationViewDto.setApplicationDto(applicationDto1);
+
         List<TaskDto> taskDtoList = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
         for(TaskDto tDto : taskDtoList){
             if(tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING) || tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)) {
@@ -234,18 +231,28 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                 }
             }
         }
+        ApplicationDto applicationDto1;
         //app rfi
         if(!StringUtil.isEmpty(appRfiDecision)){
+            applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
+            applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            applicationService.updateFEApplicaiton(applicationDto1);
+            applicationViewDto.setApplicationDto(applicationDto1);
             String preInspecComments = inspectionPreTaskDto.getPreInspecComments();
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId,
                     licenseeDto, loginContext, preInspecComments);
+        } else {
+            applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
+            applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            applicationService.updateFEApplicaiton(applicationDto1);
+            applicationViewDto.setApplicationDto(applicationDto1);
         }
         //self rfi
         if(!StringUtil.isEmpty(selfRfiDecision)){
             InterMessageDto interMessageDto = new InterMessageDto();
             interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
             interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION);
-            interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
+            interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
             String mesNO = inboxMsgService.getMessageNo();
             interMessageDto.setRefNo(mesNO);
             interMessageDto.setService_id(applicationDto1.getServiceId());

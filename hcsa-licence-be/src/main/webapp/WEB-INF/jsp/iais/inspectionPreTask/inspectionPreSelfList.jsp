@@ -55,9 +55,9 @@
                         <tbody>
                         <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
                           <tr>
-                            <td class="row_no">${(status.index + 1) }</td>
-                            <td>${item.incqDto.regClauseNo}</td>
-                            <td>${item.incqDto.checklistItem}</td>
+                            <td class="row_no"><c:out value="${(status.index + 1)}"/></td>
+                            <td><c:out value="${item.incqDto.regClauseNo}"/></td>
+                            <td><c:out value="${item.incqDto.checklistItem}"/></td>
                           </tr>
                         </c:forEach>
                         </tbody>
@@ -81,9 +81,9 @@
                           <tbody>
                           <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
                             <tr>
-                              <td class="row_no">${(status.index + 1) }</td>
-                              <td>${item.incqDto.regClauseNo}</td>
-                              <td>${item.incqDto.checklistItem}</td>
+                              <td class="row_no"><c:out value="${(status.index + 1)}"/></td>
+                              <td><c:out value="${item.incqDto.regClauseNo}"/></td>
+                              <td><c:out value="${item.incqDto.checklistItem}"/></td>
                             </tr>
                           </c:forEach>
                           </tbody>
