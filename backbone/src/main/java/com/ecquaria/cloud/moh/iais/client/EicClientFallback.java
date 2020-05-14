@@ -28,4 +28,11 @@ public class EicClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
+
+    public FeignResponseEntity<EicRequestTrackingDto> getPendingRecordByReferenceNumber(String referenceNumber) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
