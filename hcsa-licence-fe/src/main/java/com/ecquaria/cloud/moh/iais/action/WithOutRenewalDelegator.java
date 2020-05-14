@@ -362,12 +362,12 @@ public class WithOutRenewalDelegator {
         }
         String totalStr = Formatter.formatCurrency(total);
         //do app submit
-//        ApplicationGroupDto applicationGroupDto = appSubmissionService.createApplicationDataByWithOutRenewal(renewDto);
-//        //set group no.
-//        for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
-//            appSubmissionDto.setAppGrpNo(applicationGroupDto.getGroupNo());
-//            appSubmissionDto.setAppGrpId(applicationGroupDto.getId());
-//        }
+        ApplicationGroupDto applicationGroupDto = appSubmissionService.createApplicationDataByWithOutRenewal(renewDto);
+        //set group no.
+        for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
+            appSubmissionDto.setAppGrpNo(applicationGroupDto.getGroupNo());
+            appSubmissionDto.setAppGrpId(applicationGroupDto.getId());
+        }
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
         //ParamUtil.setRequestAttr(bpc.request,"applicationGroupDto",applicationGroupDto);
         ParamUtil.setSessionAttr(bpc.request,"totalStr",totalStr);
