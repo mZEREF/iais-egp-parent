@@ -69,32 +69,30 @@
                   <c:forEach var ="cdto" items ="${serListDto}" varStatus="status">
                     <h3>${cdto.svcName}</h3>
                     <div class="table-gp">
-                      <c:forEach var ="question" items ="${cdto.question}">
-                        <table class="table">
-                          <thead>
+                      <table class="table">
+                        <thead>
+                        <tr>
+                          <th width="10%">No.</th>
+                          <th width="36%">Regulation Clause Number</th>
+                          <th width="36%">Item</th>
+                          <th width="6%">Yes</th>
+                          <th width="6%">No</th>
+                          <th width="6%">Na</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var ="question" items ="${cdto.question}">
                           <tr>
-                            <th width="10%">No.</th>
-                            <th width="36%">Regulation Clause Number</th>
-                            <th width="36%">Item</th>
-                            <th width="6%">Yes</th>
-                            <th width="6%">No</th>
-                            <th width="6%">Na</th>
+                            <td class="row_no"><c:out value="${(status.index + 1)}"/></td>
+                            <td><c:out value="${question.regulation}"/></td>
+                            <td><c:out value="${question.checklistItem}"/></td>
+                            <td><input type="radio" disabled <c:if test="${'YES' eq question.answer}">checked</c:if>/></td>
+                            <td><input type="radio" disabled <c:if test="${'NO' eq question.answer}">checked</c:if>/></td>
+                            <td><input type="radio" disabled <c:if test="${'NA' eq question.answer}">checked</c:if>/></td>
                           </tr>
-                          </thead>
-                          <tbody>
-                          <c:forEach var = "item" items = "${commonDto.question}" varStatus="status">
-                            <tr>
-                              <td class="row_no"><c:out value="${(status.index + 1)}"/></td>
-                              <td><c:out value="${question.regulation}"/></td>
-                              <td><c:out value="${question.checklistItem}"/></td>
-                              <td><input type="radio" disabled <c:if test="${'YES' eq question.answer}">checked</c:if>/></td>
-                              <td><input type="radio" disabled <c:if test="${'NO' eq question.answer}">checked</c:if>/></td>
-                              <td><input type="radio" disabled <c:if test="${'NA' eq question.answer}">checked</c:if>/></td>
-                            </tr>
-                          </c:forEach>
-                          </tbody>
-                        </table>
-                      </c:forEach>
+                        </c:forEach>
+                        </tbody>
+                      </table>
                     </div>
                   </c:forEach>
                   <iais:action >

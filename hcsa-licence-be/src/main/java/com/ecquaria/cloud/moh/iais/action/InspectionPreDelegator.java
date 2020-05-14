@@ -155,8 +155,11 @@ public class InspectionPreDelegator {
         if(!IaisCommonUtils.isEmpty(selfAssessments)){
             //one refNo(appPremCorrId) --> one SelfAssessment
             List<SelfAssessmentConfig> selfAssessmentConfigs = selfAssessments.get(0).getSelfAssessmentConfig();
-            if(!IaisCommonUtils.isEmpty(selfAssessments)) {
+            if(!IaisCommonUtils.isEmpty(selfAssessmentConfigs)) {
                 for(SelfAssessmentConfig selfAssessmentConfig : selfAssessmentConfigs){
+                    if(selfAssessmentConfig == null){
+                        continue;
+                    }
                     if(selfAssessmentConfig.isCommon()){
                         PremCheckItem premCheckItem = selfAssessmentConfig.getQuestion().get(0);
                         ParamUtil.setSessionAttr(bpc.request, "commonDto", premCheckItem);
