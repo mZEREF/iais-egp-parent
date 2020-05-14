@@ -85,7 +85,7 @@
 
                             <td>
                                 <div class="text-right text-center-mobile">
-                                    <a class="btn btn-primary next <c:if test="${hasSubmitted eq 'Y'}"> disabled</c:if>" id="submitAllDataButtonId" href="#">Submit</a>
+                                    <a class="btn btn-primary next <c:if test="${fn:length(selfAssessmentQueryAttr) == 0 || hasSubmitted eq 'Y'}"> disabled</c:if>" id="submitAllDataButtonId" href="#">Submit</a>
                                 </div>
                             </td>
                             <br>

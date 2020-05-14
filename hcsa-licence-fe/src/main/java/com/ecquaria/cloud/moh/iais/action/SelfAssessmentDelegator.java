@@ -71,11 +71,12 @@ public class SelfAssessmentDelegator {
         boolean hasSubmitted;
         if (SelfAssessmentConstant.SELF_ASSESSMENT_RFI_ACTION.equals(action)){
             String corrId = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
+            ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID, corrId);
             if (StringUtil.isEmpty(corrId)) {
                 log.debug("the corrId id is null");
                 return;
             }
-            ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID, corrId);
+
             hasSubmitted = selfAssessmentService.hasSubmittedSelfAssMtRfiByCorrId(corrId).booleanValue();
             if (hasSubmitted) {
                 ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_FLAG, "Y");

@@ -84,6 +84,11 @@ public final class FeSelfChecklistHelper {
         FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> result = applicationClient.getAppPremisesSelfDeclByCorrelationId(corrId);
         if(HttpStatus.SC_OK == result.getStatusCode()){
             List<AppPremisesSelfDeclChklDto> entity = result.getEntity();
+
+            if (IaisCommonUtils.isEmpty(entity)){
+                return rfiData;
+            }
+
             SelfAssessment selfAssessment = new SelfAssessment();
             List<SelfAssessmentConfig> selfAssessmentConfigList = IaisCommonUtils.genNewArrayList();
 
