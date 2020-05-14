@@ -202,12 +202,7 @@ public class CessationApplicationDelegator {
                     String reason = ParamUtil.getRequestString(bpc.request, i + REASON + j);
                     String otherReason = ParamUtil.getRequestString(bpc.request, i + OTHERREASON + j);
                     String patRadio = ParamUtil.getRequestString(bpc.request, i + PATRADIO + j);
-                    Boolean patNeedTrans = null;
-                    if ("yes".equals(patRadio)) {
-                        patNeedTrans = true;
-                    } else if ("no".equals(patRadio)) {
-                        patNeedTrans = false;
-                    }
+                    boolean patNeedTrans = "yes".equals(patRadio);
                     String patientSelect = ParamUtil.getRequestString(bpc.request, i + PATIENTSELECT + j);
                     String patNoRemarks = ParamUtil.getRequestString(bpc.request, i + PATNOREMARKS + j);
                     String patHciName = ParamUtil.getRequestString(bpc.request, i + PATHCINAME + j);
