@@ -110,7 +110,7 @@
 
 
                                 <div class="table-gp">
-                                    <table class="table" style="border-collapse:collapse;">
+                                    <table class="table application-group" style="border-collapse:collapse;">
                                         <thead>
                                         <tr>
                                             <th>S/N</th>
@@ -156,7 +156,7 @@
                         <div class="row">
                             <div class="col-xs-11 col-md-11">
                                 <div class="text-right">
-                                    <a class="btn btn-primary"
+                                    <a class="btn btn-primary btn-support"
                                        onclick="javascript:approve()">Support</a>
                                 </div>
                             </div>
@@ -168,7 +168,7 @@
                         <div class="row">
                             <div class="col-xs-11 col-md-11">
                                 <div class="text-right">
-                                    <a class="btn btn-primary"
+                                    <a class="btn btn-primary btn-approve"
                                        onclick="javascript:approve()">Support</a>
                                 </div>
                             </div>
@@ -180,9 +180,9 @@
                         <div class="row">
                             <div class="col-xs-11 col-md-11">
                                 <div class="text-right">
-                                    <a class="btn btn-primary"
+                                    <a class="btn btn-primary btn-approve"
                                        onclick="javascript:approve()">Approve</a>
-                                    <a class="btn btn-primary"
+                                    <a class="btn btn-primary btn-trigger"
                                        onclick="javascript:trigger()">Trigger to DMS</a>
                                 </div>
                             </div>
@@ -247,7 +247,7 @@
                     html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
                         '<td colspan="6" style="padding: 0px 8px !important;">' +
                         '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                        '<table class="table" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                        '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                         '<thead>' +
                         '<tr>';
                     if (hastaskList == "true") {
