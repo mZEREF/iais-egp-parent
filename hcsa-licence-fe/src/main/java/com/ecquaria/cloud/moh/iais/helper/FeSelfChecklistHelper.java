@@ -95,8 +95,13 @@ public final class FeSelfChecklistHelper {
                 selfAssessment.setPremises(address);
             }
 
-            selfAssessmentConfigList.add(null);
+            boolean addedCommon = false;
             for (AppPremisesSelfDeclChklDto ent : entity){
+                if (!addedCommon){
+                    selfAssessmentConfigList.add(null);
+                    addedCommon = true;
+                }
+
                 String answerJson = ent.getAnswer();
                 List<PremCheckItem> answerData = JsonUtil.parseToList(answerJson, PremCheckItem.class);
 

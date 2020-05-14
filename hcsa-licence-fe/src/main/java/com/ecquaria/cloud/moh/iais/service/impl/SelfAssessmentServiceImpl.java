@@ -1,8 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.client.LicEicClient;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
@@ -18,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FeSelfChecklistHelper;
@@ -36,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,6 +62,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     @Autowired
     private FeEicGatewayClient gatewayClient;
 
+    @Autowired
+    LicEicClient licEicClient;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -66,6 +74,11 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
+
+    @Value("${spring.application.name}")
+    private String currentApp;
+    @Value("${iais.current.domain}")
+    private String currentDomain;
 
     @Override
     public List<SelfAssessment> receiveSelfAssessmentByGroupId(String groupId) {
@@ -216,6 +229,19 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         feEmailClient.sendNotification(emailDto);
     }*/
 
+
+    public void callFeEicAppPremisesSelfDeclChkl(List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtos) {
+        //route to be
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+
+        FeSelfAssessmentSyncDataDto selfDeclSyncDataDto = new FeSelfAssessmentSyncDataDto();
+        selfDeclSyncDataDto.setFeSyncData(appPremisesSelfDeclChklDtos);
+
+        gatewayClient.routeSelfAssessment(selfDeclSyncDataDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getStatusCode();
+    }
+
     @Override
     public Boolean saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList) {
         boolean successSubmit = false;
@@ -224,22 +250,41 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             //ToDo If the foreground is saved successfully, and the group information is updated.
             // But there is an error in the synchronization background, but the group information will be synchronized by other places. How to deal with it
             successSubmit = true;
+
                 /* try {
                 sendNotificationToInspector(syncData.stream().map(AppPremisesSelfDeclChklDto::getAppPremCorreId).collect(Collectors.toList()));
             }catch (Exception e){
                 log.info(StringUtil.changeForLog("encounter failure when self decl send notification" + e.getMessage()));
             }*/
 
+            String refNo = System.currentTimeMillis() + "";
+            EicRequestTrackingDto eicRequestTrackingDto = new EicRequestTrackingDto();
+            eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            eicRequestTrackingDto.setActionClsName(SelfAssessmentServiceImpl.class.getName());
+            eicRequestTrackingDto.setActionMethod("callFeEicAppPremisesSelfDeclChkl");
+            eicRequestTrackingDto.setModuleName(currentApp + "-" + currentDomain);
+            eicRequestTrackingDto.setDtoClsName(AppPremisesSelfDeclChklDto.class.getName());
+            eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(result.getEntity()));
+            eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+            eicRequestTrackingDto.setRefNo(refNo);
+            Date now = new Date();
+            eicRequestTrackingDto.setProcessNum(0);
+            eicRequestTrackingDto.setFirstActionAt(now);
+            eicRequestTrackingDto.setLastActionAt(now);
+            licEicClient.saveEicTrack(eicRequestTrackingDto);
             try {
-                //route to be
-                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-
-                FeSelfAssessmentSyncDataDto selfDeclSyncDataDto = new FeSelfAssessmentSyncDataDto();
-                selfDeclSyncDataDto.setFeSyncData(result.getEntity());
-
-                gatewayClient.routeSelfAssessment(selfDeclSyncDataDto, signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization()).getStatusCode();
+                FeignResponseEntity<EicRequestTrackingDto> fetchResult =  licEicClient.getPendingRecordByReferenceNumber(refNo);
+                if (HttpStatus.SC_OK == fetchResult.getStatusCode()){
+                    EicRequestTrackingDto entity = fetchResult.getEntity();
+                    if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
+                        callFeEicAppPremisesSelfDeclChkl(result.getEntity());
+                        eicRequestTrackingDto.setProcessNum(1);
+                        eicRequestTrackingDto.setFirstActionAt(now);
+                        eicRequestTrackingDto.setLastActionAt(now);
+                        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                        licEicClient.saveEicTrack(eicRequestTrackingDto);
+                    }
+                }
             }catch (Exception e){
                 log.error(StringUtil.changeForLog("encounter failure when sync self assessment to be" + e.getMessage()));
             }
