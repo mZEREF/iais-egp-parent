@@ -166,7 +166,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary btn-md" onclick="doArchive()">Confirm</button>
+                                <button type="button" class="btn btn-primary btn-md" id="confirmArchive">Confirm</button>
                             </div>
                         </div>
                     </div>
@@ -176,7 +176,7 @@
                     <div class="col-md-12">
                         <C:if test="${msgPage == 'msgView'}">
                             <div class="col-md-5 pull-right">
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#doArchiveModal" style="margin-right: 10px;">Archive</button>
+                                <button type="button" class="btn btn-primary" id="doArchive" style="margin-right: 10px;">Archive</button>
                                 <button type="button" class="btn btn-primary pull-right" onclick="toArchiveView()">Access Archive</button>
                             </div>
                         </C:if>

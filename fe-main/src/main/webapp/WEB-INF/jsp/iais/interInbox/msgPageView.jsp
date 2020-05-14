@@ -104,14 +104,17 @@
         submit('msgToArchive');
     }
 
-    function doArchive() {
-        // pageAction();
+    $('#doArchive').click(function () {
         if ($('.msgCheck').is(':checked')){
-            submit('msgDoArchive');
+            $('#doArchiveModal').modal('show')
         }else{
             $('#archiveModal').modal('show');
         }
-    }
+    });
+
+    $('#confirmArchive').click(function () {
+        submit('msgDoArchive');
+    });
 
     function toMsgPage() {
         doClearMsg();
