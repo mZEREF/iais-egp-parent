@@ -92,14 +92,14 @@ public class CommonPoolAjaxController {
                     AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(comPoolAjaxQueryDto.getId());
                     String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
                     if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
-                        comPoolAjaxQueryDto.setHciAddress(appGrpPremisesDto.getHciName() + " / " + address);
+                        comPoolAjaxQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
                     } else {
-                        comPoolAjaxQueryDto.setHciAddress(address);
+                        comPoolAjaxQueryDto.setHciAddress(StringUtil.viewHtml(address));
                     }
                     comPoolAjaxQueryDto.setAppStatus(MasterCodeUtil.getCodeDesc(comPoolAjaxQueryDto.getAppStatus()));
                     HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(comPoolAjaxQueryDto.getServiceId()).getEntity();;
                     comPoolAjaxQueryDto.setServiceName(hcsaServiceDto.getSvcName());
-                    comPoolAjaxQueryDto.setHciCode(appGrpPremisesDto.getHciCode());
+                    comPoolAjaxQueryDto.setHciCode(StringUtil.viewHtml(appGrpPremisesDto.getHciCode()));
                     String maskId = MaskUtil.maskValue("appCorrelationId", comPoolAjaxQueryDto.getId());
                     comPoolAjaxQueryDto.setMaskId(maskId);
                 }

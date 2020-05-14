@@ -276,9 +276,9 @@ public class InspectionServiceImpl implements InspectionService {
                 String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
                 superPoolTaskQueryDto.setHciCode(appGrpPremisesDto.getHciCode());
                 if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
-                    superPoolTaskQueryDto.setHciAddress(appGrpPremisesDto.getHciName() + " / " + address);
+                    superPoolTaskQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
                 } else {
-                    superPoolTaskQueryDto.setHciAddress(address);
+                    superPoolTaskQueryDto.setHciAddress(StringUtil.viewHtml(address));
                 }
                 //get inspection date
                 AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(superPoolTaskQueryDto.getTaskRefNo(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
