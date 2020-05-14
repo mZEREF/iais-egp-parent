@@ -45,12 +45,12 @@
             </button>
         </a>
         <c:if test="${'APST004' eq applicationViewDto.applicationDto.status}">
-            <c:if test="${not empty commonDto.sectionDtoList}">
+            <c:if test="${not empty commonDto}">
                 <button type="button" class="btn btn-primary" onclick="javascript:doInspectionPreTaskSelfBack()">
                     Self-Assessment Checklists
                 </button>
             </c:if>
-            <c:if test="${empty commonDto.sectionDtoList}">
+            <c:if test="${empty commonDto}">
                 <button type="button" class="btn btn-primary" disabled>
                     Self-Assessment Checklists
                 </button>

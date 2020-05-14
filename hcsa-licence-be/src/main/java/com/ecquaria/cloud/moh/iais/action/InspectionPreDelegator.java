@@ -156,18 +156,19 @@ public class InspectionPreDelegator {
             //one refNo(appPremCorrId) --> one SelfAssessment
             List<SelfAssessmentConfig> selfAssessmentConfigs = selfAssessments.get(0).getSelfAssessmentConfig();
             if(!IaisCommonUtils.isEmpty(selfAssessmentConfigs)) {
+                List<SelfAssessmentConfig> selfAssessmentConfigList = IaisCommonUtils.genNewArrayList();
                 for(SelfAssessmentConfig selfAssessmentConfig : selfAssessmentConfigs){
                     if(selfAssessmentConfig == null){
                         continue;
                     }
                     if(selfAssessmentConfig.isCommon()){
-                        PremCheckItem premCheckItem = selfAssessmentConfig.getQuestion().get(0);
-                        ParamUtil.setSessionAttr(bpc.request, "commonDto", premCheckItem);
-                    } else {
                         List<PremCheckItem> premCheckItems = selfAssessmentConfig.getQuestion();
-                        ParamUtil.setSessionAttr(bpc.request, "serListDto123", (Serializable) premCheckItems);
+                        ParamUtil.setSessionAttr(bpc.request, "commonDto", (Serializable) premCheckItems);
+                    } else {
+                        selfAssessmentConfigList.add(selfAssessmentConfig);
                     }
                 }
+                ParamUtil.setSessionAttr(bpc.request, "serListDto123", (Serializable) selfAssessmentConfigList);
             }
         }
     }
