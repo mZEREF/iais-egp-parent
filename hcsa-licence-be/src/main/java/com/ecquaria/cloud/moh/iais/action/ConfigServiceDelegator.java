@@ -223,18 +223,14 @@ public class ConfigServiceDelegator {
             }
 
 
-        } else if ("SVTP003".equals(serviceType)) {
-
-            if (preRequisite != null){
-                for(String str : preRequisite){
-                    HcsaServiceSubTypeDto hcsaServiceSubTypeDto=new HcsaServiceSubTypeDto();
-                    if(!"".equals(str)){
-                        hcsaServiceSubTypeDto.setServiceId(str);
-                    }
-                    list.add(hcsaServiceSubTypeDto);
+        } else if (preRequisite != null && "SVTP003".equals(serviceType)) {
+            for(String str : preRequisite){
+                HcsaServiceSubTypeDto hcsaServiceSubTypeDto=new HcsaServiceSubTypeDto();
+                if(!"".equals(str)){
+                    hcsaServiceSubTypeDto.setServiceId(str);
                 }
+                list.add(hcsaServiceSubTypeDto);
             }
-
         }
         hcsaServiceDto.setServiceSubTypeDtos(list);
         if (premisesTypes != null) {
@@ -385,7 +381,7 @@ public class ConfigServiceDelegator {
         svcPersonnelDto.setPsnType("SVCPSN");
         try {
             if (!StringUtil.isEmpty(manservicePersonnel)) {
-                svcPersonnelDto.setMandatoryCount(Integer.valueOf(manservicePersonnel));
+                svcPersonnelDto.setMandatoryCount(Integer.parseInt(manservicePersonnel));
             }
         } catch (Exception e) {
 
@@ -393,7 +389,7 @@ public class ConfigServiceDelegator {
         }
         try {
             if (!StringUtil.isEmpty(mixservicePersonnel)) {
-                svcPersonnelDto.setMaximumCount(Integer.valueOf(mixservicePersonnel));
+                svcPersonnelDto.setMaximumCount(Integer.parseInt(mixservicePersonnel));
             }
         }catch (NumberFormatException e){
             svcPersonnelDto.setMandatoryCount(-1);
@@ -430,9 +426,9 @@ public class ConfigServiceDelegator {
                     hcsaSvcDocConfigDto.setStatus("CMSTAT001");
                     hcsaSvcDocConfigDto.setDispOrder(0);
                     hcsaSvcDocConfigDto.setDupForPrem("0");
-                    hcsaSvcDocConfigDto.setIsMandatory(false);
+                    hcsaSvcDocConfigDto.setIsMandatory(Boolean.FALSE);
                     if(numberDocumentMandatory!=null&&descriptionDocumentMandatory!=null){
-                        hcsaSvcDocConfigDto.setIsMandatory(true);
+                        hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
                     }
                     hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);
                 }
