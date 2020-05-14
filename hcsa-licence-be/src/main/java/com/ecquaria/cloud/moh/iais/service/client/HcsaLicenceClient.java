@@ -194,7 +194,7 @@ public interface HcsaLicenceClient {
     @GetMapping(path = "/hcsa-licence-transport/PremisesGroupDto/{originLicenceId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesGroupDto>> getPremisesGroupDtos(@PathVariable(name = "originLicenceId") String originLicenceId);
 
-    @PostMapping(value = "/hcsa-licence/LicAppCorrelationDtos",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/hcsa-licence/LicAppCorrelationDtos",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicAppCorrelationDto>> getLicAppCorrelationDtosByApplicationIds(@RequestBody List<String> appIds);
 
 }
