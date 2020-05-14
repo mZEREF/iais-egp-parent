@@ -211,7 +211,6 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         for(TaskDto tDto : taskDtoList){
             if(tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING) || tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)) {
                 tDto.setSlaDateCompleted(new Date());
-                tDto.setSlaRemainInDays(taskService.remainDays(taskDto));
                 tDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
                 tDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 taskService.updateTask(tDto);

@@ -55,9 +55,9 @@
                           <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments"
                                                        role="tab" data-toggle="tab">Documents</a></div>
 
-                          <div class="swiper-slide"><a id="preInspSelfChList" href="#tabInspection" aria-controls="tabInspection"
+                          <div class="swiper-slide"><a id = "preInspSelfChList" href="#tabInspection" aria-controls="tabInspection"
                                                        role="tab" data-toggle="tab">Checklist</a></div>
-                          <div class="swiper-slide"><a href="#tabProcessing" aria-controls="tabProcessing"
+                          <div class="swiper-slide"><a id = "preInspProcess" href="#tabProcessing" aria-controls="tabProcessing"
                                                        role="tab" data-toggle="tab">Processing</a></div>
                         </div>
                         <div class="swiper-button-prev"></div>
@@ -300,6 +300,7 @@
                                       <span style="font-size: 16px"><c:out value="${name.text}"/></span>
                                     </p>
                                   </c:forEach>
+                                  <span class="error-msg" name="iaisErrorMsg" id="error_preInspRfiCheck"></span>
                                 </c:if>
                               </iais:value>
                             </iais:row>
@@ -408,8 +409,10 @@
 <script type="text/javascript">
     $(document).ready(function() {
         var actionValue = $("#actionValue").val();
-        if(actionValue == "edit" || actionValue == "request" || actionValue == "routeB"){
-            inspectionPreTaskJump();
+        if(actionValue == "edit"){
+            inspectionPreTaskJump("edit");
+        } else if(actionValue == "request" || actionValue == "routeB"){
+            inspectionPreTaskJump("process");
         }
         var selectValue = $("#processDec").val();
         if("REDECI001" == selectValue){
@@ -424,14 +427,18 @@
         }
     });
 
-    function inspectionPreTaskJump(){
-        $("#preInspSelfChList").click();
+    function inspectionPreTaskJump(value){
         $("#preInspTabInfo").removeClass('active');
         $("#preInspTabDocuments").removeClass('active');
         $("#preInspTabInspection").removeClass('active');
         $("#preInspTabProcessing").removeClass('active');
-        $("#preInspTabInspection").addClass('active');
-
+        if("edit" == value){
+            $("#preInspSelfChList").click();
+            $("#preInspTabInspection").addClass('active');
+        } else {
+            $("#preInspProcess").click();
+            $("#preInspTabProcessing").addClass('active');
+        }
     }
 
     $("#appPreInspRfiCheck").change(function inspPreRfiAppCheck() {

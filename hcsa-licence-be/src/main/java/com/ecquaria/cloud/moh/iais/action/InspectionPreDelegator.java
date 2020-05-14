@@ -264,6 +264,8 @@ public class InspectionPreDelegator {
             for(int i = 0; i < preInspRfiCheckStr.length; i++){
                 preInspRfiCheck.add(preInspRfiCheckStr[i]);
             }
+        } else {
+            return null;
         }
         return preInspRfiCheck;
     }
