@@ -4,8 +4,10 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.client.AtEicClient;
+import com.ecquaria.cloud.moh.iais.client.EicClient;
 import com.ecquaria.cloud.moh.iais.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.client.LicmEicClient;
+import com.ecquaria.cloud.moh.iais.client.OrgEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -38,6 +40,10 @@ public class EicSelfRecoveDelegator {
     private LicEicClient licEicClient;
     @Autowired
     private LicmEicClient licmEicClient;
+    @Autowired
+    private EicClient eicClient;
+    @Autowired
+    private OrgEicClient orgEicClient;
     @Value("${spring.application.name}")
     private String currentApp;
     @Value("${iais.current.domain}")
@@ -50,6 +56,8 @@ public class EicSelfRecoveDelegator {
         List<EicRequestTrackingDto> appList = appEicClient.getPendingRecords(moduleName).getEntity();
         List<EicRequestTrackingDto> licList = licEicClient.getPendingRecords(moduleName).getEntity();
         List<EicRequestTrackingDto> licmList = licmEicClient.getPendingRecords(moduleName).getEntity();
+        List<EicRequestTrackingDto> orgList = orgEicClient.getPendingRecords(moduleName).getEntity();
+        List<EicRequestTrackingDto> sysList = eicClient.getPendingRecords(moduleName).getEntity();
         AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(currentDomain);
         if (!IaisCommonUtils.isEmpty(atList)) {
             atList.forEach(ert -> {
@@ -74,6 +82,18 @@ public class EicSelfRecoveDelegator {
                 reTrigger(ert, auditTrailDto);
             });
             licmEicClient.updateStatus(licmList);
+        }
+        if (!IaisCommonUtils.isEmpty(orgList)) {
+            orgList.forEach(ert -> {
+                reTrigger(ert, auditTrailDto);
+            });
+            orgEicClient.updateStatus(orgList);
+        }
+        if (!IaisCommonUtils.isEmpty(sysList)) {
+            sysList.forEach(ert -> {
+                reTrigger(ert, auditTrailDto);
+            });
+            eicClient.updateStatus(sysList);
         }
         log.info("<======== End EIC Self Recover Job =========>");
     }
