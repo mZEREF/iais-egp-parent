@@ -26,7 +26,7 @@
 			<form name="redirectForm" action="/egov" method="post">
 				<SPAN class="error-message"><egov-smc:message key="sessionExpired">Session expired</egov-smc:message></SPAN>
 				<BR><BR><BR>
-				<egov-smc:commonLabel>Please click</egov-smc:commonLabel> <A HREF="#" onclick="redirectForm.submit();"><b><I><egov-smc:commonLabel>HERE</egov-smc:commonLabel></I></b></A> <egov-smc:message key="toReLogin">to re-login.</egov-smc:message>
+				<egov-smc:commonLabel>Please click</egov-smc:commonLabel> <A HREF="#" onclick="redirectForm.submit();"><strong><em><egov-smc:commonLabel>HERE</egov-smc:commonLabel></em></strong></A> <egov-smc:message key="toReLogin">to re-login.</egov-smc:message>
 			</form>
 		</td></tr>
 		</tbody>
