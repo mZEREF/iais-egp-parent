@@ -750,6 +750,8 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers start ...."));
 
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
             if(RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
@@ -769,12 +771,22 @@ public class ClinicalLaboratoryDelegator {
 
         if (isGetDataFromPagePo || isGetDataFromPageDpo) {
             List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = genAppSvcPrincipalOfficersDto(bpc.request, isGetDataFromPagePo, isGetDataFromPageDpo);
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+                List<AppSvcPrincipalOfficersDto> oldOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+                for(AppSvcPrincipalOfficersDto officersDto:oldOfficersDtoList){
+                    if(!isGetDataFromPagePo && ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(officersDto.getPsnType())){
+                        appSvcPrincipalOfficersDtoList.add(officersDto);
+                    }else if(!isGetDataFromPageDpo && ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(officersDto.getPsnType())){
+                        appSvcPrincipalOfficersDtoList.add(officersDto);
+                    }
+                }
+            }
+
             ParamUtil.setSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto", (Serializable) appSvcPrincipalOfficersDtoList);
             Map<String, String> map = IaisCommonUtils.genNewHashMap();
             String crud_action_additional = ParamUtil.getRequestString(bpc.request, "nextStep");
             String deputyPoFlag = ParamUtil.getString(bpc.request,"deputyPrincipalOfficer");
-            String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-            AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
+
             if(!StringUtil.isEmpty(deputyPoFlag)){
                 appSvcRelatedInfoDto.setDeputyPoFlag(deputyPoFlag);
             }

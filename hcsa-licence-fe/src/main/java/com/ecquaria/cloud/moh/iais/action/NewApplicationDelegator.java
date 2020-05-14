@@ -772,7 +772,8 @@ public class NewApplicationDelegator {
                     errorMap.put("rfcEffectiveDate","ERRRFC008");
                 }else if(effectiveDate.isAfter(configDate)){
                     String errorMsg = MessageUtil.getMessageDesc("ERRRFC007");
-                    errorMsg = errorMsg.replace("<date>",configDate.toString());
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern(Formatter.DATE);
+                    errorMsg = errorMsg.replace("<date>",configDate.format(dtf));
                     errorMap.put("rfcEffectiveDate",errorMsg);
                 }
                 String rfcEffectiveDateErr = errorMap.get("rfcEffectiveDate");
