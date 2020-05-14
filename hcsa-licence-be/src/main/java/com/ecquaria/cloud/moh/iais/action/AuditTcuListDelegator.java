@@ -48,7 +48,7 @@ public class AuditTcuListDelegator {
     public void init(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,"ISTUC",true);
+        ParamUtil.setSessionAttr(request,"ISTUC",Boolean.TRUE);
         List<AuditTaskDataFillterDto> auditTaskDataDtos = auditSystemPotitalListService.getSystemPotentailAdultList();
         ParamUtil.setSessionAttr(request, "auditTaskDataDtos", (Serializable) auditTaskDataDtos);
         List<SelectOption> aduitTypeOp = auditSystemListService.getAuditOp();
