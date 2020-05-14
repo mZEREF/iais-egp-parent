@@ -44,22 +44,22 @@ public class emailAjaxController {
     public @ResponseBody
     Map<String, String> recipientsRoles(HttpServletRequest request, HttpServletResponse response) {
         String serviceCode = request.getParameter("serviceCode");
-        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(serviceCode);
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+        if(!serviceCode.isEmpty()){
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(serviceCode);
+            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = distributionListService.roleByServiceId(hcsaServiceDto.getId(),AppConsts.COMMON_STATUS_ACTIVE);
+            for (HcsaSvcPersonnelDto item:hcsaSvcPersonnelDtoList
+            ) {
+                selectOptions.add(new SelectOption(item.getPsnType(),roleName(item.getPsnType())));
+            }
+        }
         Map<String, String> result = new HashMap<>();
         Map<String,String> roleAttr = IaisCommonUtils.genNewHashMap();
         roleAttr.put("class", "role");
         roleAttr.put("id", "role");
         roleAttr.put("name", "role");
         roleAttr.put("style", "display: none;");
-        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = distributionListService.roleByServiceId(hcsaServiceDto.getId(),AppConsts.COMMON_STATUS_ACTIVE);
-        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
-        for (HcsaSvcPersonnelDto item:hcsaSvcPersonnelDtoList
-             ) {
-
-            selectOptions.add(new SelectOption(item.getPsnType(),roleName(item.getPsnType())));
-        }
         String roleSelectStr = generateDropDownHtml(roleAttr, selectOptions, "Please Select", null);
-
         result.put("roleSelect",roleSelectStr);
         return result;
     }
@@ -67,8 +67,6 @@ public class emailAjaxController {
     @RequestMapping(value = "distributionList.do", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, String> distributionList(HttpServletRequest request, HttpServletResponse response) {
-        String serviceCode = request.getParameter("serviceCode");
-        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(serviceCode);
         Map<String, String> result = new HashMap<>();
         Map<String,String> distributionAttr = IaisCommonUtils.genNewHashMap();
         distributionAttr.put("class", "distributionList");
