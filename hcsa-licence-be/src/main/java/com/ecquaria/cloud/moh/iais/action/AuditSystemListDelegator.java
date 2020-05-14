@@ -55,7 +55,7 @@ public class AuditSystemListDelegator {
     public void init(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,"ISTUC",false);
+        ParamUtil.setSessionAttr(request,"ISTUC",Boolean.FALSE);
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, null);
         ParamUtil.setSessionAttr(request,"modulename","System Audit List");
     }
