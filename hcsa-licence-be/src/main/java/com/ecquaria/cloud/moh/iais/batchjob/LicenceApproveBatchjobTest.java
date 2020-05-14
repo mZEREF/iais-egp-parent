@@ -1098,9 +1098,8 @@ public class LicenceApproveBatchjobTest {
                 List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = IaisCommonUtils.genNewArrayList();
                 for(AppSvcPremisesScopeDto appSvcPremisesScopeDto :appSvcPremisesScopeDtoList){
                     LicPremisesScopeGroupDto licPremisesScopeGroupDto = new LicPremisesScopeGroupDto();
-                    LicPremisesScopeDto licPremisesScopeDto = new LicPremisesScopeDto();
-                    licPremisesScopeDto.setSubsumedType(appSvcPremisesScopeDto.isSubsumedType());
-                    licPremisesScopeDto.setScopeName(appSvcPremisesScopeDto.getScopeName());
+                    LicPremisesScopeDto licPremisesScopeDto = MiscUtil.transferEntityDto(appSvcPremisesScopeDto,LicPremisesScopeDto.class);
+                    licPremisesScopeDto.setId(null);
                     licPremisesScopeGroupDto.setLicPremisesScopeDto(licPremisesScopeDto);
                     //create LicPremisesScopeAllocationDto
                     AppSvcPremisesScopeAllocationDto appSvcPremisesScopeAllocationDto = getAppSvcPremisesScopeAllocationDto(appSvcPremisesScopeAllocationDtos,
