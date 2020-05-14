@@ -295,8 +295,8 @@ public class RequestForChangeMenuDelegator {
                 }
             }
         }
-        String premisesId = premisesListQueryDto.getPremisesId();
-        List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByPremisesId(premisesId);
+        String hciCode = premisesListQueryDto.getHciCode();
+        List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByHciCode(hciCode);
         bpc.request.setAttribute("licenceDtoList",licenceDtoList);
         appSubmissionDto.setAppGrpPremisesDtoList(reloadPremisesDtoList);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
@@ -763,7 +763,7 @@ public class RequestForChangeMenuDelegator {
                 every.setAmountStr(amountStr);
             }
         }
-        bpc.request.getSession().setAttribute("dAmount",dAmount);
+        bpc.request.getSession().setAttribute("dAmount","$"+dAmount);
         log.debug(StringUtil.changeForLog("the do prePayment end ...."));
     }
 
@@ -944,6 +944,9 @@ public class RequestForChangeMenuDelegator {
                     appSubmissionService.setDraftNo(appSubmissionDtoByLicenceId);
                 }
                 appSubmissionDtoByLicenceId.setGroupLic(grpLic);
+                if(0.0==total){
+                    appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                }
                 appSubmissionDtos.add(appSubmissionDtoByLicenceId);
             }
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos);

@@ -18,6 +18,31 @@
         <c:set var="premValue" value="${status.index}"/>
         <div class="col-xs-12">
 
+            <c:if test="${AppSubmissionDto.appType=='APTY005'||AppSubmissionDto.appType=='APTY004'}">
+                <div class="form-check col-sm-12" >
+
+                    <table>
+                        <tr>
+                            <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence</td>
+                            <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence No.</td>
+                            <span id="error_selectLicence" class="error-msg"></span>
+                        </tr>
+                        <c:forEach items="${appGrpPremisesDto.licenceDtos}" var="licence">
+                            <tr>
+                                <td >
+                                    <div class="col-xs-12 col-md-12 form-check" style="padding:0px 15px;margin-top:15px">
+                                        <input class="form-check-input"  type="checkbox" value="<iais:mask name="licenceName" value="${licence.id}"/>" name="licenceName" aria-invalid="false">
+                                        <label class="form-check-label"><span class="check-square"></span>${licence.svcName}</label>
+                                    </div></td>
+                                <td class="form-check col-sm-3">${licence.licenceNo}</td>
+                            </tr>
+                        </c:forEach>
+
+                    </table>
+                </div>
+
+            </c:if>
+
             <div class="form-horizontal">
                 <div><strong class="app-font-size-22 premHeader">Premises ${status.index+1}</strong>
                     <c:if test="${!status.first && requestInformationConfig==null && 'APTY004' !=AppSubmissionDto.appType && 'APTY005' !=AppSubmissionDto.appType}">

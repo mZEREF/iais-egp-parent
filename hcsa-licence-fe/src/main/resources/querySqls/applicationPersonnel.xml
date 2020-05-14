@@ -41,7 +41,7 @@
                    <#if licenseeId??> and li.LICENSEE_ID =:licenseeId </#if>
                    <#if type??> and p.PREMISES_TYPE=:type </#if> and
                    li.STATUS ='LICEST001' and li.ID =( select top 1 T1.ID from licence T1 where
-                   li.LICENCE_NO =T1.LICENCE_NO order by VERSION desc )
+                   li.LICENCE_NO =T1.LICENCE_NO order by VERSION desc ) and p.ID in (select max(p.ID) from premises as p group by p.HCI_CODE)
             ]]>
     </sql>
 </sqls>

@@ -60,4 +60,6 @@ public interface RequestForChangeService {
 
     SearchResult<PremisesListQueryDto> searchPreInfo(SearchParam searchParam);
     LicenceDto getLicenceById(String licenceId);
+
+    List<LicenceDto> getLicenceDtoByHciCode(String hciCode);
 }

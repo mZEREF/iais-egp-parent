@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -335,6 +336,14 @@ public class NewApplicationDelegator {
                     }
                 }
             }
+
+            List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
+            for(AppGrpPremisesDto appGrpPremisesDto :appGrpPremisesDtoList1){
+                String hciCode = appGrpPremisesDto.getHciCode();
+                List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(hciCode);
+                appGrpPremisesDto.setLicenceDtos(licenceDtoByHciCode);
+            }
+
         }
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("the do preparePremises end ...."));
@@ -448,7 +457,11 @@ public class NewApplicationDelegator {
      */
     public void doPremises(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doPremises start ...."));
-
+        String[] licenceNames = ParamUtil.getMaskedStrings(bpc.request, "licenceName");
+        // selcet licence to do
+        if(licenceNames!=null){
+            bpc.request.getSession().setAttribute("","");
+        }
         //gen dto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
 
@@ -1076,6 +1089,8 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, MessageUtil.getMessageDesc("ERRRFC001"));
             return ;
         }
+        //Get the selected license from page to save
+        bpc.request.getSession().getAttribute("");
         //change personnel
         AppSubmissionDto changePerson=oldAppSubmissionDto;
         changePerson.setAppSvcRelatedInfoDtoList(appSubmissionDto.getAppSvcRelatedInfoDtoList());

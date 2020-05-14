@@ -92,6 +92,17 @@
                       </div>
                     </div>
                   </div>
+                  <c:if test="${AppSubmissionDto.appType=='APTY005'||AppSubmissionDto.appType=='APTY004'}">
+                    <div class="form-check col-sm-12">
+                      <ul>
+                        <li>You may also apply the same changes to other licences associated with these premises.</li>
+                        <li>Please note that payment is required for each affected licence.</li>
+                      </ul>
+                    </div>
+                    <div class="form-check col-sm-12">
+                      <label style="font-weight: normal;font-size: 16px">Select the licences to include with these changes:</label>
+                    </div>
+                  </c:if>
                   <!--prem content -->
                   <%@include file="../common/premisesContent.jsp"%>
                 </div>

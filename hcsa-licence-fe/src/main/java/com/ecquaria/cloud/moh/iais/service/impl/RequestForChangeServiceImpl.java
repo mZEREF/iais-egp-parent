@@ -321,4 +321,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return licenceClient.getLicBylicId(licenceId).getEntity();
     }
 
+    @Override
+    public List<LicenceDto> getLicenceDtoByHciCode(String hciCode) {
+        return  licenceClient.getLicenceDtoByHciCode(hciCode).getEntity();
+    }
+
 }
