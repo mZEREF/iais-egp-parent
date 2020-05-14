@@ -74,6 +74,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
 //                    }
                 }
                 ParamUtil.setRequestAttr(request,"selectDecisionValue",decisionValue);
+                //verify upload file
+                checkIsUploadDMS(applicationViewDto,errMap);
             }
         }
 
@@ -125,22 +127,18 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }
         }
 
-        checkIsUploadDMS(applicationViewDto,errMap,status);
-
         return errMap;
     }
 
     /**
      * private method
      */
-    private void checkIsUploadDMS(ApplicationViewDto applicationViewDto, Map<String, String> errMap, String status){
-        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
+    private void checkIsUploadDMS(ApplicationViewDto applicationViewDto, Map<String, String> errMap){
             if(applicationViewDto != null){
                 if((applicationViewDto.getIsUpload() == null) || !applicationViewDto.getIsUpload()){
                     errMap.put("document","DMS's reply email is mandatory to be uploaded");
                 }
             }
-        }
     }
 
 
