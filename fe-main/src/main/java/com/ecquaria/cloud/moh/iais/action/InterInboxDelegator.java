@@ -427,14 +427,22 @@ public class InterInboxDelegator {
     public void licDoAmend(BaseProcessClass bpc) throws IOException {
         String licId = ParamUtil.getString(bpc.request, "licenceNo");
         String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
-        StringBuilder url = new StringBuilder();
-        url.append(InboxConst.URL_HTTPS)
-           .append(bpc.request.getServerName())
-                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
-                .append("?licenceId=")
-                .append(MaskUtil.maskValue("licenceId",licIdValue));
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
+        if(licIdValue != null){
+            Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);
+            if(errorMap.isEmpty()){
+                StringBuilder url = new StringBuilder();
+                url.append(InboxConst.URL_HTTPS)
+                        .append(bpc.request.getServerName())
+                        .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
+                        .append("?licenceId=")
+                        .append(MaskUtil.maskValue("licenceId",licIdValue));
+                String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl);
+            }else{
+                ParamUtil.setRequestAttr(bpc.request,"licIsAmend",true);
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMap.get("errorMessage"));
+            }
+        }
     }
 
     /**

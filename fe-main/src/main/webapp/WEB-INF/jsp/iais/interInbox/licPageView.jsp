@@ -48,7 +48,7 @@
 <script type="text/javascript">
 
     $(function () {
-        if ('${licIsRenewed}' || '${licIsAppealed}') {
+        if ('${licIsRenewed}' || '${licIsAppealed}' || '${licIsAmend}') {
             $('#isRenewedModal').modal('show');
         }
     });
