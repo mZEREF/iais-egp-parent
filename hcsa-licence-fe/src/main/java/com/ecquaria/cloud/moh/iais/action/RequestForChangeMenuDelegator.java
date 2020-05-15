@@ -889,9 +889,9 @@ public class RequestForChangeMenuDelegator {
         //amount
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
-        amendmentFeeDto.setChangeInHCIName(Boolean.FALSE);
         boolean isSame = compareLocation(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
-
+        boolean b = compareHciName(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
+        amendmentFeeDto.setChangeInHCIName(!b);
         amendmentFeeDto.setChangeInLocation(!isSame);
         //
         if(selectLicence!=null) {
@@ -1143,6 +1143,26 @@ public class RequestForChangeMenuDelegator {
         if (!oldAddress.equals(newAddress)) {
             return false;
         }
+        return true;
+    }
+    private boolean compareHciName(PremisesListQueryDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto){
+
+        String newHciName = "";
+        String oldHciName = "";
+        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesListQueryDto.getPremisesType())){
+            oldHciName = appGrpPremisesDto.getHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())){
+            oldHciName = appGrpPremisesDto.getConveyanceVehicleNo();
+        }
+        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesListQueryDto.getPremisesType())){
+            newHciName = appGrpPremisesDto.getHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())){
+            newHciName = appGrpPremisesDto.getConveyanceVehicleNo();
+        }
+        if(!oldHciName.equals(newHciName)){
+            return false;
+        }
+
         return true;
     }
 

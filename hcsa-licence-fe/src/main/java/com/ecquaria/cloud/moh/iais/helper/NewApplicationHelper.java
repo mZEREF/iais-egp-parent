@@ -56,8 +56,11 @@ public class NewApplicationHelper {
     public static Map<String,String> doValidateLaboratory(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppSvcLaboratoryDisciplinesDto>  appSvcLaboratoryDisciplinesDtos, String serviceId){
         Map<String,String> map=IaisCommonUtils.genNewHashMap();
         int premCount = 0 ;
+        if(appSvcLaboratoryDisciplinesDtos.isEmpty()){
+            return map;
+        }
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
-            AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = appSvcLaboratoryDisciplinesDtos.get(premCount);
+                AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = appSvcLaboratoryDisciplinesDtos.get(premCount);
                 List<AppSvcChckListDto> listDtos = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
                 int count=0;
                 if(listDtos.isEmpty()){
