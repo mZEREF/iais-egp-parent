@@ -65,7 +65,7 @@ public class FECorppassLandingDelegator {
     public void corppassCallBack(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
-        AuditTrailHelper.auditFunction("FE Corppass Singpass", "Login");
+        AuditTrailHelper.auditFunction("FE Corppass", "Login");
 
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
         String uen = ParamUtil.getRequestString(request, UserConstants.ENTITY_ID);
