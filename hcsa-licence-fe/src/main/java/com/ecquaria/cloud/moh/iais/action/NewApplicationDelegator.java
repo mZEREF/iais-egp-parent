@@ -465,14 +465,20 @@ public class NewApplicationDelegator {
      */
     public void doPremises(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doPremises start ...."));
-        String[] licenceNames = ParamUtil.getMaskedStrings(bpc.request, "licenceName");
-        List<String> list = Arrays.asList(licenceNames);
-        // selcet licence to do
-        if(licenceNames!=null){
-            bpc.request.getSession().setAttribute("selectLicence",list);
-        }
+
         //gen dto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        if( appSubmissionDto.getAppGrpPremisesDtoList()!=null){
+            int size = appSubmissionDto.getAppGrpPremisesDtoList().size();
+            for(int i=0;i<size;i++){
+                String[] licenceNames = ParamUtil.getMaskedStrings(bpc.request, "licenceName"+i);
+                // selcet licence to do
+                if(licenceNames!=null){
+                    List<String> list = Arrays.asList(licenceNames);
+                    bpc.request.getSession().setAttribute("selectLicence",list);
+                }
+            }
+        }
 
         String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
 
