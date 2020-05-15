@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 
 import java.util.List;
 
@@ -18,4 +20,8 @@ public interface SyncAuditTrailRecordsService {
     void saveFile(String data) ;
 
     void compressFile();
+
+    void   updateSysAdmEicRequestTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto);
+
+    String createBeRfiLicProcessFileTrack(ProcessFileTrackDto processFileTrackDto);
 }

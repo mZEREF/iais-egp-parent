@@ -1,20 +1,25 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.SyncAuditTrailRecordsService;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminMainFeClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +33,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
@@ -47,7 +52,8 @@ import java.util.zip.ZipOutputStream;
 public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsService {
     @Autowired
     AuditTrailMainClient auditTrailClient;
-
+    @Autowired
+    SystemAdminMainFeClient systemAdminMainFeClient;
     @Autowired
     private EicGatewayFeMainClient eicGatewayClient;
 
@@ -254,26 +260,69 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         }
     }
 
-    private String saveFileName(String fileName ,String filePath){
+    private String saveFileName(String fileName ,String filePath ){
         ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
+        processFileTrackDto.setEventRefNo(System.currentTimeMillis()+"");
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         processFileTrackDto.setFileName(fileName);
         processFileTrackDto.setFilePath(filePath);
-        processFileTrackDto.setRefId(UUID.randomUUID().toString());
+        processFileTrackDto.setRefId(processFileTrackDto.getEventRefNo());
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
         AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
         processFileTrackDto.setAuditTrailDto(intenet);
+        EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
+        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        Date now = new Date();
+        eicRequestTrackingDto.setActionClsName("com.ecquaria.cloud.moh.iais.service.SyncAuditTrailRecordsServiceImpl");
+        eicRequestTrackingDto.setActionMethod("eicCallSyncAuditTrailProcessFileTrack");
+        eicRequestTrackingDto.setModuleName("main-web-internet");
+        eicRequestTrackingDto.setDtoClsName(ProcessFileTrackDto.class.getName());
+        eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(processFileTrackDto));
+        eicRequestTrackingDto.setProcessNum(1);
+        eicRequestTrackingDto.setFirstActionAt(now);
+        eicRequestTrackingDto.setLastActionAt(now);
+        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+        eicRequestTrackingDto.setRefNo(processFileTrackDto.getEventRefNo());
+        updateSysAdmEicRequestTrackingDto(eicRequestTrackingDto);
         String s="FAIL";
         try {
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            s = eicGatewayClient.saveFile(processFileTrackDto, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
+            s=createBeRfiLicProcessFileTrack(processFileTrackDto);
         }catch (Exception e){
             log.error(e.getMessage(),e);
             return s;
         }
 
         return s;
+    }
+
+    @Override
+    public String createBeRfiLicProcessFileTrack(ProcessFileTrackDto processFileTrackDto) {
+        EicRequestTrackingDto trackDto = getLicEicRequestTrackingDtoByRefNo(processFileTrackDto.getEventRefNo());
+        String s=eicCallSyncAuditTrailProcessFileTrack(processFileTrackDto);
+        trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+        updateSysAdmEicRequestTrackingDto(trackDto);
+
+        return s;
+    }
+
+    public String eicCallSyncAuditTrailProcessFileTrack(ProcessFileTrackDto processFileTrackDto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return eicGatewayClient.saveFile(processFileTrackDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
+    }
+
+
+
+    @Override
+    public void   updateSysAdmEicRequestTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto) {
+        List<EicRequestTrackingDto> eicRequestTrackingDtos= IaisCommonUtils.genNewArrayList();
+        eicRequestTrackingDtos.add(licEicRequestTrackingDto);
+        systemAdminMainFeClient.saveEicTrack(eicRequestTrackingDtos);
+    }
+
+
+    public EicRequestTrackingDto getLicEicRequestTrackingDtoByRefNo(String refNo) {
+        return systemAdminMainFeClient.getByRefNum(refNo).getEntity();
     }
 }

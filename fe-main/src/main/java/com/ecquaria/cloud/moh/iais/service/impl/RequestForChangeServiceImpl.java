@@ -7,7 +7,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminMainFeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     AppInboxClient applicationClient;
     
     @Autowired
-    SystemAdminClient systemAdminClient;
+    SystemAdminMainFeClient systemAdminClient;
     
     @Override
     public List<PremisesListQueryDto> getPremisesList(String licenseeId) {

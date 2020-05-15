@@ -461,13 +461,13 @@ public class RequestForInformationDelegator {
         eicRequestTrackingDto.setActionMethod("eicCallFeRfiLic");
         eicRequestTrackingDto.setModuleName("hcsa-licence-web-intranet");
         eicRequestTrackingDto.setDtoClsName(LicPremisesReqForInfoDto.class.getName());
+        eicRequestTrackingDto.setRefNo(System.currentTimeMillis()+"");
+        licPremisesReqForInfoDto.setEventRefNo(eicRequestTrackingDto.getRefNo());
         eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(licPremisesReqForInfoDto));
         eicRequestTrackingDto.setProcessNum(1);
         eicRequestTrackingDto.setFirstActionAt(now);
         eicRequestTrackingDto.setLastActionAt(now);
         eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-        eicRequestTrackingDto.setRefNo(System.currentTimeMillis()+"");
-        licPremisesReqForInfoDto.setEventRefNo(eicRequestTrackingDto.getRefNo());
         requestForInformationService.updateLicEicRequestTrackingDto(eicRequestTrackingDto);
         requestForInformationService.createFeRfiLicDto(licPremisesReqForInfoDto);
         // 		doUpdate->OnStepProcess

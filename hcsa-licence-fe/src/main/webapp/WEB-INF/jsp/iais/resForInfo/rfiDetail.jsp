@@ -27,7 +27,7 @@
                                 <div class="panel-main-content">
                                     <iais:section title="" id = "rfiDetail">
                                         <iais:row>
-                                            <iais:field value="Title :"/>
+                                            <iais:field value="Title "/>
                                             <iais:value width="18">
                                                 <label>
                                                     <span>${licPreReqForInfoDto.officerRemarks}</span>
@@ -35,7 +35,7 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="Licence No :"/>
+                                            <iais:field value="Licence No. "/>
                                             <iais:value width="18">
                                                 <label>
                                                     <span>${licPreReqForInfoDto.licenceNo}</span>
@@ -43,7 +43,7 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="Due Date :"/>
+                                            <iais:field value="Due Date "/>
                                             <iais:value width="18" >
                                                 <span><fmt:formatDate value="${licPreReqForInfoDto.dueDateSubmission}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></span>
                                             </iais:value>
