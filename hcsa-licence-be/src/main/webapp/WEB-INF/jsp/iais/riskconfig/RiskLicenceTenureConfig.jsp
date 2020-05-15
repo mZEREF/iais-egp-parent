@@ -186,10 +186,10 @@
                                                 <span class="error-msg" id="<c:out value="${inEffdate}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${ten.svcCode}inEndDate" var = "inEnddate"/>
                                                 <span class="error-msg" id="<c:out value="${inEnddate}"/>" name="iaisErrorMsg"></span>
-                                                <span class="error-msg" id="error_<c:out value="${tenName}lefterr"/>" name="iaisErrorMsg"></span>
-                                                <span class="error-msg" id="<c:out value="error_${tenName}righterr"/>" name="iaisErrorMsg"></span>
-                                                <span class="error-msg" id="<c:out value="error_${tenName}lterr"/>" name="iaisErrorMsg"></span>
-                                                <span class="error-msg" id="<c:out value="error_${tenName}timeerr"/>" name="iaisErrorMsg"></span>
+                                                <span class="error-msg" id="error_<c:out value="${ten.svcCode}lefterr"/>" name="iaisErrorMsg"></span>
+                                                <span class="error-msg" id="<c:out value="error_${ten.svcCode}righterr"/>" name="iaisErrorMsg"></span>
+                                                <span class="error-msg" id="<c:out value="error_${ten.svcCode}lterr"/>" name="iaisErrorMsg"></span>
+                                                <span class="error-msg" id="<c:out value="error_${ten.svcCode}timeerr"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${ten.svcCode}maxsort" var = "maxsort"/>
                                                 <span class="error-msg" id="<c:out value="${maxsort}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${ten.svcCode}maxminsort" var = "maxminsort"/>

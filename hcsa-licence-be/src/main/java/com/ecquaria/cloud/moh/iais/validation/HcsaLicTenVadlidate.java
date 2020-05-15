@@ -181,21 +181,21 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
         //mandatory
         boolean numfalg = true;
             if(StringUtil.isEmpty(temp.getColumRight())){
-                errMap.put(svcCode+temp.getOrderNum()+"righterr","UC_CHKLMD001_ERR001");
+                errMap.put(svcCode+"righterr",MessageUtil.replaceMessage("ERR0009","Maximum Risk Score","The field"));
                 numfalg = false;
             }else{
                 if(!StringUtil.stringIsFewDecimal(temp.getColumRight(),2)){
-                    errMap.put(svcCode+temp.getOrderNum()+"righterr","ERR0013");
+                    errMap.put(svcCode+"righterr",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Risk Score");
                     numfalg = false;
                 }
             }
 
             if(StringUtil.isEmpty(temp.getColumLeft())){
-                errMap.put(svcCode+temp.getOrderNum()+"lefterr","UC_CHKLMD001_ERR001");
+                errMap.put(svcCode+"lefterr",MessageUtil.replaceMessage("ERR0009","Minimum Risk Score","The field"));
                 numfalg = false;
             }else{
                 if(!StringUtil.stringIsFewDecimal(temp.getColumLeft(),2)){
-                    errMap.put(svcCode+temp.getOrderNum()+"lefterr","ERR0013");
+                    errMap.put(svcCode+"lefterr",MessageUtil.replaceMessage("ERR0013","Minimum Risk Score" ,"The field"));
                     numfalg = false;
                 }
             }
@@ -204,7 +204,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
             Double rightnum =  Double.parseDouble(temp.getColumRight());
             Double leftnum =  Double.parseDouble(temp.getColumLeft());
             if(rightnum<leftnum){
-                errMap.put(svcCode+temp.getOrderNum()+"righterr","Maximum should be granter than Minimum");
+                errMap.put(svcCode+"righterr","Maximum should be granter than Minimum in the same row");
                 numfalg = false;
             }
         }
@@ -218,24 +218,24 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
         Integer numMonth =0;
         try {
             if(StringUtil.isEmpty(temp.getYearNum())){
-                errMap.put(svcCode+temp.getOrderNum()+"lterr","UC_CHKLMD001_ERR001");
+                errMap.put(svcCode+"lterr",MessageUtil.replaceMessage("ERR0009","Licence Tenure Year(s)","The field"));
                 flag = false;
             }
             else{
                 numyear = Integer.parseInt(temp.getYearNum());
                     if(numyear<0||numyear>5){
-                        errMap.put(svcCode+temp.getOrderNum()+"lterr","Licence Tenure should be less than 5 years");
+                        errMap.put(svcCode+"lterr","Licence Tenure should be less than 5 years");
                         flag = false;
                     }
                   }
             if(StringUtil.isEmpty(temp.getMonthNum())){
-                errMap.put(svcCode+temp.getOrderNum()+"timeerr","UC_CHKLMD001_ERR001");
+                errMap.put(svcCode+"timeerr",MessageUtil.replaceMessage("ERR0009","Licence Tenure Month(s)","The field"));
                 flag = false;
             }
             else {
                 numMonth = Integer.parseInt(temp.getMonthNum());
                 if( numMonth <0|| numMonth>13){
-                    errMap.put(svcCode+temp.getOrderNum()+"timeerr","Licence Tenure should be less than 12 months");
+                    errMap.put(svcCode+"timeerr","Licence Tenure should be less than 12 months");
                     flag = false;
                 }
             }
@@ -243,7 +243,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                 temp.setLicenceTenure(String.valueOf(numyear*12+numMonth));
             }
         }catch (Exception e){
-            errMap.put(svcCode+temp.getOrderNum()+"lterr","ERR0013");
+            errMap.put(svcCode+"lterr","ERR0013");
             flag = false;
             log.error(e.getMessage(), e);
         }

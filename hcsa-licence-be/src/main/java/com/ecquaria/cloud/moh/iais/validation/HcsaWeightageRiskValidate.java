@@ -107,35 +107,35 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
         boolean vadFlag = true;
         if(StringUtil.isEmpty(strEffDate)){
             vadFlag = false;
-            errMap.put(serviceCode+"inEffDate","Effective Date is mandatory");
+            errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field"));
         }else{
             try {
                 Formatter.parseDate(strEffDate);
             }catch (Exception e){
-                errMap.put(serviceCode+"inEffDate","Date Format Error");
+                errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea"));
                 vadFlag = false;
             }
         }
         if(StringUtil.isEmpty(strEndDate)){
             vadFlag = false;
-            errMap.put(serviceCode+"inEndDate","EndDate is mandatory");
+            errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("ERR0009","Effective End Date","The field"));
         }else{
             try {
                 Formatter.parseDate(strEndDate);
             }catch (Exception e){
                 vadFlag = false;
-                errMap.put(serviceCode+"inEndDate","Date Format Error");
+                errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea"));
             }
         }
         return vadFlag;
     }
     private void doWeightageVad(HcsaRiskWeightageDto temp, Map<String, String> errMap) {
         boolean isnullFlag = notEmptyVad(temp,errMap);
-        boolean lasInpNumFlag = formatVad(temp,errMap,temp.getDoLastInp(),"lastInp","ERR0013");
-        boolean lasSecInpNumFlag = formatVad(temp,errMap,temp.getDoSecLastInp(),"secLastInp","ERR0013");
-        boolean lasFinNumFlag = formatVad(temp,errMap,temp.getDoFinancial(),"fin","ERR0013");
-        boolean lasLeaNumFlag = formatVad(temp,errMap,temp.getDoLeadship(),"lea","ERR0013");
-        boolean lasLegNumFlag = formatVad(temp,errMap,temp.getDoLegislative(),"leg","ERR0013");
+        boolean lasInpNumFlag = formatVad(temp,errMap,temp.getDoLastInp(),"lastInp",MessageUtil.getMessageDesc("ERR0013") + "for Last Inspection");
+        boolean lasSecInpNumFlag = formatVad(temp,errMap,temp.getDoSecLastInp(),"secLastInp",MessageUtil.getMessageDesc("ERR0013") + "for Second Last Inspection");
+        boolean lasFinNumFlag = formatVad(temp,errMap,temp.getDoFinancial(),"fin",MessageUtil.getMessageDesc("ERR0013") + "for Financial Scheme Audit");
+        boolean lasLeaNumFlag = formatVad(temp,errMap,temp.getDoLeadship(),"lea",MessageUtil.getMessageDesc("ERR0013") + "for Leadership And Governance");
+        boolean lasLegNumFlag = formatVad(temp,errMap,temp.getDoLegislative(),"leg",MessageUtil.getMessageDesc("ERR0013") + "for Legislative Breaches");
         if(isnullFlag&&lasInpNumFlag&&lasSecInpNumFlag&&lasFinNumFlag&&lasLeaNumFlag&&lasLegNumFlag){
             calwWeightageVad(temp,errMap);
         }
@@ -185,32 +185,32 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
         int notEmptyNum = 0;
 
         if(StringUtil.isEmpty(temp.getDoLastInp())){
-            errMap.put(temp.getServiceCode()+"lastInp","ERR0009");
+            errMap.put(temp.getServiceCode()+"lastInp",MessageUtil.replaceMessage("ERR0009","Last Inspection","The field"));
             notEmptyNum++;
         }
         if(StringUtil.isEmpty(temp.getDoSecLastInp())){
-            errMap.put(temp.getServiceCode()+"secLastInp","ERR0009");
+            errMap.put(temp.getServiceCode()+"secLastInp",MessageUtil.replaceMessage("ERR0009","Second Last Inspection","The field"));
             notEmptyNum++;
         }
         if(StringUtil.isEmpty(temp.getDoFinancial())){
-            errMap.put(temp.getServiceCode()+"fin","ERR0009");
+            errMap.put(temp.getServiceCode()+"fin",MessageUtil.replaceMessage("ERR0009","Financial Scheme Audit","The field"));
             notEmptyNum++;
         }
         if(StringUtil.isEmpty(temp.getDoLeadship())){
-            errMap.put(temp.getServiceCode()+"lea","ERR0009");
+            errMap.put(temp.getServiceCode()+"lea",MessageUtil.replaceMessage("ERR0009","Leadership And Governance","The field"));
             notEmptyNum++;
         }
         if(StringUtil.isEmpty(temp.getDoLegislative())){
-            errMap.put(temp.getServiceCode()+"leg","ERR0009");
+            errMap.put(temp.getServiceCode()+"leg",MessageUtil.replaceMessage("ERR0009","Legislative Breaches","The field"));
             notEmptyNum++;
         }
         if(StringUtil.isEmpty(temp.getDoEffectiveDate())){
             notEmptyNum++;
-            errMap.put(temp.getServiceCode()+"inEffDate","ERR0009");
+            errMap.put(temp.getServiceCode()+"inEffDate",MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field"));
         }
         if(StringUtil.isEmpty(temp.getDoEndDate())){
             notEmptyNum++;
-            errMap.put(temp.getServiceCode()+"inEndDate","ERR0009");
+            errMap.put(temp.getServiceCode()+"inEndDate",MessageUtil.replaceMessage("ERR0009","Effective End Date","The field"));
         }
         if(notEmptyNum==0){
             return true;

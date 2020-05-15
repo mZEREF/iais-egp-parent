@@ -365,13 +365,13 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
     public void doSpecialDateFlag(Map<String, String> errMap,HcsaRiskLeadershipMatrixDto fdto,boolean isIn){
         try {
             Date inEffDate = Formatter.parseDate(fdto.getAdEffectiveStartDate());
-            Date inEndDate = Formatter.parseDate(fdto.getAdEffectiveEndDate());
+         //   Date inEndDate = Formatter.parseDate(fdto.getAdEffectiveEndDate());
             Date prEffDate = Formatter.parseDate(fdto.getDpEffectiveStartDate());
-            Date prEndDate = Formatter.parseDate(fdto.getDpEffectiveEndDate());
+          //  Date prEndDate = Formatter.parseDate(fdto.getDpEffectiveEndDate());
             Date baseInEffDate = Formatter.parseDate(fdto.getBaseAdEffectiveStartDate());
-            Date baseInEndDate = Formatter.parseDate(fdto.getBaseAdEffectiveEndDate());
+          //  Date baseInEndDate = Formatter.parseDate(fdto.getBaseAdEffectiveEndDate());
             Date basePrEffDate = Formatter.parseDate(fdto.getBaseDpEffectiveStartDate());
-            Date basePrEndDate = Formatter.parseDate(fdto.getBaseDpEffectiveEndDate());
+          //  Date basePrEndDate = Formatter.parseDate(fdto.getBaseDpEffectiveEndDate());
             if(inEffDate.getTime()<baseInEffDate.getTime()&&isIn){
                 errMap.put(fdto.getSvcCode() + "inEffDate", "Effective Date should later than Previous version");
                 fdto.setAdEffectiveStartDateerr(true);
