@@ -6,7 +6,7 @@
             <div class="form-group">
                 <iais:value>
                     <%String codeKey = request.getParameter("codeCategory")==null?"":request.getParameter("codeCategory");%>
-                    <label class="col-xs-4 col-md-4 control-label" for="codeCategory">Code Category.</label>
+                    <label class="col-xs-4 col-md-4 control-label" for="codeCategory">Code Category</label>
                     <div class="col-xs-8 col-sm-8 col-md-8">
                         <input id="codeCategory" type="text" name="codeCategory" value="<%=codeKey%>" maxlength="25">
                     </div>
@@ -15,7 +15,7 @@
             <div class="form-group">
                 <iais:value>
                     <%String codeDescription = request.getParameter("codeDescription")==null?"":request.getParameter("codeDescription");%>
-                    <label class="col-xs-4 col-md-4 control-label">Code Description.</label>
+                    <label class="col-xs-4 col-md-4 control-label">Code Description</label>
                     <div class="col-xs-8 col-sm-8 col-md-8">
                         <input id="codeDescription" type="text" name="codeDescription" value="<%=codeDescription%>" maxlength="255">
                     </div>
@@ -33,7 +33,7 @@
             <div class="form-group">
                 <iais:value>
                     <%String esd = request.getParameter("esd")==null?"":request.getParameter("esd");%>
-                    <label class="col-xs-4 col-md-4 control-label" for="esd">Effective Start Date.</label>
+                    <label class="col-xs-4 col-md-4 control-label" for="esd">Effective Start Date</label>
                     <div class="col-xs-8 col-sm-8 col-md-8">
                         <iais:datePicker id="esd" name="esd" value="<%=esd%>"/>
                     </div>
@@ -42,7 +42,7 @@
             <div class="form-group">
                 <iais:value>
                     <%String eed = request.getParameter("eed")==null?"":request.getParameter("eed");%>
-                    <label class="col-xs-4 col-md-4 control-label" for="eed">Effective End Date.</label>
+                    <label class="col-xs-4 col-md-4 control-label" for="eed">Effective End Date</label>
                     <div class="col-xs-8 col-sm-8 col-md-8">
                         <iais:datePicker id="eed" name="eed" value="<%=eed%>"/>
                     </div>
@@ -51,7 +51,7 @@
             <div class="form-group">
                 <iais:value>
                     <%String codeStatus = request.getParameter("codeStatus")==null?"":request.getParameter("codeStatus");%>
-                    <label class="col-xs-4 col-md-4 control-label" for="codeStatus">Status.</label>
+                    <label class="col-xs-4 col-md-4 control-label" for="codeStatus">Status</label>
                     <div class="col-xs-8 col-sm-8 col-md-8">
                         <iais:select name="codeStatus" id="codeStatus" options="codeStatus" value="<%=codeStatus%>"></iais:select>
                     </div>

@@ -15,16 +15,16 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th>No.</th>
+                                <th>SN</th>
                                 <th>Code Category</th>
                                 <th>Code Value</th>
                                 <th>Code Description</th>
                                 <th>Filter Value</th>
                                 <th>Sequence</th>
-                                <th>Status</th>
+                                <th>Version</th>
                                 <th>Effective Start Date</th>
                                 <th>Effective End Date</th>
-                                <th>Version</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
@@ -65,8 +65,8 @@
                                                 <p>${masterCodeResult.sequence}</p>
                                             </td>
                                             <td>
-                                                <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                <p>${masterCodeResult.status}</p>
+                                                <p class="visible-xs visible-sm table-row-title">Version</p>
+                                                <p>${masterCodeResult.version}</p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Effective Start
@@ -80,8 +80,8 @@
                                                                    pattern="dd/MM/yyyy"/></p>
                                             </td>
                                             <td>
-                                                <p class="visible-xs visible-sm table-row-title">Version</p>
-                                                <p>${masterCodeResult.version}</p>
+                                                <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                <p>${masterCodeResult.status}</p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Action</p>
