@@ -494,25 +494,30 @@ public class LicenceApproveBatchjobTest {
         log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId start ..."));
        String result = null;
        if(!StringUtil.isEmpty(idNo)){
-           String personnelId = null;
+           List<String> personnelIds = IaisCommonUtils.genNewArrayList();
            List<AppGrpPersonnelDto> appGrpPersonnelDtos = applicationListDto.getAppGrpPersonnelDtos();
            if(!IaisCommonUtils.isEmpty(appGrpPersonnelDtos)){
                log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId appGrpPersonnelDtos.size() is -- >:" + appGrpPersonnelDtos.size()));
                for (AppGrpPersonnelDto appGrpPersonnelDtos1 :appGrpPersonnelDtos ){
                    if(idNo.equals(appGrpPersonnelDtos1.getIdNo())){
-                       personnelId = appGrpPersonnelDtos1.getId();
-                       break;
+                       personnelIds.add(appGrpPersonnelDtos1.getId());
                    }
                }
            }
-           log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId personnelId is -- >:" + personnelId));
-           if(!StringUtil.isEmpty(personnelId)){
+
+           if(!IaisCommonUtils.isEmpty(personnelIds)){
+               log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId personnelIds.size() is -- >:" + personnelIds.size()));
                List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationListDto.getAppSvcKeyPersonnelDtos();
                if(!IaisCommonUtils.isEmpty(appSvcKeyPersonnelDtos)){
                    log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId appSvcKeyPersonnelDtos.size() is -- >:" + appSvcKeyPersonnelDtos.size()));
-                   for (AppSvcKeyPersonnelDto appSvcKeyPersonnelDto : appSvcKeyPersonnelDtos){
-                       if(personnelId.equals(appSvcKeyPersonnelDto.getAppGrpPsnId()) && ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(appSvcKeyPersonnelDto.getPsnType())){
-                           result = appSvcKeyPersonnelDto.getId();
+                   for(String personnelId : personnelIds){
+                       for (AppSvcKeyPersonnelDto appSvcKeyPersonnelDto : appSvcKeyPersonnelDtos){
+                           if(personnelId.equals(appSvcKeyPersonnelDto.getAppGrpPsnId()) && ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(appSvcKeyPersonnelDto.getPsnType())){
+                               result = appSvcKeyPersonnelDto.getId();
+                               break;
+                           }
+                       }
+                       if(!StringUtil.isEmpty(result)){
                            break;
                        }
                    }
@@ -689,7 +694,7 @@ public class LicenceApproveBatchjobTest {
                                 errorMessage = msg;
                                 break;
                             }
-                            addDocumentToList(premisesGroupDtoList,licDocumentRelationDtos);
+                           // addDocumentToList(premisesGroupDtoList,licDocumentRelationDtos);
                         }else{
                             log.error(StringUtil.changeForLog("This Appno do not have the OriginLicenceId -- >" +applicationDto.getApplicationNo()));
                         }
