@@ -1478,8 +1478,8 @@ public class ClinicalLaboratoryDelegator {
             if("other".equals(specialtyStr)){
                 appSvcCgoDto.setSpecialityOther(specialtyOther[i]);
             }
-            //qualification
-            appSvcCgoDto.setQualification(qualification[i]);
+            //qualification(before)
+            appSvcCgoDto.setSubspeciality(qualification[i]);
             appSvcCgoDto.setMobileNo(mobileNo[i]);
             appSvcCgoDto.setEmailAddr(emailAddress[i]);
             appSvcCgoDto.setCgoIndexNo(cgoIndexNo);

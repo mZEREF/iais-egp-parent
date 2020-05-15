@@ -356,7 +356,7 @@ public class AppealServiceImpl implements AppealService {
                 appSvcCgoDto.setSpecialityOther(specialtyOther[i]);
             }
             //qualification
-            appSvcCgoDto.setQualification(qualification[i]);
+            appSvcCgoDto.setSubspeciality(qualification[i]);
             appSvcCgoDto.setMobileNo(mobileNo[i]);
             appSvcCgoDto.setEmailAddr(emailAddress[i]);
             appSvcCgoDto.setCgoIndexNo(cgoIndexNo);

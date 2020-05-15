@@ -2718,7 +2718,7 @@ public class NewApplicationDelegator {
                         appSvcPrincipalOfficersDto.setProfRegNo((String) v.get("profRegNo"));
                         appSvcPrincipalOfficersDto.setSpeciality((String) v.get("speciality"));
                         appSvcPrincipalOfficersDto.setSpecialityOther((String) v.get("specialityOther"));
-                        appSvcPrincipalOfficersDto.setQualification((String) v.get("qualification"));
+                        appSvcPrincipalOfficersDto.setSubspeciality((String) v.get("subspeciality"));
                         appSvcPrincipalOfficersDto.setNeedSpcOptList((boolean) v.get("needSpcOptList"));
                         List<LinkedHashMap<String,String>> spcOptLinkedMap= (List<LinkedHashMap<String, String>>) v.get("spcOptList");
                         List<SelectOption> spcOptList = IaisCommonUtils.genNewArrayList();
