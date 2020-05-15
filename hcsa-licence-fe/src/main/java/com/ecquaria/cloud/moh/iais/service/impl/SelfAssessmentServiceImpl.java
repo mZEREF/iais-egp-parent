@@ -23,6 +23,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
+import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -31,7 +33,6 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeAppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -62,9 +63,6 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     @Autowired
     private FeEicGatewayClient gatewayClient;
 
-    @Autowired
-    private FeAppEicClient appEicClient;
-
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -79,6 +77,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     private String currentApp;
     @Value("${iais.current.domain}")
     private String currentDomain;
+
+    @Autowired
+    private EicRequestTrackingHelper eicRequestTrackingHelper;
 
     @Override
     public List<SelfAssessment> receiveSelfAssessmentByGroupId(String groupId) {
@@ -230,7 +231,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     }*/
 
 
-    public void callFeEicAppPremisesSelfDeclChkl(List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtos) {
+    private void callFeEicAppPremisesSelfDeclChkl(List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtos) {
         //route to be
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -257,32 +258,23 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 log.info(StringUtil.changeForLog("encounter failure when self decl send notification" + e.getMessage()));
             }*/
 
-            String refNo = System.currentTimeMillis() + "";
-            EicRequestTrackingDto eicRequestTrackingDto = new EicRequestTrackingDto();
-            eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            eicRequestTrackingDto.setActionClsName(SelfAssessmentServiceImpl.class.getName());
-            eicRequestTrackingDto.setActionMethod("callFeEicAppPremisesSelfDeclChkl");
-            eicRequestTrackingDto.setModuleName(currentApp + "-" + currentDomain);
-            eicRequestTrackingDto.setDtoClsName(AppPremisesSelfDeclChklDto.class.getName());
-            eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(result.getEntity()));
-            eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-            eicRequestTrackingDto.setRefNo(refNo);
-            Date now = new Date();
-            eicRequestTrackingDto.setProcessNum(0);
-            eicRequestTrackingDto.setFirstActionAt(now);
-            eicRequestTrackingDto.setLastActionAt(now);
-            appEicClient.saveEicTrack(eicRequestTrackingDto);
+
+            EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, SelfAssessmentServiceImpl.class.getName(),
+                    "callFeEicAppPremisesSelfDeclChkl", currentApp + "-" + currentDomain,
+                    AppPremisesSelfDeclChklDto.class.getName(), JsonUtil.parseToJson(result.getEntity()));
+
             try {
-                FeignResponseEntity<EicRequestTrackingDto> fetchResult =  appEicClient.getPendingRecordByReferenceNumber(refNo);
+                FeignResponseEntity<EicRequestTrackingDto> fetchResult =  eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
                 if (HttpStatus.SC_OK == fetchResult.getStatusCode()){
-                    EicRequestTrackingDto entity = fetchResult.getEntity();
-                    if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
+                    EicRequestTrackingDto preEicRequest = fetchResult.getEntity();
+                    if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(preEicRequest.getStatus())){
                         callFeEicAppPremisesSelfDeclChkl(result.getEntity());
-                        eicRequestTrackingDto.setProcessNum(1);
-                        eicRequestTrackingDto.setFirstActionAt(now);
-                        eicRequestTrackingDto.setLastActionAt(now);
-                        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                        appEicClient.saveEicTrack(eicRequestTrackingDto);
+                        preEicRequest.setProcessNum(1);
+                        Date now = new Date();
+                        preEicRequest.setFirstActionAt(now);
+                        preEicRequest.setLastActionAt(now);
+                        preEicRequest.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                        eicRequestTrackingHelper.getAppEicClient().saveEicTrack(preEicRequest);
                     }
                 }
             }catch (Exception e){

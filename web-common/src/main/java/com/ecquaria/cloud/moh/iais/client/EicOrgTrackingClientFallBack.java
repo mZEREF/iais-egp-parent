@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.service.client;
+package com.ecquaria.cloud.moh.iais.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -8,13 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * AtEicClientFallback
- *
- * @author Jinhua
- * @date 2020/4/17 14:47
- */
-public class FeAppEicClientFallback implements FeAppEicClient{
+ * @Author: yichen
+ * @Description:
+ * @Date:2020/5/15
+ **/
 
+public class EicOrgTrackingClientFallBack implements EicOrgTrackingClient {
     @Override
     public FeignResponseEntity<List<EicRequestTrackingDto>> getPendingRecords(String moduleName) {
         FeignResponseEntity entity = new FeignResponseEntity<>();

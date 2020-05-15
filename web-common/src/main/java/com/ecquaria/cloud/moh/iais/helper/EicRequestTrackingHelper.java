@@ -1,0 +1,73 @@
+package com.ecquaria.cloud.moh.iais.helper;
+
+import com.ecquaria.cloud.moh.iais.client.AppEicClient;
+import com.ecquaria.cloud.moh.iais.client.EicOrgTrackingClient;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.UUID;
+
+/**
+ * @Author: yichen
+ * @Description:
+ * @Date:2020/5/15
+ **/
+
+@Service
+@Slf4j
+public final class EicRequestTrackingHelper {
+
+    @Autowired
+    private EicOrgTrackingClient orgTrackingClient;
+
+    @Autowired
+    private AppEicClient appEicClient;
+
+    public EicOrgTrackingClient getOrgTrackingClient() {
+        return this.orgTrackingClient;
+    }
+
+    public AppEicClient getAppEicClient() {
+        return this.appEicClient;
+    }
+
+    public EicRequestTrackingDto clientSaveEicRequestTracking(int client, String actionClsName,
+                                                              String actionMethod, String moduleName,
+                                                              String dtoClsName, String dtoObject){
+        EicRequestTrackingDto eicRequestTrackingDto = new EicRequestTrackingDto();
+        String refNo = UUID.randomUUID().toString();
+
+        log.info(StringUtil.changeForLog("new eic client ref number" + refNo));
+
+        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        eicRequestTrackingDto.setActionClsName(actionClsName);
+        eicRequestTrackingDto.setDtoClsName(dtoClsName);
+        eicRequestTrackingDto.setActionMethod(actionMethod);
+        eicRequestTrackingDto.setModuleName(moduleName);
+        eicRequestTrackingDto.setDtoObject(dtoObject);
+        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+        eicRequestTrackingDto.setRefNo(refNo);
+        Date now = new Date();
+        eicRequestTrackingDto.setProcessNum(0);
+        eicRequestTrackingDto.setFirstActionAt(now);
+        eicRequestTrackingDto.setLastActionAt(now);
+
+        switch (client){
+            case EicClientConstant.APPLICATION_CLIENT:
+                appEicClient.saveEicTrack(eicRequestTrackingDto);
+                break;
+            case EicClientConstant.ORGANIZATION_CLIENT:
+                orgTrackingClient.saveEicTrack(eicRequestTrackingDto);
+                break;
+        }
+
+        return eicRequestTrackingDto;
+    }
+
+}
