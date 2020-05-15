@@ -67,7 +67,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -116,9 +115,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     private InsRepService insRepService;
     @Autowired
     AppInspectionStatusClient appInspectionStatusClient;
-
-    @Autowired
-    private TaskOrganizationClient taskOrganizationClient;
 
 
     @Autowired

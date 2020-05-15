@@ -51,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.google.common.collect.ImmutableSet;
 import ecq.commons.sequence.uuid.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,11 +65,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * OfficerOnlineEnquiriesDelegator
@@ -79,6 +80,8 @@ import java.util.Objects;
 @Delegator(value = "onlineEnquiriesDelegator")
 @Slf4j
 public class OfficerOnlineEnquiriesDelegator {
+    private static final Set<String> COUNTS = ImmutableSet.of("1", "2", "5");
+    private static final Set<String> COUNTS1 = ImmutableSet.of("3", "4");
     @Autowired
     RequestForInformationService requestForInformationService;
     @Autowired
@@ -153,7 +156,6 @@ public class OfficerOnlineEnquiriesDelegator {
         else {
             ParamUtil.setSessionAttr(request,"cease",0);
         }
-        ParamUtil.setSessionAttr(request,SEARCH_NO,null);
         ParamUtil.setSessionAttr(request,"id",null);
         ParamUtil.setSessionAttr(request, "licenceNo", null);
         ParamUtil.setSessionAttr(request, "reqInfoId", null);
@@ -168,43 +170,33 @@ public class OfficerOnlineEnquiriesDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,"SearchResult", null);
         String searchNo=ParamUtil.getString(request,SEARCH_NO);
-        ParamUtil.setRequestAttr(request,SEARCH_NO,searchNo);
-        int count=0;
-        if(ParamUtil.getString(request,"hciChk")!=null){
-            count=1;
+        if(StringUtil.isEmpty(searchNo)){
+            searchNo= (String) ParamUtil.getSessionAttr(request,SEARCH_NO);
         }
-        if(ParamUtil.getString(request,"applicationChk")!=null){
-            count=2;
-        }
-        if(ParamUtil.getString(request,"licenceChk")!=null){
-            count=3;
-        }
-        if(ParamUtil.getString(request,"licenseeChk")!=null){
-            count=4;
-        }
-        if(ParamUtil.getString(request,"servicePersonnelChk")!=null){
-            count=5;
+        ParamUtil.setSessionAttr(request,SEARCH_NO,searchNo);
+        String count=ParamUtil.getString(request,"searchChk");
+        if(count==null){
+            count="3";
         }
         Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
         if(searchNo!=null) {
             switch (count) {
-                case 2:
+                case "2":
                     filter.put("appNo", searchNo);
                     break;
-                case 3:
+                case "3":
                     filter.put("licence_no", searchNo);
                     break;
-                case 1:
+                case "1":
                     filter.put("hciName", searchNo);
                     break;
-                case 5:
+                case "5":
                     filter.put("personnelName", searchNo);
                     serviceParameter.setFilters(filter);
-
                     break;
-                case 4:
+                case "4":
                     licenseeIds=IaisCommonUtils.genNewArrayList();
                     filter.put("licenseeName", searchNo);
                     licenseeParameter.setFilters(filter);
@@ -227,7 +219,7 @@ public class OfficerOnlineEnquiriesDelegator {
             }
         }
 
-        if(count==1||count==2||count==5){
+        if(COUNTS.contains(count)){
             SearchResultHelper.doPage(request,applicationParameter);
             applicationParameter.setFilters(filter);
             SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
@@ -261,7 +253,6 @@ public class OfficerOnlineEnquiriesDelegator {
                                 licenceIds.add(lic.getId());
                                 reqForInfoSearchListDto.setLicenceStatus(licStatus);
                                 reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
-                                //reqForInfoSearchListDto.setServiceName(lic.getServiceName());
                                 reqForInfoSearchListDto.setStartDate(lic.getStartDate());
                                 reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
 
@@ -280,7 +271,7 @@ public class OfficerOnlineEnquiriesDelegator {
             }
             ParamUtil.setRequestAttr(request,"SearchParam", appParam);
         }
-        else if(count==3||count==4){
+        else if(COUNTS1.contains(count)){
             SearchResultHelper.doPage(request,licenceParameter);
             licenceParameter.setFilters(filter);
             SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
@@ -347,7 +338,7 @@ public class OfficerOnlineEnquiriesDelegator {
             ParamUtil.setRequestAttr(request,"SearchParam", licParam);
         }
 
-        ParamUtil.setRequestAttr(request,"count", count);
+        ParamUtil.setSessionAttr(request,"count", count);
         // 		preBasicSearch->OnStepProcess
     }
 
@@ -381,27 +372,9 @@ public class OfficerOnlineEnquiriesDelegator {
         log.info("=======>>>>>doBasicSearch>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request=bpc.request;
 
+        String count=ParamUtil.getString(request,"searchChk");
 
-        int[] count={0,0,0,0,0};
-        if(ParamUtil.getString(request,"hciChk")!=null){
-            count[0]=1;
-        }
-        if(ParamUtil.getString(request,"applicationChk")!=null){
-            count[1]=2;
-        }
-        if(ParamUtil.getString(request,"licenceChk")!=null){
-            count[2]=3;
-        }
-        if(ParamUtil.getString(request,"licenseeChk")!=null){
-            count[3]=4;
-        }
-        if(ParamUtil.getString(request,"servicePersonnelChk")!=null){
-            count[4]=5;
-        }
-        if (Arrays.equals(count, new int[]{0, 0, 0, 0, 0})) {
-            count= new int[]{1, 2, 3, 4, 5};
-        }
-        ParamUtil.setSessionAttr(request,"choose",count);
+        ParamUtil.setSessionAttr(request,"count",count);
         preSelectOption(request);
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         String searchNo=ParamUtil.getString(request,"search_no");
@@ -474,133 +447,131 @@ public class OfficerOnlineEnquiriesDelegator {
         List<String> svcNames=IaisCommonUtils.genNewArrayList();
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
-        Integer[] count={0,0,0,0,0};
-        if(ParamUtil.getString(request,"hciChk")!=null){
-            count[0]=1;
-            if(!StringUtil.isEmpty(hciCode)){
-                filters.put("hciCode", hciCode);
-            }
-            if(!StringUtil.isEmpty(hciName)){
-                filters.put("hciName", hciName);
-            }
-            if(!StringUtil.isEmpty(hciPostalCode)){
-                filters.put("hciPostalCode", hciPostalCode);
-            }
-            if(!StringUtil.isEmpty(hciStreetName)){
-                filters.put("hciStreetName", hciStreetName);
-            }
-        }
-        if(ParamUtil.getString(request,"applicationChk")!=null||ParamUtil.getString(request,"licenceChk")!=null){
-            count[2]=3;
-            if(!StringUtil.isEmpty(applicationNo)){
-                filters.put("appNo", applicationNo);count[1]=2;
-            }
-            if(!StringUtil.isEmpty(applicationType)){
-                filters.put("appType", applicationType);count[1]=2;
-            }
-            if(!StringUtil.isEmpty(status)){
-                filters.put("appStatus", status);count[1]=2;
-            }
-            if(!StringUtil.isEmpty(appSubDate)){
-                filters.put("subDate", appSubDate);count[1]=2;
-            }
-            if(!StringUtil.isEmpty(appSubToDate)){
-                filters.put("toDate",appSubToDate);count[1]=2;
-            }
-            if(!StringUtil.isEmpty(licStaDate)){
-                filters.put("start_date", licStaDate);
-            }
-            if(!StringUtil.isEmpty(licStaToDate)){
-                filters.put("start_to_date",licStaToDate);
-            }
-            if(!StringUtil.isEmpty(licExpDate)){
-                filters.put("expiry_start_date", licExpDate);
-            }
-            if(!StringUtil.isEmpty(licExpToDate)){
-                filters.put("expiry_date",licExpToDate);
-            }
-            if(!StringUtil.isEmpty(licenceNo)){
-                filters.put("licence_no", licenceNo);
-            }
-            if(!StringUtil.isEmpty(licenceStatus)){
-                filters.put("licence_status", licenceStatus);
-            }
-            if(!StringUtil.isEmpty(serviceLicenceType)){
-                filters.put("svc_name", serviceLicenceType);
-            }
-            if(!StringUtil.isEmpty(svcSubType)){
-                filters.put("serviceSubTypeName", svcSubType);
-                serviceParameter.setFilters(filters);
-                SearchParam serviceParam = SearchResultHelper.getSearchParam(request, serviceParameter,true);
-                QueryHelp.setMainSql(RFI_QUERY,"serviceQuery",serviceParam);
-                if (!serviceParam.getFilters().isEmpty()) {
-                    SearchResult<HcsaSvcQueryDto> serviceParamResult = onlineEnquiriesService.searchSvcNamesParam(serviceParam);
-                    for (HcsaSvcQueryDto r:serviceParamResult.getRows()
+
+        String count=ParamUtil.getString(request,"searchChk");
+        switch (count) {
+            case "2":
+                if(!StringUtil.isEmpty(applicationNo)){
+                    filters.put("appNo", applicationNo);
+                }
+                if(!StringUtil.isEmpty(applicationType)){
+                    filters.put("appType", applicationType);
+                }
+                if(!StringUtil.isEmpty(status)){
+                    filters.put("appStatus", status);
+                }
+                if(!StringUtil.isEmpty(appSubDate)){
+                    filters.put("subDate", appSubDate);
+                }
+                if(!StringUtil.isEmpty(appSubToDate)){
+                    filters.put("toDate",appSubToDate);
+                }
+                if(!StringUtil.isEmpty(licStaDate)){
+                    filters.put("start_date", licStaDate);count="3";
+                }
+                if(!StringUtil.isEmpty(licStaToDate)){
+                    filters.put("start_to_date",licStaToDate);count="3";
+                }
+                if(!StringUtil.isEmpty(licExpDate)){
+                    filters.put("expiry_start_date", licExpDate);count="3";
+                }
+                if(!StringUtil.isEmpty(licExpToDate)){
+                    filters.put("expiry_date",licExpToDate);count="3";
+                }
+                if(!StringUtil.isEmpty(licenceNo)){
+                    filters.put("licence_no", licenceNo);count="3";
+                }
+                if(!StringUtil.isEmpty(licenceStatus)){
+                    filters.put("licence_status", licenceStatus);count="3";
+                }
+                if(!StringUtil.isEmpty(serviceLicenceType)){
+                    filters.put("svc_name", serviceLicenceType);count="3";
+                }
+                if(!StringUtil.isEmpty(svcSubType)){
+                    filters.put("serviceSubTypeName", svcSubType);count="3";
+                    serviceParameter.setFilters(filters);
+                    SearchParam serviceParam = SearchResultHelper.getSearchParam(request, serviceParameter,true);
+                    QueryHelp.setMainSql(RFI_QUERY,"serviceQuery",serviceParam);
+                    if (!serviceParam.getFilters().isEmpty()) {
+                        SearchResult<HcsaSvcQueryDto> serviceParamResult = onlineEnquiriesService.searchSvcNamesParam(serviceParam);
+                        for (HcsaSvcQueryDto r:serviceParamResult.getRows()
+                        ) {
+                            svcNames.add(r.getServiceName());
+                        }
+
+                    }
+
+                }
+                if(!StringUtil.isEmpty(uenNo)){
+                    count="3";
+                    List<LicenseeDto> licenseeDtos= organizationClient.getLicenseeDtoByUen(uenNo).getEntity();
+                    if(licenseeDtos!=null) {
+                        for (LicenseeDto licensee:licenseeDtos
+                        ) {
+                            licenseeIds.add(licensee.getId());
+                        }
+                    }
+                }
+                break;
+            case "1":
+                if(!StringUtil.isEmpty(hciCode)){
+                    filters.put("hciCode", hciCode);
+                }
+                if(!StringUtil.isEmpty(hciName)){
+                    filters.put("hciName", hciName);
+                }
+                if(!StringUtil.isEmpty(hciPostalCode)){
+                    filters.put("hciPostalCode", hciPostalCode);
+                }
+                if(!StringUtil.isEmpty(hciStreetName)){
+                    filters.put("hciStreetName", hciStreetName);
+                }
+                break;
+            case "5":
+                if(!StringUtil.isEmpty(personnelId)){
+                    filters.put("personnelId", personnelId);
+                }
+                if(!StringUtil.isEmpty(personnelName)){
+                    filters.put("personnelName",personnelName);
+                }
+                if(!StringUtil.isEmpty(personnelRegnNo)){
+                    filters.put("personnelRegnNo", personnelRegnNo);
+                }
+                if(!StringUtil.isEmpty(personnelRole)){
+                    filters.put("personnelRole", personnelRole);
+                }
+                break;
+            case "4":
+                if(!StringUtil.isEmpty(licenseeIdNo)){
+                    filters.put("licenseeIdNo",licenseeIdNo);
+                }
+                if(!StringUtil.isEmpty(licenseeName)){
+                    filters.put("licenseeName", licenseeName);
+                }
+                licenseeParameter.setFilters(filters);
+                SearchParam licenseeParam = SearchResultHelper.getSearchParam(request, licenseeParameter,true);
+                QueryHelp.setMainSql(RFI_QUERY,"licenseeQuery",licenseeParam);
+                if (!licenseeParam.getFilters().isEmpty()) {
+                    SearchResult<LicenseeQueryDto> licenseeParamResult = onlineEnquiriesService.searchLicenseeIdsParam(licenseeParam);
+                    for (LicenseeQueryDto r:licenseeParamResult.getRows()
                     ) {
-                        svcNames.add(r.getServiceName());
+                        filters.put("licenseeId",r.getId());
+                        licenseeIds.add(r.getId());
                     }
-
-                }
-
-            }
-            if(!StringUtil.isEmpty(uenNo)){
-                List<LicenseeDto> licenseeDtos= organizationClient.getLicenseeDtoByUen(uenNo).getEntity();
-                if(licenseeDtos!=null) {
-                    for (LicenseeDto licensee:licenseeDtos
-                         ) {
-                        licenseeIds.add(licensee.getId());
+                    if(licenseeIds.size()==0){
+                        licenseeIds.add(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID);
                     }
                 }
-            }
+                if(!StringUtil.isEmpty(licenseeRegnNo)){
+                    filters.put("licenseeRegnNo",licenseeRegnNo);
+                }
+                break;
+            default:
+                break;
         }
 
-        if(ParamUtil.getString(request,"licenseeChk")!=null){
-            count[3]=4;
-            if(!StringUtil.isEmpty(licenseeIdNo)){
-                filters.put("licenseeIdNo",licenseeIdNo);
-            }
-            if(!StringUtil.isEmpty(licenseeName)){
-                filters.put("licenseeName", licenseeName);
-            }
-            licenseeParameter.setFilters(filters);
-            SearchParam licenseeParam = SearchResultHelper.getSearchParam(request, licenseeParameter,true);
-            QueryHelp.setMainSql(RFI_QUERY,"licenseeQuery",licenseeParam);
-            if (!licenseeParam.getFilters().isEmpty()) {
-                SearchResult<LicenseeQueryDto> licenseeParamResult = onlineEnquiriesService.searchLicenseeIdsParam(licenseeParam);
-                for (LicenseeQueryDto r:licenseeParamResult.getRows()
-                ) {
-                    filters.put("licenseeId",r.getId());
-                    licenseeIds.add(r.getId());
-                }
-                if(licenseeIds.size()==0){
-                    licenseeIds.add(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID);
-                }
-            }
-            if(!StringUtil.isEmpty(licenseeRegnNo)){
-                filters.put("licenseeRegnNo",licenseeRegnNo);
-            }
-        }
-        if(ParamUtil.getString(request,"servicePersonnelChk")!=null){
-            count[4]=5;
-            if(!StringUtil.isEmpty(personnelId)){
-                filters.put("personnelId", personnelId);
-            }
-            if(!StringUtil.isEmpty(personnelName)){
-                filters.put("personnelName",personnelName);
-            }
-            if(!StringUtil.isEmpty(personnelRegnNo)){
-                filters.put("personnelRegnNo", personnelRegnNo);
-            }
-            if(!StringUtil.isEmpty(personnelRole)){
-                filters.put("personnelRole", personnelRole);
-            }
-
-        }
-        if (Arrays.equals(count, new Integer[]{0, 0, 0, 0, 0})) {
-            count= new Integer[]{1, 2, 3, 4, 5};
-        }
-        ParamUtil.setSessionAttr(request,"choose",count);
-        if(count[0]==1||count[1]==2||count[4]==5){
+        ParamUtil.setSessionAttr(request,"count",count);
+        if(COUNTS.contains(count)){
             SearchResultHelper.doPage(request,applicationParameter);
             applicationParameter.setFilters(filters);
             SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);

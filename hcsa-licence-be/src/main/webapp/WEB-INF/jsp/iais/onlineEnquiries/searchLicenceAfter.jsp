@@ -35,26 +35,16 @@
                     </div>
 
                     <div id="searchCondition" class="collapse">
-                        <c:if test="${choose[2]==3||choose[1]==2}">
+                        <c:if test="${count=='3'||count=='2'}">
                             <h4>
                         <span>
                             Search By Application
                             <b class="form-check">&nbsp;
-                                <c:choose>
-                                    <c:when test="${choose[2]==3||choose[1]==2}">
-                                    <input class="form-check-input licenceCheck" id="applicationChk" type="checkbox"
-                                           checked name="applicationChk">
+                                <input class="form-check-input licenceCheck" id="applicationChk" type="radio"
+                                       checked name="searchChk" disabled value="2"/>
                                         <label class="form-check-label" for="applicationChk">
                                             <span class="check-square"></span>
                                         </label>
-                                    </c:when>
-                                    <c:otherwise><input class="form-check-input licenceCheck" id="applicationChk"
-                                                        type="checkbox" name="applicationChk">
-                                        <label class="form-check-label" for="applicationChk">
-                                        <span class="check-square"></span>
-                                    </label>
-                                    </c:otherwise>
-                                </c:choose>
                             </b>
                         </span>
                             </h4>
@@ -206,26 +196,15 @@
                                 </div>
                             </div>
                         </c:if>
-                        <c:if test="${choose[0]==1}">
+                        <c:if test="${count=='1'}">
                             <h4>
                             <span>Search By HCI
                                 <strong class="form-check">&nbsp;
-                                    <c:choose>
-                                        <c:when test="${choose[0]==1}">
-                                        <input class="form-check-input licenceCheck" id="hciChk" type="checkbox"
-                                               name="hciChk" checked>
+                                    <input class="form-check-input licenceCheck" id="hciChk" type="radio"
+                                           checked name="searchChk" disabled value="1"/>
                                             <label class="form-check-label" for="hciChk">
                                             <span class="check-square"></span>
                                         </label>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <input class="form-check-input licenceCheck" id="hciChk" type="checkbox"
-                                                   name="hciChk">
-                                            <label class="form-check-label" for="hciChk">
-                                            <span class="check-square"></span>
-                                        </label>
-                                        </c:otherwise>
-                                    </c:choose>
                                 </strong>
                             </span>
                             </h4>
@@ -281,26 +260,16 @@
                             </div>
 
                         </c:if>
-                        <c:if test="${choose[3]==4}">
+                        <c:if test="${count=='4'}">
                             <h4>
                             <span>Search By Licensee
                                 <strong class="form-check">&nbsp;
-                                    <c:choose>
-                                        <c:when test="${choose[3]==4}">
-                                            <input class="form-check-input licenceCheck" id="licenseeChk" type="checkbox"
-                                                   checked name="licenseeChk">
+                                    <input class="form-check-input licenceCheck" id="licenseeChk" type="radio"
+                                           checked name="searchChk" disabled value="4"/>
                                             <label class="form-check-label" for="licenseeChk">
                                                 <span
                                                         class="check-square"></span>
-                                            </label></c:when>
-                                        <c:otherwise>
-                                            <input class="form-check-input licenceCheck" id="licenseeChk" type="checkbox"
-                                                   name="licenseeChk">
-                                            <label class="form-check-label" for="licenseeChk">
-                                                <span class="check-square"></span>
                                             </label>
-                                        </c:otherwise>
-                                    </c:choose>
                                 </strong>
                             </span>
                             </h4>
@@ -344,26 +313,15 @@
                             </div>
 
                         </c:if>
-                        <c:if test="${choose[4]==5}">
+                        <c:if test="${count=='5'}">
                             <h4>
                             <span>Search By Service Personnel Details (CGO, PO, DPO & MedAlert)
                                 <strong class="form-check">&nbsp;
-                                    <c:choose>
-                                        <c:when test="${choose[4]==5}">
-                                            <input class="form-check-input licenceCheck" id="servicePersonnelChk"
-                                                   type="checkbox" checked name="servicePersonnelChk">
+                                    <input class="form-check-input licenceCheck" id="servicePersonnelChk"
+                                           type="radio" checked name="searchChk" disabled value="5"/>
                                             <label class="form-check-label" for="servicePersonnelChk">
                                             <span class="check-square"></span>
                                         </label>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <input class="form-check-input licenceCheck" id="servicePersonnelChk"
-                                                   type="checkbox" name="servicePersonnelChk">
-                                            <label class="form-check-label" for="servicePersonnelChk">
-                                            <span class="check-square"></span>
-                                        </label>
-                                        </c:otherwise>
-                                    </c:choose>
                                 </strong>
                             </span>
                             </h4>

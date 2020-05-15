@@ -178,9 +178,7 @@ public class RequestForInformationDelegator {
 
         ParamUtil.setRequestAttr(request,"licPreReqForInfoDtoList", licPremisesReqForInfoDtoLists);
 
-//        List<SelectOption> selectOptions=MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.REQUEST_FOR_SUPPORTING_DOCUMENTS,RequestForInformationConstants.REQUEST_FOR_INFORMATION,RequestForInformationConstants.OTHERS});
-//        ParamUtil.setRequestAttr(request,"selectOptions", selectOptions);
-        // 		preReqForInfo->OnStepProcess
+
     }
 
     public void doReqForInfo(BaseProcessClass bpc) {
@@ -346,8 +344,8 @@ public class RequestForInformationDelegator {
             String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",applicationDto.getApplicationNo());
             interMessageDto.setSubject(subject);
             interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
-            String mesNO = inboxMsgService.getMessageNo();
-            interMessageDto.setRefNo(mesNO);
+            String messageNo = inboxMsgService.getMessageNo();
+            interMessageDto.setRefNo(messageNo);
             HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
             interMessageDto.setService_id(svcDto.getId());
             interMessageDto.setMsgContent(mesContext);
