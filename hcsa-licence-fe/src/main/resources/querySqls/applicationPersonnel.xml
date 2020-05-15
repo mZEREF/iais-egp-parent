@@ -2,31 +2,13 @@
 <sqls catalog="applicationPersonnelQuery">
     <sql key = "appPersonnelQuery" remarks = "Query Application Data by condition">
         <![CDATA[
-                select T3.ID,T1.ID as licence_id,T1.STATUS,T1.SVC_NAME,T1.LICENCE_NO,
-                T3.NAME,T3.ID_NO,T3.EMAIL_ADDR,T3.MOBILE_NO,T3.DESIGNATION,T3.SALUTATION,T3.ID_TYPE,
-                T2.PSN_TYPE,
-                 T4.PROFESSION_TYPE,T4.PROF_REG_NO
-                 from licence T1
-                 join lic_key_personnel T2 on T1.ID = T2.LICENCE_ID
-                 join key_personnel T3 on T2.PERSON_ID = T3.ID
-                 join key_personnel_ext
-                 T4 on T2.PSN_EXT_ID = T4.ID WHERE 1 = 1
-                 <#if licenseeId??> and T1.LICENSEE_ID =:licenseeId </#if>
-                  and T1.STATUS ='LICEST001'
-                  and T2.PSN_EXT_ID is not NULL <#if psnType??> and ${psnType} </#if>
-                  and T1.ID = (select top 1 lic.ID from licence lic where
-                  T1.LICENCE_NO =lic.LICENCE_NO order by VERSION desc )
-                  UNION
-                  select
-                  T3.ID,T1.ID as licence_id,T1.STATUS,T1.SVC_NAME,T1.LICENCE_NO,
-                  T3.NAME,T3.ID_NO,T3.EMAIL_ADDR,T3.MOBILE_NO,T3.DESIGNATION,T3.SALUTATION,T3.ID_TYPE,
-                  T2.PSN_TYPE,
-                  '' PROFESSION_TYPE,'' PROF_REG_NO
-                  from licence T1 join lic_key_personnel T2 on T1.ID = T2.LICENCE_ID
-                  join key_personnel
-                  T3 on T2.PERSON_ID = T3.ID WHERE T1.STATUS ='LICEST001'
-                     and T2.PSN_EXT_ID is null <#if psnType??> and ${psnType} </#if>  and T1.ID =
-                ( select top 1 lic.ID from licence lic where T1.LICENCE_NO = lic.LICENCE_NO order by VERSION desc )
+        SELECT T1.ID,T1.NAME,T1.ID_NO,T1.EMAIL_ADDR,T1.MOBILE_NO,T1.DESIGNATION,T1.SALUTATION,T1.ID_TYPE
+			    FROM hcsal.dbo.key_personnel T1
+			    join hcsal.dbo.lic_key_personnel T2
+			    on T1.ID  = T2.PERSON_ID
+			    WHERE T1.ID in (select max(T1.ID) from hcsal.dbo.key_personnel as T1 group by T1.ID_NO )
+			   <#if name??> and name (:name, T1.NAME) >0</#if>
+			   <#if psnType??> and psnType (:psnType, T2.PSN_TYPE) >0</#if>
         ]]>
     </sql>
     <sql remarks="Query" key="queryPremises">

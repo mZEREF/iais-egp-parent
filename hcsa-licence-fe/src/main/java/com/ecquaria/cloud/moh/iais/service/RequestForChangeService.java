@@ -4,12 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 
 import java.util.List;
 
@@ -52,7 +47,7 @@ public interface RequestForChangeService {
     LicenseeDto getLicenseeByUenNo(String uenNo);
 
 
-    SearchResult<PersonnelListQueryDto> psnDoQuery(SearchParam searchParam);
+    SearchResult<PersonnelQueryDto> psnDoQuery(SearchParam searchParam);
 
 
     void sendEmail(String appGrpId,String type,String appNo,String serviceName,String licenceNo,Double amount,String licenceeName,String giroNo,String licenseeId,String subject,String aoName) throws Exception;
@@ -62,4 +57,8 @@ public interface RequestForChangeService {
     LicenceDto getLicenceById(String licenceId);
 
     List<LicenceDto> getLicenceDtoByHciCode(String hciCode);
+
+    List<LicKeyPersonnelDto> getLicKeyPersonnelDtoByPerId(List<String> personIds);
+
+    List<String> getPersonnelDtoByIdNo(String idNo);
 }

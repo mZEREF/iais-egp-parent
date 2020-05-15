@@ -26,7 +26,7 @@
                 <div class="tab-gp steps-tab">
                     <div class="tab-content">
                         <c:set value="${errorMap_premises}" var="errMsg"/>
-                        <c:set var="onePersonnel" value="${PersonnelEditList.get(0)}"/>
+                        <c:set var="onePersonnel" value="${personnelEditDto}"/>
                         <input type="hidden" id="premTypeVal" value="${appGrpPremisesDto.premisesType}"/>
                         <div class="row" id="mainPrem">
                             <div class="col-xs-12">
@@ -49,34 +49,54 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <c:forEach items="${PersonnelEditList}" var="personnel">
-                                        <tr>
-                                            <td>
-                                                <p><c:out value="${personnel.svcId}"></c:out></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${personnel.licenceNo}"></c:out></p>
-                                            </td>
-                                            <td>
-                                                <c:forEach var="psnType" items="${personnel.psnTypes}">
-                                                    <c:choose>
-                                                        <c:when test="${'CGO'==psnType}">
-                                                            <p>Clinical Governance Officer</p>
-                                                        </c:when>
-                                                        <c:when test="${'PO'==psnType}">
-                                                            <p>Principal Officer</p>
-                                                        </c:when>
-                                                        <c:when test="${'DPO'==psnType}">
-                                                            <p>Deputy Principal Officer</p>
-                                                        </c:when>
-                                                        <c:when test="${'MAP'==MedAlert}">
-                                                            <p>Deputy Principal Officer</p>
-                                                        </c:when>
-                                                    </c:choose>
-                                                </c:forEach>
-                                            </td>
-                                        </tr>
-                                    </c:forEach>
+                                    <c:set var="map" value="${onePersonnel.licPsnTypeDtoMaps}"/>
+                                    <c:forEach items="${map}" var="map1">
+                                    <tr>
+                                        <td>
+                                            <c:set var="dto" value="${map1.value}"/>
+                                            <p><c:out value="${dto.licSvcName}"/></p>
+                                            <c:forEach var="psnType" items="${dto.psnTypes}">
+                                                <c:choose>
+                                                    <c:when test="${'CGO'==psnType}">
+                                                        <p>&nbsp;</p>
+                                                    </c:when>
+                                                    <c:when test="${'PO'==psnType}">
+                                                        <p>&nbsp;</p>
+                                                    </c:when>
+                                                    <c:when test="${'DPO'==psnType}">
+                                                        <p>&nbsp;</p>
+                                                    </c:when>
+                                                    <c:when test="${'MAP'==psnType}">
+                                                        <p>&nbsp;</p>
+                                                    </c:when>
+                                                </c:choose>
+                                            </c:forEach>
+                                        </td>
+                                        <td>
+                                            <p><c:out value="${map1.key}"></c:out></p>
+                                        </td>
+                                        <td>
+                                            <c:set var="dto" value="${map1.value}"/>
+                                            <c:forEach var="psnType" items="${dto.psnTypes}">
+                                                <c:choose>
+                                                    <c:when test="${'CGO'==psnType}">
+                                                        <p>Clinical Governance Officer</p>
+                                                    </c:when>
+                                                    <c:when test="${'PO'==psnType}">
+                                                        <p>Principal Officer</p>
+                                                    </c:when>
+                                                    <c:when test="${'DPO'==psnType}">
+                                                        <p>Deputy Principal Officer</p>
+                                                    </c:when>
+                                                    <c:when test="${'MAP'==psnType}">
+                                                        <p>MedAlert</p>
+                                                    </c:when>
+                                                </c:choose>
+                                            </c:forEach>
+                                            <p>&nbsp;</p>
+                                            </c:forEach>
+                                        </td>
+                                    </tr>
                                     </tbody>
                                 </table>
                                 <br/>

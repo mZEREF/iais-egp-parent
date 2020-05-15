@@ -9,12 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -167,7 +162,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public SearchResult<PersonnelListQueryDto> psnDoQuery(SearchParam searchParam) {
+    public SearchResult<PersonnelQueryDto> psnDoQuery(SearchParam searchParam) {
         return licenceClient.psnDoQuery(searchParam).getEntity();
     }
 
@@ -325,6 +320,18 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public List<LicenceDto> getLicenceDtoByHciCode(String hciCode) {
         return  licenceClient.getLicenceDtoByHciCode(hciCode).getEntity();
+    }
+
+    @Override
+    public List<LicKeyPersonnelDto> getLicKeyPersonnelDtoByPerId(List<String> personIds) {
+        List<LicKeyPersonnelDto> entity = licenceClient.getLicBypersonId(personIds).getEntity();
+        return entity;
+    }
+
+    @Override
+    public List<String> getPersonnelDtoByIdNo(String idNo) {
+        List<String> entity = licenceClient.getPersonnelDtoByIdNo(idNo).getEntity();
+        return entity;
     }
 
 }
