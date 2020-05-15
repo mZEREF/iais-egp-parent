@@ -33,7 +33,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicFeeGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicFeeGroupItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
@@ -111,11 +110,11 @@ public class LicenceApproveBatchjob {
     public void doBatchJob(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is start ..."));
         int day = systemParamConfig.getLicGenDay();
-       //get can Generate Licence
+        //get can Generate Licence
         List<ApplicationLicenceDto> applicationLicenceDtos =licenceService.getCanGenerateApplications(day);
         if(applicationLicenceDtos == null || applicationLicenceDtos.size() == 0 ){
-           log.debug(StringUtil.changeForLog("This time do not have need Generate Licences."));
-           return;
+            log.debug(StringUtil.changeForLog("This time do not have need Generate Licences."));
+            return;
         }
         //get the all use serviceCode.
         List<String> serviceIds = getAllServiceId(applicationLicenceDtos);
@@ -139,15 +138,15 @@ public class LicenceApproveBatchjob {
                     Map<String,ApplicationLicenceDto> applicationLicenceDtoMap = sepaApplication(applicationLicenceDto);
                     ApplicationLicenceDto generalApplicationLicenceDto = applicationLicenceDtoMap.get(GENERALLICENCE);
                     ApplicationLicenceDto groupApplicationLicenceDto = applicationLicenceDtoMap.get(GROUPLICENCE);
-                    GenerateResult generalGenerateResult =null;
-                    GenerateResult groupGenerateResult =null;
+                    LicenceApproveBatchjobTest.GenerateResult generalGenerateResult =null;
+                    LicenceApproveBatchjobTest.GenerateResult groupGenerateResult =null;
                     try{
                         if(groupApplicationLicenceDto != null){
                             //generate the Group licence
                             groupGenerateResult = generateGroupLicence(groupApplicationLicenceDto,hcsaServiceDtos);
                         }
                         if(generalApplicationLicenceDto != null){
-                            //generate licence
+                            //generate the general licence
                             generalGenerateResult = generateLIcence(generalApplicationLicenceDto,hcsaServiceDtos);
                         }
                     }catch (Exception exception){
@@ -156,33 +155,33 @@ public class LicenceApproveBatchjob {
                     }
                     toDoResult(licenceGroupDtos,generalGenerateResult,groupGenerateResult,success,fail,applicationGroupDto);
                     if(success.size() > 0){
-                    //
-                    AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
-                    EventBusLicenceGroupDtos eventBusLicenceGroupDtos = new EventBusLicenceGroupDtos();
-                    String evenRefNum = String.valueOf(System.currentTimeMillis());
-                    eventBusLicenceGroupDtos.setEventRefNo(evenRefNum);
-                    eventBusLicenceGroupDtos.setLicenceGroupDtos(licenceGroupDtos);
-                    eventBusLicenceGroupDtos.setAuditTrailDto(auditTrailDto);
-                    //step1 create Licence to BE DB
-                    licenceService.createSuperLicDto(eventBusLicenceGroupDtos);
+                        //
+                        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+                        EventBusLicenceGroupDtos eventBusLicenceGroupDtos = new EventBusLicenceGroupDtos();
+                        String evenRefNum = String.valueOf(System.currentTimeMillis());
+                        eventBusLicenceGroupDtos.setEventRefNo(evenRefNum);
+                        eventBusLicenceGroupDtos.setLicenceGroupDtos(licenceGroupDtos);
+                        eventBusLicenceGroupDtos.setAuditTrailDto(auditTrailDto);
+                        //step1 create Licence to BE DB
+                        licenceService.createSuperLicDto(eventBusLicenceGroupDtos);
 
-                    //if create licence success
-                    //todo:update the success application group.
-                    //get the application
-                    List<ApplicationDto> applicationDtos = getApplications(licenceGroupDtos);
-                    //
-                    EventApplicationGroupDto eventApplicationGroupDto = new EventApplicationGroupDto();
-                    eventApplicationGroupDto.setEventRefNo(evenRefNum);
-                    eventApplicationGroupDto.setRollBackApplicationGroupDtos(success);
-                    eventApplicationGroupDto.setApplicationGroupDtos(updateStatusToGenerated(success));
-                    eventApplicationGroupDto.setRollBackApplicationDto(applicationDtos);
-                    eventApplicationGroupDto.setApplicationDto(updateApplicationStatusToGenerated(applicationDtos));
-                    eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
-                    applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
+                        //if create licence success
+                        //todo:update the success application group.
+                        //get the application
+                        List<ApplicationDto> applicationDtos = getApplications(licenceGroupDtos);
+                        //
+                        EventApplicationGroupDto eventApplicationGroupDto = new EventApplicationGroupDto();
+                        eventApplicationGroupDto.setEventRefNo(evenRefNum);
+                        eventApplicationGroupDto.setRollBackApplicationGroupDtos(success);
+                        eventApplicationGroupDto.setApplicationGroupDtos(updateStatusToGenerated(success));
+                        eventApplicationGroupDto.setRollBackApplicationDto(applicationDtos);
+                        eventApplicationGroupDto.setApplicationDto(updateApplicationStatusToGenerated(applicationDtos));
+                        eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
+                        applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
                         //step2 save licence to Fe DB
 //               EventBusLicenceGroupDtos eventBusLicenceGroupDtos1 =  licenceService.getEventBusLicenceGroupDtosByRefNo(eventRefNo);
 //               licenceService.createFESuperLicDto(eventBusLicenceGroupDtos1);
-                   }
+                    }
 
                 }
 
@@ -192,7 +191,7 @@ public class LicenceApproveBatchjob {
         //todo:send the email to admin for fail Data.
         //else{ rollback step1}
         //step2 save licence to Fe DB
-         //if(step2) success  completed
+        //if(step2) success  completed
         //else{roll back step1 and step 2}
 
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is end ..."));
@@ -207,23 +206,23 @@ public class LicenceApproveBatchjob {
             log.info(StringUtil.changeForLog("The sepaApplication applicationListDtoList.size() is -->: " + applicationListDtoList.size()));
             List<ApplicationListDto> generalLicence = IaisCommonUtils.genNewArrayList();
             List<ApplicationListDto> groupLicence = IaisCommonUtils.genNewArrayList();
-           for (ApplicationListDto applicationListDto : applicationListDtoList){
-               ApplicationDto applicationDto =  applicationListDto.getApplicationDto();
-               if(applicationDto.isGrpLic()){
-                   groupLicence.add(applicationListDto);
-               }else{
-                   generalLicence.add(applicationListDto);
-               }
-           }
+            for (ApplicationListDto applicationListDto : applicationListDtoList){
+                ApplicationDto applicationDto =  applicationListDto.getApplicationDto();
+                if(applicationDto.isGrpLic()){
+                    groupLicence.add(applicationListDto);
+                }else{
+                    generalLicence.add(applicationListDto);
+                }
+            }
             log.info(StringUtil.changeForLog("The sepaApplication generateLicence.size() is -->: " + generalLicence.size()));
-           if(!IaisCommonUtils.isEmpty(generalLicence)){
-               ApplicationLicenceDto generateApplicationLicenceDto = new ApplicationLicenceDto();
-               generateApplicationLicenceDto.setApplicationGroupDto(applicationGroupDto);
-               generateApplicationLicenceDto.setApplicationListDtoList(generalLicence);
-               result.put(GENERALLICENCE,generateApplicationLicenceDto);
-           }else{
-               result.put(GENERALLICENCE,null);
-           }
+            if(!IaisCommonUtils.isEmpty(generalLicence)){
+                ApplicationLicenceDto generateApplicationLicenceDto = new ApplicationLicenceDto();
+                generateApplicationLicenceDto.setApplicationGroupDto(applicationGroupDto);
+                generateApplicationLicenceDto.setApplicationListDtoList(generalLicence);
+                result.put(GENERALLICENCE,generateApplicationLicenceDto);
+            }else{
+                result.put(GENERALLICENCE,null);
+            }
             log.info(StringUtil.changeForLog("The sepaApplication groupLicence.size() is -->: " + groupLicence.size()));
             if(!IaisCommonUtils.isEmpty(groupLicence)){
                 ApplicationLicenceDto groupApplicationLicenceDto = new ApplicationLicenceDto();
@@ -267,30 +266,30 @@ public class LicenceApproveBatchjob {
         }
     }
 
-   private List<ApplicationDto> getApplications(List<LicenceGroupDto> licenceGroupDtos){
-       List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
-       if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
-         for (LicenceGroupDto licenceGroupDto : licenceGroupDtos){
-             List<SuperLicDto>  superLicDtos =  licenceGroupDto.getSuperLicDtos();
-             if(!IaisCommonUtils.isEmpty(superLicDtos)){
-               for (SuperLicDto superLicDto : superLicDtos){
-                   LicenceDto licenceDto = superLicDto.getLicenceDto();
-                   if(licenceDto!=null){
-                       List<ApplicationDto> applicationDtos = licenceDto.getApplicationDtos();
-                       if(!IaisCommonUtils.isEmpty(applicationDtos)){
-                           result.addAll(applicationDtos);
-                       }
-                   }
-               }
-             }
-         }
-       }
-       return  result;
-   }
+    private List<ApplicationDto> getApplications(List<LicenceGroupDto> licenceGroupDtos){
+        List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
+            for (LicenceGroupDto licenceGroupDto : licenceGroupDtos){
+                List<SuperLicDto>  superLicDtos =  licenceGroupDto.getSuperLicDtos();
+                if(!IaisCommonUtils.isEmpty(superLicDtos)){
+                    for (SuperLicDto superLicDto : superLicDtos){
+                        LicenceDto licenceDto = superLicDto.getLicenceDto();
+                        if(licenceDto!=null){
+                            List<ApplicationDto> applicationDtos = licenceDto.getApplicationDtos();
+                            if(!IaisCommonUtils.isEmpty(applicationDtos)){
+                                result.addAll(applicationDtos);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return  result;
+    }
     private List<ApplicationGroupDto> updateStatusToGenerated(List<ApplicationGroupDto> applicationGroupDtos){
         List<ApplicationGroupDto> result = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isEmpty(applicationGroupDtos)){
-             return result;
+            return result;
         }
         for(ApplicationGroupDto applicationGroupDto : applicationGroupDtos){
             applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_LICENCE_GENERATED);
@@ -299,7 +298,7 @@ public class LicenceApproveBatchjob {
         return  result;
     }
 
-    private void toDoResult(List<LicenceGroupDto> licenceGroupDtos,GenerateResult generalResult,GenerateResult groupResult,
+    private void toDoResult(List<LicenceGroupDto> licenceGroupDtos, LicenceApproveBatchjobTest.GenerateResult generalResult, LicenceApproveBatchjobTest.GenerateResult groupResult,
                             List<ApplicationGroupDto> success,
                             List<Map<String,String>> fail, ApplicationGroupDto applicationGroupDto){
         log.info(StringUtil.changeForLog("The toDoResult is start ..."));
@@ -346,7 +345,7 @@ public class LicenceApproveBatchjob {
 
     }
 
-    private void toDoResult(List<LicenceGroupDto> licenceGroupDtos,GenerateResult generateResult,List<ApplicationGroupDto> success,
+    private void toDoResult(List<LicenceGroupDto> licenceGroupDtos, LicenceApproveBatchjobTest.GenerateResult generateResult, List<ApplicationGroupDto> success,
                             List<Map<String,String>> fail, ApplicationGroupDto applicationGroupDto){
         if(generateResult!=null){
             boolean isSuccess = generateResult.isSuccess();
@@ -425,25 +424,134 @@ public class LicenceApproveBatchjob {
             }
         }
         if(result != null){
-          log.info(StringUtil.changeForLog("The Licence Start Date -->:"+result.getRecomInDate()));
-          log.info(StringUtil.changeForLog("The RecomInNumber -->:"+result.getRecomInNumber()));
-          log.info(StringUtil.changeForLog("The ChronoUnit -->:"+result.getChronoUnit()));
+            log.info(StringUtil.changeForLog("The Licence Start Date -->:"+result.getRecomInDate()));
+            log.info(StringUtil.changeForLog("The RecomInNumber -->:"+result.getRecomInNumber()));
+            log.info(StringUtil.changeForLog("The ChronoUnit -->:"+result.getChronoUnit()));
         }
         log.info(StringUtil.changeForLog("The getAppPremisesRecommendationDto end ..."));
         return result;
     }
-    private GenerateResult generateGroupLicence(ApplicationLicenceDto applicationLicenceDto,List<HcsaServiceDto> hcsaServiceDtos){
+
+    private void addDocumentToList(List<PremisesGroupDto> premisesGroupDtos, List<LicDocumentRelationDto> licDocumentRelationDtos){
+        log.info(StringUtil.changeForLog("The addDocumentToList start ..."));
+        log.info(StringUtil.changeForLog("The addDocumentToList licDocumentRelationDtos.size() is-->:"+licDocumentRelationDtos.size()));
+        if(!IaisCommonUtils.isEmpty(premisesGroupDtos)){
+            log.info(StringUtil.changeForLog("The addDocumentToList premisesGroupDtos.size() is-->:"+premisesGroupDtos.size()));
+            for(PremisesGroupDto premisesGroupDto : premisesGroupDtos){
+                List<LicDocumentRelationDto> licDocumentRelationDtoList = premisesGroupDto.getLicDocumentRelationDtos();
+                if(!IaisCommonUtils.isEmpty(licDocumentRelationDtoList)){
+                    log.info(StringUtil.changeForLog("The addDocumentToList licDocumentRelationDtoList.size() is-->:"+licDocumentRelationDtoList.size()));
+                    for (LicDocumentRelationDto licDocumentRelationDto : licDocumentRelationDtoList){
+                        if(!isExist(licDocumentRelationDtos,licDocumentRelationDto.getDocumentDto().getFileRepoId())){
+                            licDocumentRelationDtos.add(licDocumentRelationDto);
+                        }
+                    }
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("The addDocumentToList licDocumentRelationDtos.size() is-->:"+licDocumentRelationDtos.size()));
+        log.info(StringUtil.changeForLog("The addDocumentToList end ..."));
+    }
+
+    private String addPremisesGroupDtos(List<PremisesGroupDto> allPremisesGroupDtos,List<PremisesGroupDto> premisesGroupDtos,
+                                        ApplicationListDto applicationListDto){
+        log.info(StringUtil.changeForLog("The allPremisesGroupDtos start ..."));
+        String errorMsg = null;
+        if(!IaisCommonUtils.isEmpty(premisesGroupDtos)){
+            for (PremisesGroupDto premisesGroupDto : premisesGroupDtos){
+                PremisesDto premisesDto =  premisesGroupDto.getPremisesDto();
+                String hciCode = premisesDto.getHciCode();
+                log.info(StringUtil.changeForLog("The allPremisesGroupDtos hciCode is -->:"+hciCode));
+                boolean isExist = isExistPremisess(allPremisesGroupDtos,hciCode);
+                log.info(StringUtil.changeForLog("The allPremisesGroupDtos isExist is -->:"+isExist));
+                if(!isExist){
+                    premisesDto.setVersion(getVersionByHciCode(hciCode));
+                    List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = premisesGroupDto.getLicPremisesScopeGroupDtoList();
+                    if(!IaisCommonUtils.isEmpty(licPremisesScopeGroupDtoList)){
+                        for (LicPremisesScopeGroupDto licPremisesScopeGroupDto : licPremisesScopeGroupDtoList){
+                            LicPremisesScopeAllocationDto licPremisesScopeAllocationDto = licPremisesScopeGroupDto.getLicPremisesScopeAllocationDto();
+                            KeyPersonnelDto keyPersonnelDto = licPremisesScopeGroupDto.getKeyPersonnelDto();
+                            String idNo = keyPersonnelDto.getIdNo();
+                            log.info(StringUtil.changeForLog("The allPremisesGroupDtos idNo is -->:"+idNo));
+                            String appSvcKeyPsnId = getAppSvcKeyPsnId(applicationListDto,idNo);
+                            if(!StringUtil.isEmpty(appSvcKeyPsnId)){
+                                licPremisesScopeAllocationDto.setLicCgoId(appSvcKeyPsnId);
+                            }else{
+                                errorMsg = "can not find  the CGO for idNo is -->:"+idNo;
+                                log.error(StringUtil.changeForLog(errorMsg));
+                            }
+                        }
+                    }
+                    allPremisesGroupDtos.add(premisesGroupDto);
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("The allPremisesGroupDtos end ..."));
+        return errorMsg;
+    }
+
+    private String getAppSvcKeyPsnId(ApplicationListDto applicationListDto,String idNo){
+        log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId start ..."));
+        String result = null;
+        if(!StringUtil.isEmpty(idNo)){
+            List<String> personnelIds = IaisCommonUtils.genNewArrayList();
+            List<AppGrpPersonnelDto> appGrpPersonnelDtos = applicationListDto.getAppGrpPersonnelDtos();
+            if(!IaisCommonUtils.isEmpty(appGrpPersonnelDtos)){
+                log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId appGrpPersonnelDtos.size() is -- >:" + appGrpPersonnelDtos.size()));
+                for (AppGrpPersonnelDto appGrpPersonnelDtos1 :appGrpPersonnelDtos ){
+                    if(idNo.equals(appGrpPersonnelDtos1.getIdNo())){
+                        personnelIds.add(appGrpPersonnelDtos1.getId());
+                    }
+                }
+            }
+
+            if(!IaisCommonUtils.isEmpty(personnelIds)){
+                log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId personnelIds.size() is -- >:" + personnelIds.size()));
+                List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationListDto.getAppSvcKeyPersonnelDtos();
+                if(!IaisCommonUtils.isEmpty(appSvcKeyPersonnelDtos)){
+                    log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId appSvcKeyPersonnelDtos.size() is -- >:" + appSvcKeyPersonnelDtos.size()));
+                    for(String personnelId : personnelIds){
+                        for (AppSvcKeyPersonnelDto appSvcKeyPersonnelDto : appSvcKeyPersonnelDtos){
+                            if(personnelId.equals(appSvcKeyPersonnelDto.getAppGrpPsnId()) && ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(appSvcKeyPersonnelDto.getPsnType())){
+                                result = appSvcKeyPersonnelDto.getId();
+                                break;
+                            }
+                        }
+                        if(!StringUtil.isEmpty(result)){
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId result is -- >:" + result));
+        log.info(StringUtil.changeForLog("The getAppSvcKeyPsnId end ..."));
+        return  result;
+    }
+
+    private boolean isExistPremisess(List<PremisesGroupDto> allPremisesGroupDtos,String hciCode){
+        boolean result = false;
+        if(!IaisCommonUtils.isEmpty(allPremisesGroupDtos) && !StringUtil.isEmpty(hciCode)){
+            for (PremisesGroupDto premisesGroupDto : allPremisesGroupDtos){
+                if(hciCode.equals(premisesGroupDto.getPremisesDto().getHciCode())){
+                    result =  true;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+    private LicenceApproveBatchjobTest.GenerateResult generateGroupLicence(ApplicationLicenceDto applicationLicenceDto, List<HcsaServiceDto> hcsaServiceDtos){
         log.debug(StringUtil.changeForLog("The generateGroupLicence is start ..."));
-        GenerateResult result = new GenerateResult();
+        LicenceApproveBatchjobTest.GenerateResult result = new LicenceApproveBatchjobTest.GenerateResult();
         LicenceGroupDto licenceGroupDto = new LicenceGroupDto();
         List<ApplicationListDto> applicationListDtoList = applicationLicenceDto.getApplicationListDtoList();
         ApplicationGroupDto applicationGroupDto = applicationLicenceDto.getApplicationGroupDto();
         Integer isPostInspNeeded = isPostInspNeeded(applicationGroupDto);
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is -->:"+isPostInspNeeded));
-
-        //create licence group fee
-        LicFeeGroupDto licFeeGroupDto = getLicFeeGroupDto(applicationGroupDto.getAmount().toString());
-        licenceGroupDto.setLicFeeGroupDto(licFeeGroupDto);
+        String appType = applicationGroupDto.getAppType();
+        log.debug(StringUtil.changeForLog("The appType is -->:"+appType));
+        licenceGroupDto.setAppType(appType);
 
         LicenseeDto oldLicenseeDto = getOrganizationIdBylicenseeId(applicationGroupDto.getLicenseeId());
         //get organizationId
@@ -524,11 +632,6 @@ public class LicenceApproveBatchjob {
                     List<PremisesGroupDto> premisesGroupDtos1 = getPremisesGroupDto(applicationLicenceDto,appGrpPremisesEntityDtos,appPremisesCorrelationDtos,appSvcPremisesScopeDtos,
                             appSvcPremisesScopeAllocationDtos, hcsaServiceDto,organizationId,isPostInspNeeded);
                     if(!IaisCommonUtils.isEmpty(premisesGroupDtos1)){
-                        PremisesGroupDto premisesGroupDto = premisesGroupDtos1.get(0);
-                        if(premisesGroupDto.isHasError()){
-                            errorMessage = premisesGroupDto.getErrorMessage();
-                            break;
-                        }
                         premisesGroupDtos.addAll(premisesGroupDtos1);
                     }
                     //create key_personnel key_personnel_ext lic_key_personnel
@@ -543,9 +646,9 @@ public class LicenceApproveBatchjob {
                         }
                         personnelsDtos.addAll(personnelsDto1s);
                     }
+                    //RFC for premises: Generate partPremises group Licence
                     ApplicationDto applicationDto = applicationListDto.getApplicationDto();
                     if(applicationDto != null){
-                        String appType = applicationDto.getApplicationType();
                         String applicationNo = applicationDto.getApplicationNo();
                         String loginUrl = "#";
                         //new application send email
@@ -561,7 +664,6 @@ public class LicenceApproveBatchjob {
                             newApplicationApproveSendEmail(licenceDto,applicationNo,licenceNo,loginUrl,isNew,uenNo);
                         }
                     }
-
 
                     //create the lic_app_correlation
                     LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
@@ -579,12 +681,25 @@ public class LicenceApproveBatchjob {
                     //do not need create in the Dto
                     //todo:lic_base_specified_correlation
                     //
+                    //part premises
+                    boolean isPartPremises = applicationDto.isPartPremises();
+                    log.info(StringUtil.changeForLog("The generateGroupLicence isPartPremises is -->:"+isPartPremises));
+                    if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) && isPartPremises){
+                        String everyOriginLicenceId = applicationDto.getOriginLicenceId();
+                        log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is -->:"+everyOriginLicenceId));
+                        if(!StringUtil.isEmpty(everyOriginLicenceId)){
+                            List<PremisesGroupDto> premisesGroupDtoList = licenceService.getPremisesGroupDtoByOriginLicenceId(everyOriginLicenceId);
+                            String msg = addPremisesGroupDtos(premisesGroupDtos,premisesGroupDtoList,applicationListDto);
+                            if(!StringUtil.isEmpty(msg)){
+                                errorMessage = msg;
+                                break;
+                            }
+                            // addDocumentToList(premisesGroupDtoList,licDocumentRelationDtos);
+                        }else{
+                            log.error(StringUtil.changeForLog("This Appno do not have the OriginLicenceId -- >" +applicationDto.getApplicationNo()));
+                        }
+                    }
                 }
-                //create LicFeeGroupItemDto
-                List<LicFeeGroupItemDto> licFeeGroupItemDtos = IaisCommonUtils.genNewArrayList();
-                LicFeeGroupItemDto licFeeGroupItemDto = new LicFeeGroupItemDto();
-                licFeeGroupItemDtos.add(licFeeGroupItemDto);
-                superLicDto.setLicFeeGroupItemDtos(licFeeGroupItemDtos);
 
                 //create LicSvcSpecificPersonnelDto
                 List<AppSvcPersonnelDto> appSvcPersonnelDtos = applicationListDtos.get(0).getAppSvcPersonnelDtos();
@@ -609,7 +724,7 @@ public class LicenceApproveBatchjob {
             }
         }
         log.debug(StringUtil.changeForLog("The generateGroupLicence is end ..."));
-       return result;
+        return result;
     }
 
     private void newApplicationApproveSendEmail(LicenceDto licenceDto,String applicationNo,String licenceNo,String loginUrl,boolean isNew,String uenNo){
@@ -630,10 +745,10 @@ public class LicenceApproveBatchjob {
     private void sendEmailHelper(Map<String ,Object> tempMap,String msgTemplateId,String subject,String licenseeId,String clientQueryCode){
         MsgTemplateDto msgTemplateDto = licenceService.getMsgTemplateById(msgTemplateId);
         if(tempMap == null || tempMap.isEmpty() || msgTemplateDto == null
-                         || StringUtil.isEmpty(msgTemplateId)
-                         || StringUtil.isEmpty(subject)
-                         || StringUtil.isEmpty(licenseeId)
-                         || StringUtil.isEmpty(clientQueryCode)){
+                || StringUtil.isEmpty(msgTemplateId)
+                || StringUtil.isEmpty(subject)
+                || StringUtil.isEmpty(licenseeId)
+                || StringUtil.isEmpty(clientQueryCode)){
             return;
         }
         String mesContext = null;
@@ -677,7 +792,7 @@ public class LicenceApproveBatchjob {
                 licenceService.sendEmail(emailDto);
             }
         }
-        
+
     }
 
     private LicenceDto deleteOriginLicenceDto(String organizationId){
@@ -701,19 +816,17 @@ public class LicenceApproveBatchjob {
         return  result;
     }
 
-    private GenerateResult generateLIcence(ApplicationLicenceDto applicationLicenceDto,List<HcsaServiceDto> hcsaServiceDtos){
+    private LicenceApproveBatchjobTest.GenerateResult generateLIcence(ApplicationLicenceDto applicationLicenceDto, List<HcsaServiceDto> hcsaServiceDtos){
         log.debug(StringUtil.changeForLog("The generateLIcence is start ..."));
-        GenerateResult result = new GenerateResult();
+        LicenceApproveBatchjobTest.GenerateResult result = new LicenceApproveBatchjobTest.GenerateResult();
         LicenceGroupDto licenceGroupDto = new LicenceGroupDto();
         List<ApplicationListDto> applicationListDtoList = applicationLicenceDto.getApplicationListDtoList();
         ApplicationGroupDto applicationGroupDto = applicationLicenceDto.getApplicationGroupDto();
         Integer isPostInspNeeded = isPostInspNeeded(applicationGroupDto);
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is -->:"+isPostInspNeeded));
-
-        //create licence group fee
-        LicFeeGroupDto licFeeGroupDto = getLicFeeGroupDto(applicationGroupDto.getAmount().toString());
-        licenceGroupDto.setLicFeeGroupDto(licFeeGroupDto);
-
+        String appType = applicationGroupDto.getAppType();
+        log.debug(StringUtil.changeForLog("The appType is -->:"+appType));
+        licenceGroupDto.setAppType(appType);
         LicenseeDto oldLicenseeDto = getOrganizationIdBylicenseeId(applicationGroupDto.getLicenseeId());
         //get organizationId
         String organizationId = oldLicenseeDto.getOrganizationId();
@@ -742,10 +855,10 @@ public class LicenceApproveBatchjob {
                 String serviceId = applicationDto.getServiceId();
                 log.debug(StringUtil.changeForLog("The serviceId is -->:" + serviceId));
                 HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(hcsaServiceDtos,serviceId);
-                 if(hcsaServiceDto ==  null){
-                     errorMessage = "There is a ApplicationDto is null";
-                     break;
-                 }
+                if(hcsaServiceDto ==  null){
+                    errorMessage = "There is a ApplicationDto is null";
+                    break;
+                }
                 //create Premises
                 List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = applicationListDto.getAppGrpPremisesEntityDtos();
                 if(appGrpPremisesEntityDtos == null || appGrpPremisesEntityDtos.size() == 0){
@@ -792,7 +905,7 @@ public class LicenceApproveBatchjob {
                 if(isPostInspNeeded == Integer.parseInt(AppConsts.YES)){
                     sendEmailInspection(licenceDto);
                 }
-                String appType = applicationDto.getApplicationType();
+
                 String applicationNo = applicationDto.getApplicationNo();
                 String loginUrl = "#";
                 //new application send email
@@ -820,11 +933,7 @@ public class LicenceApproveBatchjob {
                 licAppCorrelationDto.setApplicationId(applicationDto.getId());
                 licAppCorrelationDtos.add(licAppCorrelationDto);
                 superLicDto.setLicAppCorrelationDtos(licAppCorrelationDtos);
-                //create LicFeeGroupItemDto
-                List<LicFeeGroupItemDto> licFeeGroupItemDtos = IaisCommonUtils.genNewArrayList();
-                LicFeeGroupItemDto licFeeGroupItemDto = new LicFeeGroupItemDto();
-                licFeeGroupItemDtos.add(licFeeGroupItemDto);
-                superLicDto.setLicFeeGroupItemDtos(licFeeGroupItemDtos);
+
                 //create the document and lic_document from the primary doc.
                 List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = applicationListDto.getAppGrpPrimaryDocDtos();
                 List<AppSvcDocDto> appSvcDocDtos = applicationListDto.getAppSvcDocDtos();
@@ -870,25 +979,6 @@ public class LicenceApproveBatchjob {
         return result;
     }
 
-
-//    private  int getYearLength(AppPremisesRecommendationDto appPremisesRecommendationDto){
-//        log.debug(StringUtil.changeForLog("The getYearLength is start ..."));
-//        int yearLength = 1;
-//        if(appPremisesRecommendationDto!=null){
-//            String chrono = appPremisesRecommendationDto.getChronoUnit();
-//            if(AppConsts.LICENCE_PERIOD_YEAR.equals(chrono)){
-//                yearLength = appPremisesRecommendationDto.getRecomInNumber();
-//            }else if(AppConsts.LICENCE_PERIOD_MONTH.equals(chrono)){
-//                yearLength = appPremisesRecommendationDto.getRecomInNumber()/12;
-//            }else{
-//                log.debug(StringUtil.changeForLog("The getYearLength chrono is not Year ..."));
-//            }
-//        }else{
-//            log.error(StringUtil.changeForLog("The getYearLength appPremisesRecommendationDto is null ..."));
-//        }
-//        log.debug(StringUtil.changeForLog("The getYearLength is end ..."));
-//        return yearLength;
-//    }
     private boolean isApplicaitonReject(AppPremisesRecommendationDto appPremisesRecommendationDto){
         boolean result = false;
         if(appPremisesRecommendationDto!=null){
@@ -905,10 +995,10 @@ public class LicenceApproveBatchjob {
     private List<LicSvcSpecificPersonnelDto> getLicSvcSpecificPersonnelDtos(List<AppSvcPersonnelDto> appSvcPersonnelDtos){
         List<LicSvcSpecificPersonnelDto> result = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(appSvcPersonnelDtos)){
-           for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtos){
-               LicSvcSpecificPersonnelDto licSvcSpecificPersonnelDto = MiscUtil.transferEntityDto(appSvcPersonnelDto,LicSvcSpecificPersonnelDto.class);
-               result.add(licSvcSpecificPersonnelDto);
-           }
+            for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtos){
+                LicSvcSpecificPersonnelDto licSvcSpecificPersonnelDto = MiscUtil.transferEntityDto(appSvcPersonnelDto,LicSvcSpecificPersonnelDto.class);
+                result.add(licSvcSpecificPersonnelDto);
+            }
         }
         return  result;
     }
@@ -918,21 +1008,21 @@ public class LicenceApproveBatchjob {
         if(applicationLicenceDto != null && appGrpPremisesEntityDto != null){
             List<ApplicationListDto> applicationListDtoList = applicationLicenceDto.getApplicationListDtoList();
             if(!IaisCommonUtils.isEmpty(applicationListDtoList)){
-              for (ApplicationListDto applicationListDto : applicationListDtoList){
-                  List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos =  applicationListDto.getAppGrpPremisesEntityDtos();
-                  if(!IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)){
-                     for (AppGrpPremisesEntityDto appGrpPremisesEntityDto1 : appGrpPremisesEntityDtos){
-                         if(appGrpPremisesEntityDto.getPremiseKey().equals(appGrpPremisesEntityDto1.getPremiseKey()) &&
-                                 !StringUtil.isEmpty(appGrpPremisesEntityDto1.getHciCode())){
-                             hciCode = appGrpPremisesEntityDto1.getHciCode();
-                             break;
-                         }
-                     }
-                  }
-                  if(!StringUtil.isEmpty(hciCode)){
-                      break;
-                  }
-              }
+                for (ApplicationListDto applicationListDto : applicationListDtoList){
+                    List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos =  applicationListDto.getAppGrpPremisesEntityDtos();
+                    if(!IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)){
+                        for (AppGrpPremisesEntityDto appGrpPremisesEntityDto1 : appGrpPremisesEntityDtos){
+                            if(appGrpPremisesEntityDto.getPremiseKey().equals(appGrpPremisesEntityDto1.getPremiseKey()) &&
+                                    !StringUtil.isEmpty(appGrpPremisesEntityDto1.getHciCode())){
+                                hciCode = appGrpPremisesEntityDto1.getHciCode();
+                                break;
+                            }
+                        }
+                    }
+                    if(!StringUtil.isEmpty(hciCode)){
+                        break;
+                    }
+                }
             }
         }
         return  hciCode;
@@ -983,11 +1073,6 @@ public class LicenceApproveBatchjob {
             String premisesId = appGrpPremisesEntityDto.getId();
             String appPremCorrecId = getAppPremCorrecId(appPremisesCorrelationDtos,premisesId);
             if(StringUtil.isEmpty(appPremCorrecId)){
-//                premisesGroupDto.setHasError(true);
-//                premisesGroupDto.setErrorMessage("This PremisesId can not find out appPremCorrecId -->:"+premisesId);
-//                reuslt.clear();
-//                reuslt.add(premisesGroupDto);
-//                break;
                 continue;
             }
             AppPremisesRecommendationDto appPremisesRecommendationDto = licenceService.getTcu(appPremCorrecId);
@@ -1001,16 +1086,16 @@ public class LicenceApproveBatchjob {
                 licPremisesDto.setTcuDate(appPremisesRecommendationDto.getRecomInDate());
             }
             premisesGroupDto.setLicPremisesDto(licPremisesDto);
-             if(1==isPostInspNeeded){
-                 //create the LicInspectionGroupDto
-                 LicInspectionGroupDto licInspectionGroupDto = new LicInspectionGroupDto();
-                 licInspectionGroupDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                 premisesGroupDto.setLicInspectionGroupDto(licInspectionGroupDto);
-                 //create the LicPremInspGrpCorrelationDto
-                 LicPremInspGrpCorrelationDto licPremInspGrpCorrelationDto = new LicPremInspGrpCorrelationDto();
-                 licPremInspGrpCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                 premisesGroupDto.setLicPremInspGrpCorrelationDto(licPremInspGrpCorrelationDto);
-             }
+            if(1==isPostInspNeeded){
+                //create the LicInspectionGroupDto
+                LicInspectionGroupDto licInspectionGroupDto = new LicInspectionGroupDto();
+                licInspectionGroupDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                premisesGroupDto.setLicInspectionGroupDto(licInspectionGroupDto);
+                //create the LicPremInspGrpCorrelationDto
+                LicPremInspGrpCorrelationDto licPremInspGrpCorrelationDto = new LicPremInspGrpCorrelationDto();
+                licPremInspGrpCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                premisesGroupDto.setLicPremInspGrpCorrelationDto(licPremInspGrpCorrelationDto);
+            }
 
             //create LicPremisesScopeDto
             List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtoList = getAppSvcPremisesScopeDtoByCorrelationId(appSvcPremisesScopeDtos,appPremCorrecId);
@@ -1018,9 +1103,8 @@ public class LicenceApproveBatchjob {
                 List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = IaisCommonUtils.genNewArrayList();
                 for(AppSvcPremisesScopeDto appSvcPremisesScopeDto :appSvcPremisesScopeDtoList){
                     LicPremisesScopeGroupDto licPremisesScopeGroupDto = new LicPremisesScopeGroupDto();
-                    LicPremisesScopeDto licPremisesScopeDto = new LicPremisesScopeDto();
-                    licPremisesScopeDto.setSubsumedType(appSvcPremisesScopeDto.isSubsumedType());
-                    licPremisesScopeDto.setScopeName(appSvcPremisesScopeDto.getScopeName());
+                    LicPremisesScopeDto licPremisesScopeDto = MiscUtil.transferEntityDto(appSvcPremisesScopeDto,LicPremisesScopeDto.class);
+                    licPremisesScopeDto.setId(null);
                     licPremisesScopeGroupDto.setLicPremisesScopeDto(licPremisesScopeDto);
                     //create LicPremisesScopeAllocationDto
                     AppSvcPremisesScopeAllocationDto appSvcPremisesScopeAllocationDto = getAppSvcPremisesScopeAllocationDto(appSvcPremisesScopeAllocationDtos,
@@ -1045,19 +1129,19 @@ public class LicenceApproveBatchjob {
     }
 
 
-  private List<AppSvcPremisesScopeDto> getAppSvcPremisesScopeDtoByCorrelationId(List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos,String appPremCorrecId){
-      List<AppSvcPremisesScopeDto> result = IaisCommonUtils.genNewArrayList();
+    private List<AppSvcPremisesScopeDto> getAppSvcPremisesScopeDtoByCorrelationId(List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos,String appPremCorrecId){
+        List<AppSvcPremisesScopeDto> result = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isEmpty(appSvcPremisesScopeDtos)|| StringUtil.isEmpty(appPremCorrecId)){
-          return result;
+            return result;
         }
 
-      for(AppSvcPremisesScopeDto appSvcPremisesScopeDto : appSvcPremisesScopeDtos){
-         if(appSvcPremisesScopeDto != null && appPremCorrecId.equals(appSvcPremisesScopeDto.getAppPremCorreId())){
-             result.add(appSvcPremisesScopeDto);
-         }
-      }
-      return  result;
-  }
+        for(AppSvcPremisesScopeDto appSvcPremisesScopeDto : appSvcPremisesScopeDtos){
+            if(appSvcPremisesScopeDto != null && appPremCorrecId.equals(appSvcPremisesScopeDto.getAppPremCorreId())){
+                result.add(appSvcPremisesScopeDto);
+            }
+        }
+        return  result;
+    }
 
     private LicFeeGroupDto getLicFeeGroupDto(String amount){
         LicFeeGroupDto licFeeGroupDto = new LicFeeGroupDto();
@@ -1151,7 +1235,7 @@ public class LicenceApproveBatchjob {
     private AppGrpPersonnelDto getAppGrpPersonnelDtoById(List<AppGrpPersonnelDto> appGrpPersonnelDtos ,String appGrpPsnId){
         AppGrpPersonnelDto result = null;
         if(appGrpPersonnelDtos == null || appGrpPersonnelDtos.size() == 0 || StringUtil.isEmpty(appGrpPsnId)){
-          return result;
+            return result;
         }
         for(AppGrpPersonnelDto appGrpPersonnelDto : appGrpPersonnelDtos){
             if(appGrpPsnId.equals(appGrpPersonnelDto.getId())){
@@ -1168,13 +1252,13 @@ public class LicenceApproveBatchjob {
         if(StringUtil.isEmpty(appSvcPremisesScopeId)|| appSvcPremisesScopeAllocationDtos == null || appSvcPremisesScopeAllocationDtos.size() == 0){
             return result;
         }
-       for (AppSvcPremisesScopeAllocationDto appSvcPremisesScopeAllocationDto : appSvcPremisesScopeAllocationDtos){
-           if(appSvcPremisesScopeId.equals(appSvcPremisesScopeAllocationDto.getAppSvcPremScopeId())){
-               result =appSvcPremisesScopeAllocationDto;
-               break;
-           }
-       }
-       return result;
+        for (AppSvcPremisesScopeAllocationDto appSvcPremisesScopeAllocationDto : appSvcPremisesScopeAllocationDtos){
+            if(appSvcPremisesScopeId.equals(appSvcPremisesScopeAllocationDto.getAppSvcPremScopeId())){
+                result =appSvcPremisesScopeAllocationDto;
+                break;
+            }
+        }
+        return result;
     }
 
     private boolean isExist(List<LicDocumentRelationDto> licDocumentRelationDtos,String fileRepoId){
@@ -1201,18 +1285,14 @@ public class LicenceApproveBatchjob {
         if(appGrpPrimaryDocDtos != null){
             for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
                 if(isExist(licDocumentRelationDtos,appGrpPrimaryDocDto.getFileRepoId())){
-                  continue;
+                    continue;
                 }
                 if(!IaisCommonUtils.isEmpty(premisesGroupDtos)){
                     for(PremisesGroupDto premisesGroupDto : premisesGroupDtos){
                         PremisesDto premisesDto = premisesGroupDto.getPremisesDto();
                         LicDocumentRelationDto licDocumentRelationDto = new LicDocumentRelationDto();
-                        DocumentDto documentDto = new DocumentDto();
-                        documentDto.setDocName(appGrpPrimaryDocDto.getDocName());
-                        documentDto.setDocSize(appGrpPrimaryDocDto.getDocSize());
-                        documentDto.setFileRepoId(appGrpPrimaryDocDto.getFileRepoId());
-                        documentDto.setSubmitDt(appGrpPrimaryDocDto.getSubmitDt());
-                        documentDto.setSubmitBy(appGrpPrimaryDocDto.getSubmitBy());
+                        DocumentDto documentDto = MiscUtil.transferEntityDto(appGrpPrimaryDocDto,DocumentDto.class);
+                        documentDto.setId(null);
                         licDocumentRelationDto.setDocumentDto(documentDto);
 
                         LicDocumentDto licDocumentDto = new LicDocumentDto();
@@ -1233,28 +1313,24 @@ public class LicenceApproveBatchjob {
             }
         }
         if(appSvcDocDtos != null){
-           for (AppSvcDocDto appSvcDocDto : appSvcDocDtos){
-               LicDocumentRelationDto licDocumentRelationDto = new LicDocumentRelationDto();
-               DocumentDto documentDto = new DocumentDto();
-               documentDto.setDocName(appSvcDocDto.getDocName());
-               documentDto.setDocSize(appSvcDocDto.getDocSize());
-               documentDto.setFileRepoId(appSvcDocDto.getFileRepoId());
-               documentDto.setSubmitDt(appSvcDocDto.getSubmitDt());
-               documentDto.setSubmitBy(appSvcDocDto.getSubmitBy());
-               licDocumentRelationDto.setDocumentDto(documentDto);
-               LicDocumentDto licDocumentDto = new LicDocumentDto();
-               licDocumentDto.setSvcDocId(appSvcDocDto.getSvcDocId());
-               licDocumentDto.setDocType(Integer.valueOf(ApplicationConsts.APPLICATION_DOC_TYPE_SERVICE));
-               //set the old premises Id ,get the releation when the save.
-               String premisesId = getPremisesByAppPremCorreId(appPremisesCorrelationDtos,appSvcDocDto.getAppPremCorreId());
-               if(StringUtil.isEmpty(premisesId)){
-                   log.info(StringUtil.changeForLog("The premisesId is null"));
-                 continue;
-               }
-               licDocumentDto.setLicPremId(premisesId);
-               licDocumentRelationDto.setLicDocumentDto(licDocumentDto);
-               licDocumentRelationDtos.add(licDocumentRelationDto);
-           }
+            for (AppSvcDocDto appSvcDocDto : appSvcDocDtos){
+                LicDocumentRelationDto licDocumentRelationDto = new LicDocumentRelationDto();
+                DocumentDto documentDto = MiscUtil.transferEntityDto(appSvcDocDto,DocumentDto.class);
+                documentDto.setId(null);
+                licDocumentRelationDto.setDocumentDto(documentDto);
+                LicDocumentDto licDocumentDto = new LicDocumentDto();
+                licDocumentDto.setSvcDocId(appSvcDocDto.getSvcDocId());
+                licDocumentDto.setDocType(Integer.valueOf(ApplicationConsts.APPLICATION_DOC_TYPE_SERVICE));
+                //set the old premises Id ,get the releation when the save.
+                String premisesId = getPremisesByAppPremCorreId(appPremisesCorrelationDtos,appSvcDocDto.getAppPremCorreId());
+                if(StringUtil.isEmpty(premisesId)){
+                    log.info(StringUtil.changeForLog("The premisesId is null"));
+                    continue;
+                }
+                licDocumentDto.setLicPremId(premisesId);
+                licDocumentRelationDto.setLicDocumentDto(licDocumentDto);
+                licDocumentRelationDtos.add(licDocumentRelationDto);
+            }
         }
         log.info(StringUtil.changeForLog("The getLicDocumentRelationDto end ..."));
         return licDocumentRelationDtos;
@@ -1263,7 +1339,7 @@ public class LicenceApproveBatchjob {
     private String getPremisesByAppPremCorreId(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos,String appPremCorreId){
         String result = null;
         if(StringUtil.isEmpty(appPremCorreId) || appPremisesCorrelationDtos == null || appPremisesCorrelationDtos.size() == 0){
-          return  result;
+            return  result;
         }
         for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
             if(appPremCorreId.equals(appPremisesCorrelationDto.getId())){
@@ -1277,15 +1353,15 @@ public class LicenceApproveBatchjob {
 
     private String getAppPremCorrecId(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos,String premisesId){
         String result = null;
-          if(appPremisesCorrelationDtos == null || appPremisesCorrelationDtos.size() == 0 || StringUtil.isEmpty(premisesId)){
+        if(appPremisesCorrelationDtos == null || appPremisesCorrelationDtos.size() == 0 || StringUtil.isEmpty(premisesId)){
             return  result;
-          }
-          for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
-              if(premisesId.equals(appPremisesCorrelationDto.getAppGrpPremId())){
-                 result = appPremisesCorrelationDto.getId();
-              }
-          }
-          return result;
+        }
+        for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
+            if(premisesId.equals(appPremisesCorrelationDto.getAppGrpPremId())){
+                result = appPremisesCorrelationDto.getId();
+            }
+        }
+        return result;
     }
 
     private LicenceDto getLicenceDto(String licenceNo,String svcName,String svcType,ApplicationGroupDto applicationGroupDto,
@@ -1310,8 +1386,8 @@ public class LicenceApproveBatchjob {
             licenceDto.setOriginLicenceId(originLicenceDto.getId());
             licenceDto.setMigrated(originLicenceDto.isMigrated());
             licenceDto.setLicenceNo(originLicenceDto.getLicenceNo());
-            licenceDto.setVersion(originLicenceDto.getVersion()+1);
             licenceDto.setFeeRetroNeeded(originLicenceDto.isFeeRetroNeeded());
+            licenceDto.setVersion(originLicenceDto.getVersion()+1);
             licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
             if(applicationGroupDto!=null){
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
@@ -1330,10 +1406,10 @@ public class LicenceApproveBatchjob {
                     startDate = DateUtils.addDays(startDate,1);
                     log.info(StringUtil.changeForLog("The  getLicenceDto startDate is " + startDate));
                 }else if(appPremisesRecommendationDto != null){
-                        Date date= appPremisesRecommendationDto.getRecomInDate();
-                        if(date !=null){
-                            startDate = date;
-                        }
+                    Date date= appPremisesRecommendationDto.getRecomInDate();
+                    if(date !=null){
+                        startDate = date;
+                    }
                 }
                 log.debug(StringUtil.changeForLog("The startDate is -->:"+startDate));
                 if(startDate == null){
@@ -1345,12 +1421,12 @@ public class LicenceApproveBatchjob {
                 if(!StringUtil.isEmpty(relLicenceNo)){
                     LicenceDto relLicenceDto = licenceService.getLicenceDtoByLicNo(relLicenceNo);
                     if(relLicenceDto!=null){
-                     Date relExpiryDate = relLicenceDto.getExpiryDate();
-                     log.info(StringUtil.changeForLog("The relExpiryDate is -->:" + relExpiryDate));
-                     if(expiryDate.after(relExpiryDate)){
-                         expiryDate = relExpiryDate;
-                     }
-                     licenceDto.setRelLicenceId(relLicenceDto.getRelLicenceId());
+                        Date relExpiryDate = relLicenceDto.getExpiryDate();
+                        log.info(StringUtil.changeForLog("The relExpiryDate is -->:" + relExpiryDate));
+                        if(expiryDate.after(relExpiryDate)){
+                            expiryDate = relExpiryDate;
+                        }
+                        licenceDto.setRelLicenceId(relLicenceDto.getRelLicenceId());
                     }
                 }
                 licenceDto.setExpiryDate(expiryDate);
@@ -1406,7 +1482,7 @@ public class LicenceApproveBatchjob {
             licenseeDto = new LicenseeDto();
         }
         log.info(StringUtil.changeForLog("The  getOrganizationIdBylicenseeId end ..."));
-       return licenseeDto;
+        return licenseeDto;
     }
 
 
@@ -1448,7 +1524,7 @@ public class LicenceApproveBatchjob {
                     log.warn(StringUtil.changeForLog("There is the null in the List<ApplicationListDto>"));
                 }
             }else{
-             log.warn(StringUtil.changeForLog("There is the null in the List<ApplicationLicenceDto>"));
+                log.warn(StringUtil.changeForLog("There is the null in the List<ApplicationLicenceDto>"));
             }
         }
         result.addAll(set);
@@ -1459,7 +1535,7 @@ public class LicenceApproveBatchjob {
     private HcsaServiceDto getHcsaServiceDtoByServiceId(List<HcsaServiceDto> hcsaServiceDtos,String serviceId){
         HcsaServiceDto result = null;
         if(StringUtil.isEmpty(serviceId)){
-           return  result;
+            return  result;
         }
         for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
             if(serviceId.equals(hcsaServiceDto.getId())){
