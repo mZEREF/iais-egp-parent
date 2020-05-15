@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -14,7 +13,7 @@ import org.springframework.http.HttpHeaders;
 
 public class EicGatewayClientFallBack implements EicGatewayClient {
 	@Override
-	public FeignResponseEntity<SystemParameterDto> saveSystemParameterFe(SystemParameterDto systemParameterDto, String date, String authorization, String dateSec, String authorizationSec) {
+	public FeignResponseEntity<String> saveSystemParameterFe(SystemParameterDto systemParameterDto, String date, String authorization, String dateSec, String authorizationSec) {
 		FeignResponseEntity entity = new FeignResponseEntity<>();
 		HttpHeaders headers = new HttpHeaders();
 		entity.setHeaders(headers);

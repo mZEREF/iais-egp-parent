@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 		fallback = EicGatewayClientFallBack.class)
 public interface EicGatewayClient {
 	@PutMapping(value = "/v1/sys-params",consumes = MediaType.APPLICATION_JSON_VALUE)
-	FeignResponseEntity<SystemParameterDto> saveSystemParameterFe(@RequestBody SystemParameterDto systemParameterDto,
+	FeignResponseEntity<String> saveSystemParameterFe(@RequestBody SystemParameterDto systemParameterDto,
 	                                                      @RequestHeader("date") String date,
 	                                                      @RequestHeader("authorization") String authorization,
 	                                                      @RequestHeader("date-Secondary") String dateSec,

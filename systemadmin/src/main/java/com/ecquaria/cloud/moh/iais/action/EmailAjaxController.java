@@ -33,7 +33,7 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequestMapping("/emailAjax")
-public class emailAjaxController {
+public class EmailAjaxController {
 
     @Autowired
     private DistributionListService distributionListService;

@@ -47,7 +47,6 @@ public class NonWorkingDayAjaxController {
     @RequestMapping(value = "change.do", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
-        String groupNo = request.getParameter("groupno");
         Map<String, Object> map = new HashMap<>();
 
         String nonWkrDayId = ParamUtil.getMaskedString(request, NON_WKR_DAY_ID_ATTR);
