@@ -86,6 +86,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -338,9 +339,16 @@ public class NewApplicationDelegator {
             }
 
             List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
+            String licenceNo = appSubmissionDto.getLicenceNo();
             for(AppGrpPremisesDto appGrpPremisesDto :appGrpPremisesDtoList1){
                 String hciCode = appGrpPremisesDto.getHciCode();
                 List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(hciCode);
+                for(LicenceDto licenceDto : licenceDtoByHciCode){
+                    if(licenceDto.getLicenceNo().equals(licenceNo)){
+                        licenceDtoByHciCode.remove(licenceDto);
+                        break;
+                    }
+                }
                 appGrpPremisesDto.setLicenceDtos(licenceDtoByHciCode);
             }
 
@@ -458,9 +466,10 @@ public class NewApplicationDelegator {
     public void doPremises(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doPremises start ...."));
         String[] licenceNames = ParamUtil.getMaskedStrings(bpc.request, "licenceName");
+        List<String> list = Arrays.asList(licenceNames);
         // selcet licence to do
         if(licenceNames!=null){
-            bpc.request.getSession().setAttribute("","");
+            bpc.request.getSession().setAttribute("selectLicence",list);
         }
         //gen dto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);

@@ -943,6 +943,14 @@ public class RequestForChangeMenuDelegator {
                 if(StringUtil.isEmpty(draftNo)){
                     appSubmissionService.setDraftNo(appSubmissionDtoByLicenceId);
                 }
+                if(grpLic){
+                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
+                    if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+                        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                            appGrpPremisesDto.setGroupLicenceFlag(string);
+                        }
+                    }
+                }
                 appSubmissionDtoByLicenceId.setGroupLic(grpLic);
                 if(0.0==total){
                     appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
