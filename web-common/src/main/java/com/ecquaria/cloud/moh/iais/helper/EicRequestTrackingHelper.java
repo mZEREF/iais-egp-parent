@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.client.AppEicClient;
-import com.ecquaria.cloud.moh.iais.client.EicOrgTrackingClient;
+import com.ecquaria.cloud.moh.iais.client.OrgEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -24,12 +24,12 @@ import java.util.UUID;
 public final class EicRequestTrackingHelper {
 
     @Autowired
-    private EicOrgTrackingClient orgTrackingClient;
+    private OrgEicClient orgTrackingClient;
 
     @Autowired
     private AppEicClient appEicClient;
 
-    public EicOrgTrackingClient getOrgTrackingClient() {
+    public OrgEicClient getOrgTrackingClient() {
         return this.orgTrackingClient;
     }
 
@@ -43,6 +43,7 @@ public final class EicRequestTrackingHelper {
         EicRequestTrackingDto eicRequestTrackingDto = new EicRequestTrackingDto();
         String refNo = UUID.randomUUID().toString();
 
+        log.info(StringUtil.changeForLog("eic client request tracking " + client));
         log.info(StringUtil.changeForLog("new eic client ref number" + refNo));
 
         eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
