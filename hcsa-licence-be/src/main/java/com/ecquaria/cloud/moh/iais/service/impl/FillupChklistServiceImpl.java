@@ -1373,5 +1373,15 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     public  String[]  getStringsByHHDD(String dateString){
         return StringUtil.isEmpty(dateString) ? null : dateString.split(" : ");
     }
-
+    @Override
+    public  InspectionFDtosDto getInspectionFDtosDtoOnlyForChecklistLetter(String refNo){
+        InspectionFDtosDto serListDto = new InspectionFDtosDto();
+        AppPremisesSpecialDocDto appPremisesSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(refNo).getEntity();
+        if(appPremisesSpecialDocDto != null){
+            serListDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto );
+            serListDto.setOldFileGuid(appPremisesSpecialDocDto.getFileRepoId());
+            serListDto.setCopyAppPremisesSpecialDocDto(getCopyAppPremisesSpecialDocDtoByAppPremisesSpecialDocDto(appPremisesSpecialDocDto));
+        }
+        return serListDto;
+    }
 }
