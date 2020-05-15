@@ -46,12 +46,14 @@ public class WithdrawalDelegator {
 
     private String withdrawAppId;
 
+    private String withdrawAppNo;
+
     public void start(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("****The Start Step****"));
-        String appNo = ParamUtil.getMaskedString(bpc.request, "withdrawAppNo");
+        withdrawAppNo = ParamUtil.getMaskedString(bpc.request, "withdrawAppNo");
         withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
-        if (!StringUtil.isEmpty(appNo)){
-            ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", appNo);
+        if (!StringUtil.isEmpty(withdrawAppNo)){
+            ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawAppNo);
         }
         AuditTrailHelper.auditFunction("Withdrawal Application", "Withdrawal Application");
     }
@@ -75,6 +77,8 @@ public class WithdrawalDelegator {
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
         CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
         withdrawnDto.setApplicationId(withdrawAppId);
+        withdrawnDto.setApplicationNo(withdrawAppNo);
+        withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
         withdrawnDto.setWithdrawnReason(withdrawnReason);
         if ("WDR005".equals(withdrawnReason)){
             String withdrawnRemarks = ParamUtil.getRequestString(bpc.request, "withdrawnRemarks");
@@ -99,11 +103,9 @@ public class WithdrawalDelegator {
                 withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
                 withdrawnDto.setFileRepoId(fileRepoId);
             }
-            ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
-            applicationGroupDto.setLicenseeId(loginContext.getLicenseeId());
-            applicationGroupDto.setSubmitBy(loginContext.getUserId());
-            withdrawnDto.setApplicationGroupDto(applicationGroupDto);
-            withdrawalService.saveWithdrawn(withdrawnDto);
+            List<WithdrawnDto> withdrawnDtoList = IaisCommonUtils.genNewArrayList();
+            withdrawnDtoList.add(withdrawnDto);
+            withdrawalService.saveWithdrawn(withdrawnDtoList);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         }
     }
