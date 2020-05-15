@@ -118,11 +118,11 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
 
     private int getCaColumMj(HcsaRiskInspectionMatrixDto fin, String mjleftmod, String mjlefthigh, String mjrightlow, String mjrightmod, String mjStartDate, String mjEndDate) {
         int editNum = 0;
-        if(!fin.getBaseMjEffectiveDate().equals(mjStartDate)){
+        if(!fin.getBaseMjEffectiveDate().equals(mjStartDate) && !(StringUtil.isEmpty(fin.getBaseMjEffectiveDate()) &&StringUtil.isEmpty(mjStartDate))){
             editNum++;
         }
         fin.setDoMjEffectiveDate(mjStartDate);
-        if(!fin.getBaseMjEndDate().equals(mjEndDate)){
+        if(!fin.getBaseMjEndDate().equals(mjEndDate) && !(StringUtil.isEmpty(fin.getBaseMjEndDate()) &&StringUtil.isEmpty(mjEndDate))){
             editNum++;
         }
         fin.setDoMjEndDate(mjEndDate);
@@ -147,11 +147,11 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
 
     private int getCaColumMi(HcsaRiskInspectionMatrixDto fin, String mileftmod, String milefthigh, String mirightlow, String mirightmod, String miStartDate, String miEndDate) {
         int editNum = 0;
-        if(!fin.getBaseMiEffectiveDate().equals(miStartDate)){
+        if(!fin.getBaseMiEffectiveDate().equals(miStartDate)  && !(StringUtil.isEmpty(fin.getBaseMiEffectiveDate()) &&StringUtil.isEmpty(miStartDate))){
             editNum++;
         }
         fin.setDoMiEffectiveDate(miStartDate);
-        if(!fin.getBaseMiEndDate().equals(miEndDate)){
+        if(!fin.getBaseMiEndDate().equals(miEndDate) &&  !(StringUtil.isEmpty(fin.getBaseMiEndDate()) &&StringUtil.isEmpty(miEndDate))){
             editNum++;
         }
         fin.setDoMiEndDate(miEndDate);
@@ -176,11 +176,11 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
 
     private int getCaColumCa(HcsaRiskInspectionMatrixDto fin, String caleftmod, String calefthigh, String carightlow, String carightmod, String caStartDate, String caEndDate) {
         int editNum = 0;
-        if(!fin.getBaseCEffectiveDate().equals(caStartDate)){
+        if(!fin.getBaseCEffectiveDate().equals(caStartDate) && !(StringUtil.isEmpty(fin.getBaseCEffectiveDate()) &&StringUtil.isEmpty(caStartDate))){
             editNum++;
         }
         fin.setDoCaEffectiveDate(caStartDate);
-        if(!fin.getBaseCEndDate().equals(caEndDate)){
+        if(!fin.getBaseCEndDate().equals(caEndDate) && !(StringUtil.isEmpty(fin.getBaseCEndDate()) &&StringUtil.isEmpty(caEndDate))){
             editNum++;
         }
         fin.setDoCaEndDate(caEndDate);

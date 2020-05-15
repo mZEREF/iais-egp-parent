@@ -25,6 +25,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -79,7 +81,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
     }
     public void therholdVad(Map<String, String> errMap,HcsaRiskFinanceMatrixDto fdto){
         if(StringUtil.isEmpty(fdto.getInThershold())){
-            errMap.put(fdto.getServiceCode()+"inThershold","UC_CHKLMD001_ERR001");
+            errMap.put(fdto.getServiceCode()+"inThershold",MessageUtil.replaceMessage("ERR0009","Threshold","The field"));
             fdto.setInThersholderr(true);
         }else{
             try {
@@ -300,36 +302,36 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
     public void mandatoryCaseCounthVad(Map<String, String> errMap,HcsaRiskFinanceMatrixDto fdto){
         //in
         if(StringUtil.isEmpty(fdto.getInLeftModCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"inLeftModCaseCounth","UC_CHKLMD001_ERR001");
+            errMap.put(fdto.getServiceCode()+"inLeftModCaseCounth",MessageUtil.replaceMessage("ERR0009","Minimum Number of NCs","The field"));
             fdto.setInLeftModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getInRightModCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"inRightModCaseCounth()","UC_CHKLMD001_ERR001");
+            errMap.put(fdto.getServiceCode()+"inRightModCaseCounth",MessageUtil.replaceMessage("ERR0009","Maximum Number of NCs","The field"));
             fdto.setInRightModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getInRightLowCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"inRightLowCaseCounth","UC_CHKLMD001_ERR001");
+            errMap.put(fdto.getServiceCode()+"inRightLowCaseCounth",MessageUtil.replaceMessage("ERR0009","Maximum Number of NCs","The field"));
             fdto.setInRightLowCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getInLeftHighCaseCount())){
-            errMap.put(fdto.getServiceCode()+"inLeftHighCaseCounth","UC_CHKLMD001_ERR001");
+            errMap.put(fdto.getServiceCode()+"inLeftHighCaseCounth",MessageUtil.replaceMessage("ERR0009","Minimum Number of NCs","The field"));
             fdto.setInLeftHighCaseCounterr(true);
         }
         //pr
         if(StringUtil.isEmpty(fdto.getPrLeftModCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"prLeftModCaseCounth","UC_CHKLMD001_ERR001");
+            errMap.put(fdto.getServiceCode()+"prLeftModCaseCounth",MessageUtil.replaceMessage("ERR0009","Minimum Number of NCs","The field"));
             fdto.setPrLeftModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getPrRightModCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"prRightModCaseCounth()","UC_CHKLMD001_ERR001");
+            errMap.put(fdto.getServiceCode()+"prRightModCaseCounth",MessageUtil.replaceMessage("ERR0009","Maximum Number of NCs","The field"));
             fdto.setPrRightModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getPrRightLowCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"prRightLowCaseCounth","UC_CHKLMD001_ERR001");
+            errMap.put(fdto.getServiceCode()+"prRightLowCaseCounth",MessageUtil.replaceMessage("ERR0009","Maximum Number of NCs","The field"));
             fdto.setPrRightLowCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getPrLeftHighCaseCount())){
-            errMap.put(fdto.getServiceCode()+"prLeftHighCaseCounth","UC_CHKLMD001_ERR001");
+            errMap.put(fdto.getServiceCode()+"prLeftHighCaseCounth",MessageUtil.replaceMessage("ERR0009","Minimum Number of NCs","The field"));
             fdto.setPrLeftHighCaseCounterr(true);
         }
     }
@@ -385,13 +387,13 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
     public void doSpecialDateFlag(Map<String, String> errMap,HcsaRiskFinanceMatrixDto fdto,boolean isIn){
         try {
             Date inEffDate = Formatter.parseDate(fdto.getInEffectiveStartDate());
-            Date inEndDate = Formatter.parseDate(fdto.getInEffectiveEndDate());
+           // Date inEndDate = Formatter.parseDate(fdto.getInEffectiveEndDate());
             Date prEffDate = Formatter.parseDate(fdto.getPrEffectiveStartDate());
-            Date prEndDate = Formatter.parseDate(fdto.getPrEffectiveEndDate());
+          //  Date prEndDate = Formatter.parseDate(fdto.getPrEffectiveEndDate());
             Date baseInEffDate = Formatter.parseDate(fdto.getBaseInEffectiveStartDate());
-            Date baseInEndDate = Formatter.parseDate(fdto.getBaseInEffectiveEndDate());
+          //  Date baseInEndDate = Formatter.parseDate(fdto.getBaseInEffectiveEndDate());
             Date basePrEffDate = Formatter.parseDate(fdto.getBasePrEffectiveStartDate());
-            Date basePrEndDate = Formatter.parseDate(fdto.getBasePrEffectiveEndDate());
+          //  Date basePrEndDate = Formatter.parseDate(fdto.getBasePrEffectiveEndDate());
             if(inEffDate.getTime()<baseInEffDate.getTime()&&isIn){
                 errMap.put(fdto.getServiceCode() + "inEffDate", "Effective Date should later than Previous version");
                 fdto.setInEffectiveStartDateerr(true);
@@ -411,12 +413,12 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             flag = false;
             if(isIn){
                 if(inEdit == 1){
-                    errMap.put(serviceCode + "inEffDate", "ERR0012");
+                    errMap.put(serviceCode + "inEffDate",MessageUtil.replaceMessage("ERR0012","Effective Start Date","Effective Date"));
                     fdto.setInEffectiveStartDateerr(true);
                 }
             }else {
                 if(prEdit == 1){
-                    errMap.put(serviceCode + "prEffDate", "ERR0012");
+                    errMap.put(serviceCode + "prEffDate", MessageUtil.replaceMessage("ERR0012","Effective Start Date","Effective Date"));
                     fdto.setPrEffectiveStartDateerr(true);
                 }
             }
@@ -424,12 +426,12 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             flag = false;
             if(isIn){
                 if(inEdit == 1){
-                    errMap.put(serviceCode + "inEndDate", "Effective Date should be ealier than EndDate");
+                    errMap.put(serviceCode + "inEndDate", "ERR0016");
                     fdto.setInEffectiveEndDateerr(true);
                 }
             }else{
                 if(prEdit == 1){
-                    errMap.put(serviceCode + "prEndDate", "Effective Date should be ealier than EndDate");
+                    errMap.put(serviceCode + "prEndDate", "ERR0016");
                     fdto.setPrEffectiveEndDateerr(true);
                 }
             }
@@ -441,10 +443,10 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         if(StringUtil.isEmpty(strEffDate)){
             vadFlag = false;
             if(isIn){
-                errMap.put(serviceCode+"inEffDate","UC_CHKLMD001_ERR001");
+                errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field"));
                 fdto.setInEffectiveStartDateerr(true);
             }else{
-                errMap.put(serviceCode+"prEffDate","UC_CHKLMD001_ERR001");
+                errMap.put(serviceCode+"prEffDate",MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field"));
                 fdto.setPrEffectiveStartDateerr(true);
             }
         }else{
@@ -452,10 +454,10 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                Formatter.parseDate(strEffDate);
            }catch (Exception e){
                if(isIn){
-                   errMap.put(serviceCode+"inEffDate","Date Format Error");
+                   errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea"));
                    fdto.setInEffectiveStartDateerr(true);
                }else{
-                   errMap.put(serviceCode+"prEffDate","Date Format Error");
+                   errMap.put(serviceCode+"prEffDate",MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea"));
                    fdto.setPrEffectiveStartDateerr(true);
                }
                vadFlag = false;
@@ -464,22 +466,21 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         if(StringUtil.isEmpty(strEndDate)){
             vadFlag = false;
             if(isIn){
-                errMap.put(serviceCode+"inEndDate","UC_CHKLMD001_ERR001");
+                errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("ERR0009","Effective End Date","The field"));
                 fdto.setInEffectiveEndDateerr(true);
             }else{
-                errMap.put(serviceCode+"prEndDate","UC_CHKLMD001_ERR001");
+                errMap.put(serviceCode+"prEndDate",MessageUtil.replaceMessage("ERR0009","Effective End Date","The field"));
                 fdto.setPrEffectiveEndDateerr(true);
             }
         }else{
             try {
                 Formatter.parseDate(strEndDate);
             }catch (Exception e){
-                vadFlag = false;
                 if(isIn){
-                    errMap.put(serviceCode+"inEndDate","Date Format Error");
+                    errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea"));
                     fdto.setInEffectiveEndDateerr(true);
                 }else{
-                    errMap.put(serviceCode+"prEndDate","Date Format Error");
+                    errMap.put(serviceCode+"prEndDate",MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea"));
                     fdto.setPrEffectiveEndDateerr(true);
                 }
                 return false;

@@ -83,11 +83,11 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
                     isInEditNum++;
                 }
                 lea.setAdLeftHighCaseCounth(inlefthigh);
-                if(!lea.getBaseAdEffectiveStartDate().equals(inStartDate)){
+                if(!lea.getBaseAdEffectiveStartDate().equals(inStartDate) && !(StringUtil.isEmpty(lea.getBaseAdEffectiveStartDate()) && StringUtil.isEmpty(inStartDate))){
                     isInEditNum++;
                 }
                 lea.setAdEffectiveStartDate(inStartDate);
-                if(!lea.getBaseAdEffectiveEndDate().equals(inEndDate)){
+                if(!lea.getBaseAdEffectiveEndDate().equals(inEndDate) && !(StringUtil.isEmpty(lea.getBaseAdEffectiveEndDate()) && StringUtil.isEmpty(inEndDate))){
                     isInEditNum++;
                 }
                 lea.setAdEffectiveEndDate(inEndDate);
@@ -120,11 +120,11 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
                     prInEditNum++;
                 }
                 lea.setDpLeftHighCaseCounth(prlefthigh);
-                if(!lea.getBaseDpEffectiveStartDate().equals(prStartDate)){
+                if(!lea.getBaseDpEffectiveStartDate().equals(prStartDate) && !(StringUtil.isEmpty(lea.getBaseDpEffectiveStartDate()) && StringUtil.isEmpty(prStartDate))){
                     prInEditNum++;
                 }
                 lea.setDpEffectiveStartDate(prStartDate);
-                if(!lea.getBaseDpEffectiveEndDate().equals(prEndDate)){
+                if(!lea.getBaseDpEffectiveEndDate().equals(prEndDate)  && !(StringUtil.isEmpty(lea.getBaseDpEffectiveEndDate()) && StringUtil.isEmpty(prEndDate))){
                     prInEditNum++;
                 }
                 lea.setDpEffectiveEndDate(prEndDate);

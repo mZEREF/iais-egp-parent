@@ -96,7 +96,7 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
         } else if (endDate.getTime() < effDate.getTime()) {
             flag = false;
             if (inEdit == 1) {
-                errMap.put(serviceCode + "inEndDate", "Effective Date should be ealier than EndDate");
+                errMap.put(serviceCode + "inEndDate", "ERR0016");
             }
         }
         return flag;

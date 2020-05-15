@@ -64,7 +64,7 @@ public class HcsaRiskLegislativeConfigDelegator {
         log.debug(StringUtil.changeForLog("the doNext start ...."));
         HttpServletRequest request = bpc.request;
         RiskLegislativeShowDto legislativeShowDto = (RiskLegislativeShowDto)ParamUtil.getSessionAttr(request, "legShowDto");
-        legislativeShowDto = getDataFrompage(request, legislativeShowDto);
+        getDataFrompage(request, legislativeShowDto);
         HcsaLegislativeValidate financialRiskValidate = new HcsaLegislativeValidate();
         Map<String, String> errMap = financialRiskValidate.validate(request);
         if(errMap.isEmpty()){

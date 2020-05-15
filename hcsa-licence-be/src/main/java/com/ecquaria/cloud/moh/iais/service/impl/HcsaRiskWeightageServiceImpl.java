@@ -72,11 +72,11 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
                 editNum++;
             }
             wDto.setDoLegislative(legislative);
-            if(!wDto.getBaseEffectiveDate().equals(inStartDate)){
+            if(!wDto.getBaseEffectiveDate().equals(inStartDate) && !(StringUtil.isEmpty(wDto.getBaseEffectiveDate()) && StringUtil.isEmpty(inStartDate))){
                 editNum++;
             }
             wDto.setDoEffectiveDate(inStartDate);
-            if(!wDto.getBaseEndDate().equals(inEndDate)){
+            if(!wDto.getBaseEndDate().equals(inEndDate)  && !(StringUtil.isEmpty(wDto.getBaseEndDate()) && StringUtil.isEmpty(inEndDate))){
                 editNum++;
             }
             wDto.setDoEndDate(inEndDate);

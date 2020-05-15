@@ -38,8 +38,8 @@
                                         <th>Source</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
-                                        <th>Minimum Number of Cases</th>
-                                        <th>Maximum Number of Cases</th>
+                                        <th>Minimum Number of NCs</th>
+                                        <th>Maximum Number of NCs</th>
                                         <th>Risk Rating</th>
                                     </tr>
                                     </thead>
@@ -63,20 +63,14 @@
                                                 <p>
                                                     <iais:select name="${lea.svcCode}inthershold" id="${lea.svcCode}inthershold" options="yearSelectOptions" firstOption="-" value="${lea.adThershold}"></iais:select>
                                                 </p>
-                                                <c:set value = "error_${lea.svcCode}inThershold" var = "inther"/>
-                                                <span class="error-msg" id="<c:out value="${inther}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <input type="hidden" id="<c:out value="${lea.svcCode}"></c:out>insource" name="<c:out value="${lea.svcCode}"></c:out>insource" value="LGRAT001">
                                                 <p>Audit</p>
                                             </td>
                                             <td><iais:datePicker id = "${lea.svcCode}instartdate" name = "${lea.svcCode}instartdate" value="${lea.adEffectiveStartDate}"></iais:datePicker>
-                                                <c:set value = "error_${lea.svcCode}inEffDate" var = "inEffdate"/>
-                                                <span class="error-msg" id="<c:out value="${inEffdate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td><iais:datePicker id = "${lea.svcCode}inenddate" name = "${lea.svcCode}inenddate" value="${lea.adEffectiveEndDate}"></iais:datePicker>
-                                                <c:set value = "error_${lea.svcCode}inEndDate" var = "inEnddate"/>
-                                                <span class="error-msg" id="<c:out value="${inEnddate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
@@ -113,6 +107,12 @@
                                         </tr>
                                         <tr>
                                             <td colspan="8">
+                                                <c:set value = "error_${lea.svcCode}inThershold" var = "inther"/>
+                                                <span class="error-msg" id="<c:out value="${inther}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${lea.svcCode}inEffDate" var = "inEffdate"/>
+                                                <span class="error-msg" id="<c:out value="${inEffdate}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${lea.svcCode}inEndDate" var = "inEnddate"/>
+                                                <span class="error-msg" id="<c:out value="${inEnddate}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${lea.svcCode}inRightLowCaseCounth" var = "inrightlow"/>
                                                 <span class="error-msg" id="<c:out value="${inrightlow}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${lea.svcCode}inLeftModCaseCounth" var = "inleftmod"/>
@@ -135,21 +135,15 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <p><input type="text" id="<c:out value="${lea.svcCode}"/>prthershold" name="<c:out value="${lea.svcCode}"/>prthershold" value="<c:out value="${lea.dpThershold}"></c:out>"></p>
-                                                <c:set value = "error_${fin.svcCode}prThershold" var = "prther"/>
-                                                <span class="error-msg" id="<c:out value="${prther}"/>" name="iaisErrorMsg"></span>
+                                                <p>     <iais:select name="${lea.svcCode}prthershold" id="${lea.svcCode}prthershold" options="yearSelectOptions" firstOption="-" value="${lea.dpThershold}"></iais:select></p>
                                             </td>
                                             <td>
                                                 <input type="hidden" id="<c:out value="${lea.svcCode}"></c:out>prsource" name="<c:out value="${lea.svcCode}"></c:out>prsource" value="SOURCE002">
                                                 <p>Disciplinary</p>
                                             </td>
                                             <td><iais:datePicker id = "${lea.svcCode}prstartdate" name = "${lea.svcCode}prstartdate" value="${lea.dpEffectiveStartDate}"></iais:datePicker>
-                                                <c:set value = "error_${lea.svcCode}prEffDate" var = "prEffDate"/>
-                                                <span class="error-msg" id="<c:out value="${prEffDate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td><iais:datePicker id = "${lea.svcCode}prenddate" name = "${lea.svcCode}prenddate" value="${lea.dpEffectiveEndDate}"></iais:datePicker>
-                                                <c:set value = "error_${lea.svcCode}prEndDate" var = "prEndDate"/>
-                                                <span class="error-msg" id="<c:out value="${prEndDate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
@@ -183,6 +177,12 @@
 
                                         </tr>
                                         <tr> <td colspan="8">
+                                            <c:set value = "error_${fin.svcCode}prThershold" var = "prther"/>
+                                            <span class="error-msg" id="<c:out value="${prther}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${lea.svcCode}prEffDate" var = "prEffDate"/>
+                                            <span class="error-msg" id="<c:out value="${prEffDate}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${lea.svcCode}prEndDate" var = "prEndDate"/>
+                                            <span class="error-msg" id="<c:out value="${prEndDate}"/>" name="iaisErrorMsg"></span>
                                             <c:set value = "error_${lea.svcCode}prRightLowCaseCounth" var = "prrightlow"/>
                                             <span class="error-msg" id="<c:out value="${prrightlow}"/>" name="iaisErrorMsg"></span>
                                             <c:set value = "error_${lea.svcCode}prLeftModCaseCounth" var = "prleftmod"/>

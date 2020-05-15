@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -116,7 +118,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         } else if (endDate.getTime() < effDate.getTime()) {
             flag = false;
             if (inEdit == 1) {
-                errMap.put(serviceCode + "inEndDate", "Effective Date should be ealier than EndDate");
+                errMap.put(serviceCode + "inEndDate", "ERR0016");
             }
         }
         return flag;
@@ -126,24 +128,24 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         boolean vadFlag = true;
         if(StringUtil.isEmpty(strEffDate)){
             vadFlag = false;
-            errMap.put(serviceCode+"inEffDate","Effective Date is mandatory");
+            errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field"));
         }else{
             try {
                 Formatter.parseDate(strEffDate);
             }catch (Exception e){
-                errMap.put(serviceCode+"inEffDate","Date Format Error");
+                errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea"));
                 vadFlag = false;
             }
         }
         if(StringUtil.isEmpty(strEndDate)){
             vadFlag = false;
-            errMap.put(serviceCode+"inEndDate","EndDate is mandatory");
+            errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("ERR0009","Effective End Date","The field"));
         }else{
             try {
                 Formatter.parseDate(strEndDate);
             }catch (Exception e){
                 vadFlag = false;
-                errMap.put(serviceCode+"inEndDate","Date Format Error");
+                errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea"));
                 return false;
             }
         }
@@ -152,7 +154,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
 
     public void therholdVad(Map<String, String> errMap,HcsaRiskLegislativeMatrixDto fdto){
         if(StringUtil.isEmpty(fdto.getDoThershold())){
-            errMap.put(fdto.getSvcCode()+"inThershold","Thershold is mandatory");
+            errMap.put(fdto.getSvcCode()+"inThershold",MessageUtil.replaceMessage("ERR0009","Thershold","The field"));
         }else{
             try {
                 Integer thold = Integer.parseInt(fdto.getDoThershold());

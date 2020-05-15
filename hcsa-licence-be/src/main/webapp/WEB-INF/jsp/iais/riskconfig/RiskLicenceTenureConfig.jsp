@@ -79,12 +79,8 @@
                                                 </c:choose>
                                             </td>
                                             <td width="22%"><iais:datePicker id = "${ten.svcCode}instartdate" name = "${ten.svcCode}instartdate" value="${ten.doEffectiveDate}"></iais:datePicker>
-                                                <c:set value = "error_${ten.svcCode}inEffDate" var = "inEffdate"/>
-                                                <span class="error-msg" id="<c:out value="${inEffdate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td width="22%"><iais:datePicker id = "${ten.svcCode}inenddate" name = "${ten.svcCode}inenddate" value="${ten.doEndDate}"></iais:datePicker>
-                                                <c:set value = "error_${ten.svcCode}inEndDate" var = "inEnddate"/>
-                                                <span class="error-msg" id="<c:out value="${inEnddate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td  width="8%">
                                                 <c:choose>
@@ -94,7 +90,6 @@
                                                                 <c:set var="tenName" value="${ten.svcCode}${sub.orderNum}"> </c:set>
                                                                 <div style="width: 120px;float: left" id = "<c:out value="${tenName}leftdiv"/>">
                                                                     <input type="text" maxlength="5" name="<c:out value="${tenName}left"/>" value="<c:out value="${sub.columLeft}"/>">
-                                                                    <span class="error-msg" id="error_<c:out value="${tenName}lefterr"/>" name="iaisErrorMsg"></span>
                                                                 </div>
                                                             </div>
                                                         </c:forEach>
@@ -116,7 +111,6 @@
                                                                 <c:set var="tenName" value="${ten.svcCode}${sub.orderNum}"> </c:set>
                                                                 <div style="width: 120px;float: left" id="<c:out value="${tenName}right"/>div">
                                                                     <input type="text" maxlength="5" name="<c:out value="${tenName}right"/>" value="<c:out value="${sub.columRight}"/>">
-                                                                    <span class="error-msg" id="<c:out value="error_${tenName}righterr"/>" name="iaisErrorMsg"></span>
                                                                 </div>
                                                             </div>
                                                         </c:forEach>
@@ -139,7 +133,6 @@
                                                             <div style="width: 120px;height:50px;margin-bottom:15px;" id = "<c:out value="${tenName}ltdiv"/>">
                                                                 <iais:select name="${tenName}ltYear" options="yearSelectOptions" firstOption="--" value="${sub.yearNum}" ></iais:select>
                                                             </div>
-                                                            <span class="error-msg" id="<c:out value="error_${tenName}lterr"/>" name="iaisErrorMsg"></span>
                                                         </c:forEach>
                                                     </c:when>
                                                     <c:otherwise>
@@ -156,7 +149,6 @@
                                                             <div style="width: 120px;height:50px;margin-bottom:15px;" id ="<c:out value="${tenName}timediv"/>">
                                                                 <iais:select name="${tenName}ltMonth" options="monthSelectOptions" firstOption="--" value="${sub.monthNum}" ></iais:select>
                                                             </div>
-                                                            <span class="error-msg" id="<c:out value="error_${tenName}timeerr"/>" name="iaisErrorMsg"></span>
                                                         </c:forEach>
                                                     </c:when>
                                                     <c:otherwise>
@@ -189,26 +181,23 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td  width="10%"></td>
-                                            <td  width="22%"></td>
-                                            <td width="22%"></td>
-                                            <td width="8%">
+                                            <td  colspan="7">
+                                                <c:set value = "error_${ten.svcCode}inEffDate" var = "inEffdate"/>
+                                                <span class="error-msg" id="<c:out value="${inEffdate}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${ten.svcCode}inEndDate" var = "inEnddate"/>
+                                                <span class="error-msg" id="<c:out value="${inEnddate}"/>" name="iaisErrorMsg"></span>
+                                                <span class="error-msg" id="error_<c:out value="${tenName}lefterr"/>" name="iaisErrorMsg"></span>
+                                                <span class="error-msg" id="<c:out value="error_${tenName}righterr"/>" name="iaisErrorMsg"></span>
+                                                <span class="error-msg" id="<c:out value="error_${tenName}lterr"/>" name="iaisErrorMsg"></span>
+                                                <span class="error-msg" id="<c:out value="error_${tenName}timeerr"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${ten.svcCode}maxsort" var = "maxsort"/>
                                                 <span class="error-msg" id="<c:out value="${maxsort}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td width="8%">
                                                 <c:set value = "error_${ten.svcCode}maxminsort" var = "maxminsort"/>
                                                 <span class="error-msg" id="<c:out value="${maxminsort}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td width="10%">
                                                 <c:set value = "error_${ten.svcCode}ltsort" var = "ltsort"/>
                                                 <span class="error-msg" id="<c:out value="${ltsort}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td width="10%">
                                                 <c:set value = "error_${ten.svcCode}maxSubList" var = "ltsort"/>
                                                 <span class="error-msg" id="<c:out value="${ltsort}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td width="5%">
                                                 <c:set value = "error_${ten.svcCode}maxAddList" var = "ltsort"/>
                                                 <span class="error-msg" id="<c:out value="${ltsort}"/>" name="iaisErrorMsg"></span>
                                             </td>

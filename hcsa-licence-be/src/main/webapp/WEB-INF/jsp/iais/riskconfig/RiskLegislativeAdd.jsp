@@ -36,8 +36,8 @@
                                         <th width="10%">Threshold  (X Years)</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
-                                        <th  width="10%">Minimum Number of Cases</th>
-                                        <th  width="10%">Maximum Number of Cases</th>
+                                        <th  width="10%">Minimum Number of NCs</th>
+                                        <th  width="10%">Maximum Number of NCs</th>
                                         <th>Risk Rating</th>
                                     </tr>
                                     </thead>
@@ -59,16 +59,10 @@
                                                 <p>
                                                     <iais:select name="${leg.svcCode}inthershold" id="${leg.svcCode}inthershold" options="yearSelectOptions" firstOption="-" value="${leg.doThershold}"></iais:select>
                                                 </p>
-                                                <c:set value = "error_${leg.svcCode}inThershold" var = "inther"/>
-                                                <span class="error-msg" id="<c:out value="${inther}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td><iais:datePicker id = "${leg.svcCode}instartdate" name = "${leg.svcCode}instartdate" value="${leg.doEffectiveDate}"></iais:datePicker>
-                                                <c:set value = "error_${leg.svcCode}inEffDate" var = "inEffdate"/>
-                                                <span class="error-msg" id="<c:out value="${inEffdate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td><iais:datePicker id = "${leg.svcCode}inenddate" name = "${leg.svcCode}inenddate" value="${leg.doEndDate}"></iais:datePicker>
-                                                <c:set value = "error_${leg.svcCode}inEndDate" var = "inEnddate"/>
-                                                <span class="error-msg" id="<c:out value="${inEnddate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
@@ -109,6 +103,12 @@
 
                                         </tr>
                                         <tr> <td colspan="7">
+                                            <c:set value = "error_${leg.svcCode}inThershold" var = "inther"/>
+                                            <span class="error-msg" id="<c:out value="${inther}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${leg.svcCode}inEffDate" var = "inEffdate"/>
+                                            <span class="error-msg" id="<c:out value="${inEffdate}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${leg.svcCode}inEndDate" var = "inEnddate"/>
+                                            <span class="error-msg" id="<c:out value="${inEnddate}"/>" name="iaisErrorMsg"></span>
                                             <c:set value = "error_${leg.svcCode}inRightLowCaseCounth" var = "inrightlow"/>
                                             <span class="error-msg" id="<c:out value="${inrightlow}"/>" name="iaisErrorMsg"></span>
                                             <c:set value = "error_${leg.svcCode}inLeftModCaseCounth" var = "inleftmod"/>

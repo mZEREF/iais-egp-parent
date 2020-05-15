@@ -82,4 +82,13 @@ public class MessageUtil {
                 pattern)).replace("<Time>", IaisEGPHelper.parseToString(new Date(),
                 "hh:mm"));
     }
+
+    //only replace first
+    public static String replaceMessage(String codeKey,String replaceString,String replacePart){
+        String msg = MessageUtil.getMessageDesc(codeKey);
+        if(StringUtil.isEmpty(msg))
+            return  codeKey;
+        else
+            return msg.replace(replacePart,replaceString);
+    }
 }

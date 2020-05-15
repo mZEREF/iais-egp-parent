@@ -73,11 +73,11 @@ public class HcsaRiskLegislativeServiceImpl implements HcsaRiskLegislativeServic
                 isEditNum++;
             }
             lea.setDoLeftHighCaseCounth(inlefthigh);
-            if (!lea.getBaseEffectiveDate().equals(inStartDate)) {
+            if (!lea.getBaseEffectiveDate().equals(inStartDate) && !(StringUtil.isEmpty(lea.getBaseEffectiveDate()) && StringUtil.isEmpty(inStartDate))) {
                 isEditNum++;
             }
             lea.setDoEffectiveDate(inStartDate);
-            if (!lea.getBaseEndDate().equals(inEndDate)) {
+            if (!lea.getBaseEndDate().equals(inEndDate) && !(StringUtil.isEmpty(lea.getBaseEndDate())&& StringUtil.isEmpty(inEndDate))) {
                 isEditNum++;
             }
             lea.setDoEndDate(inEndDate);

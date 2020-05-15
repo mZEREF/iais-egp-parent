@@ -37,8 +37,8 @@
                                         <th>Source</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
-                                        <th>Minimum Number of Cases</th>
-                                        <th>Maximum Number of Cases</th>
+                                        <th>Minimum Number of NCs</th>
+                                        <th>Maximum Number of NCs</th>
                                         <th>Risk Rating</th>
                                     </tr>
                                     </thead>
@@ -59,22 +59,17 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <p><input type="text" id="<c:out value="${fin.serviceCode}"/>inthershold" name="<c:out value="${fin.serviceCode}"/>inthershold"value="<c:out value="${fin.inThershold}"></c:out>">
+                                                <p>
+                                                    <iais:select name="${fin.serviceCode}inthershold" id="${fin.serviceCode}inthershold" options="yearSelectOptions" firstOption="-" value="${fin.inThershold}"></iais:select>
                                                 </p>
-                                                <c:set value = "error_${fin.serviceCode}inThershold" var = "inther"/>
-                                                <span class="error-msg" id="<c:out value="${inther}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <input type="hidden" id="<c:out value="${fin.serviceCode}"></c:out>insource" name="<c:out value="${fin.serviceCode}"></c:out>insource" value="SOURCE001">
                                                 <p>Institution</p>
                                             </td>
                                             <td><iais:datePicker id = "${fin.serviceCode}instartdate" name = "${fin.serviceCode}instartdate" value="${fin.inEffectiveStartDate}"></iais:datePicker>
-                                                <c:set value = "error_${fin.serviceCode}inEffDate" var = "inEffdate"/>
-                                                <span class="error-msg" id="<c:out value="${inEffdate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td><iais:datePicker id = "${fin.serviceCode}inenddate" name = "${fin.serviceCode}inenddate" value="${fin.inEffectiveEndDate}"></iais:datePicker>
-                                                <c:set value = "error_${fin.serviceCode}inEndDate" var = "inEnddate"/>
-                                                <span class="error-msg" id="<c:out value="${inEnddate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
@@ -113,15 +108,22 @@
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
                                         </tr>
-                                        <tr>        <td colspan="7">
-                                            <c:set value = "error_${fin.serviceCode}inRightLowCaseCounth" var = "inrightlow"/>
-                                            <span class="error-msg" id="<c:out value="${inrightlow}"/>" name="iaisErrorMsg"></span>
-                                            <c:set value = "error_${fin.serviceCode}inLeftModCaseCounth" var = "inleftmod"/>
-                                            <span class="error-msg" id="<c:out value="${inleftmod}"/>" name="iaisErrorMsg"></span>
-                                            <c:set value = "error_${fin.serviceCode}inRightModCaseCounth" var = "inrightmod"/>
-                                            <span class="error-msg" id="<c:out value="${inrightmod}"/>" name="iaisErrorMsg"></span>
-                                            <c:set value = "error_${fin.serviceCode}inLeftHighCaseCounth" var = "inlefthigh"/>
-                                            <span class="error-msg" id="<c:out value="${inlefthigh}"/>" name="iaisErrorMsg"></span>
+                                        <tr>
+                                            <td colspan="7">
+                                                <c:set value = "error_${fin.serviceCode}inThershold" var = "inther"/>
+                                                <span class="error-msg" id="<c:out value="${inther}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${fin.serviceCode}inEffDate" var = "inEffdate"/>
+                                                <span class="error-msg" id="<c:out value="${inEffdate}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${fin.serviceCode}inEndDate" var = "inEnddate"/>
+                                                <span class="error-msg" id="<c:out value="${inEnddate}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${fin.serviceCode}inRightLowCaseCounth" var = "inrightlow"/>
+                                                <span class="error-msg" id="<c:out value="${inrightlow}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${fin.serviceCode}inLeftModCaseCounth" var = "inleftmod"/>
+                                                <span class="error-msg" id="<c:out value="${inleftmod}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${fin.serviceCode}inRightModCaseCounth" var = "inrightmod"/>
+                                                <span class="error-msg" id="<c:out value="${inrightmod}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${fin.serviceCode}inLeftHighCaseCounth" var = "inlefthigh"/>
+                                                <span class="error-msg" id="<c:out value="${inlefthigh}"/>" name="iaisErrorMsg"></span>
                                         </td></tr>
                                         <tr>
                                             <td>
@@ -135,9 +137,9 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <p><input type="text" id="<c:out value="${fin.serviceCode}"/>prthershold" name="<c:out value="${fin.serviceCode}"/>prthershold" value="<c:out value="${fin.prThershold}"></c:out>"></p>
-                                                <c:set value = "error_${fin.serviceCode}prThershold" var = "prther"/>
-                                                <span class="error-msg" id="<c:out value="${prther}"/>" name="iaisErrorMsg"></span>
+                                                <p>
+                                                    <iais:select name="${fin.serviceCode}prthershold" id="${fin.serviceCode}prthershold" options="yearSelectOptions" firstOption="-" value="${fin.prThershold}"></iais:select>
+                                                  </p>
                                             </td>
                                             <td>
                                                 <input type="hidden" id="<c:out value="${fin.serviceCode}"></c:out>prsource" name="<c:out value="${fin.serviceCode}"></c:out>prsource" value="SOURCE002">
@@ -145,12 +147,8 @@
 
                                             </td>
                                             <td><iais:datePicker id = "${fin.serviceCode}prstartdate" name = "${fin.serviceCode}prstartdate" value="${fin.prEffectiveStartDate}"></iais:datePicker>
-                                                <c:set value = "error_${fin.serviceCode}prEffDate" var = "prEffDate"/>
-                                                <span class="error-msg" id="<c:out value="${prEffDate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td><iais:datePicker id = "${fin.serviceCode}prenddate" name = "${fin.serviceCode}prenddate" value="${fin.prEffectiveEndDate}"></iais:datePicker>
-                                                <c:set value = "error_${fin.serviceCode}prEndDate" var = "prEndDate"/>
-                                                <span class="error-msg" id="<c:out value="${prEndDate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
@@ -190,6 +188,12 @@
                                             </td>
                                         </tr>
                                         <tr>  <td colspan="8">
+                                            <c:set value = "error_${fin.serviceCode}prThershold" var = "prther"/>
+                                            <span class="error-msg" id="<c:out value="${prther}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.serviceCode}prEffDate" var = "prEffDate"/>
+                                            <span class="error-msg" id="<c:out value="${prEffDate}"/>" name="iaisErrorMsg"></span>
+                                            <c:set value = "error_${fin.serviceCode}prEndDate" var = "prEndDate"/>
+                                            <span class="error-msg" id="<c:out value="${prEndDate}"/>" name="iaisErrorMsg"></span>
                                             <c:set value = "error_${fin.serviceCode}prRightLowCaseCounth" var = "prrightlow"/>
                                             <span class="error-msg" id="<c:out value="${prrightlow}"/>" name="iaisErrorMsg"></span>
                                             <c:set value = "error_${fin.serviceCode}prLeftModCaseCounth" var = "prleftmod"/>

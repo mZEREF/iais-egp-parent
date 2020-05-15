@@ -281,11 +281,11 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
                     isInEditNum++;
                 }
                 fin.setInLeftHighCaseCount(inlefthigh);
-                if(!fin.getBaseInEffectiveStartDate().equals(inStartDate)){
+                if(!fin.getBaseInEffectiveStartDate().equals(inStartDate) && !(StringUtil.isEmpty(fin.getBaseInEffectiveStartDate()) && StringUtil.isEmpty(inStartDate))){
                     isInEditNum++;
                 }
                 fin.setInEffectiveStartDate(inStartDate);
-                if(!fin.getBaseInEffectiveEndDate().equals(inEndDate)){
+                if(!fin.getBaseInEffectiveEndDate().equals(inEndDate)&& !(StringUtil.isEmpty(fin.getBaseInEffectiveEndDate()) && StringUtil.isEmpty(inEndDate))){
                     isInEditNum++;
                 }
                 fin.setInEffectiveEndDate(inEndDate);
@@ -318,11 +318,11 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
                     prInEditNum++;
                 }
                 fin.setPrLeftHighCaseCount(prlefthigh);
-                if(!fin.getBasePrEffectiveStartDate().equals(prStartDate)){
+                if(!fin.getBasePrEffectiveStartDate().equals(prStartDate) && !(StringUtil.isEmpty(fin.getBasePrEffectiveStartDate()) && StringUtil.isEmpty(prStartDate))){
                     prInEditNum++;
                 }
                 fin.setPrEffectiveStartDate(prStartDate);
-                if(!fin.getBasePrEffectiveEndDate().equals(prEndDate)){
+                if(!fin.getBasePrEffectiveEndDate().equals(prEndDate) && !(StringUtil.isEmpty(fin.getBasePrEffectiveEndDate()) && StringUtil.isEmpty(prEndDate))){
                     prInEditNum++;
                 }
                 fin.setPrEffectiveEndDate(prEndDate);

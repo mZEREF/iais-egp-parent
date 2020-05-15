@@ -117,9 +117,9 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
         boolean flag = true;
         int flagNum = 0;
         if(!StringUtil.isEmpty(temp.getId())){
-            if(!temp.getBaseEffectiveDate().equals(temp.getDoEffectiveDate())){
+            if(!temp.getBaseEffectiveDate().equals(temp.getDoEffectiveDate()) && !(StringUtil.isEmpty(temp.getBaseEffectiveDate()) && StringUtil.isEmpty(temp.getDoEffectiveDate()))){
                 return false;
-            }else if(!temp.getBaseEndDate().equals(temp.getDoEndDate())){
+            }else if(!temp.getBaseEndDate().equals(temp.getDoEndDate()) && !(StringUtil.isEmpty(temp.getBaseEndDate()) && StringUtil.isEmpty(temp.getDoEndDate()))){
                 return false;
             }
             List<SubLicenceTenureDto> subDtoList = temp.getSubDtoList();

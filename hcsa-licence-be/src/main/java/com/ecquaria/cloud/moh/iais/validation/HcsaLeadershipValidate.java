@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -62,7 +64,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
 
     public void therholdVad(Map<String, String> errMap,HcsaRiskLeadershipMatrixDto fdto){
         if(StringUtil.isEmpty(fdto.getAdThershold())){
-            errMap.put(fdto.getSvcCode()+"inThershold","Thershold is mandatory");
+            errMap.put(fdto.getSvcCode()+"inThershold",MessageUtil.replaceMessage("ERR0009","Threshold","The field"));
             fdto.setAdThersholderr(true);
         }else{
             try {
@@ -77,7 +79,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             }
         }
         if(StringUtil.isEmpty(fdto.getDpThershold())){
-            errMap.put(fdto.getSvcCode()+"prThershold","Thershold is mandatory");
+            errMap.put(fdto.getSvcCode()+"prThershold",MessageUtil.replaceMessage("ERR0009","Threshold","The field"));
             fdto.setDpThersholderr(true);
         }else{
             try {
@@ -402,12 +404,12 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             flag = false;
             if(isIn){
                 if(inEdit == 1){
-                    errMap.put(serviceCode + "inEndDate", "Effective Date should be ealier than EndDate");
+                    errMap.put(serviceCode + "inEndDate", "ERR0016");
                     fdto.setAdEffectiveEndDateerr(true);
                 }
             }else{
                 if(prEdit == 1){
-                    errMap.put(serviceCode + "prEndDate", "Effective Date should be ealier than EndDate");
+                    errMap.put(serviceCode + "prEndDate", "ERR0016");
                     fdto.setDpEffectiveEndDateerr(true);
                 }
             }
