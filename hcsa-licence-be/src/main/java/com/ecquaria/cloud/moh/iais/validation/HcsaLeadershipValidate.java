@@ -117,20 +117,20 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 inLeftModNum = Integer.parseInt(inLeftMod);
                 if(inLeftModNum<0||inLeftModNum>999){
                     if(isIn){
-                        errMap.put(serviceCode+"inLeftModCaseCounth","ERR0013");
+                        errMap.put(serviceCode+"inLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                         fdto.setAdLeftModCaseCountherr(true);
                     }else{
-                        errMap.put(serviceCode+"prLeftModCaseCounth","ERR0013");
+                        errMap.put(serviceCode+"prLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                         fdto.setDpLeftModCaseCountherr(true);
                     }
                 }
                 numberFlag++;
             }catch (Exception e){
                 if(isIn){
-                    errMap.put(serviceCode+"inLeftModCaseCounth","ERR0013");
+                    errMap.put(serviceCode+"inLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                     fdto.setAdLeftModCaseCountherr(true);
                 }else{
-                    errMap.put(serviceCode+"prLeftModCaseCounth","ERR0013");
+                    errMap.put(serviceCode+"prLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                     fdto.setDpLeftModCaseCountherr(true);
                 }
                 log.error(e.getMessage(), e);
@@ -141,20 +141,20 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum<0 || inRightModNum >999){
                     if(isIn){
-                        errMap.put(serviceCode+"inRightModCaseCounth","ERR0013");
+                        errMap.put(serviceCode+"inRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                         fdto.setAdRightModCaseCountherr(true);
                     }else{
-                        errMap.put(serviceCode+"prRightModCaseCounth","ERR0013");
+                        errMap.put(serviceCode+"prRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                         fdto.setDpRightModCaseCountherr(true);
                     }
             }
                 numberFlag++;
             }catch (Exception e){
                 if(isIn){
-                    errMap.put(serviceCode+"inRightModCaseCounth","ERR0013");
+                    errMap.put(serviceCode+"inRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                     fdto.setAdRightModCaseCountherr(true);
                 }else{
-                    errMap.put(serviceCode+"prRightModCaseCounth","ERR0013");
+                    errMap.put(serviceCode+"prRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                     fdto.setDpRightModCaseCountherr(true);
                 }
                 log.error(e.getMessage(), e);
@@ -184,11 +184,11 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     if(isIn){
                         inLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0013");
+                        errMap.put(serviceCode + "inLeftHighCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                         fdto.setAdLeftHighCaseCountherr(true);
                     }else{
                         prLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "prLeftHighCaseCounth", "ERR0013");
+                        errMap.put(serviceCode + "prLeftHighCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                         fdto.setDpLeftHighCaseCountherr(true);
                     }
                 }
@@ -196,11 +196,11 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         } catch (Exception e) {
             if(isIn){
                 inLeftHighNumFlag = false;
-                errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0013");
+                errMap.put(serviceCode + "inLeftHighCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                 fdto.setAdLeftHighCaseCountherr(true);
             }else{
                 prLeftHighNumFlag = false;
-                errMap.put(serviceCode + "prLeftHighCaseCounth", "ERR0013");
+                errMap.put(serviceCode + "prLeftHighCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                 fdto.setDpLeftHighCaseCountherr(true);
             }
             log.error(e.getMessage(), e);
@@ -233,11 +233,11 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
                     if(isIn){
                         inRightLowNumFlag = false;
-                        errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0013");
+                        errMap.put(serviceCode + "inRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                         fdto.setAdRightLowCaseCountherr(true);
                     }else{
                         prRightLowNumFlag = false;
-                        errMap.put(serviceCode + "prRightLowCaseCounth", "ERR0013");
+                        errMap.put(serviceCode + "prRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                         fdto.setDpRightLowCaseCountherr(true);
                     }
                 }
@@ -246,12 +246,12 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             // TODO: handle exception
             if(isIn){
                 if(inRightLowNumFlag){
-                    errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0013");
+                    errMap.put(serviceCode + "inRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                     fdto.setAdRightModCaseCountherr(true);
                 }
             }else{
                 if(prRightLowNumFlag){
-                    errMap.put(serviceCode + "prRightLowCaseCounth", "ERR0013");
+                    errMap.put(serviceCode + "prRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                     fdto.setDpRightLowCaseCountherr(true);
                 }
             }
@@ -280,37 +280,37 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
     public void mandatoryCaseCounthVad(Map<String, String> errMap,HcsaRiskLeadershipMatrixDto fdto){
         //in
         if(StringUtil.isEmpty(fdto.getAdLeftModCaseCounth())){
-            errMap.put(fdto.getSvcCode()+"inLeftModCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"inLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
             fdto.setAdLeftModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getAdRightModCaseCounth())){
-            errMap.put(fdto.getSvcCode()+"inRightModCaseCounth()","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"inRightModCaseCounth()",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
             fdto.setAdRightModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getAdRightLowCaseCounth())){
             fdto.setAdRightLowCaseCountherr(true);
-            errMap.put(fdto.getSvcCode()+"inRightLowCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"inRightLowCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
         }
         if(StringUtil.isEmpty(fdto.getAdLeftHighCaseCounth())){
             fdto.setAdLeftHighCaseCountherr(true);
-            errMap.put(fdto.getSvcCode()+"inLeftHighCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"inLeftHighCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
         }
         //pr
         if(StringUtil.isEmpty(fdto.getDpLeftModCaseCounth())){
             fdto.setDpLeftModCaseCountherr(true);
-            errMap.put(fdto.getSvcCode()+"prLeftModCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"prLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
         }
         if(StringUtil.isEmpty(fdto.getDpRightModCaseCounth())){
             fdto.setDpRightModCaseCountherr(true);
-            errMap.put(fdto.getSvcCode()+"prRightModCaseCounth()","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"prRightModCaseCounth()",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
         }
         if(StringUtil.isEmpty(fdto.getDpRightLowCaseCounth())){
             fdto.setDpRightLowCaseCountherr(true);
-            errMap.put(fdto.getSvcCode()+"prRightLowCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"prRightLowCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
         }
         if(StringUtil.isEmpty(fdto.getDpLeftHighCaseCounth())){
             fdto.setDpLeftHighCaseCountherr(true);
-            errMap.put(fdto.getSvcCode()+"prLeftHighCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"prLeftHighCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
         }
     }
 
@@ -391,12 +391,12 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             flag = false;
             if(isIn){
                 if(inEdit == 1){
-                    errMap.put(serviceCode + "inEffDate", "ERR0012");
+                    errMap.put(serviceCode + "inEffDate", MessageUtil.replaceMessage("ERR0012","Effective Start Date","Effective Date"));
                     fdto.setAdEffectiveStartDateerr(true);
                 }
             }else {
                 if(prEdit == 1){
-                    errMap.put(serviceCode + "prEffDate", "ERR0012");
+                    errMap.put(serviceCode + "prEffDate", MessageUtil.replaceMessage("ERR0012","Effective Start Date","Effective Date"));
                     fdto.setDpEffectiveEndDateerr(true);
                 }
             }
@@ -421,10 +421,10 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         if(StringUtil.isEmpty(strEffDate)){
             vadFlag = false;
             if(isIn){
-                errMap.put(serviceCode+"inEffDate","Effective Date is mandatory");
+                errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field"));
                 fdto.setAdEffectiveStartDateerr(true);
             }else{
-                errMap.put(serviceCode+"prEffDate","Effective Date is mandatory");
+                errMap.put(serviceCode+"prEffDate",MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field"));
                 fdto.setDpEffectiveStartDateerr(true);
             }
         }else{
@@ -432,10 +432,10 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 Formatter.parseDate(strEffDate);
             }catch (Exception e){
                 if(isIn){
-                    errMap.put(serviceCode+"inEffDate","Date Format Error");
+                    errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea"));
                     fdto.setAdEffectiveStartDateerr(true);
                 }else{
-                    errMap.put(serviceCode+"prEffDate","Date Format Error");
+                    errMap.put(serviceCode+"prEffDate",MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea"));
                     fdto.setDpEffectiveStartDateerr(true);
                 }
                 vadFlag = false;
@@ -444,22 +444,21 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         if(StringUtil.isEmpty(strEndDate)){
             vadFlag = false;
             if(isIn){
-                errMap.put(serviceCode+"inEndDate","EndDate is mandatory");
+                errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("ERR0009","Effective End Date","The field"));
                 fdto.setAdEffectiveEndDateerr(true);
             }else{
-                errMap.put(serviceCode+"prEndDate","EndDate is mandatory");
+                errMap.put(serviceCode+"prEndDate",MessageUtil.replaceMessage("ERR0009","Effective End Date","The field"));
                 fdto.setDpEffectiveEndDateerr(true);
             }
         }else{
             try {
                 Formatter.parseDate(strEndDate);
             }catch (Exception e){
-                vadFlag = false;
                 if(isIn){
-                    errMap.put(serviceCode+"inEndDate","Date Format Error");
+                    errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea"));
                     fdto.setAdEffectiveEndDateerr(true);
                 }else{
-                    errMap.put(serviceCode+"prEndDate","Date Format Error");
+                    errMap.put(serviceCode+"prEndDate",MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea"));
                     fdto.setDpEffectiveEndDateerr(true);
                 }
                 return false;

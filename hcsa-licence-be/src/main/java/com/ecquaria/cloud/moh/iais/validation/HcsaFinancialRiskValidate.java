@@ -96,7 +96,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             }
         }
         if(StringUtil.isEmpty(fdto.getPrThershold())){
-            errMap.put(fdto.getServiceCode()+"prThershold","UC_CHKLMD001_ERR001");
+            errMap.put(fdto.getServiceCode()+"prThershold",MessageUtil.replaceMessage("ERR0009","Threshold","The field"));
             fdto.setPrThersholderr(true);
         }else{
             try {
@@ -134,20 +134,20 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 inLeftModNum = Integer.parseInt(inLeftMod);
                 if(inLeftModNum<0||inLeftModNum>999){
                     if(isIn){
-                        errMap.put(serviceCode+"inLeftModCaseCounth","ERR0013");
+                        errMap.put(serviceCode+"inLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                         fdto.setInLeftModCaseCountherr(true);
                     }else{
-                        errMap.put(serviceCode+"prLeftModCaseCounth","ERR0013");
+                        errMap.put(serviceCode+"prLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                         fdto.setPrLeftModCaseCountherr(true);
                     }
                 }
                 numberFlag++;
             }catch (Exception e){
                 if(isIn){
-                    errMap.put(serviceCode+"inLeftModCaseCounth","ERR0013");
+                    errMap.put(serviceCode+"inLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                     fdto.setInLeftModCaseCountherr(true);
                 }else{
-                    errMap.put(serviceCode+"prLeftModCaseCounth","ERR0013");
+                    errMap.put(serviceCode+"prLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                     fdto.setPrLeftModCaseCountherr(true);
                 }
                 log.error(e.getMessage(), e);
@@ -158,20 +158,20 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum<0 || inRightModNum >99){
                     if(isIn){
-                        errMap.put(serviceCode+"inRightModCaseCounth","ERR0013");
+                        errMap.put(serviceCode+"inRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                         fdto.setInRightModCaseCountherr(true);
                     }else{
-                        errMap.put(serviceCode+"prRightModCaseCounth","ERR0013");
+                        errMap.put(serviceCode+"prRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                         fdto.setPrRightModCaseCountherr(true);
                     }
                 }
                 numberFlag++;
             }catch (Exception e){
                 if(isIn){
-                    errMap.put(serviceCode+"inRightModCaseCounth","ERR0013");
+                    errMap.put(serviceCode+"inRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                     fdto.setInRightModCaseCountherr(true);
                 }else{
-                    errMap.put(serviceCode+"prRightModCaseCounth","ERR0013");
+                    errMap.put(serviceCode+"prRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                     fdto.setPrRightModCaseCountherr(true);
                 }
                 log.error(e.getMessage(), e);
@@ -203,11 +203,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     if(isIn){
                         inLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0013");
+                        errMap.put(serviceCode + "inLeftHighCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                         fdto.setInLeftHighCaseCounterr(true);
                     }else{
                         prLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "prLeftHighCaseCounth", "ERR0013");
+                        errMap.put(serviceCode + "prLeftHighCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                         fdto.setPrLeftHighCaseCounterr(true);
                     }
                 }
@@ -215,11 +215,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         } catch (Exception e) {
             if(isIn){
                 inLeftHighNumFlag = false;
-                errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0013");
+                errMap.put(serviceCode + "inLeftHighCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                 fdto.setInLeftHighCaseCounterr(true);
             }else{
                 prLeftHighNumFlag = false;
-                errMap.put(serviceCode + "prLeftHighCaseCounth", "ERR0013");
+                errMap.put(serviceCode + "prLeftHighCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                 fdto.setPrLeftHighCaseCounterr(true);
             }
             log.error(e.getMessage(), e);
@@ -253,11 +253,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
                     if(isIn){
                         inRightLowNumFlag = false;
-                        errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0013");
+                        errMap.put(serviceCode + "inRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                         fdto.setInRightLowCaseCountherr(true);
                     }else{
                         prRightLowNumFlag = false;
-                        errMap.put(serviceCode + "prRightLowCaseCounth", "ERR0013");
+                        errMap.put(serviceCode + "prRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                         fdto.setPrRightLowCaseCountherr(true);
                     }
                 }
@@ -266,11 +266,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             // TODO: handle exception
             if(isIn){
                 inRightLowNumFlag = false;
-                errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0013");
+                errMap.put(serviceCode + "inRightLowCaseCounth",  MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                 fdto.setInRightLowCaseCountherr(true);
             }else{
                 prRightLowNumFlag = false;
-                errMap.put(serviceCode + "prRightLowCaseCounth", "ERR0013");
+                errMap.put(serviceCode + "prRightLowCaseCounth",  MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                 fdto.setPrRightLowCaseCountherr(true);
             }
 

@@ -70,7 +70,7 @@
                                                 </div>
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doCaLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>caleftmod" name = "<c:out value="${fin.svcCode}"/>caleftmod" maxlength="2"value="${fin.doCaLeftModCounth == null ? 0 : fin.doCaLeftModCounth}" onchange="doChangeMc('${fin.svcCode}','C',true)">
+                                                    <input type="text" style="color: <c:if test="${fin.doCaLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>caleftmod" name = "<c:out value="${fin.svcCode}"/>caleftmod" maxlength="2"value="${fin.doCaLeftModCounth == null ? "" : fin.doCaLeftModCounth}" onchange="doChangeMc('${fin.svcCode}','C',true)">
                                                 </div>
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
@@ -85,7 +85,7 @@
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doCaRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>carightmod" name = "<c:out value="${fin.svcCode}"/>carightmod"  maxlength="3"value="${fin.doCaRightModCounth  == null ? 0 : fin.doCaRightModCounth}" onchange="doChangeMc('${fin.svcCode}','C',false)">
+                                                    <input type="text" style="color: <c:if test="${fin.doCaRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>carightmod" name = "<c:out value="${fin.svcCode}"/>carightmod"  maxlength="3"value="${fin.doCaRightModCounth  == null ? "" : fin.doCaRightModCounth}" onchange="doChangeMc('${fin.svcCode}','C',false)">
                                                 </div>
 
                                                 </div>
@@ -141,7 +141,7 @@
                                                     <input type="text" disabled readonly maxlength="2" value="0">
                                                 </div></div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMjLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjleftmod" name = "<c:out value="${fin.svcCode}"/>mjleftmod"  maxlength="2"value="${fin.doMjLeftModCounth == null ? 0 : fin.doMjLeftModCounth}" onchange="doChangeMc('${fin.svcCode}','Ma',true)">
+                                                    <input type="text" style="color: <c:if test="${fin.doMjLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjleftmod" name = "<c:out value="${fin.svcCode}"/>mjleftmod"  maxlength="2"value="${fin.doMjLeftModCounth == null ? "" : fin.doMjLeftModCounth}" onchange="doChangeMc('${fin.svcCode}','Ma',true)">
                                                 </div>
 
                                                 </div>
@@ -158,7 +158,7 @@
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMjRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjrightlmod" name = "<c:out value="${fin.svcCode}"/>mjrightmod" maxlength="3"value="${fin.doMjRightModCounth == null ? 0 : fin.doMjRightModCounth}" onchange="doChangeMc('${fin.svcCode}','Ma',false)">
+                                                    <input type="text" style="color: <c:if test="${fin.doMjRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjrightlmod" name = "<c:out value="${fin.svcCode}"/>mjrightmod" maxlength="3"value="${fin.doMjRightModCounth == null ? "" : fin.doMjRightModCounth}" onchange="doChangeMc('${fin.svcCode}','Ma',false)">
                                                 </div>
 
                                                 </div>
@@ -212,7 +212,7 @@
                                                     <input type="text" disabled readonly maxlength="2" value="0">
                                                 </div></div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMiLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mileftmod" name = "<c:out value="${fin.svcCode}"/>mileftmod"  maxlength="2"value="${fin.doMiLeftModCounth == null ? 0 : fin.doMiLeftModCounth}" onchange="doChangeMc('${fin.svcCode}','Mi',true)">
+                                                    <input type="text" style="color: <c:if test="${fin.doMiLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mileftmod" name = "<c:out value="${fin.svcCode}"/>mileftmod"  maxlength="2"value="${fin.doMiLeftModCounth == null ? "" : fin.doMiLeftModCounth}" onchange="doChangeMc('${fin.svcCode}','Mi',true)">
                                                 </div>
 
                                                 </div>
@@ -229,7 +229,7 @@
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMiRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mirightlmod" name = "<c:out value="${fin.svcCode}"/>mirightmod" maxlength="3"value="${fin.doMiRightModCounth == null ? 0 : fin.doMiRightModCounth}" onchange="doChangeMc('${fin.svcCode}','Mi',false)" >
+                                                    <input type="text" style="color: <c:if test="${fin.doMiRightModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mirightlmod" name = "<c:out value="${fin.svcCode}"/>mirightmod" maxlength="3"value="${fin.doMiRightModCounth == null ? "": fin.doMiRightModCounth}" onchange="doChangeMc('${fin.svcCode}','Mi',false)" >
                                                 </div>
 
                                                 </div>

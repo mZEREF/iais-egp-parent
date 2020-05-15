@@ -113,7 +113,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         if (effDate.getTime() < System.currentTimeMillis()) {
             flag = false;
             if (inEdit == 1) {
-                errMap.put(serviceCode + "inEffDate", "ERR0012");
+                errMap.put(serviceCode + "inEffDate", MessageUtil.replaceMessage("ERR0012","Effective Start Date","Effective Date"));
             }
         } else if (endDate.getTime() < effDate.getTime()) {
             flag = false;
@@ -144,7 +144,6 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             try {
                 Formatter.parseDate(strEndDate);
             }catch (Exception e){
-                vadFlag = false;
                 errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea"));
                 return false;
             }
@@ -186,13 +185,13 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 inLeftHighNum = Integer.parseInt(inLeftHigh);
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     inLeftHighNumFlag = false;
-                    errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0013");
+                    errMap.put(serviceCode + "inLeftHighCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                     fdto.setDoLeftHighCaseCountherr(true);
                 }
             }
         } catch (Exception e) {
             inLeftHighNumFlag = false;
-            errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0013");
+            errMap.put(serviceCode + "inLeftHighCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
             fdto.setDoLeftHighCaseCountherr(true);
             log.error(e.getMessage(), e);
         }
@@ -218,14 +217,14 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 inRightLowNum = Integer.parseInt(inRightLow);
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
                     inrightflag = false;
-                    errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0013");
+                    errMap.put(serviceCode + "inRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                     fdto.setDoRightModCaseCountherr(true);
                 }
             }
         } catch (Exception e) {
             // TODO: handle exception
                 inrightflag = false;
-                errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0013");
+                errMap.put(serviceCode + "inRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                 fdto.setDoRightLowCaseCountherr(true);
             log.error(e.getMessage(), e);
         }
@@ -250,12 +249,12 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             try {
                 inLeftModNum = Integer.parseInt(inLeftMod);
                 if(inLeftModNum<0||inLeftModNum>999){
-                        errMap.put(serviceCode+"inLeftModCaseCounth","ERR0013");
+                        errMap.put(serviceCode+"inLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                         fdto.setDoLeftModCaseCountherr(true);
                 }
                 numberFlag++;
             }catch (Exception e){
-                    errMap.put(serviceCode+"inLeftModCaseCounth","ERR0013");
+                    errMap.put(serviceCode+"inLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                     fdto.setDoLeftModCaseCountherr(true);
                 log.error(e.getMessage(), e);
             }
@@ -264,12 +263,12 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             try {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum<0 || inRightModNum >999){
-                    errMap.put(serviceCode+"inRightModCaseCounth","ERR0013");
+                    errMap.put(serviceCode+"inRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                     fdto.setDoRightModCaseCountherr(true);
                 }
                 numberFlag++;
             }catch (Exception e){
-                errMap.put(serviceCode+"inRightModCaseCounth","ERR0013");
+                errMap.put(serviceCode+"inRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                 fdto.setDoRightModCaseCountherr(true);
                 log.error(e.getMessage(), e);
             }
@@ -288,19 +287,19 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
     public void mandatoryCaseCounthVad(Map<String, String> errMap,HcsaRiskLegislativeMatrixDto fdto){
         //in
         if(StringUtil.isEmpty(fdto.getDoLeftModCaseCounth())){
-            errMap.put(fdto.getSvcCode()+"inLeftModCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"inLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
             fdto.setDoLeftModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getDoRightModCaseCounth())){
-            errMap.put(fdto.getSvcCode()+"inRightModCaseCounth()","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"inRightModCaseCounth()",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
             fdto.setDoRightModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getDoRightLowCaseCounth())){
-            errMap.put(fdto.getSvcCode()+"inRightLowCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"inRightLowCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
             fdto.setDoRightLowCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getDoLeftHighCaseCounth())){
-            errMap.put(fdto.getSvcCode()+"inLeftHighCaseCounth","CaseCounth is mandatory");
+            errMap.put(fdto.getSvcCode()+"inLeftHighCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
             fdto.setDoLeftModCaseCountherr(true);
         }
     }

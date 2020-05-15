@@ -69,7 +69,7 @@
                                                     <input type="text" disabled readonly maxlength="2" value="0">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inleftmod" name = "<c:out value="${leg.svcCode}"/>inleftmod" maxlength="2"value="${leg.doLeftModCaseCounth == null ? 0 : leg.doLeftModCaseCounth}"
+                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inleftmod" name = "<c:out value="${leg.svcCode}"/>inleftmod" maxlength="2"value="${leg.doLeftModCaseCounth == null ? "" : leg.doLeftModCaseCounth}"
                                                            onchange="doChangeMc('${leg.svcCode}',true)">
                                                 </div>
 
@@ -87,7 +87,7 @@
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inrightmod" name = "<c:out value="${leg.svcCode}"/>inrightmod"  maxlength="3"value="${leg.doRightModCaseCounth == null ? 0 : leg.doRightModCaseCounth}"   onchange="doChangeMc('${leg.svcCode}',false)">
+                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inrightmod" name = "<c:out value="${leg.svcCode}"/>inrightmod"  maxlength="3"value="${leg.doRightModCaseCounth == null ? "" : leg.doRightModCaseCounth}"   onchange="doChangeMc('${leg.svcCode}',false)">
                                                 </div>
 
                                                 </div>
