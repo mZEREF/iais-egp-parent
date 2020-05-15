@@ -155,6 +155,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             premisessTypes.add(appGrpPremisesDto.getPremisesType());
         }
         List<String> baseServiceIds = IaisCommonUtils.genNewArrayList();
+        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtos = appConfigClient.serviceCorrelation().getEntity();
 
         if(appSubmissionDto.isOnlySpecifiedSvc() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
             baseServiceIds = appSubmissionDto.getExistBaseServiceList();
@@ -172,11 +173,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
                     baseServiceIds.add(appSvcRelatedInfoDto.getServiceId());
+                }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(appSvcRelatedInfoDto.getServiceType())){
+                    for(HcsaServiceCorrelationDto hcsaServiceCorrelationDto:hcsaServiceCorrelationDtos){
+                        if(appSvcRelatedInfoDto.getServiceId().equals(hcsaServiceCorrelationDto.getSpecifiedSvcId())){
+                            baseServiceIds.add(hcsaServiceCorrelationDto.getBaseSvcId());
+                        }
+                    }
                 }
             }
         }
         log.info("base service size:"+baseServiceIds.size());
-        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtos = appConfigClient.serviceCorrelation().getEntity();
+
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
             LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
