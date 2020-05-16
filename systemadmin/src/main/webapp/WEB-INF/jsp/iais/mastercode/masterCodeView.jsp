@@ -56,6 +56,7 @@
     $("#MC_Clear").click(function () {
         $("[name='codeCategory']").val("");
         $("[name='codeDescription']").val("");
+        $("[name='codeValue']").val("");
         $("[name='filterValue']").val("");
         $("[name='esd']").val("");
         $("[name='eed']").val("");

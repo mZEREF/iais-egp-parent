@@ -19,6 +19,7 @@
             WHERE ACM.STATUS != 'CMSTAT002'
             <#if id??> AND CHARINDEX(:id, ACM.master_code_id) >0</#if>
             <#if codeCategory??> AND ACM.code_category LIKE :codeCategory</#if>
+            <#if codeValue??> AND ACM.code_value LIKE :codeValue</#if>
             <#if codeDescription??> AND ACM.code_description LIKE :codeDescription</#if>
             <#if filterValue??> AND ACM.filter_value LIKE :filterValue</#if>
             <#if esd??> AND ACM.effective_from > :esd</#if>

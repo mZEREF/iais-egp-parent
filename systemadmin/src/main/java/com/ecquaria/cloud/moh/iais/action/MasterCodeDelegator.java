@@ -208,12 +208,13 @@ public class MasterCodeDelegator {
         HttpServletRequest request = bpc.request;
         String categoryDescription = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_CATEGORY);
         String codeDescription = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_DESCRIPTION);
+        String codeValue = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VALUE);
         String codeStatus = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_STATUS);
         String filterValue = ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE);
-        String codeStartDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM)),
-                SystemAdminBaseConstants.DATE_FORMAT);
-        String codeEndDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO)),
-                SystemAdminBaseConstants.DATE_FORMAT);
+        Date codeEffFrom = Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM));
+        Date codeEffTo = Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO));
+        String codeStartDate = Formatter.formatDateTime(codeEffFrom,SystemAdminBaseConstants.DATE_FORMAT);
+        String codeEndDate = Formatter.formatDateTime(codeEffTo, SystemAdminBaseConstants.DATE_FORMAT);
         Map<String,Object> masterCodeMap = IaisCommonUtils.genNewHashMap();
         if (!StringUtil.isEmpty(categoryDescription)){
 //            String codeCategory = masterCodeService.findCodeCategoryByDescription(categoryDescription);
@@ -231,20 +232,42 @@ public class MasterCodeDelegator {
         }else{
             masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_DESCRIPTION);
         }
+        if(!StringUtil.isEmpty(codeValue)){
+            masterCodeMap.put(MasterCodeConstants.MASTER_CODE_VALUE,"%"+codeValue+"%");
+        }else{
+            masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_VALUE);
+        }
         if(!StringUtil.isEmpty(filterValue)){
             masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE,"%"+filterValue+"%");
         }else{
             masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE);
         }
-        if (!StringUtil.isEmpty(codeStartDate)){
-            masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,codeStartDate);
+        if (codeEffFrom != null && codeEffTo != null){
+            if (codeEffFrom.before(codeEffTo)){
+                if(!StringUtil.isEmpty(codeStartDate)){
+                    masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,codeStartDate);
+                }else{
+                    masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
+                }
+                if(!StringUtil.isEmpty(codeEndDate)){
+                    masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,codeEndDate);
+                }else{
+                    masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
+                }
+            }else{
+                ParamUtil.setRequestAttr(request,"ERR_EED", "Effective Start Date cannot be later than Effective End Date");
+            }
         }else{
-            masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
-        }
-        if (!StringUtil.isEmpty(codeEndDate)){
-            masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,codeEndDate);
-        }else{
-            masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
+            if(!StringUtil.isEmpty(codeStartDate)){
+                masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,codeStartDate);
+            }else{
+                masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
+            }
+            if(!StringUtil.isEmpty(codeEndDate)){
+                masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,codeEndDate);
+            }else{
+                masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
+            }
         }
         filterParameter.setFilters(masterCodeMap);
     }

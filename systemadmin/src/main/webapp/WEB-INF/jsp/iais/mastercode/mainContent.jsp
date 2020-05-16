@@ -9,14 +9,14 @@
                 <div class="center-content">
                     <div class="intranet-content">
                         <div class="bg-title">
-                            <h2>Master Code View</h2>
+                            <h2>Master Code Management</h2>
                         </div>
                         <%@ include file="doSearchBody.jsp" %>
                         <table class="table">
                             <thead>
                             <tr>
                                 <th>SN</th>
-                                <th>Code Category</th>
+                                <th>Master Code Category</th>
                                 <th>Code Value</th>
                                 <th>Code Description</th>
                                 <th>Filter Value</th>
