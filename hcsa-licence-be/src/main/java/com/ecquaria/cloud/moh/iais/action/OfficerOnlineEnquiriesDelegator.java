@@ -449,7 +449,10 @@ public class OfficerOnlineEnquiriesDelegator {
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
 
-        String count= (String) ParamUtil.getSessionAttr(request,"count");
+        String count=ParamUtil.getString(request,"searchChk");
+        if(count==null){
+            count= (String) ParamUtil.getSessionAttr(request,"count");
+        }
         switch (count) {
             case "2":
                 if(!StringUtil.isEmpty(applicationNo)){
