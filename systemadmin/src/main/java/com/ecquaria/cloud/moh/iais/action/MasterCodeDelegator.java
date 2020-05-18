@@ -243,7 +243,7 @@ public class MasterCodeDelegator {
             masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE);
         }
         if (codeEffFrom != null && codeEffTo != null){
-            if (codeEffFrom.before(codeEffTo)){
+            if (codeEffFrom.before(codeEffTo) || codeEffFrom.equals(codeEffTo)){
                 if(!StringUtil.isEmpty(codeStartDate)){
                     masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,codeStartDate);
                 }else{
