@@ -247,8 +247,8 @@
                               <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectorProRecSubmit()">Submit</button>
                             </iais:action>
                             <br><br><br>
-                            <%@include file="/WEB-INF/jsp/iais/inspectionncList/processHistory.jsp"%>
                           </iais:section>
+                          <%@include file="/WEB-INF/jsp/iais/inspectionncList/processHistory.jsp"%>
                         </div>
                       </div>
                     </div>

@@ -171,8 +171,8 @@
                               </iais:action>
                             </c:if>
                             <br><br><br>
-                            <%@include file="/WEB-INF/jsp/iais/inspectionncList/processHistory.jsp"%>
                           </iais:section>
+                          <%@include file="/WEB-INF/jsp/iais/inspectionncList/processHistory.jsp"%>
                         </div>
                       </div>
                     </div>
