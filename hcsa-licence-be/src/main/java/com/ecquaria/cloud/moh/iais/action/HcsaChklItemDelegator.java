@@ -42,6 +42,7 @@ import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -74,6 +75,9 @@ public class HcsaChklItemDelegator {
     public HcsaChklItemDelegator(HcsaChklService hcsaChklService){
         this.hcsaChklService = hcsaChklService;
     }
+
+    @Value("${iais.system.clone.checklist.maxnum}")
+    private int cloneChecklistMaxNum;
 
     /**
      * StartStep: startStep
@@ -327,13 +331,19 @@ public class HcsaChklItemDelegator {
 
         String[] checkBoxItemId = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
         if(checkBoxItemId == null || checkBoxItemId.length <= 0){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             return;
         }
 
-        if(checkBoxItemId.length > 0x10){
+        int maxNum = cloneChecklistMaxNum <= 0 ? 10 : cloneChecklistMaxNum;
+        if(checkBoxItemId.length > cloneChecklistMaxNum){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("cloneItemMsg",
+                    "CHKL_ERR026"));
             return;
         }
 
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         List<ChecklistItemDto> chklItemDtos = hcsaChklService.listChklItemByItemId(Arrays.asList(checkBoxItemId));
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, (Serializable) chklItemDtos);
 
@@ -479,8 +489,6 @@ public class HcsaChklItemDelegator {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return;
         }
-
-
 
         ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
     }

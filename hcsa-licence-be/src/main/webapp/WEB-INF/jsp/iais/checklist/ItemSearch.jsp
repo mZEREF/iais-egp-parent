@@ -27,7 +27,8 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="currentValidateId" value="">
     <input type="hidden" id="currentMaskId" name="currentMaskId" value="">
-     <div class="bg-title"><h2>Checklist Item Management</h2></div>
+    <input type="hidden" id="itemCheckboxReDisplay" name="itemCheckboxReDisplay" value="${param.itemCheckbox}">
+      <div class="bg-title"><h2>Checklist Item Management</h2></div>
 
     <span id="error_deleteItemMsg" name="iaisErrorMsg" class="error-msg"></span>
     <span id="error_cloneItemMsg" name="iaisErrorMsg" class="error-msg"></span>
@@ -231,6 +232,16 @@
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
+/*    window.onload = function(){
+        $("input[type=checkbox][name='itemCheckboxReDisplay']").each(function(){
+          var checkedStatus = (this).getAttribute("checked")
+          console.log(checkedStatus)
+          if($(this).val() != null && checkedStatus != null){
+            $(this).attr("checked",true);
+          }
+        });
+    }*/
+
 
     function cancelConfig() {
         SOP.Crud.cfxSubmit("mainForm", "cancelConfig");

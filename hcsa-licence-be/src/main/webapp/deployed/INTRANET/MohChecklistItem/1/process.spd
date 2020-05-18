@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="11" minorVersion="0" name="MohChecklistItem" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="5" minorVersion="0" name="MohChecklistItem" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
  <WebServices/>
  <RestServices/>
  <Steps>
@@ -127,7 +127,7 @@
     <JavaCode defClass="" executor="" methodName="configToChecklist_OnStepProcess_0" name="configToChecklist_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preUploadData" x="1240" y="140">
+  <AutomaticStep defClass="" executor="" icon="" name="preUploadData" x="1220" y="130">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -220,6 +220,9 @@
   <Condition componentIfFalse="/Steps/AutomaticStep/prepareCloneItem" componentIfTrue="/Steps/AutomaticStep/viewCloneData" defClass="" executor="" icon="" leftOperand="isValid" name="Cond6" operator="=" rightOperand="&quot;Y&quot;" x="1060" y="180">
    <Description/>
   </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/prepareItem" componentIfTrue="/Pages/WebPage/viewClonePage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond7" operator="=" rightOperand="&quot;Y&quot;" x="1150" y="250">
+   <Description/>
+  </Condition>
  </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="1210" y="40">
@@ -299,9 +302,6 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/viewCloneData" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(1230,60)(1150,160)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/viewClonePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/viewCloneData" style="oblique">
-   <position>{(1150,160)(1240,330)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/submitCloneItem" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(1260,530)(1230,670)}</position>
   </SynchronousLink>
@@ -369,13 +369,13 @@
    <position>{(1560,730)(1650,140)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preUploadData" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(1230,60)(1260,160)}</position>
+   <position>{(1230,60)(1240,150)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/UploadPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preUploadData" style="oblique">
-   <position>{(1260,160)(1280,220)}</position>
+   <position>{(1240,150)(1280,220)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preUploadData" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond4" style="oblique">
-   <position>{(1510,490)(1500,154)(1260,160)}</position>
+   <position>{(1510,490)(1500,154)(1240,150)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/AckPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond4" style="oblique">
    <position>{(1510,490)(1480,670)}</position>
@@ -430,6 +430,15 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/viewCloneData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
    <position>{(1080,720)(768,744)(1150,160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond7" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/viewCloneData" style="rectanular">
+   <position>{(1150,160)(1170,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/viewClonePage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond7" style="rectanular">
+   <position>{(1170,270)(1240,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareItem" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond7" style="rectanular">
+   <position>{(1170,270)(220,60)}</position>
   </SynchronousLink>
  </Links>
  <BatFlowsSelected batFlowsName="" batFlowsSelected="false" conditions="" mandatoryConditions=""/>
