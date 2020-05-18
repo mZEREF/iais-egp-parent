@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -27,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -40,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
@@ -81,7 +85,10 @@ public class RequestForChangeMenuDelegator {
     private AppSubmissionService appSubmissionService;
     @Autowired
     private ServiceConfigService serviceConfigService;
-
+    @Autowired
+    private EventBusHelper eventBusHelper;
+    @Autowired
+    private GenerateIdClient generateIdClient;
 
     /**
      * @param bpc
@@ -886,12 +893,12 @@ public class RequestForChangeMenuDelegator {
                 switchValue = "ack";
                 //update status
                 List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
-                String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
+                String appGrpNo = appSubmissionDtos.get(0).getAppGrpNo();
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
-                appGrp.setId(appGrpId);
+                appGrp.setGroupNo(appGrpNo);
                 appGrp.setPmtRefNo(pmtRefNo);
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-                serviceConfigService.updatePaymentStatus(appGrp);
+                serviceConfigService.paymentUpDateByGrpNo(appGrp);
                 bpc.request.setAttribute("createDate", new Date());
             }
 
@@ -1007,12 +1014,16 @@ public class RequestForChangeMenuDelegator {
                 }
                 appSubmissionDtos.add(appSubmissionDtoByLicenceId);
             }
-            List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos);
-            appSubmissionDtos.get(0).setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
-            for (AppSubmissionDto every : appSubmissionDtos1) {
-                every.setAmount(appSubmissionDtos.get(0).getAmount());
-            }
-            ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos", (Serializable) appSubmissionDtos1);
+            String submissionId = generateIdClient.getSeqId().getEntity();
+            AppSubmissionListDto appSubmissionListDto =new AppSubmissionListDto();
+            Long l = System.currentTimeMillis();
+            appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos);
+            appSubmissionListDto.setEventRefNo(l.toString());
+            eventBusHelper.submitAsyncRequest(appSubmissionDtos,submissionId,EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                    EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT,l.toString(),null);
+
+
+            ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos", (Serializable) appSubmissionDtos);
         }
 
         if (isSame) {

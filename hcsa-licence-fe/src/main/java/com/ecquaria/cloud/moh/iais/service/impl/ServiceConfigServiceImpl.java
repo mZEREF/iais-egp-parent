@@ -301,4 +301,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         });
         return publicHolidayList;
     }
+
+    @Override
+    public void paymentUpDateByGrpNo(ApplicationGroupDto appGrp) {
+        applicationClient.paymentUpDateByGrpNo(appGrp);
+    }
 }

@@ -49,7 +49,7 @@
                                                         <p><c:out value="${AppSubmissionDto.appGrpNo}"></c:out></p>
                                                     </td>
                                                     <td>
-                                                        <p><c:out value="${UnitPrice}"></c:out></p>
+                                                        <p><c:out value="${svc.score}"></c:out></p>
                                                     </td>
                                                 </tr>
                                             </c:forEach>

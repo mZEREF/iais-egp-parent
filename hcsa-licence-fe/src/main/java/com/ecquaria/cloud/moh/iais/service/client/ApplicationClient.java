@@ -118,6 +118,8 @@ public interface ApplicationClient  {
 
     @PutMapping(path="/iais-application/payment-app-grp", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> doPaymentUpDate(@RequestBody ApplicationGroupDto applicationGroupDto);
+    @PutMapping(value = "/iais-application/payment-app-grp-id-no",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> paymentUpDateByGrpNo(@RequestBody ApplicationGroupDto applicationGroup);
 
     @GetMapping(value = "/iais-submission/submission-id")
     FeignResponseEntity<String> getSubmissionId();

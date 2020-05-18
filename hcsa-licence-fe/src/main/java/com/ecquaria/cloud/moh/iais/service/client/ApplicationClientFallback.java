@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Map;
@@ -149,7 +150,15 @@ public class ApplicationClientFallback implements ApplicationClient {
         entity.setHeaders(headers);
         return entity;
     }
-    
+
+    @Override
+    public FeignResponseEntity<String> paymentUpDateByGrpNo( ApplicationGroupDto applicationGroup) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
     @Override
     public FeignResponseEntity<String> getSubmissionId() {
         FeignResponseEntity entity = new FeignResponseEntity<>();

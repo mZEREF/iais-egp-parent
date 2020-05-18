@@ -28,6 +28,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -41,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -450,14 +453,18 @@ public class NewApplicationDelegator {
         if(tranferSub!=null){
             appSubmissionDto=tranferSub;
         }
+        Double total=0.0;
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos=IaisCommonUtils.genNewArrayList();
         if(appSubmissionDtos!=null&&!appSubmissionDtos.isEmpty()){
             appSubmissionDto.setAmount(appSubmissionDtos.get(0).getAmount());
             for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtos){
+                Double amount = appSubmissionDto1.getAmount();
+                total=total+amount;
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto1.getAppSvcRelatedInfoDtoList();
+                appSvcRelatedInfoDtoList.get(0).setScore(appSubmissionDto1.getAmount());
                 appSvcRelatedInfoDtos.addAll(appSvcRelatedInfoDtoList);
             }
-            bpc.request.setAttribute("UnitPrice",appSubmissionDto.getAmount()/appSubmissionDtos.size());
+            appSubmissionDto.setAmount(total);
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
         }
         if(!StringUtil.isEmpty(appSubmissionDto.getAmount())){
@@ -1122,7 +1129,6 @@ public class NewApplicationDelegator {
 
         boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
         //is need to pay ?
-        Double t=0.0;
         String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
         if(!IaisCommonUtils.isEmpty(applicationDtos)){
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
@@ -1168,7 +1174,7 @@ public class NewApplicationDelegator {
                             appSubmissionDtoByLicenceId.setGroupLic(groupLic);
                             FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
                             Double total = feeDto.getTotal();
-                            t=t+total;
+
                             if(equals){
                                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
                                 if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
@@ -1210,9 +1216,6 @@ public class NewApplicationDelegator {
                                 appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
                             }
                             appSubmissionDtos.add(appSubmissionDtoByLicenceId);
-                            AppSubmissionDto personAppsubmit = getPersonAppsubmit(oldAppSubmissionDto, appSubmissionDto, appEditSelectDto, bpc);
-                            personAppSubmissionDtos.add(personAppsubmit);
-
 
                     }
 
@@ -1265,7 +1268,7 @@ public class NewApplicationDelegator {
         appSubmissionService.setRiskToDto(appSubmissionDto);
         if(0.0==amount){
             appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-            appSubmissionDto.setCreatAuditAppStatus(null);
+            appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
         }
         appSubmissionDto.setIsNeedNewLicNo(AppConsts.YES);
    /*     appSubmissionDto = appSubmissionService.submitRequestChange(appSubmissionDto, bpc.process);*/
@@ -1283,9 +1286,14 @@ public class NewApplicationDelegator {
             isrfiSuccess = "Y";
             ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE,"The request for change save success");
         }
-        t= t+amount;
+
+        premisesDocToSvcDoc(appSubmissionDto);
+        List<AppSubmissionDto> personAppSubmissionList = personContact(appSubmissionDto, oldAppSubmissionDto);
         appSubmissionDtos.add(appSubmissionDto);
         List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos);
+        for(int i=0;i<appSubmissionDtos.size();i++ ){
+            appSubmissionDtos1.get(i).setAmount( appSubmissionDtos.get(i).getAmount());
+        }
         appSubmissionDto.setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
         bpc.request.getSession().setAttribute("appSubmissionDtos",appSubmissionDtos1);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess",isrfiSuccess);
@@ -1299,13 +1307,110 @@ public class NewApplicationDelegator {
             //notification
             appGroupMiscDto.setAppGrpId(grpId);
             appGroupMiscDto.setMiscValue(grpId1);
-            appGroupMiscDto.setMiscType(AppConsts.COMMON_STATUS_ACTIVE);
-            appGroupMiscDto.setStatus(appSubmissionDto.getAppType());
+            appGroupMiscDto.setMiscType(ApplicationConsts.APP_GROUP_MISC_TYPE_AMEND_GROUP_ID);
+            appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             appSubmissionService.saveAppGrpMisc(appGroupMiscDto);
         }
 
 
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
+    }
+
+    private void premisesDocToSvcDoc( AppSubmissionDto appSubmissionDtoByLicenceId){
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDtoByLicenceId.getAppGrpPrimaryDocDtos();
+        List<AppSvcDocDto> appSvcDocDtoList=IaisCommonUtils.genNewArrayList();
+        if(appGrpPrimaryDocDtos!=null){
+            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
+                AppSvcDocDto appSvcDocDto = MiscUtil.transferEntityDto(appGrpPrimaryDocDto, AppSvcDocDto.class);
+                appSvcDocDto.setSvcDocId(appGrpPrimaryDocDto.getSvcComDocId());
+                appSvcDocDto.setDocName(appGrpPrimaryDocDto.getSvcComDocName());
+                appSvcDocDtoList.add(appSvcDocDto);
+            }
+            appSubmissionDtoByLicenceId.setAppGrpPrimaryDocDtos(null);
+        }
+        List<AppSvcDocDto> appSvcDocDtoLit = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDocDtoLit();
+        if(appSvcDocDtoLit!=null){
+            appSvcDocDtoList.addAll(appSvcDocDtoLit);
+        }
+        appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).setAppSvcDocDtoLit(appSvcDocDtoList);
+    }
+
+    private  List<AppSubmissionDto> personContact(AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto1 = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        if(appSvcRelatedInfoDto1==null||appSvcRelatedInfoDto==null){
+            return null;
+        }
+        List<AppSvcCgoDto> appSvcCgoDtoList1 = appSvcRelatedInfoDto1.getAppSvcCgoDtoList();
+        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList1 = appSvcRelatedInfoDto1.getAppSvcMedAlertPersonList();
+        List<AppSvcPersonnelDto> appSvcPersonnelDtoList1 = appSvcRelatedInfoDto1.getAppSvcPersonnelDtoList();
+        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList1 = appSvcRelatedInfoDto1.getAppSvcPrincipalOfficersDtoList();
+
+        List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+        Set<String> set=IaisCommonUtils.genNewHashSet();
+        List<String> list=IaisCommonUtils.genNewArrayList();
+        if(appSvcCgoDtoList!=null){
+            for(AppSvcCgoDto appSvcCgoDto :appSvcCgoDtoList){
+                String idNo = appSvcCgoDto.getIdNo();
+                set.add(idNo);
+            }
+        }
+        if(appSvcPersonnelDtoList!=null){
+            for(AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtoList){
+
+            }
+        }
+        if(appSvcMedAlertPersonList!=null){
+            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcMedAlertPersonList){
+                set.add(appSvcPrincipalOfficersDto.getIdNo());
+            }
+        }
+        if(appSvcPrincipalOfficersDtoList!=null){
+            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtoList){
+                set.add(appSvcPrincipalOfficersDto.getIdNo());
+            }
+        }
+        list.addAll(set);
+        List<LicKeyPersonnelDto> licKeyPersonnelDtos=IaisCommonUtils.genNewArrayList();
+        for(String string :list){
+            List<String> personnelDtoByIdNo = requestForChangeService.getPersonnelDtoByIdNo(string);
+            List<LicKeyPersonnelDto> licKeyPersonnelDtoByPerId = requestForChangeService.getLicKeyPersonnelDtoByPerId(personnelDtoByIdNo);
+            licKeyPersonnelDtos.addAll(licKeyPersonnelDtoByPerId);
+        }
+        Set<String> licenceId =IaisCommonUtils.genNewHashSet();
+        List<String> licenceIdList=IaisCommonUtils.genNewArrayList();
+        for(LicKeyPersonnelDto licKeyPersonnelDto: licKeyPersonnelDtos){
+            licenceId.add(licKeyPersonnelDto.getLicenceId());
+        }
+        licenceIdList.addAll(licenceId);
+        List<AppSubmissionDto> appSubmissionDtoList=IaisCommonUtils.genNewArrayList();
+        for(String string : licenceIdList){
+            AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string);
+            if(appSubmissionDtoByLicenceId==null|| appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList()==null){
+                continue;
+            }
+            AppSvcRelatedInfoDto appSvcRelatedInfoDto2 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0);
+
+            List<AppSvcCgoDto> appSvcCgoDtoList2 = appSvcRelatedInfoDto2.getAppSvcCgoDtoList();
+            if(appSvcCgoDtoList2!=null&&appSvcCgoDtoList1!=null){
+                appSvcRelatedInfoDto2.setAppSvcCgoDtoList(appSvcCgoDtoList1);
+            }
+            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList2 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcMedAlertPersonList();
+            if(appSvcMedAlertPersonList2!=null&&appSvcMedAlertPersonList1!=null){
+                appSvcRelatedInfoDto2.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList1);
+            }
+            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList2 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcPrincipalOfficersDtoList();
+            if(appSvcPrincipalOfficersDtoList2!=null&&appSvcPrincipalOfficersDtoList1!=null){
+                appSvcRelatedInfoDto2.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList1);
+            }
+            appSubmissionDtoList.add(appSubmissionDtoByLicenceId);
+        }
+
+        return appSubmissionDtoList;
+
     }
     private boolean compareHciName(AppGrpPremisesDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto){
 
