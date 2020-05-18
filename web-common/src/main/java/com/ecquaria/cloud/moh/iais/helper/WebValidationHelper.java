@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.annotation.CustomMsg;
 import com.ecquaria.cloud.moh.iais.common.annotation.CustomValidate;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -26,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -120,6 +122,7 @@ public class WebValidationHelper {
             }
 
             if (violations != null && !violations.isEmpty()) {
+                Class cls = obj.getClass();
                 result.setHasErrors(true);
                 for (ConstraintViolation constraintViolation : violations) {
                     String fullName = constraintViolation.getContext().toString();
@@ -127,15 +130,30 @@ public class WebValidationHelper {
 
                     Collection<? extends Serializable> values = constraintViolation.getMessageVariables() == null ? null
                             : constraintViolation.getMessageVariables().values();
+                    String msg = "";
                     if (!Objects.isNull(values) && !values.isEmpty()){
                         String[] val = values.toArray(new String[1]);
                         if (val.length > 0){
                             String i = val[0];
                             //example: "Key/Number"
-                            result.addMessage(name, formatValuesMessage(constraintViolation.getMessage(), i));
+                            msg = formatValuesMessage(constraintViolation.getMessage(), i);
                         }
                     }else {
-                        result.addMessage(name, constraintViolation.getMessage());
+                        msg = constraintViolation.getMessage();
+                    }
+                    if (!StringUtil.isEmpty(msg)) {
+                        Field field = cls.getDeclaredField(name);
+                        if (field != null) {
+                            CustomMsg cMsg = field.getAnnotation(CustomMsg.class);
+                            if (cMsg != null && cMsg.placeHolders().length > 0) {
+                                Map<String, String> repMap = IaisCommonUtils.genNewHashMap(cMsg.placeHolders().length);
+                                for (int i = 0; i < cMsg.placeHolders().length; i++) {
+                                    repMap.put(cMsg.placeHolders()[i], cMsg.replaceVals()[i]);
+                                }
+                                msg = MessageUtil.getMessageDesc(msg, repMap);
+                            }
+                        }
+                        result.addMessage(name, msg);
                     }
                 }
             }

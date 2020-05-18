@@ -56,8 +56,9 @@ public class MessageUtil {
      * @return Formatted string
      */
     public static String getMessageDesc(String pattern, Map arguments) {
+        String msg = getMessageDesc(pattern);
         MapFormat temp = new MapFormat(arguments);
-        return temp.format(pattern);
+        return temp.format(msg);
     }
 
     public static String formatMessage(String msg, String paramVal){
