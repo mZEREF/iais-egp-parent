@@ -3,10 +3,13 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -17,14 +20,16 @@ import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
+import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
+import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 
 @Delegator(value = "corpassLandingDelegator")
 @Slf4j
@@ -35,6 +40,9 @@ public class FECorppassLandingDelegator {
 
     @Autowired
     private OrgUserManageService orgUserManageService;
+
+    @Autowired
+    private SubmissionClient submissionClient;
 
     /**
      * StartStep: startStep
@@ -133,6 +141,20 @@ public class FECorppassLandingDelegator {
             LoginHelper.initUserInfo(bpc.request, bpc.response, user);
             ParamUtil.setRequestAttr(bpc.request, "isAdminRole", "Y");
         }else {
+            // Add Audit Trail -- Start
+            List<AuditTrailDto> adList = IaisCommonUtils.genNewArrayList(1);
+            AuditTrailDto auditTrailDto = new AuditTrailDto();
+            auditTrailDto.setNricNumber(nric);
+            auditTrailDto.setUenId(uen);
+            auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+            auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
+            adList.add(auditTrailDto);
+            try {
+                AuditLogUtil.callWithEventDriven(adList, submissionClient);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+            // End Audit Trail -- End
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0012"));
             ParamUtil.setRequestAttr(bpc.request, "isAdminRole", "N");
         }
