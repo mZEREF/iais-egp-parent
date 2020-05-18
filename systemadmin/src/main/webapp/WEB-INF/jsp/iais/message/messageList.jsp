@@ -124,17 +124,13 @@
     }
 
     function prepareEdit(id){
-        if(confirm('Are you sure you want to edit ? ')){
-            $("#msgQueryId").val(id);
-            SOP.Crud.cfxSubmit("mainForm", "prepareEdit", id);
-        }
+        $("#msgQueryId").val(id);
+        SOP.Crud.cfxSubmit("mainForm", "prepareEdit", id);
     }
 
     function disable(id){
-        if(confirm('Are you sure you want to disable ?')){
-            $("#msgQueryId").val(id);
-            SOP.Crud.cfxSubmit("mainForm", "disableStatus", id);
-        }
+        $("#msgQueryId").val(id);
+        SOP.Crud.cfxSubmit("mainForm", "disableStatus", id);
     }
 
 

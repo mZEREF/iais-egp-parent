@@ -91,6 +91,13 @@ public class HcsaChklItemDelegator {
             ParamUtil.setSessionAttr(request, "currentValidateId", null);
         }
 
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, null);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_DESC, null);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM, null);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_STATUS, null);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_ANSWER_TYPE, null);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_RISK_LEVEL, null);
+
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, null);
@@ -627,6 +634,14 @@ public class HcsaChklItemDelegator {
         itemDto.setRiskLevel(riskLevel);
         itemDto.setAnswerType(answerType);
 
+
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, clause);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_REGULATION_DESC, desc);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM, chklItem);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_STATUS, status);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_ANSWER_TYPE, answerType);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_RISK_LEVEL, riskLevel);
+
         ValidationResult validationResult = WebValidationHelper.validateProperty(itemDto, "search");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
@@ -676,10 +691,15 @@ public class HcsaChklItemDelegator {
     private void filterItemInConfig(HttpServletRequest request, SearchParam searchParam){
         String fromConfigPage = (String) ParamUtil.getSessionAttr(request, "routeToItemProcess");
         List<String> selectedItemIdToConfig = (List<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG);
-        if (!StringUtils.isEmpty(fromConfigPage) && !IaisCommonUtils.isEmpty(selectedItemIdToConfig)){
+
+        if (!StringUtils.isEmpty(fromConfigPage)){
+            searchParam.addFilter("itemStatus", "CMSTAT001", true);
+        }
+
+        if (!IaisCommonUtils.isEmpty(selectedItemIdToConfig)){
             SqlHelper.builderNotInSql(searchParam, "item.id", HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, selectedItemIdToConfig);
         }
-        searchParam.addFilter("itemStatus", "CMSTAT001", true);
+
     }
 
     
