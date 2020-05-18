@@ -374,12 +374,13 @@ public class OfficerOnlineEnquiriesDelegator {
 
         String count=ParamUtil.getString(request,"searchChk");
 
+        if(count==null){
+            count= (String) ParamUtil.getSessionAttr(request,"count");
+        }
         ParamUtil.setSessionAttr(request,"count",count);
         preSelectOption(request);
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        String searchNo=ParamUtil.getString(request,"search_no");
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
-        ParamUtil.setSessionAttr(request,SEARCH_NO,searchNo);
 
         // 		doBasicSearch->OnStepProcess
     }
@@ -737,7 +738,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
             }
         }
-        ParamUtil.setRequestAttr(request,"SearchParam", licParam);
+        ParamUtil.setSessionAttr(request,"SearchParam", licParam);
     }
 
     private void rfiApplicationQueryDtoToReqForInfoSearchListDto(RfiApplicationQueryDto rfiApplicationQueryDto,ReqForInfoSearchListDto reqForInfoSearchListDto){
