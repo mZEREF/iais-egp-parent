@@ -230,6 +230,8 @@
         $("#mainForm").addClass("form-horizontal");});
 
     $('#processingli').click(function(){
+        $("#mainForm").removeClass("form-horizontal");});
+    $('#emailViewli').click(function(){
         $("#mainForm").addClass("form-horizontal");});
 
 </script>
