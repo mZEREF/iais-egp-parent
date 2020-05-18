@@ -170,13 +170,13 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 per.getLicKeyPersonnelDto().setPsnType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getLicKeyPersonnelDto().getPsnType()}).get(0).getText());
                 per.getKeyPersonnelDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getSalutation()}).get(0).getText());
                 per.getKeyPersonnelDto().setDesignation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getDesignation()}).get(0).getText());
+                per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelExtDto().getProfessionType()}).get(0).getText());
                 switch (per.getKeyPersonnelExtDto().getPreferredMode()){
                     case "1":per.getKeyPersonnelExtDto().setPreferredMode("Email");break;
                     case "2":per.getKeyPersonnelExtDto().setPreferredMode("SMS");break;
                     case "3":per.getKeyPersonnelExtDto().setPreferredMode("Email  SMS");break;
                     default:per.getKeyPersonnelExtDto().setPreferredMode("-");break;
                 }
-                per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelExtDto().getProfessionType()}).get(0).getText());
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);
             }
@@ -235,7 +235,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 complianceHistoryDto.setRiskTag("-");
             }
             try{
-                List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
                 Calendar c = Calendar.getInstance();
                 for (AppPremisesRecommendationDto appPremisesRecommendationDto:appPremisesRecommendationDtos
                 ) {
@@ -381,7 +381,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }else {
             inspectionReportDto.setNcRectification(null);
         }
-        List<AppPremisesRecommendationDto>  appPremisesRecommendationDtos  = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_TCU).getEntity();
+        List<AppPremisesRecommendationDto>  appPremisesRecommendationDtos  = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
 
         AppPremisesRecommendationDto ncRecommendationDto =appPremisesRecommendationDtos.get(indexNo);
         //best practice remarks
@@ -413,7 +413,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         String inspectionEndTime = "-";
         try{
             List<AppPremisesRecommendationDto> appPreRecommentdationDtoStart = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME).getEntity();
-            List<AppPremisesRecommendationDto> appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+            List<AppPremisesRecommendationDto> appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
             List<AppPremisesRecommendationDto> appPreRecommentdationDtoEnd = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME).getEntity();
             if(appPreRecommentdationDtoDate!=null){
                 inspectionDate = appPreRecommentdationDtoDate.get(indexNo).getRecomInDate();

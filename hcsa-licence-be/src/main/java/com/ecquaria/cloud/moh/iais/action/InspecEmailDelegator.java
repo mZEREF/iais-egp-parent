@@ -167,10 +167,14 @@ public class InspecEmailDelegator {
             else {
                 appPremisesRoutingHistoryDto1.setActionby(applicationViewService.getUserNameById(new ArrayList<String>(Collections.singleton(appPremisesRoutingHistoryDto1.getActionby()))).get(0).getDisplayName());
             }
-            if(StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getAppStatus())){
-                appPremisesRoutingHistoryDto1.setAppStatus("-");
+            if(StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getProcessDecision())){
+                if(StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getAppStatus())){
+                    appPremisesRoutingHistoryDto1.setProcessDecision(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHistoryDto1.getAppStatus()}).get(0).getText());
+                }else {
+                    appPremisesRoutingHistoryDto1.setProcessDecision("-");
+                }
             }else {
-                appPremisesRoutingHistoryDto1.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHistoryDto1.getAppStatus()}).get(0).getText());
+                appPremisesRoutingHistoryDto1.setProcessDecision(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHistoryDto1.getProcessDecision()}).get(0).getText());
             }
         }
         inspectionEmailTemplateDto.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getStatus()}).get(0).getText());

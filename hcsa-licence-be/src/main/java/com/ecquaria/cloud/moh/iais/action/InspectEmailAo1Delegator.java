@@ -354,10 +354,14 @@ public class InspectEmailAo1Delegator {
             else {
                 appPremisesRoutingHistoryDto1.setActionby(applicationViewService.getUserNameById(new ArrayList<String>(Collections.singleton(appPremisesRoutingHistoryDto1.getActionby()))).get(0).getDisplayName());
             }
-            if(StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getAppStatus())){
-                appPremisesRoutingHistoryDto1.setAppStatus("-");
+            if(StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getProcessDecision())){
+                if(StringUtil.isEmpty(appPremisesRoutingHistoryDto1.getAppStatus())){
+                    appPremisesRoutingHistoryDto1.setProcessDecision(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHistoryDto1.getAppStatus()}).get(0).getText());
+                }else {
+                    appPremisesRoutingHistoryDto1.setProcessDecision("-");
+                }
             }else {
-                appPremisesRoutingHistoryDto1.setAppStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHistoryDto1.getAppStatus()}).get(0).getText());
+                appPremisesRoutingHistoryDto1.setProcessDecision(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRoutingHistoryDto1.getProcessDecision()}).get(0).getText());
             }
         }
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT});

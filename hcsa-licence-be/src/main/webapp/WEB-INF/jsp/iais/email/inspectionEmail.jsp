@@ -183,7 +183,7 @@
                                                                             <tr>
                                                                                 <td><c:out value="${pool.actionby}"/></td>
                                                                                 <td><c:out value="${pool.wrkGrpId}"/></td>
-                                                                                <td><c:out value="${pool.appStatus}"/></td>
+                                                                                <td><c:out value="${pool.processDecision}"/></td>
                                                                                 <td><c:out value="${pool.internalRemarks}"/></td>
                                                                                 <td><c:out value="${pool.updatedDt}"/></td>
                                                                             </tr>

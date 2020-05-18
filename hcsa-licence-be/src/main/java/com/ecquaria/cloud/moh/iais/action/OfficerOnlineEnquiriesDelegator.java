@@ -176,7 +176,10 @@ public class OfficerOnlineEnquiriesDelegator {
         ParamUtil.setSessionAttr(request,SEARCH_NO,searchNo);
         String count=ParamUtil.getString(request,"searchChk");
         if(count==null){
-            count="3";
+            count= (String) ParamUtil.getSessionAttr(request,"count");
+            if(count==null){
+                count="3";
+            }
         }
         Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
@@ -776,7 +779,7 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setAddress(addressList);
 
         try{
-            List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+            List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
             if(appPremisesRecommendationDtos.size()>=2){
                 reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
             }
@@ -835,7 +838,11 @@ public class OfficerOnlineEnquiriesDelegator {
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
-
+        String count=ParamUtil.getString(request,"searchChk");
+        if(count==null){
+            count= (String) ParamUtil.getSessionAttr(request,"count");
+        }
+        ParamUtil.setSessionAttr(request,"count",count);
         String [] appIds=ParamUtil.getStrings(request,"appIds");
         List<String> licIds=IaisCommonUtils.genNewArrayList();
         List<String> licRfiIds=IaisCommonUtils.genNewArrayList();
