@@ -35,9 +35,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator("backendLoginDelegator")
 public class BackendLoginDelegator {
     @Autowired
-    OrganizationMainClient organizationMainClient;
+    private OrganizationMainClient organizationMainClient;
     @Autowired
-    SubmissionClient submissionClient;
+    private SubmissionClient submissionClient;
 
     public void Start(BaseProcessClass bpc){
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -110,6 +110,7 @@ public class BackendLoginDelegator {
 
         if (orgUserDto==null) {
             String userId = ParamUtil.getString(request,"entityId");
+            // Add Audit Trail -- Start
             List<AuditTrailDto> adList = IaisCommonUtils.genNewArrayList(1);
             AuditTrailDto auditTrailDto = new AuditTrailDto();
             auditTrailDto.setMohUserId(userId);
@@ -121,6 +122,7 @@ public class BackendLoginDelegator {
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
+            // End Audit Trail -- End
             errMap.put("login","Please key in a valid userId");
         }
         return errMap;
