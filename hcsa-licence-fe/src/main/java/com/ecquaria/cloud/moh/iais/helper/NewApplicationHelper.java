@@ -151,7 +151,7 @@ public class NewApplicationHelper {
                 String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
                 if(StringUtil.isEmpty(professionRegoNo)){
                     errMap.put("professionRegoNo"+i,"UC_CHKLMD001_ERR001");
-                    String qualification = appSvcCgoList.get(i).getSubspeciality();
+                    String qualification = appSvcCgoList.get(i).getSubSpeciality();
                     if(StringUtil.isEmpty(qualification)){
                         errMap.put("qualification"+i,"UC_CHKLMD001_ERR001");
                     }
@@ -1039,7 +1039,7 @@ public class NewApplicationHelper {
                     person.setProfRegNo(psnDto.getProfRegNo());
                     person.setSpeciality(psnDto.getSpeciality());
                     person.setSpecialityOther(psnDto.getSpecialityOther());
-                    person.setSubspeciality(psnDto.getSubspeciality());
+                    person.setSubSpeciality(psnDto.getSubSpeciality());
                     //
                     person.setNeedSpcOptList(true);
                     List<SelectOption> spcOpts = person.getSpcOptList();
@@ -1368,7 +1368,7 @@ public class NewApplicationHelper {
         psnDto.setProfRegNo(appSvcCgoDto.getProfRegNo());
         psnDto.setSpeciality(appSvcCgoDto.getSpeciality());
         psnDto.setSpecialityOther(appSvcCgoDto.getSpecialityOther());
-        psnDto.setSubspeciality(appSvcCgoDto.getSubspeciality());
+        psnDto.setSubSpeciality(appSvcCgoDto.getSubSpeciality());
         return psnDto;
     }
 
@@ -1389,7 +1389,7 @@ public class NewApplicationHelper {
                 appSvcCgoDto.setProfRegNo(selPerson.getProfRegNo());
                 appSvcCgoDto.setSpeciality(selPerson.getSpeciality());
                 appSvcCgoDto.setSpecialityOther(selPerson.getSpecialityOther());
-                appSvcCgoDto.setSubspeciality(selPerson.getSubspeciality());
+                appSvcCgoDto.setSubSpeciality(selPerson.getSubSpeciality());
                 appSvcCgoDto.setMobileNo(selPerson.getMobileNo());
                 appSvcCgoDto.setEmailAddr(selPerson.getEmailAddr());
                 //

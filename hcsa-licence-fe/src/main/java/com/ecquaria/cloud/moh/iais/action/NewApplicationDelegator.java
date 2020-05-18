@@ -29,7 +29,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -2869,7 +2868,7 @@ public class NewApplicationDelegator {
                         appSvcPrincipalOfficersDto.setProfRegNo((String) v.get("profRegNo"));
                         appSvcPrincipalOfficersDto.setSpeciality((String) v.get("speciality"));
                         appSvcPrincipalOfficersDto.setSpecialityOther((String) v.get("specialityOther"));
-                        appSvcPrincipalOfficersDto.setSubspeciality((String) v.get("subspeciality"));
+                        appSvcPrincipalOfficersDto.setSubSpeciality((String) v.get("subSpeciality"));
                         appSvcPrincipalOfficersDto.setNeedSpcOptList((boolean) v.get("needSpcOptList"));
                         List<LinkedHashMap<String,String>> spcOptLinkedMap= (List<LinkedHashMap<String, String>>) v.get("spcOptList");
                         List<SelectOption> spcOptList = IaisCommonUtils.genNewArrayList();

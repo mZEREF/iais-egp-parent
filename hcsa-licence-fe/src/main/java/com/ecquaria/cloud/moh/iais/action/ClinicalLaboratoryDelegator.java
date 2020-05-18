@@ -1479,7 +1479,7 @@ public class ClinicalLaboratoryDelegator {
                 appSvcCgoDto.setSpecialityOther(specialtyOther[i]);
             }
             //qualification(before)
-            appSvcCgoDto.setSubspeciality(qualification[i]);
+            appSvcCgoDto.setSubSpeciality(qualification[i]);
             appSvcCgoDto.setMobileNo(mobileNo[i]);
             appSvcCgoDto.setEmailAddr(emailAddress[i]);
             appSvcCgoDto.setCgoIndexNo(cgoIndexNo);

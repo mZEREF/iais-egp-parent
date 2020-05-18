@@ -247,7 +247,7 @@
             $CurrentPsnEle.find('input[name="specialtyOther"]').addClass('hidden');
         }
         <!--Subspeciality or relevant qualification -->
-        var qualification = data.subspeciality;
+        var qualification = data.subSpeciality;
         if(qualification != null && qualification != ''){
             $CurrentPsnEle.find('input[name="qualification"]').val(qualification);
         }else{

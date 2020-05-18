@@ -288,7 +288,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-7">
                                       <div class="">
-                                        <iais:input maxLength="100" type="text" name="qualification" value="${currentCgo.subspeciality}"></iais:input>
+                                        <iais:input maxLength="100" type="text" name="qualification" value="${currentCgo.subSpeciality}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_qualification${status.index}"><c:out value="${errorMap.qualification}"></c:out></span>
                                       </div>
                                     </div>
