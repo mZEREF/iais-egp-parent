@@ -189,14 +189,6 @@ public class ApplicationServiceImpl implements ApplicationService {
         String appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING;
         List<ApplicationDto> postApps = applicationClient.getPostApplication(appType, appStatus).getEntity();
         //ApplicationDto applicationDto, String statgId,String roleId,String correlationId
-            if(!postApps.isEmpty()&&postApps!=null){
-                for(ApplicationDto applicationDto : postApps){
-
-                    //taskService.getRoutingTask(applicationDto,)
-                }
-
-            }
-
     }
 
     @Override

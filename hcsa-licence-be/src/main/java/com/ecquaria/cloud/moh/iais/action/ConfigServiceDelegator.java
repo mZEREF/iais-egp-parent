@@ -457,9 +457,9 @@ public class ConfigServiceDelegator {
                     hcsaSvcDocConfigDto.setStatus("CMSTAT001");
                     hcsaSvcDocConfigDto.setDispOrder(0);
                     hcsaSvcDocConfigDto.setDupForPrem("0");
-                    hcsaSvcDocConfigDto.setIsMandatory(false);
+                    hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
                     if(numberfieldsMandatory!=null){
-                        hcsaSvcDocConfigDto.setIsMandatory(true);
+                        hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
                     }
                     hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);
                 }

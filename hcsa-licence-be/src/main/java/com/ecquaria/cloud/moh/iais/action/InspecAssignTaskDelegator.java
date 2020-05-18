@@ -111,7 +111,9 @@ public class InspecAssignTaskDelegator {
             List<String> appCorrId_list = inspectionAssignTaskService.getAppCorrIdListByPool(commPools);
             StringBuilder sb = new StringBuilder("(");
             for(int i = 0; i < appCorrId_list.size(); i++){
-                sb.append(":appCorrId" + i).append(",");
+                sb.append(":appCorrId")
+                        .append(i)
+                        .append(',');
             }
             String inSql = sb.substring(0, sb.length() - 1) + ")";
             searchParam.addParam("appCorrId_list", inSql);
@@ -309,7 +311,9 @@ public class InspecAssignTaskDelegator {
         GroupRoleFieldDto groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
         StringBuilder sb = new StringBuilder("(");
         for(int i = 0; i < appCorrId_list.size(); i++){
-            sb.append(":appCorrId" + i).append(",");
+            sb.append(":appCorrId")
+                    .append(i)
+                    .append(',');
         }
         String inSql = sb.substring(0, sb.length() - 1) + ")";
         searchParam.addParam("appCorrId_list", inSql);

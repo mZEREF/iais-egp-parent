@@ -165,7 +165,7 @@ public class FeAdminManageDelegate {
             feUserDto.setOfficeTelNo(officeNo);
             feUserDto.setEmail(email);
             feUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
-            feUserDto.setAvailable(true);
+            feUserDto.setAvailable(Boolean.TRUE);
             if("active".equals(active)){
                 feUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             }else{

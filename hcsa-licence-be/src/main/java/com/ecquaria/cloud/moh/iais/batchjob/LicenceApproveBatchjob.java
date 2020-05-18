@@ -682,23 +682,26 @@ public class LicenceApproveBatchjob {
                     //todo:lic_base_specified_correlation
                     //
                     //part premises
-                    boolean isPartPremises = applicationDto.isPartPremises();
-                    log.info(StringUtil.changeForLog("The generateGroupLicence isPartPremises is -->:"+isPartPremises));
-                    if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) && isPartPremises){
-                        String everyOriginLicenceId = applicationDto.getOriginLicenceId();
-                        log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is -->:"+everyOriginLicenceId));
-                        if(!StringUtil.isEmpty(everyOriginLicenceId)){
-                            List<PremisesGroupDto> premisesGroupDtoList = licenceService.getPremisesGroupDtoByOriginLicenceId(everyOriginLicenceId);
-                            String msg = addPremisesGroupDtos(premisesGroupDtos,premisesGroupDtoList,applicationListDto);
-                            if(!StringUtil.isEmpty(msg)){
-                                errorMessage = msg;
-                                break;
+                    if (applicationDto != null){
+                        boolean isPartPremises = applicationDto.isPartPremises();
+                        log.info(StringUtil.changeForLog("The generateGroupLicence isPartPremises is -->:"+isPartPremises));
+                        if(isPartPremises&&ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+                            String everyOriginLicenceId = applicationDto.getOriginLicenceId();
+                            log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is -->:"+everyOriginLicenceId));
+                            if(!StringUtil.isEmpty(everyOriginLicenceId)){
+                                List<PremisesGroupDto> premisesGroupDtoList = licenceService.getPremisesGroupDtoByOriginLicenceId(everyOriginLicenceId);
+                                String msg = addPremisesGroupDtos(premisesGroupDtos,premisesGroupDtoList,applicationListDto);
+                                if(!StringUtil.isEmpty(msg)){
+                                    errorMessage = msg;
+                                    break;
+                                }
+                                // addDocumentToList(premisesGroupDtoList,licDocumentRelationDtos);
+                            }else{
+                                log.error(StringUtil.changeForLog("This Appno do not have the OriginLicenceId -- >" +applicationDto.getApplicationNo()));
                             }
-                            // addDocumentToList(premisesGroupDtoList,licDocumentRelationDtos);
-                        }else{
-                            log.error(StringUtil.changeForLog("This Appno do not have the OriginLicenceId -- >" +applicationDto.getApplicationNo()));
                         }
                     }
+
                 }
 
                 //create LicSvcSpecificPersonnelDto
@@ -1080,9 +1083,9 @@ public class LicenceApproveBatchjob {
             licPremisesDto.setPremisesId(premisesId);
             licPremisesDto.setIsPostInspNeeded(isPostInspNeeded);
             if(appPremisesRecommendationDto == null){
-                licPremisesDto.setIsTcuNeeded(Integer.parseInt(AppConsts.NO));
+                licPremisesDto.setIsTcuNeeded(Integer.valueOf(AppConsts.NO));
             }else{
-                licPremisesDto.setIsTcuNeeded(Integer.parseInt(AppConsts.YES));
+                licPremisesDto.setIsTcuNeeded(Integer.valueOf(AppConsts.YES));
                 licPremisesDto.setTcuDate(appPremisesRecommendationDto.getRecomInDate());
             }
             premisesGroupDto.setLicPremisesDto(licPremisesDto);
@@ -1098,33 +1101,34 @@ public class LicenceApproveBatchjob {
             }
 
             //create LicPremisesScopeDto
-            List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtoList = getAppSvcPremisesScopeDtoByCorrelationId(appSvcPremisesScopeDtos,appPremCorrecId);
-            if(!IaisCommonUtils.isEmpty(appSvcPremisesScopeDtoList)){
-                List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = IaisCommonUtils.genNewArrayList();
-                for(AppSvcPremisesScopeDto appSvcPremisesScopeDto :appSvcPremisesScopeDtoList){
-                    LicPremisesScopeGroupDto licPremisesScopeGroupDto = new LicPremisesScopeGroupDto();
-                    LicPremisesScopeDto licPremisesScopeDto = MiscUtil.transferEntityDto(appSvcPremisesScopeDto,LicPremisesScopeDto.class);
-                    licPremisesScopeDto.setId(null);
-                    licPremisesScopeGroupDto.setLicPremisesScopeDto(licPremisesScopeDto);
-                    //create LicPremisesScopeAllocationDto
-                    AppSvcPremisesScopeAllocationDto appSvcPremisesScopeAllocationDto = getAppSvcPremisesScopeAllocationDto(appSvcPremisesScopeAllocationDtos,
-                            appSvcPremisesScopeDto.getId());
-                    if(appSvcPremisesScopeAllocationDto!= null){
-                        LicPremisesScopeAllocationDto licPremisesScopeAllocationDto = new LicPremisesScopeAllocationDto();
-                        licPremisesScopeAllocationDto.setLicCgoId(appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId());
-                        licPremisesScopeGroupDto.setLicPremisesScopeAllocationDto(licPremisesScopeAllocationDto);
-                    }else{
-                        log.info(StringUtil.changeForLog("this appSvcPremisesScopeDto.getId() do not have the AppSvcPremisesScopeAllocationDto -->:"+appSvcPremisesScopeDto.getId()));
+            if (!StringUtil.isEmpty(appPremCorrecId)){
+                List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtoList = getAppSvcPremisesScopeDtoByCorrelationId(appSvcPremisesScopeDtos,appPremCorrecId);
+                if(!IaisCommonUtils.isEmpty(appSvcPremisesScopeDtoList)){
+                    List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = IaisCommonUtils.genNewArrayList();
+                    for(AppSvcPremisesScopeDto appSvcPremisesScopeDto :appSvcPremisesScopeDtoList){
+                        LicPremisesScopeGroupDto licPremisesScopeGroupDto = new LicPremisesScopeGroupDto();
+                        LicPremisesScopeDto licPremisesScopeDto = MiscUtil.transferEntityDto(appSvcPremisesScopeDto,LicPremisesScopeDto.class);
+                        licPremisesScopeDto.setId(null);
+                        licPremisesScopeGroupDto.setLicPremisesScopeDto(licPremisesScopeDto);
+                        //create LicPremisesScopeAllocationDto
+                        AppSvcPremisesScopeAllocationDto appSvcPremisesScopeAllocationDto = getAppSvcPremisesScopeAllocationDto(appSvcPremisesScopeAllocationDtos,
+                                appSvcPremisesScopeDto.getId());
+                        if(appSvcPremisesScopeAllocationDto!= null){
+                            LicPremisesScopeAllocationDto licPremisesScopeAllocationDto = new LicPremisesScopeAllocationDto();
+                            licPremisesScopeAllocationDto.setLicCgoId(appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId());
+                            licPremisesScopeGroupDto.setLicPremisesScopeAllocationDto(licPremisesScopeAllocationDto);
+                        }else{
+                            log.info(StringUtil.changeForLog("this appSvcPremisesScopeDto.getId() do not have the AppSvcPremisesScopeAllocationDto -->:"+appSvcPremisesScopeDto.getId()));
+                        }
+                        licPremisesScopeGroupDtoList.add(licPremisesScopeGroupDto);
                     }
-                    licPremisesScopeGroupDtoList.add(licPremisesScopeGroupDto);
+                    premisesGroupDto.setLicPremisesScopeGroupDtoList(licPremisesScopeGroupDtoList);
+                }else{
+                    log.info(StringUtil.changeForLog("This appPremCorrecId can not get the AppSvcPremisesScopeDto -->:"+appPremCorrecId));
                 }
-                premisesGroupDto.setLicPremisesScopeGroupDtoList(licPremisesScopeGroupDtoList);
-            }else{
-                log.info(StringUtil.changeForLog("This appPremCorrecId can not get the AppSvcPremisesScopeDto -->:"+appPremCorrecId));
+                reuslt.add(premisesGroupDto);
             }
-            reuslt.add(premisesGroupDto);
         }
-
         return  reuslt;
     }
 

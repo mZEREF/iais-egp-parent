@@ -82,7 +82,7 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
         List<ChecklistConfigDto> inspChecklist = IaisCommonUtils.genNewArrayList();
         ChecklistConfigDto commonConfig = hcsaChklClient.getMaxVersionCommonConfig().getEntity();
         if (commonConfig != null){
-            log.info(StringUtil.changeForLog("inspection checklist for common info: " + commonConfig.toString()));
+            log.info(StringUtil.changeForLog("inspection checklist for common info: " + commonConfig));
             inspChecklist.add(commonConfig);
         }
 

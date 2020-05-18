@@ -180,7 +180,7 @@ public class InsReportDelegator {
         appPremisesRecommendationDto.setPeriod(periods);
         if(!StringUtil.isEmpty(number)){
             try {
-                appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
+                appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number));
             }catch (NumberFormatException e){
                 appPremisesRecommendationDto.setRecomInNumber(null);
             }
@@ -214,14 +214,14 @@ public class InsReportDelegator {
         if (OTHERS.equals(periods) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setChronoUnit(chrono);
-            appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
+            appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number));
         } else if (!StringUtil.isEmpty(periods) && !OTHERS.equals(periods)) {
             String[] splitPeriods = periods.split("\\s+");
             String count = splitPeriods[0];
             String dateType = splitPeriods[1];
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setChronoUnit(dateType);
-            appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(count));
+            appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(count));
             appPremisesRecommendationDto.setRecommendation(recommendation);
         }else if(InspectionReportConstants.REJECTED.equals(recommendation)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);

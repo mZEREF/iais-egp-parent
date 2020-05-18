@@ -125,7 +125,9 @@ public class InspectionSearchDelegator {
             List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
             StringBuilder sb = new StringBuilder("(");
             for (int i = 0; i < appCorrId_list.size(); i++) {
-                sb.append(":appCorrId" + i).append(",");
+                sb.append(":appCorrId")
+                        .append(i)
+                        .append(',');
             }
             String inSql = sb.substring(0, sb.length() - 1) + ")";
             searchParam.addParam("appCorrId_list", inSql);
@@ -218,7 +220,9 @@ public class InspectionSearchDelegator {
         List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
         StringBuilder sb = new StringBuilder("(");
         for(int i = 0; i < appCorrId_list.size(); i++){
-            sb.append(":appCorrId" + i).append(",");
+            sb.append(":appCorrId")
+                    .append(i)
+                    .append(',');
         }
         String inSql = sb.substring(0, sb.length() - 1) + ")";
         searchParam.addParam("appCorrId_list", inSql);
@@ -233,7 +237,9 @@ public class InspectionSearchDelegator {
             appCorIdStrs = memberValue.split(",");
             StringBuilder sb2 = new StringBuilder("(");
             for(int i = 0; i < appCorIdStrs.length; i++){
-                sb2.append(":appCorId" + i).append(",");
+                sb2.append(":appCorId")
+                        .append(i)
+                        .append(',');
             }
             String inSql2 = sb2.substring(0, sb2.length() - 1) + ")";
             searchParam.addParam("appCorId_list", inSql2);

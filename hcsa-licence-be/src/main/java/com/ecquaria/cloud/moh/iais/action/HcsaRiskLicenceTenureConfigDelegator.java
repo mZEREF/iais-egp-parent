@@ -51,8 +51,8 @@ public class HcsaRiskLicenceTenureConfigDelegator {
         log.debug(StringUtil.changeForLog("the init start ...."));
         HttpServletRequest request = bpc.request;
         LicenceTenShowDto showDto = hcsaRiskLicenceTenureSerice.getTenShowDto();
-        ParamUtil.setSessionAttr(request,"yearSelectOptions",(Serializable)LicenceUtil.getRiskYearsOrMonthDrop(true));
-        ParamUtil.setSessionAttr(request,"monthSelectOptions",(Serializable) LicenceUtil.getRiskYearsOrMonthDrop(false));
+        ParamUtil.setSessionAttr(request,"yearSelectOptions",(Serializable)LicenceUtil.getRiskYearsOrMonthDrop(Boolean.TRUE));
+        ParamUtil.setSessionAttr(request,"monthSelectOptions",(Serializable) LicenceUtil.getRiskYearsOrMonthDrop(Boolean.FALSE));
         ParamUtil.setSessionAttr(request,TEN_SHOW_DTO, showDto);
         ;
     }

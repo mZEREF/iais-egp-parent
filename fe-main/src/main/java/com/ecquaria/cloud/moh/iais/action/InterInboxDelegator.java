@@ -439,7 +439,7 @@ public class InterInboxDelegator {
                 String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
                 bpc.response.sendRedirect(tokenUrl);
             }else{
-                ParamUtil.setRequestAttr(bpc.request,"licIsAmend",true);
+                ParamUtil.setRequestAttr(bpc.request,"licIsAmend",Boolean.TRUE);
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMap.get("errorMessage"));
             }
         }

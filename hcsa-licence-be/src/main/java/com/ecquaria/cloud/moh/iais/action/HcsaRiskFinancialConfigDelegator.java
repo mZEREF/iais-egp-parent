@@ -98,7 +98,6 @@ public class HcsaRiskFinancialConfigDelegator {
     public RiskFinancialShowDto getDataFrompage(HttpServletRequest request, RiskFinancialShowDto financialShowDto) {
         List<HcsaRiskFinanceMatrixDto> finList = financialShowDto.getFinanceList();
         for (HcsaRiskFinanceMatrixDto fin : finList) {
-            HcsaRiskFinanceMatrixDto newFinDto = new HcsaRiskFinanceMatrixDto();
             String prsource = ParamUtil.getString(request, fin.getServiceCode() + "prsource");
             String prthershold = ParamUtil.getString(request, fin.getServiceCode() + "prthershold");
             String prleftmod = ParamUtil.getString(request, fin.getServiceCode() + "prleftmod");

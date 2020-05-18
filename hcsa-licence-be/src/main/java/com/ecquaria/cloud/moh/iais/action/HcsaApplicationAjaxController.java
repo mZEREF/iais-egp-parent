@@ -119,10 +119,12 @@ public class HcsaApplicationAjaxController{
             appIntranetDocDto.setUrl(url);
             InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
             appIntranetDocDto.setFileSn((serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? 999:fileSizes);
-            appIntranetDocDto.setIsUpload(true);
+            appIntranetDocDto.setIsUpload(Boolean.TRUE);
             appIntranetDocDtos.add( appIntranetDocDto);
-            applicationViewDto.setAppIntranetDocDtoList(appIntranetDocDtos);
-            applicationViewDto.setIsUpload(true);
+            if (applicationViewDto != null){
+                applicationViewDto.setAppIntranetDocDtoList(appIntranetDocDtos);
+                applicationViewDto.setIsUpload(Boolean.TRUE);
+            }
             ParamUtil.setSessionAttr(request,"applicationViewDto",(Serializable) applicationViewDto);
             //call back upload file succeeded
             if( !StringUtil.isEmpty( appIntranetDocDto.getId())){
