@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -98,16 +99,17 @@ public class BackendAjaxController {
                 }
                 HcsaSvcKpiDto hcsaSvcKpiDto = hcsaConfigClient.searchKpiResult(hcsaServiceDto.getSvcCode(), applicationDto.getApplicationType()).getEntity();
                 if(hcsaSvcKpiDto != null) {
+                    AppStageSlaTrackingDto appStageSlaTrackingDto = inspectionTaskMainClient.getSlaTrackByAppNoStageId(applicationDto.getApplicationNo(), stage).getEntity();
+                    int days = 0;
+                    if(appStageSlaTrackingDto != null){
+                        days = appStageSlaTrackingDto.getSlaDays();
+                    }
                     Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
                     int kpi = 0;
                     if(!StringUtil.isEmpty(stage)) {
                         if (kpiMap != null && kpiMap.get(stage) != null) {
                             kpi = kpiMap.get(stage);
                         }
-                    }
-                    int days = 0;
-                    if (taskDto.getSlaRemainInDays() != null) {
-                        days = taskDto.getSlaRemainInDays();
                     }
                     int remThreshold = 0;
                     if (hcsaSvcKpiDto.getRemThreshold() != null) {
