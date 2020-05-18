@@ -100,10 +100,12 @@ public class BackendAjaxController {
                 HcsaSvcKpiDto hcsaSvcKpiDto = hcsaConfigClient.searchKpiResult(hcsaServiceDto.getSvcCode(), applicationDto.getApplicationType()).getEntity();
                 if(hcsaSvcKpiDto != null) {
                     AppStageSlaTrackingDto appStageSlaTrackingDto = inspectionTaskMainClient.getSlaTrackByAppNoStageId(applicationDto.getApplicationNo(), stage).getEntity();
+                    //get current stage worked days
                     int days = 0;
                     if(appStageSlaTrackingDto != null){
                         days = appStageSlaTrackingDto.getSlaDays();
                     }
+                    //get warning value
                     Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
                     int kpi = 0;
                     if(!StringUtil.isEmpty(stage)) {
@@ -111,6 +113,7 @@ public class BackendAjaxController {
                             kpi = kpiMap.get(stage);
                         }
                     }
+                    //get threshold value
                     int remThreshold = 0;
                     if (hcsaSvcKpiDto.getRemThreshold() != null) {
                         remThreshold = hcsaSvcKpiDto.getRemThreshold();
@@ -118,6 +121,7 @@ public class BackendAjaxController {
                     //get color
                     colour = getColorByWorkAndKpiDay(kpi, days, remThreshold);
                 }
+                //set colour to show jsp
                 item.setTimeLimitWarning(colour);
             }
             map.put("serviceName", serviceNameMap);
