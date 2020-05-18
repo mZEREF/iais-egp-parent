@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.KpiCountDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppPremInsDraftDto;
@@ -103,6 +104,10 @@ public class KpiColourByWorkDaysBatchJob {
 
     private void getTimeLimitWarningColourByTask(TaskDto taskDto, AuditTrailDto intranet, List<Long> holidayTime) {
         String appPremCorrId = taskDto.getRefNo();
+        ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+        String appNo = applicationDto.getApplicationNo();
+        //get current stageId
+        String curStage;
         int days = 0;
         List<Date> workAndNonWorkDays = IaisCommonUtils.genNewArrayList();
         if(taskDto.getTaskKey().equals(HcsaConsts.ROUTING_STAGE_INS)) {
@@ -113,7 +118,9 @@ public class KpiColourByWorkDaysBatchJob {
                     days = map.getKey();
                 }
             }
+            curStage = subStage;
         } else {
+            curStage = taskDto.getTaskKey();
             int allWorkDays = 0;
             int allHolidays = 0;
             Map<Integer, Integer> workAndNonMap = new HashMap();
@@ -154,9 +161,27 @@ public class KpiColourByWorkDaysBatchJob {
         if(days > 0){
             days--;
         }
-        taskDto.setSlaRemainInDays(days);
-        taskDto.setAuditTrailDto(intranet);
-        taskService.updateTask(taskDto);
+        //set work days to current stage
+        setSalDaysToCurStage(appNo, curStage, days, intranet);
+    }
+
+    private void setSalDaysToCurStage(String appNo, String curStage, int days, AuditTrailDto intranet) {
+        AppStageSlaTrackingDto appStageSlaTrackingDto = inspectionTaskClient.getSlaTrackByAppNoStageId(appNo, curStage).getEntity();
+        if(appStageSlaTrackingDto == null){
+            appStageSlaTrackingDto = new AppStageSlaTrackingDto();
+            appStageSlaTrackingDto.setId(null);
+            appStageSlaTrackingDto.setApplicationNo(appNo);
+            appStageSlaTrackingDto.setStageId(curStage);
+            appStageSlaTrackingDto.setSlaDays(days);
+            appStageSlaTrackingDto.setAuditTrailDto(intranet);
+            inspectionTaskClient.createAppStageSlaTrackingDto(appStageSlaTrackingDto);
+        } else {
+            appStageSlaTrackingDto.setApplicationNo(appNo);
+            appStageSlaTrackingDto.setStageId(curStage);
+            appStageSlaTrackingDto.setSlaDays(days);
+            appStageSlaTrackingDto.setAuditTrailDto(intranet);
+            inspectionTaskClient.updateAppStageSlaTrackingDto(appStageSlaTrackingDto);
+        }
     }
 
     private Map<Integer, Integer> getWorkingDaysBySubStage(String subStage, TaskDto taskDto, List<Long> holidayTime) {

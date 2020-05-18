@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventInspRecItemNcDto;
@@ -22,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -100,4 +102,22 @@ public interface InspectionTaskClient {
 
     @GetMapping(value = "/iais-inspection/ins-draf-date/{appPreCorrId}")
     FeignResponseEntity<AppPremInsDraftDto> getAppPremInsDraftDtoByAppPreCorrId(@PathVariable(name = "appPreCorrId") String appPreCorrId);
+
+    /**
+     * Kpi stageId sla days
+     */
+    @PostMapping(value = "/application-be/kpi-sla-dayc", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppStageSlaTrackingDto> createAppStageSlaTrackingDto(@RequestBody AppStageSlaTrackingDto appStageSlaTrackingDto);
+
+    @PutMapping(value = "/application-be/kpi-sla-dayu", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppStageSlaTrackingDto> updateAppStageSlaTrackingDto(@RequestBody AppStageSlaTrackingDto appStageSlaTrackingDto);
+
+    @GetMapping(value = "/application-be/every-stage-salday/{appNo}")
+    FeignResponseEntity<List<AppStageSlaTrackingDto>> getSlaTrackByAppNo(@PathVariable("appNo") String appNo);
+
+    @GetMapping(value = "/application-be/app-stage-salday/{appNo}/{stageId}")
+    FeignResponseEntity<AppStageSlaTrackingDto> getSlaTrackByAppNoStageId(@PathVariable("appNo") String appNo, @PathVariable("stageId") String stageId);
+
+    @GetMapping(value = "/application-be/one-stage-salday/{id}")
+    FeignResponseEntity<AppStageSlaTrackingDto> searchSlaTrackById(@PathVariable("id") String id);
 }
