@@ -152,54 +152,9 @@
                                                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doSend()">Submit</button>
                                                 </iais:action>
                                                 <br><br><br>
-                                                <div class="alert alert-info" role="alert">
-                                                    <strong>
-                                                        <h4>Processing History</h4>
-                                                    </strong>
-                                                </div>
+                                                <%@include file="/WEB-INF/jsp/iais/inspectionncList/processHistory.jsp"%>
                                             </iais:section>
-                                            <div class="row">
-                                                <div class="col-xs-12">
-                                                    <div class="table-gp">
-                                                        <table class="table">
-                                                            <thead>
-                                                            <tr>
-                                                                <th>Username</th>
-                                                                <th>Working Group</th>
-                                                                <th>Status Update</th>
-                                                                <th>Remarks</th>
-                                                                <th>Last Updated</th>
-                                                            </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                            <c:choose>
-                                                                <c:when test="${empty appPremisesRoutingHistoryDtos}">
-                                                                    <tr>
-                                                                        <td colspan="7">
-                                                                            <iais:message key="ACK018"
-                                                                                          escape="true"></iais:message>
-                                                                        </td>
-                                                                    </tr>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    <c:forEach var="pool"
-                                                                               items="${appPremisesRoutingHistoryDtos}"
-                                                                               varStatus="status">
-                                                                        <tr>
-                                                                            <td><c:out value="${pool.actionby}"/></td>
-                                                                            <td><c:out value="${pool.wrkGrpId}"/></td>
-                                                                            <td><c:out value="${pool.processDecision}"/></td>
-                                                                            <td><c:out value="${pool.internalRemarks}"/></td>
-                                                                            <td><c:out value="${pool.updatedDt}"/></td>
-                                                                        </tr>
-                                                                    </c:forEach>
-                                                                </c:otherwise>
-                                                            </c:choose>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
