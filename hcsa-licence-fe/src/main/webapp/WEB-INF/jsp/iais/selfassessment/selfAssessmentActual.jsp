@@ -28,7 +28,7 @@
                     <a  id="backLastPageId" >< Back</a>
                 </iais:action>
 
-                <td>
+            <td>
                     <div class="text-right text-center-mobile">
                         <a class="btn btn-secondary <c:if test="${canEditAnswerFlag eq 'true'}">disabled</c:if>" id="clearButtonId" href="#">Clear</a>
                         <a class="btn btn-primary next <c:if test="${canEditAnswerFlag eq 'true'}">disabled</c:if>" id="submitButtonId" href="#">Submit</a>

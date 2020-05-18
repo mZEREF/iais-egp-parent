@@ -45,10 +45,10 @@ public final class FeSelfChecklistHelper {
         List<PremCheckItem> premCheckItemList = IaisCommonUtils.genNewArrayList();
         List<ChecklistSectionDto> checklistSectionDtos = configDto.getSectionDtos();
         if (!IaisCommonUtils.isEmpty(checklistSectionDtos)){
-            for(ChecklistSectionDto sectionDto : checklistSectionDtos){
-                List<ChecklistItemDto> checklistItemDtos = sectionDto.getChecklistItemDtos();
-                if (!IaisCommonUtils.isEmpty(checklistItemDtos)){
-                    for (ChecklistItemDto checklistItemDto : sectionDto.getChecklistItemDtos()){
+            for(ChecklistSectionDto i : checklistSectionDtos){
+                List<ChecklistItemDto> item = i.getChecklistItemDtos();
+                if (!IaisCommonUtils.isEmpty(item)){
+                    for (ChecklistItemDto j : item){
                         PremCheckItem premCheckItem = new PremCheckItem();
 
                         //record subtype config id
@@ -57,10 +57,12 @@ public final class FeSelfChecklistHelper {
                         }
 
                         premCheckItem.setSubType(isSubType);
-                        premCheckItem.setRegulation(checklistItemDto.getRegulationClauseNo());
+                        premCheckItem.setRegulationId(j.getRegulationId());
+                        premCheckItem.setRegulation(j.getRegulationClauseNo());
+                        premCheckItem.setRegulationClause(j.getRegulationClause());
                         premCheckItem.setAnswerKey(UUID.randomUUID().toString());
-                        premCheckItem.setChecklistItem(checklistItemDto.getChecklistItem());
-                        premCheckItem.setChecklistItemId(checklistItemDto.getItemId());
+                        premCheckItem.setChecklistItem(j.getChecklistItem());
+                        premCheckItem.setChecklistItemId(j.getItemId());
                         premCheckItemList.add(premCheckItem);
                     }
                 }
