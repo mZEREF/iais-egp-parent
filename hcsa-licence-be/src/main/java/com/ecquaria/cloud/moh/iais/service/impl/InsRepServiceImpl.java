@@ -716,6 +716,7 @@ public class InsRepServiceImpl implements InsRepService {
                 String groupDomain = entity.getGroupDomain();
                 if ("hcsa".equals(groupDomain)) {
                     workId = entity.getId();
+                    break;
                 }
             }
             List<String> leadId = organizationClient.getInspectionLead(workId).getEntity();
@@ -749,7 +750,7 @@ public class InsRepServiceImpl implements InsRepService {
         //appGrp --------app -------task    submissionId   operation yiyang    update licPremise
         List<TaskDto> taskDtos = new ArrayList<>();
         List<String> appGrpIds = new ArrayList<>();
-        if (!postApps.isEmpty() && postApps != null) {
+        if (!postApps.isEmpty()) {
             for (ApplicationDto applicationDto : postApps) {
                 String licenceId = applicationDto.getOriginLicenceId();
                 List<String> licIds = IaisCommonUtils.genNewArrayList();
@@ -935,7 +936,7 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId) {
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList();
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
         for (ApplicationDto applicationDto : applicationDtos) {
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);

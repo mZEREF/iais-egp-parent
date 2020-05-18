@@ -217,13 +217,13 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
             finDto.setEndDate(endDate);
             if(isLow){
                 finDto.setFinSource(RiskConsts.INSTITUTION);
-                finDto.setThershold(Integer.parseInt(dto.getInThershold()));
-                finDto.setCaseCountTh(Integer.parseInt(dto.getInLeftModCaseCounth()));
+                finDto.setThershold(Integer.valueOf(dto.getInThershold()));
+                finDto.setCaseCountTh(Integer.valueOf(dto.getInLeftModCaseCounth()));
                 finDto.setRiskRating(RiskConsts.LOW);
             }else{
                 finDto.setFinSource(RiskConsts.INSTITUTION);
-                finDto.setThershold(Integer.parseInt(dto.getInThershold()));
-                finDto.setCaseCountTh(Integer.parseInt(dto.getInRightModCaseCounth()));
+                finDto.setThershold(Integer.valueOf(dto.getInThershold()));
+                finDto.setCaseCountTh(Integer.valueOf(dto.getInRightModCaseCounth()));
                 finDto.setRiskRating(RiskConsts.HIGH);
             }
         }else{
@@ -237,13 +237,13 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
             finDto.setEndDate(endDate);
             if(isLow){
                 finDto.setFinSource(RiskConsts.PRACTITIONER);
-                finDto.setThershold(Integer.parseInt(dto.getPrThershold()));
-                finDto.setCaseCountTh(Integer.parseInt(dto.getPrLeftModCaseCounth()));
+                finDto.setThershold(Integer.valueOf(dto.getPrThershold()));
+                finDto.setCaseCountTh(Integer.valueOf(dto.getPrLeftModCaseCounth()));
                 finDto.setRiskRating(RiskConsts.LOW);
             }else{
                 finDto.setFinSource(RiskConsts.PRACTITIONER);
-                finDto.setThershold(Integer.parseInt(dto.getPrThershold()));
-                finDto.setCaseCountTh(Integer.parseInt(dto.getPrRightModCaseCounth()));
+                finDto.setThershold(Integer.valueOf(dto.getPrThershold()));
+                finDto.setCaseCountTh(Integer.valueOf(dto.getPrRightModCaseCounth()));
                 finDto.setRiskRating(RiskConsts.HIGH);
             }
         }
@@ -371,7 +371,7 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
     public String getRightLowCase(String lowCaseCount){
         Integer num = 0;
         try {
-            num = Integer.parseInt(lowCaseCount);
+            num = Integer.valueOf(lowCaseCount);
             num = num-1;
         } catch (Exception e) {
             return "";
@@ -381,7 +381,7 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
     public String getLeftHighCase(String highCaseCount){
         Integer num = 0;
         try {
-            num = Integer.parseInt(highCaseCount);
+            num = Integer.valueOf(highCaseCount);
             num = num+1;
         } catch (Exception e) {
             return "";

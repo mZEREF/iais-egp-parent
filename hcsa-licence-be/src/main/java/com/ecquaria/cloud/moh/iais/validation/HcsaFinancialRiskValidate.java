@@ -85,7 +85,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             fdto.setInThersholderr(true);
         }else{
             try {
-                Integer thold = Integer.parseInt(fdto.getInThershold());
+                Integer thold = Integer.valueOf(fdto.getInThershold());
                 if(thold<0 || thold>999){
                     errMap.put(fdto.getServiceCode()+"inThershold","ERR0013");
                     fdto.setInThersholderr(true);
@@ -100,7 +100,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             fdto.setPrThersholderr(true);
         }else{
             try {
-                Integer thold = Integer.parseInt(fdto.getPrThershold());
+                Integer thold = Integer.valueOf(fdto.getPrThershold());
                 if(thold<0 || thold>999){
                     errMap.put(fdto.getServiceCode()+"prThershold","ERR0013");
                     fdto.setPrThersholderr(true);
@@ -131,7 +131,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         int numberFlag = 0;
         if(!StringUtil.isEmpty(inLeftMod)){
             try {
-                inLeftModNum = Integer.parseInt(inLeftMod);
+                inLeftModNum = Integer.valueOf(inLeftMod);
                 if(inLeftModNum<0||inLeftModNum>999){
                     if(isIn){
                         errMap.put(serviceCode+"inLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
@@ -155,7 +155,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         }
         if(!StringUtil.isEmpty(inRightMod)){
             try {
-                inRightModNum = Integer.parseInt(inRightMod);
+                inRightModNum = Integer.valueOf(inRightMod);
                 if(inRightModNum<0 || inRightModNum >99){
                     if(isIn){
                         errMap.put(serviceCode+"inRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
@@ -199,7 +199,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         Integer inRightModNum = 0;
         try {
             if(!StringUtil.isEmpty(inLeftHigh)){
-                inLeftHighNum = Integer.parseInt(inLeftHigh);
+                inLeftHighNum = Integer.valueOf(inLeftHigh);
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     if(isIn){
                         inLeftHighNumFlag = false;
@@ -226,7 +226,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         }
         try {
             if(!StringUtil.isEmpty(inRightMod)){
-                inRightModNum = Integer.parseInt(inRightMod);
+                inRightModNum = Integer.valueOf(inRightMod);
                 if(inRightModNum +1 != inLeftHighNum){
                     if(isIn&&inLeftHighNumFlag){
                         errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0014");
@@ -249,7 +249,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         Integer inLeftModNum = 0;
         try {
             if(!StringUtil.isEmpty(inRightLow)){
-                inRightLowNum = Integer.parseInt(inRightLow);
+                inRightLowNum = Integer.valueOf(inRightLow);
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
                     if(isIn){
                         inRightLowNumFlag = false;
@@ -278,7 +278,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         }
         try {
             if(!StringUtil.isEmpty(inLeftMod)){
-                inLeftModNum = Integer.parseInt(inLeftMod);
+                inLeftModNum = Integer.valueOf(inLeftMod);
                 if(inLeftModNum -1 != inRightLowNum && inLeftModNum != inRightLowNum){
                     if(isIn){
                         if(inRightLowNumFlag){

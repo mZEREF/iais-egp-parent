@@ -257,7 +257,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         Integer inRightModNum = 0;
         try {
             if(!StringUtil.isEmpty(inLeftHigh)){
-                inLeftHighNum = Integer.parseInt(inLeftHigh);
+                inLeftHighNum = Integer.valueOf(inLeftHigh);
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     if("C".equals(level)){
                         caLeftHighNumFlag = false;
@@ -292,15 +292,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         }
         try {
             if(!StringUtil.isEmpty(inRightMod)){
-                inRightModNum = Integer.parseInt(inRightMod);
+                inRightModNum = Integer.valueOf(inRightMod);
                 if(inRightModNum +1 != inLeftHighNum){
-                    if("C".equals(level)&&caLeftHighNumFlag){
+                    if(caLeftHighNumFlag&&"C".equals(level)){
                         errMap.put(serviceCode + "caRightLowCaseCounth", "ERR0014");
                         fdto.setDoCaLeftHighCountherr(true);
-                    }else if("I".equals(level)&&miLeftHighNumFlag){
+                    }else if(miLeftHighNumFlag&&"I".equals(level)){
                         errMap.put(serviceCode + "miRightLowCaseCounth", "ERR0014");
                         fdto.setDoMiLeftHighCountherr(true);
-                    }else if("A".equals(level)&&mjLeftHighNumFlag){
+                    }else if(mjLeftHighNumFlag&&"A".equals(level)){
                         errMap.put(serviceCode + "mjRightLowCaseCounth", "ERR0014");
                         fdto.setDoMjLeftHighCountherr(true);
                     }
@@ -318,7 +318,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         Integer inLeftModNum = 0;
         try {
             if(!StringUtil.isEmpty(inRightLow)){
-                inRightLowNum = Integer.parseInt(inRightLow);
+                inRightLowNum = Integer.valueOf(inRightLow);
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
                     if("C".equals(level)){
                         caRightLowNumFlag = false;
@@ -386,7 +386,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         int numberFlag = 0;
         if(!StringUtil.isEmpty(inLeftMod)){
             try {
-                inLeftModNum = Integer.parseInt(inLeftMod);
+                inLeftModNum = Integer.valueOf(inLeftMod);
                 if(inLeftModNum<0||inLeftModNum>999){
                     if("C".equals(level)){
                         errMap.put(serviceCode+"caLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
@@ -416,7 +416,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         }
         if(!StringUtil.isEmpty(inRightMod)){
             try {
-                inRightModNum = Integer.parseInt(inRightMod);
+                inRightModNum = Integer.valueOf(inRightMod);
                 if(inRightModNum<0 || inRightModNum >999){
                     if("C".equals(level)){
                         errMap.put(serviceCode+"caRightModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");

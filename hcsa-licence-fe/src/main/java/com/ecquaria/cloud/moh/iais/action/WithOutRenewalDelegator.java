@@ -491,9 +491,9 @@ public class WithOutRenewalDelegator {
             ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,switch_value);
             String userAgreement = ParamUtil.getString(bpc.request, "verifyInfoCheckbox");
             if(!StringUtil.isEmpty(userAgreement) && AppConsts.YES.equals(userAgreement)){
-                ParamUtil.setSessionAttr(bpc.request,"userAgreement",true);
+                ParamUtil.setSessionAttr(bpc.request,"userAgreement",Boolean.TRUE);
             }else{
-                ParamUtil.setSessionAttr(bpc.request,"userAgreement",false);
+                ParamUtil.setSessionAttr(bpc.request,"userAgreement",Boolean.FALSE);
             }
         }else if(PAGE2.equals(switch_value)){
             ParamUtil.setRequestAttr(bpc.request,CONTROL_SWITCH,BACK);
@@ -726,9 +726,11 @@ public class WithOutRenewalDelegator {
             map.put("GIROAccountNumber",GIROAccountNumber);
 
         }
-        mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
         EmailDto emailDto = new EmailDto();
-        emailDto.setContent(mesContext);
+        if (msgTemplateDto != null){
+            mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
+            emailDto.setContent(mesContext);
+        }
         emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
         emailDto.setSubject(subject);
         emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
