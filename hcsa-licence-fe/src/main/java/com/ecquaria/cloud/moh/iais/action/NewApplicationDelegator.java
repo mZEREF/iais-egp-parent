@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -15,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
@@ -56,6 +58,7 @@ import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -67,6 +70,7 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -166,6 +170,10 @@ public class NewApplicationDelegator {
 
     @Autowired
     private ApplicationClient applicationClient;
+    @Autowired
+    private EventBusHelper eventBusHelper;
+    @Autowired
+    private GenerateIdClient generateIdClient;
 
     /**
      * StartStep: Start
@@ -1290,7 +1298,15 @@ public class NewApplicationDelegator {
         premisesDocToSvcDoc(appSubmissionDto);
         List<AppSubmissionDto> personAppSubmissionList = personContact(appSubmissionDto, oldAppSubmissionDto);
         appSubmissionDtos.add(appSubmissionDto);
-        List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos);
+        AppSubmissionListDto appSubmissionListDto =new AppSubmissionListDto();
+        String submissionId = generateIdClient.getSeqId().getEntity();
+        Long l = System.currentTimeMillis();
+        List<AppSubmissionDto> appSubmissionDtos1=  requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos);
+        appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
+        appSubmissionListDto.setEventRefNo(l.toString());
+        eventBusHelper.submitAsyncRequest(appSubmissionListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT,l.toString(),bpc.process);
+
         for(int i=0;i<appSubmissionDtos.size();i++ ){
             appSubmissionDtos1.get(i).setAmount( appSubmissionDtos.get(i).getAmount());
         }
@@ -1299,8 +1315,17 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess",isrfiSuccess);
         AppSubmissionDto personAppsubmit = getPersonAppsubmit(oldAppSubmissionDto, appSubmissionDto, appEditSelectDto, bpc);
         personAppSubmissionDtos.add(personAppsubmit);
-        List<AppSubmissionDto> personAppSubmissionDto = requestForChangeService.saveAppsBySubmissionDtos(personAppSubmissionDtos);
-        for(AppSubmissionDto changePersonAppSubmissionDto :personAppSubmissionDto){
+        personAppSubmissionDtos.addAll(personAppSubmissionList);
+        String submissionId1 = generateIdClient.getSeqId().getEntity();
+        AppSubmissionListDto appSubmissionListDto1 =new AppSubmissionListDto();
+        Long l1 = System.currentTimeMillis();
+        appSubmissionListDto1.setEventRefNo(l1.toString());
+        List<AppSubmissionDto> personAppSubmissionDtos1=  requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(personAppSubmissionDtos);
+        appSubmissionListDto1.setAppSubmissionDtos(personAppSubmissionDtos1);
+        eventBusHelper.submitAsyncRequest(personAppSubmissionDtos1,submissionId1, EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT,l1.toString(),bpc.process);
+
+        for(AppSubmissionDto changePersonAppSubmissionDto :personAppSubmissionDtos1){
             String grpId = changePersonAppSubmissionDto.getAppGrpId();
             String grpId1 = appSubmissionDto.getAppGrpId();
             AppGroupMiscDto appGroupMiscDto=new AppGroupMiscDto();

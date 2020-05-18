@@ -334,4 +334,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return entity;
     }
 
+    @Override
+    public List<AppSubmissionDto> saveAppsForRequestForGoupAndAppChangeByList(List<AppSubmissionDto> appSubmissionDtos) {
+        List<AppSubmissionDto> entity = applicationClient.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos).getEntity();
+
+        return entity;
+    }
+
 }
