@@ -145,8 +145,6 @@ public class AuditManualListDelegator {
         String hclCode = ParamUtil.getString(request, "hclCode");
         String premType = ParamUtil.getString(request, "premType");
         String riskType = ParamUtil.getString(request, "riskType");
-        List<SelectOption> aduitTypeOp = auditSystemListService.getAuditOp();
-        ParamUtil.setSessionAttr(request,"aduitTypeOp",(Serializable) aduitTypeOp);
         AuditSystemPotentialDto dto = new AuditSystemPotentialDto();
         List<String> serviceNmaeList = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(serviceName))
@@ -164,15 +162,17 @@ public class AuditManualListDelegator {
         dto.setPremisesType(premType);
         dto.setTypeOfRisk(riskType);
         ParamUtil.setSessionAttr(request, SESSION_AUDIT_SYSTEM_POTENTIAL_DTO_FOR_SEARCH_NAME, dto);
-        List<AuditTaskDataFillterDto> auditTaskDataDtos =  auditSystemPotitalListService.getSystemPotentailAdultList(dto);
-        auditSystemListService.getInspectors(auditTaskDataDtos);
-        for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos ){
-            ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
-        }
-        ParamUtil.setSessionAttr(request,"auditTaskDataDtos",(Serializable) auditTaskDataDtos);
         AduitSystemGenerateValidate auditTestValidate = new AduitSystemGenerateValidate();
         Map<String, String> errMap = auditTestValidate.validate(request);
         if (errMap.isEmpty()) {
+            List<SelectOption> aduitTypeOp = auditSystemListService.getAuditOp();
+            ParamUtil.setSessionAttr(request,"aduitTypeOp",(Serializable) aduitTypeOp);
+            List<AuditTaskDataFillterDto> auditTaskDataDtos =  auditSystemPotitalListService.getSystemPotentailAdultList(dto);
+            auditSystemListService.getInspectors(auditTaskDataDtos);
+            for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos ){
+                ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
+            }
+            ParamUtil.setSessionAttr(request,"auditTaskDataDtos",(Serializable) auditTaskDataDtos);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         } else {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));

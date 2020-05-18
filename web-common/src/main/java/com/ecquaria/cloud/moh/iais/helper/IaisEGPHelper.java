@@ -114,7 +114,7 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     /**
-     * It can't be the same day
+     * It could be the same day
      * @param start
      * @param end
      * @return
@@ -128,7 +128,7 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     /**
-     * It could be the same day
+     * It can't be the same day
      * @param start
      * @param end
      * @return
@@ -141,6 +141,14 @@ public final class IaisEGPHelper extends EGPHelper {
         return end.compareTo(start) > 0 ? true : false;
     }
 
+
+    public static boolean isAfterDateSecondByStringDate(String start, String end,Boolean isSameDay){
+        if(isSameDay){
+            return isAfterDate(parseToDate(start),parseToDate(end));
+        }else {
+            return isAfterDateSecond(parseToDate(start),parseToDate(end));
+        }
+    }
 
     /**
      * use by delegator to clear session attr, prefix of param need use 'Param_'

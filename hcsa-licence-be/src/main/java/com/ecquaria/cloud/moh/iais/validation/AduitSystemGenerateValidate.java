@@ -4,6 +4,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import sop.util.DateUtil;
+
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,12 +20,38 @@ public class AduitSystemGenerateValidate implements CustomizeValidator {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         String postcode = ParamUtil.getString(request,"postcode");
         String genNum = ParamUtil.getString(request,"genNum");
+        String inspectionStartDate = ParamUtil.getDate(request, "inspectionStartDate");
+        String inspectionEndDate = ParamUtil.getDate(request, "inspectionEndDate");
         if( !StringUtil.isEmpty(postcode) && !StringUtil.stringIsFewDecimal(postcode,null)){
             errMap.put("postcode","GENERAL_ERR0002");
         }
 
         if( !StringUtil.isEmpty(genNum) && !StringUtil.stringIsFewDecimal(genNum,null)){
             errMap.put("genNum","GENERAL_ERR0002");
+        }
+
+        if(!StringUtil.isEmpty(inspectionStartDate) && !StringUtil.isEmpty(inspectionEndDate)){
+           boolean isDateS;
+           boolean isDateE;
+           try{
+               IaisEGPHelper.parseToDate(inspectionStartDate);
+               isDateS = true;
+           }catch (Exception e){
+               errMap.put("inspectionStartDate","ERR0020");
+               isDateS = false;
+           }
+
+           try {
+               IaisEGPHelper.parseToDate(inspectionEndDate);
+               isDateE = true;
+           }catch (Exception e){
+               errMap.put("inspectionEndDate","ERR0020");
+               isDateE = false;
+           }
+
+           if(isDateS && isDateE && !IaisEGPHelper.isAfterDateSecondByStringDate(inspectionStartDate,inspectionEndDate,true)){
+               errMap.put("inspectionStartDate","Last Inspection done before(Start) cannot be later than Last Inspection done before(End)");
+           }
         }
         return errMap;
     }
