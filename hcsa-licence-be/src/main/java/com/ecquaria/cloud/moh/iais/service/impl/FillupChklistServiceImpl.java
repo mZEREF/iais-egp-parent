@@ -735,6 +735,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(dto).getEntity();
         String workGrp = dto.getGroupId();
         String subStage = HcsaConsts.ROUTING_STAGE_POT;
+        if(StringUtil.isEmpty(workGrp))  workGrp = taskDto.getWkGrpId();
         createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.PROCESS_DECI_PENDING_MYSELF_FOR_CHECKLIST_VERIFY, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
         taskDto.setSlaDateCompleted(new Date());
         taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
@@ -780,6 +781,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(dto).getEntity();
         String workGrp = dto.getGroupId();
         String subStage = HcsaConsts.ROUTING_STAGE_POT;
+        if(StringUtil.isEmpty(workGrp))  workGrp = taskDto.getWkGrpId();
         createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
         //create task
         TaskDto updatedtaskDto = taskService.updateTask(taskDto);
@@ -862,6 +864,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesRoutingHistoryDto.setProcessDecision(processDec);
         appPremisesRoutingHistoryDto.setWorkingGroup(wrkGroupId);
+        appPremisesRoutingHistoryDto.setWrkGrpId(wrkGroupId);
         appPremisesRoutingHistoryDto.setSubStage(subStageId);
         appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto).getEntity();
         return appPremisesRoutingHistoryDto;
