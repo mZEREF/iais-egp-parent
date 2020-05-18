@@ -76,12 +76,14 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -261,14 +263,16 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     public EnquiryInspectionReportDto getInsRepDto(ApplicationViewDto applicationViewDto,String licenceId) {
         EnquiryInspectionReportDto inspectionReportDto = new EnquiryInspectionReportDto();
         List<PremisesDto> licPremisesDto=hcsaLicenceClient.getPremisess(licenceId).getEntity();
+        String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
+        List<AppPremisesRecommendationDto>  appPremisesRecommendationDtos  = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+        AppPremisesRecommendationDto ncRecommendationDto =appPremisesRecommendationDtos.get(0);
         inspectionReportDto.setHciCode(licPremisesDto.get(0).getHciCode());
         //inspection report application dto
-        AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
+        AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(appPremisesCorrelationId).getEntity();
 
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appId = applicationDto.getId();
         String appGrpId = applicationDto.getAppGrpId();
-        String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         String status = applicationDto.getStatus();
         String appTypeCode = insRepClient.getAppType(appId).getEntity();
         ApplicationGroupDto applicationGroupDto = insRepClient.getApplicationGroupDto(appGrpId).getEntity();
@@ -384,9 +388,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }else {
             inspectionReportDto.setNcRectification(null);
         }
-        List<AppPremisesRecommendationDto>  appPremisesRecommendationDtos  = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
 
-        AppPremisesRecommendationDto ncRecommendationDto =appPremisesRecommendationDtos.get(0);
         //best practice remarks
         String bestPractice = "-";
         String remarks = "-";
@@ -443,18 +445,27 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         List<String> listUserId = IaisCommonUtils.genNewArrayList();
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(applicationViewDto.getApplicationDto().getApplicationNo());
         String userId ="";
-        String wkGrpId = appPremisesRoutingHistoryDtos.get(0).getWrkGrpId();
+        String wkGrpId = "";
         for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:appPremisesRoutingHistoryDtos ){
-            if(appPremisesRoutingHistoryDto.getProcessDecision().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW)){
-                userId=appPremisesRoutingHistoryDto.getActionby();
+            try {
+                if(appPremisesRoutingHistoryDto.getProcessDecision().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW)){
+                    userId=appPremisesRoutingHistoryDto.getActionby();
+                }
+                if(appPremisesRoutingHistoryDto.getWrkGrpId()!=null){
+                    wkGrpId = appPremisesRoutingHistoryDto.getWrkGrpId();
+                }
             }
-            if(appPremisesRoutingHistoryDto.getWrkGrpId()!=null){
-                wkGrpId = appPremisesRoutingHistoryDto.getWrkGrpId();
+            catch (NullPointerException e){
+                log.error(e.getMessage(), e);
             }
         }
-        listUserId.add(userId);
-        List<OrgUserDto> userList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
-        String reportBy = userList.get(0).getDisplayName();
+        String reportBy="-";
+        if(!"".equals(userId)){
+            listUserId.add(userId);
+            List<OrgUserDto> userList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
+            reportBy = userList.get(0).getDisplayName();
+        }
+
         listUserId.clear();
         //get inspection lead
         List<String> leadId = organizationClient.getInspectionLead(wkGrpId).getEntity();
@@ -506,6 +517,11 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto,licenceId);
         ParamUtil.setSessionAttr(request, "insRepDto", insRepDto);
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDtos.get(indexNo).getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+        LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licenceId).getEntity();
+        if(licenceDto!=null){
+            SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+            appPremisesRecommendationDto.setPeriod(sdf.format(licenceDto.getStartDate())+"-"+sdf.format(licenceDto.getExpiryDate()));
+        }
         appPremisesRecommendationDto.setRecomDecision(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getRecomDecision()}).get(0).getText());
         ParamUtil.setSessionAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         // 		preInspReport->OnStepProcess
