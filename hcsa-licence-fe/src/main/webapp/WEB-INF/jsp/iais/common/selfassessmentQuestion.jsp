@@ -62,7 +62,7 @@
                                     <th>Item</th>
                                     <th>Yes</th>
                                     <th>No</th>
-                                    <th>Na</th>
+                                    <th>N/A</th>
                                 </tr>
                                 </thead>
                                 <tbody id="general">
