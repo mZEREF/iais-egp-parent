@@ -104,7 +104,7 @@ public class BackendAjaxController {
                     if(!StringUtil.isEmpty(stage)) {
                         AppStageSlaTrackingDto appStageSlaTrackingDto = inspectionTaskMainClient.getSlaTrackByAppNoStageId(applicationDto.getApplicationNo(), stage).getEntity();
                         if (appStageSlaTrackingDto != null) {
-                            days = appStageSlaTrackingDto.getSlaDays();
+                            days = appStageSlaTrackingDto.getKpiSlaDays();
                         }
                     }
                     //get warning value

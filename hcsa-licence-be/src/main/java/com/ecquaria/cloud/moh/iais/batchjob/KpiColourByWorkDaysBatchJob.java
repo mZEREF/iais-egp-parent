@@ -104,8 +104,6 @@ public class KpiColourByWorkDaysBatchJob {
 
     private void getTimeLimitWarningColourByTask(TaskDto taskDto, AuditTrailDto intranet, List<Long> holidayTime) {
         String appPremCorrId = taskDto.getRefNo();
-        ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
-        String appNo = applicationDto.getApplicationNo();
         //get current stageId
         String curStage;
         int days = 0;
@@ -162,7 +160,11 @@ public class KpiColourByWorkDaysBatchJob {
             days--;
         }
         //set work days to current stage
-        setSalDaysToCurStage(appNo, curStage, days, intranet);
+        ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+        if(applicationDto != null) {
+            String appNo = applicationDto.getApplicationNo();
+            setSalDaysToCurStage(appNo, curStage, days, intranet);
+        }
     }
 
     private void setSalDaysToCurStage(String appNo, String curStage, int days, AuditTrailDto intranet) {
@@ -173,13 +175,13 @@ public class KpiColourByWorkDaysBatchJob {
                 appStageSlaTrackingDto.setId(null);
                 appStageSlaTrackingDto.setApplicationNo(appNo);
                 appStageSlaTrackingDto.setStageId(curStage);
-                appStageSlaTrackingDto.setSlaDays(days);
+                appStageSlaTrackingDto.setKpiSlaDays(days);
                 appStageSlaTrackingDto.setAuditTrailDto(intranet);
                 inspectionTaskClient.createAppStageSlaTrackingDto(appStageSlaTrackingDto);
             } else {
                 appStageSlaTrackingDto.setApplicationNo(appNo);
                 appStageSlaTrackingDto.setStageId(curStage);
-                appStageSlaTrackingDto.setSlaDays(days);
+                appStageSlaTrackingDto.setKpiSlaDays(days);
                 appStageSlaTrackingDto.setAuditTrailDto(intranet);
                 inspectionTaskClient.updateAppStageSlaTrackingDto(appStageSlaTrackingDto);
             }
