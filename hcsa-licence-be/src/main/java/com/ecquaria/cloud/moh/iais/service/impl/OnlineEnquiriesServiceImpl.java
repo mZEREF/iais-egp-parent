@@ -457,7 +457,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremCorrId);
         EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto,licenceId,index);
         ParamUtil.setSessionAttr(request, "insRepDto", insRepDto);
-        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
         ParamUtil.setSessionAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         // 		preInspReport->OnStepProcess
     }

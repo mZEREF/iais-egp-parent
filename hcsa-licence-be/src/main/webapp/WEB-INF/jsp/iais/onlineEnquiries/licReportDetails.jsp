@@ -2,6 +2,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -704,50 +705,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="alert alert-info" role="alert">
-                                        <strong>
-                                            <h4>Section F (After Action)</h4>
-                                        </strong>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div class="table-gp">
-                                                <table class="table">
-                                                    <tr>
-                                                        <td class="col-xs-4">
-                                                            <p>Follow up Action</p>
-                                                        </td>
-                                                        <td class="col-xs-4">
-                                                            <P><textarea style="resize:none" name="followUpAction" cols="50" rows="6" title="content" maxlength="8000"><c:out value="${appPremisesRecommendationDto.followUpAction}"/></textarea></P>
-                                                        </td>
-                                                        <td class="col-xs-4"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="col-xs-4">
-                                                            <p>To Engage Enforcement?</p>
-                                                        </td>
-                                                        <td class="col-xs-4">
-                                                            <input type="checkbox" id="enforcement" name="engageEnforcement" onchange="javascirpt:changeEngage();" <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if> >
-                                                        </td>
-                                                        <td class="col-xs-4"></td>
-                                                    </tr>
-                                                    <tr id="engageRemarks" hidden>
-                                                        <td class="col-xs-4">
-                                                            <p>Enforcement Remarks <strong style="color:#ff0000;"> *</strong></p>
-                                                        </td>
-                                                        <td class="col-xs-4">
-                                                            <textarea style="resize:none" name="enforcementRemarks" cols="50" rows="6" title="content" MAXLENGTH="4000"><c:out value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
-                                                            <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
-                                                        </td>
-                                                        <td class="col-xs-4"></td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -783,14 +742,6 @@
     }
 
 
-    function changeEngage() {
-        if ($('#enforcement').is(':checked')) {
-            $("#engageRemarks").show();
-        } else {
-            $("#engageRemarks").hide();
-        }
-    }
-
 
     $(document).ready(function () {
         if ($("#recommendation").val() == "IRE001") {
@@ -802,9 +753,7 @@
         if ($("#periods").val() == "Others") {
             changePeriod("Others");
         }
-        if ($('#enforcement').is(':checked')) {
-            $("#engageRemarks").show();
-        }
+
     });
 
 </script>
