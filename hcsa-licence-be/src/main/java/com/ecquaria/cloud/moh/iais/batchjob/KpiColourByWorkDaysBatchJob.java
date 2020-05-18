@@ -166,21 +166,23 @@ public class KpiColourByWorkDaysBatchJob {
     }
 
     private void setSalDaysToCurStage(String appNo, String curStage, int days, AuditTrailDto intranet) {
-        AppStageSlaTrackingDto appStageSlaTrackingDto = inspectionTaskClient.getSlaTrackByAppNoStageId(appNo, curStage).getEntity();
-        if(appStageSlaTrackingDto == null){
-            appStageSlaTrackingDto = new AppStageSlaTrackingDto();
-            appStageSlaTrackingDto.setId(null);
-            appStageSlaTrackingDto.setApplicationNo(appNo);
-            appStageSlaTrackingDto.setStageId(curStage);
-            appStageSlaTrackingDto.setSlaDays(days);
-            appStageSlaTrackingDto.setAuditTrailDto(intranet);
-            inspectionTaskClient.createAppStageSlaTrackingDto(appStageSlaTrackingDto);
-        } else {
-            appStageSlaTrackingDto.setApplicationNo(appNo);
-            appStageSlaTrackingDto.setStageId(curStage);
-            appStageSlaTrackingDto.setSlaDays(days);
-            appStageSlaTrackingDto.setAuditTrailDto(intranet);
-            inspectionTaskClient.updateAppStageSlaTrackingDto(appStageSlaTrackingDto);
+        if(!StringUtil.isEmpty(curStage)) {
+            AppStageSlaTrackingDto appStageSlaTrackingDto = inspectionTaskClient.getSlaTrackByAppNoStageId(appNo, curStage).getEntity();
+            if (appStageSlaTrackingDto == null) {
+                appStageSlaTrackingDto = new AppStageSlaTrackingDto();
+                appStageSlaTrackingDto.setId(null);
+                appStageSlaTrackingDto.setApplicationNo(appNo);
+                appStageSlaTrackingDto.setStageId(curStage);
+                appStageSlaTrackingDto.setSlaDays(days);
+                appStageSlaTrackingDto.setAuditTrailDto(intranet);
+                inspectionTaskClient.createAppStageSlaTrackingDto(appStageSlaTrackingDto);
+            } else {
+                appStageSlaTrackingDto.setApplicationNo(appNo);
+                appStageSlaTrackingDto.setStageId(curStage);
+                appStageSlaTrackingDto.setSlaDays(days);
+                appStageSlaTrackingDto.setAuditTrailDto(intranet);
+                inspectionTaskClient.updateAppStageSlaTrackingDto(appStageSlaTrackingDto);
+            }
         }
     }
 
