@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -255,18 +254,13 @@ public class HcsaChklItemDelegator {
             return;
         }
 
-        String json = hcsaChklService.submitCloneItem(chklItemDtos);
-        List<ErrorMsgContent> messageContentList = JsonUtil.parseToList(json, ErrorMsgContent.class);
-        if (messageContentList != null && ! messageContentList.isEmpty()){
-            for (ErrorMsgContent errorMsgContent : messageContentList){
-                String msg = MessageUtil.getMessageDesc(errorMsgContent.getErrorMsg());
-                errorMsgContent.setErrorMsg(msg);
-            }
-
+        boolean duplicationRecord = hcsaChklService.submitCloneItem(chklItemDtos).booleanValue();
+        if (duplicationRecord){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            ParamUtil.setRequestAttr(request, "messageContent", messageContentList);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("cloneItemMsg", "CHKL_ERR012"));
             return;
         }
+
         ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
 
     }

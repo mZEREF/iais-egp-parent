@@ -46,6 +46,7 @@
           <iais:field value="Checklist Item" required="true"></iais:field>
           <div class="col-xs-5 col-md-3">
             <input type="text" name="checklistItem" value="${itemRequestAttr.checklistItem}"/>
+            <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
           </div>
         </div>
       </div>
@@ -66,7 +67,7 @@
           <iais:field value="Answer Type" required="true"></iais:field>
           <div class="col-xs-5 col-md-3">
             <iais:select name="answerType" id="answerType" codeCategory="CATE_ID_ANSWER_TYPE"
-                         firstOption="Select Answer Type" value="${itemRequestAttr.answerType}"></iais:select>
+                         firstOption="Select Answer Type" filterValue="ANTP003, ANTP001" value="${itemRequestAttr.answerType}"></iais:select>
           </div>
         </div>
       </div>
@@ -90,6 +91,7 @@
 </div>
 
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
+<%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <script type="text/javascript">
     function editCloneItem() {
         SOP.Crud.cfxSubmit("mainForm", "editCloneItem");

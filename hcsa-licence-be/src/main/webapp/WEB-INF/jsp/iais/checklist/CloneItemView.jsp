@@ -36,11 +36,7 @@
       <div class="tab-content">
         <div class="row">
           <div class="col-xs-12">
-            <c:if test="${messageContent != null}">
-              <c:forEach var = "msg" items="${messageContent}">
-                <strong>${msg.subject}: ${msg.errorMsg}</strong><br>
-              </c:forEach>
-            </c:if>
+            <span id="error_cloneItemMsg" name="iaisErrorMsg" class="error-msg"></span>
             <br><br>
             <div class="components">
               <h2 class="component-title">Clone &amp; Result</h2>

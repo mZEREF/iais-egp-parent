@@ -85,7 +85,7 @@ public interface HcsaChklClient {
     FeignResponseEntity<Boolean> deleteRegulation(@PathVariable("id") String regulationId);
 
     @PostMapping(path = "/iais-hcsa-checklist/item/items-clone", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos);
+    FeignResponseEntity<Boolean> submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos);
 
     @PostMapping(path = "/iais-hcsa-checklist/item/items-upload", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<IaisApiResult<List<ErrorMsgContent>>> saveUploadItems(List<ChecklistItemDto> checklistItemList);

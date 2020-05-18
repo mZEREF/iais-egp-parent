@@ -108,7 +108,7 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
 
     @Override
-    public String submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos) {
+    public Boolean submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos) {
         return chklClient.submitCloneItem(hcsaChklItemDtos).getEntity();
     }
 

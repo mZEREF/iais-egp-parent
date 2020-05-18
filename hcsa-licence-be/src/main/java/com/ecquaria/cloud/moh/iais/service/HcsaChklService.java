@@ -78,7 +78,7 @@ public interface HcsaChklService {
      * backend method: saveCloneItem
      * @param checklistItemDtos
      */
-    String submitCloneItem(List<ChecklistItemDto> checklistItemDtos);
+    Boolean submitCloneItem(List<ChecklistItemDto> checklistItemDtos);
 
     /**
      * submit single config to backend, backend need clean to uuid of each section obj then generate by db
