@@ -34,6 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.validation.constraints.Null;
+
 /**
  * @author weilu
  * date 2019/11/20 17:15
@@ -263,9 +265,10 @@ public class InsReportDelegator {
         if (appPremisesRecommendationDto != null) {
             String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
+            String recomDecision = appPremisesRecommendationDto.getRecomDecision();
             String period = recomInNumber+" " + chronoUnit;
             List<String> periods = insRepService.getPeriods(applicationViewDto);
-            if(periods!=null&&!periods.isEmpty()){
+            if(periods!=null&&!periods.isEmpty()&&!InspectionReportConstants.REJECTED.equals(recomDecision)){
                 if(periods.contains(period)){
                     initRecommendationDto.setPeriod(period);
                 }else {
@@ -273,8 +276,9 @@ public class InsReportDelegator {
                     initRecommendationDto.setRecomInNumber(recomInNumber);
                     initRecommendationDto.setChronoUnit(chronoUnit);
                 }
+            }else if(InspectionReportConstants.REJECTED.equals(recomDecision)) {
+                initRecommendationDto.setPeriod(null);
             }
-            String recomDecision = appPremisesRecommendationDto.getRecomDecision();
             initRecommendationDto.setRecommendation(recomDecision);
         }
 

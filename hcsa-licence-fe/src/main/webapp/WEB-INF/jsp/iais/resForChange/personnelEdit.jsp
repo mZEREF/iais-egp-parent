@@ -111,7 +111,7 @@
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
                                             <iais:input maxLength="66" type="text" needDisabled="true"
-                                                        name="emailAddress"
+                                                        name="psnName"
                                                         value="${onePersonnel.psnName}"></iais:input>
                                         </iais:value>
                                     </iais:row>
@@ -124,7 +124,7 @@
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
                                             <iais:input maxLength="66" needDisabled="true" type="text"
-                                                        name="emailAddress" value="${onePersonnel.idNo}"></iais:input>
+                                                        name="idNo" value="${onePersonnel.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
@@ -153,15 +153,13 @@
                                             <iais:input maxLength="20" type="text" name="professionRegnNo"
                                                         value="${onePersonnel.professionRegnNo}"></iais:input>
                                         </iais:value>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_professionRegnNor"></span>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Email " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="66" type="text" name="emailAddress"
+                                            <iais:input maxLength="66" type="text" name="emailAddr"
                                                         value="${onePersonnel.emailAddr}"></iais:input>
                                         </iais:value>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr"></span>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Mobile " width="12" mandatory="true"/>
@@ -169,7 +167,6 @@
                                             <iais:input maxLength="8" type="text" name="mobileNo"
                                                         value="${onePersonnel.mobileNo}"></iais:input>
                                         </iais:value>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_mobileNo"></span>
                                     </iais:row>
                                 </div>
                             </div>

@@ -487,7 +487,6 @@
         } else {
             $("#period").hide();
             $("#selfPeriod").hide();
-            $("#period").hide();
         }
     }
 
@@ -508,7 +507,12 @@
         if ($("#recommendation").val() == "IRE002") {
             changeRecommendation("IRE002");
         }
+        if ($("#recommendation").val() == "IRE003") {
+            $("#period").hide();
+            $("#selfPeriod").hide();
+        }
         if ($("#periods").val() == "Others") {
+            alert("asda");
             changePeriod("Others");
         }
         if ($('#enforcement').is(':checked')) {

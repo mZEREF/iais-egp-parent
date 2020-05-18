@@ -7,7 +7,7 @@
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
-    String webroot=IaisEGPConstant.BE_CSS_ROOT;
+    String webroot = IaisEGPConstant.BE_CSS_ROOT;
 
 %>
 <webui:setLayout name="iais-intranet"/>
@@ -22,217 +22,259 @@
                 <div class="col-lg-12 col-xs-12">
                     <div class="center-content">
                         <div class="intranet-content">
-                        <iais:body>
-                            <div class="container">
-                                <div class="col-xs-12">
-                                    <div class="tab-gp dashboard-tab">
-                                        <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                                            <li id="info" class="${infoClassTop}" role="presentation"><a href="#tabInfo"
-                                                                                                         aria-controls="tabInfo"
-                                                                                                         role="tab"
-                                                                                                         data-toggle="tab">Info</a>
-                                            </li>
-                                            <li class="complete" role="presentation"><a href="#tabDocuments"
-                                                                                        aria-controls="tabDocuments"
-                                                                                        role="tab"
-                                                                                        data-toggle="tab">Documents</a>
-                                            </li>
-                                            <li id="report" class="${reportClassTop}" role="presentation"><a
-                                                    id="reportClink" href="#tabInspectionReport"
-                                                    aria-controls="tabProcessing" role="tab"
-                                                    data-toggle="tab">Inspection Report</a></li>
-                                            <li class="complete" role="presentation"><a href="#tabProcessing"
-                                                                                        aria-controls="tabProcessing"
-                                                                                        role="tab"
-                                                                                        data-toggle="tab">Processing</a>
-                                            </li>
+                            <iais:body>
+                                <div class="container">
+                                    <div class="col-xs-12">
+                                        <div class="tab-gp dashboard-tab">
+                                            <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
+                                                <li id="info" class="${infoClassTop}" role="presentation"><a
+                                                        href="#tabInfo"
+                                                        aria-controls="tabInfo"
+                                                        role="tab"
+                                                        data-toggle="tab">Info</a>
+                                                </li>
+                                                <li class="complete" role="presentation"><a href="#tabDocuments"
+                                                                                            aria-controls="tabDocuments"
+                                                                                            role="tab"
+                                                                                            data-toggle="tab">Documents</a>
+                                                </li>
+                                                <li id="report" class="${reportClassTop}" role="presentation"><a
+                                                        id="reportClink" href="#tabInspectionReport"
+                                                        aria-controls="tabProcessing" role="tab"
+                                                        data-toggle="tab">Inspection Report</a></li>
+                                                <li class="complete" role="presentation"><a href="#tabProcessing"
+                                                                                            aria-controls="tabProcessing"
+                                                                                            role="tab"
+                                                                                            data-toggle="tab">Processing</a>
+                                                </li>
 
-                                        </ul>
-                                        <div class="tab-nav-mobile visible-xs visible-sm">
-                                            <div class="swiper-wrapper" role="tablist">
-                                                <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo"
-                                                                             role="tab" data-toggle="tab">Info</a></div>
-                                                <div class="swiper-slide"><a href="#tabDocuments"
-                                                                             aria-controls="tabDocuments" role="tab"
-                                                                             data-toggle="tab">Documents</a></div>
-                                                <div class="swiper-slide"><a href="#tabInspectionReport"
-                                                                             aria-controls="tabInspectionReport"
-                                                                             role="tab" data-toggle="tab">Inspection
-                                                    Report</a></div>
-                                                <div class="swiper-slide"><a href="#tabProcessing"
-                                                                             aria-controls="tabProcessing" role="tab"
-                                                                             data-toggle="tab">Processing</a></div>
+                                            </ul>
+                                            <div class="tab-nav-mobile visible-xs visible-sm">
+                                                <div class="swiper-wrapper" role="tablist">
+                                                    <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo"
+                                                                                 role="tab" data-toggle="tab">Info</a>
+                                                    </div>
+                                                    <div class="swiper-slide"><a href="#tabDocuments"
+                                                                                 aria-controls="tabDocuments" role="tab"
+                                                                                 data-toggle="tab">Documents</a></div>
+                                                    <div class="swiper-slide"><a href="#tabInspectionReport"
+                                                                                 aria-controls="tabInspectionReport"
+                                                                                 role="tab" data-toggle="tab">Inspection
+                                                        Report</a></div>
+                                                    <div class="swiper-slide"><a href="#tabProcessing"
+                                                                                 aria-controls="tabProcessing"
+                                                                                 role="tab"
+                                                                                 data-toggle="tab">Processing</a></div>
+                                                </div>
+                                                <div class="swiper-button-prev"></div>
+                                                <div class="swiper-button-next"></div>
                                             </div>
-                                            <div class="swiper-button-prev"></div>
-                                            <div class="swiper-button-next"></div>
-                                        </div>
-                                        <div class="tab-content">
-                                            <div class="${infoClassBelow}" id="tabInfo" role="tabpanel">
-                                                <%@ include file="../hcsaLicence/applicationInfo.jsp" %>
-                                            </div>
-                                            <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/inspectionncList/tabDocuments.jsp"%>
-                                            </div>
-                                            <div class="${reportClassBelow}" id="tabInspectionReport" role="tabpanel">
-                                                <jsp:include page="/WEB-INF/jsp/iais/report/inspectorReport.jsp"></jsp:include>
-                                            </div>
-                                            <div class="tab-pane" id="tabProcessing" role="tabpanel">
-                                                <div class="col-xs-12">
-                                                    <div class="table-gp">
-                                                        <div class="alert alert-info" role="alert">
-                                                            <strong>
-                                                                <h4 style="border-bottom: none">Processing Status
-                                                                    Update</h4>
-                                                            </strong>
-                                                        </div>
+                                            <div class="tab-content">
+                                                <div class="${infoClassBelow}" id="tabInfo" role="tabpanel">
+                                                    <%@ include file="../hcsaLicence/applicationInfo.jsp" %>
+                                                </div>
+                                                <div class="tab-pane" id="tabDocuments" role="tabpanel">
+                                                    <%@include
+                                                            file="/WEB-INF/jsp/iais/inspectionncList/tabDocuments.jsp" %>
+                                                </div>
+                                                <div class="${reportClassBelow}" id="tabInspectionReport"
+                                                     role="tabpanel">
+                                                    <jsp:include
+                                                            page="/WEB-INF/jsp/iais/report/inspectorReport.jsp"></jsp:include>
+                                                </div>
+                                                <div class="tab-pane" id="tabProcessing" role="tabpanel">
+                                                    <div class="col-xs-12">
                                                         <div class="table-gp">
-                                                            <iais:section title="">
-                                                                <iais:row>
-                                                                    <iais:field value="Current Status"/>
-                                                                    <iais:value width="6">
-                                                                        <p><iais:code code="${insRepDto.currentStatus}"/></p>
-                                                                    </iais:value>
-                                                                </iais:row>
+                                                            <div class="alert alert-info" role="alert">
+                                                                <strong>
+                                                                    <h4 style="border-bottom: none">Processing Status
+                                                                        Update</h4>
+                                                                </strong>
+                                                            </div>
+                                                            <div class="table-gp">
+                                                                <iais:section title="">
+                                                                    <iais:row>
+                                                                        <iais:field value="Current Status"/>
+                                                                        <iais:value width="6">
+                                                                            <p><iais:code
+                                                                                    code="${insRepDto.currentStatus}"/></p>
+                                                                        </iais:value>
+                                                                    </iais:row>
 
-                                                                <iais:row>
-                                                                    <iais:field value="Internal Remarks"/>
-                                                                    <iais:value width="6">
+                                                                    <iais:row>
+                                                                        <iais:field value="Internal Remarks"/>
+                                                                        <iais:value width="6">
                                                                         <textarea style="resize:none"
                                                                                   name="processRemarks" cols="65"
                                                                                   rows="6" title="content"
                                                                                   MAXLENGTH="8000"><c:out
                                                                                 value="${appPremisesRecommendationDto.processRemarks}"/></textarea>
-                                                                    </iais:value>
-                                                                </iais:row>
-                                                                <iais:row>
-                                                                    <iais:field value="Processing Decision"
-                                                                                required="true"/>
-                                                                    <iais:value width="6">
-                                                                        <iais:select id="processSubmit"
-                                                                                     name="processingDecision"
-                                                                                     options="processingDe"
-                                                                                     firstOption="Please Select"
-                                                                                     value="${appPremisesRecommendationDto.processingDecision}"/>
-                                                                        <span id="error_submit" class="error-msg"
-                                                                              hidden> The field is mandatory.</span>
-                                                                    </iais:value>
-                                                                </iais:row>
-                                                                <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">
-                                                                <iais:row>
-                                                                    <iais:field value="Licence Start Date" required="false"/>
-                                                                    <iais:value width="10">
-                                                                        <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
-                                                                            <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
-                                                                        </c:if>
-                                                                        <c:if test="${empty applicationViewDto.recomLiceStartDate}">
-                                                                            <p>-</p>
-                                                                        </c:if>
-                                                                    </iais:value>
-                                                                </iais:row>
-                                                                </c:if>
-                                                                <iais:row>
-                                                                    <iais:field value="Recommendation" required="true"/>
-                                                                    <iais:value width="10">
-                                                                        <iais:select id="recommendation1" name="recommendation" options="recommendationOption" firstOption="Please Select" value="${appPremisesRecommendationDto.recommendation}" onchange="javascirpt:changeRecommendation1(this.value);"/>
-                                                                </iais:value>
-                                                                </iais:row>
-                                                                <div id="period1" hidden>
-                                                                <iais:row>
-                                                                    <iais:field value="Period" required="true"/>
-                                                                    <iais:value width="10">
-                                                                        <iais:select name="periods" options="riskOption" firstOption="Please Select" onchange="javascirpt:changePeriod1(this.value);" value="${appPremisesRecommendationDto.period}"/>
-                                                                    </iais:value>
-                                                                </iais:row>
-                                                                </div>
-                                                                <div id="selfPeriod1" hidden>
-                                                                    <iais:row>
-                                                                        <iais:field value="Other Period" required="true"/>
-                                                                        <iais:value width="10">
-                                                                            <input id=recomInNumber type="text" name="number" maxlength="2" value="${appPremisesRecommendationDto.recomInNumber}">
-                                                                            <iais:select id="chronoUnit" name="chrono" options="chronoOption" value="${appPremisesRecommendationDto.chronoUnit}"/>
                                                                         </iais:value>
                                                                     </iais:row>
-                                                                </div>
-                                                                <div class="fastTrack">
                                                                     <iais:row>
-                                                                        <iais:field value="Fast Tracking?" required="false"/>
-                                                                        <iais:value width="10">
-                                                                            <p>
-                                                                                <c:choose>
-                                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST019'}">
-                                                                                        <input class="form-check-input" id="fastTracking"
-                                                                                        <c:if test="${applicationViewDto.applicationDto.fastTracking}">
-                                                                                               checked disabled
-                                                                                        </c:if>
-                                                                                               type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
-                                                                                        <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
-                                                                                    </c:when>
-                                                                                    <c:otherwise>
-                                                                                        <input class="form-check-input" disabled
-                                                                                        <c:if test="${applicationViewDto.applicationDto.fastTracking}">
-                                                                                               checked
-                                                                                        </c:if>
-                                                                                               id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
-                                                                                        <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
-                                                                                    </c:otherwise>
-                                                                                </c:choose>
-                                                                            </p>
+                                                                        <iais:field value="Processing Decision"
+                                                                                    required="true"/>
+                                                                        <iais:value width="6">
+                                                                            <iais:select id="processSubmit"
+                                                                                         name="processingDecision"
+                                                                                         options="processingDe"
+                                                                                         firstOption="Please Select"
+                                                                                         value="${appPremisesRecommendationDto.processingDecision}"/>
+                                                                            <span id="error_submit" class="error-msg"
+                                                                                  hidden> The field is mandatory.</span>
                                                                         </iais:value>
                                                                     </iais:row>
-                                                                </div>
-                                                            </iais:section>
-                                                            <iais:action style="text-align:right;">
-                                                                <a id="submitButton" class="btn btn-primary" onclick="insSubmit()">SUBMIT</a>
-                                                            </iais:action>
-                                                        </div>
-                                                        <br/>
-                                                        <div class="alert alert-info" role="alert">
-                                                            <strong>
-                                                                <h4>Processing History</h4>
-                                                            </strong>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-xs-12">
-                                                                <div class="table-gp">
-                                                                    <table class="table">
-                                                                        <thead>
-                                                                        <tr>
-                                                                            <th>Username</th>
-                                                                            <th>Working Group</th>
-                                                                            <th>Status Update</th>
-                                                                            <th>Remarks</th>
-                                                                            <th>Last Updated</th>
-                                                                        </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                        <c:forEach
-                                                                                items="${applicationViewDto.appPremisesRoutingHistoryDtoList}"
-                                                                                var="appPremisesRoutingHistoryDto">
+                                                                    <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">
+                                                                        <iais:row>
+                                                                            <iais:field value="Licence Start Date"
+                                                                                        required="false"/>
+                                                                            <iais:value width="10">
+                                                                                <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
+                                                                                    <p><fmt:formatDate
+                                                                                            value='${applicationViewDto.recomLiceStartDate}'
+                                                                                            pattern='dd/MM/yyyy'/></p>
+                                                                                </c:if>
+                                                                                <c:if test="${empty applicationViewDto.recomLiceStartDate}">
+                                                                                    <p>-</p>
+                                                                                </c:if>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </c:if>
+<%--                                                                    <iais:row>--%>
+<%--                                                                        <iais:field value="Recommendation"--%>
+<%--                                                                                    required="true"/>--%>
+<%--                                                                        <iais:value width="10">--%>
+<%--                                                                            <iais:select id="recommendation1"--%>
+<%--                                                                                         name="recommendation"--%>
+<%--                                                                                         options="recommendationOption"--%>
+<%--                                                                                         firstOption="Please Select"--%>
+<%--                                                                                         value="${appPremisesRecommendationDto.recommendation}"--%>
+<%--                                                                                         onchange="javascirpt:changeRecommendation1(this.value);"/>--%>
+<%--                                                                        </iais:value>--%>
+<%--                                                                    </iais:row>--%>
+<%--                                                                    <div id="period1" hidden>--%>
+<%--                                                                        <iais:row>--%>
+<%--                                                                            <iais:field value="Period" required="true"/>--%>
+<%--                                                                            <iais:value width="10">--%>
+<%--                                                                                <iais:select name="periods"--%>
+<%--                                                                                             options="riskOption"--%>
+<%--                                                                                             firstOption="Please Select"--%>
+<%--                                                                                             onchange="javascirpt:changePeriod1(this.value);"--%>
+<%--                                                                                             value="${appPremisesRecommendationDto.period}"/>--%>
+<%--                                                                            </iais:value>--%>
+<%--                                                                        </iais:row>--%>
+<%--                                                                    </div>--%>
+<%--                                                                    <div id="selfPeriod1" hidden>--%>
+<%--                                                                        <iais:row>--%>
+<%--                                                                            <iais:field value="Other Period"--%>
+<%--                                                                                        required="true"/>--%>
+<%--                                                                            <iais:value width="10">--%>
+<%--                                                                                <input id=recomInNumber type="text"--%>
+<%--                                                                                       name="number" maxlength="2"--%>
+<%--                                                                                       value="${appPremisesRecommendationDto.recomInNumber}">--%>
+<%--                                                                                <iais:select id="chronoUnit"--%>
+<%--                                                                                             name="chrono"--%>
+<%--                                                                                             options="chronoOption"--%>
+<%--                                                                                             value="${appPremisesRecommendationDto.chronoUnit}"/>--%>
+<%--                                                                            </iais:value>--%>
+<%--                                                                        </iais:row>--%>
+<%--                                                                    </div>--%>
+                                                                    <div class="fastTrack">
+                                                                        <iais:row>
+                                                                            <iais:field value="Fast Tracking?"
+                                                                                        required="false"/>
+                                                                            <iais:value width="10">
+                                                                                <p>
+                                                                                    <c:choose>
+                                                                                        <c:when test="${applicationViewDto.applicationDto.status=='APST019'}">
+                                                                                            <input class="form-check-input"
+                                                                                                   id="fastTracking"
+                                                                                            <c:if test="${applicationViewDto.applicationDto.fastTracking}">
+                                                                                                   checked disabled
+                                                                                            </c:if>
+                                                                                                   type="checkbox"
+                                                                                                   name="fastTracking"
+                                                                                                   aria-invalid="false"
+                                                                                                   value="Y">
+                                                                                            <label class="form-check-label"
+                                                                                                   for="fastTracking"><span
+                                                                                                    class="check-square"></span></label>
+                                                                                        </c:when>
+                                                                                        <c:otherwise>
+                                                                                            <input class="form-check-input"
+                                                                                                   disabled
+                                                                                            <c:if test="${applicationViewDto.applicationDto.fastTracking}">
+                                                                                                   checked
+                                                                                            </c:if>
+                                                                                                   id="fastTracking"
+                                                                                                   type="checkbox"
+                                                                                                   name="fastTracking"
+                                                                                                   aria-invalid="false"
+                                                                                                   value="Y">
+                                                                                            <label class="form-check-label"
+                                                                                                   for="fastTracking"><span
+                                                                                                    class="check-square"></span></label>
+                                                                                        </c:otherwise>
+                                                                                    </c:choose>
+                                                                                </p>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                </iais:section>
+                                                                <iais:action style="text-align:right;">
+                                                                    <a id="submitButton" class="btn btn-primary"
+                                                                       onclick="insSubmit()">SUBMIT</a>
+                                                                </iais:action>
+                                                            </div>
+                                                            <br/>
+                                                            <div class="alert alert-info" role="alert">
+                                                                <strong>
+                                                                    <h4>Processing History</h4>
+                                                                </strong>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-xs-12">
+                                                                    <div class="table-gp">
+                                                                        <table class="table">
+                                                                            <thead>
                                                                             <tr>
-                                                                                <td>
-                                                                                    <p><c:out
-                                                                                            value="${appPremisesRoutingHistoryDto.actionby}"></c:out></p>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <p><c:out
-                                                                                            value="${appPremisesRoutingHistoryDto.workingGroup}"></c:out></p>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <p><c:out
-                                                                                            value="${appPremisesRoutingHistoryDto.processDecision}"></c:out></p>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <p><c:out
-                                                                                            value="${appPremisesRoutingHistoryDto.internalRemarks}"></c:out></p>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <p><c:out
-                                                                                            value="${appPremisesRoutingHistoryDto.updatedDt}"></c:out></p>
-                                                                                </td>
+                                                                                <th>Username</th>
+                                                                                <th>Working Group</th>
+                                                                                <th>Status Update</th>
+                                                                                <th>Remarks</th>
+                                                                                <th>Last Updated</th>
                                                                             </tr>
-                                                                        </c:forEach>
-                                                                        </tbody>
-                                                                    </table>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                            <c:forEach
+                                                                                    items="${applicationViewDto.appPremisesRoutingHistoryDtoList}"
+                                                                                    var="appPremisesRoutingHistoryDto">
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        <p><c:out
+                                                                                                value="${appPremisesRoutingHistoryDto.actionby}"></c:out></p>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <p><c:out
+                                                                                                value="${appPremisesRoutingHistoryDto.workingGroup}"></c:out></p>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <p><c:out
+                                                                                                value="${appPremisesRoutingHistoryDto.processDecision}"></c:out></p>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <p><c:out
+                                                                                                value="${appPremisesRoutingHistoryDto.internalRemarks}"></c:out></p>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <p><c:out
+                                                                                                value="${appPremisesRoutingHistoryDto.updatedDt}"></c:out></p>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </c:forEach>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -242,9 +284,8 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </iais:body>
-                    </div>
+                            </iais:body>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -252,34 +293,35 @@
     </form>
     <%@ include file="../inspectionncList/uploadFile.jsp" %>
 </div>
-    <script>
+<script>
 
-        function insSubmit() {
-            const s = $("#processSubmit").val();
-            if (s == "" || s == null) {
-                $("#error_submit").show();
-            } else if ("submit" == s) {
-                $("#mainForm").submit();
-                $("#error_submit").hide();
-            }
+    function insSubmit() {
+        const s = $("#processSubmit").val();
+        if (s == "" || s == null) {
+            $("#error_submit").show();
+        } else if ("submit" == s) {
+            $("#mainForm").submit();
+            $("#error_submit").hide();
         }
+    }
 
-        function changePeriod1(obj) {
-            if (obj == "Others") {
-                $("#selfPeriod1").show();
-            } else {
-                $("#selfPeriod1").hide();
-            }
-        }
+    // function changePeriod1(obj) {
+    //     if (obj == "Others") {
+    //         $("#selfPeriod1").show();
+    //     } else {
+    //         $("#selfPeriod1").hide();
+    //     }
+    // }
+    //
+    // function changeRecommendation1(obj) {
+    //     if (obj == "IRE001" || obj == "IRE002") {
+    //         $("#period1").show();
+    //     } else {
+    //         $("#selfPeriod1").hide();
+    //         $("#period1").hide();
+    //     }
+    // }
 
-        function changeRecommendation1(obj) {
-            if (obj == "IRE001" || obj == "IRE002") {
-                $("#period1").show();
-            } else {
-                $("#period1").hide();
-                $("#selfPeriod1").hide();
-                $("#period1").hide();
-            }
-        }
-    </script>
+
+</script>
 
