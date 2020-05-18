@@ -15,16 +15,15 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
 
 /**
  * BackendLoginDelegator
@@ -105,14 +104,23 @@ public class BackendLoginDelegator {
         }
     }
 
-
-
-
     private Map<String, String> validate(HttpServletRequest request) {
         OrgUserDto orgUserDto= (OrgUserDto) ParamUtil.getSessionAttr(request,"orgUserDto");
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
 
-        if(orgUserDto==null){
+        if (orgUserDto==null) {
+            String userId = ParamUtil.getString(request,"entityId");
+            List<AuditTrailDto> adList = IaisCommonUtils.genNewArrayList(1);
+            AuditTrailDto auditTrailDto = new AuditTrailDto();
+            auditTrailDto.setMohUserId(userId);
+            auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTRANET);
+            auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
+            adList.add(auditTrailDto);
+            try {
+                AuditLogUtil.callWithEventDriven(adList, submissionClient);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
             errMap.put("login","Please key in a valid userId");
         }
         return errMap;
