@@ -432,7 +432,7 @@
                                                         <td class="col-xs-4">
                                                             <c:if test="${insRepDto.inspectors != null && not empty insRepDto.inspectors}">
                                                                 <p><c:forEach items="${insRepDto.inspectors}" var="inspector" varStatus="status">
-                                                                <p><c:out value="${inspector}"></c:out></p>
+                                                                <c:out value="${inspector}"></c:out>
                                                             </c:forEach></p>
                                                             </c:if>
                                                         </td>
@@ -575,11 +575,10 @@
                                                         </tr>
                                                         <tr>
                                                             <td class="col-xs-4">
-                                                                <p>Risk Level <strong style="color:#ff0000;"> *</strong></p>
+                                                                <p>Risk Level </p>
                                                             </td>
                                                             <td class="col-xs-4">
-                                                                <iais:select name="riskLevel" options="riskLevelOptions" firstOption="Please Select" value="${appPremisesRecommendationDto.riskLevel}"/>
-                                                                <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
+                                                                ${appPremisesRecommendationDto.riskLevel}
                                                             </td>
                                                             <td class="col-xs-4">
                                                             </td>
@@ -672,32 +671,28 @@
                                                 <table class="table">
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Recommendation <strong style="color:#ff0000;"> *</strong></p>
+                                                            <p>Recommendation </p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <iais:select name="recommendation" options="recommendationOption" firstOption="Please Select" value="${appPremisesRecommendationDto.recommendation}" onchange="javascirpt:changeRecommendation(this.value);"/>
-                                                        </td>
-                                                        <td class="col-xs-4"></td>
-                                                    </tr>
-                                                    <tr id="period" hidden>
-                                                        <td class="col-xs-4">
-                                                            <p>Period <strong style="color:#ff0000;"> *</strong></p>
-                                                        </td>
-                                                        <td class="col-xs-4">
-                                                            <iais:select name="periods" options="riskOption" firstOption="Please Select" onchange="javascirpt:changePeriod(this.value);" value="${appPremisesRecommendationDto.period}"/>
-                                                            <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
+                                                            ${appPremisesRecommendationDto.recommendation}
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
-                                                    <tr id="selfPeriod" hidden>
+                                                    <tr id="period" >
                                                         <td class="col-xs-4">
-                                                            <p>Other Period <strong style="color:#ff0000;"> *</strong></p>
+                                                            <p>Period </p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <input id=recomInNumber type="text" name="number" maxlength="2" value="${appPremisesRecommendationDto.recomInNumber}">
-                                                            <iais:select id="chronoUnit" name="chrono" options="chronoOption" firstOption="Please Select" value="${appPremisesRecommendationDto.chronoUnit}"/>
-                                                            <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
-                                                            <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
+                                                            ${appPremisesRecommendationDto.period}
+                                                        </td>
+                                                        <td class="col-xs-4"></td>
+                                                    </tr>
+                                                    <tr id="selfPeriod" >
+                                                        <td class="col-xs-4">
+                                                            <p>Other Period </p>
+                                                        </td>
+                                                        <td class="col-xs-4">
+                                                            ${appPremisesRecommendationDto.recomInNumber} ${appPremisesRecommendationDto.chronoUnit}
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>

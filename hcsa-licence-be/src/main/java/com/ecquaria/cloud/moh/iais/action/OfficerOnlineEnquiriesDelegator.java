@@ -159,6 +159,7 @@ public class OfficerOnlineEnquiriesDelegator {
         ParamUtil.setSessionAttr(request,"id",null);
         ParamUtil.setSessionAttr(request, "licenceNo", null);
         ParamUtil.setSessionAttr(request, "reqInfoId", null);
+        ParamUtil.setSessionAttr(request,SEARCH_NO,null);
 
         // 		Start->OnStepProcess
     }
@@ -170,9 +171,6 @@ public class OfficerOnlineEnquiriesDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,"SearchResult", null);
         String searchNo=ParamUtil.getString(request,SEARCH_NO);
-        if(StringUtil.isEmpty(searchNo)){
-            searchNo= (String) ParamUtil.getSessionAttr(request,SEARCH_NO);
-        }
         ParamUtil.setSessionAttr(request,SEARCH_NO,searchNo);
         String count=ParamUtil.getString(request,"searchChk");
         if(count==null){
