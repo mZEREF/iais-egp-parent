@@ -321,7 +321,7 @@ public class InterInboxDelegator {
             licSearchMap.put("licStatus",licStatus);
         }
         if (licStartDate != null && licEndDate != null){
-            if (licStartDate.before(licEndDate)){
+            if (licStartDate.before(licEndDate) || licStartDate.equals(licEndDate)){
                 if(!StringUtil.isEmpty(fStartDate)){
                     licSearchMap.put("fStartDate",fStartDate);
                 }else{
@@ -332,7 +332,8 @@ public class InterInboxDelegator {
                 }else{
                     licSearchMap.remove("eStartDate");
                 }
-            }else{
+            }
+            else{
                 ParamUtil.setRequestAttr(request,InboxConst.LIC_DATE_ERR_MSG, "Licence Start Date From cannot be later than Licence Start Date To");
             }
         }else{
@@ -348,7 +349,7 @@ public class InterInboxDelegator {
             }
         }
         if (licfExpiryDate != null && liceExpiryDate != null){
-            if (licfExpiryDate.before(liceExpiryDate)){
+            if (licfExpiryDate.before(liceExpiryDate) || licfExpiryDate.equals(liceExpiryDate)){
                 if(!StringUtil.isEmpty(fExpiryDate)){
                     licSearchMap.put("fExpiryDate",fExpiryDate);
                 }else{
@@ -586,7 +587,7 @@ public class InterInboxDelegator {
             appSearchMap.put("serviceType",serviceType);
         }
         if (startAppDate != null && endAppDate != null){
-            if(startAppDate.before(endAppDate)){
+            if(startAppDate.before(endAppDate) || startAppDate.equals(endAppDate)){
                 if(!StringUtil.isEmpty(createDtStart)){
                     appSearchMap.put("createDtStart",createDtStart);
                 }else{
