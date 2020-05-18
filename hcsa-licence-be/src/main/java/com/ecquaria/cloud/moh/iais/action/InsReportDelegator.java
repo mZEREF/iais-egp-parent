@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
@@ -215,7 +214,7 @@ public class InsReportDelegator {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setChronoUnit(chrono);
             appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number));
-        } else if (!StringUtil.isEmpty(periods) && !OTHERS.equals(periods)) {
+        } else if (!StringUtil.isEmpty(periods) && !OTHERS.equals(periods)&&InspectionReportConstants.APPROVEDLTC.equals(recommendation)||InspectionReportConstants.APPROVED.equals(recommendation)) {
             String[] splitPeriods = periods.split("\\s+");
             String count = splitPeriods[0];
             String dateType = splitPeriods[1];

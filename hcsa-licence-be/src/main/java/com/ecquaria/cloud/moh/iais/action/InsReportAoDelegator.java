@@ -216,12 +216,18 @@ public class InsReportAoDelegator {
         String period;
         if (appPremisesRecommendationDto != null) {
             String reportRemarks = appPremisesRecommendationDto.getRemarks();
-            initRecommendationDto.setRemarks(reportRemarks);
-            String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
-            String codeDesc = MasterCodeUtil.getCodeDesc(chronoUnit);
-            Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
-            period  = recomInNumber+" " + codeDesc;
-            initRecommendationDto.setPeriod(period);
+            String recomDecision = appPremisesRecommendationDto.getRecomDecision();
+            if(InspectionReportConstants.APPROVED.equals(recomDecision)||InspectionReportConstants.APPROVEDLTC.equals(recomDecision)){
+                initRecommendationDto.setRemarks(reportRemarks);
+                String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
+                String codeDesc = MasterCodeUtil.getCodeDesc(chronoUnit);
+                Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
+                period  = recomInNumber+" " + codeDesc;
+                initRecommendationDto.setPeriod(period);
+            }
+            if(InspectionReportConstants.REJECTED.equals(recomDecision)){
+                initRecommendationDto.setPeriod("Rejected");
+            }
         }
         if (engageRecommendationDto != null) {
             String remarks = engageRecommendationDto.getRemarks();
