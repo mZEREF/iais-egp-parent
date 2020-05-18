@@ -163,13 +163,13 @@ public class CessationServiceImpl implements CessationService {
                         appIdsTrue.add(appId);
                     }
                 }
-            }
             int size = appIds.size();
-            int size1 = appIdsTrue.size();
-            if (size == size1) {
-                results.add(true);
+                int size1 = appIdsTrue.size();
+                if (size == size1) {
+                    results.add(Boolean.TRUE);
+                }
             } else {
-                results.add(false);
+                results.add(Boolean.FALSE);
             }
         }
         return results;
@@ -301,6 +301,7 @@ public class CessationServiceImpl implements CessationService {
             String hciCode1 = entity1.getHciCode();
             if (hciCode1.equals(hciCode)) {
                 appId = id ;
+                break;
             }
         }
         return appId;
@@ -339,7 +340,7 @@ public class CessationServiceImpl implements CessationService {
 
     private void setRiskToDto(AppSubmissionDto appSubmissionDto) {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        List<RiskAcceptiionDto> riskAcceptiionDtoList = new ArrayList();
+        List<RiskAcceptiionDto> riskAcceptiionDtoList = IaisCommonUtils.genNewArrayList();
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
             riskAcceptiionDto.setScvCode(appSvcRelatedInfoDto.getServiceCode());

@@ -173,7 +173,7 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
     public String getRightLowCase(String lowCaseCount){
         Integer num = 0;
         try {
-            num = Integer.parseInt(lowCaseCount);
+            num = Integer.valueOf(lowCaseCount);
             num = num-1;
         } catch (Exception e) {
             return "";
@@ -183,7 +183,7 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
     public String getLeftHighCase(String highCaseCount){
         Integer num = 0;
         try {
-            num = Integer.parseInt(highCaseCount);
+            num = Integer.valueOf(highCaseCount);
             num = num+1;
         } catch (Exception e) {
             return "";
@@ -343,13 +343,13 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
             finDto.setEndDate(endDate);
             if(isLow){
                 finDto.setLsSourse(RiskConsts.AUDIT);
-                finDto.setThershold(Integer.parseInt(dto.getAdThershold()));
-                finDto.setCaseCounth(Integer.parseInt(dto.getAdLeftModCaseCounth()));
+                finDto.setThershold(Integer.valueOf(dto.getAdThershold()));
+                finDto.setCaseCounth(Integer.valueOf(dto.getAdLeftModCaseCounth()));
                 finDto.setRiskRating(RiskConsts.LOW);
             }else{
                 finDto.setLsSourse(RiskConsts.AUDIT);
-                finDto.setThershold(Integer.parseInt(dto.getAdThershold()));
-                finDto.setCaseCounth(Integer.parseInt(dto.getAdRightModCaseCounth()));
+                finDto.setThershold(Integer.valueOf(dto.getAdThershold()));
+                finDto.setCaseCounth(Integer.valueOf(dto.getAdRightModCaseCounth()));
                 finDto.setRiskRating(RiskConsts.HIGH);
             }
         }else{
@@ -363,13 +363,13 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
             finDto.setEndDate(endDate);
             if(isLow){
                 finDto.setLsSourse(RiskConsts.DISCIPLINARY);
-                finDto.setThershold(Integer.parseInt(dto.getDpThershold()));
-                finDto.setCaseCounth(Integer.parseInt(dto.getDpLeftModCaseCounth()));
+                finDto.setThershold(Integer.valueOf(dto.getDpThershold()));
+                finDto.setCaseCounth(Integer.valueOf(dto.getDpLeftModCaseCounth()));
                 finDto.setRiskRating(RiskConsts.LOW);
             }else{
                 finDto.setLsSourse(RiskConsts.DISCIPLINARY);
-                finDto.setThershold(Integer.parseInt(dto.getDpThershold()));
-                finDto.setCaseCounth(Integer.parseInt(dto.getDpRightModCaseCounth()));
+                finDto.setThershold(Integer.valueOf(dto.getDpThershold()));
+                finDto.setCaseCounth(Integer.valueOf(dto.getDpRightModCaseCounth()));
                 finDto.setRiskRating(RiskConsts.HIGH);
             }
         }

@@ -257,8 +257,8 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
             dto.setId(temp.getId());
             dto.setVersion(Integer.parseInt(temp.getVersion()== null ? "0": temp.getVersion()));
             dto.setEndDate(Formatter.parseDate(temp.getDoEndDate()));
-            dto.setLastInpectTh(Integer.parseInt(temp.getDoLastInspection()));
-            dto.setMaxLicTenu(Integer.parseInt(temp.getDoMaxLic()));
+            dto.setLastInpectTh(Integer.valueOf(temp.getDoLastInspection()));
+            dto.setMaxLicTenu(Integer.valueOf(temp.getDoMaxLic()));
             dto.setServiceCode(temp.getServiceCode());
             dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         } catch (Exception e) {

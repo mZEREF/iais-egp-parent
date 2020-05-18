@@ -654,7 +654,7 @@ public class ConfigServiceImpl implements ConfigService {
         for (int i = 0; i < hcsaSvcRoutingStageDtos.size(); i++) {
             String stageOrder = hcsaSvcRoutingStageDtos.get(i).getStageOrder();
             try {
-                if (Integer.valueOf(stageOrder) % 100 != 0) {
+                if (Integer.parseInt(stageOrder) % 100 != 0) {
                     hcsaSvcRoutingStageDtos.remove(i);
                     i--;
                 }

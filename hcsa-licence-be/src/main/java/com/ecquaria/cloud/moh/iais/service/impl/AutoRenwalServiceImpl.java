@@ -176,8 +176,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         List<String> list = useLicenceIdFindHciNameAndAddress(id);
 
             for(String every:list){
-            String address = every.substring(every.indexOf("/")+1);
-            String substring = every.substring(0, every.indexOf("/"));
+            String address = every.substring(every.indexOf('/')+1);
+            String substring = every.substring(0, every.indexOf('/'));
             String format = simpleDateFormat.format(expiryDate);
             Map<String,Object> map =new HashMap();
             map.put("IAIS_URL","aaaaa");
@@ -265,8 +265,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             FeeDto feeDto = hcsaConfigClient.renewFee(licenceFeeDtos).getEntity();
              total = feeDto.getTotal();
             for(String every:useLicenceIdFindHciNameAndAddress){
-                String hciName = every.substring(0, every.indexOf("/"));
-                String address = every.substring(every.indexOf("/") + 1);
+                String hciName = every.substring(0, every.indexOf('/'));
+                String address = every.substring(every.indexOf('/') + 1);
                 Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
                 String format = simpleDateFormat.format(expiryDate);
                 map.put("Payment_Amount",total);
@@ -307,8 +307,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         for (String every:useLicenceIdFindHciNameAndAddress
              ) {
             String svcName = licenceDto.getSvcName();
-            String hciName = every.substring(0, every.indexOf("/"));
-            String address = every.substring(every.indexOf("/") + 1);
+            String hciName = every.substring(0, every.indexOf('/'));
+            String address = every.substring(every.indexOf('/') + 1);
             Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
             String format = simpleDateFormat.format(expiryDate);
             map.put("HCIName",hciName);
@@ -376,12 +376,12 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 String floorNo = every.getFloorNo();
                 String unitNo = every.getUnitNo();
                 String postalCode = every.getPostalCode();
-                stringBuilder.append(hciName+"/");
-                stringBuilder.append(blkNo+" ");
-                stringBuilder.append(streetName+" ");
+                stringBuilder.append(hciName+'/');
+                stringBuilder.append(blkNo+' ');
+                stringBuilder.append(streetName+' ');
                 stringBuilder.append(buildingName+" # ");
-                stringBuilder.append(floorNo+"-");
-                stringBuilder.append(unitNo+",");
+                stringBuilder.append(floorNo+'-');
+                stringBuilder.append(unitNo+',');
                 stringBuilder.append(postalCode);
                 nameAndAddress.add(stringBuilder.toString());
             }

@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.xpath.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +68,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             List<AuditTaskDataDto> auditTaskDataDtos = searchResult.getRows();
             List<AuditTaskDataFillterDto> auditTaskDataFillterDtos = new ArrayList<>(auditTaskDataDtos.size());
             for(AuditTaskDataDto auditTaskDataDto : auditTaskDataDtos){
-                auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto,false,false));
+                auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto,Boolean.FALSE,Boolean.FALSE));
             }
             return removeDuplicates(auditTaskDataFillterDtos);
         }
@@ -82,7 +83,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             List<AuditTaskDataDto> auditTaskDataDtos = searchResult.getRows();
             List<AuditTaskDataFillterDto> auditTaskDataFillterDtos = new ArrayList<>(auditTaskDataDtos.size());
             for(AuditTaskDataDto auditTaskDataDto : auditTaskDataDtos){
-                auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto,true,true));
+                auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto,Boolean.TRUE,Boolean.TRUE));
             }
             return removeDuplicates(auditTaskDataFillterDtos);
         }
@@ -130,7 +131,9 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             }
             StringBuilder sb = new StringBuilder("(");
             for (int i = 0; i < svcNameList.size(); i++) {
-                sb.append(":svcName" + i).append(",");
+                sb.append(":svcName")
+                        .append(i)
+                        .append(',');
             }
             String inSql = sb.substring(0, sb.length() - 1) + ")";
             SearchParam searchParam = getSearchParamFrom(dto, inSql);

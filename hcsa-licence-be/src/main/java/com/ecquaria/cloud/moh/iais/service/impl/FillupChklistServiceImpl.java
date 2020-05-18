@@ -692,9 +692,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         AdhocSaveAnswerDto answerDto = JsonUtil.parseToObject(answerStr,AdhocSaveAnswerDto.class);
         itemDto.setAdAnswer(answerDto.getAnswer());
         if(answerDto.getIsRec()==1){
-            itemDto.setRectified(true);
+            itemDto.setRectified(Boolean.TRUE);
         }else{
-            itemDto.setRectified(false);
+            itemDto.setRectified(Boolean.FALSE);
         }
     }
     public boolean isHaveNc(InspectionFillCheckListDto dto){
@@ -842,7 +842,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     }
 
     private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList();
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
         for(ApplicationDto applicationDto : applicationDtos){
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);

@@ -341,10 +341,10 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
             finDto.setEffectiveDate(effDate);
             finDto.setEndDate(endDate);
             if (isLow) {
-                finDto.setNcCountTh(Integer.parseInt(dto.getDoCaLeftModCounth()));
+                finDto.setNcCountTh(Integer.valueOf(dto.getDoCaLeftModCounth()));
                 finDto.setRiskRating(RiskConsts.LOW);
             } else {
-                finDto.setNcCountTh(Integer.parseInt(dto.getDoCaRightModCounth()));
+                finDto.setNcCountTh(Integer.valueOf(dto.getDoCaRightModCounth()));
                 finDto.setRiskRating(RiskConsts.HIGH);
             }
         }else if("RSKL0003".equals(level)){
@@ -358,10 +358,10 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
             finDto.setEffectiveDate(effDate);
             finDto.setEndDate(endDate);
             if(isLow){
-                finDto.setNcCountTh(Integer.parseInt(dto.getDoMiLeftModCounth()));
+                finDto.setNcCountTh(Integer.valueOf(dto.getDoMiLeftModCounth()));
                 finDto.setRiskRating(RiskConsts.LOW);
             }else{
-                finDto.setNcCountTh(Integer.parseInt(dto.getDoMiRightModCounth()));
+                finDto.setNcCountTh(Integer.valueOf(dto.getDoMiRightModCounth()));
                 finDto.setRiskRating(RiskConsts.HIGH);
             }
         }else if("RSKL0002".equals(level)){
@@ -375,10 +375,10 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
             finDto.setEffectiveDate(effDate);
             finDto.setEndDate(endDate);
             if(isLow){
-                finDto.setNcCountTh(Integer.parseInt(dto.getDoMjLeftModCounth()));
+                finDto.setNcCountTh(Integer.valueOf(dto.getDoMjLeftModCounth()));
                 finDto.setRiskRating(RiskConsts.LOW);
             }else{
-                finDto.setNcCountTh(Integer.parseInt(dto.getDoMjRightModCounth()));
+                finDto.setNcCountTh(Integer.valueOf(dto.getDoMjRightModCounth()));
                 finDto.setRiskRating(RiskConsts.HIGH);
             }
         }

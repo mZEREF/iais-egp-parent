@@ -110,7 +110,7 @@ public class HcsaRiskLegislativeServiceImpl implements HcsaRiskLegislativeServic
     public String getRightLowCase(String lowCaseCount){
         Integer num = 0;
         try {
-            num = Integer.parseInt(lowCaseCount);
+            num = Integer.valueOf(lowCaseCount);
             num = num-1;
         } catch (Exception e) {
             return "";
@@ -120,7 +120,7 @@ public class HcsaRiskLegislativeServiceImpl implements HcsaRiskLegislativeServic
     public String getLeftHighCase(String highCaseCount){
         Integer num = 0;
         try {
-            num = Integer.parseInt(highCaseCount);
+            num = Integer.valueOf(highCaseCount);
             num = num+1;
         } catch (Exception e) {
             return "";
@@ -220,12 +220,12 @@ public class HcsaRiskLegislativeServiceImpl implements HcsaRiskLegislativeServic
         finDto.setEffectiveDate(effDate);
         finDto.setEndDate(endDate);
         if (isLow) {
-            finDto.setThershold(Integer.parseInt(dto.getDoThershold()));
-            finDto.setCaseCounth(Integer.parseInt(dto.getDoLeftModCaseCounth()));
+            finDto.setThershold(Integer.valueOf(dto.getDoThershold()));
+            finDto.setCaseCounth(Integer.valueOf(dto.getDoLeftModCaseCounth()));
             finDto.setRiskRating(RiskConsts.LOW);
         } else {
-            finDto.setThershold(Integer.parseInt(dto.getDoThershold()));
-            finDto.setCaseCounth(Integer.parseInt(dto.getDoRightModCaseCounth()));
+            finDto.setThershold(Integer.valueOf(dto.getDoThershold()));
+            finDto.setCaseCounth(Integer.valueOf(dto.getDoRightModCaseCounth()));
             finDto.setRiskRating(RiskConsts.HIGH);
         }
 

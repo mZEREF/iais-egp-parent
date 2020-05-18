@@ -105,11 +105,7 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
         if(subList!=null&&!subList.isEmpty()){
             subDto.setOrderNum(subList.get(subList.size()-1).getOrderNum()+1);
             subList.add(subDto);
-        }else{
-            subDto.setOrderNum(0);
-            subList.add(subDto);
         }
-
     }
 
     @Override
@@ -249,8 +245,8 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
                 ltDto.setVersion(1);
             }
             ltDto.setSvcCode(temp.getSvcCode());
-            ltDto.setLicTenure(Integer.parseInt(sub.getLicenceTenure()));
-            ltDto.setRiskScoreTh(Double.parseDouble(sub.getColumRight()));
+            ltDto.setLicTenure(Integer.valueOf(sub.getLicenceTenure()));
+            ltDto.setRiskScoreTh(Double.valueOf(sub.getColumRight()));
             ltDto.setChronoUnit(sub.getDateType());
         }catch (Exception e){
             log.error(e.getMessage(), e);

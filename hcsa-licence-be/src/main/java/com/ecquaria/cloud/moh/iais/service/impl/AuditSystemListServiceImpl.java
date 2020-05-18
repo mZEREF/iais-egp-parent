@@ -218,7 +218,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                 hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
                 hcsaSvcStageWorkingGroupDtos = taskHcsaConfigClient.getWrkGrp(hcsaSvcStageWorkingGroupDtos).getEntity();
                 taskDto.setScore(getConfigScoreForService( hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),HcsaConsts.ROUTING_STAGE_INS,applicationDto.getApplicationType()));
-                break;
             }
         }else {
             log.info("=============== group id is null.==========");

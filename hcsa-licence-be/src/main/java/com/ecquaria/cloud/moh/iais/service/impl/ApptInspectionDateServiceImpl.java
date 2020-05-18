@@ -638,6 +638,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                     appPremInspApptDto.setId(null);
                     appPremInspApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     if(appPremInspApptDto1 != null){
+                        appPremInspApptDto1.setAuditTrailDto(auditTrailDto);
                         if(appPremInspApptDto1.getStartDate() != null) {
                             appPremInspApptDto.setStartDate(appPremInspApptDto1.getStartDate());
                         }
@@ -659,7 +660,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
             apptFeConfirmDateDto.setAppPremisesInspecApptCreateList(appPremisesInspecApptDtoCreateList);
             apptFeConfirmDateDto.setAppPremisesInspecApptUpdateList(appPremisesInspecApptDtoUpdateList);
-            appPremInspApptDto1.setAuditTrailDto(auditTrailDto);
+
             apptFeConfirmDateDto.setAppPremisesInspecApptDto(appPremInspApptDto1);
             beEicGatewayClient.reSchedulingSaveFeDate(apptFeConfirmDateDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization());
@@ -676,6 +677,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             for(TaskDto tDto : taskDtoList){
                 if(appPremCorrId.equals(tDto.getRefNo())){
                     taskDto = tDto;
+                    break;
                 }
             }
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
