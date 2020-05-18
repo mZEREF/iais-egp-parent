@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -229,13 +228,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     }
                 }
 
-                List<AdhocChecklistItemDto> adhocChecklistItemDtos=applicationClient.getAdhocByAppPremCorrId(appPremisesCorrelationDto.getId()).getEntity();
-                List<ChecklistItemDto> checklistItemDtos=inspectionRectificationProService.getQuesAndClause( appPremisesCorrelationDto.getId());
-                String riskLvl = MasterCodeUtil.retrieveOptionsByCodes(new String[]{checklistItemDtos.get(0).getRiskLevel()}).get(0).getText();
-                if(adhocChecklistItemDtos.size()!=0){
-                    riskLvl = MasterCodeUtil.retrieveOptionsByCodes(new String[]{adhocChecklistItemDtos.get(0).getRiskLvl()}).get(0).getText();
-                }
-                complianceHistoryDto.setRiskTag(riskLvl);
             }catch (Exception e){
                 log.error(e.getMessage(), e);
                 complianceHistoryDto.setRiskTag("-");
@@ -248,6 +240,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     c.setTime(appPremisesRecommendationDto.getRecomInDate());
                     complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
                     complianceHistoryDto.setInspectionDateYear(c.get(Calendar.YEAR));
+                    complianceHistoryDto.setRiskTag(fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesRecommendationDto.getAppPremCorreId(), InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity().getRecomDecision());
                     complianceHistoryDtos.add(complianceHistoryDto);
                 }
 
@@ -523,6 +516,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             appPremisesRecommendationDto.setPeriod(sdf.format(licenceDto.getStartDate())+"-"+sdf.format(licenceDto.getExpiryDate()));
         }
         appPremisesRecommendationDto.setRecomDecision(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getRecomDecision()}).get(0).getText());
+        appPremisesRecommendationDto.setRiskLevel(fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDtos.get(indexNo).getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity().getRecomDecision());
         ParamUtil.setSessionAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         // 		preInspReport->OnStepProcess
     }

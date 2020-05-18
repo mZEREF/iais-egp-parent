@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto;
@@ -756,18 +755,11 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getHciCode());
         reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getHciName());
         reqForInfoSearchListDto.setBlkNo(rfiApplicationQueryDto.getBlkNo());
-        String riskLevel;
-        try {
-            List<ChecklistItemDto> checklistItemDtos=inspectionRectificationProService.getQuesAndClause( rfiApplicationQueryDto.getAppCorrId());
-            if(checklistItemDtos.size()!=0){
-                riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{checklistItemDtos.get(0).getRiskLevel()}).get(0).getText();
-            }else {
-                riskLevel = MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getRiskLevel()}).get(0).getText();
-            }
-        }catch (Exception e){
-            riskLevel="-";
+
+        reqForInfoSearchListDto.setCurrentRiskTagging(rfiApplicationQueryDto.getRiskLevel());
+        if(rfiApplicationQueryDto.getRiskLevel()==null){
+            reqForInfoSearchListDto.setCurrentRiskTagging("-");
         }
-        reqForInfoSearchListDto.setCurrentRiskTagging(riskLevel);
         reqForInfoSearchListDto.setBuildingName(rfiApplicationQueryDto.getBuildingName());
         reqForInfoSearchListDto.setUnitNo(rfiApplicationQueryDto.getUnitNo());
         reqForInfoSearchListDto.setStreetName(rfiApplicationQueryDto.getStreetName());
