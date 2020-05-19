@@ -1534,6 +1534,28 @@ public class HcsaApplicationDelegator {
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
 
+        AppPremisesRoutingHistoryDto userHistory = appPremisesRoutingHistoryService.getAppHistoryByAppNoAndActionBy(applicationViewDto.getApplicationDto().getApplicationNo(), taskDto.getUserId());
+        String currentRoleId = "";
+        if(userHistory != null){
+            currentRoleId = userHistory.getRoleId();
+        }
+        boolean broadcastAsoPso = false;
+        boolean broadcastOther = false;
+        boolean broadcastAso = false;
+        String status = applicationViewDto.getApplicationDto().getStatus();
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
+            if(RoleConsts.USER_ROLE_PSO.equals(currentRoleId) || RoleConsts.USER_ROLE_ASO.equals(currentRoleId)){
+                broadcastAsoPso = true;
+                if(RoleConsts.USER_ROLE_ASO.equals(currentRoleId)){
+                    broadcastAso = true;
+                }
+            }else{
+                broadcastOther = true;
+            }
+        }
+        ParamUtil.setSessionAttr(bpc.request,"broadcastAsoPso",broadcastAsoPso);
+        ParamUtil.setSessionAttr(bpc.request,"broadcastAso",broadcastAso);
+
         AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
         if(appPremisesRecommendationDto != null){
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
@@ -1543,7 +1565,7 @@ public class HcsaApplicationDelegator {
             if(recomInNumber == null || recomInNumber == 0){
                 recommendationOnlyShow = "Reject";
                 //set DMS decision value
-                if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
+                if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
                     ParamUtil.setRequestAttr(bpc.request,"selectDecisionValue","decisionReject");
                 }
             }else{
@@ -1555,14 +1577,14 @@ public class HcsaApplicationDelegator {
                 }
             }
             //PSO 0062307
-            if(RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId)){
+            if(RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId) || broadcastAsoPso){
                 //pso back fill
                 checkRecommendationDropdownValue(recomInNumber,chronoUnit,codeDesc,applicationViewDto,bpc);
             }
             Date recomInDate = appPremisesRecommendationDto.getRecomInDate();
             String recomInDateOnlyShow = Formatter.formatDateTime(recomInDate,Formatter.DATE);
             ParamUtil.setRequestAttr(bpc.request, "recomInDateOnlyShow",recomInDateOnlyShow);
-            if(RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId)){
+            if(RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId) || broadcastOther){
                 ParamUtil.setRequestAttr(bpc.request, "recommendationOnlyShow",recommendationOnlyShow);
             }
         }

@@ -1,7 +1,9 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -29,6 +31,11 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         String recommendationStr = ParamUtil.getString(request,"recommendation");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
         String status = applicationViewDto.getApplicationDto().getStatus();
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
+        String roleId = "";
+        if(taskDto != null){
+            roleId = taskDto.getRoleId();
+        }
 
 
         if(StringUtil.isEmpty(internalRemarks)){
@@ -89,12 +96,16 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 errMap.put("nextStageReplys","The field is mandatory.");
             }else{
                 ParamUtil.setRequestAttr(request,"selectNextStageReply",nextStageReplys);
-                //AO route back to
-                if(isAoRouteBackStatus(status)){
-                    if(StringUtil.isEmpty(recommendationStr)){
-                        errMap.put("recommendation","Please key in recommendation");
-                    }
+            }
+            //AO route back to
+            if(isAoRouteBackStatus(status)){
+                if(StringUtil.isEmpty(recommendationStr)){
+                    errMap.put("recommendation","Please key in recommendation");
                 }
+            }
+            //ASO PSO broadcast
+            if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
+                checkBroadcast(roleId,errMap,status,recommendationStr,request);
             }
         }else{
             String nextStage = ParamUtil.getRequestString(request, "nextStage");
@@ -108,13 +119,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         errMap.put("verified","The field is mandatory.");
                     }
                     // if role is AOS or PSO ,check verified's value
-                    TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
-                    String roleId = "";
-                    if(taskDto !=null){
-                        roleId = taskDto.getRoleId();
-                    }
-                    if("ASO".equals(roleId) || "PSO".equals(roleId)){
-                        if("AO1".equals(verified) || "AO2".equals(verified) || "AO3".equals(verified)){
+                    if(RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)){
+                        if(RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)){
                             if(StringUtil.isEmpty(recommendationStr)){
                                 errMap.put("recommendation","Please key in recommendation");
                             }
@@ -137,6 +143,16 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     /**
      * private method
      */
+
+    private void checkBroadcast(String roleId, Map<String, String> errMap,String status, String recommendationStr,HttpServletRequest request){
+        boolean broadcastAsoPso = (boolean)ParamUtil.getSessionAttr(request,"broadcastAsoPso");
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status) && broadcastAsoPso){
+            if(StringUtil.isEmpty(recommendationStr)){
+                errMap.put("recommendation","Please key in recommendation");
+            }
+        }
+    }
+
     private void checkIsUploadDMS(ApplicationViewDto applicationViewDto, Map<String, String> errMap){
             if(applicationViewDto != null){
                 if((applicationViewDto.getIsUpload() == null) || !applicationViewDto.getIsUpload()){

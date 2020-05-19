@@ -46,6 +46,14 @@ public class AppPremisesRoutingHistoryClientFallback implements AppPremisesRouti
     }
 
     @Override
+    public FeignResponseEntity<AppPremisesRoutingHistoryDto> getAppHistoryByAppNoAndActionBy(String appNo, String actionBy) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> createAppPremisesRoutingHistorys(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

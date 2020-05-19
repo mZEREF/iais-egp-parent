@@ -23,6 +23,9 @@
             <c:set var="isPsoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST063'}"/>
             <c:set var="isInspectorRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST064'}"/>
             <c:set var="isRouteBackStatus" value="${isInspectorRouteBackStatus || isAoRouteBackStatus || isPsoRouteBackStatus}"/>
+            <c:set var="isBroadcastStatus" value="${applicationViewDto.applicationDto.status == 'APST013'}"/>
+            <c:set var="isBroacastAsoPso" value="${broadcastAsoPso}"/>
+            <c:set var="isBroacastAso" value="${broadcastAso}"/>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
@@ -178,7 +181,7 @@
                                                                 <iais:field value="Licence Start Date" required="false"/>
                                                                 <iais:value width="10">
                                                                     <c:choose>
-                                                                        <c:when test="${applicationViewDto.applicationDto.status=='APST007' || (isRouteBackStatus && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC')}">
+                                                                        <c:when test="${applicationViewDto.applicationDto.status=='APST007' || (isRouteBackStatus && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC') || isBroacastAso}">
                                                                             <iais:datePicker id="licenceStartDate" name="tuc"
                                                                                              value="${date}"></iais:datePicker>
                                                                         </c:when>
@@ -197,7 +200,7 @@
                                                             <div id="recommendationFieldFalse"><iais:field value="${recommendationShowName}" required="false"/></div>
                                                             <iais:value width="10">
                                                                 <c:choose>
-                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || applicationViewDto.applicationDto.status=='APST014' || (isRouteBackStatus && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC') || (isRouteBackStatus && taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC')}">
+                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || applicationViewDto.applicationDto.status=='APST014' || (isRouteBackStatus && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC') || (isRouteBackStatus && taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC') || isBroacastAsoPso}">
                                                                         <iais:select cssClass="recommendation" name="recommendation"
                                                                                      options="recommendationDropdown"
                                                                                      firstOption="Please Select"
@@ -378,6 +381,11 @@
         if ('${applicationViewDto.applicationDto.applicationType}' == 'APTY008'){
             $('#recommendationDropdown').addClass('hidden');
             $('#licenceStartDate').addClass('hidden');
+        }
+        //broadcast
+        if('${applicationViewDto.applicationDto.status}' == 'APST013'){
+            $('#recommendationFieldTrue').removeClass('hidden');
+            $('#recommendationFieldFalse').addClass('hidden');
         }
         $('#rfiSelect').hide();
         check();
