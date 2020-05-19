@@ -1007,6 +1007,7 @@ public class RequestForChangeMenuDelegator {
                     }
                 }
                 appSubmissionDtoByLicenceId.setGroupLic(grpLic);
+                appSubmissionDtoByLicenceId.setPartPremise(grpLic);
                 if (0.0 == total) {
                     appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                 }

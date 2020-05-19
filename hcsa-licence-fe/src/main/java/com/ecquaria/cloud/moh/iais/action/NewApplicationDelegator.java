@@ -351,8 +351,8 @@ public class NewApplicationDelegator {
 
             List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
             String licenceNo = appSubmissionDto.getLicenceNo();
-            for(AppGrpPremisesDto appGrpPremisesDto :appGrpPremisesDtoList1){
-                String hciCode = appGrpPremisesDto.getHciCode();
+            for(int i=0;i<appGrpPremisesDtoList1.size();i++  ){
+                String hciCode = appGrpPremisesDtoList1.get(i).getHciCode();
                 List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(hciCode);
                 for(LicenceDto licenceDto : licenceDtoByHciCode){
                     if(licenceDto.getLicenceNo().equals(licenceNo)){
@@ -360,7 +360,8 @@ public class NewApplicationDelegator {
                         break;
                     }
                 }
-                appGrpPremisesDto.setLicenceDtos(licenceDtoByHciCode);
+                appGrpPremisesDtoList1.get(i).setLicenceDtos(licenceDtoByHciCode);
+                bpc.request.getSession().setAttribute("selectLicence"+i,licenceDtoByHciCode);
             }
 
         }
@@ -495,7 +496,7 @@ public class NewApplicationDelegator {
 
         //gen dto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        if( appSubmissionDto.getAppGrpPremisesDtoList()!=null){
+      /*  if( appSubmissionDto.getAppGrpPremisesDtoList()!=null){
             int size = appSubmissionDto.getAppGrpPremisesDtoList().size();
             for(int i=0;i<size;i++){
                 String[] licenceNames = ParamUtil.getMaskedStrings(bpc.request, "licenceName"+i);
@@ -505,7 +506,7 @@ public class NewApplicationDelegator {
                     bpc.request.getSession().setAttribute("selectLicence"+i,list);
                 }
             }
-        }
+        }*/
 
         String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
 
@@ -1113,6 +1114,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doRequestForChangeSubmit(BaseProcessClass bpc){
+        //validate reject  apst050
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(appSubmissionDto.getLicenceId());
@@ -1149,16 +1151,33 @@ public class NewApplicationDelegator {
         List<AppSubmissionDto> personAppSubmissionDtos=IaisCommonUtils.genNewArrayList();
         if(appGrpPremisesDtoList!=null){
             int size = appGrpPremisesDtoList.size();
+            for(int i=0;i<size;i++){
+                List<LicenceDto> attribute =(List<LicenceDto>)bpc.request.getSession().getAttribute("selectLicence" + i);
+                if(attribute!=null){
+                    for(LicenceDto licenceDto : attribute){
+                        List<ApplicationDto> appByLicIdAndExcludeNew = requestForChangeService.getAppByLicIdAndExcludeNew(licenceDto.getId());
+                        if(!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNew)){
+                            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
+                            ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
+                            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, MessageUtil.getMessageDesc("ERRRFC001"));
+                            return ;
+                        }
+                    }
+                }
+            }
+        }
+        if(appGrpPremisesDtoList!=null){
+            int size = appGrpPremisesDtoList.size();
 
             for(int i=0;i<size;i++){
                 //Get the selected license from page to save
-                List<String> attribute =(List<String>)bpc.request.getSession().getAttribute("selectLicence" + i);
+                List<LicenceDto> attribute =(List<LicenceDto>)bpc.request.getSession().getAttribute("selectLicence" + i);
                 if(attribute!=null){
                     AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
                     amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
                     amendmentFeeDto.setChangeInHCIName(Boolean.FALSE);
-                    for(String string :attribute){
-                        AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string);
+                    for(LicenceDto string :attribute){
+                        AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string.getId());
                         appSubmissionService.transform(appSubmissionDtoByLicenceId,appSubmissionDto.getLicenseeId());
                         boolean groupLic = appSubmissionDtoByLicenceId.isGroupLic();
 
@@ -1296,7 +1315,9 @@ public class NewApplicationDelegator {
         }
 
         premisesDocToSvcDoc(appSubmissionDto);
-        List<AppSubmissionDto> personAppSubmissionList = personContact(appSubmissionDto, oldAppSubmissionDto);
+        List<AppSubmissionDto> personAppSubmissionList = personContact(bpc,appSubmissionDto, oldAppSubmissionDto);
+
+        appSubmissionDto.setPartPremise(appSubmissionDto.isGroupLic());
         appSubmissionDtos.add(appSubmissionDto);
         AppSubmissionListDto appSubmissionListDto =new AppSubmissionListDto();
         String submissionId = generateIdClient.getSeqId().getEntity();
@@ -1314,6 +1335,7 @@ public class NewApplicationDelegator {
         bpc.request.getSession().setAttribute("appSubmissionDtos",appSubmissionDtos1);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess",isrfiSuccess);
         AppSubmissionDto personAppsubmit = getPersonAppsubmit(oldAppSubmissionDto, appSubmissionDto, appEditSelectDto, bpc);
+        personAppsubmit.setPartPremise(personAppsubmit.isGroupLic());
         personAppSubmissionDtos.add(personAppsubmit);
         personAppSubmissionDtos.addAll(personAppSubmissionList);
         String submissionId1 = generateIdClient.getSeqId().getEntity();
@@ -1322,7 +1344,7 @@ public class NewApplicationDelegator {
         appSubmissionListDto1.setEventRefNo(l1.toString());
         List<AppSubmissionDto> personAppSubmissionDtos1=  requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(personAppSubmissionDtos);
         appSubmissionListDto1.setAppSubmissionDtos(personAppSubmissionDtos1);
-        eventBusHelper.submitAsyncRequest(personAppSubmissionDtos1,submissionId1, EventBusConsts.SERVICE_NAME_APPSUBMIT,
+        eventBusHelper.submitAsyncRequest(appSubmissionListDto1,submissionId1, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT,l1.toString(),bpc.process);
 
         for(AppSubmissionDto changePersonAppSubmissionDto :personAppSubmissionDtos1){
@@ -1360,7 +1382,7 @@ public class NewApplicationDelegator {
         appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).setAppSvcDocDtoLit(appSvcDocDtoList);
     }
 
-    private  List<AppSubmissionDto> personContact(AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
+    private  List<AppSubmissionDto> personContact(BaseProcessClass bpc,AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto1 = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         if(appSvcRelatedInfoDto1==null||appSvcRelatedInfoDto==null){
@@ -1407,8 +1429,15 @@ public class NewApplicationDelegator {
         }
         Set<String> licenceId =IaisCommonUtils.genNewHashSet();
         List<String> licenceIdList=IaisCommonUtils.genNewArrayList();
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = loginContext.getLicenseeId();
+        if(StringUtil.isEmpty(licenseeId)){
+            return null;
+        }
         for(LicKeyPersonnelDto licKeyPersonnelDto: licKeyPersonnelDtos){
-            licenceId.add(licKeyPersonnelDto.getLicenceId());
+            if(licenseeId.equals(licKeyPersonnelDto.getLicenseeId())){
+                licenceId.add(licKeyPersonnelDto.getLicenceId());
+            }
         }
         licenceIdList.addAll(licenceId);
         List<AppSubmissionDto> appSubmissionDtoList=IaisCommonUtils.genNewArrayList();
@@ -1431,6 +1460,7 @@ public class NewApplicationDelegator {
             if(appSvcPrincipalOfficersDtoList2!=null&&appSvcPrincipalOfficersDtoList1!=null){
                 appSvcRelatedInfoDto2.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList1);
             }
+            appSubmissionDtoByLicenceId.setPartPremise(appSubmissionDtoByLicenceId.isGroupLic());
             appSubmissionDtoList.add(appSubmissionDtoByLicenceId);
         }
 
