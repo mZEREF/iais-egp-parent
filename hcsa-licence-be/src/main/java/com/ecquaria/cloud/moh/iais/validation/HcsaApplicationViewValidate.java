@@ -66,7 +66,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         //DMS recommendation
         if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
             //verify upload file
-            checkIsUploadDMS(applicationViewDto,errMap);
+            checkIsUploadDMS(applicationViewDto,errMap,roleId);
 
             String decisionValue = ParamUtil.getString(request,"decisionValues");
 
@@ -153,10 +153,12 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         }
     }
 
-    private void checkIsUploadDMS(ApplicationViewDto applicationViewDto, Map<String, String> errMap){
+    private void checkIsUploadDMS(ApplicationViewDto applicationViewDto, Map<String, String> errMap, String roleId){
             if(applicationViewDto != null){
-                if((applicationViewDto.getIsUpload() == null) || !applicationViewDto.getIsUpload()){
-                    errMap.put("document","DMS's reply email is mandatory to be uploaded");
+                if(RoleConsts.USER_ROLE_ASO.equals(roleId)){
+                    if((applicationViewDto.getIsUpload() == null) || !applicationViewDto.getIsUpload()){
+                        errMap.put("document","DMS's reply email is mandatory to be uploaded");
+                    }
                 }
             }
     }
