@@ -376,12 +376,10 @@ public class WithOutRenewalDelegator {
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
 
         AppSubmissionDto oldAppSubmissionDto  =(AppSubmissionDto)bpc.request.getSession().getAttribute("oldAppSubmissionDto");
-        List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         List<AppSubmissionDto> rfcAppSubmissionDtos=IaisCommonUtils.genNewArrayList();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
             String appType = appSubmissionDto.getAppType();
             String appGrpNo = requestForChangeService.getApplicationGroupNumber(appType);
-            //
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             if(appGrpPremisesDtoList!=null){
                 for(int i=0;i<appGrpPremisesDtoList.size();i++){
@@ -392,22 +390,20 @@ public class WithOutRenewalDelegator {
                             appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
                             boolean groupLic = appSubmissionDtoByLicenceId.isGroupLic();
                             String address = appGrpPremisesDtoList.get(i).getAddress();
-                            boolean equals=false;
+                            boolean equals;
                             if(groupLic){
                                 AppGrpPremisesDto oldAppGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(i);
                                 boolean b = NewApplicationDelegator.compareHciName(oldAppGrpPremisesDto, appGrpPremisesDtoList.get(i));
                                 amendmentFeeDto.setChangeInHCIName(b);
                                 String olAddress = oldAppGrpPremisesDto.getAddress();
                                 equals = olAddress.equals(address);
-                                amendmentFeeDto.setChangeInLocation(!equals);
                             }else {
                                 String oldAddress = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getAddress();
                                 equals = oldAddress.equals(address);
                                 boolean b = NewApplicationDelegator.compareHciName(appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0), appSubmissionDto.getAppGrpPremisesDtoList().get(i));
                                 amendmentFeeDto.setChangeInHCIName(b);
-                                amendmentFeeDto.setChangeInLocation(!equals);
-
                             }
+                            amendmentFeeDto.setChangeInLocation(!equals);
 
                             FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
                             Double rfcTotal = feeDto.getTotal();
@@ -419,7 +415,6 @@ public class WithOutRenewalDelegator {
                                         appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
                                     }
                                 }
-
                             }
                             appSubmissionDtoByLicenceId.setGroupLic(groupLic);
                             appSubmissionDtoByLicenceId.setAmount(rfcTotal);
@@ -459,6 +454,10 @@ public class WithOutRenewalDelegator {
                 }
             }
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto :appSvcRelatedInfoDtoList){
+
+            }
+
             FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
             appSubmissionDto.setLicenseeId(licenseeId);
             //set fee detail

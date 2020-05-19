@@ -10,16 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
@@ -458,40 +449,44 @@ public class RequestForChangeMenuDelegator {
                 List<LicKeyPersonnelDto> licByPerId = requestForChangeService.getLicKeyPersonnelDtoByPerId(personIds);
                 List<String> licIds = IaisCommonUtils.genNewArrayList();
                 for (LicKeyPersonnelDto dto1 : licByPerId) {
-                    String licSvcName = dto1.getLicSvcName();
-                    String psnType = dto1.getPsnType();
-                    String licenceId = dto1.getLicenceId();
-                    String licNo = dto1.getLicNo();
-                    String professionRegnNo = dto1.getProfessionRegnNo();
-                    String professionType = dto1.getProfessionType();
-                    if (psnTypeSearch.equals(psnType)) {
-                        personnelListDto.setProfessionRegnNo(professionRegnNo);
-                        personnelListDto.setProfessionType(professionType);
-                        LicPsnTypeDto licPsnTypeDto = map.get(licNo);
-                        if (!licIds.contains(licenceId)) {
-                            licIds.add(licenceId);
+                    String licseeId = dto1.getLicenseeId();
+                    if (licenseeId.equals(licseeId)) {
+                        String licSvcName = dto1.getLicSvcName();
+                        String psnType = dto1.getPsnType();
+                        String licenceId = dto1.getLicenceId();
+                        String licNo = dto1.getLicNo();
+                        String professionRegnNo = dto1.getProfessionRegnNo();
+                        String professionType = dto1.getProfessionType();
+                        if (psnTypeSearch.equals(psnType)) {
+                            personnelListDto.setProfessionRegnNo(professionRegnNo);
+                            personnelListDto.setProfessionType(professionType);
+                            LicPsnTypeDto licPsnTypeDto = map.get(licNo);
+                            if (!licIds.contains(licenceId)) {
+                                licIds.add(licenceId);
+                            }
+                            if (licPsnTypeDto == null) {
+                                licPsnTypeDto = new LicPsnTypeDto();
+                                licPsnTypeDto.setLicSvcName(licSvcName);
+                                List<String> psnTypes = IaisCommonUtils.genNewArrayList();
+                                psnTypes.add(psnType);
+                                licPsnTypeDto.setPsnTypes(psnTypes);
+                                map.put(licNo, licPsnTypeDto);
+                            } else {
+                                licPsnTypeDto.getPsnTypes().add(psnType);
+                            }
+                            personnelListDto.setLicenceIds(licIds);
+                            personnelListDto.setLicPsnTypeDtoMaps(map);
+                            personnelListDtos.add(personnelListDto);
                         }
-                        if (licPsnTypeDto == null) {
-                            licPsnTypeDto = new LicPsnTypeDto();
-                            licPsnTypeDto.setLicSvcName(licSvcName);
-                            List<String> psnTypes = IaisCommonUtils.genNewArrayList();
-                            psnTypes.add(psnType);
-                            licPsnTypeDto.setPsnTypes(psnTypes);
-                            map.put(licNo, licPsnTypeDto);
-                        } else {
-                            licPsnTypeDto.getPsnTypes().add(psnType);
-                        }
-                        personnelListDto.setLicenceIds(licIds);
-                        personnelListDto.setLicPsnTypeDtoMaps(map);
-                        personnelListDtos.add(personnelListDto);
                     }
                 }
+                List<SelectOption> personelRoles = getPsnType();
+                ParamUtil.setRequestAttr(bpc.request, "PersonnelRoleList", personelRoles);
+                ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtos);
+                ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "PersonnelList");
+                return;
             }
-            List<SelectOption> personelRoles = getPsnType();
-            ParamUtil.setRequestAttr(bpc.request, "PersonnelRoleList", personelRoles);
-            ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtos);
-            ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "PersonnelList");
-            return;
+
         }
         List<PersonnelQueryDto> personnelQueryDtos = searchResult.getRows();
         List<PersonnelListDto> personnelListDtos = IaisCommonUtils.genNewArrayList();
@@ -503,29 +498,32 @@ public class RequestForChangeMenuDelegator {
             List<LicKeyPersonnelDto> licByPerId = requestForChangeService.getLicKeyPersonnelDtoByPerId(personIds);
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             for (LicKeyPersonnelDto dto1 : licByPerId) {
-                String licSvcName = dto1.getLicSvcName();
-                String psnType = dto1.getPsnType();
-                String licenceId = dto1.getLicenceId();
-                String licNo = dto1.getLicNo();
-                String professionRegnNo = dto1.getProfessionRegnNo();
-                String professionType = dto1.getProfessionType();
-                if (!StringUtil.isEmpty(professionRegnNo) && !StringUtil.isEmpty(professionType)) {
-                    personnelListDto.setProfessionRegnNo(professionRegnNo);
-                    personnelListDto.setProfessionType(professionType);
-                }
-                LicPsnTypeDto licPsnTypeDto = map.get(licNo);
-                if (!licIds.contains(licenceId)) {
-                    licIds.add(licenceId);
-                }
-                if (licPsnTypeDto == null) {
-                    licPsnTypeDto = new LicPsnTypeDto();
-                    licPsnTypeDto.setLicSvcName(licSvcName);
-                    List<String> psnTypes = IaisCommonUtils.genNewArrayList();
-                    psnTypes.add(psnType);
-                    licPsnTypeDto.setPsnTypes(psnTypes);
-                    map.put(licNo, licPsnTypeDto);
-                } else {
-                    licPsnTypeDto.getPsnTypes().add(psnType);
+                String licseeId = dto1.getLicenseeId();
+                if (licenseeId.equals(licseeId)) {
+                    String licSvcName = dto1.getLicSvcName();
+                    String psnType = dto1.getPsnType();
+                    String licenceId = dto1.getLicenceId();
+                    String licNo = dto1.getLicNo();
+                    String professionRegnNo = dto1.getProfessionRegnNo();
+                    String professionType = dto1.getProfessionType();
+                    if (!StringUtil.isEmpty(professionRegnNo) && !StringUtil.isEmpty(professionType)) {
+                        personnelListDto.setProfessionRegnNo(professionRegnNo);
+                        personnelListDto.setProfessionType(professionType);
+                    }
+                    LicPsnTypeDto licPsnTypeDto = map.get(licNo);
+                    if (!licIds.contains(licenceId)) {
+                        licIds.add(licenceId);
+                    }
+                    if (licPsnTypeDto == null) {
+                        licPsnTypeDto = new LicPsnTypeDto();
+                        licPsnTypeDto.setLicSvcName(licSvcName);
+                        List<String> psnTypes = IaisCommonUtils.genNewArrayList();
+                        psnTypes.add(psnType);
+                        licPsnTypeDto.setPsnTypes(psnTypes);
+                        map.put(licNo, licPsnTypeDto);
+                    } else {
+                        licPsnTypeDto.getPsnTypes().add(psnType);
+                    }
                 }
             }
             personnelListDto.setLicenceIds(licIds);
@@ -648,16 +646,30 @@ public class RequestForChangeMenuDelegator {
             return;
         }
         PersonnelListDto personnelEditDto = (PersonnelListDto) ParamUtil.getSessionAttr(bpc.request, "personnelEditDto");
+        String oldName = personnelEditDto.getPsnName();
+        String salutation = ParamUtil.getString(bpc.request, "salutation");
+        String psnName = ParamUtil.getString(bpc.request, "psnName");
+        String idType = ParamUtil.getString(bpc.request, "idType");
+        String idNo = ParamUtil.getString(bpc.request, "idNo");
         String email = ParamUtil.getString(bpc.request, "emailAddr");
         String mobile = ParamUtil.getString(bpc.request, "mobileNo");
         String designation = ParamUtil.getString(bpc.request, "designation");
         String professionType = ParamUtil.getString(bpc.request, "professionType");
         String professionRegnNo = ParamUtil.getString(bpc.request, "professionRegnNo");
+        String editSelect = ParamUtil.getString(bpc.request, "editSelect");
+        ParamUtil.setRequestAttr(bpc.request, "editSelectResult", editSelect);
         personnelEditDto.setEmailAddr(email);
         personnelEditDto.setMobileNo(mobile);
         personnelEditDto.setDesignation(designation);
         personnelEditDto.setProfessionType(professionType);
         personnelEditDto.setProfessionRegnNo(professionRegnNo);
+        if ("replace".equals(editSelect)) {
+            personnelEditDto.setIdNo(idNo);
+            personnelEditDto.setIdType(idType);
+            personnelEditDto.setPsnName(psnName);
+            personnelEditDto.setSalutation(salutation);
+        }
+
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         if (StringUtil.isEmpty(email)) {
             errMap.put("emailAddr", "UC_CHKLMD001_ERR001");
@@ -676,11 +688,26 @@ public class RequestForChangeMenuDelegator {
         if (StringUtil.isEmpty(professionType)) {
             errMap.put("professionType", "UC_CHKLMD001_ERR001");
         }
+        if (StringUtil.isEmpty(salutation)) {
+            errMap.put("salutation", "UC_CHKLMD001_ERR001");
+        }
+        if (StringUtil.isEmpty(psnName)) {
+            errMap.put("psnName", "UC_CHKLMD001_ERR001");
+        }
+        if (StringUtil.isEmpty(idType)) {
+            errMap.put("idType", "UC_CHKLMD001_ERR001");
+        }
+        if (StringUtil.isEmpty(idNo)) {
+            errMap.put("idNo", "UC_CHKLMD001_ERR001");
+        }
         if (StringUtil.isEmpty(designation)) {
             errMap.put("designation", "UC_CHKLMD001_ERR001");
         }
         if (StringUtil.isEmpty(professionRegnNo)) {
             errMap.put("professionRegnNo", "UC_CHKLMD001_ERR001");
+        }
+        if (StringUtil.isEmpty(editSelect)) {
+            errMap.put("editSelect", "UC_CHKLMD001_ERR001");
         }
         if (!errMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
@@ -740,8 +767,13 @@ public class RequestForChangeMenuDelegator {
             appSubmissionService.setRiskToDto(appSubmissionDto);
             appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             AppSubmissionDto appSubmissionDto1 = setPersonnelDate(appSubmissionDto, personnelEditDto);
+            AppSubmissionDto appSubmissionDto2 = replacePersonnelDate(appSubmissionDto, personnelEditDto,oldName);
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-            appSubmissionDtos1.add(appSubmissionDto1);
+            if ("replace".equals(editSelect)) {
+                appSubmissionDtos1.add(appSubmissionDto2);
+            }else {
+                appSubmissionDtos1.add(appSubmissionDto1);
+            }
         }
         requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
         ParamUtil.setRequestAttr(bpc.request, "action_type", "ack");
@@ -910,8 +942,8 @@ public class RequestForChangeMenuDelegator {
     public void doSubmit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
         List<LicenceDto> selectLicence = (List<LicenceDto>) bpc.request.getSession().getAttribute("licenceDtoList");
-        if(selectLicence!=null){
-            for(LicenceDto string :selectLicence){
+        if (selectLicence != null) {
+            for (LicenceDto string : selectLicence) {
                 List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(string.getId());
                 if (!IaisCommonUtils.isEmpty(applicationDtos)) {
                     ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
@@ -1014,13 +1046,13 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionDtos.add(appSubmissionDtoByLicenceId);
             }
             String submissionId = generateIdClient.getSeqId().getEntity();
-            AppSubmissionListDto appSubmissionListDto =new AppSubmissionListDto();
+            AppSubmissionListDto appSubmissionListDto = new AppSubmissionListDto();
             Long l = System.currentTimeMillis();
             appSubmissionListDto.setEventRefNo(l.toString());
-            List<AppSubmissionDto> appSubmissionDtos1=  requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos);
+            List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos);
             appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
-            eventBusHelper.submitAsyncRequest(appSubmissionListDto,submissionId,EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                    EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT,l.toString(),bpc.process);
+            eventBusHelper.submitAsyncRequest(appSubmissionListDto, submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                    EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, l.toString(), bpc.process);
 
             ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos", (Serializable) appSubmissionDtos1);
         }
@@ -1243,6 +1275,57 @@ public class RequestForChangeMenuDelegator {
             if (!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)) {
                 for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
                     if (personnelListDto.getIdNo().equals(appSvcPrincipalOfficersDto.getIdNo())) {
+                        appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
+                        appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
+                        appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());
+                    }
+                }
+            }
+        }
+        return appSubmissionDto;
+    }
+
+    private AppSubmissionDto replacePersonnelDate(AppSubmissionDto appSubmissionDto, PersonnelListDto personnelListDto,String oldName) {
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+            //cgo
+            List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            if (!IaisCommonUtils.isEmpty(appSvcCgoDtos)) {
+                for (AppSvcCgoDto appSvcCgoDto : appSvcCgoDtos) {
+                    if (personnelListDto.getIdNo().equals(appSvcCgoDto.getIdNo())) {
+                        appSvcCgoDto.setIdNo(personnelListDto.getIdNo());
+                        appSvcCgoDto.setIdType(personnelListDto.getIdType());
+                        appSvcCgoDto.setName(personnelListDto.getPsnName());
+                        appSvcCgoDto.setSalutation(personnelListDto.getSalutation());
+                        appSvcCgoDto.setEmailAddr(personnelListDto.getEmailAddr());
+                        appSvcCgoDto.setMobileNo(personnelListDto.getMobileNo());
+                    }
+                }
+            }
+            //po Dpo
+            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+            if (!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)) {
+                for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
+                    if (personnelListDto.getIdNo().equals(appSvcPrincipalOfficersDto.getIdNo())) {
+                        appSvcPrincipalOfficersDto.setIdNo(personnelListDto.getIdNo());
+                        appSvcPrincipalOfficersDto.setIdType(personnelListDto.getIdType());
+                        appSvcPrincipalOfficersDto.setName(personnelListDto.getPsnName());
+                        appSvcPrincipalOfficersDto.setSalutation(personnelListDto.getSalutation());
+                        appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
+                        appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
+                        appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());
+                    }
+                }
+            }
+            //MAT
+            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+            if (!IaisCommonUtils.isEmpty(appSvcMedAlertPersonList)) {
+                for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
+                    if (personnelListDto.getIdNo().equals(appSvcPrincipalOfficersDto.getIdNo())) {
+                        appSvcPrincipalOfficersDto.setIdNo(personnelListDto.getIdNo());
+                        appSvcPrincipalOfficersDto.setIdType(personnelListDto.getIdType());
+                        appSvcPrincipalOfficersDto.setName(personnelListDto.getPsnName());
+                        appSvcPrincipalOfficersDto.setSalutation(personnelListDto.getSalutation());
                         appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
                         appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
                         appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());

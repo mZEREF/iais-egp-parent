@@ -98,8 +98,27 @@
                                     </tr>
                                     </tbody>
                                 </table>
+                                <div id="edit">
+                                    <a class="btn btn-secondary aMarginleft pull-left">Edit</a>
+                                    <span class="error-msg" name="errorMsg" id="error_editSelect"></span>
+                                </div>
+                                <br/>
+                                <div class="form-check-gp" id="editSelect" hidden>
+                                    <p class="form-check-title">What would you like to edit?</p>
+                                    <div class="form-check progress-step-check" style="width: 33%">
+                                        <input class="form-check-input" id="checkitem1" <c:if test="${editSelectResult=='update'}">checked</c:if> type="radio" name="editSelect" value="update" aria-invalid="false">
+                                        <label class="form-check-label" for="checkitem1"><span class="check-circle"></span>Change the Details of this Personnel</label>
+                                    </div>
+                                    <div class="form-check progress-step-check" style="width: 33%">
+                                        <input class="form-check-input" id="checkitem2" type="radio" <c:if test="${editSelectResult=='replace'}">checked</c:if> name="editSelect" value="replace" aria-invalid="false">
+                                        <label class="form-check-label" for="checkitem2"><span class="check-circle"></span>Replace with Another Personnel</label>
+                                    </div>
+                                    <a class="cancel" id="cancel">Cancel</a>
+                                </div>
+                                <br/>
                                 <br/>
                                 <div class="form-horizontal">
+                                    <div id="update">
                                     <iais:row>
                                         <iais:field value="Name " width="12"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
@@ -126,6 +145,36 @@
                                                         name="idNo" value="${onePersonnel.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
+                                    </div>
+
+                                    <div id="replace" hidden>
+                                    <iais:row>
+                                        <iais:field value="Name " width="12"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
+                                            <iais:select name="salutation"
+                                                         codeCategory="CATE_ID_SALUTATION"
+                                                         value="${onePersonnel.salutation}"
+                                                         firstOption="Please Select"></iais:select>
+                                        </iais:value>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
+                                            <iais:input maxLength="66" type="text"
+                                                        name="psnName"
+                                                        value="${onePersonnel.psnName}"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Id No. " width="12"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
+                                            <iais:select name="idType"
+                                                         value="${onePersonnel.idType}"
+                                                         options="IdTypeSelect"></iais:select>
+                                        </iais:value>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
+                                            <iais:input maxLength="66" type="text"
+                                                        name="idNo" value="${onePersonnel.idNo}"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                    </div>
                                     <iais:row>
                                         <iais:field value="Designation " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
@@ -137,7 +186,7 @@
                                         <span class="error-msg" name="iaisErrorMsg" id="error_designation"></span>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Profession Type " width="12" mandatory="true"/>
+                                        <iais:field value="Professional Type " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
                                             <iais:select cssClass="professionTypeSel" name="professionType"
                                                          codeCategory="CATE_ID_PROFESSIONAL_TYPE"
@@ -147,7 +196,7 @@
                                         <span class="error-msg" name="iaisErrorMsg" id="error_professionType"></span>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Profession Regn No. " width="12" mandatory="true"/>
+                                        <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
                                             <iais:input maxLength="20" type="text" name="professionRegnNo"
                                                         value="${onePersonnel.professionRegnNo}"></iais:input>
@@ -204,6 +253,34 @@
 
         $('.needDisable').css('border-color','#ededed');
         $('.needDisabled').css('color','#999');
+
+        $('#edit').click(function () {
+            $("#editSelect").show();
+            $('#edit').hide();
+        });
+
+        $('#cancel').click(function () {
+            $("#editSelect").hide();
+            $('#edit').show();
+        });
+
+        $('#checkitem1').click(function () {
+            $("#update").show();
+            $('#replace').hide();
+        });
+        $('#checkitem2').click(function () {
+            $("#update").hide();
+            $('#replace').show();
+        });
+        if($('#checkitem2').val()=='replace'){
+            $("#update").hide();
+            $('#replace').show();
+        }
+        if($('#checkitem1').val()=='update'){
+            $("#update").hide();
+            $('#replace').show();
+        }
+
     });
 
 
