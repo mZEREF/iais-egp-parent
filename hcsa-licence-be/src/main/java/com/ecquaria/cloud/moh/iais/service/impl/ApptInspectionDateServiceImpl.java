@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -10,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
@@ -34,9 +36,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -90,6 +95,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     @Autowired
     private EmailClient emailClient;
+
+    @Autowired
+    private AppEicClient appEicClient;
 
     @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
@@ -457,7 +465,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
         }
         appPremisesInspecApptDtoList = applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList).getEntity();
-        createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
+        appPremisesInspecApptDtoList = setAudiTrailDtoInspAppt(appPremisesInspecApptDtoList, IaisEGPHelper.getCurrentAuditTrailDto());
+        apptInspectionDateDto.setAppPremisesInspecApptCreateList(appPremisesInspecApptDtoList);
+        createFeAppPremisesInspecApptDto(apptInspectionDateDto);
         //cancel or confirm appointment date
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         Map<String, List<ApptUserCalendarDto>> inspectionDateMap = apptInspectionDateDto.getInspectionDateMap();
@@ -496,6 +506,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
         String serviceId = applicationViewDto.getApplicationDto().getServiceId();
         Map<String, List<ApptUserCalendarDto>> inspectionDateMap = apptInspectionDateDto.getInspectionDateMap();
+        //save AppPremisesInspecApptDto
         for(String appPremCorrId : appPremCorrIds) {
             for(Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()){
                 String apptRefNo = inspDateMap.getKey();
@@ -526,9 +537,11 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 appPremisesInspecApptDtoList.add(appPremisesInspecApptDto);
             }
         }
-
         appPremisesInspecApptDtoList = applicationClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList).getEntity();
-        createFeAppPremisesInspecApptDto(appPremisesInspecApptDtoList);
+        //synchronization FE
+        appPremisesInspecApptDtoList = setAudiTrailDtoInspAppt(appPremisesInspecApptDtoList, IaisEGPHelper.getCurrentAuditTrailDto());
+        apptInspectionDateDto.setAppPremisesInspecApptCreateList(appPremisesInspecApptDtoList);
+        createFeAppPremisesInspecApptDto(apptInspectionDateDto);
         //cancel or confirm appointment date
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         List<String> confirmRefNo = IaisCommonUtils.genNewArrayList();
@@ -541,7 +554,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         apptCalendarStatusDto.setConfirmRefNums(confirmRefNo);
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
         cancelOrConfirmApptDate(apptCalendarStatusDto);
-        //
+        //send message and email
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
         String taskId = apptInspectionDateDto.getTaskDto().getId();
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
@@ -553,7 +566,18 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         inspectionDateSendEmail(submitDt, loginUrl, licenseeId, taskId);
         createMessage(url, serviceId, submitDt, licenseeId, maskParams);
+        //save data to app table
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_INSPECTION_DATE, InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE);
+    }
+
+    private List<AppPremisesInspecApptDto> setAudiTrailDtoInspAppt(List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList, AuditTrailDto currentAuditTrailDto) {
+        if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtoList)){
+            for(AppPremisesInspecApptDto appPremisesInspecApptDto : appPremisesInspecApptDtoList){
+                appPremisesInspecApptDto.setAuditTrailDto(currentAuditTrailDto);
+            }
+            return appPremisesInspecApptDtoList;
+        }
+        return appPremisesInspecApptDtoList;
     }
 
     @Override
@@ -657,14 +681,26 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             //synchronize FE
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            //run eic api
             ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
             apptFeConfirmDateDto.setAppPremisesInspecApptCreateList(appPremisesInspecApptDtoCreateList);
             apptFeConfirmDateDto.setAppPremisesInspecApptUpdateList(appPremisesInspecApptDtoUpdateList);
-
             apptFeConfirmDateDto.setAppPremisesInspecApptDto(appPremInspApptDto1);
+            //save eic record
+            EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
+            EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApptInspectionDateServiceImpl", "saveSpecificDateLast",
+                    "hcsa-licence-web-intranet", ApptFeConfirmDateDto.class.getName(), JsonUtil.parseToJson(apptFeConfirmDateDto));
+            String eicRefNo = eicRequestTrackingDto.getRefNo();
             beEicGatewayClient.reSchedulingSaveFeDate(apptFeConfirmDateDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization());
-
+            //get eic record
+            eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
+            //update eic record status
+            eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+            eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
+            eicRequestTrackingDtos.add(eicRequestTrackingDto);
+            appEicClient.updateStatus(eicRequestTrackingDtos);
         }
         Date saveDate = apptInspectionDateDto.getSpecificStartDate();
         //save Inspection date / status, save Application
@@ -787,11 +823,25 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         }
     }
 
-    private void createFeAppPremisesInspecApptDto(List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList) {
+    private void createFeAppPremisesInspecApptDto(ApptInspectionDateDto apptInspectionDateDto) {
+        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = apptInspectionDateDto.getAppPremisesInspecApptCreateList();
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        //save eic record
+        EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
+        EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApptInspectionDateServiceImpl", "createFeAppPremisesInspecApptDto",
+                "hcsa-licence-web-intranet", AppPremisesInspecApptDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
+        String eicRefNo = eicRequestTrackingDto.getRefNo();
         beEicGatewayClient.createAppPremisesInspecApptDto(appPremisesInspecApptDtoList, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
+        //get eic record
+        eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
+        //update eic record status
+        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
+        eicRequestTrackingDtos.add(eicRequestTrackingDto);
+        appEicClient.updateStatus(eicRequestTrackingDtos);
     }
 
     private void updateStatusAndCreateHistory(List<TaskDto> taskDtos, String inspecStatus, String processDec) {
@@ -855,7 +905,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
         interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_APPT_INSPECTION_DATE);
-        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
+        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
         String mesNO = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(mesNO);
         interMessageDto.setService_id(serviceId);
