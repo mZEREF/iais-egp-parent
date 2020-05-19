@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.client.EicClient;
+import com.ecquaria.cloud.moh.iais.client.OnlineApptEicClient;
 import com.ecquaria.cloud.moh.iais.client.OrgEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -29,6 +30,9 @@ public final class EicRequestTrackingHelper {
 
     @Autowired
     private AppEicClient appEicClient;
+
+    @Autowired
+    private OnlineApptEicClient onlineApptEicClient;
 
     @Autowired
     private EicClient eicClient;
@@ -76,6 +80,8 @@ public final class EicRequestTrackingHelper {
                 break;
             case EicClientConstant.SYSTEM_ADMIN_CLIENT:
                 eicClient.saveEicTrack(eicRequestTrackingDto);
+            case EicClientConstant.ONLINE_APPT_CLIENT:
+                onlineApptEicClient.saveEicTrack(eicRequestTrackingDto);
             break;
         }
 
