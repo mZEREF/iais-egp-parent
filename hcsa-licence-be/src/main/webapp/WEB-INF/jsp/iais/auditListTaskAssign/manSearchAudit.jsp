@@ -24,9 +24,7 @@
             <iais:row>
                 <iais:field value="Service Name"/>
                 <iais:value width="8">
-                    <iais:select name="svcName" options="activeHCIServiceNames" firstOption="Please Select"
-                                 value=""/>
-                    <span id="error_svcName" name="iaisErrorMsg" class="error-msg"></span>
+                    <iais:multipleSelect name="svcName" selectValue="${auditSystemPotentialDtoForSearch.svcNameSelect}" options="activeHCIServiceNames"></iais:multipleSelect>
                 </iais:value>
             </iais:row>
 
@@ -67,8 +65,7 @@
             <iais:row>
                 <iais:field value="HSCA Service Code"/>
                 <iais:value width="8">
-                    <iais:select name="hclSCode" options="activeHCIServiceCodes" firstOption="Please Select" value=""/>
-                    <span id="error_hclSCode" name="iaisErrorMsg" class="error-msg"></span>
+                    <iais:multipleSelect name="hclSCode" selectValue="${auditSystemPotentialDtoForSearch.svcNameCodeSelect}" options="activeHCIServiceCodes"></iais:multipleSelect>
                 </iais:value>
             </iais:row>
 

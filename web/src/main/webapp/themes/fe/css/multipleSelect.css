@@ -1,0 +1,77 @@
+.checkbox-custom label {
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    padding-left: 30px !important;
+    margin-right: 15px;
+}
+
+.checkbox-custom label:before{
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    position: absolute;
+    left: 0px;
+    border: 1px solid #dbdbdb;
+    margin-top: 4px;
+}
+
+
+.checkbox-custom input[type=radio][disabled] + label:after {
+    background-color: #e6e6e6;
+}
+
+.checkbox-custom label {
+    white-space: nowrap;
+    -webkit-transition: all .2s;
+    transition: all .2s;
+}
+
+.checkbox-custom label:before {
+    top: -1px;
+    -webkit-transition: all .2s;
+    transition: all .2s;
+}
+
+.checkbox-custom label::after {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    left: 2.5px;
+    top: 1px;
+    font-size: 12px;
+    -webkit-transition: all .2s;
+    transition: all .2s;
+}
+
+.checkbox-custom input[type=checkbox] {
+    display: none;
+}
+
+.checkbox-custom input[type=checkbox]:checked + label:before {
+    border-width: 8px;
+}
+
+.checkbox-custom input[type=checkbox]:checked + label::after {
+    font-family: 'FontAwesome';
+    content: "\F00C";
+    color: #fff;
+}
+
+.checkbox-custom input[type=checkbox][disabled] + label {
+    opacity: 0.5;
+}
+
+.checkbox-custom input[type=checkbox][disabled] + label:before {
+    background-color: #e2e5e9;
+}
+.checkbox-custom.check-primary input[type=checkbox]:checked + label:before{
+    border-color: #6ed0d9;
+}
+.check-primary label{
+    margin-bottom: 0;
+}
+

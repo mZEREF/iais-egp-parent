@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.AduitSystemGenerateValidate;
 import com.ecquaria.cloud.moh.iais.validation.AuditAssginListValidate;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,22 +137,28 @@ public class AuditManualListDelegator {
     public void vad(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
-        String serviceName = ParamUtil.getString(request, "svcName");
+        String[] serviceNames = ParamUtil.getStrings(request, "svcName");
         String postcode = ParamUtil.getString(request, "postcode");
         String inspectionStartDate = ParamUtil.getDate(request, "inspectionStartDate");
         String inspectionEndDate = ParamUtil.getDate(request, "inspectionEndDate");
         String complianceLastResult = ParamUtil.getString(request, "complianceLastResult");
-        String hclSCode = ParamUtil.getString(request, "hclSCode");
+        String[] hclSCodes = ParamUtil.getStrings(request, "hclSCode");
         String hclCode = ParamUtil.getString(request, "hclCode");
         String premType = ParamUtil.getString(request, "premType");
         String riskType = ParamUtil.getString(request, "riskType");
+        String svcNameSelect = ParamUtil.getStringsToString(request, "svcName");
+        String svcNameCodeSelect = ParamUtil.getStringsToString(request, "hclSCode");
         AuditSystemPotentialDto dto = new AuditSystemPotentialDto();
         List<String> serviceNmaeList = IaisCommonUtils.genNewArrayList();
-        if(!StringUtil.isEmpty(serviceName))
-            serviceNmaeList.add(serviceName);
+        if(serviceNames != null && serviceNames.length >0){
+            serviceNmaeList.addAll(Arrays.asList(serviceNames));
+        }
         List<String> hcsaServiceCodeList = IaisCommonUtils.genNewArrayList();
-        if(!StringUtil.isEmpty(hclSCode))
-            hcsaServiceCodeList.add(hclSCode);
+        if(hclSCodes != null && hclSCodes.length > 0) {
+            serviceNmaeList.addAll(Arrays.asList(hclSCodes));
+        }
+        dto.setSvcNameSelect(svcNameSelect);
+        dto.setSvcNameCodeSelect(svcNameCodeSelect);
         dto.setSvcNameList(serviceNmaeList);
         dto.setHcsaServiceCodeList(hcsaServiceCodeList);
         dto.setPostalCode(postcode);

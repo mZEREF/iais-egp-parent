@@ -26,7 +26,7 @@
 <link href="<%=webRootCommon%>css/comm_style.css" rel="stylesheet">
 <link rel="stylesheet" href="<%=webroot%>css/cpl_style.css">
 <link rel="stylesheet" href="<%=webroot%>css/cpl_intranet_style.css">
-
+<link rel="stylesheet" href="<%=webroot%>css/multipleSelect.css">
 <script type="text/javascript" src="<%=webroot%>js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/particles.js"></script>
 <script type="text/javascript" src="<%=webroot%>js/app.js"></script>
