@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.client.AtEicClient;
 import com.ecquaria.cloud.moh.iais.client.EicClient;
 import com.ecquaria.cloud.moh.iais.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.client.LicmEicClient;
+import com.ecquaria.cloud.moh.iais.client.OnlineApptEicClient;
 import com.ecquaria.cloud.moh.iais.client.OrgEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -15,14 +16,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.List;
 
 /**
  * EicRecoverJob
@@ -45,6 +45,8 @@ public class EicSelfRecoveDelegator {
     private EicClient eicClient;
     @Autowired
     private OrgEicClient orgEicClient;
+    @Autowired
+    private OnlineApptEicClient onlineApptEicClient;
     @Value("${spring.application.name}")
     private String currentApp;
     @Value("${iais.current.domain}")
@@ -59,6 +61,7 @@ public class EicSelfRecoveDelegator {
         List<EicRequestTrackingDto> licmList = licmEicClient.getPendingRecords(moduleName).getEntity();
         List<EicRequestTrackingDto> orgList = orgEicClient.getPendingRecords(moduleName).getEntity();
         List<EicRequestTrackingDto> sysList = eicClient.getPendingRecords(moduleName).getEntity();
+        List<EicRequestTrackingDto> apptList = onlineApptEicClient.getPendingRecords(moduleName).getEntity();
         AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(currentDomain);
         if (!IaisCommonUtils.isEmpty(atList)) {
             atList.forEach(ert -> {
@@ -95,6 +98,12 @@ public class EicSelfRecoveDelegator {
                 reTrigger(ert, auditTrailDto);
             });
             eicClient.updateStatus(sysList);
+        }
+        if (!IaisCommonUtils.isEmpty(apptList)) {
+            apptList.forEach(ert -> {
+                reTrigger(ert, auditTrailDto);
+            });
+            onlineApptEicClient.updateStatus(apptList);
         }
         log.info("<======== End EIC Self Recover Job =========>");
     }
