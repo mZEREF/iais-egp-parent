@@ -604,7 +604,7 @@ public class LicenceApproveBatchjobTest {
                 }
 
                 LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),null,applicationGroupDto,appPremisesRecommendationDto,
-                        originLicenceDto,null,applicationDtos.get(0).getRelLicenceNo(),applicationDtos,true);
+                        originLicenceDto,applicationDtos.get(0),applicationDtos.get(0).getRelLicenceNo(),applicationDtos,true);
                 superLicDto.setLicenceDto(licenceDto);
                 //if PostInspNeeded send email
                 if(isPostInspNeeded == Integer.parseInt(AppConsts.YES)){
