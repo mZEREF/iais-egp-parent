@@ -118,14 +118,14 @@
                                                         </select>
                                                     </iais:value>
                                                 </iais:row>
-                                                <iais:row >
-                                                    <iais:field value=""/>
-                                                    <iais:value width="7">
-                                                        <div style="color:#ff0000; display: none" id="selectDecisionMsg" >
+                                                <div style="color:#ff0000; display: none" id="selectDecisionMsg" >
+                                                    <iais:row >
+                                                        <iais:field value=""/>
+                                                        <iais:value width="7">
                                                             This field is mandatory.
-                                                        </div>
-                                                    </iais:value>
-                                                </iais:row>
+                                                        </iais:value>
+                                                    </iais:row>
+                                                </div>
                                                 <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
                                                     <div class="row">
                                                         <div class="col-md-4">
