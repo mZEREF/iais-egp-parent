@@ -2,18 +2,24 @@ package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.esotericsoftware.minlog.Log;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author: jiahao
@@ -38,10 +44,12 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         fillUpVad(request,errMap);
         otherinfoVad(serListDto,errMap);
         // validate file
-        if(serListDto.getAppPremisesSpecialDocDto() != null){
-            if(10240 < serListDto.getAppPremisesSpecialDocDto().getDocSize())
-                errMap.put("litterFile",UC_CHKLMD001_ERR007);
+        if(serListDto!=null){
+            if(serListDto.getAppPremisesSpecialDocDto() != null){
+                if(10240 < serListDto.getAppPremisesSpecialDocDto().getDocSize())
+                    errMap.put("litterFile",UC_CHKLMD001_ERR007);
 
+            }
         }
         auditVad( request,errMap);
         return errMap;

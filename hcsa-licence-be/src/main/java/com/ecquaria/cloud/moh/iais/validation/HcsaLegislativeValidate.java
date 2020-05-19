@@ -7,13 +7,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author: jiahao
@@ -156,7 +156,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             errMap.put(fdto.getSvcCode()+"inThershold",MessageUtil.replaceMessage("ERR0009","Thershold","The field"));
         }else{
             try {
-                Integer thold = Integer.parseInt(fdto.getDoThershold());
+                Integer thold = Integer.valueOf(fdto.getDoThershold());
                 if(thold<0 || thold>999){
                     errMap.put(fdto.getSvcCode()+"inThershold","ERR0013");
                 }
@@ -182,7 +182,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         Integer inRightModNum = 0;
         try {
             if(!StringUtil.isEmpty(inLeftHigh)){
-                inLeftHighNum = Integer.parseInt(inLeftHigh);
+                inLeftHighNum = Integer.valueOf(inLeftHigh);
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     inLeftHighNumFlag = false;
                     errMap.put(serviceCode + "inLeftHighCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
@@ -197,7 +197,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         }
         try {
             if(!StringUtil.isEmpty(inRightMod)){
-                inRightModNum = Integer.parseInt(inRightMod);
+                inRightModNum = Integer.valueOf(inRightMod);
                 if((inRightModNum +1 != inLeftHighNum)&&inLeftHighNumFlag){
                     errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0014");
                     fdto.setDoLeftHighCaseCountherr(true);
@@ -214,7 +214,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         Integer inLeftModNum = 0;
         try {
             if(!StringUtil.isEmpty(inRightLow)){
-                inRightLowNum = Integer.parseInt(inRightLow);
+                inRightLowNum = Integer.valueOf(inRightLow);
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
                     inrightflag = false;
                     errMap.put(serviceCode + "inRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
@@ -230,8 +230,8 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         }
         try {
             if(!StringUtil.isEmpty(inLeftMod)&&inrightflag){
-                inLeftModNum = Integer.parseInt(inLeftMod);
-                if(inLeftModNum -1 != inRightLowNum && inLeftModNum != inRightLowNum){
+                inLeftModNum = Integer.valueOf(inLeftMod);
+                if(inLeftModNum -1 != inRightLowNum && !inLeftModNum.equals(inRightLowNum)){
                     errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0015");
                 }
             }
@@ -247,7 +247,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         int numberFlag = 0;
         if(!StringUtil.isEmpty(inLeftMod)){
             try {
-                inLeftModNum = Integer.parseInt(inLeftMod);
+                inLeftModNum = Integer.valueOf(inLeftMod);
                 if(inLeftModNum<0||inLeftModNum>999){
                         errMap.put(serviceCode+"inLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
                         fdto.setDoLeftModCaseCountherr(true);
@@ -261,7 +261,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         }
         if(!StringUtil.isEmpty(inRightMod)){
             try {
-                inRightModNum = Integer.parseInt(inRightMod);
+                inRightModNum = Integer.valueOf(inRightMod);
                 if(inRightModNum<0 || inRightModNum >999){
                     errMap.put(serviceCode+"inRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
                     fdto.setDoRightModCaseCountherr(true);

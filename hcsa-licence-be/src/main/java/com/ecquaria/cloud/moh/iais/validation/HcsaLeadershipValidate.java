@@ -7,13 +7,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author: jiahao
@@ -68,7 +68,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             fdto.setAdThersholderr(true);
         }else{
             try {
-                Integer thold = Integer.parseInt(fdto.getAdThershold());
+                Integer thold = Integer.valueOf(fdto.getAdThershold());
                 if(thold<0 || thold>999){
                     errMap.put(fdto.getSvcCode()+"inThershold","ERR0013");
                     fdto.setAdThersholderr(true);
@@ -83,7 +83,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             fdto.setDpThersholderr(true);
         }else{
             try {
-                Integer thold = Integer.parseInt(fdto.getDpThershold());
+                Integer thold = Integer.valueOf(fdto.getDpThershold());
                 if(thold<0 || thold>999){
                     errMap.put(fdto.getSvcCode()+"prThershold","ERR0013");
                     fdto.setDpThersholderr(true);
@@ -114,7 +114,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         int numberFlag = 0;
         if(!StringUtil.isEmpty(inLeftMod)){
             try {
-                inLeftModNum = Integer.parseInt(inLeftMod);
+                inLeftModNum = Integer.valueOf(inLeftMod);
                 if(inLeftModNum<0||inLeftModNum>999){
                     if(isIn){
                         errMap.put(serviceCode+"inLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
@@ -138,7 +138,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         }
         if(!StringUtil.isEmpty(inRightMod)){
             try {
-                inRightModNum = Integer.parseInt(inRightMod);
+                inRightModNum = Integer.valueOf(inRightMod);
                 if(inRightModNum<0 || inRightModNum >999){
                     if(isIn){
                         errMap.put(serviceCode+"inRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
@@ -180,7 +180,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         Integer inRightModNum = 0;
         try {
             if(!StringUtil.isEmpty(inLeftHigh)){
-                inLeftHighNum = Integer.parseInt(inLeftHigh);
+                inLeftHighNum = Integer.valueOf(inLeftHigh);
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     if(isIn){
                         inLeftHighNumFlag = false;
@@ -207,7 +207,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         }
         try {
             if(!StringUtil.isEmpty(inRightMod)){
-                inRightModNum = Integer.parseInt(inRightMod);
+                inRightModNum = Integer.valueOf(inRightMod);
                 if(inRightModNum +1 != inLeftHighNum){
                     if(isIn&&inLeftHighNumFlag){
                         errMap.put(serviceCode + "inLeftHighCaseCounth", "High Maximum cases and Moderate Minimax can only differ by 1");
@@ -229,7 +229,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         boolean prRightLowNumFlag = true;
         try {
             if(!StringUtil.isEmpty(inRightLow)){
-                inRightLowNum = Integer.parseInt(inRightLow);
+                inRightLowNum = Integer.valueOf(inRightLow);
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
                     if(isIn){
                         inRightLowNumFlag = false;
@@ -260,8 +260,8 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         }
         try {
             if(!StringUtil.isEmpty(inLeftMod)){
-                inLeftModNum = Integer.parseInt(inLeftMod);
-                if(inLeftModNum -1 != inRightLowNum && inLeftModNum != inRightLowNum){
+                inLeftModNum = Integer.valueOf(inLeftMod);
+                if(inLeftModNum -1 != inRightLowNum && !inLeftModNum.equals(inRightLowNum)){
                     if(isIn){
                         errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0015");
                         fdto.setAdRightLowCaseCountherr(true);

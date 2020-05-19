@@ -13,10 +13,10 @@ import java.util.Map;
  * @date 2020/1/17 16:41
  */
 public class InsRepRecValidate implements CustomizeValidator {
-    private final String RECOMMENDATION = "recommendation";
-    private final String CHRONO = "chrono";
-    private final String NUMBER = "number";
-    private final String OTHERS = "Others";
+    private static final String RECOMMENDATION = "recommendation";
+    private static final String CHRONO = "chrono";
+    private static final String NUMBER = "number";
+    private static final String OTHERS = "Others";
     @Override
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errorMap = new HashMap<>(34);

@@ -236,7 +236,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 roleMap.put(index + "", role);
                 //set current role check key
                 if (role.equals(curRole)) {
-                    curCheckRole = index + "";
+                    curCheckRole = String.valueOf(index);
                 }
                 index++;
             }
@@ -483,13 +483,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     private TaskDto getTaskDtoByPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
-        TaskDto taskDto = new TaskDto();
         for (TaskDto tDto : commPools) {
             if (tDto.getId().equals(inspecTaskCreAndAssDto.getTaskId())) {
-                taskDto = tDto;
+                return tDto;
             }
         }
-        return taskDto;
+        return new TaskDto();
     }
 
     /**

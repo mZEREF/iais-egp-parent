@@ -13,12 +13,6 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +21,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wenkang
@@ -248,14 +248,14 @@ public class AppealDelegator {
 
 
     private String getHtml(Map<String, String> premisesOnSiteAttr, List<SelectOption> selectOptionList, String firestOption){
-        StringBuffer sBuffer = new StringBuffer();
+        StringBuilder sBuffer = new StringBuilder();
         sBuffer.append("<select ");
         for(Map.Entry<String, String> entry : premisesOnSiteAttr.entrySet()){
-            sBuffer.append(entry.getKey()+"=\""+entry.getValue()+"\" ");
+            sBuffer.append(entry.getKey()).append("=\"").append(entry.getValue()).append("\" ");
         }
         sBuffer.append(" >");
         for(SelectOption sp:selectOptionList){
-            sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+            sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
         }
         sBuffer.append("</select>");
         String classNameValue = premisesOnSiteAttr.get("class");
@@ -263,20 +263,20 @@ public class AppealDelegator {
         if(!StringUtil.isEmpty(classNameValue)){
             className =  classNameValue;
         }
-        sBuffer.append("<div class=\"nice-select "+className+"\" tabindex=\"0\">");
+        sBuffer.append("<div class=\"nice-select ").append(className).append("\" tabindex=\"0\">");
         if(StringUtil.isEmpty(firestOption)){
-            sBuffer.append("<span class=\"current\">"+selectOptionList.get(0).getText()+"</span>");
+            sBuffer.append("<span class=\"current\">").append(selectOptionList.get(0).getText()).append("</span>");
         }else {
-            sBuffer.append("<span class=\"current\">"+firestOption+"</span>");
+            sBuffer.append("<span class=\"current\">").append(firestOption).append("</span>");
         }
         sBuffer.append("<ul class=\"list mCustomScrollbar _mCS_2 mCS_no_scrollbar\">")
                 .append("<div id=\"mCSB_2\" class=\"mCustomScrollBox mCS-light mCSB_vertical mCSB_inside\" tabindex=\"0\" style=\"max-height: none;\">")
                 .append("<div id=\"mCSB_2_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">");
         if(!StringUtil.isEmpty(firestOption)){
-            sBuffer.append("<li data-value=\"-1\" class=\"option selected\">"+firestOption+"</li>");
+            sBuffer.append("<li data-value=\"-1\" class=\"option selected\">").append(firestOption).append("</li>");
         }
         for(SelectOption kv:selectOptionList){
-            sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+            sBuffer.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append("</li>");
         }
         sBuffer.append("</div>")
                 .append("<div id=\"mCSB_2_scrollbar_vertical\" class=\"mCSB_scrollTools mCSB_2_scrollbar mCS-light mCSB_scrollTools_vertical\" style=\"display: none;\">")

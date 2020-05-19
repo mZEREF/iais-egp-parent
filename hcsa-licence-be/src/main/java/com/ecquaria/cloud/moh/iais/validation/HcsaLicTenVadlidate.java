@@ -10,13 +10,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author: jiahao
@@ -151,22 +151,18 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
             }
         }
         for(SubLicenceTenureDto temp:monthList){
-            temp.setLicenceTenureNum(Integer.parseInt(temp.getLicenceTenure()));
+            temp.setLicenceTenureNum(Integer.valueOf(temp.getLicenceTenure()));
         }
-        if(monthList!=null&&!monthList.isEmpty()){
+        if(!monthList.isEmpty()){
             monthList.sort((SubLicenceTenureDto s1,SubLicenceTenureDto s2)->s1.getLicenceTenureNum().compareTo(s2.getLicenceTenureNum()));
-            for(SubLicenceTenureDto temp:monthList){
-                ltSortList.add(temp);
-            }
+            ltSortList.addAll(monthList);
         }
         for(SubLicenceTenureDto temp:yearList){
-            temp.setLicenceTenureNum(Integer.parseInt(temp.getLicenceTenure()));
+            temp.setLicenceTenureNum(Integer.valueOf(temp.getLicenceTenure()));
         }
-        if(yearList!=null&&!yearList.isEmpty()){
+        if(!yearList.isEmpty()){
             yearList.sort((SubLicenceTenureDto s1,SubLicenceTenureDto s2)->s1.getLicenceTenureNum().compareTo(s2.getLicenceTenureNum()));
-            for(SubLicenceTenureDto temp:yearList){
-                ltSortList.add(temp);
-            }
+            ltSortList.addAll(yearList);
         }
         for(int i=0;i<subList.size();i++){
             if(!subList.get(i).getLicenceTenure().equals(ltSortList.get(i).getLicenceTenure())){
@@ -201,8 +197,8 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
             }
 
         if(numfalg){
-            Double rightnum =  Double.parseDouble(temp.getColumRight());
-            Double leftnum =  Double.parseDouble(temp.getColumLeft());
+            Double rightnum =  Double.valueOf(temp.getColumRight());
+            Double leftnum =  Double.valueOf(temp.getColumLeft());
             if(rightnum<leftnum){
                 errMap.put(svcCode+"righterr","Maximum should be granter than Minimum in the same row");
                 numfalg = false;
@@ -222,7 +218,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                 flag = false;
             }
             else{
-                numyear = Integer.parseInt(temp.getYearNum());
+                numyear = Integer.valueOf(temp.getYearNum());
                     if(numyear<0||numyear>5){
                         errMap.put(svcCode+"lterr","Licence Tenure should be less than 5 years");
                         flag = false;
@@ -233,7 +229,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                 flag = false;
             }
             else {
-                numMonth = Integer.parseInt(temp.getMonthNum());
+                numMonth = Integer.valueOf(temp.getMonthNum());
                 if( numMonth <0|| numMonth>13){
                     errMap.put(svcCode+"timeerr","Licence Tenure should be less than 12 months");
                     flag = false;

@@ -7,14 +7,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author: jiahao
@@ -148,7 +148,7 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
                     errMap.put(temp.getServiceCode()+mapkey,mapv);
                     return false;
                 }
-                Double num = Double.parseDouble(numStr);
+                Double num = Double.valueOf(numStr);
                 if(num<=0||num>=1){
                     errMap.put(temp.getServiceCode()+mapkey,mapv);
                 }else{
@@ -164,11 +164,11 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
     }
 
     private void calwWeightageVad(HcsaRiskWeightageDto temp, Map<String, String> errMap) {
-        Double lastInp = Double.parseDouble(temp.getDoLastInp());
-        Double seclastInp = Double.parseDouble(temp.getDoSecLastInp());
-        Double finInp = Double.parseDouble(temp.getDoFinancial());
-        Double leaInp = Double.parseDouble(temp.getDoLeadship());
-        Double legInp = Double.parseDouble(temp.getDoLegislative());
+        Double lastInp = Double.valueOf(temp.getDoLastInp());
+        Double seclastInp = Double.valueOf(temp.getDoSecLastInp());
+        Double finInp = Double.valueOf(temp.getDoFinancial());
+        Double leaInp = Double.valueOf(temp.getDoLeadship());
+        Double legInp = Double.valueOf(temp.getDoLegislative());
         BigDecimal lastBig = new BigDecimal(lastInp.toString());
         BigDecimal seclastInpBig = new BigDecimal(seclastInp.toString());
         BigDecimal finInpBig = new BigDecimal(finInp.toString());
