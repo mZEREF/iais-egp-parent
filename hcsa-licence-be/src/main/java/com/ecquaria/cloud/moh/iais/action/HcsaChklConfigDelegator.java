@@ -68,7 +68,6 @@ public class HcsaChklConfigDelegator {
     //Save the section that user added to the current page
     private Set<String> curSecName = null;
 
-
     @Autowired
     public HcsaChklConfigDelegator(HcsaChklService hcsaChklService){
         this.hcsaChklService = hcsaChklService;
@@ -160,7 +159,6 @@ public class HcsaChklConfigDelegator {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
-
 
         try {
             ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);

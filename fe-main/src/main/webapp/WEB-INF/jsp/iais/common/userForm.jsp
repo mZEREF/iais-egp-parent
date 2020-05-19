@@ -1,7 +1,7 @@
 <iais:row>
     <iais:field value="Name" width="11" required="true"/>
     <iais:value width="11">
-        <iais:input type="text" name="name" id="name" value="${inter_user_attr.displayName}"/>
+        <iais:input type="text" name="name" id="name" maxLength="66" value="${inter_user_attr.displayName}"/>
             <span class="error-msg" name="errorMsg" id="error_displayName"></span>
     </iais:value>
 </iais:row>
@@ -69,7 +69,7 @@
 <iais:row>
     <iais:field value="Email" width="11" required="true"/>
     <iais:value width="11">
-        <iais:input type="text" name="email" id="email" value="${inter_user_attr.email}"/>
+        <iais:input type="text" name="email" id="email" maxLength="66" value="${inter_user_attr.email}"/>
             <span class="error-msg" name="errorMsg" id="error_email"></span>
     </iais:value>
 </iais:row>

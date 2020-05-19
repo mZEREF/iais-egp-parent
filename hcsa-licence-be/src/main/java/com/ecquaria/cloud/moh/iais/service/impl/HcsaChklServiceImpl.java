@@ -35,20 +35,7 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     private HcsaChklClient chklClient;
 
     @Autowired
-    private BeEicGatewayClient beEicGatewayClient;
-
-    @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
-
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
 
     @Override
     public Boolean deleteRecord(String configId) {
