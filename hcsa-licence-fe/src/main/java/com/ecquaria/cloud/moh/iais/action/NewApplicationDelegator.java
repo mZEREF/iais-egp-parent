@@ -1198,7 +1198,6 @@ public class NewApplicationDelegator {
                                 amendmentFeeDto.setChangeInHCIName(b);
                                 amendmentFeeDto.setChangeInLocation(!equals);
                             }
-                            appSubmissionDtoByLicenceId.setGroupLic(groupLic);
                             FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
                             Double total = feeDto.getTotal();
 
@@ -1211,7 +1210,7 @@ public class NewApplicationDelegator {
                                 }
 
                             }
-                        appSubmissionDtoByLicenceId.setGroupLic(groupLic);
+                            appSubmissionDtoByLicenceId.setGroupLic(groupLic);
                             appSubmissionDtoByLicenceId.setAmount(total);
                             AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(i);
                             List<AppGrpPremisesDto> appGrpPremisesDtos=new ArrayList<>(1);
@@ -1467,7 +1466,7 @@ public class NewApplicationDelegator {
         return appSubmissionDtoList;
 
     }
-    private boolean compareHciName(AppGrpPremisesDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto){
+    public static boolean compareHciName(AppGrpPremisesDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto){
 
         String newHciName = "";
         String oldHciName = "";

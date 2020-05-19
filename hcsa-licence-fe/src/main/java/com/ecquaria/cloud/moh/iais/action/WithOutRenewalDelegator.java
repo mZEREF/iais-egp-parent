@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -11,14 +12,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -34,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
@@ -42,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.validation.PaymentValidate;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -55,6 +62,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESSAGE;
 
 
 /**
@@ -90,7 +99,10 @@ public class WithOutRenewalDelegator {
 
     @Autowired
     RequestForChangeService requestForChangeService;
-
+    @Autowired
+    private GenerateIdClient generateIdClient;
+    @Autowired
+    private EventBusHelper eventBusHelper;
     public void start(BaseProcessClass bpc){
         log.info("**** the non auto renwal  start ******");
         //init session
@@ -269,7 +281,12 @@ public class WithOutRenewalDelegator {
             groupId = appSubmissionDtos.get(0).getAppGrpId();
             amount = appSubmissionDtos.get(0).getAmount();
             licenseeId = appSubmissionDtos.get(0).getLicenseeId();
-            bpc.request.getSession().setAttribute("oldAppSubmissionDto",appSubmissionDtos.get(0));
+
+            AppSubmissionDto oldAppSubmissionDto=(AppSubmissionDto) bpc.request.getSession().getAttribute("oldAppSubmissionDto");
+            if(oldAppSubmissionDto==null){
+                oldAppSubmissionDto= appSubmissionDtos.get(0);
+            }
+            bpc.request.getSession().setAttribute("oldAppSubmissionDto",oldAppSubmissionDto);
 
         }
         String result = ParamUtil.getMaskedString(bpc.request,"result");
@@ -325,6 +342,13 @@ public class WithOutRenewalDelegator {
             return;
         }
         //
+        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+        appEditSelectDto.setServiceEdit(true);
+        appEditSelectDto.setPremisesEdit(true);
+        appEditSelectDto.setDocEdit(true);
+        appEditSelectDto.setPoEdit(true);
+        appEditSelectDto.setDocEdit(true);
+
         String hasSubmit = (String)ParamUtil.getSessionAttr(bpc.request,"hasAppSubmit");
         if("Y".equals(hasSubmit)){
             return;
@@ -339,9 +363,89 @@ public class WithOutRenewalDelegator {
             log.error(StringUtil.changeForLog("interInboxUserDto null"));
         }
         Double total = 0d;
+        AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
+        amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
+
+        AppSubmissionDto oldAppSubmissionDto  =(AppSubmissionDto)bpc.request.getSession().getAttribute("oldAppSubmissionDto");
+        List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+        List<AppSubmissionDto> rfcAppSubmissionDtos=IaisCommonUtils.genNewArrayList();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
-            AppSubmissionDto oldAppSubmissionDto  =(AppSubmissionDto)bpc.request.getSession().getAttribute("oldAppSubmissionDto");
+            String appType = appSubmissionDto.getAppType();
+            String appGrpNo = requestForChangeService.getApplicationGroupNumber(appType);
+            //
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+            if(appGrpPremisesDtoList!=null){
+                for(int i=0;i<appGrpPremisesDtoList.size();i++){
+                    List<LicenceDto> attribute =(List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence"+i);
+                    if(attribute!=null){
+                        for(LicenceDto licenceDto : attribute){
+                            AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceDto.getId());
+                            appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
+                            boolean groupLic = appSubmissionDtoByLicenceId.isGroupLic();
+                            String address = appGrpPremisesDtoList.get(i).getAddress();
+                            boolean equals=false;
+                            if(groupLic){
+                                AppGrpPremisesDto oldAppGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(i);
+                                boolean b = NewApplicationDelegator.compareHciName(oldAppGrpPremisesDto, appGrpPremisesDtoList.get(i));
+                                amendmentFeeDto.setChangeInHCIName(b);
+                                String olAddress = oldAppGrpPremisesDto.getAddress();
+                                equals = olAddress.equals(address);
+                                amendmentFeeDto.setChangeInLocation(!equals);
+                            }else {
+                                String oldAddress = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getAddress();
+                                equals = oldAddress.equals(address);
+                                boolean b = NewApplicationDelegator.compareHciName(appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0), appSubmissionDto.getAppGrpPremisesDtoList().get(i));
+                                amendmentFeeDto.setChangeInHCIName(b);
+                                amendmentFeeDto.setChangeInLocation(!equals);
+
+                            }
+
+                            FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
+                            Double rfcTotal = feeDto.getTotal();
+                            if(equals){
+                                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
+                                if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+                                    for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                                        appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                                    }
+                                }
+
+                            }
+                            appSubmissionDtoByLicenceId.setGroupLic(groupLic);
+                            appSubmissionDtoByLicenceId.setAmount(rfcTotal);
+                            AppGrpPremisesDto appGrpPremisesDto=appGrpPremisesDtoList.get(i);
+                            List<AppGrpPremisesDto> appGrpPremisesDtos=new ArrayList<>(1);
+                            appGrpPremisesDtos.add(appGrpPremisesDto);
+                            appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+                            appSubmissionDtoByLicenceId.setAppGrpNo(appGrpNo);
+                            appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
+                            PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDtoByLicenceId);
+                            if (preOrPostInspectionResultDto == null) {
+                                appSubmissionDtoByLicenceId.setPreInspection(Boolean.TRUE);
+                                appSubmissionDtoByLicenceId.setRequirement(Boolean.TRUE);
+                            } else {
+                                appSubmissionDtoByLicenceId.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
+                                appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
+                            }
+                            appSubmissionDtoByLicenceId.setAutoRfc(equals);
+
+                            appEditSelectDto.setPremisesListEdit(Boolean.TRUE);
+                            appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
+                            appSubmissionDtoByLicenceId.setChangeSelectDto(appEditSelectDto);
+                            appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                            appSubmissionDtoByLicenceId.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
+                            String draftNo = appSubmissionDtoByLicenceId.getDraftNo();
+                            if(StringUtil.isEmpty(draftNo)){
+                                appSubmissionService.setDraftNo(appSubmissionDtoByLicenceId);
+                            }
+                            if(0.0==rfcTotal){
+                                appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                            }
+                            rfcAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
+                        }
+                    }
+                }
+            }
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
             appSubmissionDto.setLicenseeId(licenseeId);
@@ -360,9 +464,19 @@ public class WithOutRenewalDelegator {
                 appSubmissionDto.setAmountStr(amountStr);
             }
         }
+
+        AppSubmissionListDto appSubmissionListDto =new AppSubmissionListDto();
+        String submissionId = generateIdClient.getSeqId().getEntity();
+        Long l = System.currentTimeMillis();
+        List<AppSubmissionDto> appSubmissionDtos1=  requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(rfcAppSubmissionDtos);
+        appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
+        appSubmissionListDto.setEventRefNo(l.toString());
+        eventBusHelper.submitAsyncRequest(appSubmissionListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT,l.toString(),bpc.process);
+
         String totalStr = Formatter.formatCurrency(total);
         //do app submit
-        ApplicationGroupDto applicationGroupDto = appSubmissionService.createApplicationDataByWithOutRenewal(renewDto);
+       /* ApplicationGroupDto applicationGroupDto = appSubmissionService.createApplicationDataByWithOutRenewal(renewDto);
         //set group no.
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
             appSubmissionDto.setAppGrpNo(applicationGroupDto.getGroupNo());
@@ -373,7 +487,7 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request,"totalStr",totalStr);
         ParamUtil.setSessionAttr(bpc.request,"totalAmount",total);
         //has app submit
-        ParamUtil.setSessionAttr(bpc.request,"hasAppSubmit","Y");
+        ParamUtil.setSessionAttr(bpc.request,"hasAppSubmit","Y");*/
     }
 
     //prepareAcknowledgement

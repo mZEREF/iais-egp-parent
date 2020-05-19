@@ -1206,7 +1206,7 @@ public class RequestForChangeMenuDelegator {
         return true;
     }
 
-    private boolean compareHciName(PremisesListQueryDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto) {
+        private  boolean compareHciName(PremisesListQueryDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto) {
 
         String newHciName = "";
         String oldHciName = "";
