@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -68,8 +68,6 @@ public class LicenceServiceImpl implements LicenceService {
     private GenerateIdClient generateIdClient;
 
     @Autowired
-    private SystemParamConfig systemParamConfig;
-    @Autowired
     private EventBusHelper eventBusHelper;
 
     @Autowired
@@ -77,6 +75,9 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Autowired
     private EmailClient emailClient;
+
+    @Autowired
+    private LicEicClient licEicClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -183,7 +184,7 @@ public class LicenceServiceImpl implements LicenceService {
     public EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum,String submissionId) {
         EventBusLicenceGroupDtos eventBusLicenceGroupDtos =  getEventBusLicenceGroupDtosByRefNo(eventRefNum);
         if(eventBusLicenceGroupDtos!=null){
-            EicRequestTrackingDto trackDto = hcsaLicenceClient.getLicEicRequestTrackingDto(eventRefNum).getEntity();
+            EicRequestTrackingDto trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
             eicCallFeSuperLic(eventBusLicenceGroupDtos);
             trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
             hcsaLicenceClient.updateEicTrackStatus(trackDto);
@@ -207,13 +208,13 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     @Override
-    public EicRequestTrackingDto updateLicEicRequestTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto) {
-        return hcsaLicenceClient.updateLicEicRequestTracking(licEicRequestTrackingDto).getEntity();
+    public void updateLicEicRequestTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto) {
+        licEicClient.saveEicTrack(licEicRequestTrackingDto);
     }
 
     @Override
     public EicRequestTrackingDto getLicEicRequestTrackingDtoByRefNo(String refNo) {
-        return hcsaLicenceClient.getLicEicRequestTrackingDto(refNo).getEntity();
+        return licEicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
     }
 
     @Override

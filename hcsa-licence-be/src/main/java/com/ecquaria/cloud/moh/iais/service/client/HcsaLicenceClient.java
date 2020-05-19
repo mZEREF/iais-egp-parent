@@ -99,12 +99,6 @@ public interface HcsaLicenceClient {
     @PutMapping(path = "/hcsa-licence-transport", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> updateEicTrackStatus(@RequestBody EicRequestTrackingDto dto);
 
-    @RequestMapping(path = "/lic-eic-request-tracking/{eventRefNo}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<EicRequestTrackingDto> getLicEicRequestTrackingDto(@PathVariable(name = "eventRefNo") String eventRefNo);
-
-    @RequestMapping(path = "/lic-eic-request-tracking",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<EicRequestTrackingDto> updateLicEicRequestTracking(@RequestBody EicRequestTrackingDto licEicRequestTrackingDto);
-
     @RequestMapping(path = "/hcsa-licence/lic-systemaudit-searchparam",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<SearchResult<AuditTaskDataDto>> searchSysAduit(SearchParam searchParam);
     @PostMapping(value = "/hcsa-licence/cessation-licences-ids",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -53,6 +54,8 @@ public class AppealServiceImpl implements AppealService {
     private LicenceService licenceService;
     @Autowired
     private EventBusHelper eventBusHelper;
+    @Autowired
+    private LicEicClient licEicClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -136,7 +139,7 @@ public class AppealServiceImpl implements AppealService {
         EicRequestTrackingDto licEicRequestTrackingDto = licenceService.getLicEicRequestTrackingDtoByRefNo(eventRefNum);
         AppealLicenceDto appealLicenceDto = getObjectLic(licEicRequestTrackingDto,AppealLicenceDto.class);
         if(appealLicenceDto!=null){
-            EicRequestTrackingDto trackDto = hcsaLicenceClient.getLicEicRequestTrackingDto(eventRefNum).getEntity();
+            EicRequestTrackingDto trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
             callFeEicAppealLicence(appealLicenceDto);
             trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
             hcsaLicenceClient.updateEicTrackStatus(trackDto);

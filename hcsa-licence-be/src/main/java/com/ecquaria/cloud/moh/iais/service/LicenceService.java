@@ -23,32 +23,32 @@ import java.util.List;
  * @date 11/29/2019
  */
 public interface LicenceService {
-    public List<ApplicationLicenceDto> getCanGenerateApplications(int day);
-    public List<HcsaServiceDto> getHcsaServiceById(List<String> serviceIds);
-    public String getHciCode(String serviceCode);
-    public String getLicenceNo(String hciCode,String serviceCode,AppPremisesRecommendationDto appPremisesRecommendationDto);
-    public String getGroupLicenceNo(String serviceCode,AppPremisesRecommendationDto appPremisesRecommendationDto,String orgLicecnceId,Integer premisesNumber);
-    public AppPremisesRecommendationDto getTcu(String appPremCorrecId);
-    public PremisesDto getLatestVersionPremisesByHciCode(String hciCode);
-    public KeyPersonnelDto getLatestVersionKeyPersonnelByIdNoAndOrgId(String idNo,String orgId);
-    public LicenceDto getLicenceDto(String licenceId);
-    public LicenceDto getLicenceDtoByLicNo(String licNo);
+    List<ApplicationLicenceDto> getCanGenerateApplications(int day);
+    List<HcsaServiceDto> getHcsaServiceById(List<String> serviceIds);
+    String getHciCode(String serviceCode);
+    String getLicenceNo(String hciCode,String serviceCode,AppPremisesRecommendationDto appPremisesRecommendationDto);
+    String getGroupLicenceNo(String serviceCode,AppPremisesRecommendationDto appPremisesRecommendationDto,String orgLicecnceId,Integer premisesNumber);
+    AppPremisesRecommendationDto getTcu(String appPremCorrecId);
+    PremisesDto getLatestVersionPremisesByHciCode(String hciCode);
+    KeyPersonnelDto getLatestVersionKeyPersonnelByIdNoAndOrgId(String idNo,String orgId);
+    LicenceDto getLicenceDto(String licenceId);
+    LicenceDto getLicenceDtoByLicNo(String licNo);
 
-    public List<LicenceGroupDto> createSuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos);
-    public EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum,String submissionId);
+    List<LicenceGroupDto> createSuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos);
+    EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum,String submissionId);
 
-    public EventBusLicenceGroupDtos getEventBusLicenceGroupDtosByRefNo(String refNo);
+    EventBusLicenceGroupDtos getEventBusLicenceGroupDtosByRefNo(String refNo);
 
-    public EicRequestTrackingDto updateLicEicRequestTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto);
+    void updateLicEicRequestTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto);
 
-    public EicRequestTrackingDto getLicEicRequestTrackingDtoByRefNo(String refNo);
+    EicRequestTrackingDto getLicEicRequestTrackingDtoByRefNo(String refNo);
 
-    public MsgTemplateDto getMsgTemplateById(String id);
+    MsgTemplateDto getMsgTemplateById(String id);
 
-    public void sendEmail(EmailDto emailDto);
+    void sendEmail(EmailDto emailDto);
 
-    public List<PremisesGroupDto> getPremisesGroupDtoByOriginLicenceId (String originLicenceId);
+    List<PremisesGroupDto> getPremisesGroupDtoByOriginLicenceId (String originLicenceId);
 
-    public List<LicAppCorrelationDto> getLicAppCorrelationDtosByApplicationIds(List<String> appIds);
+    List<LicAppCorrelationDto> getLicAppCorrelationDtosByApplicationIds(List<String> appIds);
 
 }

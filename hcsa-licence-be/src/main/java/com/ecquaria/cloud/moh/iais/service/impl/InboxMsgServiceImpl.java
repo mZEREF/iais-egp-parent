@@ -36,9 +36,14 @@ public class InboxMsgServiceImpl implements InboxMsgService {
 
     @Override
     public InterMessageDto saveInterMessage(InterMessageDto interMessageDto) {
+
+        return interMessageDto;
+    }
+
+    public void callEicInterMsg(InterMessageDto interMessageDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return beEicGatewayClient.saveInboxMessage(interMessageDto, signature.date(), signature.authorization(),
+        beEicGatewayClient.saveInboxMessage(interMessageDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
     }
 
