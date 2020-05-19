@@ -26,7 +26,7 @@ public interface CessationClient {
     FeignResponseEntity<List<String>> saveCessation(@RequestBody List<AppCessMiscDto> appCessMiscDtos);
 
     @PostMapping(value = "/appeal/application-fe-withdrawal",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> saveWithdrawn(@RequestBody List<WithdrawnDto> withdrawnDtoList);
+    FeignResponseEntity<List<String>> saveWithdrawn(@RequestBody List<WithdrawnDto> withdrawnDtoList);
 
     @PostMapping(value = "/appeal/application-cessation-list",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity <List<AppCessLicDto>> getCessationByLicIds(@RequestBody List<String> licIds);

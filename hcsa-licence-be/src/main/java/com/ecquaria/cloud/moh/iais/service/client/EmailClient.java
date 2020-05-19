@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author Wenkang
  * @date 2020/1/19 15:54
  */
+
 @FeignClient(name = "email-sms",configuration = FeignConfiguration.class,fallback = EmailFClientFallback.class)
 public interface EmailClient {
 
