@@ -3,6 +3,8 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDataDto;
@@ -10,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
@@ -19,12 +22,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
+import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -34,15 +39,23 @@ import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEmailClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -62,6 +75,12 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Autowired
     private FeEicGatewayClient gatewayClient;
+
+    @Autowired
+    private EmailHelper emailHelper;
+
+    @Autowired
+    private FeEmailClient feEmailClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -200,7 +219,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         return viewData;
     }
 
-   /* private void sendNotificationToInspector(List<String> correlationId) throws IOException, TemplateException {
+   private void sendNotificationToInspector(List<String> correlationId) throws IOException, TemplateException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("corrData", correlationId);
         jsonObject.put("status", Arrays.asList(TaskConsts.TASK_STATUS_PENDING, TaskConsts.TASK_STATUS_READ, TaskConsts.TASK_STATUS_COMPLETED));
@@ -228,7 +247,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         emailDto.setReceipts(emailAddress);
 
         feEmailClient.sendNotification(emailDto);
-    }*/
+    }
 
 
     private void callFeEicAppPremisesSelfDeclChkl(List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtos) {
@@ -248,16 +267,14 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         boolean successSubmit = false;
         FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> result =  applicationClient.saveAllSelfAssessment(selfAssessmentList);
         if (result.getStatusCode() == HttpStatus.SC_OK){
-            //ToDo If the foreground is saved successfully, and the group information is updated.
-            // But there is an error in the synchronization background, but the group information will be synchronized by other places. How to deal with it
             successSubmit = true;
 
-                /* try {
-                sendNotificationToInspector(syncData.stream().map(AppPremisesSelfDeclChklDto::getAppPremCorreId).collect(Collectors.toList()));
+           try {
+               List<String> sendEmailAddress = selfAssessmentList.stream().map(SelfAssessment::getCorrId).collect(Collectors.toList());
+                sendNotificationToInspector(sendEmailAddress);
             }catch (Exception e){
                 log.info(StringUtil.changeForLog("encounter failure when self decl send notification" + e.getMessage()));
-            }*/
-
+            }
 
             EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, SelfAssessmentServiceImpl.class.getName(),
                     "callFeEicAppPremisesSelfDeclChkl", currentApp + "-" + currentDomain,
