@@ -117,14 +117,21 @@
     }
 
     function doClear() {
-        $("#svcName").val("");
+        $("#svcNameClear label input[type='checkbox']").removeAttr('checked');
         $("#postcode").val("");
         $("#inspectionStartDate").val("");
         $("#inspectionEndDate").val("");
-        $("#complianceLastResult").val("");
-        $("#hclSCode").val("");
-        $("#hclCode").val("");
-        $("#premType").val("");
-        $("#riskType").val("");
+        clearSelectFiled('complianceLastResult');
+        $("#hclSCodeClear label input[type='checkbox']").removeAttr('checked');
+        clearSelectFiled('hclCode');
+        clearSelectFiled('premType');
+        clearSelectFiled('riskType');
+        $(".current").text("Please Select");
+    }
+
+    function  clearSelectFiled(id) {
+           var id = "#"+id;
+            $(id+" option[text = 'Please Select']").val("selected", "selected");
+            $(id+" option").val("");
     }
 </script>

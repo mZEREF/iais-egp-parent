@@ -55,7 +55,6 @@ public class SelectTag extends DivTagSupport {
         hidden = "";
         needErrorSpan = true;
         needMask = false;
-        needMask = false;
     }
 
     public void setHidden(String hidden) {
