@@ -244,7 +244,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     @Override
     public List<String> getSvcNamesByType() {
-        return hcsaConfigClient.listServiceP1Name().getEntity();
+        return hcsaChklClient.listServiceName().getEntity();
     }
 
     @Override

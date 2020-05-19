@@ -86,7 +86,6 @@
                                                                           value="${insEmailDto.subject}"></p>
                                                             </div>
                                                         </td>
-
                                                     </tr>
                                                     <tr height="1">
                                                         <td class="col-xs-2">
@@ -162,19 +161,21 @@
                                                         </td>
                                                     </tr>
                                                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
-                                                        <div class="row">
-                                                            <div class="col-xs-2">
+                                                        <tr height="1">
+                                                            <td class="col-xs-2">
                                                                 <label style="font-size: 16px">Licence Start Date</label>
-                                                            </div>
-                                                            <div class="col-sm-9">
-                                                                <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
-                                                                    <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
-                                                                </c:if>
-                                                                <c:if test="${empty applicationViewDto.recomLiceStartDate}">
-                                                                    <p>-</p>
-                                                                </c:if>
-                                                            </div>
-                                                        </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="col-sm-9">
+                                                                    <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
+                                                                        <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
+                                                                    </c:if>
+                                                                    <c:if test="${empty applicationViewDto.recomLiceStartDate}">
+                                                                        <p>-</p>
+                                                                    </c:if>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
                                                     </c:if>
                                                     </tbody>
                                                 </table>
