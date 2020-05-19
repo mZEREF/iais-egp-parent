@@ -658,18 +658,6 @@ public class RequestForChangeMenuDelegator {
         personnelEditDto.setDesignation(designation);
         personnelEditDto.setProfessionType(professionType);
         personnelEditDto.setProfessionRegnNo(professionRegnNo);
-//        for (PersonnelListQueryDto item : personnelEditList) {
-//            String licenceId = item.getLicenceId();
-//            if (!StringUtil.isEmpty(licenceId)) {
-//                List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(licenceId);
-//                if (!IaisCommonUtils.isEmpty(applicationDtos)) {
-//                    ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
-//                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preAck");
-//                    ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is ongoing application for the licence");
-//                    return;
-//                }
-//            }
-//        }
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         if (StringUtil.isEmpty(email)) {
             errMap.put("emailAddr", "UC_CHKLMD001_ERR001");

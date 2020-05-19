@@ -39,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.validation.PaymentValidate;
@@ -86,6 +87,9 @@ public class WithOutRenewalDelegator {
 
     @Autowired
     ServiceConfigService serviceConfigService;
+
+    @Autowired
+    RequestForChangeService requestForChangeService;
 
     public void start(BaseProcessClass bpc){
         log.info("**** the non auto renwal  start ******");
@@ -255,7 +259,7 @@ public class WithOutRenewalDelegator {
     public void prepare(BaseProcessClass bpc)throws Exception{
         log.info("**** the  auto renwal  prepare start  ******");
         ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);
-//finish pay
+        //finish pay
         RenewDto renewDto = (RenewDto)ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         String groupId = "";
@@ -337,12 +341,8 @@ public class WithOutRenewalDelegator {
         Double total = 0d;
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
             AppSubmissionDto oldAppSubmissionDto  =(AppSubmissionDto)bpc.request.getSession().getAttribute("oldAppSubmissionDto");
-            AppSubmissionDto premisesSubmissionDto =  oldAppSubmissionDto;
-            AppSubmissionDto personnelSubmissionDto = oldAppSubmissionDto;
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            premisesSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-            personnelSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
             FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
             appSubmissionDto.setLicenseeId(licenseeId);
             //set fee detail
