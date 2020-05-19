@@ -67,7 +67,7 @@
                                                     <p>${detailFeeDto.lateFeeAmoumtStr}</p>
                                                 </td>
                                                 <td>
-                                                    <p>${AppSubmissionDto.amountStr}</p>
+                                                    <p>${svc.amount}</p>
                                                 </td>
 <%--                                                <td>--%>
 <%--                                                    <p><c:out value="${AppSubmissionDto.amountStr}"></c:out></p>--%>
