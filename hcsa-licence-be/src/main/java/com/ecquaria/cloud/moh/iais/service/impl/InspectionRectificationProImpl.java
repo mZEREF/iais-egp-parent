@@ -155,6 +155,9 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
+    static String[] processDecArr = new String[]
+            {InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION, InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION,
+                    InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION};
     @Override
     public AppPremisesRoutingHistoryDto getAppHistoryByTask(String appNo, String stageId) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNoAndStageId(appNo, stageId).getEntity();
@@ -166,11 +169,8 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
     @Override
     public List<SelectOption> getProcessRecDecOption() {
-        String[] processDecArr = new String[]
-                {InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION, InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION,
-                        InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION};
-        List<SelectOption> processDecOption = MasterCodeUtil.retrieveOptionsByCodes(processDecArr);
-        return processDecOption;
+
+        return MasterCodeUtil.retrieveOptionsByCodes(processDecArr);
     }
 
     @Override

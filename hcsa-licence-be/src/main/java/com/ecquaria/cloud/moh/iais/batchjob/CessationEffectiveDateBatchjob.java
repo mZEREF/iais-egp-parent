@@ -3,30 +3,23 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author weilu
@@ -68,7 +61,7 @@ public class CessationEffectiveDateBatchjob {
                         AppPremiseMiscDto appPremiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
                         if (appPremiseMiscDto != null) {
                             Date effectiveDate = appPremiseMiscDto.getEffectiveDate();
-                            if (effectiveDate.before(date) || effectiveDate.equals(date)) {
+                            if (effectiveDate.compareTo(date)<=0 ) {
                                 if (applicationDto.isNeedNewLicNo()) {
                                     activeAppDtos.add(applicationDto);
                                 }
@@ -84,7 +77,7 @@ public class CessationEffectiveDateBatchjob {
                         AppPremiseMiscDto appPremiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
                         if (appPremiseMiscDto != null) {
                             Date effectiveDate = appPremiseMiscDto.getEffectiveDate();
-                            if (effectiveDate.before(date) || effectiveDate.equals(date)) {
+                            if (effectiveDate.compareTo(date)<=0 ) {
                                 LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(originLicenceId).getEntity();
                                 updateLicenceStatusAndSendMails(licenceDto,date);
                                 String svcName = licenceDto.getSvcName();

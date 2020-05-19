@@ -12,10 +12,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGroupMiscService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.List;
 
 /**
  * NotificationApplicationUpdateBatchjob
@@ -36,8 +37,7 @@ public class NotificationApplicationUpdateBatchjob {
         log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob start ..."));
         List<NotificateApplicationDto> notificateApplicationDtoList = appGroupMiscService.getNotificateApplicationDtos();
         if(!IaisCommonUtils.isEmpty(notificateApplicationDtoList)){
-            log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob notificateApplicationDtoList.size() -->:")
-                    + notificateApplicationDtoList.size());
+            log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob notificateApplicationDtoList.size() -->:"+ notificateApplicationDtoList.size()));
             //get all LicAppCorrelationDtos
             List<String> applicationIds = getApplicationIds(notificateApplicationDtoList);
             List<LicAppCorrelationDto> licAppCorrelationDtoList = null;
@@ -56,13 +56,13 @@ public class NotificationApplicationUpdateBatchjob {
               newNotificateApplicationDto.setAppGroupMiscDto(appGroupMiscDto);
               //newAmendApplicationDtos
               if(!IaisCommonUtils.isEmpty(notificateApplicationDtos)){
-                  log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob notificateApplicationDtos.size() -->:")+ notificateApplicationDtos.size());
+                  log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob notificateApplicationDtos.size() -->:"+ notificateApplicationDtos.size()));
                   List<ApplicationDto> newAmendApplicationDtos = IaisCommonUtils.genNewArrayList();
                  for(ApplicationDto applicationDto : notificateApplicationDtos){
                      String orignLicenceId = applicationDto.getOriginLicenceId();
-                     log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob orignLicenceId -->:")+ orignLicenceId);
+                     log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob orignLicenceId -->:"+ orignLicenceId));
                      String appId = applicationDto.getId();
-                     log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob appId -->:")+ appId);
+                     log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob appId -->:"+ appId));
                      LicAppCorrelationDto licAppCorrelationDto = getLicAppCorrelationDtoByAppId(licAppCorrelationDtoList,appId);
                      List<ApplicationDto> sameOrignApplications = getSameOrignLicenceidApplication(amendApplicationDtos,orignLicenceId);
                      if(!IaisCommonUtils.isEmpty(sameOrignApplications) && licAppCorrelationDto!= null){
@@ -91,8 +91,7 @@ public class NotificationApplicationUpdateBatchjob {
         log.info(StringUtil.changeForLog("The getLicAppCorrelationDtoByAppId start ..."));
         LicAppCorrelationDto result = null;
         if(!IaisCommonUtils.isEmpty(licAppCorrelationDtoList) && !StringUtil.isEmpty(appId)){
-            log.info(StringUtil.changeForLog("The getLicAppCorrelationDtoByAppId licAppCorrelationDtoList.size() -->:")
-                    + licAppCorrelationDtoList.size());
+            log.info(StringUtil.changeForLog("The getLicAppCorrelationDtoByAppId licAppCorrelationDtoList.size() -->:"+ licAppCorrelationDtoList.size()));
             for(LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtoList){
                 if(appId.equals(licAppCorrelationDto.getApplicationId())){
                     result = licAppCorrelationDto;
@@ -115,7 +114,7 @@ public class NotificationApplicationUpdateBatchjob {
                  }
              }
          }
-        log.info(StringUtil.changeForLog("The getSameOrignLicenceidApplication result.size() -->:")+ result.size());
+        log.info(StringUtil.changeForLog("The getSameOrignLicenceidApplication result.size() -->:"+ result.size()));
         log.info(StringUtil.changeForLog("The getSameOrignLicenceidApplication end ..."));
         return result;
 
@@ -127,15 +126,14 @@ public class NotificationApplicationUpdateBatchjob {
         for(NotificateApplicationDto notificateApplicationDto : notificateApplicationDtoList) {
             List<ApplicationDto> notificateApplicationDtos = notificateApplicationDto.getNotificateApplicationDtos();
             if(!IaisCommonUtils.isEmpty(notificateApplicationDtos)){
-                log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob notificateApplicationDtos.size() -->:")
-                        + notificateApplicationDtos.size());
+                log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob notificateApplicationDtos.size() -->:"+ notificateApplicationDtos.size()));
                 for(ApplicationDto applicationDto : notificateApplicationDtos){
                     String id = applicationDto.getId();
                     result.add(id);
                 }
             }
         }
-        log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob result.size() -->:")+ result.size());
+        log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob result.size() -->:"+ result.size()));
         log.info(StringUtil.changeForLog("The getApplicationIds end ..."));
         return result;
     }

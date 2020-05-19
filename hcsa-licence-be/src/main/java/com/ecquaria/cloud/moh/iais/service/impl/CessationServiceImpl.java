@@ -255,7 +255,7 @@ public class CessationServiceImpl implements CessationService {
 
     private void routingTaskToAo3(List<ApplicationDto> applicationDtos, LoginContext loginContext) throws FeignException {
         String curRoleId = loginContext.getCurRoleId();
-        log.info("=============>>>roleId" + curRoleId);
+        log.info(StringUtil.changeForLog("=============>>>roleId" + curRoleId));
         TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtos, HcsaConsts.ROUTING_STAGE_AO3, RoleConsts.USER_ROLE_AO3, IaisEGPHelper.getCurrentAuditTrailDto());
         List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
         taskService.createTasks(taskDtos);
@@ -278,7 +278,7 @@ public class CessationServiceImpl implements CessationService {
         AppSubmissionDto appSubmissionDto = appSubmissionDtoList.get(0);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
-        log.info("============================serviceName" + serviceName);
+        log.info(StringUtil.changeForLog("============================serviceName" + serviceName));
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
         String svcId = hcsaServiceDto.getId();
         String svcCode = hcsaServiceDto.getSvcCode();

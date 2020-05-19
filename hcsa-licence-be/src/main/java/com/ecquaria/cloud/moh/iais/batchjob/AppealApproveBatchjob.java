@@ -29,14 +29,15 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * AppealApproveBatchjob
@@ -349,19 +350,19 @@ public class AppealApproveBatchjob {
 
 
             }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE.equals(reason)){
-                stringBuilder.append("For refund cases:  A refund of "+money+" has been credited back to your account.");
+                stringBuilder.append("For refund cases:  A refund of ").append(money).append(" has been credited back to your account.");
 
             }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)){
 
             }else if(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD.equals(reason)){
 
-                stringBuilder.append("For licence period adjustment: The licence period is now "+ date);
+                stringBuilder.append("For licence period adjustment: The licence period is now ").append(date);
 
             }else if(ApplicationConsts.APPEAL_REASON_OTHER.equals(reason)){
 
 
             }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME.equals(reason)){
-                stringBuilder.append("For application change hci name : The hci name is now " +hciName);
+                stringBuilder.append("For application change hci name : The hci name is now ").append(hciName);
 
             }
             map.put("reason",stringBuilder.toString());

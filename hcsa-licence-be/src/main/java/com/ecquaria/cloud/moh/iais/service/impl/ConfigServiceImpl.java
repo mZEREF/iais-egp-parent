@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpeRoutingSchemeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
@@ -33,11 +32,9 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.list.AbstractLinkedList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,11 +44,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -290,7 +284,7 @@ public class ConfigServiceImpl implements ConfigService {
         String crud_action_type = request.getParameter("crud_action_type");
         String crud_action_value = ParamUtil.getMaskedString(request,"crud_action_value");
         if ("delete".equals(crud_action_type)) {
-            if (crud_action_value != null && !"".equals(crud_action_value)) {
+            if (!StringUtil.isEmpty(crud_action_value)) {
                 view(request, crud_action_value);
             }
 
@@ -874,10 +868,7 @@ public class ConfigServiceImpl implements ConfigService {
                 appeal= getWorkGrop(type,"cessation");
             }else  if("APTY007".equals(type)){
                 appeal= getWorkGrop(type,"suspension");
-            }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(type)){
-                appeal= getWorkGrop(type,"withdrawal");
-            }
-            else if(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT.equals(type)){
+            }else if(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT.equals(type)){
                 appeal= getWorkGrop(type,"revocation");
             }
             setValueOfhcsaConfigPageDtos(hcsaConfigPageDto,appeal);
@@ -931,7 +922,7 @@ public class ConfigServiceImpl implements ConfigService {
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = hcsaConfigClient.getHcsaSvcDocConfigDto(id).getEntity();
         StringBuilder stringBuilder=new StringBuilder();
         for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocConfigDtos){
-            stringBuilder.append(",");
+            stringBuilder.append(',');
             stringBuilder.append(hcsaSvcDocConfigDto.getDocTitle());
         }
         if(!hcsaSvcDocConfigDtos.isEmpty()){

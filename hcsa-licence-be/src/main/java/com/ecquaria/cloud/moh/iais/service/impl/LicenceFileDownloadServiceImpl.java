@@ -50,6 +50,11 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -68,10 +73,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 
 /**
@@ -173,8 +174,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         String submissionId = generateIdClient.getSeqId().getEntity();
                         download(processFileTrackDto,listApplicationDto, requestForInfList,name,refId,submissionId);
 
-                        log.info(listApplicationDto.size()+"******listApplicationDto*********");
-                        log.info(requestForInfList.toString()+"***requestForInfList***");
+                        log.info(StringUtil.changeForLog(listApplicationDto.size()+"******listApplicationDto*********"));
+                        log.info(StringUtil.changeForLog(requestForInfList.toString()+"***requestForInfList***"));
 
                     /*    sendTask(listApplicationDto,requestForInfList,submissionId);*/
                         moveFile(fil);
@@ -213,11 +214,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     public Boolean changeFeApplicationStatus() {
         int status = applicationClient.updateStatus("AGST002").getStatusCode();
         if(status==200){
-            return true;
+            return Boolean.TRUE;
         }else if(status==500){
-            return false;
+            return Boolean.FALSE;
         }
-        return false;
+        return Boolean.FALSE;
     }
 
     @Override
@@ -251,17 +252,17 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     public Boolean  download( ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String fileName
     ,String groupPath,String submissionId)  throws Exception {
 
-        Boolean flag=false;
+        Boolean flag=Boolean.FALSE;
 
             File file =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+
                     File.separator+groupPath+File.separator+AppServicesConsts.FILE_NAME+File.separator+groupPath);
-            log.info(file.getPath()+"**********************");
+            log.info(StringUtil.changeForLog(file.getPath()+"**********************"));
             if(!file.exists()){
                 file.mkdirs();
             }
             if(file.isDirectory()){
                 File[] files = file.listFiles();
-                log.info(files.length+"FILE_FORMAT --files.length______");
+                log.info(StringUtil.changeForLog(files.length+"FILE_FORMAT --files.length______"));
                 for(File  filzz:files){
                     if(filzz.isFile() &&filzz.getName().endsWith(AppServicesConsts.FILE_FORMAT)){
                         try (  FileInputStream  fileInputStream =new FileInputStream(filzz);

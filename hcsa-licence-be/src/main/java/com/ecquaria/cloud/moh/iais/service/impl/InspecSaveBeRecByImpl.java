@@ -171,7 +171,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Override
     public Boolean saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos, List<String> reportIds) {
-        Boolean saveFlag = false;
+        Boolean saveFlag = Boolean.FALSE;
         File file = new File(download);
         List<String> appPremCorrIds = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
@@ -197,14 +197,22 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 }
             }
         }
-        log.debug(StringUtil.changeForLog("appIds:" + appIds.toString()));
+        StringBuilder strAppIds = new StringBuilder();
+        for (String s : appIds) {
+            strAppIds.append(s);
+        }
+        StringBuilder strAppCorrIds = new StringBuilder();
+        for (String s : appPremCorrIds) {
+            strAppCorrIds.append(s);
+        }
+        log.debug(StringUtil.changeForLog("appIds:" + strAppIds.toString()));
         if(!IaisCommonUtils.isEmpty(appIds)){
             Set<String> appIdSet = new HashSet<>(appIds);
             for(String appId : appIdSet){
                 AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
                 appPremCorrIds.add(appPremisesCorrelationDto.getId());
             }
-            log.debug(StringUtil.changeForLog("appPremCorrIds:" + appPremCorrIds.toString()));
+            log.debug(StringUtil.changeForLog("appPremCorrIds:" + strAppCorrIds.toString()));
         }
         if(!IaisCommonUtils.isEmpty(appPremCorrIds)){
             EventInspRecItemNcDto eventInspRecItemNcDto = new EventInspRecItemNcDto();

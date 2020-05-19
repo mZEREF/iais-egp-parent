@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -59,9 +58,9 @@ public class NotifyUnprocessedTaskBatchjob {
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(EMAILMPLATEID);
 
 
-        List<TaskEmailDto> officerDtoList= (ArrayList<TaskEmailDto>)emailmap.get("officer");
-        List<TaskEmailDto> workgroupLeaderDtoList= (ArrayList<TaskEmailDto>)emailmap.get("workgroup");
-        List<TaskEmailDto> adminDtoList= (ArrayList<TaskEmailDto>)emailmap.get("admin");
+        List<TaskEmailDto> officerDtoList= emailmap.get("officer");
+        List<TaskEmailDto> workgroupLeaderDtoList= emailmap.get("workgroup");
+        List<TaskEmailDto> adminDtoList= emailmap.get("admin");
 
         String templateHtml = inspectionEmailTemplateDto.getMessageContent();
 

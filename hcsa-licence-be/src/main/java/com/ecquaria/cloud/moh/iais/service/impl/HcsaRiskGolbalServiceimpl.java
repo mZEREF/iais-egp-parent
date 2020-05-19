@@ -18,14 +18,13 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskGolbalService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-
-import java.util.Date;
-import java.util.List;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: jiahao
@@ -47,7 +46,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
-
+    static String[] category = {"TOIR001", "TOIR002", "TOIR003"};
     @Override
     public GolbalRiskShowDto getGolbalRiskShowDto() {
         List<HcsaServiceDto> serviceDtoList = hcsaConfigClient.getActiveServices().getEntity();
@@ -71,9 +70,8 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
 
     @Override
     public List<SelectOption> inpTypeOp() {
-        String category[] = {"TOIR001", "TOIR002", "TOIR003"};
-        List<SelectOption> inpTypeOp = MasterCodeUtil.retrieveOptionsByCodes(category);
-        return inpTypeOp;
+
+        return MasterCodeUtil.retrieveOptionsByCodes(category);
     }
 
     @Override

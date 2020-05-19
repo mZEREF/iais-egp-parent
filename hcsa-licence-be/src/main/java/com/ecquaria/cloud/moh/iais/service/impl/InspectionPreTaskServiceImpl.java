@@ -137,6 +137,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     @Autowired
     private LicenseeService licenseeService;
+    static private String[] processDec= new String[]{InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION,
+            InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO,
+            InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
 
     @Override
     public ApplicationDto getAppStatusByTaskId(TaskDto taskDto) {
@@ -151,9 +154,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)) {
             processDecArr = new String[]{InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
         } else {
-            processDecArr = new String[]{InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION,
-                    InspectionConstants.PROCESS_DECI_ROUTE_BACK_APSO,
-                    InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY};
+            processDecArr = processDec;
         }
         List<SelectOption> processDecOption = MasterCodeUtil.retrieveOptionsByCodes(processDecArr);
         return processDecOption;

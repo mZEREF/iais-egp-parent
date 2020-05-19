@@ -77,7 +77,7 @@ public class CommonPoolAjaxController {
             List<String> appCorrId_list = inspectionAssignTaskService.getAppCorrIdListByPool(commPools);
             StringBuilder sb = new StringBuilder("(");
             for(int i = 0; i < appCorrId_list.size(); i++){
-                sb.append(":appCorrId" + i).append(",");
+                sb.append(":appCorrId").append(i).append(',');
             }
             String inSql = sb.substring(0, sb.length() - 1) + ")";
             searchParam.addParam("appCorrId_list", inSql);
@@ -137,7 +137,7 @@ public class CommonPoolAjaxController {
             StringBuilder sb = new StringBuilder("(");
             if (!IaisCommonUtils.isEmpty(appCorrId_list)) {
                 for (int i = 0; i < appCorrId_list.size(); i++) {
-                    sb.append(":appCorrId" + i).append(",");
+                    sb.append(":appCorrId").append(i).append(',');
                 }
                 String inSq1 = sb.substring(0, sb.length() - 1) + ")";
                 searchParam.addParam("appCorrId_list", inSq1);
@@ -148,7 +148,7 @@ public class CommonPoolAjaxController {
 
             StringBuilder sb2 = new StringBuilder("(");
             for (int i = 0; i < status.size(); i++) {
-                sb2.append(":tStatus" + i).append(",");
+                sb2.append(":tStatus").append(i).append(',');
             }
             String inSq2 = sb2.substring(0, sb2.length() - 1) + ")";
             searchParam.addParam("taskStatus", inSq2);
@@ -158,7 +158,7 @@ public class CommonPoolAjaxController {
 
             StringBuilder sb3 = new StringBuilder("(");
             for (int i = 0; i < workGroupIds.size(); i++) {
-                sb3.append(":workId" + i).append(",");
+                sb3.append(":workId").append(i).append(',');
             }
             String inSq3 = sb3.substring(0, sb3.length() - 1) + ")";
             searchParam.addParam("workGroupId", inSq3);
@@ -209,7 +209,7 @@ public class CommonPoolAjaxController {
             StringBuilder sb = new StringBuilder("(");
             if (!IaisCommonUtils.isEmpty(appCorrId_list)) {
                 for (int i = 0; i < appCorrId_list.size(); i++) {
-                    sb.append(":appCorrId" + i).append(",");
+                    sb.append(":appCorrId").append(i).append(',');
                 }
                 String inSq1 = sb.substring(0, sb.length() - 1) + ")";
                 searchParam.addParam("appCorrId_list", inSq1);
@@ -220,7 +220,7 @@ public class CommonPoolAjaxController {
 
             StringBuilder sb2 = new StringBuilder("(");
             for (int i = 0; i < status.size(); i++) {
-                sb2.append(":tStatus" + i).append(",");
+                sb2.append(":tStatus").append(i).append(',');
             }
             String inSq2 = sb2.substring(0, sb2.length() - 1) + ")";
             searchParam.addParam("taskStatus", inSq2);
@@ -230,7 +230,7 @@ public class CommonPoolAjaxController {
 
             StringBuilder sb3 = new StringBuilder("(");
             for (int i = 0; i < workGroupIds.size(); i++) {
-                sb3.append(":workId" + i).append(",");
+                sb3.append(":workId").append(i).append(',');
             }
             String inSq3 = sb3.substring(0, sb3.length() - 1) + ")";
             searchParam.addParam("workGroupId", inSq3);

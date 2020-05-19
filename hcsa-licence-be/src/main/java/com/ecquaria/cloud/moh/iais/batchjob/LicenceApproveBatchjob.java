@@ -64,6 +64,13 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -71,12 +78,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * LicenceApproveBatchjob
@@ -569,10 +570,10 @@ public class LicenceApproveBatchjob {
             if(applications.size()<=0){
                 return result;
             }
-            for (String key : applications.keySet()){
+            for (Map.Entry<String,List<ApplicationListDto>> key : applications.entrySet()){
                 SuperLicDto superLicDto = new SuperLicDto();
                 superLicDto.setAppType(applicationGroupDto.getAppType());
-                List<ApplicationListDto> applicationListDtos = applications.get(key);
+                List<ApplicationListDto> applicationListDtos = applications.get(key.getKey());
                 if(IaisCommonUtils.isEmpty(applicationListDtos)){
                     continue;
                 }
@@ -580,7 +581,7 @@ public class LicenceApproveBatchjob {
                 //get recommedation logic
                 AppPremisesRecommendationDto appPremisesRecommendationDto = getAppPremisesRecommendationDto(applicationListDtos);
                 //get service code
-                log.debug(StringUtil.changeForLog("The key is -->:" + key));
+                log.debug(StringUtil.changeForLog("The key is -->:" + key.getKey()));
                 String serviceId = applicationListDtos.get(0).getApplicationDto().getServiceId();
                 log.debug(StringUtil.changeForLog("The serviceId is -->:" + serviceId));
                 HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(hcsaServiceDtos,serviceId);

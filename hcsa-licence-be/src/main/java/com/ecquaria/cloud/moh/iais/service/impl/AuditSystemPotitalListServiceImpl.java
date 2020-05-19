@@ -31,13 +31,13 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.esotericsoftware.minlog.Log;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.xpath.operations.Bool;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * @Author: jiahao
@@ -440,7 +440,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             if (endDate != null && dtoEndDate.getTime() < endDate.getTime()) {
                 auditTaskDtos.add(temp);
             }
-        } else if (dtostartDate != null && dtoEndDate != null) {
+        } else if ( dtoEndDate != null) {
             if (startDate != null && endDate != null && dtoEndDate.getTime() < endDate.getTime() && dtostartDate.getTime() > startDate.getTime()) {
                 auditTaskDtos.add(temp);
             }
@@ -466,7 +466,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
                             try {
                                 appPremCorrDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appprem.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
                             }catch (Exception e){
-                                log.info("------- data error appcId : " + appprem.getId()+ "-------------------------");
+                                log.info(StringUtil.changeForLog("------- data error appcId : " + appprem.getId()+ "-------------------------"));
                             }
 
                         }

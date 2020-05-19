@@ -211,7 +211,6 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
     @Override
     public void download(ProcessFileTrackDto processFileTrackDto, String fileName, String refId, String submissionId) {
 
-        Boolean flag=false;
         File file =new File(downZip+File.separator+fileName+File.separator+"userRecFile");
         if(!file.exists()){
             file.mkdirs();

@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AutoRenwalService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
@@ -24,16 +25,17 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Wenkang
@@ -167,8 +169,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         String svcName = licenceDto.getSvcName();
 
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId());
-        log.info(licenseeEmailAddrs.toString()+"----------");
-        log.info(licenceDto.getLicenseeId()+"licenseeId");
+        log.info(StringUtil.changeForLog(licenseeEmailAddrs.toString()+"----------"));
+        log.info(StringUtil.changeForLog(licenceDto.getLicenseeId()+"licenseeId"));
         Date expiryDate = licenceDto.getExpiryDate();
 
         String id = licenceDto.getId();
@@ -376,12 +378,12 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 String floorNo = every.getFloorNo();
                 String unitNo = every.getUnitNo();
                 String postalCode = every.getPostalCode();
-                stringBuilder.append(hciName+'/');
-                stringBuilder.append(blkNo+' ');
-                stringBuilder.append(streetName+' ');
-                stringBuilder.append(buildingName+" # ");
-                stringBuilder.append(floorNo+'-');
-                stringBuilder.append(unitNo+',');
+                stringBuilder.append(hciName).append('/');
+                stringBuilder.append(blkNo).append(' ');
+                stringBuilder.append(streetName).append(' ');
+                stringBuilder.append(buildingName).append(" # ");
+                stringBuilder.append(floorNo).append('-');
+                stringBuilder.append(unitNo).append(',');
                 stringBuilder.append(postalCode);
                 nameAndAddress.add(stringBuilder.toString());
             }

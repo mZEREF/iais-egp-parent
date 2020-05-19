@@ -257,16 +257,16 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 appPremisesPreInspectionNcItemDtoList = fillUpCheckListGetAppClient.saveAppPreNcItem(appPremisesPreInspectionNcItemDtoList).getEntity();
             }
             int j=0;
-            for(int i =0;i<icqDtoList.size();i++){
+            for (InspectionCheckQuestionDto inspectionCheckQuestionDto : icqDtoList) {
                 answerDto = new InspectionCheckListAnswerDto();
-                answerDto.setAnswer(icqDtoList.get(i).getChkanswer());
-                answerDto.setRemark(icqDtoList.get(i).getRemark());
-                answerDto.setItemId(icqDtoList.get(i).getItemId());
-                if("No".equals(icqDtoList.get(i).getChkanswer())&&ncflag){
-                    answerDto.setIsRec(appPremisesPreInspectionNcItemDtoList.get(j).getIsRecitfied()+"");
+                answerDto.setAnswer(inspectionCheckQuestionDto.getChkanswer());
+                answerDto.setRemark(inspectionCheckQuestionDto.getRemark());
+                answerDto.setItemId(inspectionCheckQuestionDto.getItemId());
+                if ( ncflag&&"No".equals(inspectionCheckQuestionDto.getChkanswer()) ) {
+                    answerDto.setIsRec(appPremisesPreInspectionNcItemDtoList.get(j).getIsRecitfied() + "");
                     j++;
                 }
-                answerDto.setSectionName(icqDtoList.get(i).getSectionName());
+                answerDto.setSectionName(inspectionCheckQuestionDto.getSectionName());
                 answerDtoList.add(answerDto);
             }
             String answerJson = JsonUtil.parseToJson(answerDtoList);

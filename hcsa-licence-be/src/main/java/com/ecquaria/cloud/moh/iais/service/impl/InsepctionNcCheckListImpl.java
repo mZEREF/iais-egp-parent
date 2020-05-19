@@ -2,7 +2,12 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -10,7 +15,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckListAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.SectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -20,16 +36,21 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.esotericsoftware.minlog.Log;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: jiahao
@@ -501,17 +522,17 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             try {
                 List<InspectionCheckListAnswerDto> answerDtoList = IaisCommonUtils.genNewArrayList();
                 InspectionCheckListAnswerDto answerDto = null;
-                for(int i =0;i<icqDtoList.size();i++){
+                for (InspectionCheckQuestionDto inspectionCheckQuestionDto : icqDtoList) {
                     answerDto = new InspectionCheckListAnswerDto();
-                    answerDto.setAnswer(icqDtoList.get(i).getChkanswer());
-                    answerDto.setRemark(icqDtoList.get(i).getRemark());
-                    answerDto.setItemId(icqDtoList.get(i).getItemId());
-                    if("No".equals(icqDtoList.get(i).getChkanswer())&&ncflag&&icqDtoList.get(i).isRectified()){
+                    answerDto.setAnswer(inspectionCheckQuestionDto.getChkanswer());
+                    answerDto.setRemark(inspectionCheckQuestionDto.getRemark());
+                    answerDto.setItemId(inspectionCheckQuestionDto.getItemId());
+                    if ( ncflag && inspectionCheckQuestionDto.isRectified() &&"No".equals(inspectionCheckQuestionDto.getChkanswer())  ) {
                         answerDto.setIsRec("1");
-                    }else{
+                    } else {
                         answerDto.setIsRec("0");
                     }
-                    answerDto.setSectionName(icqDtoList.get(i).getSectionName());
+                    answerDto.setSectionName(inspectionCheckQuestionDto.getSectionName());
                     answerDtoList.add(answerDto);
                 }
                 String answerJson = JsonUtil.parseToJson(answerDtoList);

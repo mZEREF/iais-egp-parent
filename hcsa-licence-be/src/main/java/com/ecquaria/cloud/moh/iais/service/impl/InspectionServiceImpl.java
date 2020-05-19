@@ -96,6 +96,17 @@ public class InspectionServiceImpl implements InspectionService {
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
 
+    static String[] statusStrs = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
+            ApplicationConsts.APPLICATION_STATUS_APPROVED,
+            ApplicationConsts.APPLICATION_STATUS_REJECTED,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03
+    };
+
     @Override
     public List<SelectOption> getAppTypeOption() {
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{
@@ -112,18 +123,8 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public List<SelectOption> getAppStatusOption() {
-        String[] statusStrs = new String[]{
-                ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
-                ApplicationConsts.APPLICATION_STATUS_APPROVED,
-                ApplicationConsts.APPLICATION_STATUS_REJECTED,
-                ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
-                ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING,
-                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
-                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
-                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03
-                                         };
-        List<SelectOption> appStatusOption = MasterCodeUtil.retrieveOptionsByCodes(statusStrs);
-        return appStatusOption;
+
+        return MasterCodeUtil.retrieveOptionsByCodes(statusStrs);
     }
 
     @Override
@@ -407,14 +408,15 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     private String getOptionValue(List<TaskDto> taskDtoList) {
-        String value = taskDtoList.get(0).getRefNo();
+        StringBuilder value =new StringBuilder();
+        value.append(taskDtoList.get(0).getRefNo());
         taskDtoList.remove(0);
         if(!IaisCommonUtils.isEmpty(taskDtoList)) {
             for (TaskDto tDto : taskDtoList) {
-                value = value + "," + tDto.getRefNo();
+                value.append(',').append(tDto.getRefNo());
             }
         }
-        return value;
+        return value.toString();
     }
 
     private List<String> getUserIdList(List<OrgUserDto> orgUserDtoList, List<String> userIdList) {

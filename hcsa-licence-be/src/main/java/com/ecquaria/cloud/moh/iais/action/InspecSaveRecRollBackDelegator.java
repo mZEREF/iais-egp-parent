@@ -10,12 +10,13 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.kafka.GlobalConstants;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -36,7 +37,7 @@ public class InspecSaveRecRollBackDelegator {
     public void inspecSaveRecRollBackStart(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String submissionId = ParamUtil.getString(request,"submissionId");
-        log.info("Submission Id ==> " + submissionId);
+        log.info(StringUtil.changeForLog("Submission Id ==> " + submissionId));
         String token = ParamUtil.getString(request, "token");
         String serviceName = ParamUtil.getString(request, "service");
         boolean isLeagal = IaisEGPHelper.verifyCallBackToken(submissionId, serviceName, token);

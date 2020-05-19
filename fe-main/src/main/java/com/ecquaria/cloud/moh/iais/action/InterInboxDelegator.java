@@ -321,7 +321,7 @@ public class InterInboxDelegator {
             licSearchMap.put("licStatus",licStatus);
         }
         if (licStartDate != null && licEndDate != null){
-            if (licStartDate.before(licEndDate) || licStartDate.equals(licEndDate)){
+            if (licStartDate.compareTo(licEndDate)<=0){
                 if(!StringUtil.isEmpty(fStartDate)){
                     licSearchMap.put("fStartDate",fStartDate);
                 }else{
@@ -349,7 +349,7 @@ public class InterInboxDelegator {
             }
         }
         if (licfExpiryDate != null && liceExpiryDate != null){
-            if (licfExpiryDate.before(liceExpiryDate) || licfExpiryDate.equals(liceExpiryDate)){
+            if (licfExpiryDate.compareTo(liceExpiryDate)<=0){
                 if(!StringUtil.isEmpty(fExpiryDate)){
                     licSearchMap.put("fExpiryDate",fExpiryDate);
                 }else{
@@ -587,7 +587,7 @@ public class InterInboxDelegator {
             appSearchMap.put("serviceType",serviceType);
         }
         if (startAppDate != null && endAppDate != null){
-            if(startAppDate.before(endAppDate) || startAppDate.equals(endAppDate)){
+            if(startAppDate.compareTo(endAppDate)<=0){
                 if(!StringUtil.isEmpty(createDtStart)){
                     appSearchMap.put("createDtStart",createDtStart);
                 }else{

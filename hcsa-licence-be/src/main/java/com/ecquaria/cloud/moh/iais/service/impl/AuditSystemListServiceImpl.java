@@ -87,6 +87,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
+    static String[] category = {"ADTYPE001", "ADTYPE002", "ADTYPE003"};
     @Override
     public void getInspectors(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
         if (!IaisCommonUtils.isEmpty(auditTaskDataDtos)) {
@@ -122,7 +123,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
 
     @Override
     public List<SelectOption> getAuditOp() {
-        String category[] = {"ADTYPE001", "ADTYPE002", "ADTYPE003"};
+
         List<SelectOption> inpTypeOp = MasterCodeUtil.retrieveOptionsByCodes(category);
         return inpTypeOp;
     }
@@ -164,7 +165,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         List<Submission> submissionList = eventClient.getSubmission(submissionId).getEntity();
         AuditCombinationDto auditCombinationDto = null;
         if(submissionList!= null && submissionList.size() > 0){
-            log.info(submissionList .size() +"submissionList .size()");
+            log.info(StringUtil.changeForLog(submissionList .size() +"submissionList .size()"));
             for(Submission submission : submissionList){
                 if(EventBusConsts.SERVICE_NAME_APPSUBMIT.equals(submission.getSubmissionIdentity().getService())){
                     auditCombinationDto = JsonUtil.parseToObject(submission.getData(), AuditCombinationDto.class);

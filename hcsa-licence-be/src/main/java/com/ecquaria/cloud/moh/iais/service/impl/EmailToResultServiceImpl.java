@@ -1,30 +1,26 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.EmailToResultService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import freemarker.template.TemplateException;
-import java.io.IOException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import sop.util.DateUtil;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import sop.util.DateUtil;
 
 /**
  * @author weilu
@@ -42,14 +38,14 @@ public class EmailToResultServiceImpl implements EmailToResultService {
     private HcsaLicenceClient hcsaLicenceClient;
 
 
-    private final String SUCCESSMSGKEY = "SUCCESS";
-    private final String FAILEDMSGKEY = "REJECT";
-    private final String SUCCESSMSGTEMPLATEID = "08B58803-4F38-EA11-BE7E-000C29F371DC";
-    private final String GETFAILEDMSGTEMPLATEID = "09B58803-4F38-EA11-BE7E-000C29F371DC";
-    private final String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
-    private final String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
-    private final String EFFECTIVEDATAEQUALDATA = "51AD8B3B-E652-EA11-BE7F-000C29F371DC";
-    private final String LICENCEENDDATE = "52AD8B3B-E652-EA11-BE7F-000C29F371DC";
+    private static final String SUCCESSMSGKEY = "SUCCESS";
+    private static final String FAILEDMSGKEY = "REJECT";
+    private static final String SUCCESSMSGTEMPLATEID = "08B58803-4F38-EA11-BE7E-000C29F371DC";
+    private static final String GETFAILEDMSGTEMPLATEID = "09B58803-4F38-EA11-BE7E-000C29F371DC";
+    private static final String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
+    private static final String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
+    private static final String EFFECTIVEDATAEQUALDATA = "51AD8B3B-E652-EA11-BE7F-000C29F371DC";
+    private static final String LICENCEENDDATE = "52AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
 
     @Override
@@ -60,7 +56,7 @@ public class EmailToResultServiceImpl implements EmailToResultService {
             for(ApplicationGroupDto applicationGroupDto : appGrpDtos){
                 String appGrpId = applicationGroupDto.getId();
                 List<ApplicationDto> applicationDtos = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
-                if(!applicationDtos.isEmpty()&&applicationDtos!=null){
+                if(!applicationDtos.isEmpty()){
                     for(ApplicationDto applicationDto :applicationDtos){
                         String applicationType = applicationDto.getApplicationType();
                         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
@@ -93,7 +89,7 @@ public class EmailToResultServiceImpl implements EmailToResultService {
             for(ApplicationGroupDto applicationGroupDto : appGrpDtos){
                 String appGrpId = applicationGroupDto.getId();
                 List<ApplicationDto> applicationDtos = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
-                if(!applicationDtos.isEmpty()&&applicationDtos!=null){
+                if(!applicationDtos.isEmpty()){
                     for(ApplicationDto applicationDto :applicationDtos){
                         String applicationType = applicationDto.getApplicationType();
                         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
@@ -178,7 +174,7 @@ public class EmailToResultServiceImpl implements EmailToResultService {
     }
 
 
-    private void prepareAndSendSuccessEmail(String appNo) throws Exception {
+    private void prepareAndSendSuccessEmail(String appNo)  {
         //check email
         JobRemindMsgTrackingDto findResult = systemBeLicClient.getJobRemindMsgTrackingDto(appNo, SUCCESSMSGKEY).getEntity();
         if(findResult!=null){

@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
@@ -11,22 +10,22 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Wenkang
@@ -111,14 +110,14 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
             String stageCode = every.getStageCode();
             String id = every.getId();
             String parameter = request.getParameter(stageCode);
-            kpi.put(id,Integer.parseInt(parameter));
+            kpi.put(id,Integer.valueOf(parameter));
         }
 
         String reminderThreshold = request.getParameter("reminderThreshold");
         String createDate = request.getParameter("createDate");
         HcsaSvcKpiDto hcsaSvcKpiDto =new HcsaSvcKpiDto();
         hcsaSvcKpiDto.setModule(module);
-        hcsaSvcKpiDto.setRemThreshold(Integer.parseInt(reminderThreshold));
+        hcsaSvcKpiDto.setRemThreshold(Integer.valueOf(reminderThreshold));
         hcsaSvcKpiDto.setStageIdKpi(kpi);
         hcsaSvcKpiDto.setVersion(1);
         hcsaSvcKpiDto.setServiceCode(service);

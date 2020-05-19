@@ -64,7 +64,6 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
     private String fileFormat = ".text";
     private String backups;
 
-    private boolean flag = true;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -181,7 +180,6 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
     private void rename(String fileNamesss)  {
         log.info("--------------rename start ---------------------");
-        flag = true;
         File zipFile =new File(backups);
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
@@ -212,7 +210,6 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                     String s1 = saveFileName(fileNamesss+AppServicesConsts.ZIP_NAME,"backupsAudit" + File.separator+fileNamesss+AppServicesConsts.ZIP_NAME);
                     if(!s1.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
-                        flag=false;
                         break;
                     }
                 } catch (IOException e) {
