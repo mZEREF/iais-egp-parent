@@ -1,11 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.AutoRenewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaLastInspectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.*;
 
 import java.util.List;
 
@@ -18,4 +13,6 @@ public interface HcsaRiskSupportBeService{
     List<PreOrPostInspectionResultDto> preOrPostInspection(List<RecommendInspectionDto> recommendInspectionDtoList);
     List<RiskResultDto> getRiskResult(List<RiskAcceptiionDto> riskAcceptiionDtoList);
     List<AutoRenewDto> isAutoRenew(List<String> licNo,boolean isRenew);
+    void feCreateRiskData( HcsaRiskFeSupportDto supportDto);
+    void sysnRiskSaveEic(int httpStatus,HcsaRiskFeSupportDto supportDto);
 }

@@ -12,15 +12,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskGolbalService;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.HcsaRiskSupportBeService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+
+import java.util.Date;
+import java.util.List;
+
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -36,16 +39,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
-    private BeEicGatewayClient beEicGatewayClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
+    private HcsaRiskSupportBeService hcsaRiskSupportBeService;
     static String[] category = {"TOIR001", "TOIR002", "TOIR003"};
     @Override
     public GolbalRiskShowDto getGolbalRiskShowDto() {
@@ -139,8 +133,6 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
 
     @Override
     public void saveDto(GolbalRiskShowDto golbalShowDto) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<GobalRiskTotalDto> totalDtoList = golbalShowDto.getGoalbalTotalList();
         List<GobalRiskTotalDto> updateList = IaisCommonUtils.genNewArrayList();
         for (GobalRiskTotalDto temp : totalDtoList) {
@@ -148,33 +140,33 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
                 updateList.add(temp);
             }
         }
+        FeignResponseEntity<List<HcsaRiskGolbalExtDto>> responseEntity = null;
         for (GobalRiskTotalDto temp : updateList) {
-            dosave(temp);
+            responseEntity = dosave(temp);
         }
         HcsaRiskFeSupportDto supportDto = new HcsaRiskFeSupportDto();
         supportDto.setGolbalRiskShowDto(golbalShowDto);
         supportDto.setGolbalFlag(true);
         supportDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+        hcsaRiskSupportBeService.sysnRiskSaveEic(responseEntity.getStatusCode(),supportDto);
     }
 
-    private void dosave(GobalRiskTotalDto temp) {
+    private FeignResponseEntity<List<HcsaRiskGolbalExtDto>> dosave(GobalRiskTotalDto temp) {
         HcsaRiskGlobalDto golDto;
         List<HcsaRiskGolbalExtDto> extDtoList;
         if (temp.getId() != null) {
             golDto = transferTogolDto(temp);
             extDtoList = transferToextDtoList(temp);
             updateLastVersion(golDto);
-            create(golDto, extDtoList);
+           return create(golDto, extDtoList);
         } else {
             golDto = transferTogolDto(temp);
             extDtoList = transferToextDtoList(temp);
-            create(golDto, extDtoList);
+           return create(golDto, extDtoList);
         }
     }
 
-    private void create(HcsaRiskGlobalDto golDto, List<HcsaRiskGolbalExtDto> extDtoList) {
+    private FeignResponseEntity<List<HcsaRiskGolbalExtDto>> create(HcsaRiskGlobalDto golDto, List<HcsaRiskGolbalExtDto> extDtoList) {
         if (golDto.getVersion() != null) {
             golDto.setVersion(golDto.getVersion() + 1);
         } else {
@@ -188,7 +180,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
             temp.setRsGolbalId(golId);
             temp.setId(null);
         }
-        hcsaConfigClient.saveGoalbalExtMatrixList(extDtoList);
+       return hcsaConfigClient.saveGoalbalExtMatrixList(extDtoList);
     }
 
     private void updateLastVersion(HcsaRiskGlobalDto golDto) {

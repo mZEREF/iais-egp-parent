@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionForAuditDto;
@@ -26,12 +27,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -42,8 +40,10 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
 import com.ecquaria.cloudfeign.FeignException;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.kafka.model.Submission;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -86,6 +86,12 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
+    @Value("${spring.application.name}")
+    private String currentApp;
+    @Value("${iais.current.domain}")
+    private String currentDomain;
+    @Autowired
+    private EicRequestTrackingHelper eicRequestTrackingHelper;
 
     static String[] category = {"ADTYPE001", "ADTYPE002", "ADTYPE003"};
     @Override
@@ -273,6 +279,28 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     public  void saveAppForAuditToFe(AppSubmissionForAuditDto appSubmissionForAuditDto,boolean isCancel){
         log.info("========================>>>>>sysn fe app start!!!!");
         appSubmissionForAuditDto.setIsCancel(isCancel);
+        EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.LICENCE_CLIENT, AuditSystemListServiceImpl.class.getName(),
+                "saveAppForAuditToFeAndCreateTrack", currentApp + "-" + currentDomain,
+                AppSubmissionForAuditDto.class.getName(), JsonUtil.parseToJson(appSubmissionForAuditDto));
+        FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getOrgTrackingClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
+        try{
+            if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
+                EicRequestTrackingDto entity = fetchResult.getEntity();
+                if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
+                    saveAppForAuditToFeAndCreateTrack(appSubmissionForAuditDto);
+                    entity.setProcessNum(1);
+                    Date now = new Date();
+                    entity.setFirstActionAt(now);
+                    entity.setLastActionAt(now);
+                    entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                    eicRequestTrackingHelper.getOrgTrackingClient().saveEicTrack(entity);
+                }
+            }
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog(e.getMessage()));
+        }
+    }
+    public  void saveAppForAuditToFeAndCreateTrack(AppSubmissionForAuditDto appSubmissionForAuditDto){
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         //  Synchronize app to fe

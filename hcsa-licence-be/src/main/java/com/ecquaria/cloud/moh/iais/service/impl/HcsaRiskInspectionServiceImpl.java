@@ -8,16 +8,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskInspectionService;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.HcsaRiskSupportBeService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import java.util.Date;
 import java.util.List;
+
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -30,16 +30,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
-    private BeEicGatewayClient beEicGatewayClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
+    private HcsaRiskSupportBeService hcsaRiskSupportBeService;
 
     @Override
     public InspectionShowDto getInspectionShowDto() {
@@ -205,8 +196,6 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
 
     @Override
     public void saveDto(InspectionShowDto showDto) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<HcsaRiskInspectionMatrixDto> dtoList = showDto.getInspectionDtoList();
         List<HcsaRiskInspectionMatrixDto> saveList = IaisCommonUtils.genNewArrayList();
         for(HcsaRiskInspectionMatrixDto temp : dtoList){
@@ -219,19 +208,18 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
                 saveList.add(getFinDto(temp,false,"RSKL0002"));
             }
         }
-        doUpdate(saveList,dtoList);
+        FeignResponseEntity<List<HcsaRiskInspectionMatrixDto>> responseEntity = doUpdate(saveList,dtoList);
         HcsaRiskFeSupportDto supportDto = new HcsaRiskFeSupportDto();
         supportDto.setInspectionShowDto(showDto);
         supportDto.setInspectionRiskFlag(true);
         supportDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+        hcsaRiskSupportBeService.sysnRiskSaveEic(responseEntity.getStatusCode(),supportDto);
     }
 
 
 
 
-    public void doUpdate(List<HcsaRiskInspectionMatrixDto> updateList,List<HcsaRiskInspectionMatrixDto> dtoList){
+    public FeignResponseEntity<List<HcsaRiskInspectionMatrixDto>> doUpdate(List<HcsaRiskInspectionMatrixDto> updateList, List<HcsaRiskInspectionMatrixDto> dtoList){
         //get last version form db
         for(HcsaRiskInspectionMatrixDto temp:dtoList){
             //List<HcsaRiskFinanceMatrixDto> lastversionList= hcsaConfigClient.getFinianceRiskBySvcCode(temp.getServiceCode()).getEntity();
@@ -254,7 +242,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
             temp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             temp.setId(null);
         }
-        hcsaConfigClient.saveInspectionMatrix(updateList);
+       return hcsaConfigClient.saveInspectionMatrix(updateList);
     }
     public void updateLastVersion(HcsaRiskInspectionMatrixDto newFin,HcsaRiskInspectionMatrixDto dbFin){
         try {

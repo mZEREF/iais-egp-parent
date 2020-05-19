@@ -9,16 +9,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.HcsaRiskSupportBeService;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskWeightageService;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import java.util.Date;
 import java.util.List;
+
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.util.CopyUtil;
 
@@ -32,15 +32,8 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
     @Autowired
     HcsaConfigClient hcsaConfigClient;
     @Autowired
-    private BeEicGatewayClient beEicGatewayClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
+    private HcsaRiskSupportBeService hcsaRiskSupportBeService;
+
     @Override
     public HcsaRiskWeightageShowDto getWeightage() {
         List<HcsaServiceDto> serviceDtoList =  hcsaConfigClient.getActiveServices().getEntity();
@@ -136,16 +129,13 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
             }
         }
         if(saveShowDto!=null&&saveShowDto.getWeightageDtoList()!=null){
-            doUpdate(saveList,saveShowDto.getWeightageDtoList());
+            FeignResponseEntity<List<HcsaRiskWeightageDto>> responseEntity = doUpdate(saveList,saveShowDto.getWeightageDtoList());
+            HcsaRiskFeSupportDto supportDto = new HcsaRiskFeSupportDto();
+            supportDto.setHcsaRiskWeightageShowDto(wShowDto);
+            supportDto.setWeightageFlag(true);
+            supportDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            hcsaRiskSupportBeService.sysnRiskSaveEic(responseEntity.getStatusCode(),supportDto);
         }
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        HcsaRiskFeSupportDto supportDto = new HcsaRiskFeSupportDto();
-        supportDto.setHcsaRiskWeightageShowDto(wShowDto);
-        supportDto.setWeightageFlag(true);
-        supportDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
     }
 
     private HcsaRiskWeightageDto getWeiDto(HcsaRiskWeightageDto temp,String type) {
@@ -182,7 +172,7 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
         return dto;
     }
 
-    public void doUpdate(List<HcsaRiskWeightageDto> updateList,List<HcsaRiskWeightageDto> weightageDtoList){
+    public FeignResponseEntity<List<HcsaRiskWeightageDto>> doUpdate(List<HcsaRiskWeightageDto> updateList, List<HcsaRiskWeightageDto> weightageDtoList){
         for(HcsaRiskWeightageDto temp:weightageDtoList){
             List<HcsaRiskWeightageDto> weightageLeastVersionList = hcsaConfigClient.getWeightageRiskBySvcCode(temp.getServiceCode()).getEntity();
             if(temp.isEdit()){
@@ -200,7 +190,7 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
             temp.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             temp.setId(null);
         }
-        hcsaConfigClient.saveWeightageMatrixList(updateList);
+        return hcsaConfigClient.saveWeightageMatrixList(updateList);
     }
 
     private List<HcsaRiskWeightageDto> updateLastVersion(List<HcsaRiskWeightageDto> weightageLeastVersionList, HcsaRiskWeightageDto temp) {

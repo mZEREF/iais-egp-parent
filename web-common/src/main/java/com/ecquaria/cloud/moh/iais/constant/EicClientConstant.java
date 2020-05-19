@@ -15,4 +15,5 @@ public final class EicClientConstant {
     public final static int ORGANIZATION_CLIENT = 2;
     public final static int SYSTEM_ADMIN_CLIENT = 3;
     public final static int ONLINE_APPT_CLIENT = 4;
+    public final static int LICENCE_CLIENT = 4;
 }

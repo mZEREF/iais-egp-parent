@@ -10,16 +10,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskLicenceTenureSerice;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.HcsaRiskSupportBeService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import java.util.List;
+
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,15 +32,8 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
-    private BeEicGatewayClient beEicGatewayClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
+    private HcsaRiskSupportBeService hcsaRiskSupportBeService;
+
     @Override
     public LicenceTenShowDto getTenShowDto() {
         List<HcsaServiceDto> serviceDtoList = hcsaConfigClient.getActiveServices().getEntity();
@@ -179,19 +172,15 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
                 }
             }
         }
-        doUpdate(saveDtoList,ltDtoList);
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        FeignResponseEntity<List<HcsaRiskLicenceTenureDto>> responseEntity = doUpdate(saveDtoList,ltDtoList);
         HcsaRiskFeSupportDto supportDto = new HcsaRiskFeSupportDto();
         supportDto.setLicenceTenShowDto(showDto);
         supportDto.setLictenureFLag(true);
         supportDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        beEicGatewayClient.feCreateRiskData(supportDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
-
+        hcsaRiskSupportBeService.sysnRiskSaveEic(responseEntity.getStatusCode(),supportDto);
     }
 
-    private void doUpdate(List<HcsaRiskLicenceTenureDto> saveDtoList, List<HcsaRiskLicenceTenureDto> ltDtoList) {
+    private FeignResponseEntity<List<HcsaRiskLicenceTenureDto>> doUpdate(List<HcsaRiskLicenceTenureDto> saveDtoList, List<HcsaRiskLicenceTenureDto> ltDtoList) {
         for(HcsaRiskLicenceTenureDto temp:ltDtoList){
             List<HcsaRiskLicenceTenureDto> lastversionList = getLastversionList(temp);
             if(lastversionList!=null &&!lastversionList.isEmpty()){
@@ -207,7 +196,7 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
             temp.setId(null);
             temp.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         }
-        hcsaConfigClient.savehcsaRiskLicenceTenure(saveDtoList);
+       return hcsaConfigClient.savehcsaRiskLicenceTenure(saveDtoList);
     }
 
     public void updateLastVersion(HcsaRiskLicenceTenureDto newFin, HcsaRiskLicenceTenureDto dbFin){
