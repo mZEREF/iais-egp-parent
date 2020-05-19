@@ -80,9 +80,10 @@ public final class EicRequestTrackingHelper {
                 break;
             case EicClientConstant.SYSTEM_ADMIN_CLIENT:
                 eicClient.saveEicTrack(eicRequestTrackingDto);
+                break;
             case EicClientConstant.ONLINE_APPT_CLIENT:
                 onlineApptEicClient.saveEicTrack(eicRequestTrackingDto);
-            break;
+                break;
         }
 
         return eicRequestTrackingDto;
