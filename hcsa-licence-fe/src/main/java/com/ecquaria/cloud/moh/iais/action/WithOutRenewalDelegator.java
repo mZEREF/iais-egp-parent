@@ -397,6 +397,8 @@ public class WithOutRenewalDelegator {
                                 amendmentFeeDto.setChangeInHCIName(b);
                                 String olAddress = oldAppGrpPremisesDto.getAddress();
                                 equals = olAddress.equals(address);
+                                amendmentFeeDto.setChangeInLocation(!equals);
+                                List<AppGrpPremisesDto> rfcAppGrpPremisesDtoList = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
                             }else {
                                 String oldAddress = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getAddress();
                                 equals = oldAddress.equals(address);
@@ -417,10 +419,14 @@ public class WithOutRenewalDelegator {
                                 }
                             }
                             appSubmissionDtoByLicenceId.setGroupLic(groupLic);
+                            appSubmissionDtoByLicenceId.setPartPremise(groupLic);
                             appSubmissionDtoByLicenceId.setAmount(rfcTotal);
                             AppGrpPremisesDto appGrpPremisesDto=appGrpPremisesDtoList.get(i);
                             List<AppGrpPremisesDto> appGrpPremisesDtos=new ArrayList<>(1);
                             appGrpPremisesDtos.add(appGrpPremisesDto);
+                            if(groupLic){
+                                appGrpPremisesDtos.get(0).setGroupLicenceFlag(licenceDto.getId());
+                            }
                             appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremisesDtos);
                             appSubmissionDtoByLicenceId.setAppGrpNo(appGrpNo);
                             appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
@@ -433,7 +439,6 @@ public class WithOutRenewalDelegator {
                                 appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
                             }
                             appSubmissionDtoByLicenceId.setAutoRfc(equals);
-
                             appEditSelectDto.setPremisesListEdit(Boolean.TRUE);
                             appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
                             appSubmissionDtoByLicenceId.setChangeSelectDto(appEditSelectDto);
@@ -476,7 +481,6 @@ public class WithOutRenewalDelegator {
                 appSubmissionDto.setAmountStr(amountStr);
             }
         }
-
         AppSubmissionListDto appSubmissionListDto =new AppSubmissionListDto();
         String submissionId = generateIdClient.getSeqId().getEntity();
         Long l = System.currentTimeMillis();
@@ -489,6 +493,8 @@ public class WithOutRenewalDelegator {
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos1){
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             appSvcRelatedInfoDtoList.get(0).setAmount(appSubmissionDto.getAmount());
+            appSvcRelatedInfoDtoList.get(0).setApplicationType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+            appSvcRelatedInfoDtoList.get(0).setGroupNo(appSubmissionDto.getAppGrpNo());
             appSvcRelatedInfoDtos.addAll(appSvcRelatedInfoDtoList);
         }
         String totalStr = Formatter.formatCurrency(total);
@@ -499,6 +505,8 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.setAppGrpNo(applicationGroupDto.getGroupNo());
             appSubmissionDto.setAppGrpId(applicationGroupDto.getId());
             appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAmount(renewTotal);
+            appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setApplicationType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+            appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setGroupNo(appSubmissionDto.getAppGrpNo());
             appSubmissionDto.getAppSvcRelatedInfoDtoList().addAll(appSvcRelatedInfoDtos);
         }
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);

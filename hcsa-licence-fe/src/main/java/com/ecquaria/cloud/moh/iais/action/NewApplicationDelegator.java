@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
@@ -74,23 +75,6 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import java.io.IOException;
-import java.io.Serializable;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.regex.Pattern;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -99,6 +83,25 @@ import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.Serializable;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.regex.Pattern;
 
 import static java.util.regex.Pattern.compile;
 
@@ -881,7 +884,6 @@ public class NewApplicationDelegator {
                             appGrp.setId(grpId);
                             appGrp.setPmtRefNo(pmtRefNo);
                             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-                            appGrp.setPaymentDt(new Date());
                             serviceConfigService.updatePaymentStatus(appGrp);
                         }
                     }
@@ -1189,6 +1191,13 @@ public class NewApplicationDelegator {
                                 String grpAddress = appGrpPremisesDto.getAddress();
                                 equals = grpAddress.equals(address);
                                 amendmentFeeDto.setChangeInLocation(!equals);
+                                List<AppGrpPremisesDto> rfcAppGrpPremisesDtoList = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
+                                if(rfcAppGrpPremisesDtoList!=null){
+                                    for(AppGrpPremisesDto appGrpPremisesDto1 : rfcAppGrpPremisesDtoList){
+                                        appGrpPremisesDto1.setGroupLicenceFlag(string.getId());
+                                    }
+                                }
+
                             }else {
                                 String oldAddress = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getAddress();
                                 equals = oldAddress.equals(address);
@@ -1213,6 +1222,9 @@ public class NewApplicationDelegator {
                             AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(i);
                             List<AppGrpPremisesDto> appGrpPremisesDtos=new ArrayList<>(1);
                             appGrpPremisesDtos.add(appGrpPremisesDto);
+                            if(groupLic){
+                                appGrpPremisesDtos.get(0).setGroupLicenceFlag(string.getId() );
+                            }
                             appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremisesDtos);
                             appSubmissionDtoByLicenceId.setAppGrpNo(appGroupNo);
                             appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
@@ -1355,8 +1367,6 @@ public class NewApplicationDelegator {
             appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             appSubmissionService.saveAppGrpMisc(appGroupMiscDto);
         }
-
-
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
 

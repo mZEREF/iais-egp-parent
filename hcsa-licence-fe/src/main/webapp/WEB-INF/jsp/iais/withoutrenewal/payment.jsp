@@ -58,10 +58,16 @@
                                                     <p>${detailFeeDto.lateFeeType}</p>
                                                 </td>
                                                 <td>
-                                                    <p>Renewal</p>
+                                                  <c:if test="${svc.applicationType=='APTY005'}">
+                                                    Amendment
+                                                  </c:if>
+                                                  <c:if test="${svc.applicationType=='APTY004'}">
+                                                    Renewal
+                                                  </c:if>
+
                                                 </td>
                                                 <td>
-                                                    <p><c:out value="${AppSubmissionDto.appGrpNo}-${(status.index+1) > 9 ? '' : '0'}${status.index + 1}"></c:out></p>
+                                                    <p>${svc.groupNo}</p>
                                                 </td>
                                                 <td>
                                                     <p>${detailFeeDto.lateFeeAmoumtStr}</p>
