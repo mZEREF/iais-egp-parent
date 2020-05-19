@@ -51,7 +51,7 @@ public class MessageUtil {
      * and returns converted string. It scans  <code>pattern</code>
      * for {} brackets, then parses enclosed string and replaces it
      * with argument's  <code>get()</code> value.
-     * @param key String to be parsed.
+     * @param key The msg code to be parsed.
      * @param arguments Map with key-value pairs to replace.
      * @return Formatted string
      */
