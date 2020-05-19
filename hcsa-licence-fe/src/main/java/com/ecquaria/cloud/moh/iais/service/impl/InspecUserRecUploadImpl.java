@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -12,8 +14,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
@@ -50,6 +55,9 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
 
     @Autowired
     private FileRepoClient fileRepoClient;
+
+    @Autowired
+    private AppEicClient appEicClient;
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
@@ -149,8 +157,21 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
             inspRectificationSaveDto.setAppPremPreInspectionNcDocDtos(inspecUserRecUploadDto.getAppPremPreInspectionNcDocDtos());
             inspRectificationSaveDto.setAppPremPreInspectionNcDtos(appPremPreInspectionNcDtos);
             inspRectificationSaveDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            //save eic record
+            EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
+            EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.InspecUserRecUploadImpl", "submitAllRecNc",
+                    "hcsa-licence-web-internet", InspRectificationSaveDto.class.getName(), JsonUtil.parseToJson(inspRectificationSaveDto));
+            String eicRefNo = eicRequestTrackingDto.getRefNo();
             feEicGatewayClient.feCreateAndUpdateItemDoc(inspRectificationSaveDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization());
+            //get eic record
+            eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
+            //update eic record status
+            eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+            eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
+            eicRequestTrackingDtos.add(eicRequestTrackingDto);
+            appEicClient.updateStatus(eicRequestTrackingDtos);
         }
     }
 
