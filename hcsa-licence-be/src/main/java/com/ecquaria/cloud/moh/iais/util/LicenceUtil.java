@@ -11,13 +11,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
-
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * LicenceUtil
@@ -27,6 +28,31 @@ import java.util.*;
  */
 
 public class LicenceUtil {
+
+    public static Date getLasterDate(Date paymentDt,Date ao3ApprovedDt,Date recommendDate){
+        Date result = getLateDate(paymentDt,ao3ApprovedDt);
+        result = getLateDate(result,recommendDate);
+        return  result;
+    }
+
+    public static Date getLateDate(Date date1,Date date2){
+        Date result = null;
+        if(date1 != null ){
+            if(date2 != null){
+                if(date1.after(date2)){
+                    result = date1;
+                }else{
+                    result = date2;
+                }
+            }else{
+                result = date1;
+            }
+        }else{
+            result = date2;
+        }
+        return  result;
+
+    }
     public static Date getExpiryDate(Date startDate, AppPremisesRecommendationDto appPremisesRecommendationDto){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startDate);

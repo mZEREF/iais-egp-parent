@@ -1399,18 +1399,25 @@ public class LicenceApproveBatchjobTest {
             }
         }else {
             if(applicationGroupDto!=null){
-                Date startDate = applicationGroupDto.getModifiedAt();
+                Date startDate = null;
                 if(applicationDto!=null && originLicenceDto!=null && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
                     log.info(StringUtil.changeForLog("The  getLicenceDto APPType is Renew ..."));
                     startDate = originLicenceDto.getExpiryDate();
                     log.info(StringUtil.changeForLog("The  getLicenceDto originLicenceDto expiryday is " + startDate));
                     startDate = DateUtils.addDays(startDate,1);
                     log.info(StringUtil.changeForLog("The  getLicenceDto startDate is " + startDate));
-                }else if(appPremisesRecommendationDto != null){
+                }else{
+                    Date paymentDt = applicationGroupDto.getPaymentDt();
+                    log.info(StringUtil.changeForLog("The  getLicenceDto paymentDt is " + paymentDt));
+                    Date ao3ApprovedDt = applicationGroupDto.getAo3ApprovedDt();
+                    log.info(StringUtil.changeForLog("The  getLicenceDto ao3ApprovedDt is " + ao3ApprovedDt));
+                    Date recommendDate = null;
+                    if(appPremisesRecommendationDto != null){
                         Date date= appPremisesRecommendationDto.getRecomInDate();
-                        if(date !=null){
-                            startDate = date;
-                        }
+                    }
+                    log.info(StringUtil.changeForLog("The  getLicenceDto recommendDate is " + recommendDate));
+                    startDate = LicenceUtil.getLasterDate(paymentDt,ao3ApprovedDt,recommendDate);
+
                 }
                 log.debug(StringUtil.changeForLog("The startDate is -->:"+startDate));
                 if(startDate == null){

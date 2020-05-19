@@ -183,7 +183,8 @@ public class HcsaApplicationDelegator {
 
         //get routing stage dropdown send to page.
         log.debug(StringUtil.changeForLog("the do prepareData get the hcsaSvcRoutingStageDtoList"));
-        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey(),applicationViewDto.getApplicationDto().getApplicationType());
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),
+                taskDto.getTaskKey(),applicationViewDto.getApplicationDto().getApplicationType());
         List<SelectOption> routingStage = IaisCommonUtils.genNewArrayList();
         if(hcsaSvcRoutingStageDtoList!=null){
             if(hcsaSvcRoutingStageDtoList.size()>0){
@@ -1320,6 +1321,7 @@ public class HcsaApplicationDelegator {
                 ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                 broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
                 applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                applicationGroupDto.setAo3ApprovedDt(new Date());
                 applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
             }
