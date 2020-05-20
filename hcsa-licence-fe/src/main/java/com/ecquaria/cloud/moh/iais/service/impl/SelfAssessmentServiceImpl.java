@@ -276,7 +276,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 log.info(StringUtil.changeForLog("encounter failure when self decl send notification" + e.getMessage()));
             }
 
-            EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, SelfAssessmentServiceImpl.class.getName(),
+            EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT,
+                    SelfAssessmentServiceImpl.class.getName(),
                     "callFeEicAppPremisesSelfDeclChkl", currentApp + "-" + currentDomain,
                     AppPremisesSelfDeclChklDto.class.getName(), JsonUtil.parseToJson(result.getEntity()));
 

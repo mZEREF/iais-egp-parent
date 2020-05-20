@@ -2,6 +2,9 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.client.EicClient;
+import com.ecquaria.cloud.moh.iais.client.HcsaServiceClient;
+import com.ecquaria.cloud.moh.iais.client.LicEicClient;
+import com.ecquaria.cloud.moh.iais.client.LicmEicClient;
 import com.ecquaria.cloud.moh.iais.client.OnlineApptEicClient;
 import com.ecquaria.cloud.moh.iais.client.OrgEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -36,6 +39,27 @@ public final class EicRequestTrackingHelper {
 
     @Autowired
     private EicClient eicClient;
+
+    @Autowired
+    private HcsaServiceClient hcsaServiceClient;
+
+    @Autowired
+    private LicEicClient licEicClient;
+
+    @Autowired
+    private LicmEicClient hcsaConfigClient;
+
+    public LicmEicClient getHcsaConfigClient() {
+        return hcsaConfigClient;
+    }
+
+    public LicEicClient getLicEicClient() {
+        return licEicClient;
+    }
+
+    public HcsaServiceClient getHcsaServiceClient() {
+        return hcsaServiceClient;
+    }
 
     public EicClient getEicClient() {
         return this.eicClient;
@@ -80,10 +104,10 @@ public final class EicRequestTrackingHelper {
                 break;
             case EicClientConstant.SYSTEM_ADMIN_CLIENT:
                 eicClient.saveEicTrack(eicRequestTrackingDto);
-                break;
-            case EicClientConstant.ONLINE_APPT_CLIENT:
-                onlineApptEicClient.saveEicTrack(eicRequestTrackingDto);
-                break;
+            break;
+            case EicClientConstant.HCSA_CONFIG:
+                hcsaConfigClient.saveEicTrack(eicRequestTrackingDto);
+            break;
         }
 
         return eicRequestTrackingDto;
