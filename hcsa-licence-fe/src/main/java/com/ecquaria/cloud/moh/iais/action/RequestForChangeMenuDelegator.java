@@ -29,7 +29,6 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
-import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
@@ -489,10 +488,9 @@ public class RequestForChangeMenuDelegator {
                 List<SelectOption> personelRoles = getPsnType();
                 ParamUtil.setRequestAttr(bpc.request, "PersonnelRoleList", personelRoles);
                 ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtos);
-                ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "PersonnelList");
+                ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Personnel List");
                 return;
             }
-
         }
         List<PersonnelQueryDto> personnelQueryDtos = searchResult.getRows();
         List<PersonnelListDto> personnelListDtos = IaisCommonUtils.genNewArrayList();
@@ -541,7 +539,7 @@ public class RequestForChangeMenuDelegator {
         List<SelectOption> personelRoles = getPsnType();
         ParamUtil.setRequestAttr(bpc.request, "PersonnelRoleList", personelRoles);
         ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtos);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "PersonnelList");
+        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Personnel List");
         log.debug(StringUtil.changeForLog("the do preparePersonnelList end ...."));
         log.debug(StringUtil.changeForLog("the preparePersonnel end ...."));
     }

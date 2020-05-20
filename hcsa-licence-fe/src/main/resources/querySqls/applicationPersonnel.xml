@@ -7,8 +7,6 @@
 			    join hcsal.dbo.lic_key_personnel T2
 			    on T1.ID  = T2.PERSON_ID
 			    WHERE T1.ID in (select max(T1.ID) from hcsal.dbo.key_personnel as T1 group by T1.ID_NO )
-			   <#if name??> and name (:name, T1.NAME) >0</#if>
-			   <#if name??> and charindex(:name, T1.NAME) >0</#if>
 			   <#if personName??> AND T1.NAME LIKE :personName</#if>
         ]]>
     </sql>

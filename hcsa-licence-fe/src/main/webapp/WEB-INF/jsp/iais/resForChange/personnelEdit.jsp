@@ -163,7 +163,7 @@
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Id No. " width="12"/>
+                                        <iais:field value="ID No. " width="12"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
                                             <iais:select name="idType"
                                                          value="${onePersonnel.idType}"
@@ -229,7 +229,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

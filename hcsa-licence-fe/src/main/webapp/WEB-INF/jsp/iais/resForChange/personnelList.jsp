@@ -15,7 +15,7 @@
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" id="hiddenIndex" name="hiddenIndex" value=""/>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <div class="col-xl-12" style="margin-left: 10%;margin-right: 10%">
+        <div class="col-xl-12" style="margin-left: 15%;margin-right: 10%">
             <div class="col-sm-5 col-md-1">
                 <label class="control-label" for="psnType">Roles:</label>
             </div>
@@ -31,7 +31,7 @@
                 </div>
             </div>
         </div>
-        <div class="row" style="margin-left: 10%;margin-right: 10%">
+        <div class="row" style="margin-left: 15%;margin-right: 10%">
             <div class="col-xs-12">
                 <div class="table-gp">
                     <iais:pagination param="PersonnelSearchParam" result="PersonnelSearchResult"/>
@@ -105,16 +105,9 @@
                         </c:forEach>
                         </tbody>
                     </table>
+                    <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
                 </div>
             </div>
-        </div>
-        <div class="row col-xs-11 ">
-            <div class="col-xs-12">
-                <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em
-                        class="fa fa-angle-left"></em> Back</a>
-            </div>
-        </div>
-        <div class="row">
         </div>
     </form>
 </div>

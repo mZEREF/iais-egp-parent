@@ -28,10 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -77,6 +74,8 @@ public class CessationServiceImpl implements CessationService {
     private TaskService taskService;
     @Autowired
     private MsgTemplateClient msgTemplateClient;
+    @Autowired
+    private EicRequestTrackingHelper eicRequestTrackingHelper;
     @Autowired
     private EmailClient emailClient;
     @Value("${iais.hmac.keyId}")
