@@ -23,7 +23,7 @@
                     </h3>
                     <iais:row>
                         <div class="col-xs-9 col-sm-5 col-md-4">
-                            <button class="addNewRfi btn btn-primary" type="button">Add Request For Information</button>
+                            <button class="addNewRfi btn btn-primary" type="button">New</button>
                         </div>
                     </iais:row>
                     <br><br><br>

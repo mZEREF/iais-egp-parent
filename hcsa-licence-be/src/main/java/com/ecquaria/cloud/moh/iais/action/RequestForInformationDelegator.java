@@ -196,6 +196,7 @@ public class RequestForInformationDelegator {
         log.info("=======>>>>>preNewRfi>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String[] lengths=ParamUtil.getStrings(request,"lengths");
+
         if(lengths!=null){
             List<NewRfiPageListDto> newRfiPageListDtos=IaisCommonUtils.genNewArrayList(lengths.length);
             for (String len:lengths
@@ -213,6 +214,11 @@ public class RequestForInformationDelegator {
                 newRfiPageListDto.setReqType(reqType);
                 newRfiPageListDtos.add(newRfiPageListDto);
             }
+            ParamUtil.setRequestAttr(bpc.request, "newRfiPageListDtos", newRfiPageListDtos);
+        }else {
+            List<NewRfiPageListDto> newRfiPageListDtos=IaisCommonUtils.genNewArrayList();
+            NewRfiPageListDto newRfiPageListDto=new NewRfiPageListDto();
+            newRfiPageListDtos.add(newRfiPageListDto);
             ParamUtil.setRequestAttr(bpc.request, "newRfiPageListDtos", newRfiPageListDtos);
         }
         List<SelectOption> salutationList= IaisCommonUtils.genNewArrayList();
