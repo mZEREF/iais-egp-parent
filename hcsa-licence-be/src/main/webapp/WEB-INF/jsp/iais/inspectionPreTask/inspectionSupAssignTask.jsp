@@ -89,7 +89,7 @@
                   <c:if test="${'common' eq inspectionTaskPoolListDto.editHoursFlag}">
                     <div class="row">
                       <div class="col-md-2">
-                        <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)<span style="color: red"> *</span></label>
+                        <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
                       </div>
                       <div class="col-md-2">
                         <input type="text" maxlength="3" style="margin-bottom: 0px;" name="inspManHours" value="${inspectionTaskPoolListDto.inspManHours}"/>
