@@ -495,21 +495,52 @@ public class WithOutRenewalDelegator {
             }
         }
         List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
+        String appGroupNo = requestForChangeService.getApplicationGroupNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         List<AppSubmissionDto> notReNewappSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(notReNewLicIds);
         List<AppSubmissionDto> rfcPersonnelAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(notReNewappSubmissionDtos)){
-            for(AppSubmissionDto appSubmissionDto :notReNewappSubmissionDtos){
-                appSubmissionService.transform(appSubmissionDto, licenseeId);
-                appSubmissionDto.setAppSvcRelatedInfoDtoList(newAppSvcRelatedInfoDtoList);
-                String draftNo = appSubmissionDto.getDraftNo();
-                if (StringUtil.isEmpty(draftNo)) {
-                    appSubmissionService.setDraftNo(appSubmissionDto);
-                }
-                rfcPersonnelAppSubmissionDtos.add(appSubmissionDto);
+        for (AppSubmissionDto appSubmissionDto : notReNewappSubmissionDtos) {
+            appSubmissionDto.setAppSvcRelatedInfoDtoList(newAppSvcRelatedInfoDtoList);
+            appSubmissionDto.setLicenseeId(licenseeId);
+            NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
+            appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+            appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
+            appSubmissionDto.setAppGrpNo(appGroupNo);
+            appSubmissionDto.setAmount(0.0);
+            appSubmissionDto.setAutoRfc(true);
+            String draftNo = appSubmissionDto.getDraftNo();
+            if (StringUtil.isEmpty(draftNo)) {
+                appSubmissionService.setDraftNo(appSubmissionDto);
             }
+            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+            if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                    appGrpPremisesDto.setNeedNewLicNo(false);
+                }
+            }
+            //judge is the preInspection
+            PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
+            if (preOrPostInspectionResultDto == null) {
+                appSubmissionDto.setPreInspection(true);
+                appSubmissionDto.setRequirement(true);
+            } else {
+                appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
+                appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
+            }
+            //set Risk Score
+            appSubmissionService.setRiskToDto(appSubmissionDto);
+            appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+            rfcPersonnelAppSubmissionDtos.add(appSubmissionDto);
         }
         //rfc personnel
-        requestForChangeService.saveAppsBySubmissionDtos(rfcPersonnelAppSubmissionDtos);
+        AppSubmissionListDto appSubmissionListPersonnelDto =new AppSubmissionListDto();
+        String submissionPersonnelId = generateIdClient.getSeqId().getEntity();
+        Long personnelL = System.currentTimeMillis();
+        appSubmissionListPersonnelDto.setAppSubmissionDtos(rfcPersonnelAppSubmissionDtos);
+        appSubmissionListPersonnelDto.setEventRefNo(personnelL.toString());
+        eventBusHelper.submitAsyncRequest(appSubmissionListPersonnelDto,submissionPersonnelId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT,personnelL.toString(),bpc.process);
+
         AppSubmissionListDto appSubmissionListDto =new AppSubmissionListDto();
         String submissionId = generateIdClient.getSeqId().getEntity();
         Long l = System.currentTimeMillis();
@@ -539,7 +570,7 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.getAppSvcRelatedInfoDtoList().addAll(appSvcRelatedInfoDtos);
         }
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
-        bpc.request.getSession().setAttribute("otherAppSubmissionDtos",appSubmissionDtos1);
+       // bpc.request.getSession().setAttribute("otherAppSubmissionDtos",appSubmissionDtos1);
         //ParamUtil.setRequestAttr(bpc.request,"applicationGroupDto",applicationGroupDto);
         ParamUtil.setSessionAttr(bpc.request,"totalStr",totalStr);
         ParamUtil.setSessionAttr(bpc.request,"totalAmount",total);
