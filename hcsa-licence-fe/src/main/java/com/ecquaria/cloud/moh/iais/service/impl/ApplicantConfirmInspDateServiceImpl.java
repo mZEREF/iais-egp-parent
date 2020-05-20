@@ -175,9 +175,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             String apptRefNo = apptInspDateMap.getKey();
             List<ApptUserCalendarDto> apptUserCalendarDtoList = apptInspDateMap.getValue();
             int daySize = apptUserCalendarDtoList.size();
-            int timeSize = apptUserCalendarDtoList.get(daySize - 1).getTimeSlot().size();
-            Date startDate = apptUserCalendarDtoList.get(0).getTimeSlot().get(0);
-            Date endDate = apptUserCalendarDtoList.get(daySize - 1).getTimeSlot().get(timeSize - 1);
+            int timeSize = apptUserCalendarDtoList.get(daySize - 1).getStartSlot().size();
+            Date startDate = apptUserCalendarDtoList.get(0).getStartSlot().get(0);
+            Date endDate = apptUserCalendarDtoList.get(daySize - 1).getStartSlot().get(timeSize - 1);
             String inspStartDate = apptDateToStringShow(startDate);
             String inspEndDate = apptDateToStringShow(endDate);
             String dateStr = inspStartDate + " - " + inspEndDate;
@@ -326,9 +326,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                     String apptRefNo = map.getKey();
                     List<ApptUserCalendarDto> apptUserCalendarDtoList = map.getValue();
                     int daySize = apptUserCalendarDtoList.size();
-                    int timeSize = apptUserCalendarDtoList.get(daySize - 1).getTimeSlot().size();
-                    Date startDate = apptUserCalendarDtoList.get(0).getTimeSlot().get(0);
-                    Date endDate = apptUserCalendarDtoList.get(daySize - 1).getTimeSlot().get(timeSize - 1);
+                    int timeSize = apptUserCalendarDtoList.get(daySize - 1).getStartSlot().size();
+                    Date startDate = apptUserCalendarDtoList.get(0).getStartSlot().get(0);
+                    Date endDate = apptUserCalendarDtoList.get(daySize - 1).getStartSlot().get(timeSize - 1);
                     String inspStartDate = apptDateToStringShow(startDate);
                     String inspEndDate = apptDateToStringShow(endDate);
                     String dateStr = inspStartDate + " - " + inspEndDate;
@@ -706,9 +706,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                     for(Map.Entry<String, List<ApptUserCalendarDto>> map : apptInspDateMap.entrySet()){
                         List<ApptUserCalendarDto> apptUserCalendarDtoList = map.getValue();
                         int daySize = apptUserCalendarDtoList.size();
-                        int timeSize = apptUserCalendarDtoList.get(daySize - 1).getTimeSlot().size();
-                        specStartInspDate = apptUserCalendarDtoList.get(0).getTimeSlot().get(0);
-                        specEndInspDate = apptUserCalendarDtoList.get(daySize - 1).getTimeSlot().get(timeSize - 1);
+                        int timeSize = apptUserCalendarDtoList.get(daySize - 1).getStartSlot().size();
+                        specStartInspDate = apptUserCalendarDtoList.get(0).getStartSlot().get(0);
+                        specEndInspDate = apptUserCalendarDtoList.get(daySize - 1).getStartSlot().get(timeSize - 1);
                         String inspStartDate = apptDateToStringShow(specStartInspDate);
                         String inspEndDate = apptDateToStringShow(specEndInspDate);
                         dateStr = inspStartDate + " - " + inspEndDate;
