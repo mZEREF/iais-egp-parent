@@ -145,9 +145,9 @@ public class OnlineApptAjaxController {
             for(Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()){
                 List<ApptUserCalendarDto> apptUserCalendarDtos = inspDateMap.getValue();
                 int daySize = apptUserCalendarDtos.size();
-                int timeSize = apptUserCalendarDtos.get(daySize - 1).getTimeSlot().size();
-                String inspStartDate = apptDateToStringShow(apptUserCalendarDtos.get(0).getTimeSlot().get(0));
-                String inspEndDate = apptDateToStringShow(apptUserCalendarDtos.get(daySize - 1).getTimeSlot().get(timeSize - 1));
+                int endTimeSize = apptUserCalendarDtos.get(daySize - 1).getEndSlot().size();
+                String inspStartDate = apptDateToStringShow(apptUserCalendarDtos.get(0).getStartSlot().get(0));
+                String inspEndDate = apptDateToStringShow(apptUserCalendarDtos.get(daySize - 1).getEndSlot().get(endTimeSize - 1));
                 String inspectionDate = inspStartDate + " - " + inspEndDate;
                 inspectionDates.add(inspectionDate);
             }
