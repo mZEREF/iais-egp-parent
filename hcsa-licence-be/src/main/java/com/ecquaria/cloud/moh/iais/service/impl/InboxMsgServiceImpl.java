@@ -36,7 +36,7 @@ public class InboxMsgServiceImpl implements InboxMsgService {
 
     @Override
     public InterMessageDto saveInterMessage(InterMessageDto interMessageDto) {
-
+        callEicInterMsg(interMessageDto);
         return interMessageDto;
     }
 

@@ -1403,6 +1403,11 @@ public class NewApplicationDelegator {
     }
 
     private  List<AppSubmissionDto> personContact(BaseProcessClass bpc,AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
+        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+        appEditSelectDto.setServiceEdit(true);
+        appEditSelectDto.setPremisesEdit(false);
+        appEditSelectDto.setDocEdit(false);
+        appEditSelectDto.setPoEdit(false);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto1 = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         if(appSvcRelatedInfoDto1==null||appSvcRelatedInfoDto==null){
@@ -1480,6 +1485,7 @@ public class NewApplicationDelegator {
             if(appSvcPrincipalOfficersDtoList2!=null&&appSvcPrincipalOfficersDtoList1!=null){
                 appSvcRelatedInfoDto2.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList1);
             }
+            appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDtoByLicenceId.setPartPremise(appSubmissionDtoByLicenceId.isGroupLic());
             appSubmissionDtoList.add(appSubmissionDtoByLicenceId);
         }
@@ -1532,6 +1538,8 @@ public class NewApplicationDelegator {
             changePerson.setRequirement(preOrPostInspectionResultDto1.isRequirement());
         }
         appSubmissionService.setRiskToDto(changePerson);
+        appEditSelectDto.setPremisesEdit(false);
+        appEditSelectDto.setServiceEdit(true);
         changePerson.setAppEditSelectDto(appEditSelectDto);
         changePerson.setChangeSelectDto(appEditSelectDto);
 

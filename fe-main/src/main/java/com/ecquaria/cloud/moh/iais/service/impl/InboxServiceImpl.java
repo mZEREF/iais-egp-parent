@@ -237,8 +237,10 @@ public class InboxServiceImpl implements InboxService {
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
         if(!IaisCommonUtils.isEmpty(apps)){
             for(ApplicationDto applicationDto:apps){
-                if(!ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationDto.getStatus()) &&
-                        !ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())){
+                if(!ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus()) &&
+                        !ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())&&
+                        !ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationDto.getStatus())&&
+                        !ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(applicationDto.getStatus())){
                     errorMap.put("errorMessage","There is already a pending application for this licence");
                     break;
                 }

@@ -214,11 +214,15 @@ public class RequestForChangeMenuDelegator {
 
     public void doPage(BaseProcessClass bpc) {
         log.info("---------doPage -------");
+        premiseFilterParameter.setPageSize(10);
+        premiseFilterParameter.setPageNo(1);
         SearchResultHelper.doPage(bpc.request, premiseFilterParameter);
     }
 
 
     public void doSearch(BaseProcessClass bpc) {
+        premiseFilterParameter.setPageSize(10);
+        premiseFilterParameter.setPageNo(1);
         String crud_action_value = bpc.request.getParameter("crud_action_value");
         if (!StringUtil.isEmpty(crud_action_value)) {
             bpc.request.setAttribute("doSearch", crud_action_value);
@@ -984,12 +988,12 @@ public class RequestForChangeMenuDelegator {
         boolean b = compareHciName(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
         amendmentFeeDto.setChangeInHCIName(!b);
         amendmentFeeDto.setChangeInLocation(!isSame);
+        FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
+        Double total = feeDto.getTotal();
         //
         if (selectLicence != null) {
             String appGrpNo = requestForChangeService.getApplicationGroupNumber(appType);
             for (LicenceDto string : selectLicence) {
-                FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
-                Double total = feeDto.getTotal();
 
                 LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
                 boolean grpLic = licenceDto.isGrpLic();
@@ -1024,7 +1028,11 @@ public class RequestForChangeMenuDelegator {
             requestForChangeService.upDateLicStatus(licenceDto);*/
 
                 AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-                appEditSelectDto.setPremisesListEdit(Boolean.TRUE);
+                appEditSelectDto.setServiceEdit(false);
+                appEditSelectDto.setDocEdit(false);
+                appEditSelectDto.setPoEdit(false);
+                appEditSelectDto.setPremisesListEdit(true);
+                appEditSelectDto.setPremisesEdit(true);
                 appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
                 appSubmissionDtoByLicenceId.setChangeSelectDto(appEditSelectDto);
                 //save data
