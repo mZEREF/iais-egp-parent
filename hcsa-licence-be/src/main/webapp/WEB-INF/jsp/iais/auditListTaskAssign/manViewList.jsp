@@ -64,7 +64,7 @@
                                         <td><c:out value="${item.svcCode}"/></td>
                                         <td><c:out value="${item.hclCode}"/></td>
                                         <td><c:out value="${item.premisesType}"/></td>
-                                        <td><c:out value="${item.riskType}"/></td>
+                                        <td><iais:code code="${item.riskType}"></iais:code></td>
                                     </tr>
                                 </c:forEach>
                                 </tbody>

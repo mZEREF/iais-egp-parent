@@ -49,9 +49,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Author: jiahao
@@ -97,22 +95,60 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     @Override
     public void getInspectors(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
         if (!IaisCommonUtils.isEmpty(auditTaskDataDtos)) {
+            Map<String,String> workGroupIds = getAllWorkGrpIds(auditTaskDataDtos);
+            for(AuditTaskDataFillterDto temp : auditTaskDataDtos){
+                temp.setWorkGroupId(workGroupIds.get(temp.getSvcName()));
+            }
+            Map<String, List<OrgUserDto>> map = getAllOrgUsersByAuditTaskDataFillterDtos(auditTaskDataDtos);
             for (AuditTaskDataFillterDto temp : auditTaskDataDtos) {
-                HcsaSvcStageWorkingGroupDto dto = new HcsaSvcStageWorkingGroupDto();
-                HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(temp.getSvcName()).getEntity();
-                dto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
-                dto.setOrder(1);
-                dto.setServiceId(svcDto.getId());
-                dto.setType("APTY002");
-                dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(dto).getEntity();
-                String workGroupId = dto.getGroupId();
-                temp.setWorkGroupId(workGroupId);
-                List<OrgUserDto> orgDtos = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-                getinspectorOp(orgDtos, temp);
+                getinspectorOp(map.get(temp.getSvcName()), temp);
             }
         }
 
     }
+
+    private Map<String, List<OrgUserDto>> getAllOrgUsersByAuditTaskDataFillterDtos(List<AuditTaskDataFillterDto> auditTaskDataDtos){
+         List<String> workGroupIds = new ArrayList<>(auditTaskDataDtos.size());
+         for(AuditTaskDataFillterDto temp : auditTaskDataDtos){
+             if(!workGroupIds.contains(temp.getWorkGroupId())){
+                 workGroupIds.add(temp.getWorkGroupId());
+             }
+         }
+        Map<String, List<OrgUserDto>> map = new HashMap<>(workGroupIds.size());
+         for(String workGroupId :  workGroupIds){
+             map.put(workGroupId,getOrgDtos(workGroupId));
+         }
+         return  map;
+    }
+
+    private   List<OrgUserDto> getOrgDtos( String workGroupId){
+        return organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+    }
+    private Map<String,String> getAllWorkGrpIds(List<AuditTaskDataFillterDto> auditTaskDataDtos){
+        List<String> svcNames = new ArrayList<>(auditTaskDataDtos.size());
+        for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos){
+            if( !svcNames.contains(auditTaskDataFillterDto.getSvcName())){
+                svcNames.add(auditTaskDataFillterDto.getSvcName());
+            }
+        }
+        Map<String,String> map = new HashMap<>(svcNames.size());
+        for(String s : svcNames){
+            map.put(s,getWorkGroupIdBySvcName(s)) ;
+        }
+        return map;
+    }
+
+    private String  getWorkGroupIdBySvcName( String svcName){
+        HcsaSvcStageWorkingGroupDto dto = new HcsaSvcStageWorkingGroupDto();
+        HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(svcName).getEntity();
+        dto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
+        dto.setOrder(1);
+        dto.setServiceId(svcDto.getId());
+        dto.setType("APTY002");
+        dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(dto).getEntity();
+        return  dto.getGroupId();
+    }
+
 
     private void getinspectorOp(List<OrgUserDto> orgDtos, AuditTaskDataFillterDto temp) {
         List<SelectOption> ops = IaisCommonUtils.genNewArrayList();

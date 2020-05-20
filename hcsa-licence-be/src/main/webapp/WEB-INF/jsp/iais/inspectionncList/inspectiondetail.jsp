@@ -5,7 +5,7 @@
     <div class="form-group">
         <label class="col-xs-12 col-md-4 control-label"  for="inspectionDate" >Inspection Date</label>
         <div class="col-xs-8 col-sm-6 col-md-5">
-            <label>${serListDto.inspectionDate}</label>
+            <p> <span>${serListDto.inspectionDate}</span></p>
             <div hidden>
             <iais:datePicker id="inspectionDate" name = "inspectionDate"  value="${serListDto.inspectionDate}"></iais:datePicker>
             </div>

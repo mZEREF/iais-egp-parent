@@ -122,7 +122,6 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
 
     @Override
     public List<AuditTaskDataFillterDto> getSystemPotentailAdultList(AuditSystemPotentialDto dto) {
-        List<AuditTaskDataDto> dtos = null;
         List<AuditTaskDataFillterDto> rdtoList = null;
         if (dto != null) {
             List<String> svcNameList = getSvcName(dto.getSvcNameList(), dto.getHcsaServiceCodeList());
@@ -153,7 +152,6 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         } else {
             for (AuditTaskDataDto temp : searchResult.getRows()) {
                 String licId = temp.getLicId();
-                String svcCode = hcsaConfigClient.getServiceCodeByName(temp.getSvcName()).getEntity();
                 Date startDate = getInspectionStartDate(licId,  true);
                 Date endDate = getInspectionStartDate(licId,  false);
                 getAduitTaskDtoByInspecitonDate(endDate, startDate, dto, auditTaskDtos, temp);
@@ -450,7 +448,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     private Date getInspectionStartDate(String licId, boolean isStartDate) {
         Date inspectionDate = null;
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = IaisCommonUtils.genNewArrayList();
-        List<InspectionInfoDto> inspInfoList = new ArrayList<InspectionInfoDto>();
+        List<InspectionInfoDto> inspInfoList = new ArrayList<InspectionInfoDto>(10);
         InspectionInfoDto info = new InspectionInfoDto();
         List<LicAppCorrelationDto> licCorrDtoList = hcsaLicenceClient.getLicCorrBylicId(licId).getEntity();
         if (licCorrDtoList != null && !licCorrDtoList.isEmpty()) {
@@ -484,7 +482,6 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         }
         return inspectionDate;
     }
-
     public Date getInpectionDate(List<InspectionInfoDto> infoList) {//use
         HcsaLastInspectionDto lastInspection = new HcsaLastInspectionDto();
         if (infoList != null && !infoList.isEmpty()) {
