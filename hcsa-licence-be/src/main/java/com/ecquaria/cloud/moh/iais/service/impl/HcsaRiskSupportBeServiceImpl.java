@@ -369,8 +369,8 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
 
     @Override
     public void sysnRiskSaveEic(int httpStatus, HcsaRiskFeSupportDto supportDto) {
-        if (httpStatus == HttpStatus.SC_OK){
-            EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.LICENCE_CLIENT, HcsaRiskSupportBeServiceImpl.class.getName(),
+        if (httpStatus == HttpStatus.SC_CREATED){
+            EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.HCSA_CONFIG, HcsaRiskSupportBeServiceImpl.class.getName(),
                     "feCreateRiskData", currentApp + "-" + currentDomain,
                     HcsaRiskFeSupportDto.class.getName(), JsonUtil.parseToJson(supportDto));
             FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getOrgTrackingClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());

@@ -269,11 +269,11 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
                     if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
                         dbFin.setStatus("CMSTAT003");
                     }
-                }else if("RSKL0002".equals(dbFin.getRiskLevel())){
-                    dbFin.setEndDate(Formatter.parseDate(newFin.getDoMjEffectiveDate()));
-                    if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
-                        dbFin.setStatus("CMSTAT003");
-                    }
+                }
+            }else if("RSKL0002".equals(dbFin.getRiskLevel())){
+                dbFin.setEndDate(Formatter.parseDate(newFin.getDoMjEffectiveDate()));
+                if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
+                    dbFin.setStatus("CMSTAT003");
                 }
             }
         }catch (Exception e){

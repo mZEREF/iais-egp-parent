@@ -108,6 +108,9 @@ public final class EicRequestTrackingHelper {
             case EicClientConstant.HCSA_CONFIG:
                 hcsaConfigClient.saveEicTrack(eicRequestTrackingDto);
             break;
+            case EicClientConstant.LICENCE_CLIENT:
+                licEicClient.saveEicTrack(eicRequestTrackingDto);
+                break;
         }
 
         return eicRequestTrackingDto;
