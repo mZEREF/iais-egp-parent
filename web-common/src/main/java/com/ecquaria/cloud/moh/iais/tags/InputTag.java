@@ -52,37 +52,37 @@ public class InputTag extends DivTagSupport{
     public int doStartTag() throws JspException {
         StringBuilder html = new StringBuilder();
         html.append("<input type=\"").append(type);
-        html.append("\"");
+        html.append('\"');
         if (!StringUtil.isEmpty(id)) {
-            html.append(" id=\"").append(id).append("\"");
+            html.append(" id=\"").append(id).append('\"');
         }
         if (!StringUtil.isEmpty(name)) {
-            html.append(" name=\"").append(name).append("\"");
+            html.append(" name=\"").append(name).append('\"');
         }
         if (!StringUtil.isEmpty(style)) {
-            html.append(" style=\"").append(style).append("\"");
+            html.append(" style=\"").append(style).append('\"');
         }
 
         if (!StringUtil.isEmpty(cssClass)) {
-            html.append(" class=\"").append(cssClass).append("\"");
+            html.append(" class=\"").append(cssClass).append('\"');
         }
 
         if (!StringUtil.isEmpty(value)) {
-            html.append(" value=\"").append(value).append("\"");
+            html.append(" value=\"").append(value).append('\"');
         }
         if(!StringUtil.isEmpty(autocomplete)){
-            html.append(" maxlength=\"").append(maxLength).append("\"");
+            html.append(" maxlength=\"").append(maxLength).append('\"');
         }
         if(!StringUtil.isEmpty(autocomplete)){
-            html.append(" autocomplete=\"").append(autocomplete).append("\"");
+            html.append(" autocomplete=\"").append(autocomplete).append('\"');
         }
         if(needDisabled){
             html.append(" disabled=\"true\"");
         }
         if (!StringUtil.isEmpty(onclick)) {
-            html.append(" onclick=\"").append(onclick).append("\"");
+            html.append(" onclick=\"").append(onclick).append('\"');
         }
-        html.append(">");
+        html.append('>');
 
 
         try {
@@ -98,7 +98,7 @@ public class InputTag extends DivTagSupport{
         try {
             StringBuilder html = new StringBuilder("</input>");
             if (needErrorSpan) {
-                html.append("<span id=\"error_").append(name).append("\"");
+                html.append("<span id=\"error_").append(name).append('\"');
                 html.append(" name=\"iaisErrorMsg\" class=\"error-msg\"></span>");
             }
             pageContext.getOut().print(html.toString());

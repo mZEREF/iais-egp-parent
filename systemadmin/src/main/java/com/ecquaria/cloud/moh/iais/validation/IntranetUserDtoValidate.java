@@ -1,19 +1,19 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
-import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * @author weilu
@@ -49,18 +49,18 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
         if(!StringUtil.isEmpty(startDateStr)&&!StringUtil.isEmpty(endDateStr)){
             String[] eftStartDateStr = startDateStr.split("/");
             String[] eftEndDateStr = endDateStr.split("/");
-            String nStr = "";
-            String eStr = "";
+            StringBuilder nStr = new StringBuilder();
+            StringBuilder eStr = new StringBuilder();
 
             int len = Math.min(eftStartDateStr.length, eftEndDateStr.length);
             for (int i = len - 1; i >= 0; i--){
-                nStr += eftStartDateStr[i];
-                eStr += eftEndDateStr[i];
+                nStr.append(eftStartDateStr[i]);
+                eStr.append(eftEndDateStr[i]);
             }
 
             DateTimeFormatter formatter =  DateTimeFormatter.ofPattern("yyyyMMdd");
-            LocalDate startDate = LocalDate.parse(nStr, formatter);
-            LocalDate endDate = LocalDate.parse(eStr, formatter);
+            LocalDate startDate = LocalDate.parse(nStr.toString(), formatter);
+            LocalDate endDate = LocalDate.parse(eStr.toString(), formatter);
 
             int comparatorValue = endDate.compareTo(startDate);
             if (comparatorValue < 0){

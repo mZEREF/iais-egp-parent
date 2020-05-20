@@ -66,7 +66,7 @@ public final class ValueTag extends DivTagSupport {
             clazz.append(" col-md-align");
         }
         if (!StringUtil.isEmpty(cssClass)) {
-            clazz.append(" ").append(cssClass);
+            clazz.append(' ').append(cssClass);
         }
 
         StringBuilder html = new StringBuilder();
@@ -74,14 +74,14 @@ public final class ValueTag extends DivTagSupport {
         if (offset) {
             html.append(" offset-top col-md-offset-").append(offsetWidth);
         }
-        html.append("\"");
+        html.append('\"');
         if (!StringUtil.isEmpty(id)) {
-            html.append(" id=\"").append(id).append("\"");
+            html.append(" id=\"").append(id).append('\"');
         }
         if (!StringUtil.isEmpty(style)) {
-            html.append(" style=\"").append(style).append("\"");
+            html.append(" style=\"").append(style).append('\"');
         }
-        html.append(">");
+        html.append('>');
 
         try {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));

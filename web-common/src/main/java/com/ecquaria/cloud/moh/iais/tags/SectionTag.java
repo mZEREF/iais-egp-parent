@@ -53,12 +53,12 @@ public final class SectionTag extends DivTagSupport {
             html.append("<div");
         }
         if (!StringUtil.isEmpty(id)) {
-            html.append(" id=\"").append(id).append("\"");
+            html.append(" id=\"").append(id).append('\"');
         }
         if (!StringUtil.isEmpty(style)) {
-            html.append(" style=\"").append(style).append("\"");
+            html.append(" style=\"").append(style).append('\"');
         }
-        html.append(">");
+        html.append('>');
         // header
         if (isBE) {
             html.append("<div class=\"dash-header\">").append(title);
@@ -84,7 +84,7 @@ public final class SectionTag extends DivTagSupport {
         if (hide) {
             html.append(" style=\"display:none;\"");
         }
-        html.append(">");
+        html.append('>');
         if (!isBE) {
             html.append("<div class=\"formpanel\">");
             html.append("<div class=\"expspace\">");

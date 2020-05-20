@@ -44,12 +44,12 @@ public final class SuccessTag extends DivTagSupport {
         StringBuilder html = new StringBuilder();
         html.append("<div class=\"alert alert-success\" role=\"alert\"");
         if (!StringUtil.isEmpty(id)) {
-            html.append(" id=\"").append(id).append("\"");
+            html.append(" id=\"").append(id).append('\"');
         }
         if (!StringUtil.isEmpty(style)) {
-            html.append(" style=\"").append(style).append("\"");
+            html.append(" style=\"").append(style).append('\"');
         }
-        html.append(">");
+        html.append('>');
         if (canClose) {
             html.append("<button type=\"button\" class=\"close\" onclick=\"javascript:$('#").append(id).append("').slideToggle('fast');\" aria-label=\"Close\">");
             html.append("<span>&times;</span></button>");

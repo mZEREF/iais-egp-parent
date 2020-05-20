@@ -374,9 +374,7 @@ public class RequestForInformationDelegator {
             }
 
         }
-//        if(lengths.length>=1){
-//            requestForInformationService.clarificationApplicationUpdateByLicPremId(licPremId);
-//        }
+
 
         // 		doCreateRequest->OnStepProcess
     }

@@ -41,16 +41,16 @@ public final class RowTag extends DivTagSupport {
             html.append(" form-inline");
         }
         if (!StringUtil.isEmpty(cssClass)) {
-            html.append(" ").append(cssClass);
+            html.append(' ').append(cssClass);
         }
-        html.append("\"");
+        html.append('\"');
         if (!StringUtil.isEmpty(id)) {
-            html.append(" id=\"").append(id).append("\"");
+            html.append(" id=\"").append(id).append('\"');
         }
         if (!StringUtil.isEmpty(style)) {
-            html.append(" style=\"").append(style).append("\"");
+            html.append(" style=\"").append(style).append('\"');
         }
-        html.append(">");
+        html.append('>');
         try {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {

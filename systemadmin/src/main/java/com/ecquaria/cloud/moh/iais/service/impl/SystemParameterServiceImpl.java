@@ -74,7 +74,7 @@ public class SystemParameterServiceImpl implements SystemParameterService {
 
     @Override
     public void saveSystemParameter(SystemParameterDto dto) {
-        log.info("test val" + val);
+        log.info(StringUtil.changeForLog("test val" + val));
         log.info("save system parameter start....");
         dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         SystemParameterDto postUpdate = systemClient.saveSystemParameter(dto).getEntity();

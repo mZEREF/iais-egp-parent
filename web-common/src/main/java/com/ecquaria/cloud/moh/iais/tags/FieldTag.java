@@ -109,7 +109,7 @@ public final class FieldTag extends DivTagSupport {
     }
     private void generateHtml(StringBuilder html){
         if (!StringUtil.isEmpty(cssClass)) {
-            html.append(" ").append(cssClass);
+            html.append(' ').append(cssClass);
         }
         if (!StringUtil.isEmpty(id)) {
             html.append("\" id=\"").append(id);
@@ -134,20 +134,20 @@ public final class FieldTag extends DivTagSupport {
         if (StringUtil.isEmpty(checkboxId)) {
             checkboxId = MiscUtil.formatDummyId();
         }
-        html.append(" id=\"").append(checkboxId).append("\"");
+        html.append(" id=\"").append(checkboxId).append('\"');
         if (!StringUtil.isEmpty(checkboxName)) {
-            html.append(" name=\"").append(checkboxName).append("\"");
+            html.append(" name=\"").append(checkboxName).append('\"');
         }
         if (!StringUtil.isEmpty(checkboxVal)) {
-            html.append(" value=\"").append(checkboxVal).append("\"");
+            html.append(" value=\"").append(checkboxVal).append('\"');
         }
         if (checked) {
             html.append(" checked");
         }
         if (!StringUtil.isEmpty(onclick)) {
-            html.append(" onclick=\"").append(onclick).append("\"");
+            html.append(" onclick=\"").append(onclick).append('\"');
         }
-        html.append(">");
+        html.append('>');
         html.append("<label for=\"").append(checkboxId).append("\" style=\"display: inline;\"></label>");
         html.append(ENDLABLE);
         html.append("</div>");

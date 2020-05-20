@@ -2,11 +2,12 @@ package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 
 /**
  * ConfirmDialogTag
@@ -62,7 +63,7 @@ public class ConfirmDialogTag extends TagSupport {
         StringBuilder html = new StringBuilder();
         //html
         String divId = popupOrder;
-        html.append("<div id=\"").append(divId).append("\"");
+        html.append("<div id=\"").append(divId).append('\"');
         html.append(" class=\"modal fade\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"").append(divId);
         html.append("\" style=\"left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%;");
         html.append("overflow: visible;bottom: inherit;right: inherit;\">");
@@ -103,7 +104,7 @@ public class ConfirmDialogTag extends TagSupport {
             if (!StringUtil.isEmpty(cancelFunc)) {
                 html.append(" onclick=\"javascript:").append(cancelFunc).append(";\"");
             }
-            html.append(">").append(cancelBtnDesc).append("</button>");
+            html.append('>').append(cancelBtnDesc).append("</button>");
         }
         html.append("</div></div></div></div>");
         //javascript
@@ -116,7 +117,7 @@ public class ConfirmDialogTag extends TagSupport {
         }
         html.append(callBack);
         if (needFungDuoJi) {
-            html.append("}");
+            html.append('}');
         }
         html.append("}</script>");
 
@@ -138,12 +139,12 @@ public class ConfirmDialogTag extends TagSupport {
 
     public void setMsg(String msg) throws JspException {
         this.msg = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("msg",
-                msg.toString(), Object.class, this, pageContext));
+                msg, Object.class, this, pageContext));
     }
 
     public void setCallBack(String callBack) throws JspException {
         this.callBack = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("callBack",
-                callBack.toString(), Object.class, this, pageContext));;
+                callBack, Object.class, this, pageContext));;
     }
 
     public void setPopupOrder(String popupOrder) {

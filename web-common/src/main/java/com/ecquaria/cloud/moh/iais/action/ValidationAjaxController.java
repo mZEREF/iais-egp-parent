@@ -5,16 +5,17 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * ValidationAjaxController
@@ -45,8 +46,8 @@ public class ValidationAjaxController {
                     Method method = clazz.getMethod("getValueFromPage", new Class[] {HttpServletRequest.class});
 
                     // validation start
-                    log.info("<== The AJAX Validation DTO Class ==>" + entityPara[i].replaceAll("[\r\n]",
-                            ""));
+                    log.info(StringUtil.changeForLog("<== The AJAX Validation DTO Class ==>" + entityPara[i].replaceAll("[\r\n]",
+                            "")));
                     if (!StringUtil.isEmpty(profiles[i])) {
                         ValidationResult constraintViolations =
                                 WebValidationHelper.validateProperty(Class.forName(entityPara[i]).cast(

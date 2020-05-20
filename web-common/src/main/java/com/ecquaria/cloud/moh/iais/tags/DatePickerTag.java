@@ -3,9 +3,10 @@ package com.ecquaria.cloud.moh.iais.tags;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import java.util.Date;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
+import java.util.Date;
 
 /**
  * Date Picker Tag
@@ -85,53 +86,53 @@ public final class DatePickerTag extends DivTagSupport {
     private void generateStartHtml(StringBuilder html) {
         html.append("<input type=\"text\" autocomplete=\"off\" class=\"date_picker form-control").append(workingDay ? "-working" : "");
         if (!StringUtil.isEmpty(cssClass)) {
-            html.append(" ").append(cssClass);
+            html.append(' ').append(cssClass);
         }
-        html.append("\"");
+        html.append('\"');
         if (!StringUtil.isEmpty(name)) {
-            html.append(" name=\"").append(name).append("\"");
+            html.append(" name=\"").append(name).append('\"');
         }
-        html.append(" id=\"").append(id).append("\"");
+        html.append(" id=\"").append(id).append('\"');
     }
     private void generateFromToHtml(StringBuilder html) {
         if (fromNow) {
             html.append(" data-date-start-date=\"0d\"");
         } else if (startDate != null) {
-            html.append(" data-date-start-date=\"").append(startDate).append("\"");
+            html.append(" data-date-start-date=\"").append(startDate).append('\"');
         } else {
             html.append(" data-date-start-date=\"01/01/1900\"");
         }
         if (toNow) {
             html.append(" data-date-end-date=\"0d\"");
         } else if (endDate != null) {
-            html.append(" data-date-end-date=\"").append(endDate).append("\"");
+            html.append(" data-date-end-date=\"").append(endDate).append('\"');
         }
     }
     private void generateEndHtml(StringBuilder html) {
         if (!StringUtil.isEmpty(disableWeekDay)) {
-            html.append(" data-date-days-of-week-disabled=\"").append(disableWeekDay).append("\"");
+            html.append(" data-date-days-of-week-disabled=\"").append(disableWeekDay).append('\"');
         }
         if (value != null) {
             String val = StringUtil.escapeHtml(value);
-            html.append(" value=\"").append(val).append("\"");
+            html.append(" value=\"").append(val).append('\"');
         } else if (dateVal != null) {
-            html.append(" value=\"").append(Formatter.formatDate(dateVal)).append("\"");
+            html.append(" value=\"").append(Formatter.formatDate(dateVal)).append('\"');
         }
         if (!StringUtil.isEmpty(onclick)) {
-            html.append(" onclick=\"").append(onclick).append("\"");
+            html.append(" onclick=\"").append(onclick).append('\"');
         }
         if (!StringUtil.isEmpty(onchange)) {
-            html.append(" onchange=\"").append(onchange).append("\"");
+            html.append(" onchange=\"").append(onchange).append('\"');
         }
         if (!StringUtil.isEmpty(onblur)) {
-            html.append(" onblur=\"").append(onblur).append("\"");
+            html.append(" onblur=\"").append(onblur).append('\"');
         }
         if (!StringUtil.isEmpty(title)) {
-            html.append(" title=\"").append(title).append("\"");
+            html.append(" title=\"").append(title).append('\"');
         }
         html.append(" placeholder=\"dd/mm/yyyy\" maxlength=\"10\"/>");
         if (needErrorSpan) {
-            html.append("<span id=\"error_").append(name).append("\"");
+            html.append("<span id=\"error_").append(name).append('\"');
             html.append(" name=\"iaisErrorMsg\" class=\"error-msg\"></span>");
         }
     }

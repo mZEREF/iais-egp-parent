@@ -74,13 +74,13 @@ public final class SearchSectionTag extends DivTagSupport {
             html.append("<div class=\"search-iconic-input\">");
             html.append("<a href=\"javascript:void(0);\"");
 
-            html.append(" onclick=\"").append(onclick).append("\"");
+            html.append(" onclick=\"").append(onclick).append('\"');
 
             html.append("><i class=\"fa fa-search\"></i></a>");
-            html.append("<input type=\"text\" class=\"form-control search-box\" placeholder=\"").append(placeholder).append("\"");
-            html.append(" name=\"").append(fieldName).append("\"");
+            html.append("<input type=\"text\" class=\"form-control search-box\" placeholder=\"").append(placeholder).append('\"');
+            html.append(" name=\"").append(fieldName).append('\"');
             if (!StringUtil.isEmpty(value)) {
-                html.append(" value=\"").append(StringUtil.escapeHtml(value)).append("\"");
+                html.append(" value=\"").append(StringUtil.escapeHtml(value)).append('\"');
             }
             html.append("></div>");
         }
@@ -101,13 +101,13 @@ public final class SearchSectionTag extends DivTagSupport {
         if (!StringUtil.isEmpty(onclick)) {
             html.append("<div class=\"search-iconic-input\">");
             html.append("<a href=\"javascript:void(0);\"");
-            html.append(" onclick=\"").append(onclick).append("\"");
+            html.append(" onclick=\"").append(onclick).append('\"');
             html.append("><i class=\"fa fa-search\"></i></a>");
-            html.append("<input type=\"text\" class=\"searchapp searchwidth no-form-control\" placeholder=\"").append(placeholder).append("\"");
-            html.append(" alt=\"").append(placeholder).append("\"");
-            html.append(" name=\"").append(fieldName).append("\"");
+            html.append("<input type=\"text\" class=\"searchapp searchwidth no-form-control\" placeholder=\"").append(placeholder).append('\"');
+            html.append(" alt=\"").append(placeholder).append('\"');
+            html.append(" name=\"").append(fieldName).append('\"');
             if (!StringUtil.isEmpty(value)) {
-                html.append(" value=\"").append(StringUtil.escapeHtml(value)).append("\"");
+                html.append(" value=\"").append(StringUtil.escapeHtml(value)).append('\"');
             }
             html.append("></div>");
         }
@@ -120,7 +120,7 @@ public final class SearchSectionTag extends DivTagSupport {
         if (hide) {
             html.append(" style=\"display:none;\"");
         }
-        html.append(">");
+        html.append('>');
     }
     @Override
     public int doEndTag() throws JspException {

@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 import java.io.IOException;
@@ -157,7 +156,7 @@ public final class CheckBoxTag extends DivTagSupport {
                         html.append("<div class=\"form-check\">");
                         html.append("<input class=\"form-check-input\" ");
 
-                        html.append("name=\"").append(name).append("\"");
+                        html.append("name=\"").append(name).append('\"');
 
                         if (!StringUtils.isEmpty(checkboxId)){
                             html.append("id=\"").append(checkboxId).append("\" ");
@@ -165,7 +164,7 @@ public final class CheckBoxTag extends DivTagSupport {
 
                         html.append(" type=\"checkbox\" ");
 
-                        html.append(" value=\"").append(text).append("\"");
+                        html.append(" value=\"").append(text).append('\"');
                         if (!StringUtils.isEmpty(ariaInvalid)){
                             html.append("aria-invalid=\"").append(ariaInvalid).append("\">");
                         }
@@ -182,7 +181,7 @@ public final class CheckBoxTag extends DivTagSupport {
                             }
                         }
 
-                        html.append(">");
+                        html.append('>');
 
                         if(!StringUtils.isEmpty(labelClass)){
                             html.append("<label class=\"").append(labelClass).append("\" ");

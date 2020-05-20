@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -94,7 +95,7 @@ public class MessageServiceImpl implements MessageService {
                 }
 
             }catch (Exception e){
-                log.error("encounter failure when sync message to fe " + e.getMessage());
+                log.error(StringUtil.changeForLog("encounter failure when sync message to fe " + e.getMessage()));
             }
 
         }

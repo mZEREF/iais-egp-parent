@@ -243,7 +243,7 @@ public class MasterCodeDelegator {
             masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE);
         }
         if (codeEffFrom != null && codeEffTo != null){
-            if (codeEffFrom.before(codeEffTo) || codeEffFrom.equals(codeEffTo)){
+            if (codeEffFrom.compareTo(codeEffTo)>=0 ){
                 if(!StringUtil.isEmpty(codeStartDate)){
                     masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,codeStartDate);
                 }else{
@@ -497,7 +497,7 @@ public class MasterCodeDelegator {
     }
 
     private void logAboutStart(String methodName){
-        log.debug("**** The  "+methodName+"  Start ****");
+        log.debug(StringUtil.changeForLog("**** The  "+methodName+"  Start ****"));
     }
 
     private void prepareSelect(HttpServletRequest request){

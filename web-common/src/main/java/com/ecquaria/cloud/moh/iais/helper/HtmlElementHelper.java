@@ -14,11 +14,11 @@ import java.util.Map;
  * @date 2019/12/5 13:45
  */
 public class HtmlElementHelper {
-    public static String generateSelect(Map<String, String> attributes, String codeCategoryId, String firstOption, String value, int size) throws Exception {
+    public static String generateSelect(Map<String, String> attributes, String codeCategoryId, String firstOption, String value, int size)  {
         return generateSelect(attributes, codeCategoryId, firstOption, value, size, false);
     }
 
-    public static String generateSelect(Map<String, String> attributes, String codeCategoryId, String firstOption, String value, int size, boolean handleOthers) throws Exception {
+    public static String generateSelect(Map<String, String> attributes, String codeCategoryId, String firstOption, String value, int size, boolean handleOthers) {
         List<SelectOption> sos = MasterCodeUtil.retrieveOptionsByCate(codeCategoryId);
         return generateSelect(attributes, sos, firstOption, value, size, handleOthers);
     }
@@ -49,7 +49,7 @@ public class HtmlElementHelper {
         } else {
             return "";
         }
-        html.append(">");
+        html.append('>');
         if (!StringUtil.isEmpty(firstOption)) {
             html.append("<option value=\"\">").append(StringUtil.viewHtml(firstOption)).append("</option>");
         }
@@ -81,12 +81,9 @@ public class HtmlElementHelper {
                     }
                 }
                 if (size < 0) {
-                    html.append("<option value=\"" + StringUtil.viewNonNullHtml(val) + "\""
-                            + selected + ">" + StringUtil.viewHtml(txt) + "</option>");
+                    html.append("<option value=\"").append(StringUtil.viewNonNullHtml(val)).append("\"").append(selected).append(">").append(StringUtil.viewHtml(txt)).append("</option>");
                 } else {
-                    html.append("<option value=\"" + StringUtil.viewNonNullHtml(val) + "\" title=\""
-                            + StringUtil.viewHtml(txt) + "\"" + selected + ">" + StringUtil.viewHtml(StringUtil.getShortDots(txt, size))
-                            + "</option>");
+                    html.append("<option value=\"").append(StringUtil.viewNonNullHtml(val)).append("\" title=\"").append(StringUtil.viewHtml(txt)).append("\"").append(selected).append(">").append(StringUtil.viewHtml(StringUtil.getShortDots(txt, size))).append("</option>");
                 }
             }
         }
@@ -94,27 +91,27 @@ public class HtmlElementHelper {
         // The Nice select css
         String clsName = StringUtil.isEmpty(attributes.get("id")) ? attributes.get("name") : attributes.get("id");
         String className = clsName + "Select";
-        html.append("<div class=\"nice-select "+className+"\" tabindex=\"0\">");
+        html.append("<div class=\"nice-select ").append(className).append("\" tabindex=\"0\">");
         if (!StringUtil.isEmpty(firstOption)) {
-            html.append("<span class=\"current\">"+firstOption+"</span>");
+            html.append("<span class=\"current\">").append(firstOption).append("</span>");
         } else {
-            html.append("<span class=\"current\">"+ options.get(0).getText() +"</span>");
+            html.append("<span class=\"current\">").append(options.get(0).getText()).append("</span>");
         }
         html.append("<ul class=\"list mCustomScrollbar _mCS_2 mCS_no_scrollbar\">")
                 .append("<div id=\"mCSB_2\" class=\"mCustomScrollBox mCS-light mCSB_vertical mCSB_inside\" tabindex=\"0\" style=\"max-height: none;\">")
                 .append("<div id=\"mCSB_2_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">");
         if (!StringUtil.isEmpty(firstOption)) {
-            html.append("<li data-value=\"\" class=\"option selected\">"+firstOption+"</li>");
+            html.append("<li data-value=\"\" class=\"option selected\">").append(firstOption).append("</li>");
             for (SelectOption kv: options) {
-                html.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+                html.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append("</li>");
             }
-        } else {
+        } else if (options!=null){
             for(int i = 0;i < options.size();i++){
                 SelectOption kv = options.get(i);
                 if(i == 0){
-                    html.append(" <li data-value=\""+kv.getValue()+"\" class=\"option selected\">"+kv.getText()+"</li>");
+                    html.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option selected\">").append(kv.getText()).append("</li>");
                 }else{
-                    html.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+                    html.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append("</li>");
                 }
             }
         }

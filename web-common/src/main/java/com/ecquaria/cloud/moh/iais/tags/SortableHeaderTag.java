@@ -92,7 +92,7 @@ public class SortableHeaderTag extends DivTagSupport {
             jsFunc = "sortRecords";
         }
         sb.append("<a class=\"sort-up" );
-        sb.append(isActiveUp).append("\"").append(" href=\"");
+        sb.append(isActiveUp).append('\"').append(" href=\"");
         if (!ACTIVE.equals(isActiveUp)) {
             sb.append("javascript:");
             sb.append(jsFunc);
@@ -102,11 +102,11 @@ public class SortableHeaderTag extends DivTagSupport {
             sb.append(SearchParam.ASCENDING);
             sb.append("');");
         } else {
-            sb.append("#");
+            sb.append('#');
         }
         sb.append("\"  title=\"Sort up\"><span class=\"glyphicon glyphicon-chevron-up\"></span></a>");
         sb.append("<a class=\"sort-down ");
-        sb.append(isActiveDown).append("\"").append(" href=\"");
+        sb.append(isActiveDown).append('\"').append(" href=\"");
         if (!ACTIVE.equals(isActiveDown)) {
             sb.append("javascript:");
             sb.append(jsFunc);
@@ -116,7 +116,7 @@ public class SortableHeaderTag extends DivTagSupport {
             sb.append(SearchParam.DESCENDING);
             sb.append("');");
         } else {
-            sb.append("#");
+            sb.append('#');
         }
         sb.append("\" title=\"Sort down\"><span class=\"glyphicon glyphicon-chevron-down\" style=\"font-size: 10px\"></span></a></span>");
 

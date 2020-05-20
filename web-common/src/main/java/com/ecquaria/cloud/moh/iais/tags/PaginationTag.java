@@ -98,7 +98,7 @@ public class PaginationTag extends DivTagSupport {
         sb.append("<p class=\"count table-count\">");
         int maxRec = sr.getRowCount() < pageNo * pageSize ? sr.getRowCount() : pageNo * pageSize;
         int statRec = sr.getRowCount() < ((pageNo - 1) * pageSize + 1) ? sr.getRowCount() : ((pageNo - 1) * pageSize + 1);
-        sb.append(statRec).append("-").append(maxRec);
+        sb.append(statRec).append('-').append(maxRec);
         sb.append(" out of ");
         sb.append(sr.getRowCount());
         sb.append(" items");
@@ -199,7 +199,7 @@ public class PaginationTag extends DivTagSupport {
         sb.append("function changePage(action){");
         sb.append("$('#pageJumpNoTextchangePage').val(action);");
         sb.append("jumpToPagechangePage();");
-        sb.append("}");
+        sb.append('}');
 //        sb.append("$(\"#pageJumpNoText\").keyup(function(){var str=$(this).val();var newstr='';");
 //        sb.append("for(i=0;i<str.length;i++){var j=str.charCodeAt(i);if(j>47&&j<58){newstr+=String.fromCharCode(j);}}");
 //        sb.append("$(this).val(newstr);});");

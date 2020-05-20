@@ -47,10 +47,10 @@ public class LinkTag extends DivTagSupport {
         html.append("<div class=\"col-xs-7 col-sm-6 col-md-4\">");
         html.append("<a href=\"javascript:void(0);\"");
         if (!StringUtil.isEmpty(id)) {
-            html.append(" id=\"").append(id).append("\"");
+            html.append(" id=\"").append(id).append('\"');
         }
         if (!StringUtil.isEmpty(onclick)) {
-            html.append(" onclick=\"").append(onclick).append("\"");
+            html.append(" onclick=\"").append(onclick).append('\"');
         }
         html.append("><div class=\"").append(icon).append("\"></div>");
         if (!StringUtil.isEmpty(title)) {

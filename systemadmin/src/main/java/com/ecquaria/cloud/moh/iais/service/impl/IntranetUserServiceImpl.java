@@ -72,9 +72,9 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     public Boolean UserIsExist(String userId) {
         OrgUserDto entity = intranetUserClient.retrieveOneOrgUserAccount(userId).getEntity();
         if(entity!=null){
-            return true;
+            return Boolean.TRUE;
         }
-           return false;
+           return Boolean.FALSE;
     }
 
     @Override
@@ -101,7 +101,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     public Boolean validatepassword(String password, UserIdentifier userIdentifier) {
         Boolean entity = egpUserClient.validatepassword(password, userIdentifier).getEntity();
         if(entity==null){
-            return false;
+            return Boolean.FALSE;
         }
         return entity;
     }

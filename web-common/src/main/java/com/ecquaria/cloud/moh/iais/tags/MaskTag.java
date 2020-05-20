@@ -59,11 +59,11 @@ public class MaskTag extends DivTagSupport {
 
     public void setValue(String value) throws JspException {
         this.value = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("value",
-                value.toString(), Object.class, this, pageContext));
+                value, Object.class, this, pageContext));
     }
 
     public void setName(String name) throws JspException {
         this.name = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("name",
-                name.toString(), Object.class, this, pageContext));;
+                name, Object.class, this, pageContext));
     }
 }

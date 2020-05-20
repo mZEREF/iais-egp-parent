@@ -61,7 +61,7 @@ public class MasterCodeTag extends DivTagSupport {
 
     public void setCode(String code) throws JspException {
         this.code = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("code",
-                code.toString(), Object.class, this, pageContext));
+                code, Object.class, this, pageContext));
     }
 
     public void setEmpty(boolean empty) {

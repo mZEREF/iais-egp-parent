@@ -35,12 +35,12 @@ public class BlastValidate implements CustomizeValidator {
         String MM = blastManagementDto.getMM();
         if(HH == null){
             errMap.put("HH","The field is mandatory.");
-        }else if(!(StringUtils.isNumeric(HH) &&  Integer.valueOf(HH) < 24)){
+        }else if(!(StringUtils.isNumeric(HH) &&  Integer.parseInt(HH) < 24)){
             errMap.put("HH","Field format is wrong");
         }
         if(MM == null){
             errMap.put("HH","The field is mandatory.");
-        }else if(!(StringUtils.isNumeric(MM) &&  Integer.valueOf(MM) < 60)){
+        }else if(!(StringUtils.isNumeric(MM) &&  Integer.parseInt(MM) < 60)){
             errMap.put("HH","Field format is wrong");
         }
         return errMap;
