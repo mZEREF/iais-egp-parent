@@ -185,7 +185,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
 
     private void updateLastVersion(HcsaRiskGlobalDto golDto) {
         HcsaRiskGlobalDto lastVersionDto = hcsaConfigClient.getRiskGolbalRiskMatraixBySvcCode(golDto.getServiceCode()).getEntity();
-        String status = null;
+        String status = "CMSTAT003";
         Date doeffDate = null;
         try {
             doeffDate = golDto.getEffectiveDate();
