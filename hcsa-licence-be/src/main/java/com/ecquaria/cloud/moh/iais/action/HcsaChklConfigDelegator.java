@@ -406,23 +406,20 @@ public class HcsaChklConfigDelegator {
             configDto.setHciCode(hciCode);
             configDto.setEftStartDate(starteDate);
             configDto.setEftEndDate(endDate);
-
             configDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            //field validate
 
+            //field validate
             ValidationResult validationResult = WebValidationHelper.validateProperty(configDto, common == null ? "save" : "commonSave");
             if(validationResult != null && validationResult.isHasErrors()){
                 Map<String,String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             }else {
-
                 ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, configDto);
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
             }
 
             //record validate
-
             boolean existsRecord = hcsaChklService.isExistsRecord(configDto);
             if (existsRecord){
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("configCustomValidation", "CHKL_ERR019"));
