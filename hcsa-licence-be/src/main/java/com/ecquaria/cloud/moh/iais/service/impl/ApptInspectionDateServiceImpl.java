@@ -141,6 +141,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Autowired
     private MsgTemplateClient msgTemplateClient;
 
+    @Autowired
+    private EicRequestTrackingHelper eicRequestTrackingHelper;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -687,7 +690,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             apptFeConfirmDateDto.setAppPremisesInspecApptUpdateList(appPremisesInspecApptDtoUpdateList);
             apptFeConfirmDateDto.setAppPremisesInspecApptDto(appPremInspApptDto1);
             //save eic record
-            EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
             EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApptInspectionDateServiceImpl", "saveSpecificDateLast",
                     "hcsa-licence-web-intranet", ApptFeConfirmDateDto.class.getName(), JsonUtil.parseToJson(apptFeConfirmDateDto));
             String eicRefNo = eicRequestTrackingDto.getRefNo();
@@ -828,7 +830,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         //save eic record
-        EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
         EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApptInspectionDateServiceImpl", "createFeAppPremisesInspecApptDto",
                 "hcsa-licence-web-intranet", AppPremisesInspecApptDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
         String eicRefNo = eicRequestTrackingDto.getRefNo();

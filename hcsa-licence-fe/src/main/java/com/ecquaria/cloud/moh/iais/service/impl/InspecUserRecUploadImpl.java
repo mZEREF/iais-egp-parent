@@ -48,6 +48,9 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
     private ApplicationClient applicationClient;
 
     @Autowired
+    private EicRequestTrackingHelper eicRequestTrackingHelper;
+
+    @Autowired
     private InspectionFeClient inspectionFeClient;
 
     @Autowired
@@ -158,7 +161,6 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
             inspRectificationSaveDto.setAppPremPreInspectionNcDtos(appPremPreInspectionNcDtos);
             inspRectificationSaveDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             //save eic record
-            EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
             EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.InspecUserRecUploadImpl", "submitAllRecNc",
                     "hcsa-licence-web-internet", InspRectificationSaveDto.class.getName(), JsonUtil.parseToJson(inspRectificationSaveDto));
             String eicRefNo = eicRequestTrackingDto.getRefNo();

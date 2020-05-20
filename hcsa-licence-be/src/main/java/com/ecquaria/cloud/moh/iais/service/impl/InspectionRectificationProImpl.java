@@ -89,6 +89,9 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
 
     @Autowired
+    private EicRequestTrackingHelper eicRequestTrackingHelper;
+
+    @Autowired
     private OrganizationClient organizationClient;
 
     @Autowired
@@ -207,7 +210,6 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
             inspRectificationSaveDto = getUpdateItemNcList(inspectionPreTaskDto, inspRectificationSaveDto);
             //save eic record
-            EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
             EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.InspectionRectificationProImpl", "routingTaskToReport",
                     "hcsa-licence-web-intranet", InspRectificationSaveDto.class.getName(), JsonUtil.parseToJson(inspRectificationSaveDto));
             String eicRefNo = eicRequestTrackingDto.getRefNo();
@@ -232,7 +234,6 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
             inspRectificationSaveDto = getUpdateItemNcList(inspectionPreTaskDto, inspRectificationSaveDto);
             //save eic record
-            EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
             EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.InspectionRectificationProImpl", "routingTaskToReport",
                     "hcsa-licence-web-intranet", InspRectificationSaveDto.class.getName(), JsonUtil.parseToJson(inspRectificationSaveDto));
             String eicRefNo = eicRequestTrackingDto.getRefNo();
@@ -257,7 +258,6 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             //update rfi nc
             inspRectificationSaveDto = getRfiUpdateItemNcList(inspectionPreTaskDto, inspRectificationSaveDto);
             //save eic record
-            EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
             EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.InspectionRectificationProImpl", "routingTaskToReport",
                     "hcsa-licence-web-intranet", InspRectificationSaveDto.class.getName(), JsonUtil.parseToJson(inspRectificationSaveDto));
             String eicRefNo = eicRequestTrackingDto.getRefNo();

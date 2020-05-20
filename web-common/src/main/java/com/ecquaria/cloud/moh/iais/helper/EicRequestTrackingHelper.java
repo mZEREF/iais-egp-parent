@@ -104,10 +104,13 @@ public final class EicRequestTrackingHelper {
                 break;
             case EicClientConstant.SYSTEM_ADMIN_CLIENT:
                 eicClient.saveEicTrack(eicRequestTrackingDto);
-            break;
+                break;
+            case EicClientConstant.ONLINE_APPT_CLIENT:
+                onlineApptEicClient.saveEicTrack(eicRequestTrackingDto);
+                break;
             case EicClientConstant.HCSA_CONFIG:
                 hcsaConfigClient.saveEicTrack(eicRequestTrackingDto);
-            break;
+                break;
             case EicClientConstant.LICENCE_CLIENT:
                 licEicClient.saveEicTrack(eicRequestTrackingDto);
                 break;

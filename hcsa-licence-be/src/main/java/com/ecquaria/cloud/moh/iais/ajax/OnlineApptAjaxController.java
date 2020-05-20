@@ -185,21 +185,16 @@ public class OnlineApptAjaxController {
         String specificDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        int curHour24 = cal.get(Calendar.HOUR_OF_DAY);
-        if(curHour24 > 12){
-            int hours = curHour24 - 12;
-            String hoursShow = "";
-            if(hours < 10){
-                hoursShow = "0";
-            }
-            specificDate = specificDate + " " + hoursShow + hours + ":00";
-        } else {
-            String hoursShow = "";
-            if(curHour24 < 10){
-                hoursShow = "0";
-            }
-            specificDate = specificDate + " " + hoursShow + curHour24 + ":00";
+        int minutes = cal.get(Calendar.MINUTE);
+        if(minutes > 0){
+            cal.add(Calendar.HOUR_OF_DAY, 1);
         }
+        int curHour24 = cal.get(Calendar.HOUR_OF_DAY);
+        String hoursShow = "";
+        if(curHour24 < 10){
+            hoursShow = "0";
+        }
+        specificDate = specificDate + " " + hoursShow + curHour24 + ":00";
         return specificDate;
     }
 

@@ -84,6 +84,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     private OnlineApptEicClient onlineApptEicClient;
 
     @Autowired
+    private EicRequestTrackingHelper eicRequestTrackingHelper;
+
+    @Autowired
     private AppSubmissionService appSubmissionService;
 
     @Autowired
@@ -131,7 +134,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 //save eic record
                 ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
                 apptAppInfoShowDto.setApptRefNo(apptRefNos);
-                EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
                 EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ONLINE_APPT_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptSystemDate",
                         "hcsa-licence-web-internet", ApptAppInfoShowDto.class.getName(), JsonUtil.parseToJson(apptAppInfoShowDto));
                 String eicRefNo = eicRequestTrackingDto.getRefNo();
@@ -228,7 +230,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         apptInspectionDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDto);
 
         //save eic record
-        EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
         EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "confirmInspectionDate",
                 "hcsa-licence-web-internet", ApptInspectionDateDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
         String eicRefNo = eicRequestTrackingDto.getRefNo();
@@ -255,7 +256,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         //save eic record
-        EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
         EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ONLINE_APPT_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "ccCalendarStatusEic",
                 "hcsa-licence-web-internet", ApptCalendarStatusDto.class.getName(), JsonUtil.parseToJson(apptCalendarStatusDto));
         String eicRefNo = eicRequestTrackingDto.getRefNo();
@@ -302,7 +302,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             appointmentDto.setEndDate(Formatter.formatDateTime(appPremisesInspecApptDto.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
 
             //save eic record
-            EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
             EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ONLINE_APPT_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptNewSystemDate",
                     "hcsa-licence-web-internet", AppointmentDto.class.getName(), JsonUtil.parseToJson(appointmentDto));
             String eicRefNo = eicRequestTrackingDto.getRefNo();
@@ -404,7 +403,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         apptInspectionDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDto);
 
         //save eic record
-        EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
         EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "confirmNewDate",
                 "hcsa-licence-web-internet", ApptInspectionDateDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
         String eicRefNo = eicRequestTrackingDto.getRefNo();
@@ -444,7 +442,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         apptInspectionDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDto);
 
         //save eic record
-        EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
         EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "saveAccSpecificDate",
                 "hcsa-licence-web-internet", ApptInspectionDateDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
         String eicRefNo = eicRequestTrackingDto.getRefNo();
@@ -573,7 +570,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         apptFeConfirmDateDto.setTaskDto(taskDto);
         //save eic record
-        EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
         EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ORGANIZATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "createApptDateTask",
                 "hcsa-licence-web-internet", ApptFeConfirmDateDto.class.getName(), JsonUtil.parseToJson(apptFeConfirmDateDto));
         String eicRefNo = eicRequestTrackingDto.getRefNo();
@@ -631,7 +627,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         apptInspectionDateDto.setRefNo(null);
 
         //save eic record
-        EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
         EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "rejectSystemDateAndCreateTask",
                 "hcsa-licence-web-internet", ApptInspectionDateDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
         String eicRefNo = eicRequestTrackingDto.getRefNo();
@@ -684,7 +679,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 //save eic record
                 ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
                 apptAppInfoShowDto.setApptRefNo(apptRefNos);
-                EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
                 EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ONLINE_APPT_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptSystemDate",
                         "hcsa-licence-web-internet", ApptAppInfoShowDto.class.getName(), JsonUtil.parseToJson(apptAppInfoShowDto));
                 String eicRefNo = eicRequestTrackingDto.getRefNo();
@@ -771,7 +765,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         apptInspectionDateDto.setRefNo(null);
 
         //save eic record
-        EicRequestTrackingHelper eicRequestTrackingHelper = new EicRequestTrackingHelper();
         EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "rejectSpecificDate",
                 "hcsa-licence-web-internet", ApptInspectionDateDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
         String eicRefNo = eicRequestTrackingDto.getRefNo();
