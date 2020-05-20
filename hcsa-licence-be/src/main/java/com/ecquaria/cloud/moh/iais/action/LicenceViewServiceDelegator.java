@@ -303,13 +303,14 @@ public class LicenceViewServiceDelegator {
         String parentMsg = null;
         String successMsg = null;
         String errorMsg = null;
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         if (applicationViewDto != null) {
             AppPremisesCorrelationDto newAppPremisesCorrelationDto = applicationViewDto.getNewAppPremisesCorrelationDto();
             if (newAppPremisesCorrelationDto != null) {
                 String[] selects = ParamUtil.getStrings(bpc.request, "editCheckbox");
                 if (selects != null && selects.length > 0) {
                     List<String> selectsList = Arrays.asList(selects);
-                    AppEditSelectDto appEditSelectDto = setAppEditSelectDto(newAppPremisesCorrelationDto, selectsList);
+                    AppEditSelectDto appEditSelectDto = setAppEditSelectDto(newAppPremisesCorrelationDto, selectsList,appSubmissionDto);
                     parentMsg = "<ul>";
                     parentMsg = parentMsg + appEditSelectDto.getParentMsg();
                     parentMsg = parentMsg + "</ul>";
@@ -540,10 +541,17 @@ public class LicenceViewServiceDelegator {
         return appSvcRelatedInfoDto;
     }
 
-    private AppEditSelectDto setAppEditSelectDto(AppPremisesCorrelationDto newAppPremisesCorrelationDto, List<String> selectsList) {
+    private AppEditSelectDto setAppEditSelectDto(AppPremisesCorrelationDto newAppPremisesCorrelationDto, List<String> selectsList, AppSubmissionDto appSubmissionDto) {
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appEditSelectDto.setApplicationId(newAppPremisesCorrelationDto.getApplicationId());
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        String serviceName = "";
+        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
+            String serviceId = appSvcRelatedInfoDtos.get(0).getServiceId();
+            HcsaServiceDto hcsaServiceDto = applicationViewService.getHcsaServiceDtoById(serviceId);
+            serviceName = hcsaServiceDto.getSvcName();
+        }
         String parentMsg = "";
         if (selectsList.contains("premises")) {
             appEditSelectDto.setPremisesEdit(true);
@@ -555,7 +563,7 @@ public class LicenceViewServiceDelegator {
         }
         if (selectsList.contains("service")) {
             appEditSelectDto.setServiceEdit(true);
-            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Service</li>";
+            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Service Related Information - " + serviceName+ "</li>";
         }
         if (selectsList.contains("po")) {
             appEditSelectDto.setPoEdit(true);
