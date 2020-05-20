@@ -570,7 +570,7 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.getAppSvcRelatedInfoDtoList().addAll(appSvcRelatedInfoDtos);
         }
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
-       // bpc.request.getSession().setAttribute("otherAppSubmissionDtos",appSubmissionDtos1);
+        bpc.request.getSession().setAttribute("otherAppSubmissionDtos",appSubmissionDtos1);
         ParamUtil.setRequestAttr(bpc.request,"applicationGroupDto",applicationGroupDto);
         ParamUtil.setSessionAttr(bpc.request,"totalStr",totalStr);
         ParamUtil.setSessionAttr(bpc.request,"totalAmount",total);
