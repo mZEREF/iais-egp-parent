@@ -17,6 +17,11 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.sz.commons.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,15 +32,10 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Shicheng
@@ -51,7 +51,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     private String fileFormat = ".text";
     private String backups;
 
-    private Boolean flag = true;
+    private Boolean flag = Boolean.TRUE;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -73,10 +73,9 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
     @Override
     public void compressFile(Map<String, String> appIdItemIdMap) {
-        Set<String> fileIds = appIdItemIdMap.keySet();
-        for(String fileId : fileIds) {
-            String compress = compress(fileId);
-            String appId = appIdItemIdMap.get(fileId);
+        for(Map.Entry<String, String> fileId: appIdItemIdMap.entrySet()) {
+            String compress = compress(fileId.getKey());
+            String appId = appIdItemIdMap.get(fileId.getKey());
             rename(compress, appId);
             deleteFile();
         }
@@ -215,7 +214,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     private void rename(String fileNamesss, String appId)  {
-        flag = true;
+        flag = Boolean.TRUE;
         File zipFile = new File(backups);
         if(zipFile.isDirectory()){
             File[] files = zipFile.listFiles((dir, name) -> {
@@ -250,7 +249,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                             if(!fileDelStatus){
                                 log.debug(StringUtil.changeForLog(file.getName() + "delete false"));
                             }
-                            flag = false;
+                            flag = Boolean.FALSE;
                             break;
                         }
                     } else {

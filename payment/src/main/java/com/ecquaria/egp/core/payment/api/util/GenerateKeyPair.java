@@ -1,10 +1,11 @@
 package com.ecquaria.egp.core.payment.api.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class GenerateKeyPair {
@@ -42,7 +43,7 @@ public class GenerateKeyPair {
 	 * Transform the specified byte into a Hex String form.
 	 */
 	public static final String bytesToHexStr(byte[] bcd) {
-		StringBuffer s = new StringBuffer(bcd.length * 2);
+		StringBuilder s = new StringBuilder(bcd.length * 2);
 
 		for (int i = 0; i < bcd.length; i++) {
 			s.append(bcdLookup[(bcd[i] >>> 4) & 0x0f]);

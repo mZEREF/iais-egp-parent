@@ -64,7 +64,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     private String fileFormat = ".text";
     private String backups;
 
-    private Boolean flag=true;
+    private Boolean flag=Boolean.TRUE;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -208,7 +208,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
     private void rename(String fileNamesss,String licPreId)  {
         log.info("--------------rename start ---------------------");
-        flag = true;
+        flag = Boolean.TRUE;
         File zipFile =new File(backups);
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
@@ -240,7 +240,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                     String s1 = saveFileName(fileNamesss+".zip","backupsRec" + File.separator+fileNamesss+".zip",licPreId);
                     if(!s1.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
-                        flag=false;
+                        flag=Boolean.FALSE;
                         break;
                     }
                 } catch (IOException e) {

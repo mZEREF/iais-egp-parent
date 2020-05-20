@@ -24,20 +24,18 @@ public class GatewaySubmit {
         Map<String, String> sPara = buildRequestPara(sParaTemp);
         List<String> keys = new ArrayList<String>(sPara.keySet());
 
-        StringBuffer sbHtml = new StringBuffer();
+        StringBuilder sbHtml = new StringBuilder();
 
-        sbHtml.append("<form id=\"gatewaysubmit\" name=\"gatewaysubmit\" action=\"" + gateway
-                      + "_input_charset=" + GatewayConfig.input_charset + "\" method=\"" + strMethod
-                      + "\">");
+        sbHtml.append("<form id=\"gatewaysubmit\" name=\"gatewaysubmit\" action=\"").append(gateway).append("_input_charset=").append(GatewayConfig.input_charset).append("\" method=\"").append(strMethod).append("\">");
 
         for (int i = 0; i < keys.size(); i++) {
             String name = (String) keys.get(i);
             String value = (String) sPara.get(name);
 
-            sbHtml.append("<input type=\"hidden\" name=\"" + name + "\" value=\"" + value + "\"/>");
+            sbHtml.append("<input type=\"hidden\" name=\"").append(name).append("\" value=\"").append(value).append("\"/>");
         }
 
-        sbHtml.append("<input type=\"submit\" value=\"" + strButtonName + "\" style=\"display:none;\"></form>");
+        sbHtml.append("<input type=\"submit\" value=\"").append(strButtonName).append("\" style=\"display:none;\"></form>");
         sbHtml.append("<script>document.forms['gatewaysubmit'].submit();</script>");
 
         return sbHtml.toString();

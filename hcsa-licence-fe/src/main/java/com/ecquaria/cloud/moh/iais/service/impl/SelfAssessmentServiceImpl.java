@@ -308,17 +308,17 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         FeignResponseEntity<Integer> result = applicationClient.getApplicationSelfAssMtStatusByGroupId(groupId);
         if (HttpStatus.SC_OK == result.getStatusCode()){
             if (ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT == result.getEntity().intValue()){
-                return false;
+                return Boolean.FALSE;
             }
         }
-        return true;
+        return Boolean.TRUE;
     }
 
     @Override
     public Boolean hasSubmittedSelfAssMtRfiByCorrId(String corrId) {
         List<ApplicationDto> appList = applicationClient.getPremisesApplicationsByCorreId(corrId).getEntity();
         if (IaisCommonUtils.isEmpty(appList)) {
-            return true;
+            return Boolean.TRUE;
         }
 
         boolean submitted = true;
@@ -326,7 +326,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 .map(ApplicationDto::getSelfAssMtFlag).collect(Collectors.toList());
 
         for (Integer i : status){
-            if (ApplicationConsts.SUBMITTED_RFI_SELF_ASSESSMENT == i){
+            if (ApplicationConsts.SUBMITTED_RFI_SELF_ASSESSMENT.equals(i)){
                 submitted = false;
                 break;
             }

@@ -130,7 +130,7 @@ public class RequestForChangeDelegator {
         log.debug(StringUtil.changeForLog("the do start doChoose ...."));
         String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if("back".equals(action)){
-            StringBuffer url = new StringBuffer();
+            StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/main-web/eservice/INTERNET/MohInternetInbox")
                     .append("?init_to_page=initLic");
@@ -339,7 +339,10 @@ public class RequestForChangeDelegator {
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
             doValidateLojic(uen,error,licenceDto,licenseeDto);
             if(error.isEmpty()){
-                String newLicenseeId = licenseeDto.getId();
+                String newLicenseeId="";
+                if(licenseeDto!=null){
+                    newLicenseeId = licenseeDto.getId();
+                }
                 log.info(StringUtil.changeForLog("The newLicenseeId is -->:"+newLicenseeId));
                 AppSubmissionDto appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
@@ -355,7 +358,7 @@ public class RequestForChangeDelegator {
                     if (selectCheakboxs.length == appSubmissionDto.getAppGrpPremisesDtoList().size()) {
                         // appSubmissionDto.setIsNeedNewLicNo("0");
                         for (AppGrpPremisesDto appGrpPremisesDto: appSubmissionDto.getAppGrpPremisesDtoList()) {
-                            appGrpPremisesDto.setNeedNewLicNo(false);
+                            appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
                             appGrpPremisesDto.setGroupLicenceFlag("1");
                         }
                     } else {
@@ -364,10 +367,10 @@ public class RequestForChangeDelegator {
                             String premise = appGrpPremisesDto.getTranferSelect();
                             boolean isSelect  = isSelect(selectCheakboxs,premise);
                             if(isSelect){
-                                appGrpPremisesDto.setNeedNewLicNo(true);
+                                appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
                                 appGrpPremisesDto.setGroupLicenceFlag("1");
                             }else {
-                                appGrpPremisesDto.setNeedNewLicNo(false);
+                                appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
                                 appGrpPremisesDto.setGroupLicenceFlag("2");
                             }
                         }
@@ -385,7 +388,7 @@ public class RequestForChangeDelegator {
                     appSubmissionService.setRiskToDto(appSubmissionDto);
 
                     String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
-                    log.info(StringUtil.changeForLog("the draftNo -->:") + draftNo);
+                    log.info(StringUtil.changeForLog("the draftNo -->:"+ draftNo) );
                     appSubmissionDto.setDraftNo(draftNo);
 
                     //file
@@ -398,7 +401,7 @@ public class RequestForChangeDelegator {
                         appPremisesSpecialDocDto.setDocName(file.getOriginalFilename());
                         appPremisesSpecialDocDto.setMd5Code(FileUtil.genMd5FileChecksum(file.getBytes()));
                         appPremisesSpecialDocDto.setFileRepoId(fileRepoGuid);
-                        appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
+                        appPremisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
                         appPremisesSpecialDocDto.setSubmitBy(auditTrailDto.getMohUserGuid());
                         appPremisesSpecialDocDto.setSubmitDt(new Date());
                         appPremisesSpecialDocDtoList.add(appPremisesSpecialDocDto);
@@ -415,7 +418,7 @@ public class RequestForChangeDelegator {
                     }
                     AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
                     ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
-                    StringBuffer url = new StringBuffer();
+                    StringBuilder url = new StringBuilder();
                     url.append("https://").append(bpc.request.getServerName())
                             .append(RfcConst.PAYMENTPROCESS);
                     String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
@@ -495,7 +498,7 @@ public class RequestForChangeDelegator {
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
             if(appSubmissionDto == null || IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList()) ||
                     IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
-                log.info("appSubmissionDto incomplete , licenceId:"+licenceId);
+                log.info(StringUtil.changeForLog("appSubmissionDto incomplete , licenceId:"+licenceId));
             }else{
                 //set audit trail licNo
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());

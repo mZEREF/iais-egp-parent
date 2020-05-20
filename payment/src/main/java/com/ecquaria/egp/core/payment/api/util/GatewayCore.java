@@ -1,12 +1,16 @@
 package com.ecquaria.egp.core.payment.api.util;
 
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
 import com.ecquaria.egp.core.payment.api.config.GatewayConstants;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 public class GatewayCore {
@@ -52,19 +56,18 @@ public class GatewayCore {
 	}
     public static Map<String, String> paraFilter(Map<String, String> sArray) {
 
-        Map<String, String> result = new HashMap<String, String>();
+        Map<String, String> result = IaisCommonUtils.genNewHashMap();
 
         if (sArray == null || sArray.size() <= 0) {
             return result;
         }
 
-        for (String key : sArray.keySet()) {
-            String value = sArray.get(key);
-            if (value == null || value.equals("") || key.equalsIgnoreCase("sign")
-                || key.equalsIgnoreCase("sign_type")) {
+        for (Map.Entry<String, String> entry : sArray.entrySet()) {
+            if (entry.getValue() == null || "".equals(entry.getValue()) || "sign".equalsIgnoreCase(entry.getKey())
+                || "sign_type".equalsIgnoreCase(entry.getKey())) {
                 continue;
             }
-            result.put(key, value);
+            result.put(entry.getKey(), entry.getValue());
         }
 
         return result;
@@ -75,20 +78,20 @@ public class GatewayCore {
         List<String> keys = new ArrayList<String>(params.keySet());
         Collections.sort(keys);
 
-        String prestr = "";
+        StringBuilder prestr = new StringBuilder();
 
         for (int i = 0; i < keys.size(); i++) {
             String key = keys.get(i);
             String value = params.get(key);
 
             if (i == keys.size() - 1) {
-                prestr = prestr + key + "=" + value;
+                prestr.append(key).append("=").append(value);
             } else {
-                prestr = prestr + key + "=" + value + "&";
+                prestr.append(key).append("=").append(value).append("&");
             }
         }
 
-        return prestr;
+        return prestr.toString();
     }
 
     public static void logResult(String sWord) {

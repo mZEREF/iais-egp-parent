@@ -35,6 +35,11 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepositoryClient;
 import com.ecquaria.sz.commons.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -43,7 +48,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -52,10 +56,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Wenkang
@@ -247,7 +247,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                    File curFile = MiscUtil.generateFile(sharedPath+AppServicesConsts.BACKUPS, s + ".zip");
                    boolean b = file.renameTo(curFile);
                    if(b){
-                       log.info("----------- new zip file name is"+sharedPath+AppServicesConsts.BACKUPS+File.separator+s+".zip");
+                       log.info(StringUtil.changeForLog("----------- new zip file name is"+sharedPath+AppServicesConsts.BACKUPS+File.separator+s+".zip"));
                    }
                    String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,AppServicesConsts.BACKUPS + File.separator+s+AppServicesConsts.ZIP_NAME,groupId);
                    if(!s1.equals("SUCCESS")){
@@ -552,7 +552,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             List<AppPremisesSpecialDocDto> appPremisesSpecialDocEntities = applicationListFileDto.getAppPremisesSpecialDocEntities();
             appSvcDoc(appSvcDoc,appGrpPrimaryDoc,appPremisesSpecialDocEntities,groupId);
         }catch (Exception e){
-            log.error("***************** there have a error is "+e+"***************");
+            log.error(StringUtil.changeForLog("***************** there have a error is "+e+"***************"));
             log.error(e.getMessage(),e);
         }
 

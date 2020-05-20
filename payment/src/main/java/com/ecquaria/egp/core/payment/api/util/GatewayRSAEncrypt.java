@@ -1,13 +1,14 @@
 package com.ecquaria.egp.core.payment.api.util;
 
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
+import lombok.extern.slf4j.Slf4j;
 
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class GatewayRSAEncrypt {
@@ -23,7 +24,7 @@ public class GatewayRSAEncrypt {
 			java.security.Signature signet = java.security.Signature
 					.getInstance("SHA256withRSA");
 			signet.initSign(myprikey);
-			signet.update(myinfo.getBytes("UTF-8"));
+			signet.update(myinfo.getBytes(StandardCharsets.UTF_8));
 			byte[] signed = signet.sign();
 
 			return bytesToHexStr(signed);
@@ -39,7 +40,7 @@ public class GatewayRSAEncrypt {
 	 * Transform the specified byte into a Hex String form.
 	 */
 	public static final String bytesToHexStr(byte[] bcd) {
-		StringBuffer s = new StringBuffer(bcd.length * 2);
+		StringBuilder s = new StringBuilder(bcd.length * 2);
 
 		for (int i = 0; i < bcd.length; i++) {
 			s.append(bcdLookup[(bcd[i] >>> 4) & 0x0f]);

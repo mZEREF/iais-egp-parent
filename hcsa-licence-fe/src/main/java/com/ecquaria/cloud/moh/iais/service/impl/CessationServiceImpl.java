@@ -234,12 +234,15 @@ public class CessationServiceImpl implements CessationService {
                     }
                 }
             }
-            int size = appIds.size();
-            int size1 = appIdsTrue.size();
-            if (size == size1) {
-                results.add(true);
-            } else {
-                results.add(false);
+
+            if(appIds!=null){
+                int size  = appIds.size();
+                int size1 = appIdsTrue.size();
+                if (size == size1) {
+                    results.add(Boolean.TRUE);
+                } else {
+                    results.add(Boolean.FALSE);
+                }
             }
         }
         return results;

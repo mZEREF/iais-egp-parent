@@ -10,8 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Date;
@@ -51,9 +51,10 @@ public class PaymentDelegator {
         String txnDt = Formatter.formatDateTime(txnDtD, "dd/MM/yyyy HH:mm:ss");
         String txnRefNo = paymentDtoSave.getTxnRefNo();
         String showUrl = "https://" + request.getServerName();
-        String s = showUrl+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment?result="+MaskUtil.maskValue("result","success")+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqRefNo)+"&txnDt="+MaskUtil.maskValue("txnDt",txnDt)+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",txnRefNo);
+        String results="?result="+MaskUtil.maskValue("result","success")+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqRefNo)+"&txnDt="+MaskUtil.maskValue("txnDt",txnDt)+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",txnRefNo);
+        String s = showUrl+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment"+results;
         if(!StringUtil.isEmpty(backUrl)){
-             s = showUrl +"/" +backUrl+"?result="+MaskUtil.maskValue("result","success")+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqRefNo)+"&txnDt="+MaskUtil.maskValue("txnDt",txnDt)+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",txnRefNo);
+             s = showUrl +"/" +backUrl+results;
         }
         String url = RedirectUtil.changeUrlToCsrfGuardUrlUrl(s, request);
         bpc.response.sendRedirect(url);

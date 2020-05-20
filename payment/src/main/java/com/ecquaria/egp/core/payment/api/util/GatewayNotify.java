@@ -28,7 +28,7 @@ public class GatewayNotify {
 	    	throw new Exception("Invalid notify request parameter.");
 	    }else{
 	    	Map<String, String> map = new HashMap<String, String>();
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			
 	    	map.put(GatewayConstants.REGISTRY_NAME_KEY, GatewayConfig.payment_registry_name);
 	    	map.put(GatewayConstants.CPS_REFNO, fields.get(GatewayConstants.CPS_REFNO));
@@ -39,11 +39,11 @@ public class GatewayNotify {
 	    	if(sign_type != null && (sign_type.equals(GatewayConstants.SIGN_TYPE_MD5) || sign_type.equals(GatewayConstants.SIGN_TYPE_RSA)))
 	    		ressign = GatewayCore.buildSign(map, sign_type);
 	    	
-	    	sb.append("{").append("\""+GatewayConstants.REGISTRY_NAME_KEY+"\":\"").append(GatewayConfig.payment_registry_name).append("\",")
-	    	.append("\""+GatewayConstants.NOTIFY_STATUS+"\":").append("\"success\",")
-	    	.append("\""+GatewayConstants.CPS_REFNO+"\":").append("\""+fields.get(GatewayConstants.CPS_REFNO)+"\",")
-	    	.append("\""+GatewayConstants.SVCREF_NO+"\":").append("\""+fields.get(GatewayConstants.SVCREF_NO)+"\",")
-	    	.append("\""+GatewayConstants.INPUT_CHARSET+"\":").append("\""+fields.get(GatewayConstants.INPUT_CHARSET)+"\",")
+	    	sb.append('{').append("\"" + GatewayConstants.REGISTRY_NAME_KEY + "\":\"").append(GatewayConfig.payment_registry_name).append("\",")
+					.append("\"" + GatewayConstants.NOTIFY_STATUS + "\":").append("\"success\",")
+					.append("\"" + GatewayConstants.CPS_REFNO + "\":").append("\"").append(fields.get(GatewayConstants.CPS_REFNO)).append("\",")
+					.append("\"" + GatewayConstants.SVCREF_NO + "\":").append("\"").append(fields.get(GatewayConstants.SVCREF_NO)).append("\",")
+					.append("\"" + GatewayConstants.INPUT_CHARSET + "\":").append("\"").append(fields.get(GatewayConstants.INPUT_CHARSET)).append("\",")
 	    	.append("\"sign\":\"").append(ressign).append("\",\"sign_type\":\"")
 	    	.append(GatewayConfig.sign_type).append("\"}");
 	    	
