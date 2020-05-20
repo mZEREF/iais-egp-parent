@@ -282,7 +282,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.LICENCE_CLIENT, AuditSystemListServiceImpl.class.getName(),
                 "saveAppForAuditToFeAndCreateTrack", currentApp + "-" + currentDomain,
                 AppSubmissionForAuditDto.class.getName(), JsonUtil.parseToJson(appSubmissionForAuditDto));
-        FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getOrgTrackingClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
+        FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getLicEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
         try{
             if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
                 EicRequestTrackingDto entity = fetchResult.getEntity();
@@ -293,7 +293,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                     entity.setFirstActionAt(now);
                     entity.setLastActionAt(now);
                     entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                    eicRequestTrackingHelper.getOrgTrackingClient().saveEicTrack(entity);
+                    eicRequestTrackingHelper.getLicEicClient().saveEicTrack(entity);
                 }
             }
         }catch (Exception e){

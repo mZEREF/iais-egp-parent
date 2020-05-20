@@ -373,7 +373,7 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
             EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.HCSA_CONFIG, HcsaRiskSupportBeServiceImpl.class.getName(),
                     "feCreateRiskData", currentApp + "-" + currentDomain,
                     HcsaRiskFeSupportDto.class.getName(), JsonUtil.parseToJson(supportDto));
-            FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getOrgTrackingClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
+            FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getHcsaConfigClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
             try{
                 if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
                     EicRequestTrackingDto entity = fetchResult.getEntity();
@@ -384,7 +384,7 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
                         entity.setFirstActionAt(now);
                         entity.setLastActionAt(now);
                         entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                        eicRequestTrackingHelper.getOrgTrackingClient().saveEicTrack(entity);
+                        eicRequestTrackingHelper.getHcsaConfigClient().saveEicTrack(entity);
                     }
                 }
             }catch (Exception e){
