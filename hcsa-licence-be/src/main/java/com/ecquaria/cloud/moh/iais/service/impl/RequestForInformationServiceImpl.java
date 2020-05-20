@@ -137,7 +137,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,
             ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE,
             ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_DMS_APPROVAL,
+            ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
             ApplicationConsts.APPLICATION_STATUS_PENDING_AO1_SUPPORT,
             ApplicationConsts.APPLICATION_STATUS_PENDING_AO2_SUPPORT,
             ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,
