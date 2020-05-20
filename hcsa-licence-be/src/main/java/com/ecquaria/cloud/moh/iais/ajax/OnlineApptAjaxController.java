@@ -146,7 +146,7 @@ public class OnlineApptAjaxController {
     }
 
     private int getServiceManHours(String refNo, String serviceId) {
-        int manHours = 0;
+        int manHours;
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(refNo, InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR).getEntity();
         if(appPremisesRecommendationDto != null){
             String hours = appPremisesRecommendationDto.getRecomDecision();
