@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -28,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
@@ -46,18 +48,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.BroadcastService;
-import com.ecquaria.cloud.moh.iais.service.InsRepService;
-import com.ecquaria.cloud.moh.iais.service.LicenseeService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
@@ -133,6 +125,9 @@ public class HcsaApplicationDelegator {
 
     @Autowired
     private EmailClient emailClient;
+
+    @Autowired
+    private InboxMsgService inboxMsgService;
 
     @Autowired
     private FillUpCheckListGetAppClient uploadFileClient;
@@ -1359,9 +1354,82 @@ public class HcsaApplicationDelegator {
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
+        if (broadcastApplicationDto != null){
+            ApplicationDto withdrawApplicationDto = broadcastApplicationDto.getApplicationDto();
+            if (withdrawApplicationDto != null){
+                /**
+                 * Send Withdrawal Application Email
+                 */
+                if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(withdrawApplicationDto.getApplicationType())){
+                    String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+                    String serviceId = applicationViewDto.getApplicationDto().getServiceId();
+                    String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
+                    String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
+                    if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(withdrawApplicationDto.getStatus())){
+                        String subjectSuppInfo = applicationNo + "is Approved";
+                        Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+                        msgInfoMap.put("appNum", applicationNo);
+                        msgInfoMap.put("reqAppNo",applicationNo);
+                        msgInfoMap.put("S_LName",serviceName);
+                        msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+                        try {
+                            EmailDto emailDto = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE,msgInfoMap,withdrawApplicationDto.getApplicationNo(),licenseeId,subjectSuppInfo);
+                            sendInboxMessage(licenseeId,null,emailDto.getContent(),serviceId,emailDto.getSubject());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (TemplateException e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        String subjectSuppInfo = applicationNo + "is Rejected";
+                        Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+                        msgInfoMap.put("appNum", applicationNo);
+                        msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+                        try {
+                            EmailDto emailDto = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT,msgInfoMap,withdrawApplicationDto.getApplicationNo(),licenseeId,subjectSuppInfo);
+                            sendInboxMessage(licenseeId,null,emailDto.getContent(),serviceId,emailDto.getSubject());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (TemplateException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
         log.info(StringUtil.changeForLog("The routingTask end ..."));
     }
+
+    private void sendInboxMessage(String licenseeId,HashMap<String, String> maskParams,String templateMessageByContent,String serviceId,String subject){
+        InterMessageDto interMessageDto = new InterMessageDto();
+        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+        interMessageDto.setSubject(subject);
+        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
+        String refNo = inboxMsgService.getMessageNo();
+        interMessageDto.setRefNo(refNo);
+        interMessageDto.setService_id(serviceId);
+        interMessageDto.setUserId(licenseeId);
+        interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        interMessageDto.setMsgContent(templateMessageByContent);
+        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        interMessageDto.setMaskParams(maskParams);
+        inboxMsgService.saveInterMessage(interMessageDto);
+    }
+
+    private EmailDto sendEmail(String msgId, Map<String, Object> msgInfoMap, String applicationNo, String licenseeId,String subjectSuppInfo) throws IOException, TemplateException {
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
+        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
+        EmailDto emailDto=new EmailDto();
+        emailDto.setClientQueryCode(applicationNo);
+        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setContent(templateMessageByContent);
+        emailDto.setSubject(msgTemplateDto.getTemplateName()+subjectSuppInfo);
+        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+        emailClient.sendNotification(emailDto).getEntity();
+        return emailDto;
+    }
+
     private List<ApplicationDto> removeFastTracking(List<ApplicationDto> applicationDtos){
         List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(applicationDtos)){

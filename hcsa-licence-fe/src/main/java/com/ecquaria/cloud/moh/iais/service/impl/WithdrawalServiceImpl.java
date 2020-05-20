@@ -70,7 +70,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     private String secSecretKey;
 
     public static final String TEMPLATE_WITHDRAWAL_ID         = "0DC58FEB-CF98-EA11-BE7A-000C29D29DB0";
-    public static final String TEMPLATE_WITHDRAWAL_SUBJECT    = "MOH IAIS – Successful Submission of Withdrawal Request - ";
 
     @Override
     public void saveWithdrawn(List<WithdrawnDto> withdrawnDtoList) {
@@ -98,7 +97,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
                         try {
                             EmailDto emailDto = sendNotification(TEMPLATE_WITHDRAWAL_ID,msgInfoMap,h.getApplicationNo(),h.getLicenseeId());
-                            sendInboxMessage(h.getApplicationNo(),h.getLicenseeId(),null,emailDto.getContent(),serviceId);
+                            sendInboxMessage(h.getApplicationNo(),h.getLicenseeId(),null,emailDto.getContent(),serviceId,emailDto.getSubject());
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (TemplateException e) {
@@ -110,10 +109,10 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         }
     }
 
-    private void sendInboxMessage(String applicationNo,String licenseeId,HashMap<String, String> maskParams,String templateMessageByContent,String serviceId){
+    private void sendInboxMessage(String applicationNo,String licenseeId,HashMap<String, String> maskParams,String templateMessageByContent,String serviceId,String subject){
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-        interMessageDto.setSubject(TEMPLATE_WITHDRAWAL_SUBJECT+applicationNo);
+        interMessageDto.setSubject(subject);
         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -136,7 +135,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         emailDto.setClientQueryCode(applicationNo);
         emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
         emailDto.setContent(templateMessageByContent);
-        emailDto.setSubject(TEMPLATE_WITHDRAWAL_SUBJECT+applicationNo);
+        emailDto.setSubject(msgTemplateDto.getTemplateName()+applicationNo);
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
         if(licenseeEmailAddrs!=null){
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
