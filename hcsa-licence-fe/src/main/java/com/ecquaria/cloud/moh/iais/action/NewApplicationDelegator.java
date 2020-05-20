@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -38,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -56,26 +58,18 @@ import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
@@ -172,6 +166,19 @@ public class NewApplicationDelegator {
     private EventBusHelper eventBusHelper;
     @Autowired
     private GenerateIdClient generateIdClient;
+    @Autowired
+    private FeMessageClient feMessageClient;
+    @Autowired
+    private FeEicGatewayClient feEicGatewayClient;
+    
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     /**
      * StartStep: Start
@@ -1753,6 +1760,7 @@ public class NewApplicationDelegator {
                 }
             }
             String appGrpNo = appSubmissionDto.getAppGrpNo();
+            String subject = " " + msgTemplateDto.getTemplateName() + " " + appGrpNo;
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
             map.put("applications", applicationNos);
             map.put("paymentType", paymentMethod);
@@ -1768,13 +1776,41 @@ public class NewApplicationDelegator {
             }
             EmailDto emailDto = new EmailDto();
             emailDto.setContent(mesContext);
-            emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + appGrpNo);
+            emailDto.setSubject(subject);
             emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
             emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
             emailDto.setClientQueryCode(appSubmissionDto.getAppGrpId());
             //send email
             appSubmissionService.feSendEmail(emailDto);
+
+            //send message
+            HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(appSvcRelatedInfoDtoList != null){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
+                    String serviceId = appSvcRelatedInfoDto.getServiceId();
+                    sendMessageHelper(subject,MessageConstants.MESSAGE_TYPE_NOTIFICATION,AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY,serviceId,licenseeId,mesContext,maskParams);
+                }
+            }
         }
+    }
+
+    private void sendMessageHelper(String subject, String messageType, String srcSystemId,String serviceId, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams){
+        InterMessageDto interMessageDto = new InterMessageDto();
+        interMessageDto.setSrcSystemId(srcSystemId);
+        interMessageDto.setSubject(subject);
+        interMessageDto.setMessageType(messageType);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        String refNo = feEicGatewayClient.getMessageNo(signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
+        interMessageDto.setRefNo(refNo);
+        interMessageDto.setService_id(serviceId);
+        interMessageDto.setUserId(licenseeId);
+        interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        interMessageDto.setMsgContent(templateMessageByContent);
+        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        feMessageClient.createInboxMessage(interMessageDto);
     }
 
     private void sendNewApplicationPaymentGIROEmail(AppSubmissionDto appSubmissionDto,BaseProcessClass bpc) {
@@ -1801,19 +1837,31 @@ public class NewApplicationDelegator {
 
             String subject = appGrpNo;
             //send email
-            sendEmailHelper(map, MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID, subject, licenseeId, clientQueryCode);
+            String mesContext = sendEmailHelper(map, MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID, subject, licenseeId, clientQueryCode);
+
+            //send message
+            HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+            MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID);
+            subject = " " + msgTemplateDto.getTemplateName() + " " + appGrpNo;
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(appSvcRelatedInfoDtoList != null){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
+                    String serviceId = appSvcRelatedInfoDto.getServiceId();
+                    sendMessageHelper(subject,MessageConstants.MESSAGE_TYPE_NOTIFICATION,AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY,serviceId,licenseeId,mesContext,maskParams);
+                }
+            }
         }
     }
 
     //send email helper
-    private void sendEmailHelper(Map<String ,Object> tempMap,String msgTemplateId,String subject,String licenseeId,String clientQueryCode){
+    private String sendEmailHelper(Map<String ,Object> tempMap,String msgTemplateId,String subject,String licenseeId,String clientQueryCode){
         MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(msgTemplateId);
         if(tempMap == null || tempMap.isEmpty() || msgTemplateDto == null
                 || StringUtil.isEmpty(msgTemplateId)
                 || StringUtil.isEmpty(subject)
                 || StringUtil.isEmpty(licenseeId)
                 || StringUtil.isEmpty(clientQueryCode)){
-            return;
+            return null;
         }
         String mesContext = null;
         try {
@@ -1829,6 +1877,8 @@ public class NewApplicationDelegator {
         emailDto.setClientQueryCode(clientQueryCode);
         //send
         appSubmissionService.feSendEmail(emailDto);
+
+        return mesContext;
     }
 
     private void inspectionDateSendNewApplicationPaymentOnlineEmail(AppSubmissionDto appSubmissionDto,BaseProcessClass bpc) {
@@ -1845,6 +1895,7 @@ public class NewApplicationDelegator {
                 }
             }
             String appGrpNo = appSubmissionDto.getAppGrpNo();
+            String subject = " " + msgTemplateDto.getTemplateName() + " " + appGrpNo;
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
             map.put("serviceNames", serviceNames);
             map.put("paymentAmount",Formatter.formatNumber(amount));
@@ -1857,12 +1908,22 @@ public class NewApplicationDelegator {
             }
             EmailDto emailDto = new EmailDto();
             emailDto.setContent(mesContext);
-            emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + appGrpNo);
+            emailDto.setSubject(subject);
             emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
             emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
             emailDto.setClientQueryCode(appSubmissionDto.getAppGrpId());
             //send email
             appSubmissionService.feSendEmail(emailDto);
+
+            //send message
+            HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(appSvcRelatedInfoDtoList != null){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
+                    String serviceId = appSvcRelatedInfoDto.getServiceId();
+                    sendMessageHelper(subject,MessageConstants.MESSAGE_TYPE_NOTIFICATION,AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY,serviceId,licenseeId,mesContext,maskParams);
+                }
+            }
         }
     }
 
