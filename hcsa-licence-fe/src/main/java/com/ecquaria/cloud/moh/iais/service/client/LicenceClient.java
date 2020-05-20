@@ -97,4 +97,7 @@ public interface LicenceClient {
 
     @GetMapping(value = "/hcsa-licence-rfc/getPersonnelDtoByLicId/{idNo}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getPersonnelDtoByIdNo(@PathVariable(name = "idNo") String idNo);
+
+    @GetMapping(value = "/hcsa-licence/getPersonnelDtoByLicId",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<PersonnelsDto>> getPersonnelDtoByLicId(@RequestParam("licId") String licId);
 }

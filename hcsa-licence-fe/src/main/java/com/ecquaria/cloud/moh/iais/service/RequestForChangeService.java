@@ -60,7 +60,9 @@ public interface RequestForChangeService {
 
     List<LicKeyPersonnelDto> getLicKeyPersonnelDtoByPerId(List<String> personIds);
 
-    List<String> getPersonnelDtoByIdNo(String idNo);
+    List<String> getPersonnelIdsByIdNo(String idNo);
+
+    String getIdNoByLicId(String licId);
 
 
     List<AppSubmissionDto> saveAppsForRequestForGoupAndAppChangeByList(List<AppSubmissionDto> appSubmissionDtos);

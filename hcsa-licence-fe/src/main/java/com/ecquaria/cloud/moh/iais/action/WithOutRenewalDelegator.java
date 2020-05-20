@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -377,6 +378,7 @@ public class WithOutRenewalDelegator {
 
         AppSubmissionDto oldAppSubmissionDto  =(AppSubmissionDto)bpc.request.getSession().getAttribute("oldAppSubmissionDto");
         List<AppSubmissionDto> rfcAppSubmissionDtos=IaisCommonUtils.genNewArrayList();
+        List<String> renewLicIds = IaisCommonUtils.genNewArrayList();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
             String appType = appSubmissionDto.getAppType();
             String appGrpNo = requestForChangeService.getApplicationGroupNumber(appType);
@@ -387,7 +389,7 @@ public class WithOutRenewalDelegator {
                     if(attribute!=null){
                         for(LicenceDto licenceDto : attribute){
                             AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceDto.getId());
-                            appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
+                            appSubmissionService.transform(appSubmissionDtoByLicenceId,licenseeId);
                             boolean groupLic = appSubmissionDtoByLicenceId.isGroupLic();
                             String address = appGrpPremisesDtoList.get(i).getAddress();
                             boolean equals;
@@ -459,10 +461,8 @@ public class WithOutRenewalDelegator {
                 }
             }
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto :appSvcRelatedInfoDtoList){
-
-            }
-
+            String licenceId = appSubmissionDto.getLicenceId();
+            renewLicIds.add(licenceId);
             FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto);
             appSubmissionDto.setLicenseeId(licenseeId);
             //set fee detail
@@ -481,6 +481,35 @@ public class WithOutRenewalDelegator {
                 appSubmissionDto.setAmountStr(amountStr);
             }
         }
+        //get licIds under the idNo that not renew
+        List<String> notReNewLicIds = IaisCommonUtils.genNewArrayList();
+        for(String licId :renewLicIds){
+            String idNo = requestForChangeService.getIdNoByLicId(licId);
+            List<String> personIds = requestForChangeService.getPersonnelIdsByIdNo(idNo);
+            List<LicKeyPersonnelDto> licByPerId = requestForChangeService.getLicKeyPersonnelDtoByPerId(personIds);
+            for(LicKeyPersonnelDto dto :licByPerId){
+                String licenceId = dto.getLicenceId();
+                if(!licId.equals(licenceId)&&!notReNewLicIds.contains(licenceId)){
+                    notReNewLicIds.add(licenceId);
+                }
+            }
+        }
+        List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
+        List<AppSubmissionDto> notReNewappSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(notReNewLicIds);
+        List<AppSubmissionDto> rfcPersonnelAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(notReNewappSubmissionDtos)){
+            for(AppSubmissionDto appSubmissionDto :notReNewappSubmissionDtos){
+                appSubmissionService.transform(appSubmissionDto, licenseeId);
+                appSubmissionDto.setAppSvcRelatedInfoDtoList(newAppSvcRelatedInfoDtoList);
+                String draftNo = appSubmissionDto.getDraftNo();
+                if (StringUtil.isEmpty(draftNo)) {
+                    appSubmissionService.setDraftNo(appSubmissionDto);
+                }
+                rfcPersonnelAppSubmissionDtos.add(appSubmissionDto);
+            }
+        }
+        //rfc personnel
+        requestForChangeService.saveAppsBySubmissionDtos(rfcPersonnelAppSubmissionDtos);
         AppSubmissionListDto appSubmissionListDto =new AppSubmissionListDto();
         String submissionId = generateIdClient.getSeqId().getEntity();
         Long l = System.currentTimeMillis();

@@ -443,7 +443,7 @@ public class RequestForChangeMenuDelegator {
             List<PersonnelListDto> personnelListDtos = IaisCommonUtils.genNewArrayList();
             for (PersonnelQueryDto dto : personnelQueryDtos) {
                 String idNo = dto.getIdNo();
-                List<String> personIds = requestForChangeService.getPersonnelDtoByIdNo(idNo);
+                List<String> personIds = requestForChangeService.getPersonnelIdsByIdNo(idNo);
                 PersonnelListDto personnelListDto = MiscUtil.transferEntityDto(dto, PersonnelListDto.class);
                 Map<String, LicPsnTypeDto> map = IaisCommonUtils.genNewHashMap();
                 List<LicKeyPersonnelDto> licByPerId = requestForChangeService.getLicKeyPersonnelDtoByPerId(personIds);
@@ -476,7 +476,9 @@ public class RequestForChangeMenuDelegator {
                             }
                             personnelListDto.setLicenceIds(licIds);
                             personnelListDto.setLicPsnTypeDtoMaps(map);
-                            personnelListDtos.add(personnelListDto);
+                            if(!IaisCommonUtils.isEmpty(licIds)){
+                                personnelListDtos.add(personnelListDto);
+                            }
                         }
                     }
                 }
@@ -492,7 +494,7 @@ public class RequestForChangeMenuDelegator {
         List<PersonnelListDto> personnelListDtos = IaisCommonUtils.genNewArrayList();
         for (PersonnelQueryDto dto : personnelQueryDtos) {
             String idNo = dto.getIdNo();
-            List<String> personIds = requestForChangeService.getPersonnelDtoByIdNo(idNo);
+            List<String> personIds = requestForChangeService.getPersonnelIdsByIdNo(idNo);
             PersonnelListDto personnelListDto = MiscUtil.transferEntityDto(dto, PersonnelListDto.class);
             Map<String, LicPsnTypeDto> map = IaisCommonUtils.genNewHashMap();
             List<LicKeyPersonnelDto> licByPerId = requestForChangeService.getLicKeyPersonnelDtoByPerId(personIds);
@@ -528,7 +530,9 @@ public class RequestForChangeMenuDelegator {
             }
             personnelListDto.setLicenceIds(licIds);
             personnelListDto.setLicPsnTypeDtoMaps(map);
-            personnelListDtos.add(personnelListDto);
+            if(!IaisCommonUtils.isEmpty(licIds)){
+                personnelListDtos.add(personnelListDto);
+            }
         }
         List<SelectOption> personelRoles = getPsnType();
         ParamUtil.setRequestAttr(bpc.request, "PersonnelRoleList", personelRoles);

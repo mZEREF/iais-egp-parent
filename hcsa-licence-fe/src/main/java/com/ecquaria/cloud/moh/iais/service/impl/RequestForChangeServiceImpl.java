@@ -329,9 +329,19 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public List<String> getPersonnelDtoByIdNo(String idNo) {
+    public List<String> getPersonnelIdsByIdNo(String idNo) {
         List<String> entity = licenceClient.getPersonnelDtoByIdNo(idNo).getEntity();
         return entity;
+    }
+
+    @Override
+    public String getIdNoByLicId(String licId) {
+        List<PersonnelsDto> entity = licenceClient.getPersonnelDtoByLicId(licId).getEntity();
+        String idNo = null;
+        if(!IaisCommonUtils.isEmpty(entity)){
+            idNo = entity.get(0).getKeyPersonnelDto().getIdNo();
+        }
+        return idNo;
     }
 
     @Override

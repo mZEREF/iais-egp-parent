@@ -1430,7 +1430,7 @@ public class NewApplicationDelegator {
         list.addAll(set);
         List<LicKeyPersonnelDto> licKeyPersonnelDtos=IaisCommonUtils.genNewArrayList();
         for(String string :list){
-            List<String> personnelDtoByIdNo = requestForChangeService.getPersonnelDtoByIdNo(string);
+            List<String> personnelDtoByIdNo = requestForChangeService.getPersonnelIdsByIdNo(string);
             List<LicKeyPersonnelDto> licKeyPersonnelDtoByPerId = requestForChangeService.getLicKeyPersonnelDtoByPerId(personnelDtoByIdNo);
             licKeyPersonnelDtos.addAll(licKeyPersonnelDtoByPerId);
         }
