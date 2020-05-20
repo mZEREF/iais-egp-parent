@@ -22,13 +22,13 @@
             SOP.Crud.cfxSubmit(form, action, paramValue);
         },
 
-        clearClickStatus: function () {
-            $(".form-horizontal input").val("");
-            $(".form-horizontal input[type='checkbox']").removeAttr('checked');
-            $(".form-horizontal input[type='radio']").removeAttr('checked');
-            $(".form-horizontal option[text = 'Please Select']").val("selected", "selected");
+        clearClickStatus: function (divName) {
+            $("."+ divName +" input").val("");
+            $("."+ divName +" input").attr("disabled", null);
+            $("."+ divName +" input[type='checkbox']").removeAttr('checked');
+            $("."+ divName +" input[type='radio']").removeAttr('checked');
+            $("."+ divName +" option[text = 'Please Select']").val("selected", "selected");
             $(".current").text("Please Select");
-            $(".form-horizontal option").val("");
         },
 
         disableButton: function (obj, id) {

@@ -25,6 +25,7 @@
 
 <div class="main-content">
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
+    <input type="hidden" id="commonSelect" name="commonSelect" value="${common}">
   <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
       <br><br><br>
           <div>
@@ -35,7 +36,7 @@
           <div class="form-group">
             <iais:field value="Common" ></iais:field>
             <div class="col-md-3">
-              <input class="form-check-input"  <c:if test="${common == true}"> checked="checked"</c:if> id="commmon" type="radio" name="common" aria-invalid="false" value="1"> General Regulation
+              <input class="form-check-input"  id="common" type="radio" name="common" aria-invalid="false" value="1"> General Regulation
               <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
             </div>
           </div>
@@ -43,7 +44,7 @@
           <div class="form-group">
             <iais:field value="Service Name" ></iais:field>
             <div class="col-md-5">
-              <iais:select name="svcName" id="svcName" options="svcNameSelect" firstOption="Please Select" value="${svcName}"></iais:select>
+                <iais:select name="svcName" id="svcName" options="svcNameSelect"  firstOption="Please Select" value="${svcName}"></iais:select>
               <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
             </div>
           </div>
@@ -76,7 +77,7 @@
           <div class="form-group">
             <iais:field value="HCI Code" ></iais:field>
             <div class="col-md-3">
-              <input type="text" name="hciCode" maxlength="7" value="${hciCode}"/>
+              <input type="text" id="hciCode" name="hciCode" maxlength="7" value="${hciCode}"/>
             <span id="error_hciCode" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
@@ -102,11 +103,11 @@
 
         <div class="row">
           <div class="col-xs-12 col-sm-6">
-            <a class="back" onclick="doBack()();"><em class="fa fa-angle-left"></em> Back</a>
+            <a class="back" onclick="doBack();"><em class="fa fa-angle-left"></em> Back</a>
           </div>
           <div class="col-xs-12 col-sm-6">
             <div class="text-right text-center-mobile">
-              <a class="btn btn-secondary" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
+              <a class="btn btn-secondary" href="javascript:void(0);" onclick="$('.nice-select').removeClass('disabled'); Utils.clearClickStatus('form-horizontal'); ">Clear</a>
               <a class="btn btn-primary next"  onclick="javascript: doNext();">Next</a>
             </div>
           </div>
@@ -114,9 +115,41 @@
 </>
 </div>
 
-<%@include file="/WEB-INF/jsp/include/validation.jsp"%>
-<%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
+    if(window.attachEvent) {
+        window.attachEvent("onload", checkInputStatus);
+    }else if(window.addEventListener) {
+        window.addEventListener("load",checkInputStatus, false);
+    }
+
+   function checkInputStatus() {
+       var commonVal = $('#commonSelect').val();
+       if (commonVal == '1'){
+           $('#common').attr('checked', 'checked')
+           $('#common').val(1)
+           disableInput();
+       }else if (commonVal == '0'){
+           $('#common').attr('disabled', 'disabled')
+       }
+   }
+
+
+    function disableInput(){
+        $('.nice-select').addClass('disabled');
+        $('#hciCode').attr('disabled', 'disabled')
+    }
+
+    $(".form-horizontal select").change(function () {
+        $('#common').attr('disabled', 'disabled')
+    });
+
+    common.onclick = function () {
+        var checkedStatus = $('#common').attr("checked");
+        if (checkedStatus != null){
+            disableInput();
+        }
+    }
+
     function doNext() {
         SOP.Crud.cfxSubmit("mainForm","nextPage");
     }
@@ -125,3 +158,5 @@
         SOP.Crud.cfxSubmit("mainForm","backLastPage");
     }
 </script>
+<%@include file="/WEB-INF/jsp/include/validation.jsp"%>
+<%@include file="/WEB-INF/jsp/include/utils.jsp"%>

@@ -1,4 +1,4 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %><%--
+<%--
   Created by IntelliJ IDEA.
   User: yichen
   Date: 10/6/2019
@@ -232,17 +232,6 @@
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
-/*    window.onload = function(){
-        $("input[type=checkbox][name='itemCheckboxReDisplay']").each(function(){
-          var checkedStatus = (this).getAttribute("checked")
-          console.log(checkedStatus)
-          if($(this).val() != null && checkedStatus != null){
-            $(this).attr("checked",true);
-          }
-        });
-    }*/
-
-
     function cancelConfig() {
         SOP.Crud.cfxSubmit("mainForm", "cancelConfig");
     }

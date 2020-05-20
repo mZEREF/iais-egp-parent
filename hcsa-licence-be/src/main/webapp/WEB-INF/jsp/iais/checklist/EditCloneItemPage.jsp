@@ -77,7 +77,7 @@
       <a class="back" onclick="doCancel();"><em class="fa fa-angle-left"></em> Back</a>
     </div>
     <div class="text-right text-center-mobile">
-      <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
+      <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus('form-horizontal');">Clear</a>
       <a class="btn btn-primary next" onclick="javascript:editCloneItem();">Edit</a>
     </div>
 </div>
