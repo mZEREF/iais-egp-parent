@@ -68,6 +68,14 @@ public class SystemAdminClientFallback implements SystemAdminClient{
     }
 
     @Override
+    public FeignResponseEntity<String> createMessageId() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<EicRequestTrackingDto>> getPendingRecords(String moduleName) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

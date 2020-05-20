@@ -181,4 +181,12 @@ public interface FeEicGatewayClient {
                                                        @RequestHeader("authorization") String authorization,
                                                        @RequestHeader("date-Secondary") String dateSec,
                                                        @RequestHeader("authorization-Secondary") String authorizationSec);
+
+    @GetMapping(value = "/v1/new-inbox-msg-no", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> getMessageNo(@RequestHeader("date") String date,
+                                            @RequestHeader("authorization") String authorization,
+                                            @RequestHeader("date-Secondary") String dateSec,
+                                            @RequestHeader("authorization-Secondary") String authorizationSec);
+
 }

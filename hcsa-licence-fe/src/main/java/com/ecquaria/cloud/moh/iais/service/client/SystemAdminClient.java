@@ -44,6 +44,9 @@ public interface SystemAdminClient  {
     @PutMapping(path = "/eicTracking",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String, String>> saveEicTrack(@RequestBody List<EicRequestTrackingDto> dtoList);
 
+    @RequestMapping(path = "/message-id",method = RequestMethod.GET)
+    FeignResponseEntity<String> createMessageId();
+
     @GetMapping(path = "/eicTracking/{moduleName}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<EicRequestTrackingDto>> getPendingRecords(@PathVariable("moduleName") String moduleName);
 
