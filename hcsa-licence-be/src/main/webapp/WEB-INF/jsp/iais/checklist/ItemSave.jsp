@@ -54,7 +54,7 @@
                         <div class="col-xs-5 col-md-3">
                             <iais:field value="Checklist Item" required="true"></iais:field>
                             <div class="col-xs-5 col-md-3">
-                                <input type="text" name="checklistItem" value="${itemRequestAttr.checklistItem}" />
+                                <textarea cols="70" rows="7" name="checklistItem" id="checklistItem" maxlength="500"><c:out value="${itemRequestAttr.checklistItem}"> </c:out></textarea>
                                 <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
