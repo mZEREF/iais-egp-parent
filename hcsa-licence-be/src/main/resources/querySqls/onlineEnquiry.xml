@@ -2,7 +2,7 @@
 <sqls catalog="onlineEnquiry">
     <sql key = "searchByProfessionalInfo" remarks="search by professional information">
         <![CDATA[
-            select a.id, a.name, a.prof_reg_no, b.practive_location, b.licence_no, b.service_name, a.designation, a.psn_type
+            select a.id, a.name, a.prof_reg_no, b.practice_location, b.licence_no, b.service_name, a.designation, a.psn_type
             from
             (
             select
@@ -24,7 +24,7 @@
             t2.hci_code as hci_code,
             t2.postal_code as postal_code,
             t2.hci_name as hci_name,
-            t2.blk_no + '/' + t2.street_name + ',' + t2.building_name + '-' + t2.floor_no as practive_location
+            t2.blk_no + '/' + t2.street_name + ',' + t2.building_name + '-' + t2.floor_no as practice_location
             from lic_premises t1
             join premises t2 on t1.premises_id = t2.id
             join licence t3 on t1.licence_id = t3.id) b
@@ -34,11 +34,11 @@
             <#if name??> AND charindex(:name, a.name) >0 </#if>
             <#if profRegNo??> AND charindex(:profRegNo, a.prof_reg_no) >0</#if>
             <#if postalCode??> AND charindex(:postalCode, b.postal_code) >0</#if>
-            <#if address??> AND  charindex(:address, b.practive_location) >0</#if>
+            <#if address??> AND  charindex(:address, b.practice_location) >0</#if>
             <#if hciName??> AND charindex(:hciName, b.hci_name) >0 </#if>
             <#if hciCode??> AND charindex(:hciCode, b.hci_code) >0</#if>
             <#if hciPostalcode??> AND charindex(:hciPostalcode, b.postal_code)  >0 </#if>
-            <#if practiceLocation??> AND charindex(:practiceLocation, b.practive_location ) >0 </#if>
+            <#if practiceLocation??> AND charindex(:practiceLocation, b.practice_location ) >0 </#if>
             <#if serviceName??> AND b.service_name = :serviceName</#if>
             <#if designation??> AND charindex(:designation, a.designation) >0 </#if>
             <#if role??> AND a.psn_type = :role</#if>

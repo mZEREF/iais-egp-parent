@@ -154,8 +154,8 @@
                                                                  value="Name"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true" field="prof_reg_no"
                                                                  value="Professional Regn No"></iais:sortableHeader>
-                                            <iais:sortableHeader needSort="true" field="practive_location"
-                                                                 value="Practive Location"></iais:sortableHeader>
+                                            <iais:sortableHeader needSort="true" field="practice_location"
+                                                                 value="Practice Location"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true" field="licence_no"
                                                                  value="Active Licence"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true" field="service_name"
