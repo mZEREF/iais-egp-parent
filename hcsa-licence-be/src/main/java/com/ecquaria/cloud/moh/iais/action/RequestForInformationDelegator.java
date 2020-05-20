@@ -474,42 +474,46 @@ public class RequestForInformationDelegator {
     private Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         String[] lengths=ParamUtil.getStrings(request,"lengths");
-        for (String len:lengths
-             ) {
-            String decision=ParamUtil.getString(request, "decision"+len);
-            if(decision==null|| "Please Select".equals(decision)){
-                errMap.put("rfiSelect"+len,"ERR0010");
+        if(lengths!=null){
+            for (String len:lengths
+            ) {
+                String decision=ParamUtil.getString(request, "decision"+len);
+                if(decision==null|| "Please Select".equals(decision)){
+                    errMap.put("rfiSelect"+len,"ERR0010");
 
-            }
-            String date=ParamUtil.getDate(request, "Due_date"+len);
-
-            if(date==null){
-                errMap.put("Due_date"+len,"ERR0010");
-            }else {
-                date= ParamUtil.getString(request, "Due_date"+len);
-                String now=new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(new Date());
-                if(date.compareTo(now) <0 ){
-                    errMap.put("Due_date"+len,"Due Date should be a future Date.");
                 }
-            }
-            String rfiTitle=ParamUtil.getString(request, "rfiTitle"+len);
-            if(rfiTitle==null){
-                errMap.put("rfiTitle"+len,"ERR0010");
-            }
-            String licenceNo=ParamUtil.getString(request, "licenceNo"+len);
-            if(licenceNo==null|| "Please Select".equals(licenceNo)){
-                errMap.put("licenceNo"+len,"ERR0010");
-            }else {
-                List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licenceNo);
-                if(!licPremisesReqForInfoDtoList.isEmpty()) {
-                    for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
-                    ) {
-                        if(StringUtil.isEmpty(licPreRfi.getUserReply())){
-                            errMap.put("LicencePending","Licence is still pending Applicant's input.Please do not submit any new Requset For Information.");
+                String date=ParamUtil.getDate(request, "Due_date"+len);
+
+                if(date==null){
+                    errMap.put("Due_date"+len,"ERR0010");
+                }else {
+                    date= ParamUtil.getString(request, "Due_date"+len);
+                    String now=new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(new Date());
+                    if(date.compareTo(now) <0 ){
+                        errMap.put("Due_date"+len,"Due Date should be a future Date.");
+                    }
+                }
+                String rfiTitle=ParamUtil.getString(request, "rfiTitle"+len);
+                if(rfiTitle==null){
+                    errMap.put("rfiTitle"+len,"ERR0010");
+                }
+                String licenceNo=ParamUtil.getString(request, "licenceNo"+len);
+                if(licenceNo==null|| "Please Select".equals(licenceNo)){
+                    errMap.put("licenceNo"+len,"ERR0010");
+                }else {
+                    List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licenceNo);
+                    if(!licPremisesReqForInfoDtoList.isEmpty()) {
+                        for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
+                        ) {
+                            if(StringUtil.isEmpty(licPreRfi.getUserReply())){
+                                errMap.put("LicencePending","Licence is still pending Applicant's input.Please do not submit any new Requset For Information.");
+                            }
                         }
                     }
                 }
             }
+        }else {
+            errMap.put("LicencePending","Licence is still pending Applicant's input.Please do not submit any new Requset For Information.");
         }
 
 
