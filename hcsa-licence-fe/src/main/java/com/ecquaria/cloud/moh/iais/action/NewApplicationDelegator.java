@@ -864,6 +864,7 @@ public class NewApplicationDelegator {
     public void doPayment(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doPayment start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        //for relation Licences when RFC the premises.
         List<AppSubmissionDto> appSubmissionDtos=(List<AppSubmissionDto>)bpc.request.getSession().getAttribute("otherAppSubmissionDtos");
         String switch2 = "loading";
         String pmtMethod = appSubmissionDto.getPaymentMethod();
@@ -905,6 +906,7 @@ public class NewApplicationDelegator {
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
                 appGrp.setId(appGrpId);
                 appGrp.setPmtRefNo(pmtRefNo);
+                appGrp.setPaymentDt(new Date());
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
                 //send email
