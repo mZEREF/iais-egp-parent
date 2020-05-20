@@ -90,48 +90,56 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }
         }
 
-        if(isRouteBackStatus(status) || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
-            String nextStageReplys = ParamUtil.getRequestString(request, "nextStageReplys");
-            if(StringUtil.isEmpty(nextStageReplys)){
-                errMap.put("nextStageReplys","The field is mandatory.");
-            }else{
-                ParamUtil.setRequestAttr(request,"selectNextStageReply",nextStageReplys);
+        if (ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(status) &&
+                applicationViewDto.getApplicationDto().getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)){
+            String withdrawalDecisionValue = ParamUtil.getString(request, "withdrawalDecisionValues");
+            if(StringUtil.isEmpty(withdrawalDecisionValue)){
+                errMap.put("decisionValues","The field is mandatory.");
             }
-            //AO route back to
-            if(isAoRouteBackStatus(status)){
-                if(StringUtil.isEmpty(recommendationStr)){
-                    errMap.put("recommendation","Please key in recommendation");
+        }else {
+            if (isRouteBackStatus(status) || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
+                String nextStageReplys = ParamUtil.getRequestString(request, "nextStageReplys");
+                if (StringUtil.isEmpty(nextStageReplys)) {
+                    errMap.put("nextStageReplys", "The field is mandatory.");
+                } else {
+                    ParamUtil.setRequestAttr(request, "selectNextStageReply", nextStageReplys);
                 }
-            }
-            //ASO PSO broadcast
-            if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
-                checkBroadcast(roleId,errMap,status,recommendationStr,request);
-            }
-        }else{
-            String nextStage = ParamUtil.getRequestString(request, "nextStage");
-            if(StringUtil.isEmpty(nextStage)){
-                errMap.put("nextStage","The field is mandatory.");
-            }else{
-                if(VERIFIED.equals(nextStage)){
-                    String verified = ParamUtil.getRequestString(request, "verified");
-                    ParamUtil.setRequestAttr(request,"selectVerified",verified);
-                    if(StringUtil.isEmpty(verified)){
-                        errMap.put("verified","The field is mandatory.");
+                //AO route back to
+                if (isAoRouteBackStatus(status)) {
+                    if (StringUtil.isEmpty(recommendationStr)) {
+                        errMap.put("recommendation", "Please key in recommendation");
                     }
-                    // if role is AOS or PSO ,check verified's value
-                    if(RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)){
-                        if(RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)){
-                            if(StringUtil.isEmpty(recommendationStr)){
-                                errMap.put("recommendation","Please key in recommendation");
+                }
+                //ASO PSO broadcast
+                if (ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
+                    checkBroadcast(roleId, errMap, status, recommendationStr, request);
+                }
+            } else {
+                String nextStage = ParamUtil.getRequestString(request, "nextStage");
+                if (StringUtil.isEmpty(nextStage)) {
+                    errMap.put("nextStage", "The field is mandatory.");
+                } else {
+                    if (VERIFIED.equals(nextStage)) {
+                        String verified = ParamUtil.getRequestString(request, "verified");
+                        ParamUtil.setRequestAttr(request, "selectVerified", verified);
+                        if (StringUtil.isEmpty(verified)) {
+                            errMap.put("verified", "The field is mandatory.");
+                        }
+                        // if role is AOS or PSO ,check verified's value
+                        if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)) {
+                            if (RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)) {
+                                if (StringUtil.isEmpty(recommendationStr)) {
+                                    errMap.put("recommendation", "Please key in recommendation");
+                                }
                             }
                         }
-                    }
 
-                }else if(ROLLBACK.equals(nextStage)){
-                    String rollBack = ParamUtil.getRequestString(request, "rollBack");
-                    ParamUtil.setRequestAttr(request,"selectRollBack",rollBack);
-                    if(StringUtil.isEmpty(rollBack)){
-                        errMap.put("rollBack","The field is mandatory.");
+                    } else if (ROLLBACK.equals(nextStage)) {
+                        String rollBack = ParamUtil.getRequestString(request, "rollBack");
+                        ParamUtil.setRequestAttr(request, "selectRollBack", rollBack);
+                        if (StringUtil.isEmpty(rollBack)) {
+                            errMap.put("rollBack", "The field is mandatory.");
+                        }
                     }
                 }
             }

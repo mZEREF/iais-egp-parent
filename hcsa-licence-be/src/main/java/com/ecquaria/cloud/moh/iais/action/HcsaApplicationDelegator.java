@@ -71,6 +71,7 @@ import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.record.TabIdRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -366,8 +367,20 @@ public class HcsaApplicationDelegator {
             //save recommendation
             String recommendationStr = ParamUtil.getString(bpc.request,"recommendation");
             boolean isDMS = ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus());
+            boolean isWithdrwal = false;
+            if (applicationViewDto.getApplicationDto().getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING)
+                    && applicationViewDto.getApplicationDto().getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)){
+                isWithdrwal = true;
+            }
             String decisionValues = ParamUtil.getString(bpc.request, "decisionValues");
+            String withdrawalDecisionValue = ParamUtil.getString(bpc.request, "withdrawalDecisionValues");
             boolean isRejectDMS = "decisionReject".equals(decisionValues);
+            boolean isRejectWithdrawal = "decisionReject".equals(withdrawalDecisionValue);
+            if (isWithdrwal){
+                if(isRejectWithdrawal){
+                    recommendationStr = "reject";
+                }
+            }
             if(isDMS){
                 if(isRejectDMS){
                     recommendationStr = "reject";
@@ -456,6 +469,15 @@ public class HcsaApplicationDelegator {
                     nextStage = "PROCAP";
                 }
             }
+
+            if(isWithdrwal){
+                if(isRejectWithdrawal){
+                    nextStage = "PROCREJ";
+                }else{
+                    nextStage = "PROCAP";
+                }
+            }
+
 
             log.debug(StringUtil.changeForLog("the nextStage is -->:"+nextStage));
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);

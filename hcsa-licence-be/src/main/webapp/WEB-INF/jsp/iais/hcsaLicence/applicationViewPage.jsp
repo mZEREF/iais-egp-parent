@@ -133,6 +133,19 @@
                                                             </iais:row>
                                                         </div>
                                                     </c:if>
+                                                    <c:if test="${applicationViewDto.applicationDto.applicationType == 'APTY006' && applicationViewDto.applicationDto.status == 'APST007'}">
+                                                        <div id="withdrawalDecision">
+                                                            <iais:row>
+                                                                <iais:field value="Processing Decision" required="true"/>
+                                                                <iais:value width="10">
+                                                                    <iais:select cssClass="withdrawalDecisionValues" name="withdrawalDecisionValues" id="withdrawalDecisionValues"
+                                                                                 firstOption="Please Select"
+                                                                                 options="decisionValues"
+                                                                                 value="${selectDecisionValue}"></iais:select>
+                                                                </iais:value>
+                                                            </iais:row>
+                                                        </div>
+                                                    </c:if>
                                                     <div id="rollBackDropdown" class="hidden">
                                                         <iais:row>
                                                             <iais:field value="Route Back To" required="true"/>
@@ -397,11 +410,11 @@
         checkInspectionShow();
         //route back
         routeBackCheck();
-
         if('APTY006' == '${applicationViewDto.applicationDto.applicationType}' && 'APST007' == '${applicationViewDto.applicationDto.status}'){
             $('#recommendationDropdown').addClass('hidden');
             $('#replytr').removeClass('hidden');
             $('#licenceStartDate').addClass('hidden');
+            $('#processingDecision').addClass('hidden');
             $('.fastTrack').addClass('hidden');
         }
     });
