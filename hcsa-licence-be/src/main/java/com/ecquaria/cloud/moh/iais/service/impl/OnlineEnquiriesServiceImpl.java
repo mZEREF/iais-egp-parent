@@ -445,11 +445,12 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         String wkGrpId = "";
         for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:appPremisesRoutingHistoryDtos ){
             try {
-                if(appPremisesRoutingHistoryDto.getProcessDecision().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW)){
-                    userId=appPremisesRoutingHistoryDto.getActionby();
-                }
                 if(appPremisesRoutingHistoryDto.getWrkGrpId()!=null){
                     wkGrpId = appPremisesRoutingHistoryDto.getWrkGrpId();
+                }
+                if(appPremisesRoutingHistoryDto.getProcessDecision().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW)){
+                    userId=appPremisesRoutingHistoryDto.getActionby();
+                    break;
                 }
             }
             catch (NullPointerException e){

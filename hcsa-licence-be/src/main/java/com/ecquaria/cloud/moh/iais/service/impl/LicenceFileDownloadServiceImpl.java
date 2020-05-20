@@ -421,10 +421,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
         applicationListDto.setAuditTrailDto(intranet);
         update(listApplicationDto,applicationGroup,application);
-        log.info(listApplicationDto.toString()+"listApplicationDto size "+listApplicationDto.size());
+        log.info(StringUtil.changeForLog(listApplicationDto.toString()+"listApplicationDto size "+listApplicationDto.size()));
 
         requeOrNew(requestForInfList,applicationGroup,application);
-        log.info(requestForInfList.toString()+"requestForInfList size" +requestForInfList .size());
+        log.info(StringUtil.changeForLog(requestForInfList.toString()+"requestForInfList size" +requestForInfList .size()));
         ApplicationNewAndRequstDto applicationNewAndRequstDto=new ApplicationNewAndRequstDto();
         applicationNewAndRequstDto.setListNewApplicationDto(listApplicationDto);
         applicationNewAndRequstDto.setRequestForInfList(requestForInfList);
@@ -436,7 +436,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         eventBusHelper.submitAsyncRequest(applicationListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION,applicationListDto.getEventRefNo(),null);
 
-        return true;
+        return Boolean.TRUE;
 
     }
 
@@ -451,11 +451,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if(!file.exists()){
             file.mkdirs();
         }
-        log.info(file.getPath()+"file path*************");
+        log.info(StringUtil.changeForLog(file.getPath()+"file path*************"));
         List<FileRepoDto> fileRepoDtos = IaisCommonUtils.genNewArrayList();
         if(file.isDirectory()){
             File[] files = file.listFiles();
-            log.info(files.length+"files.length------");
+            log.info(StringUtil.changeForLog(files.length+"files.length------"));
             FileRepoEventDto eventDto = new FileRepoEventDto();
             Boolean flag=Boolean.FALSE;
             for(File f:files){
@@ -478,7 +478,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         fileRepoDtos.add(fileRepoDto);
                         eventDto.setFileRepoList(fileRepoDtos);
                         flag=Boolean.TRUE;
-                        log.info(f.getPath()+"file path");
+                        log.info(StringUtil.changeForLog(f.getPath()+"file path"));
 
                     }catch (Exception e){
                         continue;
@@ -575,7 +575,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         List<ApplicationDto> requestForInfList  =IaisCommonUtils.genNewArrayList();
             List<Submission> submissionList = eventClient.getSubmission(submissionId).getEntity();
             ApplicationListFileDto dto = null;
-            log.info(submissionList .size() +"submissionList .size()");
+            log.info(StringUtil.changeForLog(submissionList .size() +"submissionList .size()"));
             for(Submission submission : submissionList){
                if(EventBusConsts.SERVICE_NAME_APPSUBMIT.equals(submission.getSubmissionIdentity().getService())){
                     dto = JsonUtil.parseToObject(submission.getData(), ApplicationListFileDto.class);
@@ -588,8 +588,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 update(listNewApplicationDto ,applicationGroup,application);
                 requeOrNew(requestForInfList,applicationGroup,application);
             }
-            log.info(listNewApplicationDto.size()+"listNewApplicationDto size");
-            log.info(requestForInfList.size()+"requestForInfList size");
+            log.info(StringUtil.changeForLog(listNewApplicationDto.size()+"listNewApplicationDto size"));
+            log.info(StringUtil.changeForLog(requestForInfList.size()+"requestForInfList size"));
         TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(listNewApplicationDto, HcsaConsts.ROUTING_STAGE_ASO, RoleConsts.USER_ROLE_ASO,intranet);
         //for reqeust for information
         TaskHistoryDto requestTaskHistoryDto  = getRoutingTaskForRequestForInformation(requestForInfList,intranet);

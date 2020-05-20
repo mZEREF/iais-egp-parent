@@ -112,7 +112,7 @@ public class NewApplicationAjaxController {
 
         String sql = SqlMap.INSTANCE.getSql("premises", "premisesHtml").getSqlStr();
         Set<String> premType = (Set<String>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PREMISESTYPE);
-        StringBuffer premTypeBuffer = new StringBuffer();
+        StringBuilder premTypeBuffer = new StringBuilder();
 
         for(String type:premType){
             String className = "";
@@ -127,9 +127,8 @@ public class NewApplicationAjaxController {
                 className = "offSite";
                 width = "width: 19%;";
             }
-            premTypeBuffer.append("<div class=\"col-xs-5 \" style=\""+width+"\">")
-                    .append("<div class=\"form-check\">")
-                    .append("<input class=\"form-check-input premTypeRadio "+className+"\"  type=\"radio\" name=\"premType"+currentLength+"\" value = "+type+" aria-invalid=\"false\">");
+            premTypeBuffer.append("<div class=\"col-xs-5 \" style=\"").append(width).append("\">")
+                    .append("<div class=\"form-check\">").append("<input class=\"form-check-input premTypeRadio ").append(className).append("\"  type=\"radio\" name=\"premType").append(currentLength).append("\" value = ").append(type).append(" aria-invalid=\"false\">");
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)){
                 premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>On-site<br/><span>(at a fixed address)</span></label>");
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)){

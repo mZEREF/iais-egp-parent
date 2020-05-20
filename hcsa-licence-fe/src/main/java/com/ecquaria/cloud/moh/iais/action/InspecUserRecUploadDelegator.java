@@ -140,7 +140,7 @@ public class InspecUserRecUploadDelegator {
         //do validate
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         if(InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue) || InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)){
-            log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
+            log.info(StringUtil.changeForLog("The dto we checked is null ===>" + (inspecUserRecUploadDto == null)));
             errorMap = doValidateByRecFile(inspecUserRecUploadDto, mulReq, errorMap, actionValue, file);
             if(errorMap != null && !(errorMap.isEmpty())){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -167,7 +167,7 @@ public class InspecUserRecUploadDelegator {
         } else {
             ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.TRUE);
         }
-        log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
+        log.info(StringUtil.changeForLog("The dto we checked is null ===>" + (inspecUserRecUploadDto == null)));
         ParamUtil.setRequestAttr(bpc.request, "inspecUserRecUploadType", actionValue);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
@@ -189,9 +189,9 @@ public class InspecUserRecUploadDelegator {
                 errorMap.put("remarks", "The Remarks should not be more than 300 characters.");
             }
         } else {
-            Boolean flag = false;
+            Boolean flag = Boolean.FALSE;
             String fileName = file.getOriginalFilename();
-            String substring = fileName.substring(fileName.lastIndexOf(".") + 1);
+            String substring = fileName.substring(fileName.lastIndexOf('.') + 1);
             if (file.getSize() > 4 * 1024 * 1024) {
                 errorMap.put(errorKey, "The file has exceeded the maximum upload size of 4MB.");
                 return errorMap;
@@ -199,7 +199,7 @@ public class InspecUserRecUploadDelegator {
             FileType[] values = FileType.values();
             for (FileType f : values) {
                 if (f.name().equalsIgnoreCase(substring)) {
-                    flag = true;
+                    flag = Boolean.TRUE;
                 }
             }
 
@@ -235,11 +235,11 @@ public class InspecUserRecUploadDelegator {
             for (InspecUserRecUploadDto iuruDto : inspecUserRecUploadDtos) {
                 if (!StringUtil.isEmpty(ncItemId)) {
                     if (ncItemId.equals(iuruDto.getId())) {
-                        inspecUserRecUploadDto = iuruDto;
+                        inspecUserRecUploadDto = iuruDto;break;
                     }
                 }
             }
-            log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
+            log.info(StringUtil.changeForLog("The dto we checked is null ===>" + (inspecUserRecUploadDto == null)));
             ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
         }
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
@@ -269,7 +269,7 @@ public class InspecUserRecUploadDelegator {
         InspecUserRecUploadDto inspecUserRecUploadDto = (InspecUserRecUploadDto)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDto");
         ParamUtil.setRequestAttr(bpc.request, "inspecUserRecUploadType", "confirm");
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
-        log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
+        log.info(StringUtil.changeForLog("The dto we checked is null ===>" + (inspecUserRecUploadDto == null)));
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
     }
 
@@ -289,7 +289,7 @@ public class InspecUserRecUploadDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request, "inspecUserRecUploadType", "confirm");
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
-        log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
+        log.info(StringUtil.changeForLog("The dto we checked is null ===>" + (inspecUserRecUploadDto == null)));
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
     }
 
@@ -314,7 +314,7 @@ public class InspecUserRecUploadDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtoList);
-        log.info("The dto we checked is null ===>" + (inspecUserRecUploadDto == null));
+        log.info(StringUtil.changeForLog("The dto we checked is null ===>" + (inspecUserRecUploadDto == null)));
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", inspecUserRecUploadDto);
     }
 

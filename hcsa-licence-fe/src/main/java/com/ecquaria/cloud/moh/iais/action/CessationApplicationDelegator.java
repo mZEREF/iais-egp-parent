@@ -6,12 +6,10 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -19,22 +17,19 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.CopyUtil;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.util.CopyUtil;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author weilu
@@ -117,12 +112,12 @@ public class CessationApplicationDelegator {
         String readInfo = ParamUtil.getRequestString(bpc.request, READINFO);
         ParamUtil.setSessionAttr(bpc.request, READINFO, readInfo);
         Map<String, String> errorMap = new HashMap<>(34);
-        Boolean choose = false;
+        Boolean choose = Boolean.FALSE;
         for (int i = 1; i <= size; i++) {
             for (int j = 1; j <= size; j++) {
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + WHICHTODO + j);
                 if (!StringUtil.isEmpty(whichTodo)) {
-                    choose = true;
+                    choose = Boolean.TRUE;
                 }
             }
         }
@@ -204,9 +199,9 @@ public class CessationApplicationDelegator {
                     String patRadio = ParamUtil.getRequestString(bpc.request, i + PATRADIO + j);
                     Boolean patNeedTrans = null;
                     if ("yes".equals(patRadio)) {
-                        patNeedTrans = true;
+                        patNeedTrans = Boolean.TRUE;
                     } else if ("no".equals(patRadio)) {
-                        patNeedTrans = false;
+                        patNeedTrans = Boolean.FALSE;
                     }
                     String patientSelect = ParamUtil.getRequestString(bpc.request, i + PATIENTSELECT + j);
                     String patNoRemarks = ParamUtil.getRequestString(bpc.request, i + PATNOREMARKS + j);

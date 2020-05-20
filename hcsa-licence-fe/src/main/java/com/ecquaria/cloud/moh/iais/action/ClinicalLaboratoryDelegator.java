@@ -458,7 +458,7 @@ public class ClinicalLaboratoryDelegator {
             isRfi = true;
         }
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
-        log.debug("isGetDataFromPage:"+isGetDataFromPage);
+        log.debug(StringUtil.changeForLog("isGetDataFromPage:"+isGetDataFromPage));
         if(isGetDataFromPage) {
             AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = null;
             Map<String, HcsaSvcSubtypeOrSubsumedDto> map = IaisCommonUtils.genNewHashMap();
@@ -595,7 +595,7 @@ public class ClinicalLaboratoryDelegator {
             isRfi = true;
         }
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
-        log.debug("isGetDataFromPage:"+isGetDataFromPage);
+        log.debug(StringUtil.changeForLog("isGetDataFromPage:"+isGetDataFromPage));
         if(isGetDataFromPage) {
             List<AppSvcCgoDto> appSvcCgoDtoList = genAppSvcCgoDto(bpc.request);
             //do validate
@@ -666,7 +666,7 @@ public class ClinicalLaboratoryDelegator {
             isRfi = true;
         }
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
-        log.debug("isGetDataFromPage:"+isGetDataFromPage);
+        log.debug(StringUtil.changeForLog("isGetDataFromPage:"+isGetDataFromPage));
         if (isGetDataFromPage) {
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
@@ -885,7 +885,7 @@ public class ClinicalLaboratoryDelegator {
         }
         String isEdit = ParamUtil.getString(mulReq, NewApplicationDelegator.IS_EDIT);
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
-        log.debug("isGetDataFromPage:"+isGetDataFromPage);
+        log.debug(StringUtil.changeForLog("isGetDataFromPage:"+isGetDataFromPage));
         if(isGetDataFromPage){
             Map<String,AppSvcDocDto> beforeReloadDocMap = (Map<String, AppSvcDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADSVCDOC);
             List<HcsaSvcDocConfigDto> svcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, "serviceDocConfigDto");
@@ -1175,7 +1175,7 @@ public class ClinicalLaboratoryDelegator {
             isRfi = true;
         }
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION , isEdit, isRfi);
-        log.info("isGetDataFromPage:"+isGetDataFromPage);
+        log.info(StringUtil.changeForLog("isGetDataFromPage:"+isGetDataFromPage));
         if(isGetDataFromPage){
             String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
             AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request,currentSvcId);
@@ -1591,11 +1591,11 @@ public class ClinicalLaboratoryDelegator {
             appSvcCgoList.removeAll(appSvcCgoDtos);
             StringBuilder stringBuilder=new StringBuilder();
             for(AppSvcCgoDto appSvcCgoDto : appSvcCgoList){
-                stringBuilder.append(appSvcCgoDto.getName()).append(",");
+                stringBuilder.append(appSvcCgoDto.getName()).append(',');
             }
             if(!StringUtil.isEmpty(stringBuilder.toString())){
                 String string = stringBuilder.toString();
-                String substring = string.substring(0, string.lastIndexOf(","));
+                String substring = string.substring(0, string.lastIndexOf(','));
                 String error = MessageUtil.getMessageDesc("UC_CHKLMD001_ERR005");
                 if(substring.contains(",")){
                     error = error.replaceFirst("is","are");
@@ -1626,12 +1626,12 @@ public class ClinicalLaboratoryDelegator {
                                 errorMap.put(id+"selectedFile","UC_CHKLMD001_ERR007");
                             }
 
-                            Boolean flag=false;
-                            String substring = docName.substring(docName.lastIndexOf(".") + 1);
+                            Boolean flag=Boolean.FALSE;
+                            String substring = docName.substring(docName.lastIndexOf('.') + 1);
                             FileType[] fileType = FileType.values();
                             for(FileType f:fileType){
                                 if(f.name().equalsIgnoreCase(substring)){
-                                    flag=true;
+                                    flag=Boolean.TRUE;
                                 }
                             }
 

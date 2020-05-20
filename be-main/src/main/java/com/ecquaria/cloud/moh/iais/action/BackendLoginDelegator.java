@@ -15,15 +15,15 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 /**
  * BackendLoginDelegator
@@ -58,7 +58,6 @@ public class BackendLoginDelegator {
     }
     public void doLogin(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
-        HttpServletResponse response=bpc.response;
         String userId= ParamUtil.getString(request,"entityId");
         try {
             OrgUserDto orgUserDto=organizationMainClient.retrieveOneOrgUserAccount(userId).getEntity();

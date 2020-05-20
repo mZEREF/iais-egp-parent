@@ -7,13 +7,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author: jiahao
@@ -161,10 +161,8 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 if(miEditNumFlag == 1){
                     errMap.put(serviceCode + "miEffDate", "ERR0012");
                 }
-            }else if("A".equals(level)){
-                if(mjEditNumFlag == 1){
-                    errMap.put(serviceCode + "mjEffDate", "ERR0012");
-                }
+            }else if("A".equals(level)&&mjEditNumFlag == 1){
+                errMap.put(serviceCode + "mjEffDate", "ERR0012");
             }
         } else if (endDate.getTime() < effDate.getTime()) {
             flag = false;
