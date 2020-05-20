@@ -107,7 +107,7 @@
           </div>
           <div class="col-xs-12 col-sm-6">
             <div class="text-right text-center-mobile">
-              <a class="btn btn-secondary" href="javascript:void(0);" onclick="$('.nice-select').removeClass('disabled'); Utils.clearClickStatus('form-horizontal'); ">Clear</a>
+              <%--<a class="btn btn-secondary" href="javascript:void(0);" onclick="$('.nice-select').removeClass('disabled'); Utils.clearClickStatus('form-horizontal'); $('#common').val(1)">Clear</a>--%>
               <a class="btn btn-primary next"  onclick="javascript: doNext();">Next</a>
             </div>
           </div>
@@ -130,6 +130,7 @@
            disableInput();
        }else if (commonVal == '0'){
            $('#common').attr('disabled', 'disabled')
+           $('#common').val(0)
        }
    }
 
@@ -157,6 +158,7 @@
     function doBack(){
         SOP.Crud.cfxSubmit("mainForm","backLastPage");
     }
+
 </script>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>

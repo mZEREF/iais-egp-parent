@@ -29,6 +29,7 @@
             $("."+ divName +" input[type='radio']").removeAttr('checked');
             $("."+ divName +" option[text = 'Please Select']").val("selected", "selected");
             $(".current").text("Please Select");
+            $("."+ divName +" option").val("");
         },
 
         disableButton: function (obj, id) {

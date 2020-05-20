@@ -12,52 +12,19 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import org.apache.commons.lang.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.lang.StringUtils;
 
 public class HcsaChklConfigValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-        String common = ParamUtil.getString(httpServletRequest, HcsaChecklistConstants.PARAM_CONFIG_COMMON);
-        String module = ParamUtil.getString(httpServletRequest, HcsaChecklistConstants.PARAM_CONFIG_MODULE);
-        String type = ParamUtil.getString(httpServletRequest, HcsaChecklistConstants.PARAM_CONFIG_TYPE);
-        String svcName = ParamUtil.getString(httpServletRequest, HcsaChecklistConstants.PARAM_CONFIG_SERVICE);
-        String svcSubType = ParamUtil.getString(httpServletRequest, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE);
         String eftStartDate = ParamUtil.getString(httpServletRequest, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_START_DATE);
         String eftEndDate = ParamUtil.getString(httpServletRequest, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_END_DATE);
-
-        String operationType = (String) ParamUtil.getSessionAttr(httpServletRequest, "operationType");
-        if (!"doEdit".equals(operationType) && !"doClone".equals(operationType)){
-            if(StringUtils.isEmpty(common) && StringUtils.isEmpty(svcName)){
-                errMap.put("configCustomValidation", "You need to select one of the configuration types!");
-                return errMap;
-            }
-        }
-
-        if (StringUtils.isEmpty(common)){
-            //create service
-            if (!StringUtils.isEmpty(svcName) && StringUtils.isEmpty(module) || StringUtils.isEmpty(type)){
-                errMap.put("configCustomValidation", "Module or type can not be null.");
-                return errMap;
-            }
-
-        }else {
-            //create common
-            if (!StringUtils.isEmpty(svcName) || !StringUtils.isEmpty(svcSubType)){
-                errMap.put("configCustomValidation", "You can only choose between common and service.");
-                return errMap;
-            }
-
-            if (!StringUtils.isEmpty(module) || !StringUtils.isEmpty(type)){
-                errMap.put("configCustomValidation", "When selecting common config, type and module is not required.");
-                return errMap;
-            }
-        }
-
 
         if (StringUtils.isEmpty(eftStartDate)){
             errMap.put("eftStartDate", MessageUtil.getMessageDesc(MessageCodeKey.ERR0010));

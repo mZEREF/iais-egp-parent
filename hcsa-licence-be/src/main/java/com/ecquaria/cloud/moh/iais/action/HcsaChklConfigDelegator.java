@@ -23,9 +23,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -351,7 +351,6 @@ public class HcsaChklConfigDelegator {
         String eftEndDate = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_END_DATE);
 
 
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_COMMON, common == null ? 0 : 1);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE, module);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE, type);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_HCI_CODE, hciCode);
@@ -368,46 +367,50 @@ public class HcsaChklConfigDelegator {
             String operationType = (String) ParamUtil.getSessionAttr(request, "operationType");
             if (!StringUtils.isEmpty(operationType) && HcsaChecklistConstants.ACTION_CLONE.equals(operationType)){
                 configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
-                configDto.setSvcName(svcName);
-                configDto.setHciCode(hciCode);
-
-                if (module != null){
-                    configDto.setModule(MasterCodeUtil.getCodeDesc(module));
-                }
-
-                if (type != null){
-                    configDto.setType(MasterCodeUtil.getCodeDesc(type));
-                }
+                configDto.setSvcName(null);
+                configDto.setEftStartDate(null);
+                configDto.setEftEndDate(null);
+                configDto.setSvcSubType(null);
+                configDto.setCommon(false);
+                configDto.setId(null);
+                configDto.setHciCode(null);
+                configDto.setModule(null);
+                configDto.setVersion(null);
+                configDto.setSvcCode(null);
+                configDto.setType(null);
             }else {
                 configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
                 if(configDto == null){
                     configDto = new ChecklistConfigDto();
                 }
-
-                if (common != null){
-                    configDto.setCommon(true);
-                }
-
-                if (type != null){
-                    configDto.setType(MasterCodeUtil.getCodeDesc(type));
-                }
-
-                if (module != null){
-                    configDto.setModule(MasterCodeUtil.getCodeDesc(module));
-                }
-
-
-                configDto.setSvcName(svcName);
-                configDto.setSvcSubType(svcSubType);
             }
 
+            if (common != null) {
+                configDto.setCommon(true);
+                ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_COMMON, "1");
+            }else {
+                configDto.setCommon(false);
+                ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_COMMON, "0");
+            }
+
+            if (module != null){
+                configDto.setModule(MasterCodeUtil.getCodeDesc(module));
+            }
+
+            if (type != null){
+                configDto.setType(MasterCodeUtil.getCodeDesc(type));
+            }
+
+            configDto.setSvcName(svcName);
+            configDto.setSvcSubType(svcSubType);
             configDto.setHciCode(hciCode);
             configDto.setEftStartDate(starteDate);
             configDto.setEftEndDate(endDate);
 
             configDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             //field validate
-            ValidationResult validationResult = WebValidationHelper.validateProperty(configDto, "create");
+
+            ValidationResult validationResult = WebValidationHelper.validateProperty(configDto, common == null ? "save" : "commonSave");
             if(validationResult != null && validationResult.isHasErrors()){
                 Map<String,String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
