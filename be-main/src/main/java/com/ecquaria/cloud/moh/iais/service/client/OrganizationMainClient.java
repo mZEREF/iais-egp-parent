@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -86,5 +87,9 @@ public interface OrganizationMainClient {
 
     @GetMapping(value = "/iais-task/task-read",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> taskRead(@RequestParam("id") String id);
+
+    @GetMapping(value = "/iais-licensee-be/licensee-by-id/{id}")
+    FeignResponseEntity<LicenseeDto> getLicenseeDtoById (@PathVariable("id") String id);
+
 
 }

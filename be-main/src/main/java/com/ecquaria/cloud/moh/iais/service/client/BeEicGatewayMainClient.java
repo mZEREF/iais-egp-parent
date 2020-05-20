@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -26,5 +27,11 @@ public interface BeEicGatewayMainClient {
                                                           @RequestHeader("date-Secondary") String dateSec,
                                                           @RequestHeader("authorization-Secondary") String authorizationSec);
 
+    @RequestMapping(value = "/v1/iais-inter-inbox-message/",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<InterMessageDto> saveInboxMessage(@RequestBody InterMessageDto interInboxDto,
+                                                          @RequestHeader("date") String date,
+                                                          @RequestHeader("authorization") String authorization,
+                                                          @RequestHeader("date-Secondary") String dateSec,
+                                                          @RequestHeader("authorization-Secondary") String authorizationSec);
 
 }

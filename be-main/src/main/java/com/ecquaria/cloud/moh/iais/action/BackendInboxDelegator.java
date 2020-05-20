@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -14,15 +15,20 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
@@ -31,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
@@ -45,20 +52,25 @@ import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryMainService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastMainService;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloudfeign.FeignException;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -89,6 +101,8 @@ public class BackendInboxDelegator {
     @Autowired
     private BroadcastMainService broadcastService;
 
+    @Autowired
+    private InspEmailService inspEmailService;
     private String application_no;
     private String application_type;
     private String application_status;
@@ -98,6 +112,9 @@ public class BackendInboxDelegator {
     private List<String> applicationDtoIds;
     private SearchParam searchParamGroup;
     private List<TaskDto> commPools;
+    private final String MAILMPLATEID_NOTIFY = "3580AC19-CC98-EA11-BE82-000C29F371DC";
+    private final String MAILMPLATEID_REJECT = "B870D00F-E698-EA11-BE82-000C29F371DC";
+    private final String MAILMPLATEID_APPROVE = "19CAC7AB-E798-EA11-BE82-000C29F371DC";
     public void start(BaseProcessClass bpc){
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
@@ -259,7 +276,7 @@ public class BackendInboxDelegator {
      * @param bpc
      * @throws
      */
-    public void doApprove(BaseProcessClass bpc)  throws FeignException, CloneNotSupportedException {
+    public void doApprove(BaseProcessClass bpc)   throws IOException, TemplateException , FeignException, CloneNotSupportedException {
         applicationDtoIds = IaisCommonUtils.genNewArrayList();
         String[] taskList =  ParamUtil.getMaskedStrings(bpc.request, "taskId");
         String action =  ParamUtil.getString(bpc.request, "action");
@@ -300,12 +317,47 @@ public class BackendInboxDelegator {
                     AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
                     if(appPremisesRecommendationDto!=null){
                         Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
+                        Map<String,Object> notifyMap=IaisCommonUtils.genNewHashMap();
+                        InspectionEmailTemplateDto notifyTemplateDto = inspEmailService.loadingEmailTemplate(MAILMPLATEID_NOTIFY);
+                        InspectionEmailTemplateDto rejectTemplateDto = inspEmailService.loadingEmailTemplate(MAILMPLATEID_REJECT);
+                        InspectionEmailTemplateDto approveTemplateDto = inspEmailService.loadingEmailTemplate(MAILMPLATEID_APPROVE);
+                        List<String> transfee = IaisEGPHelper.getLicenseeEmailAddrs(applicationViewDto.getApplicationGroupDto().getLicenseeId());
+                        LicenceDto licenceDto = inspEmailService.getLicBylicId(applicationViewDto.getApplicationDto().getOriginLicenceId());
+                        List<String> transfor = IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId());
                         if(null != recomInNumber && recomInNumber == 0){
                             successStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
+                            //Send notification to transferor when licence transfer application is rejected
+                            LicenseeDto licDto = inspEmailService.getLicenseeDtoById(applicationViewDto.getApplicationGroupDto().getLicenseeId());
+                            notifyMap.put("licensee",licDto.getUenNo());
+                            notifyMap.put("licenceList","<p>"+licenceDto.getLicenceNo() + " - " +licenceDto.getSvcName()+"</p>");
+                            notifyMap.put("status","Is Rejected.");
+                            //reject
+                            Map<String,Object> rejectMap=IaisCommonUtils.genNewHashMap();
+                            rejectMap.put("applicationId",applicationViewDto.getApplicationDto().getApplicationNo());
+                            sendEmail(applicationViewDto.getApplicationDto().getId(),rejectTemplateDto.getMessageContent(),transfor,rejectMap,rejectTemplateDto.getSubject(),applicationViewDto);
+
+
                         }else{
                             successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
+                            //Send notification to transferor when licence transfer application is approved
+
+                            List<String> emailAdd = IaisEGPHelper.getLicenseeEmailAddrs(applicationViewDto.getApplicationGroupDto().getLicenseeId());
+                            LicenseeDto licDto = inspEmailService.getLicenseeDtoById(applicationViewDto.getApplicationGroupDto().getLicenseeId());
+                            notifyMap.put("licensee",licDto.getUenNo());
+                            notifyMap.put("licenceList","<p>"+licenceDto.getLicenceNo() + " - " +licenceDto.getSvcName()+"</p>");
+                            notifyMap.put("status","Is Approved.");
+                            //approve
+                            Map<String,Object> approveMap=IaisCommonUtils.genNewHashMap();
+                            approveMap.put("licensee",licDto.getUenNo());
+                            approveMap.put("licenceList","<p>"+licenceDto.getLicenceNo() + " - " +licenceDto.getSvcName());
+                            sendEmail(applicationViewDto.getApplicationDto().getId(),approveTemplateDto.getMessageContent(),transfor,approveMap,approveTemplateDto.getSubject(),applicationViewDto);
                         }
-                    }
+
+                        //notify transfee
+                        sendEmail(applicationViewDto.getApplicationDto().getId(),notifyTemplateDto.getMessageContent(),transfee,notifyMap,notifyTemplateDto.getSubject(),applicationViewDto);
+                        //notify transfor
+                        sendEmail(applicationViewDto.getApplicationDto().getId(),notifyTemplateDto.getMessageContent(),transfor,notifyMap,notifyTemplateDto.getSubject(),applicationViewDto);
+                        }
                     log.debug(StringUtil.changeForLog("the do approve start ...."));
                     routingTask(bpc,null,successStatus,null,applicationViewDto,taskDto);
                     log.debug(StringUtil.changeForLog("the do approve end ...."));
@@ -324,9 +376,13 @@ public class BackendInboxDelegator {
             }else if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(successStatus)){
                 //AO3 APPROVAL
                 successInfo = MessageCodeKey.ACK009;
+                //Send notification to transferee when licence transfer application is rejected
+
+                
             }else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(successStatus)){
                 //AO3 REJECT
                 successInfo = MessageCodeKey.ACK010;
+
             }else if(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS.equals(successStatus)){
                 //AO3 DMS
                 successInfo = MessageCodeKey.ACK011;
@@ -334,6 +390,32 @@ public class BackendInboxDelegator {
             ParamUtil.setRequestAttr(bpc.request,"successInfo",successInfo);
         }
 
+    }
+
+    private void sendEmail(String appId, String templateHtml, List<String> emailAddr, Map<String,Object> map,String subject,ApplicationViewDto applicationViewDto) throws IOException, TemplateException {
+        EmailDto email = new EmailDto();
+        String mesContext = null;
+        try {
+            mesContext= MsgUtil.getTemplateMessageByContent(templateHtml,map);
+        } catch (IOException | TemplateException e) {
+            log.error(e.getMessage(),e);
+        }
+
+        email.setReqRefNum(appId);
+        email.setSubject(subject);
+        email.setContent(mesContext);
+        email.setSender(AppConsts.MOH_AGENCY_NAME);
+        email.setClientQueryCode(appId);
+        email.setReceipts(emailAddr);
+        inspEmailService.sendNotification(email);
+
+        String messageNo = inspEmailService.getMessageNo();
+        InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
+                messageNo,applicationViewDto.getApplicationDto().getServiceId(),mesContext, applicationViewDto.getApplicationGroupDto().getLicenseeId(),IaisEGPHelper.getCurrentAuditTrailDto());
+        HashMap<String,String> mapParam = IaisCommonUtils.genNewHashMap();
+        mapParam.put("appNo",applicationViewDto.getApplicationDto().getApplicationNo());
+        interMessageDto.setMaskParams(mapParam);
+        inspEmailService.saveInterMessage(interMessageDto);
     }
 
     private void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ,ApplicationViewDto applicationViewDto,TaskDto taskDto) throws FeignException, CloneNotSupportedException {

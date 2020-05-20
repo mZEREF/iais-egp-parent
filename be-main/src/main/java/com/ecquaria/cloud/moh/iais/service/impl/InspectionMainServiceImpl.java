@@ -57,7 +57,7 @@ public class InspectionMainServiceImpl implements InspectionMainService {
     private static final String[] ASO_STATUS = new String[]{
             ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,
             ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_DMS_APPROVAL,
+            ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
             ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
             ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE,
     };
@@ -65,12 +65,12 @@ public class InspectionMainServiceImpl implements InspectionMainService {
     private static final String[] AO1_STATUS = new String[]{
             ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
             ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_AO1_SUPPORT,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW,
     };
 
     private static final String[] AO2_STATUS = new String[]{
-            ApplicationConsts.APPLICATION_STATUS_PENDING_AO2_SUPPORT,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
             ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
     };
 
@@ -90,7 +90,7 @@ public class InspectionMainServiceImpl implements InspectionMainService {
             ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_DMS_APPROVAL,
+            ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
             ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,
     };
 
@@ -102,7 +102,7 @@ public class InspectionMainServiceImpl implements InspectionMainService {
             ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_DMS_APPROVAL,
+            ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
     };
 
     private static final String[] DEFAULT_STATUS = new String[]{
