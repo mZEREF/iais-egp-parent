@@ -471,8 +471,8 @@ public class NewApplicationDelegator {
         }
         Double total=0.0;
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos=IaisCommonUtils.genNewArrayList();
+        total+=appSubmissionDto.getAmount();
         if(appSubmissionDtos!=null&&!appSubmissionDtos.isEmpty()){
-            appSubmissionDto.setAmount(appSubmissionDtos.get(0).getAmount());
             for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtos){
                 Double amount = appSubmissionDto1.getAmount();
                 total=total+amount;
@@ -480,9 +480,10 @@ public class NewApplicationDelegator {
                 appSvcRelatedInfoDtoList.get(0).setScore(appSubmissionDto1.getAmount());
                 appSvcRelatedInfoDtos.addAll(appSvcRelatedInfoDtoList);
             }
-            appSubmissionDto.setAmount(total);
-            appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
+
         }
+        appSubmissionDto.setAmount(total);
+        appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
         if(!StringUtil.isEmpty(appSubmissionDto.getAmount())){
             String amountStr = Formatter.formatterMoney(appSubmissionDto.getAmount());
             log.info(StringUtil.changeForLog("The amountStr is -->:"+amountStr));

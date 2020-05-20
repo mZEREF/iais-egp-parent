@@ -592,6 +592,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         applicationClient.saveAppGroupMiscDto(appGroupMiscDto);
     }
 
+    @Override
+    public List<AppSubmissionDto> getAppSubmissionDtoByGroupNo(String groupNo) {
+
+        return null;
+    }
+
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             return appSvcRelatedInfoDtos.get(0);

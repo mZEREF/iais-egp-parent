@@ -266,4 +266,6 @@ public interface ApplicationClient  {
     FeignResponseEntity<List<ApplicationDto>> updateApplicationList(@RequestBody List<ApplicationDto> applicationDtoList);
     @PostMapping(value = "/iais-application/app-group-misc-dto",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppGroupMiscDto> saveAppGroupMiscDto(@RequestBody AppGroupMiscDto appGroupMiscDto);
+    @GetMapping(value = "/iais-application/application-group-no",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getApplicationsByGroupNo(@RequestParam("groupNo") String groupNo);
 }

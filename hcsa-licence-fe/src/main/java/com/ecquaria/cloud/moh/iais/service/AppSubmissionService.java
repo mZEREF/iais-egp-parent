@@ -47,4 +47,5 @@ public interface AppSubmissionService {
     boolean compareAndSendEmail(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto);
     void setDraftNo(AppSubmissionDto appSubmissionDto);
     void  saveAppGrpMisc(AppGroupMiscDto appGroupMiscDto);
+    List<AppSubmissionDto> getAppSubmissionDtoByGroupNo(String groupNo);
 }

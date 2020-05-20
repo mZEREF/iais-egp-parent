@@ -94,7 +94,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG, null);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, null);
-        /*  requestForInformation(bpc,appNo);*/
+        requestForInformation(bpc,appNo);
 
         log.debug(StringUtil.changeForLog("the do start end ...."));
     }
@@ -220,8 +220,6 @@ public class RequestForChangeMenuDelegator {
 
 
     public void doSearch(BaseProcessClass bpc) {
-        premiseFilterParameter.setPageSize(10);
-        premiseFilterParameter.setPageNo(1);
         String crud_action_value = bpc.request.getParameter("crud_action_value");
         if (!StringUtil.isEmpty(crud_action_value)) {
             bpc.request.setAttribute("doSearch", crud_action_value);
@@ -1350,6 +1348,8 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
         if (!StringUtil.isEmpty(appNo)) {
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
+            String appGrpNo = appSubmissionDto.getAppGrpNo();
+
             if (appSubmissionDto != null) {
                 appSubmissionDto.setNeedEditController(true);
                 for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDto.getAppGrpPremisesDtoList()) {
