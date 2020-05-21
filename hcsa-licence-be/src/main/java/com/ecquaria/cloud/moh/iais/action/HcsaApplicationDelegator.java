@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
@@ -575,7 +576,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToPSO(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
+    public void rontingTaskToPSO(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToPSO start ...."));
         routingTask(bpc,HcsaConsts.ROUTING_STAGE_PSO,ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,RoleConsts.USER_ROLE_PSO);
         log.debug(StringUtil.changeForLog("the do rontingTaskToPSO end ...."));
@@ -588,7 +589,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToINS(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
+    public void rontingTaskToINS(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToINS start ...."));
         routingTask(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT,RoleConsts.USER_ROLE_INSPECTIOR);
         log.debug(StringUtil.changeForLog("the do rontingTaskToINS end ...."));
@@ -601,7 +602,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToASO(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
+    public void rontingTaskToASO(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToASO start ...."));
         routingTask(bpc,HcsaConsts.ROUTING_STAGE_ASO,ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,RoleConsts.USER_ROLE_ASO);
         log.debug(StringUtil.changeForLog("the do rontingTaskToASO end ...."));
@@ -613,7 +614,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToAO1(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
+    public void rontingTaskToAO1(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO1 start ...."));
         routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO1,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,RoleConsts.USER_ROLE_AO1);
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO1 end ...."));
@@ -625,7 +626,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToAO2(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
+    public void rontingTaskToAO2(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
         routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO2,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,RoleConsts.USER_ROLE_AO2);
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
@@ -637,7 +638,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToAO3(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
+    public void rontingTaskToAO3(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
         routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3);
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
@@ -649,7 +650,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void approve(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
+    public void approve(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do approve start ...."));
         routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_APPROVED,null);
         log.debug(StringUtil.changeForLog("the do approve end ...."));
@@ -918,7 +919,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void reject(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
+    public void reject(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do reject start ...."));
         routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_REJECTED,null);
 
@@ -1226,7 +1227,7 @@ public class HcsaApplicationDelegator {
         return recommendationSelectOption;
     }
 
-    private void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ) throws FeignException, CloneNotSupportedException {
+    private void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.info(StringUtil.changeForLog("The routingTask start ..."));
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
@@ -1372,28 +1373,28 @@ public class HcsaApplicationDelegator {
                         msgInfoMap.put("reqAppNo",applicationNo);
                         msgInfoMap.put("S_LName",serviceName);
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                        try {
-                            EmailDto emailDto = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE,msgInfoMap,withdrawApplicationDto.getApplicationNo(),licenseeId,subjectSuppInfo);
-                            sendInboxMessage(licenseeId,null,emailDto.getContent(),serviceId,emailDto.getSubject());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (TemplateException e) {
-                            e.printStackTrace();
-                        }
+                        EmailDto emailDto = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE,msgInfoMap,withdrawApplicationDto.getApplicationNo(),licenseeId,subjectSuppInfo);
+                        sendInboxMessage(licenseeId,null,emailDto.getContent(),serviceId,emailDto.getSubject());
+                        /**
+                         *  Send SMS when withdrawal Application Approve
+                         */
+                        Map<String, Object> smsInfoMap = IaisCommonUtils.genNewHashMap();
+                        sendSMS("",taskDto.getUserId(),smsInfoMap);
                     }else{
                         String subjectSuppInfo = applicationNo + " is Rejected";
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                         msgInfoMap.put("appNum", applicationNo);
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                        try {
-                            EmailDto emailDto = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT,msgInfoMap,withdrawApplicationDto.getApplicationNo(),licenseeId,subjectSuppInfo);
-                            sendInboxMessage(licenseeId,null,emailDto.getContent(),serviceId,emailDto.getSubject());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (TemplateException e) {
-                            e.printStackTrace();
-                        }
+                        EmailDto emailDto = sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_REJECT,msgInfoMap,withdrawApplicationDto.getApplicationNo(),licenseeId,subjectSuppInfo);
+                        sendInboxMessage(licenseeId,null,emailDto.getContent(),serviceId,emailDto.getSubject());
+                        /**
+                         *  Send SMS when withdrawal Application Reject
+                         */
+                        Map<String, Object> smsInfoMap = IaisCommonUtils.genNewHashMap();
+                        sendSMS("",taskDto.getUserId(),smsInfoMap);
                     }
+                    Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+                    sendEmail("",msgInfoMap,applicationNo,taskDto.getUserId(),"");
                 }
             }
         }
@@ -1428,6 +1429,17 @@ public class HcsaApplicationDelegator {
         emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
         emailClient.sendNotification(emailDto).getEntity();
         return emailDto;
+    }
+
+    private void sendSMS(String msgId,String licenseeId,Map<String, Object> msgInfoMap) throws IOException, TemplateException {
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
+        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
+        SmsDto smsDto = new SmsDto();
+        smsDto.setContent(templateMessageByContent);
+        smsDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        smsDto.setOnlyOfficeHour(true);
+        String refNo = inboxMsgService.getMessageNo();
+        emailClient.sendSMS(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId),smsDto,refNo);
     }
 
     private List<ApplicationDto> removeFastTracking(List<ApplicationDto> applicationDtos){
