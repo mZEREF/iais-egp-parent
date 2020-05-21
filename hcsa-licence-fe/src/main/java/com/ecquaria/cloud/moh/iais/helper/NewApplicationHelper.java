@@ -59,7 +59,11 @@ public class NewApplicationHelper {
         if(appSvcLaboratoryDisciplinesDtos.isEmpty()){
             return map;
         }
+        int svcScopeSize =  appSvcLaboratoryDisciplinesDtos.size();
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
+            if(premCount >=svcScopeSize){
+                break;
+            }
                 AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = appSvcLaboratoryDisciplinesDtos.get(premCount);
                 List<AppSvcChckListDto> listDtos = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
                 int count=0;

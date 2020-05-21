@@ -1,3 +1,8 @@
+<style>
+    span{
+        word-wrap: break-word;
+    }
+</style>
 <div class="panel panel-default">
     <div class="panel-heading
         <c:if test="${!FirstView}">

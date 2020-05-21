@@ -23,48 +23,57 @@
         </tr>
         <tr>
         </tr>
+        <tr >
+          <td class="first last" style="width: 100%;">
+            <div class="section control  container-s-1">
+              <table class="assignContent control-grid">
+                <tbody>
+                <tr height="1">
+                  <td class="first last" style="width: 100%;">
+                    <div id="" class="control control-caption-horizontal">
+                      <div class="form-group form-horizontal formgap">
+                        <div class="col-sm-4">
+                          <strong style="font-size: 20px;">Clinical Governance Officers</strong>
+                        </div>
+                        <div class="col-sm-8 text-right">
+                          <c:if test="${AppSubmissionDto.needEditController }">
+                            <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+                              <c:if test="${'APPSPN02' == clickEditPage}">
+                                <c:set var="isClickEdit" value="true"/>
+                              </c:if>
+                            </c:forEach>
+                            <c:choose>
+                              <c:when test="${'true' != isClickEdit && !('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
+                                <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+                              </c:when>
+                              <c:otherwise>
+                                <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
+                              </c:otherwise>
+                            </c:choose>
+                            <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
+                              <div class="ack-font-16">
+                                <a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a>
+                              </div>
+                            </c:if>
+                            <c:if test="${'true' != isClickEdit}">
+                              <c:set var="locking" value="true"/>
+                              <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+                            </c:if>
+                          </c:if>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
         <tr height="1">
           <td class="first last" style="width: 100%;">
             <div id="control--runtime--1" class="section control  container-s-1">
-              <div class="control-set-font control-font-header section-header">
-
-                <c:if test="${AppSubmissionDto.needEditController }">
-                  <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
-                    <c:if test="${'APPSPN02' == clickEditPage}">
-                      <c:set var="isClickEdit" value="true"/>
-                    </c:if>
-                  </c:forEach>
-                  <c:choose>
-                    <c:when test="${'true' != isClickEdit}">
-                      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
-                    </c:when>
-                    <c:otherwise>
-                      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
-                    </c:otherwise>
-                  </c:choose>
-                  <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
-                    <p class="text-right"><a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a></p>
-                  </c:if>
-                  <c:if test="${'true' != isClickEdit}">
-                    <c:set var="locking" value="true"/>
-                    <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
-                    <div id="edit-content">
-                      <c:choose>
-                        <c:when test="${'true' == canEdit}">
-                          <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a></p>
-                        </c:when>
-                        <c:otherwise>
-
-                        </c:otherwise>
-                      </c:choose>
-                    </div>
-                  </c:if>
-                </c:if>
-              </div>
-
-
-              <div id="control--runtime--1--errorMsg_section_top" class="error_placements"></div>
-              <div class="assignContent hideen-div hidden"></div>
+              <div class="control-set-font control-font-header section-header"></div>
               <c:if test="${CgoMandatoryCount >0}">
                 <c:forEach  begin="0" end="${CgoMandatoryCount-1}"  step="1" varStatus="status" >
                   <c:set value="${GovernanceOfficersList}" var="cgoList"/>
@@ -72,7 +81,10 @@
                   <c:set value="${cgoList[status.index]}" var="currentCgo"/>
                   <c:set value="${errorMap_governanceOfficers[status.index]}" var="errorMap"/>
                   <c:set value="${status.index}" var="suffix" />
-                  <table class="assignContent control-grid">
+                  <div class="cgo-content">
+                  <table class="assignContent control-grid" style="width:100%;">
+                    <input type="hidden" name="isPartEdit" value="0"/>
+                    <input type="hidden" name="cgoIndexNo" value="${currentCgo.cgoIndexNo}"/>
                     <tbody>
                     <tr height="1">
                       <td class="first last" style="width: 100%;">
@@ -80,34 +92,53 @@
                           <c:when test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType }">
                             <div id="control--runtime--2" class="control control-caption-horizontal">
                               <c:if test="${currentCgo != null}">
-                                <div class=" form-group form-horizontal formgap">
-                                  <div class="col-sm-4 control-label formtext ">
-                                    <label>Clinical Governance Office ${status.index+1}</label><br/>
-                                    <label>${currentCgo.name},${currentCgo.idNo}(${currentCgo.idType})</label>
+                                <div class="form-group form-horizontal formgap">
+                                  <div class="col-sm-4 control-label formtext control">
+                                    <div class="cgo-header">
+                                      <strong>Clinical Governance Office <label class="assign-psn-item">${status.index+1}</label></strong>
+                                    </div>
                                   </div>
-                                  <div class="hidden">
-                                    <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
+                                  <div class="col-sm-8 text-right">
+                                    <div class="">
+                                      <h4 class="text-danger"><em class="fa fa-times-circle removeBtn cursorPointer"></em></h4>
+                                    </div>
+                                    <div class="hidden">
+                                      <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
+                                    </div>
+                                  </div>
+                                  <div class="col-sm-10">
+                                    <label class="control-font-label">${currentCgo.name}, ${currentCgo.idNo} (${currentCgo.idType})</label>
+                                  </div>
+                                  <div class="col-sm-2" style="margin-top:3%;">
+                                    <div class="edit-content">
+                                      <c:if test="${'true' == canEdit}">
+                                        <p class="text-right"><a class="edit"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a></p>
+                                      </c:if>
+                                    </div>
                                   </div>
                                 </div>
                               </c:if>
                             </div>
                           </c:when>
                           <c:otherwise>
-                            <div id="control--runtime--2" class="control control-caption-horizontal">
-                              <div class=" form-group form-horizontal formgap">
-                                <div>
-                                  <div class="control-label formtext assign-header cgo-header">
-                                    Clinical Governance Officer <label class="assign-psn-item">${status.index+1}</label>
+                            <div id="control--runtime--" class="control control-caption-horizontal">
+                              <div class=" form-group form-horizontal formgap" <c:if test="${status.first}">style="width:194%;"</c:if> >
+                                <div class="col-sm-4 control-label formtext control">
+                                  <div class="cgo-header">
+                                    <strong>Clinical Governance Office <label class="assign-psn-item">${status.index+1}</label></strong>
                                   </div>
+                                </div>
+                                <div class="col-sm-8 text-right">
                                   <c:if test="${!status.first}">
-                                    <div class="row" style="float:right">
-                                      <div class="form-check removeBtn">
-                                        <div class="fa fa-times-circle text-danger"></div>
-                                      </div>
+                                    <div class="">
+                                      <h4 class="text-danger"><em class="fa fa-times-circle cursorPointer removeBtn"></em></h4>
                                     </div>
                                   </c:if>
                                 </div>
-                                <br/>
+                              </div>
+                            </div>
+                            <div id="control--runtime--2" class="control control-caption-horizontal">
+                              <div class=" form-group form-horizontal formgap">
                                 <div class="col-sm-5 control-label formtext ">
                                   <label id="control--runtime--2--label" class="control-label control-set-font control-font-label" >Add/Assign a Clinical Governance Officer</label>
                                   <span class="upload_controls"></span>
@@ -123,7 +154,7 @@
                           </c:otherwise>
                         </c:choose>
                         <div class="profile-info-gp hidden"></div>
-                        <div id="newOfficer" class="new-officer-form ${cgoIndeNo}-new hidden">
+                        <div id="newOfficer" class="new-officer-form hidden">
                           <table class="control-grid" >
                             <tbody>
                             <tr height="1">
@@ -301,9 +332,8 @@
                                 <div  class="control control-caption-horizontal">
                                   <div class=" form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext ">
-                                      <label  class="control-label control-set-font control-font-label">Mobile No.
-                                      </label>                                                                                                                                        <span class="mandatory">*</span>
-                                      <span class="upload_controls"></span>
+                                        <label  class="control-label control-set-font control-font-label">Mobile No.</label>                                                                                                                                        <span class="mandatory">*</span>
+                                        <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5 col-md-7">
                                       <div class="">
@@ -320,8 +350,8 @@
                                 <div id="control--runtime--33" class="control control-caption-horizontal">
                                   <div class=" form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext ">
-                                      <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">Email Address
-                                      </label>                                                                                                                                                        <span class="mandatory">*</span>
+                                        <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">Email Address</label>
+                                        <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-4 col-md-7">
@@ -341,15 +371,15 @@
                     </tr>
                     </tbody>
                   </table>
-                  <c:if test="${!status.last}">
-                    <hr/>
-                  </c:if>
+                    <c:if test="${!status.last}">
+                      <hr/>
+                    </c:if>
+                  </div>
                 </c:forEach>
               </c:if>
             </div>
           </td>
         </tr>
-        <hr/>
         <c:if test="${'BLB'!=currentSvcCode && 'RDS'!=currentSvcCode && requestInformationConfig==null}">
           <tr id="addInfo">
             <td>
@@ -388,7 +418,7 @@
 
         if(${AppSubmissionDto.needEditController && !isClickEdit}){
             disabledPage();
-            $('.addListBtn').addClass('hidden');
+            //$('.addListBtn').addClass('hidden');
         }
 
         doEdit();
@@ -431,14 +461,6 @@
                 }
             }
         });
-    }
-
-
-
-
-
-    var disabledAll = function () {
-        $('input[type="text"]').prop('disabled',true);
     }
 
     var showSpecialty = function () {
@@ -499,11 +521,15 @@
     });
 
     var doEdit = function () {
-        $('#edit').click(function () {
-            unDisabledPage();
+        $('.edit').click(function () {
+            var $contentEle = $(this).closest('.assignContent');
+            $contentEle.find('input[name="isPartEdit"]').val('1');
+            $contentEle.find('.edit-content').addClass('hidden');
+            $contentEle.find('input[type="text"]').prop('disabled',false);
+            $contentEle.find('div.nice-select').removeClass('disabled');
+            $contentEle.find('input[type="text"]').css('border-color','');
+            $contentEle.find('input[type="text"]').css('color','');
             $('#isEditHiddenVal').val('1');
-            $('#edit-content').addClass('hidden');
-            $('.addListBtn').removeClass('hidden');
         });
     }
 
@@ -515,9 +541,14 @@
     }
     var removeCgo = function () {
         $('.removeBtn').click(function () {
-            var $premContentEle= $(this).closest('table.assignContent');
+            var assignContentLength = $('table.assignContent').length -1;
+            var $premContentEle= $(this).closest('div.cgo-content');
+            if(assignContentLength <= 2){
+                $('hr').remove();
+            }
             $premContentEle.remove();
             $('.errorMsg').html("");
+
         });
 
     }

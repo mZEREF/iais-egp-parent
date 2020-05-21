@@ -195,7 +195,7 @@
                             <span id="addMapBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another MedAlert Person</span>
                         </div>
                         <div class="col-sm-3 control-label formtext col-md-7">
-                            <span class="error-msg mapErrorMsg" style=""></span>
+                            <span class="mapErrorMsg" style="color: red;"></span>
                         </div>
                     </div>
                 </div>

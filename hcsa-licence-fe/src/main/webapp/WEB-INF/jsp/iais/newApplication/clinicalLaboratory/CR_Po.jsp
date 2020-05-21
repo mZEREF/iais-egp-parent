@@ -4,17 +4,10 @@
   <div class="col-xs-12">
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
       <div class="panel panel-default">
-        <div class="panel-heading " id="headingPrincipal" role="tab">
-          <c:set var="canExpand" value="${(ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0) || (ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0)}"/>
-          <h4 class="panel-title"><a role="button" class="
-          <c:if test="${!canExpand}">
-          collapsed
-          </c:if>
-" data-toggle="collapse" href="#collapsePrincipal" aria-expanded="true" aria-controls="collapsePrincipal">Principal Officer</a></h4>
+        <div class="panel-heading" id="headingPrincipal" role="tab">
+          <h4 class="panel-title"><a role="button" class="" data-toggle="collapse" href="#collapsePrincipal" aria-expanded="true" aria-controls="collapsePrincipal">Principal Officer</a></h4>
         </div>
-        <div class="panel-collapse collapse <c:if test="${canExpand}" >
-          in
-        </c:if>  " id="collapsePrincipal" role="tabpanel" aria-labelledby="headingPremise">
+        <div class="panel-collapse collapse in" id="collapsePrincipal" role="tabpanel" aria-labelledby="headingPremise">
 
           <div class="panel-body">
             <div class="panel-main-content">
@@ -58,12 +51,29 @@
                 </c:if>
               </div>
               <c:if test="${PrincipalOfficersMandatory>0}">
+                <c:set value="${poHcsaSvcPersonnelDto.mandatoryCount}" var="poMandatoryCount"/>
                 <c:forEach begin="0" end="${PrincipalOfficersMandatory-1}" step="1" varStatus="status">
                   <c:if test="${ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0}" >
                     <c:set var="principalOfficer" value="${ReloadPrincipalOfficers[status.index]}"/>
                   </c:if>
                   <c:set var="suffix" value="${status.index}" />
                   <div class="po-content">
+                    <div class="row">
+                      <div class="control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                          <div class="col-sm-6 control-label formtext col-md-4">
+                            <div class="cgo-header" style="font-size: 18px;">
+                              <strong>Principal Officer <label class="assign-psn-item">${status.index+1}</label></strong>
+                            </div>
+                          </div>
+                          <div class="col-sm-5 col-md-8 text-right" >
+                            <c:if test="${status.index - poMandatoryCount >=0}">
+                              <h4 class="text-danger"><em class="fa fa-times-circle removePoBtn cursorPointer"></em></h4>
+                            </c:if>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <div class="">
                       <div class="row">
                         <div class="control control-caption-horizontal">
@@ -81,13 +91,6 @@
                             </div>
                           </div>
                         </div>
-                        <c:if test="${!status.first}">
-                          <div  class="row" style="float:right">
-                            <div class="form-check removePoBtn">
-                              <div class="fa fa-times-circle text-danger" ></div>
-                            </div>
-                          </div>
-                        </c:if>
                       </div>
                     </div>
                     <div class="principalOfficers hidden">
@@ -275,19 +278,33 @@
         </div>
         <div class="deputy-content panel-collapse collapse <c:if test="${DeputyPrincipalOfficersMandatory> 0}">in</c:if>" id="deputyContent" role="tabpanel" aria-labelledby="headingDeputy">
           <div class="panel-body">
-            <%--<p class="text-right"><a href="application-premises.html"><i class="fa fa-pencil-square-o"></i>Edit</a></p>--%>
-
-
             <div class="panel-main-content">
               <h2>Deputy Principal Officer</h2>
               <div class="dpo-content">
               </div>
               <c:if test="${DeputyPrincipalOfficersMandatory>0}">
+                <c:set value="${dpoHcsaSvcPersonnelDto.mandatoryCount}" var="dpoMandatoryCount"/>
                 <c:forEach begin="0" end="${DeputyPrincipalOfficersMandatory-1}" step="1" varStatus="status">
                   <c:if test="${ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0}" >
                     <c:set var="deputy" value="${ReloadDeputyPrincipalOfficers[status.index]}"/>
                   </c:if>
                   <div class="dpo-content">
+                    <div class="row">
+                      <div class="control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                          <div class="col-sm-6 control-label formtext col-md-4">
+                            <div class="cgo-header" style="font-size: 18px;">
+                              <strong>Deputy Principal Officer <label class="assign-psn-item">${status.index+1}</label></strong>
+                            </div>
+                          </div>
+                          <div class="col-sm-5 col-md-8 text-right" >
+                            <c:if test="${status.index - dpoMandatoryCount >=0}">
+                              <h4 class="text-danger"><em class="fa fa-times-circle removeDpoBtn cursorPointer"></em></h4>
+                            </c:if>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <div class="row">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -300,13 +317,6 @@
                             <span id="error_deputyAssignSelect${status.index}" name="iaisErrorMsg" class="error-msg"></span>
                           </div>
                         </div>
-                        <c:if test="${!status.first}">
-                          <div  class="row" style="float:right">
-                            <div class="form-check removeDpoBtn">
-                              <div class="fa fa-times-circle text-danger" ></div>
-                            </div>
-                          </div>
-                        </c:if>
                       </div>
                     </div>
 
@@ -771,7 +781,10 @@
         $('.removePoBtn').click(function () {
             var $premContentEle= $(this).closest('div.po-content');
             $premContentEle.remove();
-
+            //reset number
+            $('.po-content').each(function (k,v) {
+                $(this).find('.assign-psn-item').html(k);
+            });
         });
 
     }
@@ -779,7 +792,10 @@
         $('.removeDpoBtn').click(function () {
             var $premContentEle= $(this).closest('div.dpo-content');
             $premContentEle.remove();
-
+            //reset number
+            $('.dpo-content').each(function (k,v) {
+                $(this).find('.assign-psn-item').html(k);
+            });
         });
 
     }

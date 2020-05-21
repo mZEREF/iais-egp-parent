@@ -55,6 +55,9 @@
           <c:when test="${'CONVEYANCE' == appGrpPremisesDto.premisesType}">
             <c:out value="Conveyance"/>: <c:out value="${appGrpPremisesDto.address}"/>
           </c:when>
+          <c:when test="${'OFFSIET'  == appGrpPremisesDto.premisesType}">
+            <c:out value="Off-site"/>: <c:out value="${appGrpPremisesDto.address}"/>
+          </c:when>
         </c:choose>
 
       </strong>

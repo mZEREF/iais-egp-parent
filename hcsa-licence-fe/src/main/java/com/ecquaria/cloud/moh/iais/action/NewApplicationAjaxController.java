@@ -717,7 +717,7 @@ public class NewApplicationAjaxController {
             designationAttr.put("name", "designation");
             designationAttr.put("style", "display: none;");
             String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designation, NewApplicationDelegator.FIRESTOPTION, null);
-
+            sql = sql.replace("(0)", String.valueOf(hasNumber+1));
             sql = sql.replace("(1)", personnelSelectStr);
             sql = sql.replace("(2)", designationSelectStr);
 
@@ -748,17 +748,6 @@ public class NewApplicationAjaxController {
                 break;
             }
         }
-        /*for (Map.Entry<String, List<HcsaSvcPersonnelDto>> stringListEntry : svcConfigInfo.entrySet()){
-            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = stringListEntry.getValue();
-            for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto:hcsaSvcPersonnelDtoList
-                    ) {
-                if ("PO".equalsIgnoreCase(hcsaSvcPersonnelDto.getPsnType())){
-                    poMmaximumCount = hcsaSvcPersonnelDto.getMaximumCount();
-                    break;
-                }
-            }
-            break;
-        }*/
         String errMsg = "You are allowed to add up till only "+hasNumber+" PO";
         if (poMmaximumCount - hasNumber > 0){
             //assign select
@@ -797,6 +786,7 @@ public class NewApplicationAjaxController {
             sql = sql.replace("(2)", salutationSelectStr);
             sql = sql.replace("(3)", idTypeSelectStr);
             sql = sql.replace("(4)", designationSelectStr);
+            sql = sql.replace("(poOfficerCount)",String.valueOf(hasNumber+1));
             resp.put("sucInfo",sql);
             resp.put("res","success");
             log.debug(StringUtil.changeForLog("the add addPrincipalOfficeHtml html end ...."));
@@ -826,7 +816,7 @@ public class NewApplicationAjaxController {
         }
 
         String errMsg = "You are allowed to add up till only "+dpoMmaximumCount+" DPO";
-        if (dpoMmaximumCount - hasNumber > 0){
+         if (dpoMmaximumCount - hasNumber > 0){
             //assign select
             List<SelectOption> assignPrincipalOfficerSel = NewApplicationHelper.genAssignPersonSel(request, false);
             Map<String,String> assignPrincipalOfficerAttr = IaisCommonUtils.genNewHashMap();
@@ -861,7 +851,7 @@ public class NewApplicationAjaxController {
             sql = sql.replace("(2)", idTypeSelectStr);
             sql = sql.replace("(3)", designationSelectStr);
             sql = sql.replace("(4)", principalOfficerSelStr);
-
+            sql = sql.replace("(dpoOfficerCount)", String.valueOf(hasNumber+1));
             log.debug(StringUtil.changeForLog("the add addDeputyPrincipalOfficeHtml html end ...."));
             resp.put("sucInfo",sql);
             resp.put("res","success");
@@ -955,7 +945,7 @@ public class NewApplicationAjaxController {
             break;
         }
         String errMsg = "You are allowed to add up till only "+mapMaximumCount+" MedAlert Person";
-        //mapMmaximumCount = 2;
+        //mapMaximumCount = 4;
         if (mapMaximumCount - hasNumber > 0){
             //assign select
             List<SelectOption> assignPrincipalOfficerSel = ClinicalLaboratoryDelegator.getAssignMedAlertSel(true);

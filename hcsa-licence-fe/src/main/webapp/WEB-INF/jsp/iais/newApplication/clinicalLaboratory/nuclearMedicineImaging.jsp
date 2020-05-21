@@ -68,18 +68,36 @@
               </div>
 
               <c:if test="${ServicePersonnelMandatory>0}">
+                <c:set var="spMandatoryCount" value="${spHcsaSvcPersonnelDto.mandatoryCount}"/>
                 <c:forEach begin="0" end="${ServicePersonnelMandatory-1}" step="1" varStatus="status">
                   <c:if test="${AppSvcPersonnelDtoList != null && AppSvcPersonnelDtoList.size()>0}">
                     <c:set value="${AppSvcPersonnelDtoList[status.index]}" var="appSvcPersonnelDto"/>
                   </c:if>
-
                   <table class="personnel-content" id="personnelRemoveId${status.index}">
                     <tbody>
-                    <tr><td style="text-align:right;">
+                    <tr height="1" class="personnel-header">
+                      <td class="" style="width: 100%;">
+                        <div  class="personnel-header control-caption-horizontal">
+                          <div class=" form-group form-horizontal formgap">
+                            <div class="col-sm-5 control-label formtext ">
+                              <div class="cgo-header">
+                                <strong>Service Personnel <label class="assign-psn-item">${status.index+1}</label></strong>
+                              </div>
+                            </div>
+                            <div class="col-sm-5 col-md-7 text-right">
+                              <c:if test="${status.index - spMandatoryCount >=0}">
+                                <h4 class="text-danger"><em class="fa fa-times-circle removeSpBtn cursorPointer"></em></h4>
+                              </c:if>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <%--<tr><td style="text-align:right;">
                       <c:if test="${status.count > 1}">
                         <h4 class="text-danger"><em class="fa fa-times-circle" onclick="$('#personnelRemoveId${status.index}').remove();removeSp()"></em></h4>
                       </c:if>
-                    </td></tr>
+                    </td></tr>--%>
                     <tr height="1">
                       <td class="" >
                         <div id="control--runtime--2" class="control control-caption-horizontal svcPsnSel">
@@ -236,7 +254,7 @@
       }
 
       doEdit();
-
+      spRemove();
   });
 
   var absencePsnSel = function (val) {
@@ -321,6 +339,7 @@
               if ("success" == data.res){
                   $('.personnel-content:last').after(data.sucInfo);
                   pageController($('.personnel-content:last'));
+                  spRemove();
               }else{
                   $('.spErrorMsg').html(data.errInfo);
               }
@@ -364,6 +383,16 @@
           $('.addListBtn').removeClass('hidden');
       });
   }
+var spRemove = function(){
+    $('.removeSpBtn').click(function () {
+        var $psnContentEle= $(this).closest('.personnel-content');
+        $psnContentEle.remove();
+        //reset number
+        $('.personnel-content').each(function (k,v) {
+            $(this).find('.assign-psn-item').html(k+1);
+        });
+    });
+}
 
 
 </script>

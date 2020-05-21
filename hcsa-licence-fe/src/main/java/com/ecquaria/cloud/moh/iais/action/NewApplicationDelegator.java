@@ -3179,8 +3179,10 @@ public class NewApplicationDelegator {
                         appSvcPrincipalOfficersDto.setNeedSpcOptList((boolean) v.get("needSpcOptList"));
                         List<LinkedHashMap<String,String>> spcOptLinkedMap= (List<LinkedHashMap<String, String>>) v.get("spcOptList");
                         List<SelectOption> spcOptList = IaisCommonUtils.genNewArrayList();
-                        for(LinkedHashMap<String,String> item:spcOptLinkedMap){
-                            spcOptList.add(new SelectOption(item.get("value"),item.get("text")));
+                        if(!IaisCommonUtils.isEmpty(spcOptLinkedMap)){
+                            for(LinkedHashMap<String,String> item:spcOptLinkedMap){
+                                spcOptList.add(new SelectOption(item.get("value"),item.get("text")));
+                            }
                         }
                         appSvcPrincipalOfficersDto.setSpcOptList(spcOptList);
                         appSvcPrincipalOfficersDto.setSpecialityHtml((String) v.get("specialityHtml"));

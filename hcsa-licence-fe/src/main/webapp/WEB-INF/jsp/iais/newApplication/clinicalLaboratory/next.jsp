@@ -1,4 +1,8 @@
-
+<style>
+  .cgo-header{
+    font-size:18px;
+  }
+</style>
 <div class="application-tab-footer">
   <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
   <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">

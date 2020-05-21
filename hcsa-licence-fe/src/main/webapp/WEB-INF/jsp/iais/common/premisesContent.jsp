@@ -18,18 +18,17 @@
         <c:set var="premValue" value="${status.index}"/>
         <div class="col-xs-12">
             <div class="form-horizontal">
-                <div><strong class="app-font-size-22 premHeader">Premises ${status.index+1}</strong>
-                    <c:if test="${!status.first && requestInformationConfig==null && 'APTY004' !=AppSubmissionDto.appType && 'APTY005' !=AppSubmissionDto.appType}">
-                        <div class="row" style="float:right">
-                            <div class="form-check removeBtn">
-                                <div class="fa fa-times-circle text-danger"></div>
-                            </div>
-                        </div>
-                    </c:if>
+                <div class="form-group">
+                    <div class="col-xs-4">
+                        <strong class="app-font-size-22 premHeader">Premises ${status.index+1}</strong>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <c:if test="${!status.first && requestInformationConfig==null && 'APTY004' !=AppSubmissionDto.appType && 'APTY005' !=AppSubmissionDto.appType}">
+                            <h4 class="text-danger"><em class="fa fa-times-circle removeBtn"></em></h4>
+                        </c:if>
+                    </div>
                 </div>
             </div>
-
-
             <div class="form-horizontal">
                 <div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType}">hidden</c:if> >
                     <label class="col-xs-12 col-md-4 control-label error-msg-type" for="premisesType">What is your premises type ? <span class="mandatory">*</span></label>

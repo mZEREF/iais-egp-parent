@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.base.FileType;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -49,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 
 /**
@@ -305,6 +307,7 @@ public class ClinicalLaboratoryDelegator {
         int deputyMandatory = 0;
         if(principalOfficerConfig != null && !principalOfficerConfig.isEmpty()){
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = principalOfficerConfig.get(0);
+            ParamUtil.setRequestAttr(bpc.request, "poHcsaSvcPersonnelDto", hcsaSvcPersonnelDto);
             if(hcsaSvcPersonnelDto != null){
                 mandatory = hcsaSvcPersonnelDto.getMandatoryCount();
             }
@@ -312,6 +315,7 @@ public class ClinicalLaboratoryDelegator {
 
         if(deputyPrincipalOfficerConfig != null && !deputyPrincipalOfficerConfig.isEmpty()){
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = deputyPrincipalOfficerConfig.get(0);
+            ParamUtil.setRequestAttr(bpc.request, "dpoHcsaSvcPersonnelDto", hcsaSvcPersonnelDto);
             if(hcsaSvcPersonnelDto != null){
                 deputyMandatory = hcsaSvcPersonnelDto.getMandatoryCount();
             }
@@ -609,9 +613,9 @@ public class ClinicalLaboratoryDelegator {
                 List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST);
                 errList = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList);
                 if (appSubmissionDto.isNeedEditController()) {
-                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
+                    /*Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_GOVERNANCE_OFFICERS);
-                    appSubmissionDto.setClickEditPage(clickEditPages);
+                    appSubmissionDto.setClickEditPage(clickEditPages);*/
                     AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
                     appEditSelectDto.setServiceEdit(true);
                     appSubmissionDto.setChangeSelectDto(appEditSelectDto);
@@ -1037,6 +1041,7 @@ public class ClinicalLaboratoryDelegator {
         int mandatory = 0;
         if(hcsaSvcPersonnelList != null && !hcsaSvcPersonnelList.isEmpty()){
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = hcsaSvcPersonnelList.get(0);
+            ParamUtil.setRequestAttr(bpc.request, "spHcsaSvcPersonnelDto", hcsaSvcPersonnelDto);
             if(hcsaSvcPersonnelDto != null){
                 mandatory = hcsaSvcPersonnelDto.getMandatoryCount();
             }
@@ -1449,6 +1454,20 @@ public class ClinicalLaboratoryDelegator {
         if(assignSelect != null && assignSelect.length>0){
             size = assignSelect.length;
         }
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        String appType = "";
+        if(appSubmissionDto != null){
+            appType = appSubmissionDto.getAppType();
+        }
+        String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(request,currentSvcId);
+        //cgoIndexNo
+        String[] cgoIndexNos = ParamUtil.getStrings(request,"cgoIndexNo");
+        boolean rfcOrRenew = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType);
+        if(rfcOrRenew){
+            size = cgoIndexNos.length;
+        }
+        String[] isPartEdit = ParamUtil.getStrings(request,"isPartEdit");
         String[] salutation = ParamUtil.getStrings(request, "salutation");
         String[] name = ParamUtil.getStrings(request, "name");
         String[] idType = ParamUtil.getStrings(request, "idType");
@@ -1463,8 +1482,25 @@ public class ClinicalLaboratoryDelegator {
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
         for(int i = 0; i<size; i++){
             appSvcCgoDto = new AppSvcCgoDto();
-            //cgoIndexNo
-            String cgoIndexNo = new StringBuffer().append("cgo-").append(i).append("-").toString();
+            String cgoIndexNo = cgoIndexNos[i];
+            if(rfcOrRenew){
+                if(!StringUtil.isEmpty(cgoIndexNo) && AppConsts.NO.equals(isPartEdit[i])){
+                    appSvcCgoDto = getAppSvcCgoByIndexNo(appSvcRelatedInfoDto,cgoIndexNo);
+                    appSvcCgoDtoList.add(appSvcCgoDto);
+                    //change arr
+                    cgoIndexNos = removeArrIndex(cgoIndexNos,i);
+                    isPartEdit = removeArrIndex(isPartEdit,i);
+                    //change arr index
+                    --i;
+                    --size;
+                    continue;
+                }
+            }
+            if(StringUtil.isEmpty(cgoIndexNo)){
+                appSvcCgoDto.setCgoIndexNo(UUID.randomUUID().toString());
+            }else{
+                appSvcCgoDto.setCgoIndexNo(cgoIndexNos[i]);
+            }
             appSvcCgoDto.setAssignSelect(assignSelect[i]);
             appSvcCgoDto.setSalutation(salutation[i]);
             appSvcCgoDto.setName(name[i]);
@@ -1482,7 +1518,6 @@ public class ClinicalLaboratoryDelegator {
             appSvcCgoDto.setSubSpeciality(qualification[i]);
             appSvcCgoDto.setMobileNo(mobileNo[i]);
             appSvcCgoDto.setEmailAddr(emailAddress[i]);
-            appSvcCgoDto.setCgoIndexNo(cgoIndexNo);
             appSvcCgoDtoList.add(appSvcCgoDto);
         }
         ParamUtil.setSessionAttr(request, GOVERNANCEOFFICERSDTOLIST, (Serializable) appSvcCgoDtoList);
@@ -1915,6 +1950,50 @@ public class ClinicalLaboratoryDelegator {
             medAlertPersons.add(medAlertPerson);
         }
         return medAlertPersons;
+    }
+
+    private AppSvcCgoDto getAppSvcCgoByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo){
+        if(appSvcRelatedInfoDto != null && !StringUtil.isEmpty(indexNo)){
+            List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcCgoDtos)){
+                for(AppSvcCgoDto appSvcCgoDto1:appSvcCgoDtos){
+                    if(indexNo.equals(appSvcCgoDto1.getCgoIndexNo())){
+                        return appSvcCgoDto1;
+                    }
+                }
+            }
+        }
+        return new AppSvcCgoDto();
+    }
+
+    private String[] removeArrItem(String[] arrs, String item){
+        if(arrs == null || StringUtil.isEmpty(item)){
+            return arrs;
+        }
+        String[] newArrs = new String[arrs.length-1];
+        int i = 0;
+        for(String arr:arrs){
+            if(!item.equals(arr)){
+                newArrs[i] = arr;
+                i++;
+            }
+        }
+        return newArrs;
+    }
+
+    private String[] removeArrIndex(String[] arrs, int index){
+        if(arrs == null){
+            return arrs;
+        }
+        String[] newArrs = new String[arrs.length-1];
+        int j = 0;
+        for(int i=0; i<arrs.length; i++){
+            if(i != index){
+                newArrs[j] = arrs[i];
+                j++;
+            }
+        }
+        return newArrs;
     }
 
 }
