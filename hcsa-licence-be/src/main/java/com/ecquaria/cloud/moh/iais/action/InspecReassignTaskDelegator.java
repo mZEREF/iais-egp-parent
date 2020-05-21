@@ -450,15 +450,15 @@ public class InspecReassignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
         //send email
         try{
-            sendEmail(bpc.request,inspectionTaskPoolListDto.getServiceId());
+            sendEmail(bpc.request);
         }catch (Exception e){
             log.error(StringUtil.changeForLog("reassign email error"));
         }
     }
 
-    private void sendEmail(HttpServletRequest request, String serviceId){
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String licenseeId = loginContext.getLicenseeId();
+    private void sendEmail(HttpServletRequest request){
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request, "applicationViewDto");
+        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         String subject = "reassign reject";
         String mesContext = "reassign email";
         EmailDto emailDto = new EmailDto();
@@ -469,11 +469,12 @@ public class InspecReassignTaskDelegator {
         emailDto.setClientQueryCode(licenseeId);
         //send email
         emailClient.sendNotification(emailDto).getEntity();
+        HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
         //send message
-        sendMessage(subject,serviceId,licenseeId,mesContext,null);
+        sendMessage(subject,licenseeId,mesContext,maskParams,applicationViewDto.getApplicationDto().getServiceId());
     }
 
-    private void sendMessage(String subject, String serviceId, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams){
+    private void sendMessage(String subject, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams, String serviceId){
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
         interMessageDto.setSubject(subject);
