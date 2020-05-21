@@ -1,10 +1,18 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.client.EicClient;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import java.util.Date;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,9 +42,37 @@ public class InboxMsgServiceImpl implements InboxMsgService {
     @Autowired
     private SystemBeLicClient systemBeLicClient;
 
+    @Autowired
+    private EicClient eicClient;
+
+    @Value("${spring.application.name}")
+    private String currentApp;
+    @Value("${iais.current.domain}")
+    private String currentDomain;
+
     @Override
     public InterMessageDto saveInterMessage(InterMessageDto interMessageDto) {
+        String moduleName = currentApp + "-" + currentDomain;
+        EicRequestTrackingDto dto = new EicRequestTrackingDto();
+        dto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+        dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        dto.setActionClsName(this.getClass().getName());
+        dto.setActionMethod("callEicInterMsg");
+        dto.setDtoClsName(interMessageDto.getClass().getName());
+        dto.setDtoObject(JsonUtil.parseToJson(interMessageDto));
+        dto.setRefNo(interMessageDto.getRefNo());
+        dto.setModuleName(moduleName);
+        eicClient.saveEicTrack(dto);
         callEicInterMsg(interMessageDto);
+        dto = eicClient.getPendingRecordByReferenceNumber(interMessageDto.getRefNo()).getEntity();
+        Date now = new Date();
+        dto.setProcessNum(1);
+        dto.setFirstActionAt(now);
+        dto.setLastActionAt(now);
+        dto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+        List<EicRequestTrackingDto> list = IaisCommonUtils.genNewArrayList(1);
+        list.add(dto);
+        eicClient.updateStatus(list);
         return interMessageDto;
     }
 
