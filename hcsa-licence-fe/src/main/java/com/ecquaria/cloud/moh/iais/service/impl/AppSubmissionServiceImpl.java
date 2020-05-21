@@ -1,11 +1,13 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.client.EicClient;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
@@ -32,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorr
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
@@ -54,6 +57,7 @@ import org.springframework.stereotype.Service;
 import sop.webflow.rt.api.Process;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -381,8 +385,41 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
+    @Autowired
+    private EicClient eicClient;
+
+    @Value("${spring.application.name}")
+    private String currentApp;
+    @Value("${iais.current.domain}")
+    private String currentDomain;
+
     @Override
     public void feSendEmail(EmailDto emailDto) {
+        String moduleName = currentApp + "-" + currentDomain;
+        String refNo = String.valueOf(new Date().getTime());
+        EicRequestTrackingDto dto = new EicRequestTrackingDto();
+        dto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+        dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        dto.setActionClsName(this.getClass().getName());
+        dto.setActionMethod("callEicSendEmail");
+        dto.setDtoClsName(emailDto.getClass().getName());
+        dto.setDtoObject(JsonUtil.parseToJson(emailDto));
+        dto.setRefNo(refNo);
+        dto.setModuleName(moduleName);
+        eicClient.saveEicTrack(dto);
+        callEicSendEmail(emailDto);
+        dto = eicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
+        Date now = new Date();
+        dto.setProcessNum(1);
+        dto.setFirstActionAt(now);
+        dto.setLastActionAt(now);
+        dto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+        List<EicRequestTrackingDto> list = IaisCommonUtils.genNewArrayList(1);
+        list.add(dto);
+        eicClient.updateStatus(list);
+    }
+
+    public void callEicSendEmail(EmailDto emailDto){
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
