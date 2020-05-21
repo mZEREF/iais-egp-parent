@@ -1403,11 +1403,11 @@ public class HcsaApplicationDelegator {
     }
 
     private void sendInboxMessage(String licenseeId,HashMap<String, String> maskParams,String templateMessageByContent,String serviceId,String subject){
+        String refNo = inboxMsgService.getMessageNo();
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-        interMessageDto.setSubject(subject);
         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
-        String refNo = inboxMsgService.getMessageNo();
+        interMessageDto.setSubject(subject);
         interMessageDto.setRefNo(refNo);
         interMessageDto.setService_id(serviceId);
         interMessageDto.setUserId(licenseeId);
