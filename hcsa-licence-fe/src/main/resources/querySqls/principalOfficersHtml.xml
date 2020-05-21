@@ -3,6 +3,21 @@
     <sql key="generatePrincipalOfficersHtml" cached="no" remarks="generate Principal Officers Html">
         <![CDATA[
             <div class="po-content">
+                <div class="row">
+                  <div class="control control-caption-horizontal">
+                    <div class=" form-group form-horizontal formgap">
+                      <div class="col-sm-6 control-label formtext col-md-4">
+                        <div class="cgo-header" style="font-size: 18px;">
+                          <strong>Principal Officer <label class="assign-psn-item">(poOfficerCount)</label></strong>
+                        </div>
+                      </div>
+                      <div class="col-sm-5 col-md-8 text-right" >
+                        <h4 class="text-danger"><em class="fa fa-times-circle removePoBtn cursorPointer"></em></h4>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               <div class="">
                 <div class="row">
                   <div class="control control-caption-horizontal">
@@ -16,11 +31,6 @@
                           (1)
                         </div>
                       </div>
-                    </div>
-                  </div>
-                  <div class="row" style="float:right">
-                    <div class="form-check removePoBtn">
-                      <div class="fa fa-times-circle text-danger"></div>
                     </div>
                   </div>
                 </div>
@@ -132,6 +142,20 @@
               <div class="control control-caption-horizontal">
                 <div class=" form-group form-horizontal formgap">
                   <div class="col-sm-6 control-label formtext col-md-4">
+                    <div class="cgo-header" style="font-size: 18px;">
+                      <strong>Deputy Principal Officer <label class="assign-psn-item">(dpoOfficerCount)</label></strong>
+                    </div>
+                  </div>
+                  <div class="col-sm-5 col-md-8 text-right" >
+                    <h4 class="text-danger"><em class="fa fa-times-circle removeDpoBtn cursorPointer"></em></h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="control control-caption-horizontal">
+                <div class=" form-group form-horizontal formgap">
+                  <div class="col-sm-6 control-label formtext col-md-4">
                     <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Principal Officer</label>
                     <span class="upload_controls"></span>
                   </div>
@@ -140,11 +164,6 @@
                       (4)
                     </div>
                   </div>
-                </div>
-                <div class="row" style="float:right">
-                    <div class="form-check removeDpoBtn">
-                      <div class="fa fa-times-circle text-danger"></div>
-                    </div>
                 </div>
               </div>
             </div>

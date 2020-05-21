@@ -2,31 +2,34 @@
 <sqls catalog="governanceOfficer">
     <sql key="generateGovernanceOfficerHtml" cached="no" remarks="generate Governance Officer Html">
         <![CDATA[
-        <table class="assignContent control-grid">
+        <div class="cgo-content">
+        <table class="assignContent control-grid" style="width:100%;">
+            <input type="hidden" name="isPartEdit" value="1"/>
+            <input type="hidden" name="cgoIndexNo" value=""/>
           <tbody>
           <tr height="1">
             <td class="first last" style="width: 100%;">
               <div id="control--runtime--2" class="control control-caption-horizontal">
                 <div class=" form-group form-horizontal formgap">
-                    <div>
-                        <div class="control-label formtext assign-header cgo-header">
-                            Clinical Governance Officer <label class="assign-psn-item"></label>
-                        </div>
-                        <div class="row" style="float:right">
-                            <div class="form-check removeBtn">
-                              <div class="fa fa-times-circle text-danger"></div>
-                            </div>
+                    <div class="col-sm-4 control-label formtext control">
+                      <div class="cgo-header">
+                        <strong>Clinical Governance Office <label class="assign-psn-item"></label></strong>
+                      </div>
+                    </div>
+                    <div class="col-sm-8 text-right">
+                        <div class="">
+                          <h4 class="text-danger"><em class="fa fa-times-circle cursorPointer removeBtn"></em></h4>
                         </div>
                     </div>
-                    <br/>
-                  <div class="col-sm-5 control-label formtext ">
-                    <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Add/Assign a Clinical Governance Officer</label>
-                    <span class="upload_controls"></span>
-                  </div>
-                  <div class="col-sm-5 col-md-7">
-                    <div class="">
-                      (1)
-                      <span class="error-msg" name="iaisErrorMsg" id="error_assignSelect1"></span>
+                    <div class="col-sm-5 control-label formtext ">
+                        <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Add/Assign a Clinical Governance Officer</label>
+                        <span class="upload_controls"></span>
+                    </div>
+                    <div class="col-sm-5 col-md-7">
+                        <div class="">
+                          (1)
+                          <span class="error-msg" name="iaisErrorMsg" id="error_assignSelect1"></span>
+                        </div>
                     </div>
                   </div>
                 </div>
@@ -233,6 +236,7 @@
           </tr>
           </tbody>
                 </table>
+                </div>
         ]]>
     </sql>
 </sqls>
