@@ -301,7 +301,7 @@ public class WithOutRenewalDelegator {
                 ParamUtil.setSessionAttr(bpc.request,"txnDt",txnDt);
                 ParamUtil.setSessionAttr(bpc.request,"txnRefNo",txnRefNo);
                 List<AppSubmissionDto> otherAppSubmissionDtos=(List<AppSubmissionDto>)bpc.request.getSession().getAttribute("otherAppSubmissionDtos");
-                if(otherAppSubmissionDtos!=null){
+                if(otherAppSubmissionDtos!=null&&!otherAppSubmissionDtos.isEmpty()){
                     String rfcGrpId = otherAppSubmissionDtos.get(0).getAppGrpId();
                     ApplicationGroupDto rfcAppGrp = new ApplicationGroupDto();
                     rfcAppGrp.setId(rfcGrpId);
@@ -541,15 +541,18 @@ public class WithOutRenewalDelegator {
         appSubmissionListPersonnelDto.setEventRefNo(personnelL.toString());
         eventBusHelper.submitAsyncRequest(appSubmissionListPersonnelDto,submissionPersonnelId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT,personnelL.toString(),bpc.process);
-
         AppSubmissionListDto appSubmissionListDto =new AppSubmissionListDto();
         String submissionId = generateIdClient.getSeqId().getEntity();
         Long l = System.currentTimeMillis();
-        List<AppSubmissionDto> appSubmissionDtos1=  requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(rfcAppSubmissionDtos);
-        appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
-        appSubmissionListDto.setEventRefNo(l.toString());
-        eventBusHelper.submitAsyncRequest(appSubmissionListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT,l.toString(),bpc.process);
+        List<AppSubmissionDto> appSubmissionDtos1=new ArrayList<>(rfcAppSubmissionDtos.size());
+        if(!rfcAppSubmissionDtos.isEmpty()){
+            appSubmissionDtos1=  requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(rfcAppSubmissionDtos);
+            appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
+            appSubmissionListDto.setEventRefNo(l.toString());
+            eventBusHelper.submitAsyncRequest(appSubmissionListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                    EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT,l.toString(),bpc.process);
+        }
+
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos=IaisCommonUtils.genNewArrayList();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos1){
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();

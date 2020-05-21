@@ -209,7 +209,7 @@ public interface ApplicationClient  {
 
     @PostMapping(value = "/iais-submission/application-rfc-licences",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppSubmissionDto>> saveAppsForRequestForChangeByList(@RequestBody List<AppSubmissionDto> appSubmissionDtos);
-    @PostMapping(value = "/iais-submission/application-rfc-licences-grp-app",  consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-submission/application-rfc-licences-grp-app",  consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppSubmissionDto>> saveAppsForRequestForGoupAndAppChangeByList(@RequestBody List<AppSubmissionDto> appSubmissionDtos);
     @GetMapping(value = "/appeal/list-application-by-origin-licence-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationsByLicenceId(@RequestParam("originLicenceId") String originLicenceId);

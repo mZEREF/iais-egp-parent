@@ -95,12 +95,28 @@
                   <c:if test="${AppSubmissionDto.appType=='APTY005'||AppSubmissionDto.appType=='APTY004'}">
                     <div class="form-check col-sm-12">
                       <ul>
-                        <li>You may also apply the same changes to other licences associated with these premises.</li>
-                        <li>Please note that payment is required for each affected licence.</li>
+                        <li>Changes made will be applied to other licences associated with this premises:</li>
                       </ul>
                     </div>
-                    <div class="form-check col-sm-12">
-                      <label style="font-weight: normal;font-size: 16px">Select the licences to include with these changes:</label>
+                    <div class="form-check col-sm-12" >
+                      <table>
+                        <tr>
+                          <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence</td>
+                          <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence No.</td>
+                          <span id="error_selectLicence" class="error-msg"></span>
+                        </tr>
+                        <c:forEach items="${appGrpPremisesDto.licenceDtos}" var="licence">
+                          <tr>
+                            <td >
+                              <div class="col-xs-12 col-md-12 form-check" style="padding:0px 15px;margin-top:15px">
+                                <input class="form-check-input" disabled type="checkbox" checked="checked" value="<iais:mask name="licenceName${status.index}" value="${licence.id}"/>" name="licenceName${status.index}" aria-invalid="false">
+                                <label class="form-check-label"><span class="check-square"></span>${licence.svcName}</label>
+                              </div></td>
+                            <td class="form-check col-sm-3">${licence.licenceNo}</td>
+                          </tr>
+                        </c:forEach>
+
+                      </table>
                     </div>
                   </c:if>
                   <!--prem content -->

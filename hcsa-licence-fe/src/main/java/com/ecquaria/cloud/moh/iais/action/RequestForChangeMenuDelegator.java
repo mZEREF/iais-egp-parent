@@ -874,13 +874,6 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 
-    private ApplicationGroupDto getApplicationGroupDto() {
-        ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
-
-
-        return applicationGroupDto;
-    }
-
     /**
      * @param bpc
      * @Decription prePayment
@@ -1190,15 +1183,24 @@ public class RequestForChangeMenuDelegator {
      *//**/
     public void doRequestForInformationSubmit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doRequestForInformationSubmit start ...."));
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
+        AppSubmissionDto appSubmissionDto =(AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "AppSubmissionDto");
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.OLDAPPSUBMISSIONDTO);
+        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+        appEditSelectDto.setServiceEdit(false);
+        appEditSelectDto.setDocEdit(false);
+        appEditSelectDto.setPoEdit(false);
+        appEditSelectDto.setPremisesListEdit(true);
+        appEditSelectDto.setPremisesEdit(true);
+
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
+        appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
         appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
+
         ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
         ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "The request for information save success");
 
@@ -1420,16 +1422,25 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
         if (!StringUtil.isEmpty(appNo)) {
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
-            String appGrpNo = appSubmissionDto.getAppGrpNo();
 
             if (appSubmissionDto != null) {
+                String appGrpNo = appSubmissionDto.getAppGrpNo();
+                List<AppSubmissionDto> appSubmissionDtoByGroupNo = appSubmissionService.getAppSubmissionDtoByGroupNo(appGrpNo);
                 appSubmissionDto.setNeedEditController(true);
                 for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDto.getAppGrpPremisesDtoList()) {
                     NewApplicationHelper.setWrkTime(appGrpPremisesDto1);
                 }
+            if(appSubmissionDtoByGroupNo!=null){
+              /*  for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtoByGroupNo){
+                    appSubmissionDto1.setNeedEditController(true);
+                    for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDto1.getAppGrpPremisesDtoList()) {
+                        NewApplicationHelper.setWrkTime(appGrpPremisesDto1);
+                    }
+                }*/
+            }
 
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
-                ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG, "test");
             }

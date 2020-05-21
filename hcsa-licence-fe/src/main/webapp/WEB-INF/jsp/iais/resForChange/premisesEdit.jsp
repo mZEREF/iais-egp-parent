@@ -37,13 +37,8 @@
                 </div>
                 <div class="form-check col-sm-12">
                   <ul>
-                    <li>You may also apply the same changes to other licences associated with these premises.</li>
-                    <li>Please note that payment is required for each affected licence.</li>
+                    <li>Changes made will be applied to other licences associated with this premises:</li>
                   </ul>
-                </div>
-
-                <div class="form-check col-sm-12">
-                  <label style="font-weight: normal;font-size: 16px">Select the licences to include with these changes:</label>
                 </div>
                 <div class="form-check col-sm-6" >
 

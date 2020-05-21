@@ -631,8 +631,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public List<AppSubmissionDto> getAppSubmissionDtoByGroupNo(String groupNo) {
-
-        return null;
+        List<ApplicationDto> applicationDtos = applicationClient.getApplicationsByGroupNo(groupNo).getEntity();
+        List<AppSubmissionDto> appSubmissionDtos =IaisCommonUtils.genNewArrayList();
+        for(ApplicationDto applicationDto : applicationDtos){
+            AppSubmissionDto appSubmissionDto = applicationClient.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo()).getEntity();
+            appSubmissionDtos.add(appSubmissionDto);
+        }
+        return appSubmissionDtos;
     }
 
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){

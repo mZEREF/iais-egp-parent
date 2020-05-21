@@ -108,10 +108,6 @@ public class LicenceViewServiceDelegator {
         }
         bpc.request.getSession().removeAttribute(NOT_VIEW);
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) bpc.request.getSession().getAttribute("applicationViewDto");
-        AppEditSelectDto appEditSelectDto = applicationViewDto.getAppEditSelectDto();
-        if(appEditSelectDto==null){
-            appEditSelectDto=new AppEditSelectDto();
-        }
         AppSubmissionDto appSubmissionDto;
         String newCorrelationId = "";
         String oldCorrelationId = "";
@@ -229,28 +225,6 @@ public class LicenceViewServiceDelegator {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         List<PublicHolidayDto> publicHolidayDtos = appointmentClient.getActiveHoliday().getEntity();
         formatDate(appGrpPremisesDtoList, publicHolidayDtos);
-        AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
-        if (oldAppSubmissionDto != null) {
-            List<AppGrpPremisesDto> appGrpPremisesDtoList1 = oldAppSubmissionDto.getAppGrpPremisesDtoList();
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos1 = appSubmissionDto.getAppGrpPrimaryDocDtos();
-            formatDate(appGrpPremisesDtoList1, publicHolidayDtos);
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
-            if(appSvcRelatedInfoDtoList!=null&&!appSvcRelatedInfoDtoList.isEmpty()){
-                if(!appSvcRelatedInfoDtoList.equals(appSvcRelatedInfoDtos)){
-                    appEditSelectDto.setServiceEdit(true);
-                }
-            }
-            if(appGrpPremisesDtoList.equals(appGrpPremisesDtoList1)){
-                appEditSelectDto.setPremisesEdit(true);
-            }
-            if(appGrpPrimaryDocDtos!=null&&appGrpPrimaryDocDtos1!=null){
-                if(!appGrpPrimaryDocDtos.equals(appGrpPrimaryDocDtos1)){
-                    appEditSelectDto.setDocEdit(true);
-                }
-            }
-        }
-        applicationViewDto.setAppEditSelectDto(appEditSelectDto);
         String serviceId = applicationViewDto.getApplicationDto().getServiceId();
         List<String> list = IaisCommonUtils.genNewArrayList();
         list.add(serviceId);
