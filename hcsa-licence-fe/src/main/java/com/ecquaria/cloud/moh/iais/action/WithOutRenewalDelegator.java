@@ -489,7 +489,8 @@ public class WithOutRenewalDelegator {
             List<LicKeyPersonnelDto> licByPerId = requestForChangeService.getLicKeyPersonnelDtoByPerId(personIds);
             for(LicKeyPersonnelDto dto :licByPerId){
                 String licenceId = dto.getLicenceId();
-                if(!licId.equals(licenceId)&&!notReNewLicIds.contains(licenceId)){
+                String liceseeId = dto.getLicenseeId();
+                if(!licId.equals(licenceId)&&!notReNewLicIds.contains(licenceId)&&licenseeId.equals(liceseeId)){
                     notReNewLicIds.add(licenceId);
                 }
             }
