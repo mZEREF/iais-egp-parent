@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
@@ -19,13 +20,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import java.io.Serializable;
 import java.util.List;
@@ -33,6 +32,8 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author weilu
@@ -53,6 +54,8 @@ public class InspecReassignTaskDelegator {
 
     @Autowired
     private OrganizationClient organizationClient;
+    @Autowired
+    private EmailClient emailClient;
 
     @Autowired
     private InspecReassignTaskDelegator(InspectionService inspectionService, ApplicationViewService applicationViewService, InspectionAssignTaskService inspectionAssignTaskService) {
@@ -439,5 +442,27 @@ public class InspecReassignTaskDelegator {
         inspectionService.routingTaskByPool(inspectionTaskPoolListDto, superPool, internalRemarks);
         ParamUtil.setSessionAttr(bpc.request, "inspectionTaskPoolListDto", inspectionTaskPoolListDto);
         ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
+        //send email
+        try{
+            sendEmail(bpc.request);
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog("reassign email error"));
+        }
+    }
+
+    private void sendEmail(HttpServletRequest request){
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = loginContext.getLicenseeId();
+        String mesContext = "reassign email";
+        EmailDto emailDto = new EmailDto();
+        emailDto.setContent(mesContext);
+        emailDto.setSubject("reassign reject");
+        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+        emailDto.setClientQueryCode(licenseeId);
+        //send
+        emailClient.sendNotification(emailDto).getEntity();
     }
 }
+
+
