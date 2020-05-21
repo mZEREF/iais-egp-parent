@@ -21,85 +21,123 @@
                     <h3>
                         <span>Request For Information</span>
                     </h3>
-                    <iais:row>
-                        <div class="col-xs-9 col-sm-5 col-md-4">
-                            <button class="addNewRfi btn btn-primary" type="button">New</button>
-                        </div>
-                    </iais:row>
-                    <br><br><br>
+<%--                    <iais:row>--%>
+<%--                        <div class="col-xs-9 col-sm-5 col-md-3">--%>
+<%--                            <button class="addNewRfi btn btn-primary" type="button">New</button>--%>
+<%--                        </div>--%>
+<%--                    </iais:row>--%>
+<%--                    <br><br><br>--%>
                     <c:if test="${not empty newRfiPageListDtos}">
                         <c:forEach items="${newRfiPageListDtos}" var="newRfi" varStatus="status">
                             <div class="reqForInfoContent">
-                                <div class="panel panel-default">
-                                    <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                                        <div class="panel-body">
-                                            <div class="form-group">
-                                                <div class="row">
-                                                    <label class="col-xs-9 col-md-4 control-label"> Select Category<strong style="color:#ff0000;">*</strong></label>
-                                                    <div class=" col-xs-11 col-sm-4 col-md-5">
-                                                        <iais:select name="decision${status.index}" options="salutationList" firstOption="Please Select" value="${newRfi.decision}"></iais:select>
-                                                    </div>
-                                                    <div class=" col-xs-11 col-sm-4 col-md-3">
-                                                        <div class="form-check removeRfiBtn">
-                                                            <div class="fa fa-times-circle text-danger"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <label class="col-xs-9 col-md-4 control-label" ></label><span class="error-msg" name="iaisErrorMsg" id="error_rfiSelect${status.index}"></span>
-                                            </div>
+<%--                                <div class="panel panel-default">--%>
+<%--                                    <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">--%>
+<%--                                        <div class="panel-body">--%>
+<%--                                            <div class="form-group">--%>
+<%--                                                <div class="row">--%>
+<%--                                                    <label class="col-xs-9 col-md-3 control-label"> Select Category<strong style="color:#ff0000;">*</strong></label>--%>
+<%--                                                    <div class=" col-xs-11 col-sm-4 col-md-5">--%>
+<%--                                                        <iais:select name="decision${status.index}" options="salutationList" firstOption="Please Select" value="${newRfi.decision}"></iais:select>--%>
+<%--                                                    </div>--%>
+<%--                                                    <div class=" col-xs-11 col-sm-4 col-md-3">--%>
+<%--                                                        <div class="form-check removeRfiBtn">--%>
+<%--                                                            <div class="fa fa-times-circle text-danger"></div>--%>
+<%--                                                        </div>--%>
+<%--                                                    </div>--%>
+<%--                                                </div>--%>
+<%--                                            </div>--%>
+<%--                                            <div class="row">--%>
+<%--                                                <label class="col-xs-9 col-md-3 control-label" ></label><span class="error-msg" name="iaisErrorMsg" id="error_rfiSelect${status.index}"></span>--%>
+<%--                                            </div>--%>
 
                                             <div class="form-group">
-                                                <p>
-                                                    <label class="col-xs-9 col-md-4 control-label" >Title<strong style="color:#ff0000;">*</strong></label>
+                                                <div class="row">
+                                                    <label class="col-xs-9 col-md-3 control-label" >Title<strong style="color:#ff0000;">*</strong></label>
                                                     <label >
-                                                        <textarea id="rfiTitle${status.index}"  maxlength="500" rows="8" cols="80"  name="rfiTitle${status.index}" >${newRfi.rfiTitle}</textarea>
+                                                        <textarea id="rfiTitle${status.index}" style=" font-weight:normal;" maxlength="500" rows="8" cols="70" oninput="checkTitle()"  name="rfiTitle${status.index}" >${newRfi.rfiTitle}</textarea>
                                                         <span id="error_rfiTitle${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
                                                     </label>
-                                                </p>
+                                                </div>
+                                                <br>
                                                 <div class="row">
-                                                    <label class="col-xs-9 col-md-4 control-label" > Licence No.<strong style="color:#ff0000;">*</strong></label>
+                                                    <label class="col-xs-9 col-md-3 control-label" > Licence No.<strong style="color:#ff0000;">*</strong></label>
                                                     <div class=" col-xs-7 col-sm-4 col-md-5">
-                                                        <iais:select name="licenceNo${status.index}" options="salutationLicList" firstOption="Please Select" value="${newRfi.licenceNo}"></iais:select>
-                                                        <span id="error_licenceNo${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
+                                                        <label>
+                                                            <input type="text" style="width:170%; font-weight:normal;" name="licenceNo${status.index}" value="${newRfi.licenceNo}"/>
+                                                        </label>
+                                                            <%--                                                        <iais:select name="licenceNo${status.index}" options="salutationLicList" firstOption="Please Select" value="${newRfi.licenceNo}"></iais:select>--%>
+                                                    </div>
+                                                    <span id="error_licenceNo${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-xs-9 col-md-3 control-label" >Due Date<strong style="color:#ff0000;">*</strong></label>
+                                                    <label >
+                                                            <iais:datePicker value="${newRfi.date}"  name="Due_date${status.index}"></iais:datePicker>
+                                                    </label>
+                                                    <span id="error_Due_date${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-xs-9 col-md-3 control-label">
+                                                        <input type="checkbox" onchange="checkInfo()" value="information" name = "info${status.index}" <c:if test="${newRfi.reqType!=null}">checked</c:if> />&nbsp;Information
+                                                    </label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-xs-9 col-md-3 control-label">
+                                                        <input type="checkbox" onchange="checkDoc()" value="documents" name = "doc${status.index}" <c:if test="${newRfi.reqType!=null}">checked</c:if> />&nbsp;Supporting Documents
+                                                    </label>
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-xs-9 col-md-3 control-label" ></label><span class="error-msg" name="iaisErrorMsg" id="error_rfiSelect${status.index}"></span>
+                                                </div>
+                                                <input type="hidden" name="lengths" value="${status.index}" />
+                                                <div id="infohidden" class="hidden">
+                                                    <div class="row" >
+                                                        <div id="infoTitle"></div>
+                                                    </div>
+                                                    <div class="row" >
+                                                        <iais:value width="18">
+                                                            <label>
+                                                                <textarea id="userReply_rfi" name="userReply" rows="8" style=" font-weight:normal;" cols="70">${licPreReqForInfoDto.userReply}</textarea><span id="error_userReply" name="iaisErrorMsg" class="error-msg" ></span>
+                                                            </label>
+                                                        </iais:value>
                                                     </div>
                                                 </div>
-                                                <p>
-                                                    <label class="col-xs-9 col-md-4 control-label" >Due Date<strong style="color:#ff0000;">*</strong></label>
-                                                    <label >
-                                                        <div class=" col-xs-7 col-sm-4 col-md-5">
-                                                            <iais:datePicker value="${newRfi.date}"  name="Due_date${status.index}"></iais:datePicker>
-                                                            <span id="error_Due_date${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
-                                                        </div>
-                                                    </label>
-                                                </p>
-                                                <p>
-                                                    <label class="col-xs-9 col-md-4 control-label">
-                                                        <input type="checkbox" name = "reqType${status.index}" <c:if test="${newRfi.reqType!=null}">checked</c:if> />&nbsp;File Upload <input type="hidden" name="lengths" value="${status.index}" />
-                                                    </label>
-                                                </p>
+                                                <div id="dochidden" class="hidden">
+                                                    <div class="row" >
+                                                        <div id="docTitle"></div>
+                                                    </div>
+                                                    <div class="row" >
+                                                        <iais:value width="18">
+                                                            <div class="file-upload-gp">
+
+                                                                &nbsp;&nbsp;&nbsp;<div id="uploadFileName"></div>
+                                                                <input class="selectedFile commDoc" id="commonDoc"  name = "UploadFile" type="file" style="display: none;" aria-label="selectedFile1" >
+                                                                <a class="btn btn-file-upload btn-secondary" >Attachment</a><span id="error_UploadFile" name="iaisErrorMsg" class="error-msg" ></span><br/>
+                                                            </div>
+                                                        </iais:value>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
+<%--                                        </div>--%>
+<%--                                    </div>--%>
+<%--                                </div>--%>
                             </div>
                         </c:forEach>
                     </c:if>
-
                     <div class="rfiFormMarkPoint">
                     </div>
-
+                </div>
+                <div class="row">
                     <iais:action style="text-align:left;">
                         <a  onclick="javascript:doBack()">< Back</a>
                     </iais:action>
                     <iais:action style="text-align:right;">
-                        <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit('${licenceNo}')">Submit</button>
+                        <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit()">Submit</button>
                     </iais:action>
-                    <iais:row >
-                        <span id="error_LicencePending" name="iaisErrorMsg" class="error-msg" ></span>
-                    </iais:row>
                 </div>
+                <iais:row >
+                    <span id="error_LicencePending" name="iaisErrorMsg" class="error-msg" ></span>
+                </iais:row>
             </div>
         </div>
 
@@ -176,5 +214,30 @@
             length=length-1;
         });
     }
+
+    function checkTitle(){
+        var text=$('textarea[name="rfiTitle0"]');
+        $("#infoTitle").text(text[0].text);
+        $("#docTitle").text(text[0].text)
+
+    }
+
+    function checkInfo(){
+
+        if($('input[type = checkbox][name="info0"]')[0].checked){
+            $("#infohidden").removeClass('hidden');
+        }else {
+            $("#infohidden").addClass('hidden');
+        }
+    }
+
+    function checkDoc(){
+        if($('input[type = checkbox][name="doc0"]')[0].checked){
+            $("#dochidden").removeClass('hidden');
+        }else {
+            $("#dochidden").addClass('hidden');
+        }
+    }
+
 
 </script>

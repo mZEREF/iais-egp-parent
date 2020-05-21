@@ -65,7 +65,6 @@
                                                         </label>
                                                     </c:otherwise>
                                                 </c:choose>
-
                                             </iais:value>
                                         </iais:row>
                                         <H3></H3>
@@ -92,7 +91,6 @@
                                                         <input class="selectedFile commDoc" id="commonDoc"  name = "UploadFile" type="file" style="display: none;" aria-label="selectedFile1" >
                                                         <a class="btn btn-file-upload btn-secondary" >Attachment</a><span id="error_UploadFile" name="iaisErrorMsg" class="error-msg" ></span><br/>
                                                     </div>
-
                                                 </iais:value>
                                             </iais:row>
                                         </c:if>

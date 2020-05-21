@@ -233,14 +233,17 @@ public class RequestForInformationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "salutationList", (Serializable) salutationList);
         List<LicPremisesDto> licPremisesDtos = (List<LicPremisesDto>) ParamUtil.getSessionAttr(request,"licPremisesDtos");
         List<SelectOption> salutationLicList= IaisCommonUtils.genNewArrayList();
+        Map<String, String> licLicPremMap=IaisCommonUtils.genNewHashMap();
         for(LicPremisesDto licPremisesDto:licPremisesDtos){
             SelectOption selectLicOption=new SelectOption();
             selectLicOption.setValue(licPremisesDto.getId());
             LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(licPremisesDto.getLicenceId()).getEntity();
             selectLicOption.setText(licenceDto.getLicenceNo());
+            licLicPremMap.put(licenceDto.getLicenceNo(),licPremisesDto.getId());
             salutationLicList.add(selectLicOption);
         }
         ParamUtil.setSessionAttr(bpc.request, "salutationLicList", (Serializable) salutationLicList);
+        ParamUtil.setSessionAttr(bpc.request, "licLicPremMap", (Serializable) licLicPremMap);
         // 		preNewRfi->OnStepProcess
     }
     public void doCreateRequest(BaseProcessClass bpc) throws ParseException, IOException, TemplateException {
@@ -259,12 +262,13 @@ public class RequestForInformationDelegator {
 
         for (String len:lengths
         ) {
-            String decision = ParamUtil.getString(request, "decision"+len);
-            String licPremId = ParamUtil.getString(request, "licenceNo"+len);
+            String info = ParamUtil.getString(request, "info"+len);
+            String licenceNo = ParamUtil.getString(request, "licenceNo"+len);
             String date= ParamUtil.getString(request, "Due_date"+len);
             String rfiTitle=ParamUtil.getString(request, "rfiTitle"+len);
-            String reqType=ParamUtil.getString(request,"reqType"+len);
-
+            String reqType=ParamUtil.getString(request,"doc"+len);
+            Map<String, String> lice= (Map<String, String>) ParamUtil.getSessionAttr(request, "licLicPremMap");
+            String licPremId=lice.get(licenceNo);
             LicenceViewDto licenceViewDto=licInspNcEmailService.getLicenceDtoByLicPremCorrId(licPremId);
             StringBuilder officerRemarks=new StringBuilder();
             LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
@@ -281,14 +285,14 @@ public class RequestForInformationDelegator {
             licPremisesReqForInfoDto.setDueDateSubmission(dueDate);
             officerRemarks.append(rfiTitle).append(' ');
             licPremisesReqForInfoDto.setLicPremId(licPremId);
-            if("information".equals(decision)){
+            if("information".equals(info)){
                 officerRemarks.append(" |Information");
             }
-            if("documents".equals(decision)){
+            if("documents".equals(reqType)){
                 officerRemarks.append(" |Supporting Documents");
             }
             boolean isNeedDoc=false;
-            if(!StringUtil.isEmpty(reqType)&&"on".equals(reqType)) {
+            if(!StringUtil.isEmpty(reqType)&&"documents".equals(reqType)) {
                 isNeedDoc = true;
             }
             licPremisesReqForInfoDto.setNeedDocument(isNeedDoc);
@@ -305,10 +309,10 @@ public class RequestForInformationDelegator {
             LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
             Map<String,Object> map=IaisCommonUtils.genNewHashMap();
             StringBuilder stringBuilder=new StringBuilder();
-            if("information".equals(decision)){
+            if("information".equals(info)){
                 stringBuilder.append("<p>   1. ").append("Information ").append(rfiTitle).append("</p>");
             }
-            if("documents".equals(decision)){
+            if("documents".equals(reqType)){
                 stringBuilder.append("<p>   1. ").append("Documentations  ").append(rfiTitle).append("</p>");
             }
             map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));
@@ -481,8 +485,9 @@ public class RequestForInformationDelegator {
         if(lengths!=null){
             for (String len:lengths
             ) {
-                String decision=ParamUtil.getString(request, "decision"+len);
-                if(decision==null|| "Please Select".equals(decision)){
+                String infoChk=ParamUtil.getString(request, "info"+len);
+                String docChk=ParamUtil.getString(request, "doc"+len);
+                if(infoChk==null && docChk==null){
                     errMap.put("rfiSelect"+len,"ERR0010");
 
                 }
@@ -502,10 +507,12 @@ public class RequestForInformationDelegator {
                     errMap.put("rfiTitle"+len,"ERR0010");
                 }
                 String licenceNo=ParamUtil.getString(request, "licenceNo"+len);
-                if(licenceNo==null|| "Please Select".equals(licenceNo)){
+                Map<String, String> lice= (Map<String, String>) ParamUtil.getSessionAttr(request, "licLicPremMap");
+                String licCorrId=lice.get(licenceNo);
+                if(licenceNo==null|| licCorrId==null){
                     errMap.put("licenceNo"+len,"ERR0010");
                 }else {
-                    List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licenceNo);
+                    List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licCorrId);
                     if(!licPremisesReqForInfoDtoList.isEmpty()) {
                         for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
                         ) {
