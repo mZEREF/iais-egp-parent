@@ -1,10 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.client.EicClient;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -16,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
@@ -35,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -85,6 +89,14 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Autowired
     private EmailHelper emailHelper;
 
+    @Autowired
+    private EicClient eicClient;
+
+    @Value("${spring.application.name}")
+    private String currentApp;
+    @Value("${iais.current.domain}")
+    private String currentDomain;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -122,38 +134,6 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         return result;
     }
-    private boolean containStatus(List<ApplicationDto> applicationDtos,String status){
-        boolean result = false;
-        if(!IaisCommonUtils.isEmpty(applicationDtos) && !StringUtil.isEmpty(status)){
-            for(ApplicationDto applicationDto : applicationDtos){
-                if(status.equals(applicationDto.getStatus())
-                        || ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationDto.getStatus())
-                        || ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus())
-                        || ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())){
-                    result = true;
-                    break;
-                }
-            }
-        }
-        return  result;
-    }
-
-    private Map<String,List<ApplicationDto>> tidyApplicationDto(List<ApplicationDto> applicationDtoList){
-        Map<String,List<ApplicationDto>> result = null;
-        if(!IaisCommonUtils.isEmpty(applicationDtoList)){
-            result = IaisCommonUtils.genNewHashMap();
-            for(ApplicationDto applicationDto : applicationDtoList){
-               String appNo = applicationDto.getApplicationNo();
-                List<ApplicationDto> applicationDtos = result.get(appNo);
-                if(applicationDtos ==null){
-                    applicationDtos = IaisCommonUtils.genNewArrayList();
-                }
-                applicationDtos.add(applicationDto);
-                result.put(appNo,applicationDtos);
-            }
-        }
-        return result;
-    }
 
     @Override
     public List<AppPremisesCorrelationDto> getAppPremisesCorrelationByAppGroupId(String appGroupId) {
@@ -165,12 +145,41 @@ public class ApplicationServiceImpl implements ApplicationService {
         return applicationClient.getAppCountByGroupIdAndStatus(appGroupId,status).getEntity();
     }
 
-    @Override
-    public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto) {
+
+    public ApplicationDto callEicInterApplication(ApplicationDto applicationDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return beEicGatewayClient.updateApplication(applicationDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
+    }
+
+
+    @Override
+    public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto) {
+        log.info(StringUtil.changeForLog("The updateFEApplicaiton start ..."));
+        String moduleName = currentApp + "-" + currentDomain;
+        EicRequestTrackingDto dto = new EicRequestTrackingDto();
+        dto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+        dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        dto.setActionClsName(this.getClass().getName());
+        dto.setActionMethod("callEicInterApplication");
+        dto.setDtoClsName(applicationDto.getClass().getName());
+        dto.setDtoObject(JsonUtil.parseToJson(applicationDto));
+        dto.setRefNo(applicationDto.getApplicationNo());
+        dto.setModuleName(moduleName);
+        eicClient.saveEicTrack(dto);
+        callEicInterApplication(applicationDto);
+        dto = eicClient.getPendingRecordByReferenceNumber(applicationDto.getApplicationNo()).getEntity();
+        Date now = new Date();
+        dto.setProcessNum(1);
+        dto.setFirstActionAt(now);
+        dto.setLastActionAt(now);
+        dto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+        List<EicRequestTrackingDto> list = IaisCommonUtils.genNewArrayList(1);
+        list.add(dto);
+        eicClient.updateStatus(list);
+        log.info(StringUtil.changeForLog("The updateFEApplicaiton end ..."));
+        return applicationDto;
     }
 
     @Override
@@ -298,4 +307,38 @@ public class ApplicationServiceImpl implements ApplicationService {
             emailClient.sendNotification(emailDto).getEntity();
         }
     }
+
+    private boolean containStatus(List<ApplicationDto> applicationDtos,String status){
+        boolean result = false;
+        if(!IaisCommonUtils.isEmpty(applicationDtos) && !StringUtil.isEmpty(status)){
+            for(ApplicationDto applicationDto : applicationDtos){
+                if(status.equals(applicationDto.getStatus())
+                        || ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationDto.getStatus())
+                        || ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus())
+                        || ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())){
+                    result = true;
+                    break;
+                }
+            }
+        }
+        return  result;
+    }
+
+    private Map<String,List<ApplicationDto>> tidyApplicationDto(List<ApplicationDto> applicationDtoList){
+        Map<String,List<ApplicationDto>> result = null;
+        if(!IaisCommonUtils.isEmpty(applicationDtoList)){
+            result = IaisCommonUtils.genNewHashMap();
+            for(ApplicationDto applicationDto : applicationDtoList){
+                String appNo = applicationDto.getApplicationNo();
+                List<ApplicationDto> applicationDtos = result.get(appNo);
+                if(applicationDtos ==null){
+                    applicationDtos = IaisCommonUtils.genNewArrayList();
+                }
+                applicationDtos.add(applicationDto);
+                result.put(appNo,applicationDtos);
+            }
+        }
+        return result;
+    }
+
 }
