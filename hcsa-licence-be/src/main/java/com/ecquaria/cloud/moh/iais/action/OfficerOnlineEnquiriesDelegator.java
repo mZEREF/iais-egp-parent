@@ -756,7 +756,7 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getHciName());
         reqForInfoSearchListDto.setBlkNo(rfiApplicationQueryDto.getBlkNo());
 
-        reqForInfoSearchListDto.setCurrentRiskTagging(rfiApplicationQueryDto.getRiskLevel());
+        reqForInfoSearchListDto.setCurrentRiskTagging(MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getRiskLevel()}).get(0).getText());
         if(rfiApplicationQueryDto.getRiskLevel()==null){
             reqForInfoSearchListDto.setCurrentRiskTagging("-");
         }

@@ -234,7 +234,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
             }catch (Exception e){
                 log.error(e.getMessage(), e);
-                complianceHistoryDto.setRiskTag("-");
             }
             try{
                 List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
@@ -244,7 +243,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     c.setTime(appPremisesRecommendationDto.getRecomInDate());
                     complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
                     complianceHistoryDto.setInspectionDateYear(c.get(Calendar.YEAR));
-                    complianceHistoryDto.setRiskTag(fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesRecommendationDto.getAppPremCorreId(), InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity().getRecomDecision());
+                    String riskTag=MasterCodeUtil.retrieveOptionsByCodes(new String[]{fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesRecommendationDto.getAppPremCorreId(), InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity().getRecomDecision()}).get(0).getText();
+                    complianceHistoryDto.setRiskTag(riskTag);
                     complianceHistoryDtos.add(complianceHistoryDto);
                 }
 
