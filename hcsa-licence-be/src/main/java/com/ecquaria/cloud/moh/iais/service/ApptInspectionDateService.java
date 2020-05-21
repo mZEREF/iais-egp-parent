@@ -45,6 +45,15 @@ public interface ApptInspectionDateService {
     List<SelectOption> getInspectionDateHours();
 
     /**
+     * @author: shicheng
+     * @Date 2020/2/11
+     * @Param: null
+     * @return: List<SelectOption>
+     * @Descripation: get Inspection Date Hour
+     */
+    List<SelectOption> getInspectionDateEndHours();
+
+    /**
       * @author: shicheng
       * @Date 2020/2/11
       * @Param: null

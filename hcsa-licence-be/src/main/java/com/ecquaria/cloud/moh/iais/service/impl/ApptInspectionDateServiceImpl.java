@@ -430,6 +430,28 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     }
 
     @Override
+    public List<SelectOption> getInspectionDateEndHours() {
+        List<SelectOption> hourOption = IaisCommonUtils.genNewArrayList();
+        SelectOption so1 = new SelectOption("1", "10:00");
+        SelectOption so2 = new SelectOption("2", "11:00");
+        SelectOption so3 = new SelectOption("3", "12:00");
+        SelectOption so4 = new SelectOption("4", "13:00");
+        SelectOption so5 = new SelectOption("5", "15:00");
+        SelectOption so6 = new SelectOption("6", "16:00");
+        SelectOption so7 = new SelectOption("7", "17:00");
+        SelectOption so8 = new SelectOption("8", "18:00");
+        hourOption.add(so1);
+        hourOption.add(so2);
+        hourOption.add(so3);
+        hourOption.add(so4);
+        hourOption.add(so5);
+        hourOption.add(so6);
+        hourOption.add(so7);
+        hourOption.add(so8);
+        return hourOption;
+    }
+
+    @Override
     public List<SelectOption> getAmPmOption() {
         List<SelectOption> amPmOption = IaisCommonUtils.genNewArrayList();
         SelectOption so1 = new SelectOption(Formatter.DAY_AM, Formatter.DAY_AM);

@@ -78,8 +78,8 @@ public class ApptReSchedulingInspDateDelegator {
         TaskDto taskDto = taskService.getTaskById(taskId);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", null);
-        ParamUtil.setSessionAttr(bpc.request, "hours", null);
-        ParamUtil.setSessionAttr(bpc.request, "amPm", null);
+        ParamUtil.setSessionAttr(bpc.request, "hoursOption", null);
+        ParamUtil.setSessionAttr(bpc.request, "endHoursOption", null);
     }
 
     /**
@@ -103,9 +103,11 @@ public class ApptReSchedulingInspDateDelegator {
         }
         List<SelectOption> processDecList = apptInspectionDateService.getReShProcessDecList(apptInspectionDateDto);
         List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
+        List<SelectOption> endHours = apptInspectionDateService.getInspectionDateHours();
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
         ParamUtil.setSessionAttr(bpc.request, "inspecProDec", (Serializable) processDecList);
         ParamUtil.setSessionAttr(bpc.request, "hoursOption", (Serializable) hours);
+        ParamUtil.setSessionAttr(bpc.request, "endHoursOption", (Serializable) endHours);
     }
 
     /**
@@ -143,18 +145,19 @@ public class ApptReSchedulingInspDateDelegator {
         String startHours = ParamUtil.getRequestString(bpc.request, "startHours");
         String endHours = ParamUtil.getRequestString(bpc.request, "endHours");
         List<SelectOption> hoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "hoursOption");
+        List<SelectOption> endHoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "endHoursOption");
         if(containValueInList(startHours, hoursOption)){
             apptInspectionDateDto.setStartHours(startHours);
         } else {
             apptInspectionDateDto.setStartHours(null);
         }
-        if(containValueInList(endHours, hoursOption)){
+        if(containValueInList(endHours, endHoursOption)){
             apptInspectionDateDto.setEndHours(endHours);
         } else {
             apptInspectionDateDto.setEndHours(null);
         }
         Date startDate = getSpecificDate(specificStartDate, hoursOption, startHours);
-        Date endDate = getSpecificDate(specificEndDate, hoursOption, endHours);
+        Date endDate = getSpecificDate(specificEndDate, endHoursOption, endHours);
         if(startDate != null){
             apptInspectionDateDto.setSpecificStartDate(startDate);
         }

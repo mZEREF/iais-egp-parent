@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,13 +34,20 @@ public class ApptInspectionDateValidate implements CustomizeValidator {
         if(specificStartDate == null || specificEndDate == null){
             return null;
         }
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        if(specificEndDate.before(specificStartDate)){
+            errMap.put("specificDate", "UC_INSP_ERR0007");
+            return errMap;
+        }
         specificApptDto.setStartDate(Formatter.formatDateTime(specificStartDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
         specificApptDto.setEndDate(Formatter.formatDateTime(specificEndDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
-        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         //key userId value date
-        int statusCode = appointmentClient.validateUserCalendar(specificApptDto).getStatusCode();
-        if(statusCode == HttpStatus.SC_NOT_ACCEPTABLE){
+        try {
+            appointmentClient.validateUserCalendar(specificApptDto).getStatusCode();
+        } catch (Exception e){
             errMap.put("specificDate", "UC_INSP_ERR0007");
+            ParamUtil.setSessionAttr(request, "apptInspectionDateDto", apptInspectionDateDto);
+            return errMap;
         }
         ParamUtil.setSessionAttr(request, "apptInspectionDateDto", apptInspectionDateDto);
         return errMap;
