@@ -54,7 +54,7 @@
                                                 <div class="row">
                                                     <label class="col-xs-9 col-md-3 control-label" >Title<strong style="color:#ff0000;">*</strong></label>
                                                     <label >
-                                                        <textarea id="rfiTitle${status.index}" style=" font-weight:normal;" maxlength="500" rows="8" cols="70" oninput="checkTitle()"  name="rfiTitle${status.index}" >${newRfi.rfiTitle}</textarea>
+                                                        <textarea id="rfiTitle${status.index}" class="textarea" style=" font-weight:normal;" maxlength="500" rows="8" cols="70" onchange="checkTitle()"  name="rfiTitle${status.index}" >${newRfi.rfiTitle}</textarea>
                                                         <span id="error_rfiTitle${status.index}" name="iaisErrorMsg" class="error-msg" ></span>
                                                     </label>
                                                 </div>
@@ -91,15 +91,16 @@
                                                 </div>
                                                 <input type="hidden" name="lengths" value="${status.index}" />
                                                 <div id="infohidden" class="hidden">
-                                                    <div class="row" >
+                                                    <div class="row" style="text-align:center;">
                                                         <div id="infoTitle"></div>
                                                     </div>
                                                     <div class="row" >
-                                                        <iais:value width="18">
+                                                        <label class="col-xs-9 col-md-3 control-label" ></label>
+                                                        <div class=" col-xs-7 col-sm-4 col-md-5">
                                                             <label>
                                                                 <textarea id="userReply_rfi" name="userReply" rows="8" style=" font-weight:normal;" cols="70">${licPreReqForInfoDto.userReply}</textarea><span id="error_userReply" name="iaisErrorMsg" class="error-msg" ></span>
                                                             </label>
-                                                        </iais:value>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div id="dochidden" class="hidden">
@@ -107,14 +108,14 @@
                                                         <div id="docTitle"></div>
                                                     </div>
                                                     <div class="row" >
-                                                        <iais:value width="18">
-                                                            <div class="file-upload-gp">
-
-                                                                &nbsp;&nbsp;&nbsp;<div id="uploadFileName"></div>
-                                                                <input class="selectedFile commDoc" id="commonDoc"  name = "UploadFile" type="file" style="display: none;" aria-label="selectedFile1" >
-                                                                <a class="btn btn-file-upload btn-secondary" >Attachment</a><span id="error_UploadFile" name="iaisErrorMsg" class="error-msg" ></span><br/>
-                                                            </div>
-                                                        </iais:value>
+                                                        <div class=" col-xs-7 col-sm-4 col-md-5">
+                                                            <label>
+                                                                <div class="file-upload-gp">
+                                                                    <input class="selectedFile commDoc" id="commonDoc"  name = "UploadFile" type="file" style="display: none;" aria-label="selectedFile1" >
+                                                                    <a class="btn btn-file-upload btn-secondary" >Attachment</a><span id="error_UploadFile" name="iaisErrorMsg" class="error-msg" ></span><br/>
+                                                                </div>
+                                                            </label>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -216,9 +217,9 @@
     }
 
     function checkTitle(){
-        var text=$('textarea[name="rfiTitle0"]');
-        $("#infoTitle").text(text[0].text);
-        $("#docTitle").text(text[0].text)
+        var text=$('.textarea');
+        $("#infoTitle").text(text.val());
+        $("#docTitle").text(text.val())
 
     }
 
