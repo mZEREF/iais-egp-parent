@@ -2,7 +2,7 @@
 <sqls catalog="applicationPersonnelQuery">
     <sql key = "appPersonnelQuery" remarks = "Query Application Data by condition">
         <![CDATA[
-        SELECT T1.ID,T1.NAME,T1.ID_NO,T1.EMAIL_ADDR,T1.MOBILE_NO,T1.DESIGNATION,T1.SALUTATION,T1.ID_TYPE
+        SELECT T1.ID,T1.NAME,T1.ID_NO,T1.EMAIL_ADDR,T1.MOBILE_NO,T1.DESIGNATION,T1.SALUTATION,T1.ID_TYPE,T1.OFFICE_TEL_NO
 			    FROM hcsal.dbo.key_personnel T1
 			    join hcsal.dbo.lic_key_personnel T2
 			    on T1.ID  = T2.PERSON_ID
