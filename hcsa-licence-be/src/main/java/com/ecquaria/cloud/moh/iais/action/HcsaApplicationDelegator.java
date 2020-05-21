@@ -1366,7 +1366,7 @@ public class HcsaApplicationDelegator {
                     String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
                     String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
                     if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(withdrawApplicationDto.getStatus())){
-                        String subjectSuppInfo = applicationNo + "is Approved";
+                        String subjectSuppInfo = applicationNo + " is Approved";
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                         msgInfoMap.put("appNum", applicationNo);
                         msgInfoMap.put("reqAppNo",applicationNo);
@@ -1381,7 +1381,7 @@ public class HcsaApplicationDelegator {
                             e.printStackTrace();
                         }
                     }else{
-                        String subjectSuppInfo = applicationNo + "is Rejected";
+                        String subjectSuppInfo = applicationNo + " is Rejected";
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                         msgInfoMap.put("appNum", applicationNo);
                         msgInfoMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
