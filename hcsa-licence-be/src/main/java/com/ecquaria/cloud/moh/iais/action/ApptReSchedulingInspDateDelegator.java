@@ -103,7 +103,7 @@ public class ApptReSchedulingInspDateDelegator {
         }
         List<SelectOption> processDecList = apptInspectionDateService.getReShProcessDecList(apptInspectionDateDto);
         List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
-        List<SelectOption> endHours = apptInspectionDateService.getInspectionDateHours();
+        List<SelectOption> endHours = apptInspectionDateService.getInspectionDateEndHours();
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
         ParamUtil.setSessionAttr(bpc.request, "inspecProDec", (Serializable) processDecList);
         ParamUtil.setSessionAttr(bpc.request, "hoursOption", (Serializable) hours);

@@ -65,7 +65,7 @@ public interface AppointmentClient {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String, List<String>>> validateUserCalendar(@RequestBody AppointmentDto appointmentDto);
 
-    @PostMapping(value = "/iais-appointment/manual-calendar-appointment",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-appointment/manual-calendar-appointment",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveManualUserCalendar(@RequestBody AppointmentDto appointmentDto);
 
     @PutMapping(value = "/iais-appointment/user-calendar/status",consumes = MediaType.APPLICATION_JSON_VALUE)

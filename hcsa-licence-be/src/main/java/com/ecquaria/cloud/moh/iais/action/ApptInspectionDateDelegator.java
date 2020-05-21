@@ -137,7 +137,7 @@ public class ApptInspectionDateDelegator {
         log.debug(StringUtil.changeForLog("the apptInspectionDateSpec start ...."));
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
         List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
-        List<SelectOption> endHours = apptInspectionDateService.getInspectionDateHours();
+        List<SelectOption> endHours = apptInspectionDateService.getInspectionDateEndHours();
         ParamUtil.setSessionAttr(bpc.request, "hoursOption", (Serializable) hours);
         ParamUtil.setSessionAttr(bpc.request, "endHoursOption", (Serializable) endHours);
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
@@ -263,7 +263,7 @@ public class ApptInspectionDateDelegator {
             apptInspectionDateService.saveAuditInspectionDate(apptInspectionDateDto, applicationViewDto);
         } else {
             if(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE.equals(apptInspectionDateDto.getProcessDec())){
-                //apptInspectionDateService.saveLeadSpecificDate(apptInspectionDateDto, applicationViewDto);
+                apptInspectionDateService.saveLeadSpecificDate(apptInspectionDateDto, applicationViewDto);
             } else if(InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE.equals(apptInspectionDateDto.getProcessDec())) {
                 apptInspectionDateService.saveSystemInspectionDate(apptInspectionDateDto, applicationViewDto);
             }

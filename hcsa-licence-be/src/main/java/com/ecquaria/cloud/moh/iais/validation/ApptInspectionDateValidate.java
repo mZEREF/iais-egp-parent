@@ -34,6 +34,9 @@ public class ApptInspectionDateValidate implements CustomizeValidator {
         if(specificStartDate == null || specificEndDate == null){
             return null;
         }
+        if(apptInspectionDateDto.getStartHours() == null || apptInspectionDateDto.getEndHours() == null){
+            return null;
+        }
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         if(specificEndDate.before(specificStartDate)){
             errMap.put("specificDate", "UC_INSP_ERR0007");
