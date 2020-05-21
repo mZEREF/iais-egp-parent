@@ -3,11 +3,13 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
@@ -22,11 +24,13 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +60,8 @@ public class InspecReassignTaskDelegator {
     private OrganizationClient organizationClient;
     @Autowired
     private EmailClient emailClient;
+    @Autowired
+    private InboxMsgService inboxMsgService;
 
     @Autowired
     private InspecReassignTaskDelegator(InspectionService inspectionService, ApplicationViewService applicationViewService, InspectionAssignTaskService inspectionAssignTaskService) {
@@ -444,24 +450,43 @@ public class InspecReassignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
         //send email
         try{
-            sendEmail(bpc.request);
+            sendEmail(bpc.request,inspectionTaskPoolListDto.getServiceId());
         }catch (Exception e){
             log.error(StringUtil.changeForLog("reassign email error"));
         }
     }
 
-    private void sendEmail(HttpServletRequest request){
+    private void sendEmail(HttpServletRequest request, String serviceId){
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
+        String subject = "reassign reject";
         String mesContext = "reassign email";
         EmailDto emailDto = new EmailDto();
         emailDto.setContent(mesContext);
-        emailDto.setSubject("reassign reject");
+        emailDto.setSubject(subject);
         emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
         emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
         emailDto.setClientQueryCode(licenseeId);
-        //send
+        //send email
         emailClient.sendNotification(emailDto).getEntity();
+        //send message
+        sendMessage(subject,serviceId,licenseeId,mesContext,null);
+    }
+
+    private void sendMessage(String subject, String serviceId, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams){
+        InterMessageDto interMessageDto = new InterMessageDto();
+        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+        interMessageDto.setSubject(subject);
+        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
+        String refNo = inboxMsgService.getMessageNo();
+        interMessageDto.setRefNo(refNo);
+        interMessageDto.setService_id(serviceId);
+        interMessageDto.setUserId(licenseeId);
+        interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        interMessageDto.setMsgContent(templateMessageByContent);
+        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        interMessageDto.setMaskParams(maskParams);
+        inboxMsgService.saveInterMessage(interMessageDto);
     }
 }
 
