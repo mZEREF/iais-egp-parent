@@ -83,13 +83,13 @@
                                 <c:forEach var = "msgQuery" items = "${msgSearchResult.rows}" varStatus="status">
                                     <tr>
                                         <td class="row_no">${(status.index + 1) + (msgSearchParam.pageNo - 1) * msgSearchParam.pageSize}</td>
-                                        <td align="left">${msgQuery.domainType}</td>
-                                        <td align="left">${msgQuery.msgType}</td>
-                                        <td align="left">${msgQuery.module}</td>
-                                        <td align="left">${msgQuery.description}</td>
-                                        <td align="left">${msgQuery.message}</td>
-                                        <td align="left" ><iais:code code="${msgQuery.status}"></iais:code></td>
-                                        <td align="left">
+                                        <td align="left" style="width: 120px"><c:out value="${msgQuery.domainType}"></c:out></td>
+                                        <td align="left" style="width: 180px"><c:out value="${msgQuery.msgType}"></c:out></td>
+                                        <td align="left" style="width: 150px"><c:out value="${msgQuery.module}"></c:out> </td>
+                                        <td align="left" style="width: 300px"><c:out value="${msgQuery.description}"></c:out></td>
+                                        <td align="left" ><c:out value="${msgQuery.message}"></c:out></td>
+                                        <td align="left"  ><iais:code code="${msgQuery.status}"></iais:code></td>
+                                        <td align="left"style="width: 50px">
                                             <button type="button"   onclick="prepareEdit('<iais:mask name="msgQueryId" value="${msgQuery.id}"/>')"  class="btn btn-default btn-sm" >Edit</button>
                                             <%--<iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${msgQuery.id}');"/>
                                             <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${msgQuery.id}');"/>--%>
