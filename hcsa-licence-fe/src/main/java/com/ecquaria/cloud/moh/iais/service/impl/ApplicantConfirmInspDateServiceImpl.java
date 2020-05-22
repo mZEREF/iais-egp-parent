@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.client.AppEicClient;
-import com.ecquaria.cloud.moh.iais.client.OnlineApptEicClient;
 import com.ecquaria.cloud.moh.iais.client.OrgEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -81,9 +80,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     private OrgEicClient orgEicClient;
 
     @Autowired
-    private OnlineApptEicClient onlineApptEicClient;
-
-    @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
 
     @Autowired
@@ -134,19 +130,19 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 //save eic record
                 ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
                 apptAppInfoShowDto.setApptRefNo(apptRefNos);
-                EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ONLINE_APPT_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptSystemDate",
+                EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptSystemDate",
                         "hcsa-licence-web-internet", ApptAppInfoShowDto.class.getName(), JsonUtil.parseToJson(apptAppInfoShowDto));
                 String eicRefNo = eicRequestTrackingDto.getRefNo();
                 Map<String, List<ApptUserCalendarDto>> apptInspDateMap = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos, signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization()).getEntity();
                 //get eic record
-                eicRequestTrackingDto = onlineApptEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
+                eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
                 //update eic record status
                 eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
                 eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
                 eicRequestTrackingDtos.add(eicRequestTrackingDto);
-                onlineApptEicClient.updateStatus(eicRequestTrackingDtos);
+                appEicClient.updateStatus(eicRequestTrackingDtos);
 
                 if(apptInspDateMap != null) {
                     apptFeConfirmDateDto.setApptInspDateMap(apptInspDateMap);
@@ -256,19 +252,19 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         //save eic record
-        EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ONLINE_APPT_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "ccCalendarStatusEic",
+        EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "ccCalendarStatusEic",
                 "hcsa-licence-web-internet", ApptCalendarStatusDto.class.getName(), JsonUtil.parseToJson(apptCalendarStatusDto));
         String eicRefNo = eicRequestTrackingDto.getRefNo();
         feEicGatewayClient.updateUserCalendarStatus(apptCalendarStatusDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
         //get eic record
-        eicRequestTrackingDto = onlineApptEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
+        eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
         //update eic record status
         eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
         eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
         eicRequestTrackingDtos.add(eicRequestTrackingDto);
-        onlineApptEicClient.updateStatus(eicRequestTrackingDtos);
+        appEicClient.updateStatus(eicRequestTrackingDtos);
     }
 
     private void setRecommendationDto(ApptFeConfirmDateDto apptFeConfirmDateDto, ApptInspectionDateDto apptInspectionDateDto) {
@@ -302,19 +298,19 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             appointmentDto.setEndDate(Formatter.formatDateTime(appPremisesInspecApptDto.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
 
             //save eic record
-            EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ONLINE_APPT_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptNewSystemDate",
+            EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptNewSystemDate",
                     "hcsa-licence-web-internet", AppointmentDto.class.getName(), JsonUtil.parseToJson(appointmentDto));
             String eicRefNo = eicRequestTrackingDto.getRefNo();
             Map<String, List<ApptUserCalendarDto>> appInspDateMap = feEicGatewayClient.getUserCalendarByUserId(appointmentDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
             //get eic record
-            eicRequestTrackingDto = onlineApptEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
+            eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
             //update eic record status
             eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
             eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
             eicRequestTrackingDtos.add(eicRequestTrackingDto);
-            onlineApptEicClient.updateStatus(eicRequestTrackingDtos);
+            appEicClient.updateStatus(eicRequestTrackingDtos);
 
             Map<String, Date> inspectionNewDateMap = IaisCommonUtils.genNewHashMap();
             List<SelectOption> inspectionNewDate = IaisCommonUtils.genNewArrayList();
@@ -679,19 +675,19 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 //save eic record
                 ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
                 apptAppInfoShowDto.setApptRefNo(apptRefNos);
-                EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ONLINE_APPT_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptSystemDate",
+                EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptSystemDate",
                         "hcsa-licence-web-internet", ApptAppInfoShowDto.class.getName(), JsonUtil.parseToJson(apptAppInfoShowDto));
                 String eicRefNo = eicRequestTrackingDto.getRefNo();
                 Map<String, List<ApptUserCalendarDto>> apptInspDateMap = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos, signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization()).getEntity();
                 //get eic record
-                eicRequestTrackingDto = onlineApptEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
+                eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
                 //update eic record status
                 eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
                 eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
                 eicRequestTrackingDtos.add(eicRequestTrackingDto);
-                onlineApptEicClient.updateStatus(eicRequestTrackingDtos);
+                appEicClient.updateStatus(eicRequestTrackingDtos);
 
                 Date specStartInspDate = new Date();
                 Date specEndInspDate;
@@ -791,21 +787,16 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         String specificDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        int curHour24 = cal.get(Calendar.HOUR_OF_DAY);
-        if(curHour24 > 12){
-            int hours = curHour24 - 12;
-            String hoursShow = "";
-            if(hours < 10){
-                hoursShow = "0";
-            }
-            specificDate = specificDate + " " + hoursShow + hours + ":00";
-        } else {
-            String hoursShow = "";
-            if(curHour24 < 10){
-                hoursShow = "0";
-            }
-            specificDate = specificDate + " " + hoursShow + curHour24 + ":00";
+        int minutes = cal.get(Calendar.MINUTE);
+        if(minutes > 0){
+            cal.add(Calendar.HOUR_OF_DAY, 1);
         }
+        int curHour24 = cal.get(Calendar.HOUR_OF_DAY);
+        String hoursShow = "";
+        if(curHour24 < 10){
+            hoursShow = "0";
+        }
+        specificDate = specificDate + " " + hoursShow + curHour24 + ":00";
         return specificDate;
     }
 }
