@@ -72,6 +72,7 @@ import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -177,54 +178,6 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
 
-
-        //get routing stage dropdown send to page.
-        log.debug(StringUtil.changeForLog("the do prepareData get the hcsaSvcRoutingStageDtoList"));
-        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),
-                taskDto.getTaskKey(),applicationViewDto.getApplicationDto().getApplicationType());
-        List<SelectOption> routingStage = IaisCommonUtils.genNewArrayList();
-        if(hcsaSvcRoutingStageDtoList!=null){
-            if(hcsaSvcRoutingStageDtoList.size()>0){
-                for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList) {
-                    routingStage.add(new SelectOption(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName()));
-                }
-            }else{
-                log.debug(StringUtil.changeForLog("the do prepareData add the Approve"));
-                //if  this is the last stage
-                routingStage.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
-                        "Approve"));
-            }
-        }
-
-        //   rollback
-        log.debug(StringUtil.changeForLog("the do prepareData get the rollBackMap"));
-        Map<String,String> rollBackMap = IaisCommonUtils.genNewHashMap();
-        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList = applicationViewDto.getRollBackHistroyList();
-        if(!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtoList)){
-            for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:appPremisesRoutingHistoryDtoList) {
-                //String stageName=applicationViewService.getStageById(appPremisesRoutingHistoryDto.getStageId()).getStageName();
-                String userId=appPremisesRoutingHistoryDto.getActionby();
-                String wrkGrpId=appPremisesRoutingHistoryDto.getWrkGrpId();
-                OrgUserDto user=applicationViewService.getUserById(userId);
-                String actionBy=user.getDisplayName();
-                rollBackMap.put(actionBy+" ("+appPremisesRoutingHistoryDto.getRoleId()+")",appPremisesRoutingHistoryDto.getStageId()+","+wrkGrpId+","+userId+","+appPremisesRoutingHistoryDto.getRoleId());
-              }
-        }else{
-            log.debug(StringUtil.changeForLog("the do prepareData do not have the rollback history"));
-        }
-        applicationViewDto.setRollBack(rollBackMap);
-
-      if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
-            routingStage.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY,"Broadcast Reply For Internal"));
-        }
-        //set verified values
-        applicationViewDto.setVerified(routingStage);
-        ParamUtil.setSessionAttr(bpc.request, "verifiedValues", (Serializable)routingStage);
-
-        //set recommendation dropdown
-        ParamUtil.setSessionAttr(bpc.request, "recommendationDropdown", (Serializable)getRecommendationDropdown(applicationViewDto));
-        //set recommendation other dropdown
-        ParamUtil.setSessionAttr(bpc.request, "recommendationOtherDropdown", (Serializable)getRecommendationOtherDropdown());
         log.debug(StringUtil.changeForLog("the do prepareData get the appEditSelectDto"));
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         if(applicationDto != null){
@@ -255,74 +208,9 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData get the appPremisesRecommendationDto"));
         log.debug(StringUtil.changeForLog("the do prepareData roleId -->:"+roleId));
 
+        //set selection value
+        setSelectionValue(bpc.request,applicationViewDto,taskDto);
 
-        List<SelectOption> nextStageList = IaisCommonUtils.genNewArrayList();
-        nextStageList.add(new SelectOption("", "Please Select"));
-        if(RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId)){
-//            nextStageList.add(new SelectOption("VERIFIED", "Support"));
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Support"));
-        }else{
-            //62875
-            //role is ao3 && status is 'Pending AO3 Approval'  have no verified
-            if(!(RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus()))){
-                if (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType())) {
-                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
-                }
-            }
-        }
-        if((ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(applicationViewDto.getApplicationDto().getStatus())
-                || ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus()))
-                && RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())){
-
-        }else{
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROLLBACK, "Internal Route Back"));
-        }
-        //62761
-        Integer rfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(),
-                ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
-        log.info(StringUtil.changeForLog("The rfiCount is -->:"+rfiCount));
-        if(!(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()))){
-            if(rfiCount==0){
-                if (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
-                    nextStageList.add(new SelectOption("PROCRFI", "Request For Information"));
-                }
-            }
-        }
-
-        if (RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())
-                && ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
-                && ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REJECT, "Reject"));
-        }
-
-        //62875
-        if(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
-            if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationViewDto.getApplicationDto().getApplicationType())){
-                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REJECT, "Reject"));
-            }else{
-                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast"));
-                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS"));
-            }
-        }
-
-        ParamUtil.setSessionAttr(bpc.request, "nextStages", (Serializable)nextStageList);
-
-        List<SelectOption> nextStageReplyList = IaisCommonUtils.genNewArrayList();
-        if(!ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
-            nextStageReplyList.add(new SelectOption("", "Please Select"));
-        }
-        nextStageReplyList.add(new SelectOption("PROCREP", "Give Clarification"));
-        ParamUtil.setSessionAttr(bpc.request, "nextStageReply", (Serializable)nextStageReplyList);
-
-
-
-
-        List<SelectOption> decisionValues = IaisCommonUtils.genNewArrayList();
-        decisionValues.add(new SelectOption("decisionApproval", "Approve"));
-        decisionValues.add(new SelectOption("decisionReject", "Reject"));
-        ParamUtil.setSessionAttr(bpc.request, "decisionValues", (Serializable)decisionValues);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         //check inspection
         checkShowInspection(bpc,applicationViewDto,taskDto,applicationViewDto.getNewAppPremisesCorrelationDto().getOldCorrelationId());
@@ -1724,5 +1612,149 @@ public class HcsaApplicationDelegator {
 //        }catch (Exception e){
 //            log.error(StringUtil.changeForLog("first do main flow ,have no two history"));
 //        }
+    }
+
+    public void setSelectionValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto){
+        //set normal processingDecision value
+        setNormalProcessingDecisionDropdownValue(request,applicationViewDto,taskDto);
+        //set reply processingDecision value
+        setReplyProcessingDecisionDropdownValue(request,applicationViewDto);
+        //set DMS processingDecision value
+        setDmsProcessingDecisionDropdownValue(request);
+        //set route back dropdown value
+        setRouteBackDropdownValue(request,applicationViewDto);
+        //set verified dropdown value
+        setVerifiedDropdownValue(request,applicationViewDto,taskDto);
+        //set recommendation dropdown value
+        setRecommendationDropdownValue(request,applicationViewDto);
+        //set recommendation other dropdown value
+        setRecommendationOtherDropdownValue(request);
+    }
+
+    public void setNormalProcessingDecisionDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto){
+        List<SelectOption> nextStageList = IaisCommonUtils.genNewArrayList();
+        nextStageList.add(new SelectOption("", "Please Select"));
+        if(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId())){
+//            nextStageList.add(new SelectOption("VERIFIED", "Support"));
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Support"));
+        }else{
+            //62875
+            //role is ao3 && status is 'Pending AO3 Approval'  have no verified
+            if(!(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus()))){
+                if (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType())) {
+                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
+                }
+            }
+        }
+        if((ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(applicationViewDto.getApplicationDto().getStatus())
+                || ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus()))
+                && RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())){
+
+        }else{
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROLLBACK, "Internal Route Back"));
+        }
+        //62761
+        Integer rfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(),
+                ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+        log.info(StringUtil.changeForLog("The rfiCount is -->:"+rfiCount));
+        if(!(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()))){
+            if(rfiCount==0){
+                if (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
+                    nextStageList.add(new SelectOption("PROCRFI", "Request For Information"));
+                }
+            }
+        }
+
+        if (RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())
+                && ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
+                && ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REJECT, "Reject"));
+        }
+
+        //62875
+        if(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
+            if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationViewDto.getApplicationDto().getApplicationType())){
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REJECT, "Reject"));
+            }else{
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast"));
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS"));
+            }
+        }
+
+        ParamUtil.setSessionAttr(request, "nextStages", (Serializable)nextStageList);
+    }
+
+    public void setReplyProcessingDecisionDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
+        List<SelectOption> nextStageReplyList = IaisCommonUtils.genNewArrayList();
+        if(!ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
+            nextStageReplyList.add(new SelectOption("", "Please Select"));
+        }
+        nextStageReplyList.add(new SelectOption("PROCREP", "Give Clarification"));
+        ParamUtil.setSessionAttr(request, "nextStageReply", (Serializable)nextStageReplyList);
+    }
+
+    public void setDmsProcessingDecisionDropdownValue(HttpServletRequest request){
+        List<SelectOption> decisionValues = IaisCommonUtils.genNewArrayList();
+        decisionValues.add(new SelectOption("decisionApproval", "Approve"));
+        decisionValues.add(new SelectOption("decisionReject", "Reject"));
+        ParamUtil.setSessionAttr(request, "decisionValues", (Serializable)decisionValues);
+    }
+
+    public void setRouteBackDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
+        //   rollback
+        log.debug(StringUtil.changeForLog("the do prepareData get the rollBackMap"));
+        Map<String,String> rollBackMap = IaisCommonUtils.genNewHashMap();
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList = applicationViewDto.getRollBackHistroyList();
+        if(!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtoList)){
+            for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:appPremisesRoutingHistoryDtoList) {
+                //String stageName=applicationViewService.getStageById(appPremisesRoutingHistoryDto.getStageId()).getStageName();
+                String userId=appPremisesRoutingHistoryDto.getActionby();
+                String wrkGrpId=appPremisesRoutingHistoryDto.getWrkGrpId();
+                OrgUserDto user=applicationViewService.getUserById(userId);
+                String actionBy=user.getDisplayName();
+                rollBackMap.put(actionBy+" ("+appPremisesRoutingHistoryDto.getRoleId()+")",appPremisesRoutingHistoryDto.getStageId()+","+wrkGrpId+","+userId+","+appPremisesRoutingHistoryDto.getRoleId());
+            }
+        }else{
+            log.debug(StringUtil.changeForLog("the do prepareData do not have the rollback history"));
+        }
+        applicationViewDto.setRollBack(rollBackMap);
+    }
+
+    public void setVerifiedDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto){
+        //get routing stage dropdown send to page.
+        log.debug(StringUtil.changeForLog("the do prepareData get the hcsaSvcRoutingStageDtoList"));
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),
+                taskDto.getTaskKey(),applicationViewDto.getApplicationDto().getApplicationType());
+        List<SelectOption> routingStage = IaisCommonUtils.genNewArrayList();
+        if(hcsaSvcRoutingStageDtoList!=null){
+            if(hcsaSvcRoutingStageDtoList.size()>0){
+                for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList) {
+                    routingStage.add(new SelectOption(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName()));
+                }
+            }else{
+                log.debug(StringUtil.changeForLog("the do prepareData add the Approve"));
+                //if  this is the last stage
+                routingStage.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
+                        "Approve"));
+            }
+        }
+        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
+            routingStage.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_REPLY,"Broadcast Reply For Internal"));
+        }
+        //set verified values
+        applicationViewDto.setVerified(routingStage);
+        ParamUtil.setSessionAttr(request, "verifiedValues", (Serializable)routingStage);
+    }
+
+    public void setRecommendationDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
+        //set recommendation dropdown
+        ParamUtil.setSessionAttr(request, "recommendationDropdown", (Serializable)getRecommendationDropdown(applicationViewDto));
+    }
+
+    public void setRecommendationOtherDropdownValue(HttpServletRequest request){
+        //set recommendation other dropdown
+        ParamUtil.setSessionAttr(request, "recommendationOtherDropdown", (Serializable)getRecommendationOtherDropdown());
     }
 }
