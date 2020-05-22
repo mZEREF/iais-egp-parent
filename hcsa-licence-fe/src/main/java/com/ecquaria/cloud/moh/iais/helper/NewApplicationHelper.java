@@ -1271,17 +1271,6 @@ public class NewApplicationHelper {
         }
     }
 
-    /**
-     * @Description for common prepare premise content
-     * @param bpc
-     * @param appSubmissionDto
-     */
-    public static void prePremises(BaseProcessClass bpc,AppSubmissionDto appSubmissionDto, Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap){
-
-
-
-    }
-
     //=============================================================================
     //private method
     //=============================================================================
