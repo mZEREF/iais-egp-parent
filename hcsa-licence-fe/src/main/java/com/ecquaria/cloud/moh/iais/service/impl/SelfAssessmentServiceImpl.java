@@ -130,6 +130,11 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
             ChecklistConfigDto serviceConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module).getEntity();
 
+            if (serviceConfig == null){
+                //if don't have checklist , cannot do next step.
+                continue;
+            }
+
             List<AppPremisesCorrelationDto>  correlationList = applicationClient.listAppPremisesCorrelation(appId).getEntity();
             for (AppPremisesCorrelationDto correlationDto : correlationList) {
                 String corrId = correlationDto.getId();

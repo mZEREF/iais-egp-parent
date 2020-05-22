@@ -58,7 +58,7 @@
         <iais:row>
           <iais:field value="Blacked Out Date Description"/>
           <iais:value width="18">
-            <input type="text" max="255" name="desc"  value="${param.desc}">
+            <input type="text" id="blacked_out_desc" max="255" name="desc"  value="${param.desc}">
           </iais:value>
         </iais:row>
 
@@ -192,6 +192,7 @@
   function doClear() {
     $("#startDate").val("");
     $("#endDate").val("");
+    $("#blacked_out_desc").val("");
 
     $("#dropYearOpt option[text = 'Please Select']").val("selected", "selected");
     $("#dropYearOpt").val("");
