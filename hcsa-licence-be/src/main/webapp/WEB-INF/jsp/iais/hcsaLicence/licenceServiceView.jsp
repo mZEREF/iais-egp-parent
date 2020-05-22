@@ -470,7 +470,9 @@
                             <div class="panel-body">
                               <p class="text-right">
                                 <c:if test="${rfi=='rfi'}">
-                                  <input class="form-check-input" id="primaryCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="primary">
+                                  <c:if test="${appEdit.docEdit}">
+                                    <input class="form-check-input" id="primaryCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="primary">
+                                  </c:if>
                                 </c:if>
                               </p>
                               <div class="elemClass-1561088919456">

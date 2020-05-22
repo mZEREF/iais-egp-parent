@@ -182,6 +182,14 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, "PremisesSearchResult", searchResult);
         }
         List<PremisesListQueryDto> rows = searchResult.getRows();
+       /* for(PremisesListQueryDto premisesListQueryDto :rows){
+            StringBuilder stringBuilder =new StringBuilder();
+            List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(premisesListQueryDto.getHciCode());
+            for(LicenceDto licenceDto : licenceDtoByHciCode ){
+                stringBuilder.append(licenceDto.getSvcName());
+            }
+            premisesListQueryDto.setSvcId(stringBuilder.toString());
+        }*/
         ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) rows);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Premises List");
         List<SelectOption> list = new ArrayList<>();
@@ -246,8 +254,8 @@ public class RequestForChangeMenuDelegator {
         AppGrpPremisesDto appGrpPremisesDto = null;
         Object rfi = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         if (appSubmissionDto != null) {
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             if (rfi == null) {
-                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
                 if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList) && premisesListQueryDto != null) {
                     String premType = premisesListQueryDto.getPremisesType();
                     String premHciOrConvName = "";
@@ -266,7 +274,11 @@ public class RequestForChangeMenuDelegator {
             } else {
                 reloadPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             }
-
+           for(AppGrpPremisesDto appGrpPremisesDto1 : appGrpPremisesDtoList) {
+               String hciCode = appGrpPremisesDto1.getHciCode();
+               List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByHciCode(hciCode);
+               appGrpPremisesDto1.setLicenceDtos(licenceDtoList);
+           }
         }
         if (appGrpPremisesDto != null || rfi != null) {
             log.info(StringUtil.changeForLog("The preparePremises licenseeId is -->:" + licenseeId));
@@ -1080,7 +1092,7 @@ public class RequestForChangeMenuDelegator {
         }
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
-        String hciCode = premisesListQueryDto.getHciCode();
+
         String licenceId = appSubmissionDto.getLicenceId();
         if (!StringUtil.isEmpty(licenceId)) {
             List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(licenceId);
