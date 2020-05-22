@@ -165,11 +165,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         dto.setActionMethod("callEicInterApplication");
         dto.setDtoClsName(applicationDto.getClass().getName());
         dto.setDtoObject(JsonUtil.parseToJson(applicationDto));
-        dto.setRefNo(applicationDto.getApplicationNo());
+        String refNo = String.valueOf(System.currentTimeMillis());
+        log.info(StringUtil.changeForLog("The updateFEApplicaiton refNo is  -- >:"+refNo));
+        dto.setRefNo(refNo);
         dto.setModuleName(moduleName);
         eicClient.saveEicTrack(dto);
         callEicInterApplication(applicationDto);
-        dto = eicClient.getPendingRecordByReferenceNumber(applicationDto.getApplicationNo()).getEntity();
+        dto = eicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
         Date now = new Date();
         dto.setProcessNum(1);
         dto.setFirstActionAt(now);
