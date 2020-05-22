@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
@@ -57,6 +58,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
+import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
@@ -93,6 +95,8 @@ public class LicenceApproveBatchjob {
 
     @Autowired
     private LicenceService licenceService;
+    @Autowired
+    private InboxMsgService inboxMsgService;
 
     @Autowired
     private ApplicationGroupService applicationGroupService;
@@ -652,6 +656,8 @@ public class LicenceApproveBatchjob {
                     if(applicationDto != null){
                         String applicationNo = applicationDto.getApplicationNo();
                         String loginUrl = "#";
+                        String msgId = "";
+                        Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                         //new application send email
                         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
                             String uenNo = oldLicenseeDto.getUenNo();
@@ -663,6 +669,12 @@ public class LicenceApproveBatchjob {
                             }
                             //send email
                             newApplicationApproveSendEmail(licenceDto,applicationNo,licenceNo,loginUrl,isNew,uenNo);
+                            //send sms
+                            try{
+                                sendSMS(msgId,licenceDto.getLicenceNo(),msgInfoMap);
+                            }catch(IOException | TemplateException e){
+                                log.error(StringUtil.changeForLog("send sms error"));
+                            }
                         }
                     }
 
@@ -741,6 +753,17 @@ public class LicenceApproveBatchjob {
         }
         String subject = " " + applicationNo + " is Approved ";
         sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_ID,subject,licenceDto.getLicenseeId(),licenceDto.getId());
+    }
+    private void sendSMS(String msgId,String licenseeId,Map<String, Object> msgInfoMap) throws IOException, TemplateException {
+        //MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
+        //String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
+        String templateMessageByContent = "send sms";
+        SmsDto smsDto = new SmsDto();
+        smsDto.setContent(templateMessageByContent);
+        smsDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        smsDto.setOnlyOfficeHour(true);
+        String refNo = inboxMsgService.getMessageNo();
+        emailClient.sendSMS(IaisEGPHelper.getLicenseeMobiles(licenseeId),smsDto,refNo);
     }
     //send email helper
     private void sendEmailHelper(Map<String ,Object> tempMap,String msgTemplateId,String subject,String licenseeId,String clientQueryCode){
@@ -909,6 +932,8 @@ public class LicenceApproveBatchjob {
 
                 String applicationNo = applicationDto.getApplicationNo();
                 String loginUrl = "#";
+                String msgId = "";
+                Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                 //new application send email
                 if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
                     String uenNo = oldLicenseeDto.getUenNo();
@@ -920,12 +945,24 @@ public class LicenceApproveBatchjob {
                     }
                     //send email
                     newApplicationApproveSendEmail(licenceDto,applicationNo,licenceNo,loginUrl,isNew,uenNo);
+                    //send sms
+                    try{
+                        sendSMS(msgId,licenceDto.getLicenceNo(),msgInfoMap);
+                    }catch(IOException | TemplateException e){
+                        log.error(StringUtil.changeForLog("send sms error"));
+                    }
                 }else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
                     Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
                     tempMap.put("LICENCE",licenceNo);
                     tempMap.put("APP_NO",applicationNo);
                     String subject = " " + applicationNo + " - Approved ";
                     sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE,subject,licenceDto.getLicenseeId(),licenceDto.getId());
+                    //send sms
+                    try{
+                        sendSMS(msgId,licenceDto.getLicenceNo(),msgInfoMap);
+                    }catch(IOException | TemplateException e){
+                        log.error(StringUtil.changeForLog("send sms error"));
+                    }
                 }
 
                 //create the lic_app_correlation
