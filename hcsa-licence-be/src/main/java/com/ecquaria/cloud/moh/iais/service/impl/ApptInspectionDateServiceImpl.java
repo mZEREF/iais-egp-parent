@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
@@ -31,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
@@ -59,6 +61,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -140,6 +143,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     @Autowired
     private MsgTemplateClient msgTemplateClient;
+
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
@@ -642,7 +648,66 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         apptInspectionDateDto.setApptFeReason(apptFeReason);
         apptInspectionDateDto.setTaskDtos(taskDtoList);
         apptInspectionDateDto.setTaskDto(taskDto);
+        //get Applicant set start date and end date from appGroup
+        AppointmentDto specificApptDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(taskDto.getRefNo()).getEntity();
+        specificApptDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+        Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
+        List<String> serviceIds = IaisCommonUtils.genNewArrayList();
+        for (Map.Entry<String, String> mapDate : corrIdServiceIdMap.entrySet()) {
+            if(!StringUtil.isEmpty(mapDate.getValue())){
+                serviceIds.add(mapDate.getValue());
+            }
+        }
+        //get Start date and End date when group no date
+        if (specificApptDto.getStartDate() == null && specificApptDto.getEndDate() == null) {
+            specificApptDto.setServiceIds(serviceIds);
+            specificApptDto = hcsaConfigClient.getApptStartEndDateByService(specificApptDto).getEntity();
+        }
+        //set data to validate
+        List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
+        for (TaskDto tDto : taskDtoList) {
+            AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(tDto.getUserId()).getEntity();
+            appointmentUserDto.setLoginUserId(orgUserDto.getUserId());
+            String workGroupId = tDto.getWkGrpId();
+            WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
+            appointmentUserDto.setWorkGrpName(workingGroupDto.getGroupName());
+            //get service id by task refno
+            String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
+            //get manHours by service and stage
+            int manHours = getServiceManHours(tDto.getRefNo(), serviceId);
+            //Divide the time according to the number of people
+            List<TaskDto> sizeTask = organizationClient.getCurrTaskByRefNo(tDto.getRefNo()).getEntity();
+            double hours = manHours;
+            double peopleCount = sizeTask.size();
+            int peopleHours = (int) Math.ceil(hours/peopleCount);
+            appointmentUserDto.setWorkHours(peopleHours);
+            appointmentUserDtos.add(appointmentUserDto);
+        }
+        specificApptDto.setUsers(appointmentUserDtos);
+        apptInspectionDateDto.setSpecificApptDto(specificApptDto);
         return apptInspectionDateDto;
+    }
+
+    private int getServiceManHours(String refNo, String serviceId) {
+        int manHours;
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(refNo, InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR).getEntity();
+        if(appPremisesRecommendationDto != null){
+            String hours = appPremisesRecommendationDto.getRecomDecision();
+            if(!StringUtil.isEmpty(hours)){
+                manHours = Integer.parseInt(hours);
+            } else {
+                manHours = hcsaConfigClient.getManHour(serviceId, HcsaConsts.ROUTING_STAGE_INS).getEntity();
+            }
+        } else {
+            manHours = hcsaConfigClient.getManHour(serviceId, HcsaConsts.ROUTING_STAGE_INS).getEntity();
+        }
+        return manHours;
+    }
+
+    private Map<String, String> getServiceIdsByCorrIdsFromPremises(List<String> premCorrIds) {
+        Map<String, String> serviceIds = applicationClient.getServiceIdsByCorrIdsFromPremises(premCorrIds).getEntity();
+        return serviceIds;
     }
 
     @Override

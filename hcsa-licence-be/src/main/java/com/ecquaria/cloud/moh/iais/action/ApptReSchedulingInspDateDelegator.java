@@ -121,6 +121,8 @@ public class ApptReSchedulingInspDateDelegator {
         ApptInspectionDateDto apptInspectionDateDto = (ApptInspectionDateDto) ParamUtil.getSessionAttr(bpc.request, "apptInspectionDateDto");
         String processDec = InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE;
         apptInspectionDateDto.setProcessDec(processDec);
+        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        apptInspectionDateDto.setActionValue(actionValue);
         apptInspectionDateDto = getValidateValue(apptInspectionDateDto, bpc);
         ValidationResult validationResult;
         if(processDec.equals(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE)) {
