@@ -43,7 +43,7 @@
                                 <div class="swiper-button-prev"></div>
                                 <div class="swiper-button-next"></div>
                             </div>
-
+                            <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="General" role="tabpanel">
                                     <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.generalDo}"/>/<c:out value="${serListDto.generalTotal}"/><br>
@@ -104,10 +104,10 @@
                                                             <div id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
                                                                 <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comrec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comrec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                                             </div>
-                                                            <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}com" var = "err"/>
-                                                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                         </td>
                                                         <td>
+                                                            <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}com" var = "err"/>
+                                                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                             <c:set var="fir" value="${one.index}"></c:set>
                                                             <c:set var="sec" value="${two.index}"></c:set>
                                                             <c:forEach var="oldcom" items="${allComChkDtoList}">
@@ -183,10 +183,10 @@
                                                                 <div id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>ck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
                                                                     <input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${cdto.subName}${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                                                 </div>
-                                                                <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}" var = "err"/>
-                                                                <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                             </td>
                                                             <td>
+                                                                <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}" var = "err"/>
+                                                                <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                                 <c:set var="fir" value="${one.index}"></c:set>
                                                                 <c:set var="sec" value="${two.index}"></c:set>
                                                                 <c:set var="thr" value="${status.index}"></c:set>
@@ -241,10 +241,10 @@
                                                             <div id="<c:out value="${item.id}"/>ck"<c:if test="${item.adAnswer != 'No'}">hidden</c:if>>
                                                                 <input name="<c:out value="${item.id}"/>adhocrec" id="<c:out value="${item.id}"/>adhocrec" type="checkbox" <c:if test="${item.rectified}">checked</c:if> value="rec"/>
                                                             </div>
-                                                            <c:set value = "error_${item.id}adhoc" var = "err"/>
-                                                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                         </td>
                                                         <td>
+                                                            <c:set value = "error_${item.id}adhoc" var = "err"/>
+                                                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                             <%--<c:set var="fir" value="${status.index}"></c:set>
                                                             <c:forEach var="adhocdraft" items="${otherVersionAdhocDraftList}">
                                                                 <wrms:value width="7">

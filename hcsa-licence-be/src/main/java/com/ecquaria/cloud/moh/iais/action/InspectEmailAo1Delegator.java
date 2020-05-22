@@ -389,9 +389,9 @@ public class InspectEmailAo1Delegator {
         InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,COM_DTO);
         List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
         for(InspectionCheckQuestionDto temp:checkListDtoList){
-            String answer = ParamUtil.getString(request,temp.getSectionNameSub()+temp.getItemId()+"comrad");
-            String remark = ParamUtil.getString(request,temp.getSectionNameSub()+temp.getItemId()+"comremark");
-            String rectified = ParamUtil.getString(request,temp.getSectionNameSub()+temp.getItemId()+"comrec");
+            String answer = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comrad");
+            String remark = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comremark");
+            String rectified = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comrec");
             temp.setRectified(!StringUtil.isEmpty(rectified)&&"No".equals(answer));
             temp.setChkanswer(answer);
             temp.setRemark(remark);

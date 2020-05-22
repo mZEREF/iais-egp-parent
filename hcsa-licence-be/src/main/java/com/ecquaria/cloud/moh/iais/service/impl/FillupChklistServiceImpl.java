@@ -754,7 +754,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0) {
             updatedtaskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
         }
-        createAppPremisesRoutingHistory(updateApplicationDto.getApplicationNo(),updateApplicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, null, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
+        createAppPremisesRoutingHistory(updateApplicationDto.getApplicationNo(),updateApplicationDto.getStatus(),taskDto.getTaskKey(),null, null, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
         List<TaskDto> createTaskDtoList = IaisCommonUtils.genNewArrayList();
         createTaskDtoList.add(updatedtaskDto);
         taskService.createTasks(createTaskDtoList);
@@ -799,7 +799,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             updatedtaskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
         }
         List<TaskDto> createTaskDtoList = IaisCommonUtils.genNewArrayList();
-        createAppPremisesRoutingHistory(updateApplicationDto.getApplicationNo(),updateApplicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, null, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
+        createAppPremisesRoutingHistory(updateApplicationDto.getApplicationNo(),updateApplicationDto.getStatus(),taskDto.getTaskKey(),null, null, RoleConsts.USER_ROLE_INSPECTIOR,workGrp,subStage);
         createTaskDtoList.add(updatedtaskDto);
         taskService.createTasks(createTaskDtoList);
     }

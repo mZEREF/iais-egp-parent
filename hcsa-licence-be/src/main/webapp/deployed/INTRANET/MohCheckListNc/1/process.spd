@@ -44,7 +44,7 @@
     <JavaCode defClass="" executor="" methodName="preViewCheckList_OnStepProcess_0" name="preViewCheckList_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doCheckList" x="310" y="250">
+  <AutomaticStep defClass="" executor="" icon="" name="doCheckList" x="310" y="370">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -128,10 +128,7 @@
    <position>{(670,270)(520,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doCheckList" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page1" style="rectanular">
-   <position>{(520,270)(330,270)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/pre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doCheckList" style="rectanular">
-   <position>{(330,270)(340,120)}</position>
+   <position>{(520,270)(330,390)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/confirm" style="rectanular">
    <position>{(1000,120)(1000,240)}</position>
@@ -145,9 +142,21 @@
   <SynchronousLink destinationName="/Pages/WebPage/confirm" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step2" style="rectanular">
    <position>{(860,370)(1000,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doCheckList" style="rectanular">
+   <position>{(330,390)(390,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/pre" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(390,220)(340,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(390,220)(520,270)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Pages/WebPage/confirm" componentIfTrue="/Steps/AutomaticStep/pre" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="830" y="100">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Pages/WebPage/Page1" componentIfTrue="/Steps/AutomaticStep/pre" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond2" operator="=" rightOperand="isValid" x="370" y="200">
    <Description/>
   </Condition>
  </Conditions>
