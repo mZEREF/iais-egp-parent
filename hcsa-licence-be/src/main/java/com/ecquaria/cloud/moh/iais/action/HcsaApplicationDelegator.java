@@ -930,9 +930,13 @@ public class HcsaApplicationDelegator {
         //new application send email
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String applicationType = applicationDto.getApplicationType();
+        String msgId = "";
+        Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
             //send email
             sendRejectEmail(applicationNo,licenseeId,appGrpId);
+            //send sms
+            sendSMS(msgId,licenseeId,msgInfoMap);
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
             MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT).getEntity();
             if(msgTemplateDto != null){
@@ -942,6 +946,8 @@ public class HcsaApplicationDelegator {
                 EmailDto emailDto = LicenceUtil.sendEmailHelper(tempMap,msgTemplateDto,subject,licenseeId,appGrpId);
                 emailClient.sendNotification(emailDto).getEntity();
             }
+            //send sms
+            sendSMS(msgId,licenseeId,msgInfoMap);
         }
 
         try {
@@ -1432,14 +1438,15 @@ public class HcsaApplicationDelegator {
     }
 
     private void sendSMS(String msgId,String licenseeId,Map<String, Object> msgInfoMap) throws IOException, TemplateException {
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
-        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
+        //MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
+        //String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
+        String templateMessageByContent = "send sms";
         SmsDto smsDto = new SmsDto();
         smsDto.setContent(templateMessageByContent);
         smsDto.setSender(AppConsts.MOH_AGENCY_NAME);
         smsDto.setOnlyOfficeHour(true);
         String refNo = inboxMsgService.getMessageNo();
-        emailClient.sendSMS(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId),smsDto,refNo);
+        emailClient.sendSMS(IaisEGPHelper.getLicenseeMobiles(licenseeId),smsDto,refNo);
     }
 
     private List<ApplicationDto> removeFastTracking(List<ApplicationDto> applicationDtos){
@@ -1700,6 +1707,12 @@ public class HcsaApplicationDelegator {
             String date = Formatter.formatDateTime(recomInDate,Formatter.DATE);
             ParamUtil.setRequestAttr(bpc.request,"date",date);
         }
+
+//        try{
+//            sendSMS("",applicationViewDto.getApplicationGroupDto().getLicenseeId(),IaisCommonUtils.genNewHashMap());
+//        }catch (Exception e){
+//
+//        }
 
 //        String appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
 //        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = null;
