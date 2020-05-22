@@ -319,6 +319,12 @@ public final class IaisEGPHelper extends EGPHelper {
         return licenseeService.getLicenseeEmails(licenseeId);
     }
 
+    public static List<String> getLicenseeMobiles(String licenseeId) {
+        LicenseeService licenseeService = SpringContextHelper.getContext().getBean(LicenseeService.class);
+
+        return licenseeService.getLicenseeMobiles(licenseeId);
+    }
+
     public static void retrigerEicMethods(List<EicRequestTrackingDto> trackList) {
         trackList.forEach(e -> {
             try {

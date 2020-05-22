@@ -22,4 +22,7 @@ public interface LicenseeClient {
 
     @GetMapping(value = "/iais-licensee/user-email-addrs/{licenseeId}")
     FeignResponseEntity<List<String>> getLicenseeEmails(@PathVariable(name = "licenseeId") String licenseeId);
+
+    @GetMapping(value = "/iais-licensee/user-mobile-nos/{licenseeId}")
+    FeignResponseEntity<List<String>> getLicenseeMobiles(@PathVariable(name = "licenseeId") String licenseeId);
 }
