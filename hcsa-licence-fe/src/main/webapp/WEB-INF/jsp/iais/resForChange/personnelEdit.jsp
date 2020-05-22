@@ -214,97 +214,95 @@
                                     </iais:row>
                                 </div>
                                 <div id="replace" style="width: 40%" hidden>
-                                    <iais:select name="replaceName" id="replaceOptionsId" options="replaceOptions" value="" onchange="addNew()" firstOption="Please Select"></iais:select>
+                                    <iais:select name="replaceName" id="replaceOptionsId" options="replaceOptions" value="${replaceName}" onchange="addNew()" firstOption="Please Select"></iais:select>
                                 </div>
                                 <br/><br/><br/><br/>
                                 <div id="newPerson" hidden class="form-horizontal">
                                     <iais:row>
                                         <iais:field value="Name " width="12"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
-                                            <iais:select name="salutation"
+                                            <iais:select name="salutation1"
                                                          codeCategory="CATE_ID_SALUTATION"
-                                                         value="${onePersonnel.salutation}"
+                                                         value="${newPerson.salutation}"
                                                          firstOption="Please Select"></iais:select>
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
                                             <iais:input maxLength="66" type="text"
-                                                        name="psnName"
-                                                        value="${onePersonnel.psnName}"></iais:input>
+                                                        name="psnName1"
+                                                        value="${newPerson.psnName}"></iais:input>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="ID No. " width="12"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
-                                            <iais:select name="idType"
-                                                         value="${onePersonnel.idType}"
+                                            <iais:select name="idType1"
+                                                         value="${newPerson.idType}"
                                                          options="IdTypeSelect"></iais:select>
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
                                             <iais:input maxLength="66" type="text"
-                                                        name="idNo" value="${onePersonnel.idNo}"></iais:input>
+                                                        name="idNo1" value="${newPerson.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Designation " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
-                                            <iais:select cssClass="designationSel" name="designation"
+                                            <iais:select cssClass="designationSel" name="designation1"
                                                          codeCategory="CATE_ID_DESIGNATION"
-                                                         value="${onePersonnel.designation}"
+                                                         value="${newPerson.designation}"
                                                          firstOption="Please Select"></iais:select>
                                         </iais:value>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_designation"></span>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Professional Type " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
-                                            <iais:select cssClass="professionTypeSel" name="professionType"
+                                            <iais:select cssClass="professionTypeSel" name="professionType1"
                                                          codeCategory="CATE_ID_PROFESSIONAL_TYPE"
-                                                         value="${onePersonnel.professionType}"
+                                                         value="${newPerson.professionType}"
                                                          firstOption="Please Select"></iais:select>
                                         </iais:value>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_professionType"></span>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="20" type="text" name="professionRegnNo"
-                                                        value="${onePersonnel.professionRegnNo}"></iais:input>
+                                            <iais:input maxLength="20" type="text" name="professionRegnNo1"
+                                                        value="${newPerson.professionRegnNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Specialty " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="8" type="text" name="mobileNo"
-                                                        value="${onePersonnel.mobileNo}"></iais:input>
+                                            <iais:input maxLength="8" type="text" name="mobileNo1"
+                                                        value="${newPerson.mobileNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Subspeciality or relevant qualification " width="12"
                                                     mandatory="false"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="100" type="text" name="qualification"
+                                            <iais:input maxLength="100" type="text" name="qualification1"
                                                         value="${currentCgo.subSpeciality}"></iais:input>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Mobile No. " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="8" type="text" name="mobileNo"
-                                                        value="${onePersonnel.mobileNo}"></iais:input>
+                                            <iais:input maxLength="8" type="text" name="mobileNo1"
+                                                        value="${newPerson.mobileNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="8" type="text" name="mobileNo"
-                                                        value="${onePersonnel.mobileNo}"></iais:input>
+                                            <iais:input maxLength="8" type="text" name="officeTelNo1"
+                                                        value="${newPerson.officeTelNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Email Address " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="66" type="text" name="emailAddr"
-                                                        value="${onePersonnel.emailAddr}"></iais:input>
+                                            <iais:input maxLength="66" type="text" name="emailAddr1"
+                                                        value="${newPerson.emailAddr}"></iais:input>
                                         </iais:value>
                                     </iais:row>
                                 </div>
@@ -349,28 +347,20 @@
             $("#editSelect").show();
             $('#edit').hide();
         });
-
         $('#cancel').click(function () {
             $("#editSelect").hide();
             $('#edit').show();
-        });cancel
-
+        });
         $('#checkitem1').click(function () {
             $("#update").show();
             $('#replace').hide();
+            $('#newPerson').hide();
         });
         $('#checkitem2').click(function () {
             $("#update").hide();
             $('#replace').show();
         });
-        if ($('#checkitem2').val() == 'replace') {
-            $("#update").hide();
-            $('#newPerson').show();
-        }
-        if ($('#checkitem1').val() == 'update') {
-            $("#update").show();
-            $('#newPerson').hide();
-        }
+
         $('#cancel').click(function () {
             $("#update").show();
             $('#replace').hide();
@@ -379,7 +369,9 @@
         if ($('#replaceOptionsId').val() == 'new') {
             $("#update").hide();
             $('#replace').show();
+            $('#newPerson').show();
         }
+
         $('#replaceOptionsId').click(function () {
             $("#update").hide();
             $('#newPerson').show();
