@@ -101,7 +101,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             }
             Map<String, List<OrgUserDto>> map = getAllOrgUsersByAuditTaskDataFillterDtos(auditTaskDataDtos);
             for (AuditTaskDataFillterDto temp : auditTaskDataDtos) {
-                getinspectorOp(map.get(temp.getSvcName()), temp);
+                getinspectorOp(map.get(temp.getWorkGroupId()), temp);
             }
         }
 

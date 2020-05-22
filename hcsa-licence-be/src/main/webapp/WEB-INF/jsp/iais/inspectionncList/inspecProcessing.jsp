@@ -16,6 +16,12 @@
                         <iais:field value="Current Status" required="false"/>
                         <iais:value width="10"><p><span style="font-size: 16px"><iais:code code="${applicationViewDto.applicationDto.status}"/></iais:value></span></p>
                     </iais:row>
+                    <iais:row>
+                        <iais:field value="Internal Remarks"/>
+                        <iais:value width="10">
+                            <textarea name="remarksForHistory" cols="60" rows="7"maxlength="300"></textarea>
+                        </iais:value>
+                    </iais:row>
                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION == applicationViewDto.applicationDto.applicationType}">
                         <iais:row>
                             <iais:field value="Licence Start Date" required="false"/>
