@@ -55,15 +55,6 @@
                       <label style="font-size: 16px">HCI Code</label>
                     </div>
                     <div class="col-md-6">
-                     <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.hciCode}"/></span>
-                    </div>
-                  </div>
-                  <p></p>
-                  <div class="row">
-                    <div class="col-md-2">
-                      <label style="font-size: 16px">HCI Code</label>
-                    </div>
-                    <div class="col-md-6">
                       <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.hciCode}"/></span>
                     </div>
                   </div>

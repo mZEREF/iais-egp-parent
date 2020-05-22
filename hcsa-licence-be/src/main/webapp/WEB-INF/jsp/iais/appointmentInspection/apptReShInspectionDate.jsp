@@ -103,7 +103,7 @@
                               </div>
                               <div class="col-md-6">
                                 <div class="col-xs-12 col-md-4" style="padding-left: 0px;">
-                                  <label style="font-size: 16px">To</label>
+                                  <span style="font-size: 16px">To</span>
                                   <p></p>
                                 </div>
                               </div>
@@ -117,7 +117,7 @@
                                   <iais:datePicker id = "specificEndDate" name = "specificEndDate" dateVal="${apptInspectionDateDto.specificEndDate}"></iais:datePicker>
                                 </div>
                                 <div class="col-xs-12 col-md-3">
-                                  <iais:select name="endHours" options="hoursOption" firstOption="--:--" value="${apptInspectionDateDto.endHours}"></iais:select>
+                                  <iais:select name="endHours" options="endHoursOption" firstOption="--:--" value="${apptInspectionDateDto.endHours}"></iais:select>
                                 </div>
                               </div>
                             </div>

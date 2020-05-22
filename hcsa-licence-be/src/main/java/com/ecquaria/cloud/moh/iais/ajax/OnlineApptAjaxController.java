@@ -140,6 +140,50 @@ public class OnlineApptAjaxController {
                     apptInspectionDateDto.setSpecificApptDto(specificApptDto);
                     ParamUtil.setSessionAttr(request, "apptInspectionDateDto", apptInspectionDateDto);
                 }
+            //Audit Task
+            } else {
+                TaskDto taskDto = apptInspectionDateDto.getTaskDto();
+                //get Applicant set start date and end date from appGroup
+                AppointmentDto specificApptDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(taskDto.getRefNo()).getEntity();
+                specificApptDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+                List<String> premCorrIds = apptInspectionDateDto.getRefNo();
+                Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
+                List<String> serviceIds = IaisCommonUtils.genNewArrayList();
+                for (Map.Entry<String, String> mapDate : corrIdServiceIdMap.entrySet()) {
+                    if(!StringUtil.isEmpty(mapDate.getValue())){
+                        serviceIds.add(mapDate.getValue());
+                    }
+                }
+                //get Start date and End date when group no date
+                if (specificApptDto.getStartDate() == null && specificApptDto.getEndDate() == null) {
+                    specificApptDto.setServiceIds(serviceIds);
+                    specificApptDto = hcsaConfigClient.getApptStartEndDateByService(specificApptDto).getEntity();
+                }
+                //set data to validate
+                List<TaskDto> taskDtoList = apptInspectionDateDto.getTaskDtos();
+                List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
+                for (TaskDto tDto : taskDtoList) {
+                    AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
+                    OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(tDto.getUserId()).getEntity();
+                    appointmentUserDto.setLoginUserId(orgUserDto.getUserId());
+                    String workGroupId = tDto.getWkGrpId();
+                    WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
+                    appointmentUserDto.setWorkGrpName(workingGroupDto.getGroupName());
+                    //get service id by task refno
+                    String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
+                    //get manHours by service and stage
+                    int manHours = getServiceManHours(tDto.getRefNo(), serviceId);
+                    //Divide the time according to the number of people
+                    List<TaskDto> sizeTask = organizationClient.getCurrTaskByRefNo(tDto.getRefNo()).getEntity();
+                    double hours = manHours;
+                    double peopleCount = sizeTask.size();
+                    int peopleHours = (int) Math.ceil(hours/peopleCount);
+                    appointmentUserDto.setWorkHours(peopleHours);
+                    appointmentUserDtos.add(appointmentUserDto);
+                }
+                specificApptDto.setUsers(appointmentUserDtos);
+                apptInspectionDateDto.setSpecificApptDto(specificApptDto);
+                ParamUtil.setSessionAttr(request, "apptInspectionDateDto", apptInspectionDateDto);
             }
         }
         return map;
