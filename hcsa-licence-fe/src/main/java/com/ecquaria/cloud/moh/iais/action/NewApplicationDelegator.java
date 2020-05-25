@@ -1027,6 +1027,10 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doRequestInformationSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
+        String appGrpNo = appSubmissionDto.getAppGrpNo();
+        //oldAppSubmissionDtos
+        List<AppSubmissionDto> appSubmissionDtoByGroupNo = appSubmissionService.getAppSubmissionDtoByGroupNo(appGrpNo);
+
         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
 
         }
@@ -1262,7 +1266,7 @@ public class NewApplicationDelegator {
                         AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string.getId());
                         appSubmissionService.transform(appSubmissionDtoByLicenceId,appSubmissionDto.getLicenseeId());
                         boolean groupLic = appSubmissionDtoByLicenceId.isGroupLic();
-
+                        List<AppGrpPremisesDto> oldappGrpPremisesDtoList = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
                         boolean equals=false;
                         String address = appSubmissionDto.getAppGrpPremisesDtoList().get(i).getAddress();
                             if(groupLic){
@@ -1332,6 +1336,8 @@ public class NewApplicationDelegator {
                             }else {
                                 appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
                             }
+                            appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
+                            RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
                             appSubmissionDtos.add(appSubmissionDtoByLicenceId);
 
                     }
@@ -1380,6 +1386,7 @@ public class NewApplicationDelegator {
         List<AppSubmissionDto> personAppSubmissionList = personContact(bpc,appSubmissionDto, oldAppSubmissionDto);
 
         appSubmissionDto.setPartPremise(appSubmissionDto.isGroupLic());
+        appSubmissionDto.setGetAppInfoFromDto(true);
         appSubmissionDtos.add(appSubmissionDto);
         AppSubmissionListDto appSubmissionListDto =new AppSubmissionListDto();
         String submissionId = generateIdClient.getSeqId().getEntity();
@@ -1544,6 +1551,8 @@ public class NewApplicationDelegator {
             }
             appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDtoByLicenceId.setPartPremise(appSubmissionDtoByLicenceId.isGroupLic());
+            appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
+            RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
             appSubmissionDtoList.add(appSubmissionDtoByLicenceId);
         }
 

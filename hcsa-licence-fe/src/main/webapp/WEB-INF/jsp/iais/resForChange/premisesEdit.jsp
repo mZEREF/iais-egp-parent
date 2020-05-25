@@ -67,6 +67,8 @@
           </div>
         </div>
       </div>
+    <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
+    <iais:confirm msg="There is a pending application for a licence associated to this premises" callBack="" popupOrder="ackMessageConfim"></iais:confirm>
       <%--Validation Field--%>
       <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
       <%@include file="../common/premFun.jsp"%>
@@ -79,6 +81,9 @@
     var init;
     $(document).ready(function () {
         <!-- init start-->
+        if($('#ackMessage').val()=='ACKMESSAGE'){
+            $('#ackMessageConfim').modal('show');
+        }
         init = 0;
         <!--for reload -->
         reloadPage();

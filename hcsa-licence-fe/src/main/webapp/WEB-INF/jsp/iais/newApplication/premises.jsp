@@ -92,6 +92,13 @@
                       </div>
                     </div>
                   </div>
+                  <c:if test="${AppSubmissionDto.appType=='APTY005'||AppSubmissionDto.appType=='APTY004'}">
+                    <div class="form-check col-sm-12">
+                      <ul>
+                        <li>Changes made will be applied to other licences associated with this premises:</li>
+                      </ul>
+                    </div>
+                  </c:if>
                   <!--prem content -->
                   <%@include file="../common/premisesContent.jsp"%>
                 </div>
@@ -149,7 +156,8 @@
 
     <ias:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></ias:confirm>
 
-
+  <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
+  <iais:confirm msg="There is a pending application for a licence associated to this premises" callBack="" popupOrder="ackMessageConfim"></iais:confirm>
 
 </form>
 <script type="text/javascript">
@@ -160,7 +168,9 @@
         $("select[name='conveyanceAddrType']").trigger('change');
         <!-- init start-->
         init = 0;
-
+        if($('#ackMessage').val()=='ACKMESSAGE'){
+            $('#ackMessageConfim').modal('show');
+        }
         if($('#saveDraftSuccess').val()=='success'){
             $('#saveDraft').modal('show');
         }

@@ -394,6 +394,7 @@ public class WithOutRenewalDelegator {
             if(appGrpPremisesDtoList.equals(oldAppSubmissionDtoAppGrpPremisesDtoList)){
                 premiseChange=true;
             }
+
             if(!premiseChange){
                 if(appGrpPremisesDtoList!=null){
                     for(int i=0;i<appGrpPremisesDtoList.size();i++){
@@ -452,6 +453,8 @@ public class WithOutRenewalDelegator {
                                 }
                                 appSubmissionDtoByLicenceId.setAutoRfc(equals);
                                 appEditSelectDto.setPremisesEdit(Boolean.TRUE);
+                                appEditSelectDto.setServiceEdit(false);
+                                appEditSelectDto.setDocEdit(false);
                                 appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
                                 appSubmissionDtoByLicenceId.setChangeSelectDto(appEditSelectDto);
                                 appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
@@ -466,6 +469,7 @@ public class WithOutRenewalDelegator {
                                 }else {
                                     appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
                                 }
+                                RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
                                 rfcAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
                             }
                         }

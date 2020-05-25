@@ -396,7 +396,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public void feSendEmail(EmailDto emailDto) {
         String moduleName = currentApp + "-" + currentDomain;
-        String refNo = String.valueOf(new Date().getTime());
+        String refNo = String.valueOf(System.currentTimeMillis());
         EicRequestTrackingDto dto = new EicRequestTrackingDto();
         dto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
         dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

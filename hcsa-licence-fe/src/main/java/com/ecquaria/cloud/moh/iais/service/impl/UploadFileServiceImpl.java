@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -23,19 +25,24 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesSco
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepositoryClient;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -48,6 +55,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -84,7 +92,13 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Autowired
     private FileRepositoryClient fileRepositoryClient;
 
+    @Value("${spring.application.name}")
+    private String currentApp;
 
+    @Value("${iais.current.domain}")
+    private String currentDomain;
+    @Autowired
+    private EicRequestTrackingHelper eicRequestTrackingHelper;
     @Override
     public String saveFile(ApplicationListFileDto applicationListFileDto ) {
 
@@ -261,6 +275,30 @@ public class UploadFileServiceImpl implements UploadFileService {
            }
         }
         return flag;
+    }
+
+    private void eicGateway( String fileName ,String filePath,String groupId){
+        ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
+        processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        processFileTrackDto.setFileName(fileName);
+        processFileTrackDto.setFilePath(filePath);
+        processFileTrackDto.setRefId(groupId);
+        EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, UploadFileServiceImpl.class.getName(),
+                "saveFileName", currentApp + "-" + currentDomain,
+                ProcessFileTrackDto.class.getName(), JsonUtil.parseToJson(processFileTrackDto));
+        FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getOrgTrackingClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
+        if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
+            EicRequestTrackingDto entity = fetchResult.getEntity();
+            if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
+
+                entity.setProcessNum(1);
+                Date now = new Date();
+                entity.setFirstActionAt(now);
+                entity.setLastActionAt(now);
+                entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                eicRequestTrackingHelper.getOrgTrackingClient().saveEicTrack(entity);
+            }
+        }
     }
 
     private String saveFileName(String fileName ,String filePath,String groupId){
