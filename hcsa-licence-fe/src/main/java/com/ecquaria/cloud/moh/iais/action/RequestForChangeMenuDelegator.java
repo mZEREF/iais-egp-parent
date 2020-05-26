@@ -853,7 +853,7 @@ public class RequestForChangeMenuDelegator {
             if (psnTypes.contains("PO") && StringUtil.isEmpty(officeTelNo)) {
                 errMap.put("officeTelNo", "UC_CHKLMD001_ERR001");
             }
-            if (psnTypes.contains("CGO") && StringUtil.isEmpty(specialty1)) {
+            if (psnTypes.contains("CGO") && StringUtil.isEmpty(specialty)) {
                 errMap.put("specialty", "UC_CHKLMD001_ERR001");
             }
         }

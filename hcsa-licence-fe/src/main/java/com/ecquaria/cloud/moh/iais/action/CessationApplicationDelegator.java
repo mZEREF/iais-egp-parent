@@ -55,8 +55,6 @@ public class CessationApplicationDelegator {
     private static final String PATREGNO ="patRegNo";
     private static final String PATOTHERS ="patOthers";
     private static final String ERROR ="ERR0009";
-    private final String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
-    private final String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
 
     public void start(BaseProcessClass bpc) {
@@ -114,7 +112,8 @@ public class CessationApplicationDelegator {
         Map<String, String> errorMap = new HashMap<>(34);
         Boolean choose = Boolean.FALSE;
         for (int i = 1; i <= size; i++) {
-            for (int j = 1; j <= size; j++) {
+            int size1 = appCessDtosByLicIds.get(i-1).getAppCessHciDtos().size();
+            for (int j = 1; j <=size1 ; j++) {
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + WHICHTODO + j);
                 if (!StringUtil.isEmpty(whichTodo)) {
                     choose = Boolean.TRUE;
@@ -177,7 +176,7 @@ public class CessationApplicationDelegator {
     }
 
     /*
-
+     * utils
      */
 
     private List<AppCessLicDto> prepareDataForValiant(BaseProcessClass bpc, int size, List<AppCessLicDto> appCessDtosByLicIds) {

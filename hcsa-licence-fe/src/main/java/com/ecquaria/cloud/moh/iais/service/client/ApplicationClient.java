@@ -27,8 +27,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -268,4 +272,7 @@ public interface ApplicationClient  {
     FeignResponseEntity<AppGroupMiscDto> saveAppGroupMiscDto(@RequestBody AppGroupMiscDto appGroupMiscDto);
     @GetMapping(value = "/iais-application/application-group-no",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getApplicationsByGroupNo(@RequestParam("groupNo") String groupNo);
+
+    @PutMapping(value = "/iais-application",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationDto> updateApplicationDto(@RequestBody ApplicationDto applicationDto);
 }

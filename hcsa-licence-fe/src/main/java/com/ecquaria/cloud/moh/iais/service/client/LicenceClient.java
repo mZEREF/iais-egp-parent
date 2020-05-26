@@ -100,4 +100,10 @@ public interface LicenceClient {
 
     @GetMapping(value = "/hcsa-licence/getPersonnelDtoByLicId",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PersonnelsDto>> getPersonnelDtoByLicId(@RequestParam("licId") String licId);
+
+    @PostMapping(value = "/hcsa-licence/licId-spec-cessation",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getSpecLicIdsByLicIds(@RequestBody List<String> licenceIds);
+
+    @GetMapping(value = "/hcsa-licence/premise-cessation-id", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PremisesDto> getLicPremisesDtoById(@RequestParam(value = "id")String id);
 }
