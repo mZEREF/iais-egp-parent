@@ -92,6 +92,10 @@
                     </div>
                 </div>
             </div>
+            <input type="text" style="display: none" id="draftsave" name="draftsave" value="${selectDraftNo}">
+            <c:if test="${ not empty selectDraftNo }">
+                 <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
+            </c:if>
         </form>
     </div>
 </div>
@@ -99,8 +103,26 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
+        if( $('#draftsave').val()!=null|| $('#draftsave').val()!=''){
+            $('#saveDraft').modal('show');
+        }
+
         $('#submitService').click(function () {
             SOP.Crud.cfxSubmit("mainForm", "validation");
         });
     });
+
+    function saveDraft() {
+        let val = $('#draftsave').val();
+        $("[name='crud_action_additional']").val(val);
+        $("[name='crud_action_value']").val('continue');
+        $('#mainForm').submit();
+    }
+
+    function cancelSaveDraft() {
+        let val = $('#draftsave').val();
+        $("[name='crud_action_additional']").val(val);
+        $("[name='crud_action_value']").val('resume');
+        $('#mainForm').submit();
+    }
 </script>

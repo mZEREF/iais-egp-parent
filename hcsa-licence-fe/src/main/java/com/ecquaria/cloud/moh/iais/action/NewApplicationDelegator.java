@@ -981,6 +981,7 @@ public class NewApplicationDelegator {
             appSubmissionDto.setOldDraftNo(null);
         }
         String oldDraftNo=(String)bpc.request.getSession().getAttribute(SELECT_DRAFT_NO);
+        bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
         appSubmissionDto.setOldDraftNo(oldDraftNo);
         appSubmissionDto.setStepColor(strList);
         Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
@@ -1030,10 +1031,6 @@ public class NewApplicationDelegator {
         String appGrpNo = appSubmissionDto.getAppGrpNo();
         //oldAppSubmissionDtos
         List<AppSubmissionDto> appSubmissionDtoByGroupNo = appSubmissionService.getAppSubmissionDtoByGroupNo(appGrpNo);
-
-        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
-
-        }
         StringBuilder stringBuilder=new StringBuilder();
         stringBuilder.append(appSubmissionDto.toString());
         log.info(StringUtil.changeForLog("appSubmissionDto:"+stringBuilder.toString()));
@@ -1056,11 +1053,19 @@ public class NewApplicationDelegator {
             return;
         }
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtoByGroupNo){
+            appSubmissionDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
+            appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
+            appSubmissionRequestInformationDto.setOldAppSubmissionDto(appSubmissionDto1);
+            appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
+
+        }
+      /*  oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
-        appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
+        appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);*/
         // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","Y");
         ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE,"The request for information save success");
@@ -3153,7 +3158,7 @@ public class NewApplicationDelegator {
 
     private void loadingDraft(BaseProcessClass bpc, String draftNo) {
         log.info(StringUtil.changeForLog("the do loadingDraft start ...."));
-        Object draftNumber = bpc.request.getAttribute("DraftNumber");
+        Object draftNumber = bpc.request.getSession().getAttribute("DraftNumber");
         if(draftNumber!=null){
             draftNo=(String)draftNumber;
         }

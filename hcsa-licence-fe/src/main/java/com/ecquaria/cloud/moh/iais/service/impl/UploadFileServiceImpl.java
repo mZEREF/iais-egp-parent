@@ -263,8 +263,11 @@ public class UploadFileServiceImpl implements UploadFileService {
                    if(b){
                        log.info(StringUtil.changeForLog("----------- new zip file name is"+sharedPath+AppServicesConsts.BACKUPS+File.separator+s+".zip"));
                    }
+                   String string = eicGateway(s + AppServicesConsts.ZIP_NAME, AppServicesConsts.BACKUPS + File.separator + s + AppServicesConsts.ZIP_NAME, groupId);
+/*
                    String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,AppServicesConsts.BACKUPS + File.separator+s+AppServicesConsts.ZIP_NAME,groupId);
-                   if(!s1.equals("SUCCESS")){
+*/
+                   if(!string.equals("SUCCESS")){
                        MiscUtil.deleteFile(curFile);
                        flag=false;
                        break;
@@ -277,7 +280,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         return flag;
     }
 
-    private void eicGateway( String fileName ,String filePath,String groupId){
+    private String eicGateway( String fileName ,String filePath,String groupId){
         ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         processFileTrackDto.setFileName(fileName);
@@ -290,15 +293,17 @@ public class UploadFileServiceImpl implements UploadFileService {
         if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
             EicRequestTrackingDto entity = fetchResult.getEntity();
             if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
-
+                String string = saveFileName(fileName, filePath, groupId);
                 entity.setProcessNum(1);
                 Date now = new Date();
                 entity.setFirstActionAt(now);
                 entity.setLastActionAt(now);
                 entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
                 eicRequestTrackingHelper.getOrgTrackingClient().saveEicTrack(entity);
+                return string;
             }
         }
+        return "FAIL";
     }
 
     private String saveFileName(String fileName ,String filePath,String groupId){

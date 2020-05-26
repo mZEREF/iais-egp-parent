@@ -1334,8 +1334,6 @@ public class RequestForChangeMenuDelegator {
         appEditSelectDto.setPremisesEdit(true);
         String appGrpNo = appSubmissionDto.getAppGrpNo();
         //oldAppSubmissionDtos
-        List<AppSubmissionDto> appSubmissionDtoByGroupNo = appSubmissionService.getAppSubmissionDtoByGroupNo(appGrpNo);
-
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();

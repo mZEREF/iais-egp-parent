@@ -759,7 +759,7 @@
         }
     }
 
-    function showSUSPENSION(){
+ /*   function showSUSPENSION(){
         let jQuery = $('#APTY007').attr("style");
         $('#APTY002').attr("style","display: none");
         $('#APTY004').attr("style","display: none");
@@ -772,7 +772,7 @@
         }else if(jQuery=='display: none'){
             $('#APTY007').attr("style","display: block");
         }
-    }
+    }*/
 
     function  showWITHDRAWAL(){
         let jQuery = $('#APTY006').attr("style");

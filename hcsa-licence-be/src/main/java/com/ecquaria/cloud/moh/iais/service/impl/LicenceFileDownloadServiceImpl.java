@@ -85,16 +85,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Value("${iais.syncFileTracking.shared.path}")
     private     String sharedPath;
 
-
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
     @Autowired
     private TaskService taskService;
     @Autowired

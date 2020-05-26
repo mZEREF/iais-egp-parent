@@ -99,6 +99,7 @@ public class ServiceMenuDelegator {
     }
 
     public void validation(BaseProcessClass bpc){
+
         log.debug(StringUtil.changeForLog("the do validation start ...."));
         String[] basechks = ParamUtil.getStrings(bpc.request, BASE_SERVICE_CHECK_BOX_ATTR);
         String[] sepcifiedchk = ParamUtil.getStrings(bpc.request, SPECIFIED_SERVICE_CHECK_BOX_ATTR);
@@ -194,36 +195,26 @@ public class ServiceMenuDelegator {
             }
 
         }
-        ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, nextstep);
+
         ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED, (Serializable) sepcifiedcheckedlist);
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, (Serializable) basecheckedlist);
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, (Serializable) allbaseService);
         ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, (Serializable) allspecifiedService);
-        List<String> baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED);
-        List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED);
-        List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(baseServiceIds)){
-            serviceConfigIds.addAll(baseServiceIds);
+        if(NEXT.equals(nextstep)){
+            String crud_action_value=bpc.request.getParameter("crud_action_value");
+            String crud_action_additional  =bpc.request.getParameter("crud_action_additional");
+            getDraft(bpc);
+            String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
+            if("continue".equals(crud_action_value)){
+                 bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, crud_action_additional);
+                 bpc.request.getSession().setAttribute("DraftNumber", null);
+            }else if("resume".equals(crud_action_value)){
+                bpc.request.getSession().setAttribute("DraftNumber", crud_action_additional);
+            }else if(attribute!=null){
+                 nextstep=ERROR_ATTR;
+             }
         }
-        if(!IaisCommonUtils.isEmpty(specifiedServiceIds)){
-            serviceConfigIds.addAll(specifiedServiceIds);
-        }
-        if(!serviceConfigIds.isEmpty()){
-            List<HcsaServiceDto> hcsaServiceDtosById = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
-            List<String> serviceCodeList=new ArrayList<>(hcsaServiceDtosById.size());
-
-            for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtosById){
-                serviceCodeList.add(hcsaServiceDto.getSvcCode());
-            }
-            serviceCodeList.sort(String::compareTo);
-            Map<String,Object> map=new HashMap<>();
-            map.put("serviceCodesList",serviceCodeList);
-            map.put("appType", ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-            String entity = applicationClient.selectDarft(map).getEntity();
-            bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO,entity);
-        }
-
-
+        ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, nextstep);
     }
 
     public void chooseBase(BaseProcessClass bpc){
@@ -283,9 +274,20 @@ public class ServiceMenuDelegator {
     }
 
     public void licenseValidation(BaseProcessClass bpc){
+        String licenceJudgeD=(String)bpc.request.getSession().getAttribute("licenceJudge");
+        List<String> licenceD=(List<String>)bpc.request.getSession().getAttribute("licence");
         String action = ParamUtil.getString(bpc.request, "action");
         String licenceJudge = ParamUtil.getString(bpc.request, "licenceJudge");
         String[] licence = ParamUtil.getStrings(bpc.request, "licence");
+        if(!StringUtil.isEmpty(licenceD)){
+            licence=new String[licenceD.size()];
+            for(int i=0;i<licenceD.size();i++){
+                licence[i]=licenceD.get(i);
+            }
+        }
+        if(licenceJudgeD!=null){
+            licenceJudge=licenceJudgeD;
+        }
         if(BACK_ATTR.equals(action)){
             ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, BACK_ATTR);
         }else {
@@ -315,8 +317,63 @@ public class ServiceMenuDelegator {
                 ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, NEXT);
             }
         }
-        List<String> baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED);
+        String  step =(String) bpc.request.getAttribute(VALIDATION_ATTR);
+        if(NEXT.equals(step)){
+            ParamUtil.setSessionAttr(bpc.request,"licenceJudge",licenceJudge);
+            String crud_action_value=bpc.request.getParameter("crud_action_value");
+            String crud_action_additional  =bpc.request.getParameter("crud_action_additional");
+            getDraft(bpc);
+            String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
+            if("continue".equals(crud_action_value)){
+                bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, crud_action_additional);
+                bpc.request.getSession().setAttribute("DraftNumber", null);
+            }else if("resume".equals(crud_action_value)){
+                bpc.request.getSession().setAttribute("DraftNumber", crud_action_additional);
+            }else if(attribute!=null){
+                ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, ERROR_ATTR);
+                return;
+            }
+        }
+
+        ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, step);
+    }
+
+    private void getDraft(BaseProcessClass bpc){
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId;
+        if(loginContext!=null){
+             licenseeId = loginContext.getLicenseeId();
+        }else {
+            licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
+        }
+
+        List<String> licenceList =(List<String>) ParamUtil.getSessionAttr(bpc.request, "licence");
+        List<String> baseServiceIds=IaisCommonUtils.genNewArrayList();
+        if(StringUtil.isEmpty(licenceList)){
+            baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED);
+        }
         List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED);
+        List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(baseServiceIds)){
+            serviceConfigIds.addAll(baseServiceIds);
+        }
+        if(!IaisCommonUtils.isEmpty(specifiedServiceIds)){
+            serviceConfigIds.addAll(specifiedServiceIds);
+        }
+        if(!serviceConfigIds.isEmpty()) {
+            List<HcsaServiceDto> hcsaServiceDtosById = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
+            List<String> serviceCodeList = new ArrayList<>(hcsaServiceDtosById.size());
+            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtosById) {
+                serviceCodeList.add(hcsaServiceDto.getSvcCode());
+            }
+            serviceCodeList.sort(String::compareTo);
+            Map<String, Object> map = new HashMap<>();
+            map.put("serviceCodesList", serviceCodeList);
+            map.put("appType", ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            map.put("licenseeId",licenseeId);
+            String entity = applicationClient.selectDarft(map).getEntity();
+            bpc.request.setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, entity);
+        }
     }
 
     private List<String> BaseIdToName(List<String> baseId){

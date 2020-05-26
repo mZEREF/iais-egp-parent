@@ -870,6 +870,8 @@ public class ConfigServiceImpl implements ConfigService {
                 appeal= getWorkGrop(type,"suspension");
             }else if(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT.equals(type)){
                 appeal= getWorkGrop(type,"revocation");
+            }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(type)){
+                appeal= getWorkGrop(type,"withdrawal");
             }
             setValueOfhcsaConfigPageDtos(hcsaConfigPageDto,appeal);
             map.put(type,appeal);

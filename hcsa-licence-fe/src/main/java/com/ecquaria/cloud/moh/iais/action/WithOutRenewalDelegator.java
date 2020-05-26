@@ -564,9 +564,17 @@ public class WithOutRenewalDelegator {
         String submissionId = generateIdClient.getSeqId().getEntity();
         Long l = System.currentTimeMillis();
         List<AppSubmissionDto> appSubmissionDtos1=new ArrayList<>(rfcAppSubmissionDtos.size());
+
+        String totalStr = Formatter.formatCurrency(total);
+        //do app submit
+        ApplicationGroupDto applicationGroupDto = appSubmissionService.createApplicationDataByWithOutRenewal(renewDto);
+
         if(!rfcAppSubmissionDtos.isEmpty()){
-            appSubmissionDtos1=  requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(rfcAppSubmissionDtos);
-            appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
+            for(AppSubmissionDto appSubmissionDto : rfcAppSubmissionDtos){
+                appSubmissionDto.setAppGrpId(applicationGroupDto.getId());
+                appSubmissionDto.setAppGrpNo(applicationGroupDto.getGroupNo());
+            }
+            appSubmissionListDto.setAppSubmissionDtos(rfcAppSubmissionDtos);
             appSubmissionListDto.setEventRefNo(l.toString());
             eventBusHelper.submitAsyncRequest(appSubmissionListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                     EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT,l.toString(),bpc.process);
@@ -580,9 +588,6 @@ public class WithOutRenewalDelegator {
             appSvcRelatedInfoDtoList.get(0).setGroupNo(appSubmissionDto.getAppGrpNo());
             appSvcRelatedInfoDtos.addAll(appSvcRelatedInfoDtoList);
         }
-        String totalStr = Formatter.formatCurrency(total);
-        //do app submit
-        ApplicationGroupDto applicationGroupDto = appSubmissionService.createApplicationDataByWithOutRenewal(renewDto);
         //set group no.
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
             appSubmissionDto.setAppGrpNo(applicationGroupDto.getGroupNo());
