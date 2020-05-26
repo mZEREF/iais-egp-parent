@@ -146,7 +146,9 @@ public class InspSupAddAvailabilityDelegator {
         } else {
             ParamUtil.setSessionAttr(bpc.request, "curRole", RoleConsts.USER_ROLE_INSPECTIOR);
             OrgUserDto oDto = inspSupAddAvailabilityService.getOrgUserDtoById(loginContext.getUserId());
-            apptNonAvailabilityDateDto.setUserCorrId(loginContext.getUserId());
+            String loginId = oDto.getUserId();
+            String apptUserSysCorrId = inspSupAddAvailabilityService.getApptUserSysCorrIdByLoginId(loginId);
+            apptNonAvailabilityDateDto.setUserCorrId(apptUserSysCorrId);
             ParamUtil.setSessionAttr(bpc.request, "userName", oDto.getDisplayName());
         }
         List<SelectOption> recurrenceOption = inspSupAddAvailabilityService.getRecurrenceOption();
@@ -234,10 +236,6 @@ public class InspSupAddAvailabilityDelegator {
      */
     public void inspSupAddAvailabilityConfirm(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityConfirm start ...."));
-        ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = (ApptNonAvailabilityDateDto) ParamUtil.getSessionAttr(bpc.request, "inspNonAvailabilityDto");
-        String containDate = inspSupAddAvailabilityService.dateIsContainNonWork(apptNonAvailabilityDateDto);
-        ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", apptNonAvailabilityDateDto);
-        ParamUtil.setSessionAttr(bpc.request, "containDate", containDate);
     }
 
     /**

@@ -59,7 +59,6 @@
                           <span style="font-size: 16px">To</span><p></p>
                           <iais:datePicker id = "nonAvaEndDate" name = "nonAvaEndDate" value="${inspNonAvailabilityDto.blockOutEnd}"></iais:datePicker>
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_blockOutStart"></span>
-
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_blockOutEnd"></span>
                         </iais:value>
                       </div>
