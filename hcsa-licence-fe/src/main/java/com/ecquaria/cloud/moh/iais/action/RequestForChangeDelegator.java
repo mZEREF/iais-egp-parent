@@ -85,6 +85,8 @@ public class RequestForChangeDelegator {
         ParamUtil.setSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO,null);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.DODRAFTCONFIG,null);
         ParamUtil.setSessionAttr(bpc.request,"AmendTypeValue", null);
+        ParamUtil.setRequestAttr(bpc.request, "premisesIndexNo", null);
+        ParamUtil.setSessionAttr(bpc.request, "prepareTranfer", null);
         init(bpc,licenceId);
 
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
@@ -278,7 +280,11 @@ public class RequestForChangeDelegator {
         if(!StringUtil.isEmpty(serviceName)){
             appSubmissionDto.setServiceName(serviceName);
         }
-        ParamUtil.setRequestAttr(bpc.request, "prepareTranfer", appSubmissionDto);
+        if(!appSubmissionDto.isGroupLic()){
+            String premisesIndexNo = appSubmissionDto.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
+            ParamUtil.setRequestAttr(bpc.request, "premisesIndexNo", premisesIndexNo);
+        }
+        ParamUtil.setSessionAttr(bpc.request, "prepareTranfer", appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do prepareTranfer end ...."));
     }
@@ -301,9 +307,17 @@ public class RequestForChangeDelegator {
     public void doTransfer(BaseProcessClass bpc)throws CloneNotSupportedException,IOException{
         log.info(StringUtil.changeForLog("The compareChangePercentage start ..."));
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        AppSubmissionDto appSubmissionDto  = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request,"prepareTranfer");
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         String uen = (String) ParamUtil.getSessionAttr(bpc.request, "UEN");
-        String[] selectCheakboxs = (String[]) ParamUtil.getSessionAttr(bpc.request, "premisesInput");
+        String[] selectCheakboxs = null;
+        if(appSubmissionDto.isGroupLic()){
+            selectCheakboxs = ParamUtil.getStrings(bpc.request, "premisesInput");
+        }else {
+            String premisesIndexNo = (String)ParamUtil.getSessionAttr(bpc.request,"premisesIndexNo");
+            selectCheakboxs = new String[]{premisesIndexNo};
+            log.info(StringUtil.changeForLog("The doTransfer premisesIndexNo is -->:"+premisesIndexNo));
+        }
         String email = ParamUtil.getString(mulReq,"email");
         CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("selectedFile");
         if(file ==  null || file.getSize() == 0){
@@ -344,7 +358,7 @@ public class RequestForChangeDelegator {
                     newLicenseeId = licenseeDto.getId();
                 }
                 log.info(StringUtil.changeForLog("The newLicenseeId is -->:"+newLicenseeId));
-                AppSubmissionDto appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
+                 appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                 appSubmissionDto.setLicenseeId(newLicenseeId);
                 appSubmissionDto.setAutoRfc(true);
@@ -445,13 +459,23 @@ public class RequestForChangeDelegator {
      */
     public void doValidate(BaseProcessClass bpc) throws CloneNotSupportedException,IOException {
         log.info(StringUtil.changeForLog("The doValidate start ..."));
+        AppSubmissionDto appSubmissionDto  = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request,"prepareTranfer");
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         String uen = ParamUtil.getString(bpc.request, "UEN");
-        String[] selectCheakboxs = ParamUtil.getStrings(bpc.request, "premisesInput");
+        String[] selectCheakboxs = null;
+        if(appSubmissionDto.isGroupLic()){
+             selectCheakboxs = ParamUtil.getStrings(bpc.request, "premisesInput");
+        }else {
+            String premisesIndexNo = (String)ParamUtil.getSessionAttr(bpc.request,"premisesIndexNo");
+            selectCheakboxs = new String[]{premisesIndexNo};
+            log.info(StringUtil.changeForLog("The doValidate premisesIndexNo is -->:"+premisesIndexNo));
+        }
+
         ParamUtil.setSessionAttr(bpc.request,"UEN",uen);
         ParamUtil.setSessionAttr(bpc.request,"premisesInput",selectCheakboxs);
         log.info(StringUtil.changeForLog("The doValidate licenceId is -->:"+licenceId));
         log.info(StringUtil.changeForLog("The doValidate uen is -->:"+uen));
+
         Map<String,String> error = doValidateEmpty(uen,selectCheakboxs);
         if(error.isEmpty()){
             LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
@@ -617,7 +641,7 @@ public class RequestForChangeDelegator {
     private Map<String,String> doValidateEmpty(String uen,String[] selectCheakboxs){
         Map<String,String> error = IaisCommonUtils.genNewHashMap();
         if(selectCheakboxs == null || selectCheakboxs.length == 0){
-            error.put("premisesError","UC_CHKLMD001_ERR001");
+            error.put("premisesError","Please select at least a premises to transfer");
         }
         if(StringUtil.isEmpty(uen) || uen.length() > 10){
             error.put("uenError","UC_CHKLMD001_ERR001");

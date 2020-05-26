@@ -23,20 +23,22 @@
                                      <iais:field value="Service Name"></iais:field>
                                      <iais:value width="10"><p>${prepareTranfer.serviceName}</p></iais:value>
                                  </iais:row>
-                                 <iais:row>
-                                     <iais:field value="Select Premises"></iais:field>
-                                     <iais:value width="10">
-                                         <p>
-                                         <c:forEach items="${prepareTranfer.appGrpPremisesDtoList}" var="premises">
-                                           <div class="form-check">
-                                             <input class="form-check-input" id="premisesInput" type="checkbox" name="premisesInput" aria-invalid="false" value="${premises.premisesIndexNo}">
-                                             <label class="form-check-label" for="premisesInput"><span class="check-square"></span>${premises.tranferSelect} </label>
-                                           </div>
-                                         </c:forEach>
-                                           <span  class="error-msg" name="iaisErrorMsg" id="error_premisesError"></span>
-                                         </p>
-                                     </iais:value>
-                                 </iais:row>
+                           <c:if test="${prepareTranfer.groupLic}">
+                             <iais:row>
+                               <iais:field value="Select Premises"></iais:field>
+                               <iais:value width="10">
+                                 <p>
+                                 <c:forEach items="${prepareTranfer.appGrpPremisesDtoList}" var="premises">
+                                   <div class="form-check">
+                                     <input class="form-check-input" id="premisesInput" type="checkbox" name="premisesInput" aria-invalid="false" value="${premises.premisesIndexNo}">
+                                     <label class="form-check-label" for="premisesInput"><span class="check-square"></span>${premises.tranferSelect} </label>
+                                   </div>
+                                 </c:forEach>
+                                 <span  class="error-msg" name="iaisErrorMsg" id="error_premisesError"></span>
+                                 </p>
+                               </iais:value>
+                             </iais:row>
+                           </c:if>
                                  <iais:row>
                                      <iais:field value="UEN of Licence to transfer licence to"></iais:field>
                                      <iais:value width="10">

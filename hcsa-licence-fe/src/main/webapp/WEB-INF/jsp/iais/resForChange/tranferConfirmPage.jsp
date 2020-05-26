@@ -24,6 +24,7 @@
             <iais:field value="Service Name"></iais:field>
             <iais:value width="10"><p>${prepareTranfer.serviceName}</p></iais:value>
           </iais:row>
+          <c:if test="${prepareTranfer.groupLic}">
           <iais:row>
             <iais:field value="Select Premises"></iais:field>
             <iais:value width="10">
@@ -38,6 +39,7 @@
               </p>
             </iais:value>
           </iais:row>
+          </c:if>
           <iais:row>
           <iais:field value="UEN of Licence to transfer licence to"></iais:field>
           <iais:value width="10">
