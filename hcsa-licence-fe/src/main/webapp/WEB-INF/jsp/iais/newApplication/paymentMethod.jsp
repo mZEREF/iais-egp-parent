@@ -14,6 +14,10 @@
         <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="Credit">
         <label class="form-check-label" ><span class="check-circle"></span>PayNow</label>
     </div>
+    <div class="col-xs-3">
+        <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="GIRO">
+        <label class="form-check-label" ><span class="check-circle"></span>GIRO</label>
+    </div>
 
 </div>
 <div class="col-xs-12">
@@ -30,6 +34,9 @@
         <img src="<%=webroot1%>img/paymentPayNow.png" width="66" height="25" alt="PayNow">
         <!--<img src="/hcsa-licence-web/iais/newApplication/paymentPayNow.png" width="66" height="25" alt="PayNow"> -->
     </div>
+    <divc class="col-xs-3">
+        <img src="<%=webroot1%>img/payments.png" width="36" height="30" alt="GIRO">
+    </divc>
 </div>
 <div class="col-xs-12">
     <div class="col-xs-3">
@@ -43,9 +50,6 @@
         </c:choose>
     </div>
 </div>
-<%--<input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="GIRO">
-<label class="form-check-label" ><span class="check-circle"></span>GIRO</label>--%>
-<%--<img src="<%=webroot1%>img/payments.png" width="36" height="30" alt="GIRO">--%>
 
 <div class="row">
 <%--    <c:choose>--%>

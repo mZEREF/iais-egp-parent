@@ -643,6 +643,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return appSubmissionDtos;
     }
 
+    @Override
+    public void deleteOverdueDraft(String draftValidity) {
+        applicationClient.deleteOverdueDraft(draftValidity);
+    }
+
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             return appSvcRelatedInfoDtos.get(0);
@@ -697,10 +702,5 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         //is same
         return true;
-    }
-
-    @Override
-    public void deleteOverdueDraft(String draftValidity) {
-        applicationClient.deleteOverdueDraft(draftValidity);
     }
 }
