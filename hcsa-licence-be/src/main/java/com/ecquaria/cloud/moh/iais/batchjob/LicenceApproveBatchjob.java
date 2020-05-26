@@ -558,9 +558,9 @@ public class LicenceApproveBatchjob {
         ApplicationGroupDto applicationGroupDto = applicationLicenceDto.getApplicationGroupDto();
         Integer isPostInspNeeded = isPostInspNeeded(applicationGroupDto);
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is -->:"+isPostInspNeeded));
-        String appType = applicationGroupDto.getAppType();
-        log.debug(StringUtil.changeForLog("The appType is -->:"+appType));
-        licenceGroupDto.setAppType(appType);
+        String appGroupType = applicationGroupDto.getAppType();
+        log.debug(StringUtil.changeForLog("The appGroupType is -->:"+appGroupType));
+        licenceGroupDto.setAppType(appGroupType);
 
         LicenseeDto oldLicenseeDto = getOrganizationIdBylicenseeId(applicationGroupDto.getLicenseeId());
         //get organizationId
@@ -581,39 +581,40 @@ public class LicenceApproveBatchjob {
             for (Map.Entry<String,List<ApplicationListDto>> key : applications.entrySet()){
                 SuperLicDto superLicDto = new SuperLicDto();
                 superLicDto.setAppType(applicationGroupDto.getAppType());
+                log.debug(StringUtil.changeForLog("The key is -->:" + key.getKey()));
                 List<ApplicationListDto> applicationListDtos = applications.get(key.getKey());
                 if(IaisCommonUtils.isEmpty(applicationListDtos)){
                     continue;
                 }
+                List<ApplicationDto> applicationDtos =  getApplicationDtos(applicationListDtos);
+                ApplicationDto firstApplicationDto = applicationDtos.get(0);
                 //to check this applicaiton is approve
                 //get recommedation logic
                 AppPremisesRecommendationDto appPremisesRecommendationDto = getAppPremisesRecommendationDto(applicationListDtos);
                 //get service code
-                log.debug(StringUtil.changeForLog("The key is -->:" + key.getKey()));
-                String serviceId = applicationListDtos.get(0).getApplicationDto().getServiceId();
+                String serviceId = firstApplicationDto.getServiceId();
                 log.debug(StringUtil.changeForLog("The serviceId is -->:" + serviceId));
                 HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(hcsaServiceDtos,serviceId);
                 if(hcsaServiceDto ==  null){
                     errorMessage = "This ServiceId can not get the HcsaServiceDto -->:"+serviceId;
                     break;
                 }
-                List<ApplicationDto> applicationDtos =  getApplicationDtos(applicationListDtos);
-                String originLicenceId = applicationDtos.get(0).getOriginLicenceId();
+                String originLicenceId = firstApplicationDto.getOriginLicenceId();
                 LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
                 superLicDto.setOriginLicenceDto(originLicenceDto);
                 //create licence
                 String licenceNo = null;
-                if(applicationListDtos.get(0).getApplicationDto().isNeedNewLicNo()) {
+                if(firstApplicationDto.isNeedNewLicNo()) {
                     licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(), appPremisesRecommendationDto,originLicenceId,applicationDtos.size());
                 }
                 log.debug(StringUtil.changeForLog("The licenceNo is -->;"+licenceNo));
-                if(StringUtil.isEmpty(licenceNo)&& applicationListDtos.get(0).getApplicationDto().isNeedNewLicNo()){
+                if(StringUtil.isEmpty(licenceNo)&& firstApplicationDto.isNeedNewLicNo()){
                     errorMessage = "The licenceNo is null .-->:" + hcsaServiceDto.getSvcCode() + ":" + applicationListDtos.size() ;
                     break;
                 }
 
                 LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),null,applicationGroupDto,appPremisesRecommendationDto,
-                        originLicenceDto,applicationDtos.get(0),applicationDtos.get(0).getRelLicenceNo(),applicationDtos,true);
+                        originLicenceDto,firstApplicationDto,firstApplicationDto.getRelLicenceNo(),applicationDtos,true);
                 superLicDto.setLicenceDto(licenceDto);
                 //if PostInspNeeded send email
                 if(isPostInspNeeded == Integer.parseInt(AppConsts.YES)){
@@ -625,10 +626,13 @@ public class LicenceApproveBatchjob {
                 List<LicDocumentRelationDto> licDocumentRelationDtos = IaisCommonUtils.genNewArrayList();
                 List<PersonnelsDto> personnelsDtos = IaisCommonUtils.genNewArrayList();
                 for(ApplicationListDto applicationListDto : applicationListDtos){
+                    ApplicationDto applicationDto = applicationListDto.getApplicationDto();
+                    String appType =applicationDto.getApplicationType();
+                    log.debug(StringUtil.changeForLog("The appType is -->:" + appType));
                     //create Premises
                     List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = applicationListDto.getAppGrpPremisesEntityDtos();
                     if(appGrpPremisesEntityDtos == null || appGrpPremisesEntityDtos.size() == 0){
-                        errorMessage = "The AppGrpPremises is null for ApplicationNo" + applicationListDto.getApplicationDto().getApplicationNo();
+                        errorMessage = "The AppGrpPremises is null for ApplicationNo" + applicationDto.getApplicationNo();
                         break;
                     }
                     log.debug(StringUtil.changeForLog("The appGrpPremisesDtos.size() is -->;"+appGrpPremisesEntityDtos.size()));
@@ -650,79 +654,10 @@ public class LicenceApproveBatchjob {
                     if(!IaisCommonUtils.isEmpty(appSvcKeyPersonnelDtos)){
                         List<PersonnelsDto> personnelsDto1s = getPersonnelsDto(appGrpPersonnelDtos,appGrpPersonnelExtDtos,appSvcKeyPersonnelDtos,organizationId);
                         if(personnelsDtos == null){
-                            errorMessage = "There is Error for AppGrpPersonnel -->: "+applicationListDto.getApplicationDto().getApplicationNo();
+                            errorMessage = "There is Error for AppGrpPersonnel -->: "+applicationDto.getApplicationNo();
                             break;
                         }
                         personnelsDtos.addAll(personnelsDto1s);
-                    }
-                    //RFC for premises: Generate partPremises group Licence
-                    ApplicationDto applicationDto = applicationListDto.getApplicationDto();
-                    if(applicationDto != null){
-                        String applicationNo = applicationDto.getApplicationNo();
-                        String loginUrl = "#";
-                        String msgId = "";
-                        Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                        //new application send email
-                        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
-                            String uenNo = oldLicenseeDto.getUenNo();
-                            boolean isNew = false;
-                            if(StringUtil.isEmpty(uenNo)){
-                                //todo set new uenNo
-                                uenNo = "new UEN";
-                                isNew = true;
-                            }
-                            //send email
-                            newApplicationApproveSendEmail(licenceDto,applicationNo,licenceNo,loginUrl,isNew,uenNo);
-                            //send sms
-                            try{
-                                sendSMS(msgId,licenceDto.getLicenseeId(),msgInfoMap);
-                            }catch(IOException | TemplateException e){
-                                log.error(StringUtil.changeForLog("send sms error"));
-                            }
-                        }else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
-                            Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
-                            tempMap.put("LICENCE",licenceNo);
-                            tempMap.put("APP_NO",applicationNo);
-                            String subject = " " + applicationNo + " - Approved ";
-                            sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE,subject,licenceDto.getLicenseeId(),licenceDto.getId());
-                            //send sms
-                            try{
-                                sendSMS(msgId,licenceDto.getLicenseeId(),msgInfoMap);
-                            }catch(IOException | TemplateException e){
-                                log.error(StringUtil.changeForLog("send sms error"));
-                            }
-                        }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
-                            //Send notification to transferor when licence transfer application is approve
-                            Map<String,Object> notifyMap=IaisCommonUtils.genNewHashMap();
-                            LicenseeDto licDto = inspEmailService.getLicenseeDtoById(licenceDto.getLicenseeId());
-                            notifyMap.put("licensee",licDto.getUenNo());
-                            notifyMap.put("licenceList","<p>"+licenceDto.getLicenceNo() + " - " +licenceDto.getSvcName()+"</p>");
-                            notifyMap.put("status","Is Approved.");
-                            //approve
-                            Map<String,Object> approveMap=IaisCommonUtils.genNewHashMap();
-                            approveMap.put("licensee",licDto.getUenNo());
-                            approveMap.put("licenceList","<p>"+licenceDto.getLicenceNo() + " - " +licenceDto.getSvcName());
-
-                            sendApproveEmail(licenceDto,applicationNo,notifyMap,serviceId);
-                            try{
-                                //transfee
-                                sendSMS(msgId,licenceDto.getLicenseeId(),notifyMap);
-                                //transfor
-                                sendSMS(msgId,originLicenceDto.getLicenseeId(),notifyMap);
-                            }catch(IOException | TemplateException e){
-                                log.error(StringUtil.changeForLog("send sms error"));
-                            }
-
-
-                        }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(appType)){
-                            Map<String,Object> notifyMap=IaisCommonUtils.genNewHashMap();
-                            try{
-                                sendSMS(msgId,licenceDto.getLicenseeId(),notifyMap);
-                            }catch(IOException | TemplateException e){
-                                log.error(StringUtil.changeForLog("send sms error"));
-                            }
-
-                        }
                     }
 
                     //create the lic_app_correlation
@@ -759,6 +694,10 @@ public class LicenceApproveBatchjob {
                             log.error(StringUtil.changeForLog("This Appno do not have the OriginLicenceId -- >" +applicationDto.getApplicationNo()));
                         }
                     }
+
+                    if(applicationDto != null){
+                        sendEmailAndSms( applicationDto,licenceDto,oldLicenseeDto,originLicenceDto,serviceId );
+                    }
                 }
 
                 //create LicSvcSpecificPersonnelDto
@@ -772,6 +711,9 @@ public class LicenceApproveBatchjob {
                 superLicDto.setPersonnelsDtos(personnelsDtos);
                 superLicDto.setLicAppCorrelationDtos(licAppCorrelationDtos);
                 superLicDtos.add(superLicDto);
+
+
+
             }
 
             licenceGroupDto.setSuperLicDtos(superLicDtos);
@@ -829,70 +771,7 @@ public class LicenceApproveBatchjob {
         String subject = " " + applicationNo + " is Approved ";
         sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_ID,subject,licenceDto.getLicenseeId(),licenceDto.getId());
     }
-    private void sendSMS(String msgId,String licenseeId,Map<String, Object> msgInfoMap) throws IOException, TemplateException {
-        //MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
-        //String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
-        String templateMessageByContent = "send sms";
-        SmsDto smsDto = new SmsDto();
-        smsDto.setContent(templateMessageByContent);
-        smsDto.setSender(AppConsts.MOH_AGENCY_NAME);
-        smsDto.setOnlyOfficeHour(true);
-        String refNo = inboxMsgService.getMessageNo();
-        emailClient.sendSMS(IaisEGPHelper.getLicenseeMobiles(licenseeId),smsDto,refNo);
-    }
-    //send email helper
-    private void sendEmailHelper(Map<String ,Object> tempMap,String msgTemplateId,String subject,String licenseeId,String clientQueryCode){
-        MsgTemplateDto msgTemplateDto = licenceService.getMsgTemplateById(msgTemplateId);
-        if(tempMap == null || tempMap.isEmpty() || msgTemplateDto == null
-                || StringUtil.isEmpty(msgTemplateId)
-                || StringUtil.isEmpty(subject)
-                || StringUtil.isEmpty(licenseeId)
-                || StringUtil.isEmpty(clientQueryCode)){
-            return;
-        }
-        String mesContext = null;
-        try {
-            mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
-        } catch (IOException | TemplateException e) {
-            log.error(e.getMessage(),e);
-        }
-        EmailDto emailDto = new EmailDto();
-        emailDto.setContent(mesContext);
-        emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + subject);
-        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-        emailDto.setClientQueryCode(clientQueryCode);
-        //send
-        licenceService.sendEmail(emailDto);
-    }
 
-    //send email
-    private void sendEmailInspection(LicenceDto licenceDto){
-        if(licenceDto != null){
-            String serviceName = licenceDto.getSvcName();
-            MsgTemplateDto msgTemplateDto = licenceService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_POST_INSPECTION_IS_IDENTIFIED_ID);
-            if(msgTemplateDto != null){
-                Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
-                tempMap.put("userName",StringUtil.viewHtml(serviceName));
-                tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                String mesContext = null;
-                try {
-                    mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
-                } catch (IOException | TemplateException e) {
-                    log.error(e.getMessage(),e);
-                }
-                EmailDto emailDto = new EmailDto();
-                emailDto.setContent(mesContext);
-                emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + serviceName);
-                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()));
-                emailDto.setClientQueryCode(licenceDto.getId());
-                //send
-                licenceService.sendEmail(emailDto);
-            }
-        }
-
-    }
 
     private LicenceDto deleteOriginLicenceDto(String organizationId){
         LicenceDto result = null;
@@ -923,9 +802,9 @@ public class LicenceApproveBatchjob {
         ApplicationGroupDto applicationGroupDto = applicationLicenceDto.getApplicationGroupDto();
         Integer isPostInspNeeded = isPostInspNeeded(applicationGroupDto);
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is -->:"+isPostInspNeeded));
-        String appType = applicationGroupDto.getAppType();
-        log.debug(StringUtil.changeForLog("The appType is -->:"+appType));
-        licenceGroupDto.setAppType(appType);
+        String appGroupType = applicationGroupDto.getAppType();
+        log.debug(StringUtil.changeForLog("The appGroupType is -->:"+appGroupType));
+        licenceGroupDto.setAppType(appGroupType);
         LicenseeDto oldLicenseeDto = getOrganizationIdBylicenseeId(applicationGroupDto.getLicenseeId());
         //get organizationId
         String organizationId = oldLicenseeDto.getOrganizationId();
@@ -947,7 +826,9 @@ public class LicenceApproveBatchjob {
                     errorMessage = "There is a ApplicationDto is null";
                     break;
                 }
-                superLicDto.setAppType(applicationDto.getApplicationType());
+                String appType = applicationDto.getApplicationType();
+                log.debug(StringUtil.changeForLog("The appType is -->:"+appType));
+                superLicDto.setAppType(appType);
                 //to check this applicaiton is approve
                 AppPremisesRecommendationDto appPremisesRecommendationDto = applicationListDto.getAppPremisesRecommendationDto();
                 String serviceId = applicationDto.getServiceId();
@@ -1000,67 +881,6 @@ public class LicenceApproveBatchjob {
                         originLicenceDto,applicationDto,applicationDto.getRelLicenceNo(),null,false);
                 superLicDto.setLicenceDto(licenceDto);
 
-                //if PostInspNeeded send email
-                if(isPostInspNeeded == Integer.parseInt(AppConsts.YES)){
-                    sendEmailInspection(licenceDto);
-                }
-
-                String applicationNo = applicationDto.getApplicationNo();
-                String loginUrl = "#";
-                String msgId = "";
-                Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                //new application send email
-                if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())){
-                    String uenNo = oldLicenseeDto.getUenNo();
-                    boolean isNew = false;
-                    if(StringUtil.isEmpty(uenNo)){
-                        //todo set new uenNo
-                        uenNo = "new UEN";
-                        isNew = true;
-                    }
-                    //send email
-                    newApplicationApproveSendEmail(licenceDto,applicationNo,licenceNo,loginUrl,isNew,uenNo);
-                    //send sms
-                    try{
-                        sendSMS(msgId,licenceDto.getLicenseeId(),msgInfoMap);
-                    }catch(IOException | TemplateException e){
-                        log.error(StringUtil.changeForLog("send sms error"));
-                    }
-                }else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
-                    Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
-                    tempMap.put("LICENCE",licenceNo);
-                    tempMap.put("APP_NO",applicationNo);
-                    String subject = " " + applicationNo + " - Approved ";
-                    sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE,subject,licenceDto.getLicenseeId(),licenceDto.getId());
-                    //send sms
-                    try{
-                        sendSMS(msgId,licenceDto.getLicenseeId(),msgInfoMap);
-                    }catch(IOException | TemplateException e){
-                        log.error(StringUtil.changeForLog("send sms error"));
-                    }
-                }else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
-                    //Send notification to transferor when licence transfer application is approve
-                    Map<String, Object> notifyMap = IaisCommonUtils.genNewHashMap();
-                    LicenseeDto licDto = inspEmailService.getLicenseeDtoById(licenceDto.getLicenseeId());
-                    notifyMap.put("licensee", licDto.getUenNo());
-                    notifyMap.put("licenceList", "<p>" + licenceDto.getLicenceNo() + " - " + licenceDto.getSvcName() + "</p>");
-                    notifyMap.put("status", "Is Approved.");
-                    //approve
-                    Map<String, Object> approveMap = IaisCommonUtils.genNewHashMap();
-                    approveMap.put("licensee", licDto.getUenNo());
-                    approveMap.put("licenceList", "<p>" + licenceDto.getLicenceNo() + " - " + licenceDto.getSvcName());
-
-                    sendApproveEmail(licenceDto, applicationNo, notifyMap, serviceId);
-                    try{
-                        //transfee
-                        sendSMS(msgId, licenceDto.getLicenseeId(), notifyMap);
-                        //transfor
-                        sendSMS(msgId, originLicenceDto.getLicenseeId(), notifyMap);
-                    }catch(IOException | TemplateException e){
-                        log.error(StringUtil.changeForLog("send sms error"));
-                    }
-                }
-
                     //create the lic_app_correlation
                 List<LicAppCorrelationDto> licAppCorrelationDtos = IaisCommonUtils.genNewArrayList();
                 LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
@@ -1099,6 +919,12 @@ public class LicenceApproveBatchjob {
                 superLicDto.setLicSvcSpecificPersonnelDtos(licSvcSpecificPersonnelDtos);
 
                 superLicDtos.add(superLicDto);
+
+                //if PostInspNeeded send email
+                if(isPostInspNeeded == Integer.parseInt(AppConsts.YES)){
+                    sendEmailInspection(licenceDto);
+                }
+                sendEmailAndSms( applicationDto,licenceDto,oldLicenseeDto,originLicenceDto,serviceId );
             }
             licenceGroupDto.setSuperLicDtos(superLicDtos);
             if(StringUtil.isEmpty(errorMessage)){
@@ -1112,6 +938,7 @@ public class LicenceApproveBatchjob {
         log.debug(StringUtil.changeForLog("The generateLIcence is end ..."));
         return result;
     }
+
 
     private boolean isApplicaitonReject(AppPremisesRecommendationDto appPremisesRecommendationDto){
         boolean result = false;
@@ -1685,6 +1512,140 @@ public class LicenceApproveBatchjob {
             }
         }
         return  result;
+    }
+
+    private void sendSMS(String msgId,String licenseeId,Map<String, Object> msgInfoMap) throws IOException, TemplateException {
+        //MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
+        //String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
+        String templateMessageByContent = "send sms";
+        SmsDto smsDto = new SmsDto();
+        smsDto.setContent(templateMessageByContent);
+        smsDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        smsDto.setOnlyOfficeHour(true);
+        String refNo = inboxMsgService.getMessageNo();
+        emailClient.sendSMS(IaisEGPHelper.getLicenseeMobiles(licenseeId),smsDto,refNo);
+    }
+    //send email helper
+    private void sendEmailHelper(Map<String ,Object> tempMap,String msgTemplateId,String subject,String licenseeId,String clientQueryCode){
+        MsgTemplateDto msgTemplateDto = licenceService.getMsgTemplateById(msgTemplateId);
+        if(tempMap == null || tempMap.isEmpty() || msgTemplateDto == null
+                || StringUtil.isEmpty(msgTemplateId)
+                || StringUtil.isEmpty(subject)
+                || StringUtil.isEmpty(licenseeId)
+                || StringUtil.isEmpty(clientQueryCode)){
+            return;
+        }
+        String mesContext = null;
+        try {
+            mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+        } catch (IOException | TemplateException e) {
+            log.error(e.getMessage(),e);
+        }
+        EmailDto emailDto = new EmailDto();
+        emailDto.setContent(mesContext);
+        emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + subject);
+        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+        emailDto.setClientQueryCode(clientQueryCode);
+        //send
+        licenceService.sendEmail(emailDto);
+    }
+
+    //send email
+    private void sendEmailInspection(LicenceDto licenceDto){
+        if(licenceDto != null){
+            String serviceName = licenceDto.getSvcName();
+            MsgTemplateDto msgTemplateDto = licenceService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_POST_INSPECTION_IS_IDENTIFIED_ID);
+            if(msgTemplateDto != null){
+                Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
+                tempMap.put("userName",StringUtil.viewHtml(serviceName));
+                tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+                String mesContext = null;
+                try {
+                    mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+                } catch (IOException | TemplateException e) {
+                    log.error(e.getMessage(),e);
+                }
+                EmailDto emailDto = new EmailDto();
+                emailDto.setContent(mesContext);
+                emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + serviceName);
+                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()));
+                emailDto.setClientQueryCode(licenceDto.getId());
+                //send
+                licenceService.sendEmail(emailDto);
+            }
+        }
+
+    }
+
+    private void sendEmailAndSms(ApplicationDto applicationDto,LicenceDto licenceDto,
+                                 LicenseeDto oldLicenseeDto,LicenceDto originLicenceDto,String serviceId ){
+        log.info(StringUtil.changeForLog("The sendEmailAndSms start ..."));
+        String applicationNo = applicationDto.getApplicationNo();
+        String loginUrl = "#";
+        String msgId = "";
+        Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+        //new application send email
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())){
+            String uenNo = oldLicenseeDto.getUenNo();
+            boolean isNew = false;
+            if(StringUtil.isEmpty(uenNo)){
+                //todo set new uenNo
+                uenNo = "new UEN";
+                isNew = true;
+            }
+            //send email
+            newApplicationApproveSendEmail(licenceDto,applicationNo,licenceDto.getLicenceNo(),loginUrl,isNew,uenNo);
+            //send sms
+            try{
+                sendSMS(msgId,licenceDto.getLicenseeId(),msgInfoMap);
+            }catch(IOException | TemplateException e){
+                log.error(StringUtil.changeForLog("send sms error"));
+            }
+        }else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
+            Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
+            tempMap.put("LICENCE",licenceDto.getLicenceNo());
+            tempMap.put("APP_NO",applicationNo);
+            String subject = " " + applicationNo + " - Approved ";
+            sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE,subject,licenceDto.getLicenseeId(),licenceDto.getId());
+            //send sms
+            try{
+                sendSMS(msgId,licenceDto.getLicenseeId(),msgInfoMap);
+            }catch(IOException | TemplateException e){
+                log.error(StringUtil.changeForLog("send sms error"));
+            }
+        }else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
+            //Send notification to transferor when licence transfer application is approve
+            Map<String, Object> notifyMap = IaisCommonUtils.genNewHashMap();
+            LicenseeDto licDto = inspEmailService.getLicenseeDtoById(licenceDto.getLicenseeId());
+            notifyMap.put("licensee", licDto.getUenNo());
+            notifyMap.put("licenceList", "<p>" + licenceDto.getLicenceNo() + " - " + licenceDto.getSvcName() + "</p>");
+            notifyMap.put("status", "Is Approved.");
+            //approve
+            Map<String, Object> approveMap = IaisCommonUtils.genNewHashMap();
+            approveMap.put("licensee", licDto.getUenNo());
+            approveMap.put("licenceList", "<p>" + licenceDto.getLicenceNo() + " - " + licenceDto.getSvcName());
+
+            sendApproveEmail(licenceDto, applicationNo, notifyMap, serviceId);
+            try{
+                //transfee
+                sendSMS(msgId, licenceDto.getLicenseeId(), notifyMap);
+                //transfor
+                sendSMS(msgId, originLicenceDto.getLicenseeId(), notifyMap);
+            }catch(IOException | TemplateException e){
+                log.error(StringUtil.changeForLog("send sms error"));
+            }
+        }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())){
+            Map<String,Object> notifyMap=IaisCommonUtils.genNewHashMap();
+            try{
+                sendSMS(msgId,licenceDto.getLicenseeId(),notifyMap);
+            }catch(IOException | TemplateException e){
+                log.error(StringUtil.changeForLog("send sms error"));
+            }
+
+        }
+        log.info(StringUtil.changeForLog("The sendEmailAndSms end ..."));
     }
 
     @Setter
