@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserSystemCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -72,4 +73,16 @@ public interface AppointmentClient {
 
     @PutMapping(value = "/iais-appointment/user-calendar/status",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> updateUserCalendarStatus(@RequestBody ApptCalendarStatusDto apptCalDto);
+
+    @GetMapping(value = "/iais-appointment/appt-calendar/{sysUserCorrId}/{status}")
+    FeignResponseEntity<List<ApptUserCalendarDto>> getCalenderBySysUserCorrIdAndStatus(@PathVariable("sysUserCorrId") String sysUserCorrId, @PathVariable("status") String status);
+
+    @PutMapping(value = "/iais-appointment/appt-u-calendar",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApptUserCalendarDto>> updateApptUserCalendarDtoList(@RequestBody List<ApptUserCalendarDto> apptUserCalendarDtos);
+
+    @PostMapping(value = "/iais-appointment/appt-c-calendar",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApptUserCalendarDto>> createApptUserCalendarDtoList(@RequestBody List<ApptUserCalendarDto> apptUserCalendarDtos);
+
+    @GetMapping(value = "/iais-appointment/appt-sys-corr/{srcSysId}/{userLoginId}")
+    FeignResponseEntity<List<ApptUserSystemCorrelationDto>> getApptUserSystemCorrelationDtos(@PathVariable("srcSysId") String srcSysId, @PathVariable("userLoginId") String userLoginId);
 }
