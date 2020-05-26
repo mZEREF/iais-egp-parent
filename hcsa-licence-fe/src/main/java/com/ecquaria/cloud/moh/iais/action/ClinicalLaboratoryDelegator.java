@@ -780,7 +780,7 @@ public class ClinicalLaboratoryDelegator {
                 for(AppSvcPrincipalOfficersDto officersDto:oldOfficersDtoList){
                     if(!isGetDataFromPagePo && ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(officersDto.getPsnType())){
                         appSvcPrincipalOfficersDtoList.add(officersDto);
-                    }else if(!isGetDataFromPageDpo && ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(officersDto.getPsnType())){
+                    }else if(!isGetDataFromPageDpo && ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(officersDto.getPsnType())){
                         appSvcPrincipalOfficersDtoList.add(officersDto);
                     }
                 }
