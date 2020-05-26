@@ -38,13 +38,10 @@
                         <c:if test="${count=='3'||count=='2'}">
                             <h4>
                                 <span>
-                                    Search By Application
-                                    <b class="form-check">&nbsp;
-                                        <input class="form-check-input licenceCheck" id="applicationChk" type="radio"
+                                    Search By Application&nbsp;
+                                    <b >&nbsp;
+                                        <input  id="applicationChk" type="radio"
                                                checked name="searchChk" disabled value="2"/>
-                                                <label class="form-check-label" for="applicationChk">
-                                                    <span class="check-square"></span>
-                                                </label>
                                     </b>
                                 </span>
                             </h4>
@@ -198,13 +195,10 @@
                         </c:if>
                         <c:if test="${count=='1'}">
                             <h4>
-                            <span>Search By HCI
-                                <strong class="form-check">&nbsp;
-                                    <input class="form-check-input licenceCheck" id="hciChk" type="radio"
+                            <span>Search By HCI&nbsp;
+                                <strong >&nbsp;
+                                    <input  id="hciChk" type="radio"
                                            checked name="searchChk" disabled value="1"/>
-                                            <label class="form-check-label" for="hciChk">
-                                            <span class="check-square"></span>
-                                        </label>
                                 </strong>
                             </span>
                             </h4>
@@ -262,14 +256,10 @@
                         </c:if>
                         <c:if test="${count=='4'}">
                             <h4>
-                            <span>Search By Licensee
-                                <strong class="form-check">&nbsp;
-                                    <input class="form-check-input licenceCheck" id="licenseeChk" type="radio"
+                            <span>Search By Licensee&nbsp;
+                                <strong >&nbsp;
+                                    <input  id="licenseeChk" type="radio"
                                            checked name="searchChk" disabled value="4"/>
-                                            <label class="form-check-label" for="licenseeChk">
-                                                <span
-                                                        class="check-square"></span>
-                                            </label>
                                 </strong>
                             </span>
                             </h4>
@@ -315,13 +305,10 @@
                         </c:if>
                         <c:if test="${count=='5'}">
                             <h4>
-                            <span>Search By Service Personnel Details (CGO, PO, DPO & MedAlert)
-                                <strong class="form-check">&nbsp;
-                                    <input class="form-check-input licenceCheck" id="servicePersonnelChk"
+                            <span>Search By Service Personnel Details (CGO, PO, DPO & MedAlert)&nbsp;
+                                <strong >&nbsp;
+                                    <input  id="servicePersonnelChk"
                                            type="radio" checked name="searchChk" disabled value="5"/>
-                                            <label class="form-check-label" for="servicePersonnelChk">
-                                            <span class="check-square"></span>
-                                        </label>
                                 </strong>
                             </span>
                             </h4>
@@ -453,9 +440,6 @@
                                                 <c:if test="${pool.licenceStatus!='Lapsed'&&pool.licenceStatus!='Ceased'&&pool.licenceStatus!='Expired'}">
                                                     <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
                                                             name="appIds" value="${pool.appId}|${pool.isCessation}|${pool.licenceId}|${pool.licenceStatus}"   >
-                                                    <label class="form-check-label" for="licence${status.index + 1}"><span
-                                                            class="check-square"></span>
-                                                    </label>
                                                 </c:if>
                                             </td>
                                             <td class="row_no">

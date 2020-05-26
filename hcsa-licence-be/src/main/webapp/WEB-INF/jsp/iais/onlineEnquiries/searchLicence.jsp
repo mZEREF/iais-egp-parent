@@ -25,12 +25,9 @@
                     <h4>
                         <span >
                             Search By Application
-                            <b class="form-check">&nbsp;
-                                <input class="form-check-input licenceCheck" id="applicationChk" type="radio"
+                            <b >&nbsp;
+                                <input  id="applicationChk" type="radio"
                                        <c:if test="${count=='3'||count=='2'}">checked</c:if>   value="2"   name="searchChk"  />
-                                        <label class="form-check-label" for="applicationChk">
-                                        <span class="check-square"></span>
-                                    </label>
                             </b>
                         </span>
                     </h4>
@@ -164,12 +161,9 @@
                     <c:if test="${count=='1'}">
                     <h4>
                         <span >Search By HCI
-                            <strong class="form-check">&nbsp;
-                                <input class="form-check-input licenceCheck" id="hciChk" type="radio"
+                            <strong >&nbsp;
+                                <input  id="hciChk" type="radio"
                                        name="searchChk" <c:if test="${count=='1'}">checked</c:if>   value="1"  />
-                                        <label class="form-check-label" for="hciChk">
-                                        <span class="check-square"></span>
-                                    </label>
                             </strong>
                         </span>
                     </h4>
@@ -219,11 +213,8 @@
                     <c:if test="${count=='4'}">
                     <h4>
                         <span >Search By Licensee
-                            <strong class="form-check">&nbsp;
-                                <input class="form-check-input licenceCheck" id="licenseeChk" type="radio" <c:if test="${count=='4'}">checked</c:if>   value="4"   name="searchChk"  />
-                                    <label class="form-check-label" for="licenseeChk">
-                                        <span class="check-square"></span>
-                                    </label>
+                            <strong >&nbsp;
+                                <input  id="licenseeChk" type="radio" <c:if test="${count=='4'}">checked</c:if>   value="4"   name="searchChk"  />
                             </strong>
                         </span>
                     </h4>
@@ -264,11 +255,8 @@
                     <c:if test="${count=='5'}">
                     <h4>
                         <span>Search By Service Personnel Details (CGO, PO, DPO & MedAlert)
-                            <strong class="form-check">&nbsp;
-                                <input class="form-check-input licenceCheck" id="servicePersonnelChk" type="radio" <c:if test="${count=='5'}">checked</c:if>   value="5"  name="searchChk"  />
-                                <label class="form-check-label" for="servicePersonnelChk">
-                                    <span class="check-square"></span>
-                                </label>
+                            <strong >&nbsp;
+                                <input  id="servicePersonnelChk" type="radio" <c:if test="${count=='5'}">checked</c:if>   value="5"  name="searchChk"  />
                             </strong>
                         </span>
                     </h4>

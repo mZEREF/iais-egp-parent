@@ -768,7 +768,7 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setStreetName(rfiApplicationQueryDto.getStreetName());
         reqForInfoSearchListDto.setFloorNo(rfiApplicationQueryDto.getFloorNo());
         List<String> addressList = IaisCommonUtils.genNewArrayList();
-        addressList.add(MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),""));
+        addressList.add(MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode()));
         reqForInfoSearchListDto.setAddress(addressList);
 
         try{

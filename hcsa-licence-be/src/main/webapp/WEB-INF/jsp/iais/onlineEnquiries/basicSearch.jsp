@@ -46,39 +46,24 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:value width="18" cssClass="form-check">
-                                                <input class="form-check-input licenceCheck" id="hciChk" type="radio"
-                                                       name="searchChk" value="1" <c:if test="${count=='1'}">checked</c:if> >
-                                                <label class="form-check-label" for="hciChk">
-                                                    <span class="check-square"></span>
-                                                </label> HCI Name
+                                            <iais:value width="18" >
+                                                <input  id="hciChk" type="radio"
+                                                       name="searchChk" value="1" <c:if test="${count=='1'}">checked</c:if> />&nbsp;HCI Name
                                             </iais:value>
                                             <iais:value width="18" cssClass="form-check">
-                                                <input class="form-check-input licenceCheck" id="applicationChk" type="radio"
-                                                       <c:if test="${count=='2'}">checked</c:if>      name="searchChk" value="2" >
-                                                <label class="form-check-label" for="applicationChk">
-                                                    <span class="check-square"></span>
-                                                </label> Application No
+                                                <input  id="applicationChk" type="radio"
+                                                       <c:if test="${count=='2'}">checked</c:if>      name="searchChk" value="2" />&nbsp;Application No
                                             </iais:value>
                                             <iais:value width="18" cssClass="form-check">
-                                                <input class="form-check-input licenceCheck" id="licenceChk" type="radio" <c:if test="${count=='3'}">checked</c:if>   value="3"       name="searchChk"  >
-                                                <label class="form-check-label" for="licenceChk"><span
-                                                        class="check-square"></span>
-                                                </label> Licence No
+                                                <input  id="licenceChk" type="radio" <c:if test="${count=='3'}">checked</c:if>  value="3"   name="searchChk"  />&nbsp;Licence No
                                             </iais:value>
                                             <iais:value width="18" cssClass="form-check">
-                                                <input class="form-check-input licenceCheck" id="licenseeChk" type="radio"
-                                                       <c:if test="${count=='4'}">checked</c:if>     value="4"    name="searchChk"  >
-                                                <label class="form-check-label" for="licenseeChk"><span
-                                                        class="check-square"></span>
-                                                </label> Licensee Name
+                                                <input  id="licenseeChk" type="radio"
+                                                       <c:if test="${count=='4'}">checked</c:if>     value="4"    name="searchChk"  />&nbsp;Licensee Name
                                             </iais:value>
                                             <iais:value width="18" cssClass="form-check">
-                                                <input class="form-check-input licenceCheck" id="servicePersonnelChk" type="radio"
-                                                       value="5"   <c:if test="${count=='5'}">checked</c:if>   name="searchChk"  >
-                                                <label class="form-check-label" for="servicePersonnelChk"><span
-                                                        class="check-square"></span>
-                                                </label> Service Personnel Name
+                                                <input  id="servicePersonnelChk" type="radio"
+                                                       value="5"   <c:if test="${count=='5'}">checked</c:if>   name="searchChk"  />&nbsp;Service Personnel Name
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:right;">
