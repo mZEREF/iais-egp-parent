@@ -143,8 +143,8 @@ public class LicenceApproveBatchjob {
                     Map<String,ApplicationLicenceDto> applicationLicenceDtoMap = sepaApplication(applicationLicenceDto);
                     ApplicationLicenceDto generalApplicationLicenceDto = applicationLicenceDtoMap.get(GENERALLICENCE);
                     ApplicationLicenceDto groupApplicationLicenceDto = applicationLicenceDtoMap.get(GROUPLICENCE);
-                    LicenceApproveBatchjobTest.GenerateResult generalGenerateResult =null;
-                    LicenceApproveBatchjobTest.GenerateResult groupGenerateResult =null;
+                    GenerateResult generalGenerateResult =null;
+                    GenerateResult groupGenerateResult =null;
                     try{
                         if(groupApplicationLicenceDto != null){
                             //generate the Group licence
@@ -303,7 +303,7 @@ public class LicenceApproveBatchjob {
         return  result;
     }
 
-    private void toDoResult(List<LicenceGroupDto> licenceGroupDtos, LicenceApproveBatchjobTest.GenerateResult generalResult, LicenceApproveBatchjobTest.GenerateResult groupResult,
+    private void toDoResult(List<LicenceGroupDto> licenceGroupDtos, GenerateResult generalResult, GenerateResult groupResult,
                             List<ApplicationGroupDto> success,
                             List<Map<String,String>> fail, ApplicationGroupDto applicationGroupDto){
         log.info(StringUtil.changeForLog("The toDoResult is start ..."));
@@ -350,7 +350,7 @@ public class LicenceApproveBatchjob {
 
     }
 
-    private void toDoResult(List<LicenceGroupDto> licenceGroupDtos, LicenceApproveBatchjobTest.GenerateResult generateResult, List<ApplicationGroupDto> success,
+    private void toDoResult(List<LicenceGroupDto> licenceGroupDtos, GenerateResult generateResult, List<ApplicationGroupDto> success,
                             List<Map<String,String>> fail, ApplicationGroupDto applicationGroupDto){
         if(generateResult!=null){
             boolean isSuccess = generateResult.isSuccess();
@@ -546,9 +546,9 @@ public class LicenceApproveBatchjob {
         }
         return result;
     }
-    private LicenceApproveBatchjobTest.GenerateResult generateGroupLicence(ApplicationLicenceDto applicationLicenceDto, List<HcsaServiceDto> hcsaServiceDtos){
+    private GenerateResult generateGroupLicence(ApplicationLicenceDto applicationLicenceDto, List<HcsaServiceDto> hcsaServiceDtos){
         log.debug(StringUtil.changeForLog("The generateGroupLicence is start ..."));
-        LicenceApproveBatchjobTest.GenerateResult result = new LicenceApproveBatchjobTest.GenerateResult();
+        GenerateResult result = new GenerateResult();
         LicenceGroupDto licenceGroupDto = new LicenceGroupDto();
         List<ApplicationListDto> applicationListDtoList = applicationLicenceDto.getApplicationListDtoList();
         ApplicationGroupDto applicationGroupDto = applicationLicenceDto.getApplicationGroupDto();
@@ -852,9 +852,9 @@ public class LicenceApproveBatchjob {
         return  result;
     }
 
-    private LicenceApproveBatchjobTest.GenerateResult generateLIcence(ApplicationLicenceDto applicationLicenceDto, List<HcsaServiceDto> hcsaServiceDtos){
+    private GenerateResult generateLIcence(ApplicationLicenceDto applicationLicenceDto, List<HcsaServiceDto> hcsaServiceDtos){
         log.debug(StringUtil.changeForLog("The generateLIcence is start ..."));
-        LicenceApproveBatchjobTest.GenerateResult result = new LicenceApproveBatchjobTest.GenerateResult();
+        GenerateResult result = new GenerateResult();
         LicenceGroupDto licenceGroupDto = new LicenceGroupDto();
         List<ApplicationListDto> applicationListDtoList = applicationLicenceDto.getApplicationListDtoList();
         ApplicationGroupDto applicationGroupDto = applicationLicenceDto.getApplicationGroupDto();
