@@ -698,4 +698,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         //is same
         return true;
     }
+
+    @Override
+    public void deleteOverdueDraft(String draftValidity) {
+        applicationClient.deleteOverdueDraft(draftValidity);
+    }
 }

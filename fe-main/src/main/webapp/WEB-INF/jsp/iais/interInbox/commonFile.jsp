@@ -50,9 +50,11 @@
             submit('appDoReload');
         }
         if ("Delete" == action) {
-            showWaiting();
+            //showWaiting();
             $("[name='action_no_value']").val(appNo);
-            submit('appDoDelete');
+            $('#deleteDraftModal').modal('show');
+
+            // submit('appDoDelete');
         }
     });
 

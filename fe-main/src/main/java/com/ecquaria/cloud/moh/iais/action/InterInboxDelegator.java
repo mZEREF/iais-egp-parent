@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
@@ -542,6 +543,8 @@ public class InterInboxDelegator {
             ParamUtil.setRequestAttr(request,InboxConst.APP_RESULT, appResult);
         }
         setNumInfoToRequest(request,interInboxUserDto);
+        String delDraftConfMsg = MessageUtil.getMessageDesc("NEW_ACK002");
+        ParamUtil.setRequestAttr(bpc.request,"delDraftConfMsg",delDraftConfMsg);
     }
 
     public void appSwitch(BaseProcessClass bpc){
@@ -704,7 +707,11 @@ public class InterInboxDelegator {
         log.debug(StringUtil.changeForLog("Step ---> appDoDelete start..."));
         String draft = ParamUtil.getString(bpc.request,InboxConst.ACTION_NO_VALUE);
         if(!StringUtil.isEmpty(draft)){
+            log.debug(StringUtil.changeForLog("draft no. is not null"));
             inboxService.updateDraftStatus(draft,AppConsts.COMMON_STATUS_DELETED);
+            String delDraftAckMsg = MessageUtil.getMessageDesc("NEW_ACK003");
+            ParamUtil.setRequestAttr(bpc.request,"needDelDraftMsg",AppConsts.YES);
+            ParamUtil.setRequestAttr(bpc.request,"delDraftAckMsg",delDraftAckMsg);
         }
         log.debug(StringUtil.changeForLog("Step ---> appDoDelete end..."));
     }

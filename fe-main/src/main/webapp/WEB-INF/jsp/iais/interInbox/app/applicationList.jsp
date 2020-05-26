@@ -187,6 +187,33 @@
                     </div>
                 </div>
             </div>
+            <iais:confirm msg="${delDraftConfMsg}" needFungDuoJi="false" popupOrder="deleteDraftModal" callBack="delDraftCancelBtn()" title=" " cancelFunc="delDraftYesBtn()" cancelBtnDesc="OK" yesBtnDesc="Cancel" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"  />
+            <iais:confirm msg="${delDraftAckMsg}" needFungDuoJi="false" popupOrder="deleteDraftMessage"  title=" " callBack="delDraftMsgYesBtn()"  needCancel="false" />
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('#deleteDraftModal').modal('hide');
+        $('#deleteDraftMessage').modal('hide');
+        if('1' == '${needDelDraftMsg}'){
+            $('#deleteDraftMessage').modal('show');
+        }
+    });
+
+    function delDraftYesBtn() {
+        $('#deleteDraftModal').modal('hide');
+        submit('appDoDelete');
+    }
+
+    function delDraftCancelBtn() {
+        $('#deleteDraftModal').modal('hide');
+    }
+
+    function delDraftMsgYesBtn() {
+        $('#deleteDraftMessage').modal('hide');
+    }
+
+
+</script>

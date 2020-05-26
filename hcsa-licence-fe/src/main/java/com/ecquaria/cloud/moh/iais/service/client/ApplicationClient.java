@@ -27,12 +27,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -275,4 +271,7 @@ public interface ApplicationClient  {
 
     @PutMapping(value = "/iais-application",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> updateApplicationDto(@RequestBody ApplicationDto applicationDto);
+    @PutMapping(value = "/iais-submission/delete-app-overdue-draft",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> deleteOverdueDraft(@RequestBody String draftValidity);
+
 }

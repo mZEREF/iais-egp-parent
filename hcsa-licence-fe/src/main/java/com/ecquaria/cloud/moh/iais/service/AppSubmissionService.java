@@ -48,4 +48,5 @@ public interface AppSubmissionService {
     void setDraftNo(AppSubmissionDto appSubmissionDto);
     void  saveAppGrpMisc(AppGroupMiscDto appGroupMiscDto);
     List<AppSubmissionDto> getAppSubmissionDtoByGroupNo(String groupNo);
+    void deleteOverdueDraft(String draftValidity);
 }
