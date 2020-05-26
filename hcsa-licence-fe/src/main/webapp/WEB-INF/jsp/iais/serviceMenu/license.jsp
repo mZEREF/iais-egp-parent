@@ -45,8 +45,10 @@
                 <div class="col-xs-12 col-md-4">
                     <div class="self-assessment-checkbox-gp gradient-light-grey">
                         <div class="form-check-gp">
-                            <input type="radio" name="licenceJudge" value="1">
-                            <label class="form-check-label">Existing ${baseName} licences</label>
+                            <div class="form-check">
+                                <input style="position: absolute;" type="radio" name="licenceJudge" value="1">
+                                <label class="form-check-label" style="padding-left: 0px;margin-left: 30px">Existing ${baseName} licences</label>
+                            </div>
                             <c:forEach var="item" items="${licence.getRows()}">
                                 <div class="form-check">
                                     <input class="form-check-input"
@@ -57,8 +59,10 @@
 
                                 </div>
                             </c:forEach>
-                            <input type="radio" name="licenceJudge" value="0">
-                            <label class="form-check-label">${baseName} at a different premises</label>
+                            <div class="form-check">
+                                <input style="position: absolute;" type="radio" name="licenceJudge" value="0">
+                                <label class="form-check-label" style="padding-left: 0px;margin-left: 30px">${baseName} at a different premises</label>
+                            </div>
                         </div>
                     </div>
                 </div>

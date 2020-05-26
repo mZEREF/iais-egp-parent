@@ -74,6 +74,7 @@ public class MassEmailDelegator {
         SearchResult<DistributionListDto> searchResult = distributionListService.distributionList(searchParam);
         setServiceSelect(bpc);
         searchRole(bpc);
+        setModeSelection(bpc);
         ParamUtil.setRequestAttr(bpc.request,"distributionSearchResult",searchResult);
         ParamUtil.setRequestAttr(bpc.request,"distributionSearchParam",searchParam);
     }
@@ -164,6 +165,7 @@ public class MassEmailDelegator {
         String distributionName = ParamUtil.getRequestString(bpc.request,"distributionName");
         String role = ParamUtil.getString(bpc.request, "role");
         String service = ParamUtil.getString(bpc.request, "service");
+        String mode = ParamUtil.getRequestString(bpc.request,"modeDelivery");
         searchParam.getParams().clear();
         searchParam.getFilters().clear();
         searchParam.setPageNo(1);
@@ -185,11 +187,16 @@ public class MassEmailDelegator {
         }else{
             service = null;
         }
+        if(!StringUtil.isEmpty(mode)){
+            searchParam.addFilter("mode",  mode,true);
+        }
         setServiceSelect(bpc);
+        setModeSelection(bpc);
         setSearchparam(bpc,searchParam);
         ParamUtil.setRequestAttr(bpc.request,"distributionName",distributionName);
         ParamUtil.setRequestAttr(bpc.request,"role",role);
         ParamUtil.setRequestAttr(bpc.request,"service",service);
+        ParamUtil.setRequestAttr(bpc.request,"modeDelivery",mode);
     }
 
     /**

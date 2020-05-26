@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
+import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -97,6 +98,8 @@ public class AppealServiceImpl implements AppealService {
     private ServiceConfigService serviceConfigService;
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
+    @Autowired
+    private RequestForChangeService requestForChangeService;
     @Override
     public List<String> reasonAppeal(String applicationNoOrLicenceNo) {
         ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion(applicationNoOrLicenceNo).getEntity();
@@ -655,6 +658,7 @@ public class AppealServiceImpl implements AppealService {
         //todo send email
         try {
             sendEmail(request);
+            sendAdminEmail(request);
         } catch (IOException e) {
            log.error(e.getMessage(),e);
         } catch (TemplateException e) {
@@ -758,6 +762,7 @@ public class AppealServiceImpl implements AppealService {
         request.setAttribute("newApplicationNo",s);
         try {
             sendEmail(request);
+            sendAdminEmail(request);
         } catch (IOException e) {
           log.error(e.getMessage(),e);
         } catch (TemplateException e) {
@@ -925,6 +930,33 @@ public class AppealServiceImpl implements AppealService {
         }
         //need address form login
     }
+
+    private void sendAdminEmail(HttpServletRequest request) throws IOException, TemplateException {
+        List<String> email = adminEmail(request);
+        String newApplicationNo =(String) request.getAttribute("newApplicationNo");
+        EmailDto emailDto=new EmailDto();
+        emailDto.setContent("Send notification to Admin Officer when appeal application is submitted.");
+        emailDto.setSubject(" MOH IAIS –Submission of Appeal - "+newApplicationNo);
+        emailDto.setSender("Ministry of Health");
+        emailDto.setClientQueryCode(newApplicationNo);
+        emailDto.setReceipts(email);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        try {
+            feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+    }
+
+    private List<String> adminEmail(HttpServletRequest request){
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String orgId = loginContext.getOrgId();
+        List<String> email = requestForChangeService.getAdminEmail(orgId);
+        return email;
+    }
+
 
 
     private boolean isMaxCGOnumber(ApplicationDto applicationDto){

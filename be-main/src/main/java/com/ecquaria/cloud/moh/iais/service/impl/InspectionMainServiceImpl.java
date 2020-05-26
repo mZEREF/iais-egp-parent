@@ -103,6 +103,7 @@ public class InspectionMainServiceImpl implements InspectionMainService {
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
             ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING,
     };
 
     private static final String[] DEFAULT_STATUS = new String[]{

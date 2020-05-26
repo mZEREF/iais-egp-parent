@@ -52,7 +52,12 @@
                                     </div>
                                 </iais:value>
                             </div>
-
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-4 control-label">Mode of Delivery</label>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <iais:select id="modeDelivery" name="modeDelivery" options="mode" value="${modeDelivery}" firstOption="Please Select" ></iais:select>
+                                </div>
+                            </div>
                         </div>
                         <div class="application-tab-footer">
                             <div class="row">
@@ -199,6 +204,7 @@ function clearSearch(){
     $('input[name="distributionName"]').val("");
     $("#role option:first").prop("selected", 'selected');
     $("#service option:first").prop("selected", 'selected');
+    $("#modeDelivery option:first").prop("selected", 'selected');
     $("#searchCondition .current").text("Please Select");
 }
 

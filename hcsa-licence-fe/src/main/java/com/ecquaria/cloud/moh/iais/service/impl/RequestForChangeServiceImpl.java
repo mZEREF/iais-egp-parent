@@ -9,7 +9,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -18,6 +27,8 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
@@ -29,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +68,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     private MsgTemplateClient msgTemplateClient;
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
+    @Autowired
+    private FeEmailClient feEmailClient;
+    @Autowired
+    private FeMessageClient feMessageClient;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -325,6 +341,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
+    public String sendNotification(EmailDto email){
+        return feEmailClient.sendNotification(email).getEntity();
+    }
+
+
+    @Override
     public List<LicKeyPersonnelDto> getLicKeyPersonnelDtoByPerId(List<String> personIds) {
         List<LicKeyPersonnelDto> entity = licenceClient.getLicBypersonId(personIds).getEntity();
         return entity;
@@ -351,6 +373,30 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         List<AppSubmissionDto> entity = applicationClient.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos).getEntity();
 
         return entity;
+    }
+
+    @Override
+    public void sendMessageHelper(String subject, String messageType, String srcSystemId,String serviceId, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams){
+        InterMessageDto interMessageDto = new InterMessageDto();
+        interMessageDto.setSrcSystemId(srcSystemId);
+        interMessageDto.setSubject(subject);
+        interMessageDto.setMessageType(messageType);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        String refNo = feEicGatewayClient.getMessageNo(signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
+        interMessageDto.setRefNo(refNo);
+        interMessageDto.setService_id(serviceId);
+        interMessageDto.setUserId(licenseeId);
+        interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        interMessageDto.setMsgContent(templateMessageByContent);
+        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        feMessageClient.createInboxMessage(interMessageDto);
+    }
+
+    @Override
+    public List<String> getAdminEmail(String orgId){
+        return organizationLienceseeClient.getAdminEmailAdd(orgId).getEntity();
     }
 
 }

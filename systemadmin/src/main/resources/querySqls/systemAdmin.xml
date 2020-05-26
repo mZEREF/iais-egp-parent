@@ -378,6 +378,7 @@
             <#if description??> AND DISTRIBUTION_NAME like :description</#if>
             <#if recipients??> AND RECIPIENTS_ROLE like :recipients</#if>
             <#if service??> AND SERVICE_CODE =:service</#if>
+            <#if mode??> AND T1.DELIVERY_MODE = :mode</#if>
         ]]>
     </sql>
 

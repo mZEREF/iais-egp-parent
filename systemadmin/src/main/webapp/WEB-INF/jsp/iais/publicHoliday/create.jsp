@@ -21,13 +21,11 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" >Holiday Description</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <textarea id="Description" type="text" name="Description" style="width: 100%;height: 150px"></textarea>
-                                    <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
-                            </iais:value>
+                            <label class="col-xs-12 col-md-4 control-label" >Year</label>
+                            <div class="col-md-4">
+                                <iais:select name="year" options="yearOption" cssClass="yearOption"
+                                             value="${param.year}"></iais:select>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -38,12 +36,13 @@
                                 </div>
                         </div>
 
+
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">To Date</label>
+                            <label class="col-xs-12 col-md-4 control-label" >Holiday Description</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:datePicker id="to_date" name="to_date"/>
-                                    <span id="error_to_date" name="iaisErrorMsg" class="error-msg"></span>
+                                    <textarea id="Description" type="text" name="Description" style="width: 100%;height: 150px"></textarea>
+                                    <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>

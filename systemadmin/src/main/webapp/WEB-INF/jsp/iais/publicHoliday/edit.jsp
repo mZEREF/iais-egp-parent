@@ -21,29 +21,26 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label" >Year</label>
+                            <div class="col-md-4">
+                                <iais:select id="year" name="year" options="yearOption" cssClass="yearOption"
+                                             value="${param.year}"></iais:select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label" >From Date</label>
+                            <div class="col-xs-8 col-sm-6 col-md-5" id="fromdatediv">
+                                <iais:datePicker id="sub_date"  name="sub_date" dateVal="${holiday.fromDate}"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" >Holiday Description</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <textarea id="description" type="text" name="description"  style="width: 100%;height: 150px">${holiday.description}</textarea>
                                     <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
-                            </iais:value>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" >From Date</label>
-                            <div class="col-xs-8 col-sm-6 col-md-5">
-                                <iais:datePicker id="sub_date" name="sub_date" dateVal="${holiday.fromDate}"/>
-                                <span id="error_sub_date" name="iaisErrorMsg" class="error-msg"></span>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">To Date</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:datePicker id="to_date" name="to_date" dateVal="${holiday.toDate}"/>
-                                    <span id="error_to_date" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
@@ -81,5 +78,14 @@
     $('#editholiday').click(function(){
         SOP.Crud.cfxSubmit("mainForm");
     });
+
+    $("#year").change(function () {
+        var date =  $("#sub_date").val();
+        console.log(date)
+        var time = date.substring(0,6);
+        time = time + $(this).val();
+        $("#sub_date").val(time)
+        // $("#fromdatediv").html("<input type=\"text\" autocomplete=\"off\" class=\"date_picker form-control\" name=\"sub_date\" id=\"sub_date\" data-date-start-date=\"01/01/1900\" value=\""+time+"\" placeholder=\"dd/mm/yyyy\" maxlength=\"10\"><span id=\"error_sub_date\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>")
+    })
 
 </script>

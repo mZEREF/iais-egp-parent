@@ -5,7 +5,9 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
@@ -23,12 +25,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
@@ -37,6 +41,8 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.sz.commons.util.FileUtil;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -360,6 +366,8 @@ public class RequestForChangeDelegator {
                 log.info(StringUtil.changeForLog("The newLicenseeId is -->:"+newLicenseeId));
                  appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                String transfor = appSubmissionDto.getLicenseeId();
+                String transfee = newLicenseeId;
                 appSubmissionDto.setLicenseeId(newLicenseeId);
                 appSubmissionDto.setAutoRfc(true);
                 FeeDto feeDto = getTransferFee();
@@ -374,6 +382,7 @@ public class RequestForChangeDelegator {
                         for (AppGrpPremisesDto appGrpPremisesDto: appSubmissionDto.getAppGrpPremisesDtoList()) {
                             appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
                             appGrpPremisesDto.setGroupLicenceFlag("1");
+
                         }
                     } else {
                         // appSubmissionDto.setIsNeedNewLicNo("1");
@@ -432,6 +441,20 @@ public class RequestForChangeDelegator {
                         appSubmissionDto.setAppGroupMiscDtos(appGroupMiscDtoList);
                     }
                     AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
+                    //Send notification to transferor when licence transfer application is submitted.
+                    List<String> emailTransfor = IaisEGPHelper.getLicenseeEmailAddrs(transfor);
+                    List<String> emailTransfee = IaisEGPHelper.getLicenseeEmailAddrs(transfee);
+                    Map<String,Object> notifyMap = IaisCommonUtils.genNewHashMap();
+                    notifyMap.put("licensee",licenseeDto.getName());
+                    notifyMap.put("licence",licenceDto.getLicenceNo() + " " + licenceDto.getSvcName());
+                    MsgTemplateDto templateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_TRANSFER_APPLICATION);
+
+                    sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),emailTransfor,notifyMap,templateDto.getTemplateName());
+                    // Send notification to transferee when licence transfer application is submitted.
+                    sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),emailTransfee,notifyMap,templateDto.getTemplateName());
+                    //RFC Application - Send notification to admin officers when amendment application is submitted.
+                    List<String> adminEmailList = adminEmail(bpc);
+                    sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),adminEmailList,notifyMap,templateDto.getTemplateName());
                     ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
                     StringBuilder url = new StringBuilder();
                     url.append("https://").append(bpc.request.getServerName())
@@ -509,6 +532,13 @@ public class RequestForChangeDelegator {
         ParamUtil.setRequestAttr(bpc.request, "tranferPayment", appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do submitPayment end ...."));
 
+    }
+
+    private List<String> adminEmail(BaseProcessClass bpc){
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String orgId = loginContext.getOrgId();
+        List<String> email = requestForChangeService.getAdminEmail(orgId);
+        return email;
     }
 
     private boolean iftranfer(String UNID,String licenceId,String pageType){
@@ -671,5 +701,23 @@ public class RequestForChangeDelegator {
             }
         }
         return error;
+    }
+
+    private void sendEmail(String appId, String templateHtml, List<String> emailAddr, Map<String,Object> map, String subject){
+        EmailDto email = new EmailDto();
+        String mesContext = null;
+        try {
+            mesContext = MsgUtil.getTemplateMessageByContent(templateHtml, map);
+        } catch (IOException | TemplateException e) {
+            log.error(e.getMessage(), e);
+        }
+
+        email.setReqRefNum(appId);
+        email.setSubject(subject);
+        email.setContent(mesContext);
+        email.setSender(AppConsts.MOH_AGENCY_NAME);
+        email.setClientQueryCode(appId);
+        email.setReceipts(emailAddr);
+        requestForChangeService.sendNotification(email);
     }
 }

@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
@@ -61,6 +62,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
+import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
@@ -75,6 +77,15 @@ import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -84,14 +95,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * HcsaApplicationDelegator
@@ -146,6 +149,9 @@ public class HcsaApplicationDelegator {
 
     @Autowired
     FileRepoClient fileRepoClient;
+
+    @Autowired
+    LicenceService licenceService;
 
     /**
      * StartStep: doStart
@@ -846,6 +852,28 @@ public class HcsaApplicationDelegator {
             }
             //send sms
             sendSMS(msgId,licenseeId,msgInfoMap);
+        }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+            //send email Appeal - Send SMS to licensee when appeal application is approved
+            Map<String,Object> notifyMap=IaisCommonUtils.genNewHashMap();
+            sendSMS(msgId,licenseeId,notifyMap);
+        }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+            //Send notification to transferor when licence transfer application is rejected
+            LicenceDto result = null;
+            String originLicenceId = applicationViewDto.getApplicationDto().getOriginLicenceId();
+            if(!StringUtil.isEmpty(originLicenceId)) {
+                result = licenceService.getLicenceDto(originLicenceId);
+            }
+            Map<String,Object> notifyMap=IaisCommonUtils.genNewHashMap();
+            //RFC Application - Send notification to transferor when licence transfer application is rejected
+            Map<String,Object> rejectMap=IaisCommonUtils.genNewHashMap();
+            rejectMap.put("applicationId",applicationNo);
+            sendRFCRejectEmail(licenseeId,applicationViewDto.getApplicationDto().getServiceId());
+            //RFC Application - Send SMS to transferee when licence transfer application is rejected
+            sendSMS(msgId,licenseeId,notifyMap);
+            //RFC Application - Send SMS to transferor when licence transfer application is rejected
+            sendSMS(msgId,result.getLicenseeId(),notifyMap);
+            //send sms
+            sendSMS(msgId,licenseeId,msgInfoMap);
         }
 
         try {
@@ -1499,6 +1527,40 @@ public class HcsaApplicationDelegator {
         }
 
     }
+
+    private void sendRFCRejectEmail(String licenseeId,String serviceId){
+        String subject = "reassign reject";
+        String mesContext = "reassign email";
+        EmailDto emailDto = new EmailDto();
+        emailDto.setContent(mesContext);
+        emailDto.setSubject(subject);
+        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+        emailDto.setClientQueryCode(licenseeId);
+        //send email
+        emailClient.sendNotification(emailDto).getEntity();
+        HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+        //send message
+        sendMessage(subject,licenseeId,mesContext,maskParams,serviceId);
+    }
+
+
+    private void sendMessage(String subject, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams, String serviceId){
+        InterMessageDto interMessageDto = new InterMessageDto();
+        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+        interMessageDto.setSubject(subject);
+        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
+        String refNo = inboxMsgService.getMessageNo();
+        interMessageDto.setRefNo(refNo);
+        interMessageDto.setService_id(serviceId);
+        interMessageDto.setUserId(licenseeId);
+        interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        interMessageDto.setMsgContent(templateMessageByContent);
+        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        interMessageDto.setMaskParams(maskParams);
+        inboxMsgService.saveInterMessage(interMessageDto);
+    }
+
 
     private  void  sendAppealReject(String licenseeId, ApplicationDto applicationDto) throws IOException, TemplateException {
 

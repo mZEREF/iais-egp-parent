@@ -27,6 +27,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +79,7 @@ public class PublicHolidayDelegate {
         ParamUtil.setRequestAttr(bpc.request,"HolidaySearchResult",HolidaySearchResult);
         ParamUtil.setRequestAttr(bpc.request,"holidaySearchParam",holidaySearchParam);
         statusOption(bpc);
-        yearOption(bpc);
+        yearOption(bpc,false);
 
     }
 
@@ -100,6 +101,7 @@ public class PublicHolidayDelegate {
         PublicHolidayDto publicHolidayDto = publicHolidayService.getHolidayById(holidayId);
         ParamUtil.setRequestAttr(bpc.request,"holiday",publicHolidayDto);
         statusOption(bpc);
+        yearOption(bpc,true);
     }
 
     /**
@@ -111,8 +113,18 @@ public class PublicHolidayDelegate {
         publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         publicHolidayDto.setDescription(ParamUtil.getRequestString(bpc.request,"description"));
         publicHolidayDto.setId(ParamUtil.getRequestString(bpc.request,"holidayId"));
-        publicHolidayDto.setFromDate(Formatter.parseDate(ParamUtil.getString(bpc.request, "sub_date")));
-        publicHolidayDto.setToDate(Formatter.parseDate(ParamUtil.getString(bpc.request, "to_date")));
+
+        Date fromDate = Formatter.parseDate(ParamUtil.getString(bpc.request, "sub_date"));
+        publicHolidayDto.setFromDate(fromDate);
+
+        Date todate= new  Date();
+        Calendar   calendar = Calendar.getInstance();
+        calendar.setTime(fromDate);
+        calendar.add(Calendar.DAY_OF_MONTH,1);
+        todate=calendar.getTime();
+
+        publicHolidayDto.setToDate(todate);
+
         publicHolidayDto.setStatus(ParamUtil.getString(bpc.request, "status"));
         PublicHolidayDto resDto = publicHolidayService.updateHoliday(publicHolidayDto);
         if(resDto != null){
@@ -134,7 +146,9 @@ public class PublicHolidayDelegate {
      * @param bpc
      */
     public void doCreate(BaseProcessClass bpc){
+
         statusOption(bpc);
+        yearOption(bpc,true);
     }
 
     /**
@@ -186,8 +200,16 @@ public class PublicHolidayDelegate {
     public void doCreateValidation(BaseProcessClass bpc) throws ParseException {
         PublicHolidayDto publicHolidayDto = new PublicHolidayDto();
         publicHolidayDto.setDescription(ParamUtil.getRequestString(bpc.request,"Description"));
-        publicHolidayDto.setFromDate(Formatter.parseDate(ParamUtil.getString(bpc.request, "sub_date")));
-        publicHolidayDto.setToDate(Formatter.parseDate(ParamUtil.getString(bpc.request, "to_date")));
+        Date fromDate = Formatter.parseDate(ParamUtil.getString(bpc.request, "sub_date"));
+        publicHolidayDto.setFromDate(fromDate);
+
+        Date todate= new  Date();
+        Calendar   calendar = Calendar.getInstance();
+        calendar.setTime(fromDate);
+        calendar.add(Calendar.DAY_OF_MONTH,1);
+        todate=calendar.getTime();
+
+        publicHolidayDto.setToDate(todate);
         publicHolidayDto.setStatus(ParamUtil.getString(bpc.request, "status"));
 
         ValidationResult validationResult = WebValidationHelper.validateEntity(publicHolidayDto);
@@ -204,11 +226,17 @@ public class PublicHolidayDelegate {
     }
 
 
-    private void yearOption(BaseProcessClass bpc){
+    private void yearOption(BaseProcessClass bpc,boolean isBig){
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
+        int count = cal.get(Calendar.YEAR);
         List<SelectOption> selectOptionList = IaisCommonUtils.genNewArrayList();
-        for (int count = year;count > year - 5;count --) {
+        if(isBig){
+            count = count + 5;
+        }else{
+            year = year - 5;
+        }
+        for (;count >= year;count --) {
             selectOptionList.add(new SelectOption(Integer.toString(count), Integer.toString(count)));
         }
         ParamUtil.setRequestAttr(bpc.request,"yearOption",selectOptionList);
@@ -222,4 +250,5 @@ public class PublicHolidayDelegate {
         List<SelectOption> selectOptions =  MasterCodeUtil.retrieveOptionsByCodes(status);
         ParamUtil.setRequestAttr(bpc.request,"statusOption",selectOptions);
     }
+
 }
