@@ -489,7 +489,10 @@ public class RequestForChangeMenuDelegator {
                                 licPsnTypeDto.setPsnTypes(psnTypes);
                                 map.put(licNo, licPsnTypeDto);
                             } else {
-                                licPsnTypeDto.getPsnTypes().add(psnType);
+                                List<String> psnTypes = licPsnTypeDto.getPsnTypes();
+                                if(!psnTypes.contains(psnType)){
+                                    psnTypes.add(psnType);
+                                }
                             }
                             personnelListDto.setLicenceIds(licIds);
                             personnelListDto.setLicPsnTypeDtoMaps(map);

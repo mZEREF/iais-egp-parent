@@ -276,7 +276,7 @@
     <iais:field value="Specialty " width="12" mandatory="true"/>
     <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
         <iais:select cssClass="specialty" name="specialty1" firstOption="Please Select" options="SpecialtySelectList"
-                     value="${onePersonnel.speciality}"></iais:select>
+                     value="${newPerson.speciality}"></iais:select>
     </iais:value>
 </iais:row>
     <iais:row>
@@ -284,7 +284,7 @@
                     mandatory="false"/>
         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
             <iais:input maxLength="100" type="text" name="qualification1"
-                        value="${currentCgo.subSpeciality}"></iais:input>
+                        value="${newPerson.subSpeciality}"></iais:input>
         </iais:value>
     </iais:row>
     <iais:row>
