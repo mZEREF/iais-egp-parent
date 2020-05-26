@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -49,10 +50,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SuperLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -687,6 +691,37 @@ public class LicenceApproveBatchjob {
                             }catch(IOException | TemplateException e){
                                 log.error(StringUtil.changeForLog("send sms error"));
                             }
+                        }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+                            //Send notification to transferor when licence transfer application is approve
+                            Map<String,Object> notifyMap=IaisCommonUtils.genNewHashMap();
+                            LicenseeDto licDto = inspEmailService.getLicenseeDtoById(licenceDto.getLicenseeId());
+                            notifyMap.put("licensee",licDto.getUenNo());
+                            notifyMap.put("licenceList","<p>"+licenceDto.getLicenceNo() + " - " +licenceDto.getSvcName()+"</p>");
+                            notifyMap.put("status","Is Approved.");
+                            //approve
+                            Map<String,Object> approveMap=IaisCommonUtils.genNewHashMap();
+                            approveMap.put("licensee",licDto.getUenNo());
+                            approveMap.put("licenceList","<p>"+licenceDto.getLicenceNo() + " - " +licenceDto.getSvcName());
+
+                            sendApproveEmail(licenceDto,applicationNo,notifyMap,serviceId);
+                            try{
+                                //transfee
+                                sendSMS(msgId,licenceDto.getLicenseeId(),notifyMap);
+                                //transfor
+                                sendSMS(msgId,originLicenceDto.getLicenseeId(),notifyMap);
+                            }catch(IOException | TemplateException e){
+                                log.error(StringUtil.changeForLog("send sms error"));
+                            }
+
+
+                        }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(appType)){
+                            Map<String,Object> notifyMap=IaisCommonUtils.genNewHashMap();
+                            try{
+                                sendSMS(msgId,licenceDto.getLicenseeId(),notifyMap);
+                            }catch(IOException | TemplateException e){
+                                log.error(StringUtil.changeForLog("send sms error"));
+                            }
+
                         }
                     }
 
@@ -750,6 +785,34 @@ public class LicenceApproveBatchjob {
         }
         log.debug(StringUtil.changeForLog("The generateGroupLicence is end ..."));
         return result;
+    }
+
+    private void sendApproveEmail(LicenceDto licenceDto,String applicationNo,Map<String,Object> map,String serviceId){
+        String MAILMPLATEID_APPROVE = "19CAC7AB-E798-EA11-BE82-000C29F371DC";
+        InspectionEmailTemplateDto rejectTemplateDto = inspEmailService.loadingEmailTemplate(MAILMPLATEID_APPROVE);
+        EmailDto email = new EmailDto();
+        String mesContext = null;
+        try {
+            mesContext= MsgUtil.getTemplateMessageByContent(rejectTemplateDto.getMessageContent(),map);
+        } catch (IOException | TemplateException e) {
+            log.error(e.getMessage(),e);
+        }
+
+        email.setReqRefNum(applicationNo);
+        email.setSubject(rejectTemplateDto.getSubject());
+        email.setContent(mesContext);
+        email.setSender(AppConsts.MOH_AGENCY_NAME);
+        email.setClientQueryCode(applicationNo);
+        email.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()));
+        licenceService.sendEmail(email);
+
+        String messageNo = inboxMsgService.getMessageNo();
+        InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
+                messageNo,serviceId,mesContext, licenceDto.getLicenseeId(),IaisEGPHelper.getCurrentAuditTrailDto());
+        HashMap<String,String> mapParam = IaisCommonUtils.genNewHashMap();
+        mapParam.put("appNo",applicationNo);
+        interMessageDto.setMaskParams(mapParam);
+        inboxMsgService.saveInterMessage(interMessageDto);
     }
 
     private void newApplicationApproveSendEmail(LicenceDto licenceDto,String applicationNo,String licenceNo,String loginUrl,boolean isNew,String uenNo){
@@ -975,9 +1038,30 @@ public class LicenceApproveBatchjob {
                     }catch(IOException | TemplateException e){
                         log.error(StringUtil.changeForLog("send sms error"));
                     }
+                }else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+                    //Send notification to transferor when licence transfer application is approve
+                    Map<String, Object> notifyMap = IaisCommonUtils.genNewHashMap();
+                    LicenseeDto licDto = inspEmailService.getLicenseeDtoById(licenceDto.getLicenseeId());
+                    notifyMap.put("licensee", licDto.getUenNo());
+                    notifyMap.put("licenceList", "<p>" + licenceDto.getLicenceNo() + " - " + licenceDto.getSvcName() + "</p>");
+                    notifyMap.put("status", "Is Approved.");
+                    //approve
+                    Map<String, Object> approveMap = IaisCommonUtils.genNewHashMap();
+                    approveMap.put("licensee", licDto.getUenNo());
+                    approveMap.put("licenceList", "<p>" + licenceDto.getLicenceNo() + " - " + licenceDto.getSvcName());
+
+                    sendApproveEmail(licenceDto, applicationNo, notifyMap, serviceId);
+                    try{
+                        //transfee
+                        sendSMS(msgId, licenceDto.getLicenseeId(), notifyMap);
+                        //transfor
+                        sendSMS(msgId, originLicenceDto.getLicenseeId(), notifyMap);
+                    }catch(IOException | TemplateException e){
+                        log.error(StringUtil.changeForLog("send sms error"));
+                    }
                 }
 
-                //create the lic_app_correlation
+                    //create the lic_app_correlation
                 List<LicAppCorrelationDto> licAppCorrelationDtos = IaisCommonUtils.genNewArrayList();
                 LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
                 licAppCorrelationDto.setApplicationId(applicationDto.getId());
