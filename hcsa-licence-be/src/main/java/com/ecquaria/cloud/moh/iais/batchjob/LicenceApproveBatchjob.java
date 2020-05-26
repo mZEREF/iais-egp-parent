@@ -550,7 +550,7 @@ public class LicenceApproveBatchjob {
         }
         return result;
     }
-    private GenerateResult generateGroupLicence(ApplicationLicenceDto applicationLicenceDto, List<HcsaServiceDto> hcsaServiceDtos){
+    public GenerateResult generateGroupLicence(ApplicationLicenceDto applicationLicenceDto, List<HcsaServiceDto> hcsaServiceDtos){
         log.debug(StringUtil.changeForLog("The generateGroupLicence is start ..."));
         GenerateResult result = new GenerateResult();
         LicenceGroupDto licenceGroupDto = new LicenceGroupDto();
@@ -941,14 +941,13 @@ public class LicenceApproveBatchjob {
             String errorMessage = null;
             for(ApplicationListDto applicationListDto : applicationListDtoList){
                 SuperLicDto superLicDto = new SuperLicDto();
-                superLicDto.setAppType(applicationGroupDto.getAppType());
                 //get service code
                 ApplicationDto applicationDto = applicationListDto.getApplicationDto();
                 if(applicationDto == null){
                     errorMessage = "There is a ApplicationDto is null";
                     break;
                 }
-
+                superLicDto.setAppType(applicationDto.getApplicationType());
                 //to check this applicaiton is approve
                 AppPremisesRecommendationDto appPremisesRecommendationDto = applicationListDto.getAppPremisesRecommendationDto();
                 String serviceId = applicationDto.getServiceId();
@@ -1000,6 +999,7 @@ public class LicenceApproveBatchjob {
                 LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),hcsaServiceDto.getSvcType(),applicationGroupDto,appPremisesRecommendationDto,
                         originLicenceDto,applicationDto,applicationDto.getRelLicenceNo(),null,false);
                 superLicDto.setLicenceDto(licenceDto);
+
                 //if PostInspNeeded send email
                 if(isPostInspNeeded == Integer.parseInt(AppConsts.YES)){
                     sendEmailInspection(licenceDto);
@@ -1010,7 +1010,7 @@ public class LicenceApproveBatchjob {
                 String msgId = "";
                 Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                 //new application send email
-                if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+                if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())){
                     String uenNo = oldLicenseeDto.getUenNo();
                     boolean isNew = false;
                     if(StringUtil.isEmpty(uenNo)){
@@ -1026,7 +1026,7 @@ public class LicenceApproveBatchjob {
                     }catch(IOException | TemplateException e){
                         log.error(StringUtil.changeForLog("send sms error"));
                     }
-                }else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                }else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
                     Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
                     tempMap.put("LICENCE",licenceNo);
                     tempMap.put("APP_NO",applicationNo);
