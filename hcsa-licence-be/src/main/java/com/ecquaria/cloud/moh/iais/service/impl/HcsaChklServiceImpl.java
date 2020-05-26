@@ -17,15 +17,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -39,11 +38,6 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
     @Override
     public Boolean deleteRecord(String configId) {
-        int count = fillUpCheckListGetAppClient.countByChkLstConfId(configId).getEntity();
-        if (count > 0){
-            return Boolean.FALSE;
-        }
-
         chklClient.inActiveConfig(configId);
         return Boolean.TRUE;
     }
@@ -57,6 +51,11 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     @SearchTrack(catalog = "hcsaconfig",key = "listChklItem")
     public SearchResult<CheckItemQueryDto> listChklItem(SearchParam searchParam) {
         return chklClient.listChklItem(searchParam).getEntity();
+    }
+
+    @Override
+    public Map<String, Boolean> configUsageStatus(List<String> configId) {
+        return fillUpCheckListGetAppClient.configUsageStatus(configId).getEntity();
     }
 
     @Override

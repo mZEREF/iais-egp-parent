@@ -113,14 +113,6 @@ public class AppConfigClientFallback implements AppConfigClient{
     }
 
     @Override
-    public FeignResponseEntity<String> getSelfDeclConfigIdBySvcCode(String svcCode) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
     public FeignResponseEntity<String> getCommonConfigIdForSelfDecl() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

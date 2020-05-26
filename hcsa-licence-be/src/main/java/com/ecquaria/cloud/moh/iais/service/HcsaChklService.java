@@ -18,12 +18,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface HcsaChklService {
 
     Boolean deleteRecord(String configId);
     Boolean inActiveItem(String itemId);
+    Map<String, Boolean> configUsageStatus(List<String> configId);
 
     /**
      * list checklist item by SearchParam
