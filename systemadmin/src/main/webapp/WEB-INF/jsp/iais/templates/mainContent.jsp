@@ -24,7 +24,7 @@
                                 <iais:sortableHeader needSort="true" field="delivery_mode" value="CC Recipients" style="width:8%;"/>
                                 <iais:sortableHeader needSort="true" field="effective_from" value="Effective Start Date" style="width:10%;"/>
                                 <iais:sortableHeader needSort="true" field="effective_to" value="Effective End Date" style="width:10%;"/>
-                                <th>Action</th>
+                                <th style="width:7%;">Action</th>
                             </tr>
                             </thead>
                             <tbody>
