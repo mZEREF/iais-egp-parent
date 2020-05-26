@@ -37,16 +37,16 @@
                     <div id="searchCondition" class="collapse">
                         <c:if test="${count=='3'||count=='2'}">
                             <h4>
-                        <span>
-                            Search By Application
-                            <b class="form-check">&nbsp;
-                                <input class="form-check-input licenceCheck" id="applicationChk" type="radio"
-                                       checked name="searchChk" disabled value="2"/>
-                                        <label class="form-check-label" for="applicationChk">
-                                            <span class="check-square"></span>
-                                        </label>
-                            </b>
-                        </span>
+                                <span>
+                                    Search By Application
+                                    <b class="form-check">&nbsp;
+                                        <input class="form-check-input licenceCheck" id="applicationChk" type="radio"
+                                               checked name="searchChk" disabled value="2"/>
+                                                <label class="form-check-label" for="applicationChk">
+                                                    <span class="check-square"></span>
+                                                </label>
+                                    </b>
+                                </span>
                             </h4>
 
                             <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel"
@@ -332,7 +332,7 @@
                                     <div class="panel-main-content">
                                         <iais:section title="" id="supPoolList">
                                             <iais:row>
-                                                <iais:field value="Service Personnal ID:"/>
+                                                <iais:field value="Service Personnel ID:"/>
                                                 <div class="col-sm-7 col-md-4 col-xs-10">
                                                     <label>
                                                         <input type="text" maxlength="10"

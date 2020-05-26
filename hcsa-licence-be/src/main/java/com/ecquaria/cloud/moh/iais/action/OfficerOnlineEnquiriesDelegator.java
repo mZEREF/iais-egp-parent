@@ -178,6 +178,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 count="3";
             }
         }
+        ParamUtil.setSessionAttr(request,"count", count);
         Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
@@ -338,7 +339,6 @@ public class OfficerOnlineEnquiriesDelegator {
             ParamUtil.setRequestAttr(request,"SearchParam", licParam);
         }
 
-        ParamUtil.setSessionAttr(request,"count", count);
         // 		preBasicSearch->OnStepProcess
     }
 
@@ -353,11 +353,14 @@ public class OfficerOnlineEnquiriesDelegator {
             }else {
                 rfi.setIsCessation(0);
             }
-            i++;
+            if(rfi.getLicenceId()!=null){
+                i++;
+            }
         }
         String uenNo = ParamUtil.getString(request, "uen_no");
         if(!StringUtil.isEmpty(uenNo)){
-            if(ParamUtil.getString(request,"applicationChk")!=null||ParamUtil.getString(request,"licenceChk")!=null) {
+            if( "3".equals(ParamUtil.getSessionAttr(request,"count"))||"2".equals(ParamUtil.getSessionAttr(request,"count"))
+            ) {
                 List<LicenseeDto> licenseeDtos= organizationClient.getLicenseeDtoByUen(uenNo).getEntity();
                 if(licenseeDtos==null) {
                     reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();

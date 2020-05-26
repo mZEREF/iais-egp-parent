@@ -21,6 +21,7 @@
                     <h3>
                         <span>Advanced Search Criteria</span>
                     </h3>
+                    <c:if test="${count=='3'||count=='2'}">
                     <h4>
                         <span >
                             Search By Application
@@ -159,7 +160,8 @@
                             </iais:section>
                         </div>
                     </div>
-
+                    </c:if>
+                    <c:if test="${count=='1'}">
                     <h4>
                         <span >Search By HCI
                             <strong class="form-check">&nbsp;
@@ -213,6 +215,8 @@
                             </div>
                         </div>
                     </div>
+                    </c:if>
+                    <c:if test="${count=='4'}">
                     <h4>
                         <span >Search By Licensee
                             <strong class="form-check">&nbsp;
@@ -256,6 +260,8 @@
                             </div>
                         </div>
                     </div>
+                    </c:if>
+                    <c:if test="${count=='5'}">
                     <h4>
                         <span>Search By Service Personnel Details (CGO, PO, DPO & MedAlert)
                             <strong class="form-check">&nbsp;
@@ -272,7 +278,7 @@
                             <div class="panel-main-content">
                                 <iais:section title="" id = "supPoolList">
                                     <iais:row>
-                                        <iais:field value="Service Personnal ID"/>
+                                        <iais:field value="Service Personnel ID"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label>
                                                 <input type="text" maxlength="10" style="width:165%; font-weight:normal;" name="personnelId" value="${SearchParam.filters['personnelId']}" />
@@ -307,6 +313,7 @@
                             </div>
                         </div>
                     </div>
+                    </c:if>
                     <br>
                     <br>
                     <iais:action style="text-align:left;">
@@ -347,6 +354,7 @@
         }
         if(flag)
         {
+            $('input[name="pageJumpNoTextchangePage"]').val(1);
             SOP.Crud.cfxSubmit("mainForm", "search");
         }else {
             dismissWaiting();

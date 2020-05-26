@@ -281,6 +281,12 @@
                                                             <td align="right">Mobile No</td>
                                                             <td>${personnel.keyPersonnelDto.mobileNo}</td>
                                                         </tr>
+                                                        <c:if test="${personnel.licKeyPersonnelDto.psnType!='MedAlert' && personnel.licKeyPersonnelDto.psnType!='Clinical Governance Officer'}">
+                                                            <tr>
+                                                                <td align="right">Office Telephone No</td>
+                                                                <td>${personnel.keyPersonnelDto.officeTelNo}</td>
+                                                            </tr>
+                                                        </c:if>
                                                         <tr>
                                                             <td align="right">Email Address</td>
                                                             <td>${personnel.keyPersonnelDto.emailAddr}</td>
