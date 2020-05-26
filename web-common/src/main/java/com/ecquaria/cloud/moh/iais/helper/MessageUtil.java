@@ -84,12 +84,15 @@ public class MessageUtil {
                 "hh:mm"));
     }
 
-    //only replace first
+    //only replace first or only one curly brace
     public static String replaceMessage(String codeKey,String replaceString,String replacePart){
         String msg = MessageUtil.getMessageDesc(codeKey);
         if(StringUtil.isEmpty(msg))
             return  codeKey;
-        else
-            return msg.replace(replacePart,replaceString);
+        else if(msg.contains("{") && msg.contains("}")){
+            return msg.replace(replacePart,replaceString).replace("{","").replace("}","");
+        } else
+         return msg.replace(replacePart,replaceString);
+
     }
 }

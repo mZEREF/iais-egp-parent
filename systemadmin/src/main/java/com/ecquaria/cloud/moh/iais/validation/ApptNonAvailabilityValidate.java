@@ -30,9 +30,10 @@ public class ApptNonAvailabilityValidate implements CustomizeValidator {
         ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = (ApptNonAvailabilityDateDto) ParamUtil.getSessionAttr(request, "inspNonAvailabilityDto");
         List<Date> inspectionDate = IaisCommonUtils.genNewArrayList();
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
         List<Date> nonAvaDate = MiscUtil.getDateInPeriodByRecurrence(apptNonAvailabilityDateDto.getBlockOutStart(),
                         apptNonAvailabilityDateDto.getBlockOutEnd(), apptNonAvailabilityDateDto.getRecurrence());
+
         for(Date date : nonAvaDate){
             for(Date inspDate : inspectionDate){
                 String nonDate = sdf2.format(date);

@@ -40,27 +40,6 @@
                     <li>Changes made will be applied to other licences associated with this premises:</li>
                   </ul>
                 </div>
-                <div class="form-check col-sm-6" >
-
-                  <table>
-                    <tr>
-                      <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence</td>
-                      <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence No.</td>
-                      <span id="error_selectLicence" class="error-msg"></span>
-                    </tr>
-                    <c:forEach items="${licenceDtoList}" var="licence">
-                      <tr>
-                        <td >
-                          <div class="col-xs-12 col-md-12 form-check" style="padding:0px 15px;margin-top:15px">
-                            <input class="form-check-input" checked="checked" disabled type="checkbox" value="<iais:mask name="licenceName" value="${licence.id}"/>" name="licenceName" aria-invalid="false">
-                            <label class="form-check-label"><span class="check-square"></span>${licence.svcName}</label>
-                          </div></td>
-                        <td class="form-check col-sm-3">${licence.licenceNo}</td>
-                      </tr>
-                    </c:forEach>
-
-                  </table>
-                </div>
                 <!--todo:slect prem issue -->
                 <%@include file="../common/premisesContent.jsp"%>
                   <div class="application-tab-footer">
@@ -88,6 +67,8 @@
           </div>
         </div>
       </div>
+    <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
+    <iais:confirm msg="There is a pending application for a licence associated to this premises" callBack="" popupOrder="ackMessageConfim"></iais:confirm>
       <%--Validation Field--%>
       <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
       <%@include file="../common/premFun.jsp"%>
@@ -100,6 +81,9 @@
     var init;
     $(document).ready(function () {
         <!-- init start-->
+        if($('#ackMessage').val()=='ACKMESSAGE'){
+            $('#ackMessageConfim').modal('show');
+        }
         init = 0;
         <!--for reload -->
         reloadPage();

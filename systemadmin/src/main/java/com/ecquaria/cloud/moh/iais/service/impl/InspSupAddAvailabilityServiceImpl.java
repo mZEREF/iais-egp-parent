@@ -120,21 +120,23 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
         if(!IaisCommonUtils.isEmpty(userIdList)){
             orgUserDtos = organizationClient.retrieveOrgUserAccount(userIdList).getEntity();
         }
+        //get Login Id and User Name
         if(orgUserDtos != null && !(orgUserDtos.isEmpty())){
             for(int i = 0; i < orgUserDtos.size(); i++){
-                userIdMap.put(i + "", orgUserDtos.get(i).getId());
+                userIdMap.put(i + "", orgUserDtos.get(i).getUserId());
                 SelectOption so = new SelectOption(i + "", orgUserDtos.get(i).getDisplayName());
                 inspectorOption.add(so);
             }
         }
         groupRoleFieldDto.setUserIdMap(userIdMap);
         groupRoleFieldDto.setMemberOption(inspectorOption);
-        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
-        Integer isLeadForGroup = userGroupCorrelationDtos.get(0).getIsLeadForGroup();
-        if(1!=isLeadForGroup){
-            groupRoleFieldDto.setMemberOption(null);
-        }
         return groupRoleFieldDto;
+    }
+
+    @Override
+    public String getApptUserSysCorrIdByLoginId(String loginId) {
+
+        return null;
     }
 
     private List<String> getUserIdList(List<OrgUserDto> orgUserDtoList, List<String> userIdList) {

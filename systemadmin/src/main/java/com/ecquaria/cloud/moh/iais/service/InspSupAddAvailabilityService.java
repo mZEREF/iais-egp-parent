@@ -93,4 +93,13 @@ public interface InspSupAddAvailabilityService {
      * @Descripation: get Inspector Option By Login
      */
     GroupRoleFieldDto getInspectorOptionByLogin(LoginContext loginContext, List<String> workGroupIds, GroupRoleFieldDto groupRoleFieldDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/5/22
+      * @Param: loginId
+      * @return: String
+      * @Descripation: getApptUserSysCorrIdByLoginId
+      */
+    String getApptUserSysCorrIdByLoginId(String loginId);
 }

@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
+import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListItemValidate;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.esotericsoftware.minlog.Log;
@@ -194,22 +195,22 @@ public class InspectionNcCheckListDelegator {
             serListDto.setCheckListTab("chkList");
             ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
             ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);*/
-            ParamUtil.setRequestAttr(request, "isValid", "Y");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }else{
             serListDto = getOtherInfo(mulReq);
             ParamUtil.setSessionAttr(mulReq,SERLISTDTO,serListDto);
             TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(mulReq,"taskDto");
             InspectionFillCheckListDto comDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(mulReq,"commonDto");
             AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(mulReq,"adchklDto");
-            InspectionCheckListValidation InspectionCheckListValidation = new InspectionCheckListValidation();
-            Map<String, String> errMap = InspectionCheckListValidation.validate(request);
+            InspectionCheckListValidation inspectionCheckListValidation = new InspectionCheckListValidation();
+            Map<String, String> errMap = inspectionCheckListValidation.validate(request);
             if(!errMap.isEmpty()){
-                ParamUtil.setRequestAttr(request, "isValid", "N");
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 serListDto.setCheckListTab("chkList");
                 ParamUtil.setSessionAttr(mulReq,SERLISTDTO,serListDto);
-                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             }else{
-                ParamUtil.setRequestAttr(request, "isValid", "Y");
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
                 boolean flag = insepctionNcCheckListService.isHaveNcOrBestPractice(serListDto,comDto,showDto);
                 insepctionNcCheckListService.submit(comDto,showDto,serListDto,taskDto.getRefNo());
                 ApplicationViewDto appViewDto =(ApplicationViewDto) ParamUtil.getSessionAttr(request,APPLICATIONVIEWDTO);
@@ -371,9 +372,9 @@ public class InspectionNcCheckListDelegator {
         if(cDto!=null&&cDto.getCheckList()!=null&&!cDto.getCheckList().isEmpty()){
             List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
             for(InspectionCheckQuestionDto temp:checkListDtoList){
-                String answer = ParamUtil.getString(request,temp.getSectionNameSub()+temp.getItemId()+"comrad");
-                String remark = ParamUtil.getString(request,temp.getSectionNameSub()+temp.getItemId()+"comremark");
-                String rectified = ParamUtil.getString(request,temp.getSectionNameSub()+temp.getItemId()+"comrec");
+                String answer = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comrad");
+                String remark = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comremark");
+                String rectified = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comrec");
                 if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
                     temp.setRectified(true);
                 }else{
@@ -471,15 +472,26 @@ public class InspectionNcCheckListDelegator {
     public void doCheckList(BaseProcessClass bpc){
         Log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
         HttpServletRequest request = bpc.request;
-        InspectionFDtosDto serListDto = null;
-        serListDto = getServiceCheckListDataFormViewPage(request);
+        InspectionFDtosDto serListDto = getServiceCheckListDataFormViewPage(request);
         InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
         AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
-        serListDto.setCheckListTab("chkList");
-        fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
         ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
         ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+        InspectionCheckListItemValidate inspectionCheckListItemValidate = new InspectionCheckListItemValidate();
+        Map errMap =  inspectionCheckListItemValidate.validate(request);
+        if(!errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            serListDto.setCheckListTab("chkList");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+        }else {
+            serListDto.setCheckListTab("chkList");
+            fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
+            ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
+            ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
+            ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+        }
     }
 
     public void preViewCheckList(BaseProcessClass bpc)throws IOException{

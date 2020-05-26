@@ -45,9 +45,9 @@
           <iais:pagination  param="PremisesSearchParam" result="PremisesSearchResult"/>
           <thead>
             <tr>
-            <th>Address</th>
-            <th>Type</th>
-            <th>Licence</th>
+            <th style="width: 40%">Address</th>
+            <th style="width: 20%">Type</th>
+            <th style="width: 40%">Licence</th>
             </tr>
           </thead>
         <tbody>

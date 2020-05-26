@@ -33,6 +33,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -100,7 +101,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         download = sharedPath + fileName;
         backups = sharedPath + "backupsAudit";
 
-        String s = FileUtil.genMd5FileChecksum(data.getBytes());
+        String s = FileUtil.genMd5FileChecksum(data.getBytes(StandardCharsets.UTF_8));
         File file = MiscUtil.generateFile(download+File.separator, s+fileFormat);
         File groupPath=MiscUtil.generateFile(sharedPath, fileName);
 
@@ -110,8 +111,8 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         try (FileOutputStream fileInputStream = new FileOutputStream(backups+File.separator+file.getName());
              FileOutputStream fileOutputStream  =new FileOutputStream(file);){
 
-            fileOutputStream.write(data.getBytes());
-            fileInputStream.write(data.getBytes());
+            fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
+            fileInputStream.write(data.getBytes(StandardCharsets.UTF_8));
 
         } catch (Exception e) {
 

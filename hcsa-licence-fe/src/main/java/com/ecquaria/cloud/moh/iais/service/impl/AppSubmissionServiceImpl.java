@@ -396,7 +396,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public void feSendEmail(EmailDto emailDto) {
         String moduleName = currentApp + "-" + currentDomain;
-        String refNo = String.valueOf(new Date().getTime());
+        String refNo = String.valueOf(System.currentTimeMillis());
         EicRequestTrackingDto dto = new EicRequestTrackingDto();
         dto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
         dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -464,12 +464,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
         String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_CESSATION).getEntity();
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
-        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
-        String svcId = hcsaServiceDto.getId();
-        String svcCode = hcsaServiceDto.getSvcCode();
-        appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
-        appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
+            String serviceName = appSvcRelatedInfoDto.getServiceName();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+            String svcId = hcsaServiceDto.getId();
+            String svcCode = hcsaServiceDto.getSvcCode();
+            appSvcRelatedInfoDto.setServiceId(svcId);
+            appSvcRelatedInfoDto.setServiceCode(svcCode);
+        }
+
         appSubmissionDto.setAppGrpNo(grpNo);
         appSubmissionDto.setFromBe(false);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);

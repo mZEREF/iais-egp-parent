@@ -289,7 +289,7 @@
                     <c:set var="deputy" value="${ReloadDeputyPrincipalOfficers[status.index]}"/>
                   </c:if>
                   <div class="dpo-content">
-                    <div class="row">
+                    <div class="row" <c:if test="${status.first}">style="margin-top:-4%;"</c:if> >
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                           <div class="col-sm-6 control-label formtext col-md-4">
@@ -308,9 +308,8 @@
                     <div class="row">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-6 control-label formtext col-md-4">
-                            <label id="" class="control-label control-set-font control-font-label">Assign a Principal Officer</label>
-                            <span class="upload_controls"></span>
+                          <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
+                            Assign a Deputy Principal Officer
                           </div>
                           <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
                             <iais:select cssClass="deputyPoSelect"  name="deputyPoSelect" options="DeputyPrincipalOfficersAssignSelect"  value="${deputy.assignSelect}" ></iais:select>
