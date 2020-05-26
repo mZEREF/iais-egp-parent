@@ -16,15 +16,15 @@
                             <thead>
                             <tr>
                                 <iais:sortableHeader needSort="false" field="subject" value="S/N"/>
-                                <iais:sortableHeader needSort="true" field="message_type" value="Message Type"/>
+                                <iais:sortableHeader needSort="true" field="message_type" value="Message Type" style="width:8%;"/>
                                 <iais:sortableHeader needSort="true" field="template_name" value="Template Name"/>
-                                <iais:sortableHeader needSort="true" field="delivery_mode" value="Delivery Mode"/>
-                                <iais:sortableHeader needSort="true" field="process" value="Process"/>
-                                <iais:sortableHeader needSort="true" field="delivery_mode" value="To Recipients"/>
-                                <iais:sortableHeader needSort="true" field="delivery_mode" value="CC Recipients"/>
-                                <iais:sortableHeader needSort="true" field="effective_from" value="Effective Start Date"/>
-                                <iais:sortableHeader needSort="true" field="effective_to" value="Effective End Date"/>
-                                <th>Action</th>
+                                <iais:sortableHeader needSort="true" field="delivery_mode" value="Delivery Mode" style="width:8%;"/>
+                                <iais:sortableHeader needSort="true" field="process" value="Process" style="width:6%;"/>
+                                <iais:sortableHeader needSort="true" field="delivery_mode" value="To Recipients" style="width:8%;"/>
+                                <iais:sortableHeader needSort="true" field="delivery_mode" value="CC Recipients" style="width:8%;"/>
+                                <iais:sortableHeader needSort="true" field="effective_from" value="Effective Start Date" style="width:10%;"/>
+                                <iais:sortableHeader needSort="true" field="effective_to" value="Effective End Date" style="width:10%;"/>
+                                <th style="width:7%;">Action</th>
                             </tr>
                             </thead>
                             <tbody>

@@ -79,9 +79,6 @@ public interface AppConfigClient {
     @GetMapping(path = "/iais-hcsa-service/one-of-hcsa-service/{serviceId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaServiceDto> getHcsaServiceDtoByServiceId(@PathVariable(value = "serviceId") String serviceId);
 
-    @GetMapping(path = "/iais-hcsa-checklist/config/id/{svcCode}")
-    FeignResponseEntity<String> getSelfDeclConfigIdBySvcCode(@PathVariable("svcCode") String svcCode);
-
     @GetMapping(path = "/iais-hcsa-checklist/config/common-self-desc/id")
     FeignResponseEntity<String> getCommonConfigIdForSelfDecl();
 

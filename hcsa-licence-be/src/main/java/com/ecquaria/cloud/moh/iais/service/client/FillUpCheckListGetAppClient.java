@@ -14,9 +14,15 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: jiahao
@@ -133,8 +139,8 @@ public interface FillUpCheckListGetAppClient {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesPreInspectionNcItemDto> getNcItemByItemId(@PathVariable(name = "id") String id);
 
-    @GetMapping(value = "/iais-apppreinschkl-be/premises/pre-inspect/{configId}/count", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Integer> countByChkLstConfId(@PathVariable("configId")String configId);
+    @PostMapping(value = "/iais-apppreinschkl-be/premises/checklist/config-usage-status", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String, Boolean>> configUsageStatus(@RequestBody List<String> configId);
 
     @GetMapping(value = "/iais-appintranetdoc/get-appintranetdoc-by-premid-status", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppIntranetDocDto> getAppIntranetDocByPremIdAndStatus(@RequestParam(name = "premId") String premId,@RequestParam(name = "docStatus") String status );

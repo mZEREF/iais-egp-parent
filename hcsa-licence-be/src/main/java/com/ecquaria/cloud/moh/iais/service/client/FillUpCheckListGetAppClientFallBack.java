@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: jiahao
@@ -224,7 +225,7 @@ public class FillUpCheckListGetAppClientFallBack implements FillUpCheckListGetAp
     }
 
     @Override
-    public FeignResponseEntity<Integer> countByChkLstConfId(String configId) {
+    public FeignResponseEntity<Map<String, Boolean>> configUsageStatus(List<String> configId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

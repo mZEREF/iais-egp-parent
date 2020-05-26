@@ -150,7 +150,7 @@
                           </div>
                           <div class="modal-body">
                             <div class="row">
-                              <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the delete ?</span></div>
+                              <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem"><iais:message key="CHKL_ERR027" escape="true"></iais:message></span></div>
                             </div>
                           </div>
                           <div class="modal-footer">
@@ -163,11 +163,21 @@
 
 
                     <td>
-
                       <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="javascript:loadEditData('<iais:mask name="currentMaskId" value="${config.id}"/>')" >Edit</button>
                       <button type="button" onclick="javascript:cloneConfig('<iais:mask name="currentMaskId" value="${config.id}"/>')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >Clone</button>
                       <button type="button" onclick="javascript:doView('<iais:mask name="currentMaskId" value="${config.id}"/>')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >View</button>
-                      <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal" >Delete</button>
+
+                      <c:if test="${canDeleteConfigMap != null}">
+                        <c:choose>
+                          <c:when test="${canDeleteConfigMap[config.id] == true}">
+                            <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal" >Delete</button>
+                          </c:when>
+                          <c:otherwise>
+                            <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="javascript:deleteRecord('<iais:mask name="currentMaskId" value="${config.id}"/>')" >Delete</button>
+                          </c:otherwise>
+                        </c:choose>
+
+                      </c:if>
                     </td>
                   </tr>
                 </c:forEach>

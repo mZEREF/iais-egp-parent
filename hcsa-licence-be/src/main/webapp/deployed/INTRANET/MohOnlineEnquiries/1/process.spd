@@ -168,8 +168,8 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/preLicDetails" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(920,250)(1060,250)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doBasicSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(920,250)(260,370)}</position>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(920,250)(560,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/licDetailsPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preLicDetails" style="oblique">
    <position>{(1060,250)(1060,120)}</position>
@@ -251,14 +251,14 @@
    <SwitchCase component="/Steps/AutomaticStep/doSearchLicence" value="&quot;search&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doBasicSearch" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="900" y="230">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="900" y="230">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/preLicDetails" value="&quot;details&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearchLicence" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preAppDetails" value="&quot;appDetails&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/callCessation" value="&quot;cessation&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/callReqForInfo" value="&quot;reqForInfo&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doBasicSearch" value="&quot;back&quot;"/>
+   <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preBasicSearch" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="260" y="230">
    <Description/>
