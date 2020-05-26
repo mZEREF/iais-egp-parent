@@ -671,7 +671,19 @@ public class LicenceApproveBatchjob {
                             newApplicationApproveSendEmail(licenceDto,applicationNo,licenceNo,loginUrl,isNew,uenNo);
                             //send sms
                             try{
-                                sendSMS(msgId,licenceDto.getLicenceNo(),msgInfoMap);
+                                sendSMS(msgId,licenceDto.getLicenseeId(),msgInfoMap);
+                            }catch(IOException | TemplateException e){
+                                log.error(StringUtil.changeForLog("send sms error"));
+                            }
+                        }else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                            Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
+                            tempMap.put("LICENCE",licenceNo);
+                            tempMap.put("APP_NO",applicationNo);
+                            String subject = " " + applicationNo + " - Approved ";
+                            sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE,subject,licenceDto.getLicenseeId(),licenceDto.getId());
+                            //send sms
+                            try{
+                                sendSMS(msgId,licenceDto.getLicenseeId(),msgInfoMap);
                             }catch(IOException | TemplateException e){
                                 log.error(StringUtil.changeForLog("send sms error"));
                             }
@@ -947,7 +959,7 @@ public class LicenceApproveBatchjob {
                     newApplicationApproveSendEmail(licenceDto,applicationNo,licenceNo,loginUrl,isNew,uenNo);
                     //send sms
                     try{
-                        sendSMS(msgId,licenceDto.getLicenceNo(),msgInfoMap);
+                        sendSMS(msgId,licenceDto.getLicenseeId(),msgInfoMap);
                     }catch(IOException | TemplateException e){
                         log.error(StringUtil.changeForLog("send sms error"));
                     }
@@ -959,7 +971,7 @@ public class LicenceApproveBatchjob {
                     sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE,subject,licenceDto.getLicenseeId(),licenceDto.getId());
                     //send sms
                     try{
-                        sendSMS(msgId,licenceDto.getLicenceNo(),msgInfoMap);
+                        sendSMS(msgId,licenceDto.getLicenseeId(),msgInfoMap);
                     }catch(IOException | TemplateException e){
                         log.error(StringUtil.changeForLog("send sms error"));
                     }
