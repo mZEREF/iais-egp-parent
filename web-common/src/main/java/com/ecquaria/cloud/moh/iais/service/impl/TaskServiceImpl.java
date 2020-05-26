@@ -277,7 +277,8 @@ public class TaskServiceImpl implements TaskService {
         if(StringUtil.isEmpty(workGroupId)){
             return result;
         }
-        List<OrgUserDto> orgUserDtos =getUsersByWorkGroupId(workGroupId,AppConsts.COMMON_STATUS_ACTIVE);
+        List<OrgUserDto> orgUserDtos = getUsersByWorkGroupId(workGroupId,AppConsts.COMMON_STATUS_ACTIVE);
+        orgUserDtos = removeUnavailableUser(orgUserDtos);
         List<TaskDto> taskScoreDtos = this.getTaskDtoScoresByWorkGroupId(workGroupId);
         result = this.getLowestTaskScore(taskScoreDtos,orgUserDtos);
         if(result != null && StringUtil.isEmpty(result.getWkGrpId())){
@@ -286,6 +287,8 @@ public class TaskServiceImpl implements TaskService {
         log.debug(StringUtil.changeForLog("the do getUserIdForWorkGroup end ...."));
         return result;
     }
+
+
 
     @Override
     public Set<String> getInspectiors(String corrId, String status, String roleId) {
@@ -298,6 +301,24 @@ public class TaskServiceImpl implements TaskService {
         return taskOrganizationClient.getTaskDtoByDate(date).getEntity();
     }
 
+
+    @Override
+    public Map<String, List<TaskEmailDto>> getEmailNotifyList(){
+        return taskOrganizationClient.getEmailNotifyList().getEntity();
+    }
+
+    @Override
+    public List<String> getDistincTaskRefNumByCurrentGroup(String wrkGroupId) {
+        List<TaskDto> commPoolByGroupWordId =  getCommPoolByGroupWordId(wrkGroupId);
+        List<String> taskRefNumList = IaisCommonUtils.genNewArrayList();
+        commPoolByGroupWordId.forEach(i -> taskRefNumList.add(i.getRefNo()));
+        return taskRefNumList.stream().distinct().collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<String, List<String>> getAllWorkGroupMembers(List<String> groupIdList){
+        return taskOrganizationClient.getAllWorkGroupMembers(groupIdList).getEntity();
+    }
     private boolean isExist(List<TaskDto> taskScoreDtos,String userId){
         boolean result = false;
         for (TaskDto taskScoreDto : taskScoreDtos){
@@ -322,7 +343,7 @@ public class TaskServiceImpl implements TaskService {
                                          String stageId,String appType){
         int result = 0;
         if(StringUtil.isEmpty(serviceId) || StringUtil.isEmpty(stageId) || StringUtil.isEmpty(appType)){
-          return result;
+            return result;
         }
         for (HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto :hcsaSvcStageWorkingGroupDtos){
             if(serviceId.equals(hcsaSvcStageWorkingGroupDto.getServiceId())
@@ -334,7 +355,7 @@ public class TaskServiceImpl implements TaskService {
         return result;
     }
     private List<AppPremisesCorrelationDto> getAppPremisesCorrelationId(String appId){
-       return  taskApplicationClient.getAppPremisesCorrelationsByAppId(appId).getEntity();
+        return  taskApplicationClient.getAppPremisesCorrelationsByAppId(appId).getEntity();
     }
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus,
                                                                          String stageId, String internalRemarks,String roleId,
@@ -349,23 +370,15 @@ public class TaskServiceImpl implements TaskService {
         appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
         return appPremisesRoutingHistoryDto;
     }
-
-    @Override
-    public Map<String, List<TaskEmailDto>> getEmailNotifyList(){
-        return taskOrganizationClient.getEmailNotifyList().getEntity();
+    private  List<OrgUserDto> removeUnavailableUser(List<OrgUserDto> orgUserDtos){
+        List<OrgUserDto> result = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(orgUserDtos)){
+            for (OrgUserDto orgUserDto : orgUserDtos){
+                if(orgUserDto.getAvailable()){
+                    result.add(orgUserDto);
+                }
+            }
+        }
+        return result;
     }
-
-    @Override
-    public List<String> getDistincTaskRefNumByCurrentGroup(String wrkGroupId) {
-        List<TaskDto> commPoolByGroupWordId =  getCommPoolByGroupWordId(wrkGroupId);
-        List<String> taskRefNumList = IaisCommonUtils.genNewArrayList();
-        commPoolByGroupWordId.forEach(i -> taskRefNumList.add(i.getRefNo()));
-        return taskRefNumList.stream().distinct().collect(Collectors.toList());
-    }
-
-    @Override
-    public Map<String, List<String>> getAllWorkGroupMembers(List<String> groupIdList){
-        return taskOrganizationClient.getAllWorkGroupMembers(groupIdList).getEntity();
-    }
-
 }
