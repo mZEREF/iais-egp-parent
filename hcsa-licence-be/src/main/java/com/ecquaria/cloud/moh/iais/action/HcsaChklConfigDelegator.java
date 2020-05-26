@@ -49,7 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Delegator(value = "hcsaChklConfigDelegator")
 @Slf4j
@@ -129,19 +128,10 @@ public class HcsaChklConfigDelegator {
 
         SearchResult<ChecklistConfigQueryDto> searchResult =  hcsaChklService.listChecklistConfig(searchParam);
 
-        initConfigDeleteMap(request, searchResult.getRows());
-
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_SEARCH, searchParam);
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_RESULT, searchResult);
     }
 
-    private void initConfigDeleteMap(HttpServletRequest request, List<ChecklistConfigQueryDto> queryDtoList){
-        if (!IaisCommonUtils.isEmpty(queryDtoList)){
-            List<String> idMap = queryDtoList.stream().map(ChecklistConfigQueryDto::getId).collect(Collectors.toList());
-            Map<String, Boolean> canDeleteMap = hcsaChklService.configUsageStatus(idMap);
-            ParamUtil.setSessionAttr(request, "canDeleteConfigMap", (Serializable) canDeleteMap);
-        }
-    }
 
     /**
      * StartStep: addSectionItem
