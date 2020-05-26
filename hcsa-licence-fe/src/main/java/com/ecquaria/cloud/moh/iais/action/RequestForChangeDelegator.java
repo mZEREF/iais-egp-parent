@@ -427,6 +427,7 @@ public class RequestForChangeDelegator {
                         AppGroupMiscDto appGroupMiscDto = new AppGroupMiscDto();
                         appGroupMiscDto.setMiscType(ApplicationConsts.APP_GROUP_MISC_TYPE_TRANSFER_EMAIL);
                         appGroupMiscDto.setMiscValue(email);
+                        appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                         appGroupMiscDtoList.add(appGroupMiscDto);
                         appSubmissionDto.setAppGroupMiscDtos(appGroupMiscDtoList);
                     }
