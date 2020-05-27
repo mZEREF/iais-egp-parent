@@ -47,21 +47,21 @@ public class UenManagementServiceImpl implements UenManagementService {
     AppSubmissionService appSubmissionService;
 
     private UenDto getUenDetails(String uenNo) {
-        //等ACRA api
+        //ACRA api
         return null;
     }
 
     @Override
     public boolean validityCheckforAcraissuedUen(MohUenDto mohUenDto) {
         MohUenDto mohUenDto1=uenManagementClient.getMohUenById(mohUenDto.getUenNo()).getEntity();
-        //等ACRA api
+        //ACRA api
         return false;
     }
 
     @Override
     public boolean generatesMohIssuedUen(BaseProcessClass bpc, MohUenDto mohUenDto) throws IOException, TemplateException {
         MohUenDto mohUenDto1= uenManagementClient.generatesMohIssuedUen(mohUenDto).getEntity();
-        //等ACRA api
+        //ACRA api
         sendUenEmail(bpc,"registrationUen");
         return false;
     }
