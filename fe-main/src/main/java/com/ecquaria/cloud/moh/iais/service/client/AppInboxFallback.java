@@ -53,6 +53,11 @@ public class AppInboxFallback implements AppInboxClient {
     }
 
     @Override
+    public FeignResponseEntity<ApplicationDraftDto> getDraftInfo(String draftId) {
+        return null;
+    }
+
+    @Override
     public FeignResponseEntity<AppSubmissionDto> saveAppsForRequestForChange(AppSubmissionDto appSubmissionDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

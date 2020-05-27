@@ -529,14 +529,6 @@ public class InterInboxDelegator {
         appParam.addFilter("licenseeId", interInboxUserDto.getLicenseeId(),true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.APPLICATION_QUERY_KEY,appParam);
         SearchResult appResult = inboxService.appDoQuery(appParam);
-        List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
-        for (InboxAppQueryDto appDto:inboxAppQueryDtoList) {
-            String serviceName = "N/A";
-            if (appDto.getServiceId() != null){
-                serviceName = inboxService.getServiceNameById(appDto.getServiceId());
-            }
-            appDto.setServiceId(serviceName);
-        }
         if(!StringUtil.isEmpty(appResult)){
             clearParameter("IIAT");
             ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, appParam);

@@ -8,10 +8,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
@@ -23,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
@@ -100,7 +103,39 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public SearchResult<InboxAppQueryDto> appDoQuery(SearchParam searchParam) {
-        return appInboxClient.searchResultFromApp(searchParam).getEntity();
+        SearchResult<InboxAppQueryDto> inboxAppQueryDtoSearchResult = appInboxClient.searchResultFromApp(searchParam).getEntity();
+        List<InboxAppQueryDto> inboxAppQueryDtoList = inboxAppQueryDtoSearchResult.getRows();
+        for (InboxAppQueryDto inboxAppQueryDto:inboxAppQueryDtoList) {
+            if (ApplicationConsts.APPLICATION_STATUS_DRAFT.equals(inboxAppQueryDto.getStatus())){
+                ApplicationDraftDto applicationDraftDto = appInboxClient.getDraftInfo(inboxAppQueryDto.getId()).getEntity();
+                String draftServiceCode = applicationDraftDto.getServiceCode();
+                if (!draftServiceCode.isEmpty()){
+                    String[] serviceName = draftServiceCode.split("@");
+                    StringBuilder draftServiceName = new StringBuilder();
+                    for (int i=0;i<serviceName.length;i++){
+                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(serviceName[i]);
+                        if (hcsaServiceDto != null){
+                            if (i>0){
+                                draftServiceName.append("<br/>")
+                                        .append(hcsaServiceDto.getSvcName());
+                            }else{
+                                draftServiceName.append(hcsaServiceDto.getSvcName());
+                            }
+                        }
+                    }
+                    inboxAppQueryDto.setServiceId(draftServiceName.toString());
+                }else{
+                    inboxAppQueryDto.setServiceId("N/A");
+                }
+            }else{
+                if(!inboxAppQueryDto.getServiceId().isEmpty()){
+                    inboxAppQueryDto.setServiceId(getServiceNameById(inboxAppQueryDto.getServiceId()));
+                }else{
+                    inboxAppQueryDto.setServiceId("N/A");
+                }
+            }
+        }
+        return inboxAppQueryDtoSearchResult;
     }
 
     @Override

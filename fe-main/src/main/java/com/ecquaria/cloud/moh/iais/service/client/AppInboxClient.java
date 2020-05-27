@@ -41,6 +41,9 @@ public interface AppInboxClient {
     @RequestMapping(path = "/iais-submission/drafts",method = RequestMethod.POST)
     FeignResponseEntity<List<ApplicationDraftDto>> getDraftList();
 
+    @RequestMapping(path = "/iais-submission/draft-service-name",method = RequestMethod.GET)
+    FeignResponseEntity<ApplicationDraftDto> getDraftInfo(@RequestParam(value = "draftId") String draftId);
+
     @RequestMapping(path = "/iais-submission/application-rfc", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveAppsForRequestForChange(@RequestBody AppSubmissionDto appSubmissionDto);
 
