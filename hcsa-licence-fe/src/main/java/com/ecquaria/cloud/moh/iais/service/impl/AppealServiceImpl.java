@@ -188,6 +188,7 @@ public class AppealServiceImpl implements AppealService {
                 if(!StringUtil.isEmpty(draftStatus)){
                     entity.setDraftStatus(draftStatus);
                 }
+                entity.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                 entity.setLicenseeId(licenseeId);
                 applicationClient.saveDraft(entity).getEntity();
             }
@@ -293,7 +294,7 @@ public class AppealServiceImpl implements AppealService {
                 LicenceDto licenceDto = licenceClient.getLicBylicId(originLicenceId).getEntity();
                 try {
                     int[] dateDuration = MiscUtil.getDateDuration(new Date(), licenceDto.getExpiryDate());
-                    if(dateDuration[1]==2&&dateDuration[2]==1){
+                    if(dateDuration[1]<=1&&dateDuration[2]<=31||dateDuration[1]==2&&dateDuration[2]<=1){
                         request.getSession().setAttribute("lateFee",true);
                     }
                 } catch (NullPointerException | ParseException e) {

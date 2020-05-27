@@ -385,6 +385,11 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> rfcAppSubmissionDtos=IaisCommonUtils.genNewArrayList();
         List<String> renewLicIds = IaisCommonUtils.genNewArrayList();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
+            appEditSelectDto.setPremisesEdit(Boolean.TRUE);
+            appEditSelectDto.setServiceEdit(false);
+            appEditSelectDto.setDocEdit(false);
+            appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
+            appSubmissionDto.setChangeSelectDto(appEditSelectDto);
             boolean premiseChange=false;
             String appType = appSubmissionDto.getAppType();
             String appGrpNo = requestForChangeService.getApplicationGroupNumber(appType);
