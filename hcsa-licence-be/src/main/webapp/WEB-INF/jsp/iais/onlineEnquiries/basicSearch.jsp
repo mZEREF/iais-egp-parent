@@ -246,7 +246,17 @@
 
     function doAdvancedSearch(){
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "advSearch");
+        var chk=$("[name='searchChk']:checked");
+        var dropIds = new Array();
+        chk.each(function(){
+            dropIds.push($(this).val());
+        });
+        if(dropIds.length===0){
+            $("#selectSearchChkMsg").show();
+            dismissWaiting();
+        }else {
+            SOP.Crud.cfxSubmit("mainForm", "advSearch");
+        }
     }
     function jumpToPagechangePage(){
         search();
