@@ -297,7 +297,6 @@ public class ApplicationServiceImpl implements ApplicationService {
                 emailClient.sendNotification(emailDto).getEntity();
             }
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_INSPECTION_IS_IDENTIFIED).getEntity();
             Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
             String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
             String username = licenseeDto.getName();
@@ -308,9 +307,36 @@ public class ApplicationServiceImpl implements ApplicationService {
             tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
             tempMap.put("approvalOfficerName",StringUtil.viewHtml(approvalOfficerName));
             String subject = " " + applicationNo;
-            EmailDto emailDto = LicenceUtil.sendEmailHelper(tempMap,msgTemplateDto,subject,licenseeId,appGrpId);
-            emailClient.sendNotification(emailDto).getEntity();
+            sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_INSPECTION_IS_IDENTIFIED,subject,licenseeId,appGrpId);
         }
+    }
+
+    //send email helper
+    private String sendEmailHelper(Map<String ,Object> tempMap,String msgTemplateId,String subject,String licenseeId,String clientQueryCode){
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgTemplateId).getEntity();
+        if(tempMap == null || tempMap.isEmpty() || msgTemplateDto == null
+                || StringUtil.isEmpty(msgTemplateId)
+                || StringUtil.isEmpty(subject)
+                || StringUtil.isEmpty(licenseeId)
+                || StringUtil.isEmpty(clientQueryCode)){
+            return null;
+        }
+        String mesContext = null;
+        try {
+            mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+        } catch (IOException | TemplateException e) {
+            log.error(e.getMessage(),e);
+        }
+        EmailDto emailDto = new EmailDto();
+        emailDto.setContent(mesContext);
+        emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + subject);
+        emailDto.setSender(mailSender);
+        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+        emailDto.setClientQueryCode(clientQueryCode);
+        //send
+        emailClient.sendNotification(emailDto).getEntity();
+
+        return mesContext;
     }
 
     private boolean containStatus(List<ApplicationDto> applicationDtos,String status){

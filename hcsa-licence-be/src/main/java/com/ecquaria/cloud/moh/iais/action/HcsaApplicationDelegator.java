@@ -853,8 +853,7 @@ public class HcsaApplicationDelegator {
                 Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
                 tempMap.put("APP_NO",StringUtil.viewHtml(applicationNo));
                 String subject = " " + applicationNo + "– Rejected ";
-                EmailDto emailDto = LicenceUtil.sendEmailHelper(tempMap,msgTemplateDto,subject,licenseeId,appGrpId);
-                emailClient.sendNotification(emailDto).getEntity();
+                sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT,subject,licenseeId,appGrpId);
             }
             //send sms
             sendSMS(msgId,licenseeId,msgInfoMap);
@@ -1708,6 +1707,13 @@ public class HcsaApplicationDelegator {
         setRecommendationDropdownValue(request,applicationViewDto);
         //set recommendation other dropdown value
         setRecommendationOtherDropdownValue(request);
+        //set appeal recommendation dropdown value
+        setAppealRecommendationDropdownValue(request,applicationViewDto);
+    }
+
+    private void setAppealRecommendationDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
+        //get appeal type
+        String appId = applicationViewDto.getApplicationDto().getId();
     }
 
     public void setNormalProcessingDecisionDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto){
@@ -1835,5 +1841,33 @@ public class HcsaApplicationDelegator {
     public void setRecommendationOtherDropdownValue(HttpServletRequest request){
         //set recommendation other dropdown
         ParamUtil.setSessionAttr(request, "recommendationOtherDropdown", (Serializable)getRecommendationOtherDropdown());
+    }
+
+    //send email helper
+    private String sendEmailHelper(Map<String ,Object> tempMap,String msgTemplateId,String subject,String licenseeId,String clientQueryCode){
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgTemplateId).getEntity();
+        if(tempMap == null || tempMap.isEmpty() || msgTemplateDto == null
+                || StringUtil.isEmpty(msgTemplateId)
+                || StringUtil.isEmpty(subject)
+                || StringUtil.isEmpty(licenseeId)
+                || StringUtil.isEmpty(clientQueryCode)){
+            return null;
+        }
+        String mesContext = null;
+        try {
+            mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+        } catch (IOException | TemplateException e) {
+            log.error(e.getMessage(),e);
+        }
+        EmailDto emailDto = new EmailDto();
+        emailDto.setContent(mesContext);
+        emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + subject);
+        emailDto.setSender(mailSender);
+        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+        emailDto.setClientQueryCode(clientQueryCode);
+        //send
+        emailClient.sendNotification(emailDto).getEntity();
+
+        return mesContext;
     }
 }
