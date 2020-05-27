@@ -452,6 +452,14 @@
                         <c:if test="${'OFFSIET'==appGrpPremDto.premisesType}">
                             <div class="row">
                                 <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Postal Code</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.offSitePostalCode}</span></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>Address Type</span></p>
                                 </div>
                                 <div class="col-md-6">

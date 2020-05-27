@@ -52,16 +52,17 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.validation.PaymentValidate;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
 
 
 /**
@@ -661,7 +662,9 @@ public class WithOutRenewalDelegator {
             groupNo = appSubmissionDtos.get(0).getAppGrpNo();
             licenseeId = appSubmissionDtos.get(0).getLicenseeId();
         }
-        if("Credit".equals(payMethod)){
+        if(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
+                || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
+                || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)){
             StringBuffer url = new StringBuffer();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/payment-web/eservice/INTERNET/PaymentRequest")
@@ -682,9 +685,9 @@ public class WithOutRenewalDelegator {
                 log.error(e.getMessage(),e);
             }
 
-        }else if("GIRO".equals(payMethod)){
+        }else if(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
             try {
-                sendEmail(bpc.request,groupNo,"GIRO",licenseeId,totalAmount,"xxxx-xxxx-xxxx");
+                sendEmail(bpc.request,groupNo,ApplicationConsts.PAYMENT_METHOD_NAME_GIRO,licenseeId,totalAmount,"xxxx-xxxx-xxxx");
 
             }catch (Exception e){
                 log.error(e.getMessage(),e);
@@ -929,7 +932,7 @@ public class WithOutRenewalDelegator {
 
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         String subject="";
-        if("GIRO".equals(type)){
+        if(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(type)){
             msgTemplateDto = appSubmissionService.getMsgTemplateById("10FF81AF-267D-EA11-BE7A-000C29D29DB0");
 
             map.put("paymentAmount",Formatter.formatNumber(amount));

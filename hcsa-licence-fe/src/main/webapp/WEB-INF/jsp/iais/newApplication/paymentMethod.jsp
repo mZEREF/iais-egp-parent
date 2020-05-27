@@ -4,14 +4,14 @@
 <div class="col-xs-12">
     <div class="col-xs-3">
         <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="Credit">
-        <label class="form-check-label" ><span class="check-circle"></span>Credit/Debit Card</label>
+        <label class="form-check-label" ><span class="check-circle"></span>Credit / Debit Card</label>
     </div>
     <div class="col-xs-2">
-        <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="Credit">
+        <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="NETS">
         <label class="form-check-label" ><span class="check-circle"></span>NETS</label>
     </div>
     <div class="col-xs-2">
-        <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="Credit">
+        <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="PayNow">
         <label class="form-check-label" ><span class="check-circle"></span>PayNow</label>
     </div>
     <div class="col-xs-3">

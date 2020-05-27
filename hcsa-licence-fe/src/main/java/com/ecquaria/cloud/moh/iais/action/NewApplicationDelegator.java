@@ -58,12 +58,24 @@ import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -876,7 +888,7 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "payment");
             return;
         }
-        if(!StringUtil.isEmpty(pmtMethod) && "GIRO".equals(pmtMethod)){
+        if(!StringUtil.isEmpty(pmtMethod) && ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(pmtMethod)){
             switch2 = "ack";
             String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
             ParamUtil.setSessionAttr(bpc.request,"txnDt",txnDt);
@@ -1734,7 +1746,9 @@ public class NewApplicationDelegator {
         String a=appSubmissionDto.getPaymentMethod();
         appSubmissionDto.setPaymentMethod(payMethod);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
-        if("Credit".equals(payMethod)){
+        if(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
+                || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
+                || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)){
             //send email
             inspectionDateSendNewApplicationPaymentOnlineEmail(appSubmissionDto,bpc);
             StringBuilder url = new StringBuilder();
@@ -1746,7 +1760,7 @@ public class NewApplicationDelegator {
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
             return;
-        }else if("GIRO".equals(payMethod)){
+        }else if(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
             //send email
             sendNewApplicationPaymentGIROEmail(appSubmissionDto,bpc);
             String appGrpId = appSubmissionDto.getAppGrpId();
@@ -1754,7 +1768,7 @@ public class NewApplicationDelegator {
             appGrp.setId(appGrpId);
             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
             serviceConfigService.updatePaymentStatus(appGrp);
-            ParamUtil.setRequestAttr(bpc.request, "PmtStatus", "GIRO");
+            ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
         }
         log.info(StringUtil.changeForLog("the do jumpBank end ...."));
     }
@@ -2344,14 +2358,12 @@ public class NewApplicationDelegator {
                 if(!StringUtil.isEmpty(premisesSel) && !premisesSel.equals("-1") && !premisesSel.equals(ApplicationConsts.NEW_PREMISES)){
                     if(appGrpPremisesDto != null){
                         appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
-
                         //get value for jsp page
                         if(StringUtil.isEmpty(premisesIndexNo[i])){
                             appGrpPremisesDto.setPremisesIndexNo(UUID.randomUUID().toString());
                         }else{
                             appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo[i]);
                         }
-
                         appGrpPremisesDtoList.add(appGrpPremisesDto);
                     }
                     continue;
