@@ -145,11 +145,11 @@ public class InspSupAddAvailabilityDelegator {
             ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
             ParamUtil.setSessionAttr(bpc.request, "nonAvaUserName", (Serializable) inspectorOption);
         } else {
-            ParamUtil.setSessionAttr(bpc.request, "curRole", "member");
             OrgUserDto oDto = inspSupAddAvailabilityService.getOrgUserDtoById(loginContext.getUserId());
             String loginId = oDto.getUserId();
             List<String> apptUserSysCorrIds = inspSupAddAvailabilityService.getApptUserSysCorrIdByLoginId(loginId, loginContext);
             apptNonAvailabilityDateDto.setUserSysCorrIds(apptUserSysCorrIds);
+            ParamUtil.setSessionAttr(bpc.request, "curRole", "member");
             ParamUtil.setSessionAttr(bpc.request, "userName", oDto.getDisplayName());
         }
         List<SelectOption> recurrenceOption = inspSupAddAvailabilityService.getRecurrenceOption();

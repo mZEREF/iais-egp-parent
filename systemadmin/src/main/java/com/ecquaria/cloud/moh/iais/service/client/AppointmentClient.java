@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAgencyUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDateDto;
@@ -85,4 +87,16 @@ public interface AppointmentClient {
 
     @GetMapping(value = "/iais-appointment/appt-sys-corr/{srcSysId}/{userLoginId}")
     FeignResponseEntity<List<ApptUserSystemCorrelationDto>> getApptUserSystemCorrelationDtos(@PathVariable("srcSysId") String srcSysId, @PathVariable("userLoginId") String userLoginId);
+
+    @GetMapping(value = "/iais-appointment/appt-sys-corr/{userLoginId}")
+    FeignResponseEntity<ApptAgencyUserDto> getApptAgencyUserDtoLogin(@PathVariable("userLoginId") String userLoginId);
+
+    @PostMapping(value = "/iais-appointment/appt-corr-calendar", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApptUserSystemCorrelationDto>> createApptUserInfo(@RequestBody ApptAppInfoShowDto apptAppInfoShowDto);
+
+    @PutMapping(value = "/iais-appointment/appt-nonavau-refno", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApptNonAvailabilityDateDto>> cancelNonAvailabilityByApptRefNo(@RequestBody ApptNonAvailabilityDateDto apptNonAvailabilityDateDto);
+
+    @PutMapping(value = "/iais-appointment/appt-calendar-refno", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApptUserCalendarDto>> cancelCalenderByApptRefNoAndStatus(ApptUserCalendarDto apptUserCalendarDto);
 }
