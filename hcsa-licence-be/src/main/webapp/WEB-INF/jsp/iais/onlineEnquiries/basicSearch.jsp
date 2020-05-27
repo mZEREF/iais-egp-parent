@@ -241,7 +241,7 @@
     }
     function doClear(){
         $('input[name="searchNo"]').val("");
-        $('input[type="checkbox"]').prop("checked", false);
+        $('input[type="radio"]').prop("checked", false);
     }
 
     function doAdvancedSearch(){
@@ -266,6 +266,7 @@
         search();
     }
     function search(){
+        showWaiting();
         var chk=$("[name='searchChk']:checked");
         var dropIds = new Array();
         chk.each(function(){
@@ -273,8 +274,9 @@
         });
         if(dropIds.length===0){
             $("#selectSearchChkMsg").show();
+            dismissWaiting();
         }else {
-            showWaiting();SOP.Crud.cfxSubmit("mainForm", "basicSearch");
+            SOP.Crud.cfxSubmit("mainForm", "basicSearch");
         }
     }
 

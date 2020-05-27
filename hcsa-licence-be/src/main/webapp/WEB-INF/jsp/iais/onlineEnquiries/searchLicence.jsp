@@ -74,7 +74,7 @@
                                 </iais:row>
                                 <iais:row style="color:#ff0000; display: none" id="submittedDateError">
                                     <iais:field value=""/>
-                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                    <div class="col-sm-7 col-md-8 col-xs-10">
                                         Application Submitted Date From cannot be later than Application Submitted Date To.                                            </p>
                                     </div >
                                 </iais:row>
@@ -132,7 +132,7 @@
                                 </iais:row>
                                 <iais:row style="color:#ff0000; display: none" id="startDateError">
                                     <iais:field value=""/>
-                                    <div class="col-sm-7 col-md-4 col-xs-10">
+                                    <div class="col-sm-7 col-md-6 col-xs-10">
                                         Licence Start Date From cannot be later than Licence Start Date To.                                            </p>
                                     </div >
                                 </iais:row>
@@ -149,11 +149,11 @@
                                     </div >
                                 </iais:row>
                                 <iais:row style="color:#ff0000; display: none" id="expiryDateError">
-                                <iais:field value=""/>
-                                <div class="col-sm-7 col-md-4 col-xs-10">
-                                Licence Expiry Date From cannot be later than Licence Expiry Date To.                                            </div>
-                            </div >
-                            </iais:row>
+                                    <iais:field value=""/>
+                                    <div class="col-sm-7 col-md-6 col-xs-10">
+                                        Licence Expiry Date From cannot be later than Licence Expiry Date To.                                            </div>
+                                    </div >
+                                </iais:row>
                             </iais:section>
                         </div>
                     </div>

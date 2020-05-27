@@ -96,8 +96,8 @@
                                         </iais:row>
                                         <iais:row style="color:#ff0000; display: none" id="submittedDateError">
                                             <iais:field value=""/>
-                                            <div class="col-sm-7 col-md-4 col-xs-10">
-                                                Application Submitted Date From cannot be later than Application Submitted Date To. </p>
+                                            <div class="col-sm-7 col-md-8 col-xs-10">
+                                                Application Submitted Date From cannot be later than Application Submitted Date To.
                                             </div>
                                         </iais:row>
                                         <iais:row>
@@ -160,8 +160,8 @@
                                         </iais:row>
                                         <iais:row style="color:#ff0000; display: none" id="startDateError">
                                             <iais:field value=""/>
-                                            <div class="col-sm-7 col-md-4 col-xs-10">
-                                                Licence Start Date From cannot be later than Licence Start Date To. </p>
+                                            <div class="col-sm-7 col-md-6 col-xs-10">
+                                                Licence Start Date From cannot be later than Licence Start Date To.
                                             </div>
                                         </iais:row>
                                         <iais:row>
@@ -180,11 +180,10 @@
                                         </iais:row>
                                         <iais:row style="color:#ff0000; display: none" id="expiryDateError">
                                         <iais:field value=""/>
-                                        <div class="col-sm-7 col-md-4 col-xs-10">
-                                        Licence Expiry Date From cannot be later than Licence Expiry Date To.
-                                    </div>
-                                    </div>
-                                    </iais:row>
+                                            <div class="col-sm-7 col-md-6 col-xs-10">
+                                                Licence Expiry Date From cannot be later than Licence Expiry Date To.
+                                            </div>
+                                        </iais:row>
                                     </iais:section>
                                 </div>
                             </div>
@@ -297,7 +296,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </c:if>
                         <c:if test="${count=='5'}">
                             <h4>
@@ -481,7 +479,6 @@
                                             <td><c:out value="${pool.twoLastComplianceHistory}"/></td>
                                             <td><c:out value="${pool.lastComplianceHistory}"/></td>
                                             <td><c:out value="${pool.currentRiskTagging}"/></td>
-
                                         </tr>
                                     </c:forEach>
                                 </c:otherwise>
