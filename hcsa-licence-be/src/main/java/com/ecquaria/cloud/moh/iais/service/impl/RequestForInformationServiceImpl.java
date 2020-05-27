@@ -40,6 +40,13 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -58,12 +65,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * RequestForInformationServiceImpl
@@ -204,10 +205,12 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         List<SelectOption> selectOptions= IaisCommonUtils.genNewArrayList();
         for (HcsaServiceSubTypeDto subTypeName:subTypeNames
         ) {
-            SelectOption selectOption=new SelectOption();
-            selectOption.setText(subTypeName.getSubtypeName());
-            selectOption.setValue(subTypeName.getId());
-            selectOptions.add(selectOption);
+            if("C64DAF1F-1023-EA11-BE78-000C29D29DB0".equals(subTypeName.getId())|| "12B5496B-1123-EA11-BE78-000C29D29DB0".equals(subTypeName.getId())|| "0C0FF57E-1123-EA11-BE78-000C29D29DB0".equals(subTypeName.getId())){
+                SelectOption selectOption=new SelectOption();
+                selectOption.setText(subTypeName.getSubtypeName());
+                selectOption.setValue(subTypeName.getId());
+                selectOptions.add(selectOption);
+            }
         }
         return selectOptions;
     }
