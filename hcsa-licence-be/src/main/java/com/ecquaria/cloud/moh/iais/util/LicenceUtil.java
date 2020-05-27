@@ -1,24 +1,16 @@
 package com.ecquaria.cloud.moh.iais.util;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.sz.commons.util.MsgUtil;
-import freemarker.template.TemplateException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * LicenceUtil
@@ -139,34 +131,5 @@ public class LicenceUtil {
                 selectOptions.add(new SelectOption(String.valueOf(i),String.valueOf(i)));
         return selectOptions;
     }
-    /**
-     * @author huachong & zhilin
-     * @param tempMap
-     * @param msgTemplateDto
-     * @param subject
-     * @param licenseeId
-     * @param clientQueryCode
-     * @return
-     */
-    public static EmailDto sendEmailHelper(Map<String ,Object> tempMap, MsgTemplateDto msgTemplateDto, String subject, String licenseeId, String clientQueryCode) {
-        if (tempMap == null || tempMap.isEmpty() || msgTemplateDto == null
-                || StringUtil.isEmpty(subject)
-                || StringUtil.isEmpty(licenseeId)
-                || StringUtil.isEmpty(clientQueryCode)) {
-            return null;
-        }
-        String mesContext = null;
-        try {
-            mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
-        } catch (IOException | TemplateException e) {
-            e.getMessage();
-        }
-        EmailDto emailDto = new EmailDto();
-        emailDto.setContent(mesContext);
-        emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + subject);
-        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
-        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-        emailDto.setClientQueryCode(clientQueryCode);
-        return emailDto;
-    }
+
 }
