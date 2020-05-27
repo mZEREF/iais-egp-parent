@@ -73,11 +73,13 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
     @Override
     public void compressFile(Map<String, String> appIdItemIdMap) {
-        for(Map.Entry<String, String> fileId: appIdItemIdMap.entrySet()) {
-            String compress = compress(fileId.getKey());
-            String appId = appIdItemIdMap.get(fileId.getKey());
-            rename(compress, appId);
-            deleteFile();
+        if(appIdItemIdMap != null) {
+            for (Map.Entry<String, String> fileId : appIdItemIdMap.entrySet()) {
+                String compress = compress(fileId.getKey());
+                String appId = appIdItemIdMap.get(fileId.getKey());
+                rename(compress, appId);
+                deleteFile();
+            }
         }
     }
 
