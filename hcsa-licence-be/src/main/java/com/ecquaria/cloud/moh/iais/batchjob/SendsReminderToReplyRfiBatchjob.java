@@ -19,6 +19,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
@@ -43,6 +44,8 @@ public class SendsReminderToReplyRfiBatchjob {
 
     @Autowired
     EmailClient emailClient;
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     public void start(BaseProcessClass bpc){
         logAbout("start");
@@ -79,7 +82,7 @@ public class SendsReminderToReplyRfiBatchjob {
             EmailDto emailDto=new EmailDto();
             emailDto.setContent(mesContext);
             emailDto.setSubject(rfiEmailTemplateDto.getSubject());
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setSender(mailSender);
             emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
             emailDto.setClientQueryCode(licPremisesReqForInfoDto.getLicPremId());
             String requestRefNum = emailClient.sendNotification(emailDto).getEntity();

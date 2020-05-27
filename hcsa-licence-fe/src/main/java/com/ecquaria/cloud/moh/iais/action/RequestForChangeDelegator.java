@@ -46,6 +46,7 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
@@ -75,6 +76,9 @@ public class RequestForChangeDelegator {
 
     @Autowired
     private ServiceConfigService serviceConfigService;
+
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     /**
      *
@@ -715,7 +719,7 @@ public class RequestForChangeDelegator {
         email.setReqRefNum(appId);
         email.setSubject(subject);
         email.setContent(mesContext);
-        email.setSender(AppConsts.MOH_AGENCY_NAME);
+        email.setSender(mailSender);
         email.setClientQueryCode(appId);
         email.setReceipts(emailAddr);
         requestForChangeService.sendNotification(email);

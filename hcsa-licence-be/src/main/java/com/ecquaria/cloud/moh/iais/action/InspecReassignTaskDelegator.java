@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,6 +63,8 @@ public class InspecReassignTaskDelegator {
     private EmailClient emailClient;
     @Autowired
     private InboxMsgService inboxMsgService;
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     @Autowired
     private InspecReassignTaskDelegator(InspectionService inspectionService, ApplicationViewService applicationViewService, InspectionAssignTaskService inspectionAssignTaskService) {
@@ -464,7 +467,7 @@ public class InspecReassignTaskDelegator {
         EmailDto emailDto = new EmailDto();
         emailDto.setContent(mesContext);
         emailDto.setSubject(subject);
-        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setSender(mailSender);
         emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
         emailDto.setClientQueryCode(licenseeId);
         //send email

@@ -60,6 +60,9 @@ import java.util.Map;
 @Service
 @Slf4j
 public class CessationServiceImpl implements CessationService {
+    private final String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
+    private final String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
+
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
@@ -87,8 +90,10 @@ public class CessationServiceImpl implements CessationService {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
-    private final String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
-    private final String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
+
+
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     @Override
     public List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds) {
@@ -246,7 +251,7 @@ public class CessationServiceImpl implements CessationService {
         EmailDto emailDto = new EmailDto();
         emailDto.setContent(templateMessageByContent);
         emailDto.setSubject("MOH IAIS – Cessation");
-        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setSender(mailSender);
         emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
         emailDto.setClientQueryCode(appGrpId);
         emailClient.sendNotification(emailDto).getEntity();

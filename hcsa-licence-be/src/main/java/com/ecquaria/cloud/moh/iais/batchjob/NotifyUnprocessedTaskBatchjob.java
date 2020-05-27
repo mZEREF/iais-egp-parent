@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
@@ -14,13 +13,13 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * NotifyUnprocessedTaskBatchjob
@@ -42,6 +41,8 @@ public class NotifyUnprocessedTaskBatchjob {
 
     @Autowired
     MsgTemplateClient msgTemplateClient;
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     @Autowired
     SystemBeLicClient systemBeLicClient;
@@ -119,7 +120,7 @@ public class NotifyUnprocessedTaskBatchjob {
         email.setReqRefNum(item.getId());
         email.setSubject(subject);
         email.setContent(mesContext);
-        email.setSender(AppConsts.MOH_AGENCY_NAME);
+        email.setSender(mailSender);
         email.setClientQueryCode(item.getId());
         email.setReceipts(emailAddr);
         emailClient.sendNotification(email).getEntity();

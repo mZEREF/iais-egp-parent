@@ -79,6 +79,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
@@ -152,6 +153,9 @@ public class HcsaApplicationDelegator {
 
     @Autowired
     LicenceService licenceService;
+
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     /**
      * StartStep: doStart
@@ -1089,7 +1093,7 @@ public class HcsaApplicationDelegator {
             EmailDto emailDto = new EmailDto();
             emailDto.setContent(mesContext);
             emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + applicationNo + " is Rejected");
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setSender(mailSender);
             emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
             emailDto.setClientQueryCode(groupNo);
             //send
@@ -1358,7 +1362,7 @@ public class HcsaApplicationDelegator {
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
         EmailDto emailDto=new EmailDto();
         emailDto.setClientQueryCode(applicationNo);
-        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setSender(mailSender);
         emailDto.setContent(templateMessageByContent);
         emailDto.setSubject(msgTemplateDto.getTemplateName()+subjectSuppInfo);
         emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
@@ -1372,7 +1376,7 @@ public class HcsaApplicationDelegator {
         String templateMessageByContent = "send sms";
         SmsDto smsDto = new SmsDto();
         smsDto.setContent(templateMessageByContent);
-        smsDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        smsDto.setSender(mailSender);
         smsDto.setOnlyOfficeHour(true);
         String refNo = inboxMsgService.getMessageNo();
         emailClient.sendSMS(IaisEGPHelper.getLicenseeMobiles(licenseeId),smsDto,refNo);
@@ -1536,7 +1540,7 @@ public class HcsaApplicationDelegator {
         EmailDto emailDto = new EmailDto();
         emailDto.setContent(mesContext);
         emailDto.setSubject(subject);
-        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setSender(mailSender);
         emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
         emailDto.setClientQueryCode(licenseeId);
         //send email
@@ -1576,7 +1580,7 @@ public class HcsaApplicationDelegator {
                 String mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
                 EmailDto emailDto = new EmailDto();
                 emailDto.setContent(mesContext);
-                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                emailDto.setSender(mailSender);
                 emailDto.setSubject("MOH IAIS – Appeal, "+applicationNo+" , is Rejected");
                 emailDto.setClientQueryCode(applicationNo);
                 emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));

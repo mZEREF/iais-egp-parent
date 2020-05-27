@@ -42,6 +42,7 @@ import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,6 +60,8 @@ import java.util.Map;
 @Delegator("inspectionMergeSendNcEmailDelegator")
 @Slf4j
 public class InspectionMergeSendNcEmailDelegator {
+    @Value("${iais.email.sender}")
+    private String mailSender;
     @Autowired
     InspEmailService inspEmailService;
     @Autowired
@@ -428,7 +431,7 @@ public class InspectionMergeSendNcEmailDelegator {
                 EmailDto emailDto=new EmailDto();
                 emailDto.setContent(inspectionEmailTemplateDto.getMessageContent());
                 emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
-                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                emailDto.setSender(mailSender);
                 emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                 emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
                 String requestRefNum = emailClient.sendNotification(emailDto).getEntity();

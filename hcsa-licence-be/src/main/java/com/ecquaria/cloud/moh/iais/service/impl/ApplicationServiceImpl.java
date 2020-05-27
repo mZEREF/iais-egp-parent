@@ -107,6 +107,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
+    @Value("${iais.email.sender}")
+    private String mailSender;
+
     @Override
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId) {
         return applicationClient.getGroupAppsByNo(appGroupId).getEntity();
@@ -222,7 +225,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             EmailDto emailDto = new EmailDto();
             emailDto.setContent(templateMessageByContent);
             emailDto.setSubject("Self-Assessment submission for Application Number");
-            emailDto.setSender("yichen_guo@ecquaria.com");
+            emailDto.setSender(mailSender);
             emailDto.setReceipts(emailAddress);
 
             emailClient.sendNotification(emailDto);
@@ -287,7 +290,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 EmailDto emailDto = new EmailDto();
                 emailDto.setContent(mesContext);
                 emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + applicationNo);
-                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                emailDto.setSender(mailSender);
                 emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                 emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
                 //send

@@ -31,6 +31,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
@@ -56,6 +57,9 @@ public class AppealApproveBatchjob {
     private ApplicationClient applicationClient;
     @Autowired
     private EmailClient emailClient;
+    @Value("${iais.email.sender}")
+    private String mailSender;
+
     public void doBatchJob(BaseProcessClass bpc) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob is start ..."));
         List<AppealApproveGroupDto> appealApproveGroupDtos = appealService.getAppealApproveDtos();
@@ -370,7 +374,7 @@ public class AppealApproveBatchjob {
             String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
             EmailDto emailDto=new EmailDto();
             emailDto.setClientQueryCode("Appeal approved");
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setSender(mailSender);
             emailDto.setContent(templateMessageByContent);
             emailDto.setSubject("MOH IAIS – Appeal -"+application.getApplicationNo()+" is approved");
             String grpId = application.getAppGrpId();

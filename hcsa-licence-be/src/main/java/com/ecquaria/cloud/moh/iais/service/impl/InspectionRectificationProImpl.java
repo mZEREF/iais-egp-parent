@@ -158,6 +158,9 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
+    @Value("${iais.email.sender}")
+    private String mailSender;
+
     static String[] processDecArr = new String[]
             {InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION, InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION,
                     InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION};
@@ -307,7 +310,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
                 EmailDto emailDto = new EmailDto();
                 emailDto.setContent(templateMessageByContent);
                 emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
-                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                emailDto.setSender(mailSender);
                 emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                 emailDto.setClientQueryCode(taskDto.getId());
                 emailClient.sendNotification(emailDto);

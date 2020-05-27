@@ -160,6 +160,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
+    @Value("${iais.email.sender}")
+    private String mailSender;
+
     @Override
     public ApptInspectionDateDto getInspectionDate(TaskDto taskDto, ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto) {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -970,7 +973,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             EmailDto emailDto = new EmailDto();
             emailDto.setContent(mesContext);
             emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setSender(mailSender);
             emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
             emailDto.setClientQueryCode(taskId);
             emailClient.sendNotification(emailDto);

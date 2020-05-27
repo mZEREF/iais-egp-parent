@@ -54,6 +54,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -120,6 +121,8 @@ public class RequestForInformationDelegator {
     FillupChklistService fillupChklistService;
     @Autowired
     EmailClient emailClient;
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
 
     public void start(BaseProcessClass bpc) {
@@ -369,7 +372,7 @@ public class RequestForInformationDelegator {
                 EmailDto emailDto=new EmailDto();
                 emailDto.setContent(mesContext);
                 emailDto.setSubject(rfiEmailTemplateDto.getSubject());
-                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                emailDto.setSender(mailSender);
                 emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                 emailDto.setClientQueryCode(licPremId);
                 String requestRefNum = emailClient.sendNotification(emailDto).getEntity();

@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.util.DateUtil;
 
@@ -47,6 +48,8 @@ public class EmailToResultServiceImpl implements EmailToResultService {
     private static final String EFFECTIVEDATAEQUALDATA = "51AD8B3B-E652-EA11-BE7F-000C29F371DC";
     private static final String LICENCEENDDATE = "52AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     @Override
     public void sendRenewResultEmail() throws Exception {
@@ -196,7 +199,7 @@ public class EmailToResultServiceImpl implements EmailToResultService {
 //        EmailDto emailDto = new EmailDto();
 //        emailDto.setContent(templateMessageByContent);
 //        emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + applicationNo);
-//        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+//        emailDto.setSender(mailSender);
 //        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
 //        emailDto.setClientQueryCode();
 //        //send

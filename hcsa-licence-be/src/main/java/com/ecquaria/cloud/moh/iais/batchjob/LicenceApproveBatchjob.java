@@ -75,6 +75,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
@@ -112,6 +113,8 @@ public class LicenceApproveBatchjob {
     private MsgTemplateClient msgTemplateClient;
     @Autowired
     private InspEmailService inspEmailService;
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     private Map<String,Integer> hciCodeVersion = new HashMap();
     private Map<String,Integer> keyPersonnelVersion = IaisCommonUtils.genNewHashMap();
@@ -743,7 +746,7 @@ public class LicenceApproveBatchjob {
         email.setReqRefNum(applicationNo);
         email.setSubject(rejectTemplateDto.getSubject());
         email.setContent(mesContext);
-        email.setSender(AppConsts.MOH_AGENCY_NAME);
+        email.setSender(mailSender);
         email.setClientQueryCode(applicationNo);
         email.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()));
         licenceService.sendEmail(email);
@@ -1520,7 +1523,7 @@ public class LicenceApproveBatchjob {
         String templateMessageByContent = "send sms";
         SmsDto smsDto = new SmsDto();
         smsDto.setContent(templateMessageByContent);
-        smsDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        smsDto.setSender(mailSender);
         smsDto.setOnlyOfficeHour(true);
         String refNo = inboxMsgService.getMessageNo();
         emailClient.sendSMS(IaisEGPHelper.getLicenseeMobiles(licenseeId),smsDto,refNo);
@@ -1544,7 +1547,7 @@ public class LicenceApproveBatchjob {
         EmailDto emailDto = new EmailDto();
         emailDto.setContent(mesContext);
         emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + subject);
-        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setSender(mailSender);
         emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
         emailDto.setClientQueryCode(clientQueryCode);
         //send
@@ -1569,7 +1572,7 @@ public class LicenceApproveBatchjob {
                 EmailDto emailDto = new EmailDto();
                 emailDto.setContent(mesContext);
                 emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + serviceName);
-                emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                emailDto.setSender(mailSender);
                 emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()));
                 emailDto.setClientQueryCode(licenceDto.getId());
                 //send

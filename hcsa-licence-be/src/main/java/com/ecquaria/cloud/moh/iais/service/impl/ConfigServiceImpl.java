@@ -36,6 +36,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,6 +58,8 @@ import java.util.Set;
 @Service
 @Slf4j
 public class ConfigServiceImpl implements ConfigService {
+    private static final String DATE_FORMAT="yyyy-MM-dd";
+
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
@@ -67,7 +70,10 @@ public class ConfigServiceImpl implements ConfigService {
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     private EmailClient emailClient;
-    private static final String DATE_FORMAT="yyyy-MM-dd";
+
+    @Value("${iais.email.sender}")
+    private String mailSender;
+
     @Override
     public List<HcsaServiceDto> getAllHcsaServices(HttpServletRequest request) {
         List<HcsaServiceDto> entity = hcsaConfigClient.allHcsaService().getEntity();
@@ -898,7 +904,7 @@ public class ConfigServiceImpl implements ConfigService {
         EmailDto emailDto=new EmailDto();
         emailDto.setContent(templateMessageByContent);
         emailDto.setSubject("The following HCSA Service Template:"+serviceName+" has been "+option);
-        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setSender(mailSender);
         List<String> address=new ArrayList<>();
         address.add(orgUserDto.getEmail());
         emailDto.setReceipts(address);
@@ -971,7 +977,7 @@ public class ConfigServiceImpl implements ConfigService {
         EmailDto emailDto=new EmailDto();
         emailDto.setContent(templateMessageByContent);
         emailDto.setSubject("The Effective Start/End Date of the following HCSA Service Template: "+serviceName+"  has been amended");
-        emailDto.setSender("MOH");
+        emailDto.setSender(mailSender);
         emailDto.setClientQueryCode("isNotAuto");
         //address
         List<String> address=new ArrayList<>();

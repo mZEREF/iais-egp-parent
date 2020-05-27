@@ -180,6 +180,9 @@ public class NewApplicationDelegator {
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
+    @Value("${iais.email.sender}")
+    private String mailSender;
+
     /**
      * StartStep: Start
      *
@@ -1859,7 +1862,7 @@ public class NewApplicationDelegator {
             EmailDto emailDto = new EmailDto();
             emailDto.setContent(mesContext);
             emailDto.setSubject(subject);
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setSender(mailSender);
             emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
             emailDto.setClientQueryCode(appSubmissionDto.getAppGrpId());
             //send email
@@ -1954,7 +1957,7 @@ public class NewApplicationDelegator {
         EmailDto emailDto = new EmailDto();
         emailDto.setContent(mesContext);
         emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + subject);
-        emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+        emailDto.setSender(mailSender);
         emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
         emailDto.setClientQueryCode(clientQueryCode);
         //send
@@ -1991,7 +1994,7 @@ public class NewApplicationDelegator {
             EmailDto emailDto = new EmailDto();
             emailDto.setContent(mesContext);
             emailDto.setSubject(subject);
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setSender(mailSender);
             emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
             emailDto.setClientQueryCode(appSubmissionDto.getAppGrpId());
             //send email

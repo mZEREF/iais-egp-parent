@@ -27,6 +27,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,6 +59,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     @Autowired
     private SystemBeLicClient systemBeLicClient;
     private SimpleDateFormat simpleDateFormat =new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     private static final String EMAIL_SUBJECT="MOH IAIS – REMINDER TO RENEW LICENCE";
     private static final String EMAIL_TO_OFFICER_SUBJECT="MOH IAIS – Licence is due to expiry";
@@ -194,7 +197,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 EmailDto emailDto=new EmailDto();
                 emailDto.setContent(templateMessageByContent);
                 emailDto.setSubject(EMAIL_SUBJECT);
-                emailDto.setSender("Ministry of Health");
+                emailDto.setSender(mailSender);
                 emailDto.setClientQueryCode("isNotAuto");
 
                 if(!licenseeEmailAddrs.isEmpty()){
@@ -285,7 +288,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 EmailDto emailDto=new EmailDto();
                 emailDto.setContent(templateMessageByContent);
                 emailDto.setSubject(EMAIL_SUBJECT);
-                emailDto.setSender("Ministry of Health");
+                emailDto.setSender(mailSender);
                 emailDto.setClientQueryCode("auto");
 
                 if(!licenseeEmailAddrs.isEmpty()){
@@ -324,7 +327,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             EmailDto emailDto=new EmailDto();
             emailDto.setContent(templateMessageByContent);
             emailDto.setSubject(EMAIL_TO_OFFICER_SUBJECT);
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setSender(mailSender);
             emailDto.setClientQueryCode(licenceDto.getLicenseeId());
 
 

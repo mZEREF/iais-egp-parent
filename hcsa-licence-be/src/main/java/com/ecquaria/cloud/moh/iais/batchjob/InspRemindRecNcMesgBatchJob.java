@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -18,12 +17,12 @@ import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import java.io.IOException;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Process MohRemindRecNcMesg
@@ -46,6 +45,9 @@ public class InspRemindRecNcMesgBatchJob {
 
     @Autowired
     private InspectionTaskClient inspectionTaskClient;
+
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     /**
      * StartStep: remindRecNcMesgStart
@@ -89,7 +91,7 @@ public class InspRemindRecNcMesgBatchJob {
             EmailDto emailDto = new EmailDto();
             emailDto.setContent(mesContext);
             emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setSender(mailSender);
             emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
             emailDto.setClientQueryCode(appId);
             emailClient.sendNotification(emailDto);
