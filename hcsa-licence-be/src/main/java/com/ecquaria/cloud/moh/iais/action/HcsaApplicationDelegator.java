@@ -826,8 +826,10 @@ public class HcsaApplicationDelegator {
     public void reject(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do reject start ...."));
         routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_REJECTED,null);
+        log.debug(StringUtil.changeForLog("the do reject end ...."));
+    }
 
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+    private void rejectSendNotification(ApplicationViewDto applicationViewDto)throws FeignException, CloneNotSupportedException, IOException, TemplateException{
         String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
         String appGrpId = applicationViewDto.getApplicationDto().getAppGrpId();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
@@ -884,7 +886,6 @@ public class HcsaApplicationDelegator {
         }catch (Exception e){
             log.error(e.getMessage()+"error",e);
         }
-        log.debug(StringUtil.changeForLog("the do reject end ...."));
     }
 
     /**
@@ -1179,6 +1180,7 @@ public class HcsaApplicationDelegator {
                 Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
                 if(null != recomInNumber && recomInNumber == 0){
                     appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
+                    rejectSendNotification(applicationViewDto);
                 }
             }
         }
