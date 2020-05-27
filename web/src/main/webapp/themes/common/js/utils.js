@@ -15,8 +15,8 @@ function doValidation(){
         type: 'POST',
         url: BASE_CONTEXT_PATH + "/validation.do",
         data:$('form').serialize(),
-        success: function(data){
-            doValidationParse(data);
+        success: function(res){
+            doValidationParse(res);
         },
         error: function(jqXHR, textStatus, errorThrown) {
             $("#iaisErrorFlag").val('Error:Exception');
@@ -133,4 +133,86 @@ function showPopupWindowSpec(url,width,height) {
 
     dismissWaiting();
     return false;
+}
+
+function initMemoryPage(paginationDiv, checkType, pageNo) {
+    var data = {
+        pageDiv : paginationDiv,
+        pageNum : pageNo
+    };
+    $.ajax({
+        data:"name=memPaging",
+        type:"GET",
+        dataType: 'json',
+        url:BASE_CONTEXT_PATH + "/commonAjax/changeMemoryPage.do",
+        error:function(res){
+            alert("wrong:" + res);
+        },
+        success:function(res){
+            confirmChangeMemoryPage(res);
+        }
+    });
+}
+
+function changeMemoryPage(paginationDiv, checkType, pageNo) {
+    var ids = "NA";
+    if (checkType == 1 || checkType == 2) {
+        var elemName = "input:checkbox[name='" + paginationDiv + "Check']";
+        $(elemName).each(function() {
+            if (this.checked) {
+                ids += "," + this.value;
+            }
+        });
+    }
+    var data = {
+        checkId : ids,
+        pageDiv : paginationDiv,
+        pageNum : pageNo
+    };
+    $.ajax({
+        data:"name=memPaging",
+        type:"GET",
+        dataType: 'json',
+        url:BASE_CONTEXT_PATH + "/commonAjax/changeMemoryPage.do",
+        error:function(res){
+            alert("wrong:" + res);
+        },
+        success:function(res){
+            confirmChangeMemoryPage(res);
+        }
+    });
+}
+
+function confirmChangeMemoryPage(res) {
+    var paginationDivId = "#" + res.pageDivId;
+    var recDivId = "#" + res.recDivId;
+    var checkAllId = res.pageDivId + "CheckAll";
+    $(paginationDivId).html(res.pageHtml);
+    $(recDivId).html(res.recHtml);
+    var checkAllObj = document.getElementById(checkAllId);
+    if (res.checkAllRemove != null && res.checkAllRemove == '1') {
+        checkAllObj.checked = false;
+    } else if (res.checkAllRemove != null && res.checkAllRemove == '0') {
+        checkAllObj.checked = true;
+    }
+}
+
+function checkAllMemoryheck(paginationDiv) {
+    var checkAllId = paginationDiv + "CheckAll";
+    var elemName = paginationDiv + "Check";
+    var checkAllObj = document.getElementById(checkAllId);
+    var elems = document.getElementsByName(elemName);
+    var checked = checkAllObj.checked;
+    if (elems != null) {
+        for (var i = 0; i < elems.length; i++) {
+            elems[i].checked = checked;
+        }
+    }
+}
+
+function memoryCheckBoxChange(paginationDiv, obj) {
+    var checkAllId = "#" + paginationDiv + "CheckAll";
+    if (!obj.checked) {
+        $(checkAllId).removeAttr("checked");
+    }
 }
