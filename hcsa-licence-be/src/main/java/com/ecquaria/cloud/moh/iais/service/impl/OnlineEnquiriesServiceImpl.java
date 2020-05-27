@@ -159,6 +159,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             organizationLicDto.getLicenseeIndividualDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{organizationLicDto.getLicenseeIndividualDto().getSalutation()}).get(0).getText());
         }catch (Exception e){
             log.error(e.getMessage(), e);
+            organizationLicDto.getLicenseeIndividualDto().setSalutation("-");
         }
         try{
             organizationLicDto.setDoMain(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()).get(0));
@@ -170,16 +171,47 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
         for (LicenseeKeyApptPersonDto org:organizationLicDto.getLicenseeKeyApptPersonDtos()
         ) {
-            org.setDesignation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{org.getDesignation()}).get(0).getText());
-            org.setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{org.getSalutation()}).get(0).getText());
+            try {
+                org.setDesignation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{org.getDesignation()}).get(0).getText());
+
+            }catch (NullPointerException e){
+                log.error(e.getMessage(), e);
+                org.setDesignation("-");
+            }
+            try {
+                org.setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{org.getSalutation()}).get(0).getText());
+            }catch (NullPointerException e){
+                log.error(e.getMessage(), e);
+                org.setSalutation("-");
+            }
         }
         for (PersonnelsDto per:personnelsDto
         ) {
             try{
                 per.getLicKeyPersonnelDto().setPsnType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getLicKeyPersonnelDto().getPsnType()}).get(0).getText());
+            }catch (NullPointerException e){
+                log.error(e.getMessage(), e);
+                per.getLicKeyPersonnelDto().setPsnType("-");
+            }
+            try {
                 per.getKeyPersonnelDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getSalutation()}).get(0).getText());
+            }catch (NullPointerException e){
+                log.error(e.getMessage(), e);
+                per.getKeyPersonnelDto().setSalutation("-");
+            }
+            try {
                 per.getKeyPersonnelDto().setDesignation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getDesignation()}).get(0).getText());
+            }catch (NullPointerException e){
+                log.error(e.getMessage(), e);
+                per.getKeyPersonnelDto().setDesignation("-");
+            }
+            try {
                 per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelExtDto().getProfessionType()}).get(0).getText());
+            }catch (NullPointerException e){
+                log.error(e.getMessage(), e);
+                per.getKeyPersonnelExtDto().setProfessionType("-");
+            }
+            try {
                 switch (per.getKeyPersonnelExtDto().getPreferredMode()){
                     case "1":per.getKeyPersonnelExtDto().setPreferredMode("Email");break;
                     case "2":per.getKeyPersonnelExtDto().setPreferredMode("SMS");break;
@@ -187,6 +219,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     default:per.getKeyPersonnelExtDto().setPreferredMode("-");break;
                 }
             }catch (NullPointerException e){
+                per.getKeyPersonnelExtDto().setPreferredMode("-");
                 log.error(e.getMessage(), e);
             }
         }
@@ -243,8 +276,13 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     c.setTime(appPremisesRecommendationDto.getRecomInDate());
                     complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
                     complianceHistoryDto.setInspectionDateYear(c.get(Calendar.YEAR));
-                    String riskTag=MasterCodeUtil.retrieveOptionsByCodes(new String[]{fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesRecommendationDto.getAppPremCorreId(), InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity().getRecomDecision()}).get(0).getText();
-                    complianceHistoryDto.setRiskTag(riskTag);
+                    try {
+                        String riskTag=MasterCodeUtil.retrieveOptionsByCodes(new String[]{fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesRecommendationDto.getAppPremCorreId(), InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity().getRecomDecision()}).get(0).getText();
+                        complianceHistoryDto.setRiskTag(riskTag);
+                    }catch (NullPointerException e){
+                        log.error(e.getMessage(), e);
+                        complianceHistoryDto.setRiskTag("-");
+                    }
                     complianceHistoryDtos.add(complianceHistoryDto);
                 }
 

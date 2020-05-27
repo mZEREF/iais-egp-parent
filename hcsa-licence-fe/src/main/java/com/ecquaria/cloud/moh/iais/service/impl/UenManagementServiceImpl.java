@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.UenManagementService;
-import com.ecquaria.cloud.moh.iais.service.client.FeEmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.UenManagementClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -39,8 +38,6 @@ public class UenManagementServiceImpl implements UenManagementService {
     private UenManagementClient uenManagementClient;
     @Autowired
     private SystemAdminClient systemAdminClient;
-    @Autowired
-    private FeEmailClient emailClient;
     @Autowired
     private EmailHelper emailHelper;
 
