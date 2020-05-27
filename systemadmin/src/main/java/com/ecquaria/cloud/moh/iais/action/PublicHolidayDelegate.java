@@ -120,7 +120,9 @@ public class PublicHolidayDelegate {
         Date todate= new  Date();
         Calendar   calendar = Calendar.getInstance();
         calendar.setTime(fromDate);
-        calendar.add(Calendar.DAY_OF_MONTH,1);
+        calendar.add(Calendar.HOUR,23);
+        calendar.add(Calendar.MINUTE,59);
+        calendar.add(Calendar.SECOND,59);
         todate=calendar.getTime();
 
         publicHolidayDto.setToDate(todate);
@@ -206,7 +208,9 @@ public class PublicHolidayDelegate {
         Date todate= new  Date();
         Calendar   calendar = Calendar.getInstance();
         calendar.setTime(fromDate);
-        calendar.add(Calendar.DAY_OF_MONTH,1);
+        calendar.add(Calendar.HOUR,23);
+        calendar.add(Calendar.MINUTE,59);
+        calendar.add(Calendar.SECOND,59);
         todate=calendar.getTime();
 
         publicHolidayDto.setToDate(todate);
