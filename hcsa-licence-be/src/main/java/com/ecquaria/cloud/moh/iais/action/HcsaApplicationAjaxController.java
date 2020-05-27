@@ -68,6 +68,10 @@ public class HcsaApplicationAjaxController{
             //name
             String fileName = fileSplit[0];
 //            String fileName = UUID.randomUUID().toString();
+            if(!StringUtil.isEmpty(fileName) && fileName.contains("\\")) {
+                String [] DOCS= fileName.split("\\\\");
+                fileName = DOCS[DOCS.length-1];
+            }
             appIntranetDocDto.setDocName(fileName);
             //status
             appIntranetDocDto.setDocStatus(AppConsts.COMMON_STATUS_ACTIVE);
