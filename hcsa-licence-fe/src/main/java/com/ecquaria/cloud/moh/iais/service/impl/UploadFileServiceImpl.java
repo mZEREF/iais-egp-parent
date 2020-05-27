@@ -263,11 +263,9 @@ public class UploadFileServiceImpl implements UploadFileService {
                    if(b){
                        log.info(StringUtil.changeForLog("----------- new zip file name is"+sharedPath+AppServicesConsts.BACKUPS+File.separator+s+".zip"));
                    }
-/*
                    String string = eicGateway(s + AppServicesConsts.ZIP_NAME, AppServicesConsts.BACKUPS + File.separator + s + AppServicesConsts.ZIP_NAME, groupId);
-*/
-                   String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,AppServicesConsts.BACKUPS + File.separator+s+AppServicesConsts.ZIP_NAME,groupId);
-                   if(!s1.equals("SUCCESS")){
+           /*        String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,AppServicesConsts.BACKUPS + File.separator+s+AppServicesConsts.ZIP_NAME,groupId);*/
+                   if(!string.equals("SUCCESS")){
                        MiscUtil.deleteFile(curFile);
                        flag=false;
                        break;
@@ -289,7 +287,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, UploadFileServiceImpl.class.getName(),
                 "saveFileName", currentApp + "-" + currentDomain,
                 ProcessFileTrackDto.class.getName(), JsonUtil.parseToJson(processFileTrackDto));
-        FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getOrgTrackingClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
+        FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
         if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
             EicRequestTrackingDto entity = fetchResult.getEntity();
             if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
@@ -299,7 +297,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                 entity.setFirstActionAt(now);
                 entity.setLastActionAt(now);
                 entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                eicRequestTrackingHelper.getOrgTrackingClient().saveEicTrack(entity);
+                eicRequestTrackingHelper.getAppEicClient().saveEicTrack(entity);
                 return string;
             }
         }
