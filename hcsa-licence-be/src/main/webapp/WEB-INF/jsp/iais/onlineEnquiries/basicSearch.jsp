@@ -66,6 +66,13 @@
                                                        value="5"   <c:if test="${count=='5'}">checked</c:if>   name="searchChk"  />&nbsp;Service Personnel Name
                                             </iais:value>
                                         </iais:row>
+                                        <iais:row id="selectSearchChkMsg" style="display: none">
+                                            <div class="col-sm-9">
+                                                <p style="color:#ff0000;">
+                                                    Please select one option
+                                                </p>
+                                            </div>
+                                        </iais:row>
                                         <iais:action style="text-align:right;">
                                             <button type="button" class="btn btn-secondary" type="button"
                                                     onclick="javascript:doClear();">Clear</button>
@@ -249,7 +256,16 @@
         search();
     }
     function search(){
-        showWaiting();SOP.Crud.cfxSubmit("mainForm", "basicSearch");
+        var chk=$("[name='searchChk']:checked");
+        var dropIds = new Array();
+        chk.each(function(){
+            dropIds.push($(this).val());
+        });
+        if(dropIds.length===0){
+            $("#selectSearchChkMsg").show();
+        }else {
+            showWaiting();SOP.Crud.cfxSubmit("mainForm", "basicSearch");
+        }
     }
 
     function sortRecords(sortFieldName,sortType){

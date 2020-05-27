@@ -175,7 +175,7 @@ public class OfficerOnlineEnquiriesDelegator {
         if(count==null){
             count= (String) ParamUtil.getSessionAttr(request,"count");
             if(count==null){
-                count="3";
+                count="0";
             }
         }
         ParamUtil.setSessionAttr(request,"count", count);
