@@ -1590,6 +1590,7 @@ public class LicenceApproveBatchjob {
         String msgId = "";
         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
         //new application send email
+        //zhilin
         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())){
             String uenNo = oldLicenseeDto.getUenNo();
             boolean isNew = false;
@@ -1606,6 +1607,7 @@ public class LicenceApproveBatchjob {
             }catch(IOException | TemplateException e){
                 log.error(StringUtil.changeForLog("send sms error"));
             }
+         //huachong
         }else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
             Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
             tempMap.put("LICENCE",licenceDto.getLicenceNo());
@@ -1618,6 +1620,7 @@ public class LicenceApproveBatchjob {
             }catch(IOException | TemplateException e){
                 log.error(StringUtil.changeForLog("send sms error"));
             }
+         //guying
         }else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
             //Send notification to transferor when licence transfer application is approve
             Map<String, Object> notifyMap = IaisCommonUtils.genNewHashMap();
@@ -1639,6 +1642,7 @@ public class LicenceApproveBatchjob {
             }catch(IOException | TemplateException e){
                 log.error(StringUtil.changeForLog("send sms error"));
             }
+         //guying
         }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())){
             Map<String,Object> notifyMap=IaisCommonUtils.genNewHashMap();
             try{
