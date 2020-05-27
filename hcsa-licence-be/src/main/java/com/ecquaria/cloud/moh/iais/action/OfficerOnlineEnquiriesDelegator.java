@@ -263,6 +263,8 @@ public class OfficerOnlineEnquiriesDelegator {
                             licenceIds.add(UUID.randomUUID().toString());
                             ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
                             rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
+                            reqForInfoSearchListDto.setLicenceStatus("-");
+                            reqForInfoSearchListDto.setLicenceNo("-");
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
@@ -621,6 +623,8 @@ public class OfficerOnlineEnquiriesDelegator {
                         else {
                             ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
                             rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto);
+                            reqForInfoSearchListDto.setLicenceStatus("-");
+                            reqForInfoSearchListDto.setLicenceNo("-");
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
@@ -756,6 +760,9 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setServiceName(rfiApplicationQueryDto.getSvcId());
         reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getHciCode());
         reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getHciName());
+        if(rfiApplicationQueryDto.getHciName().isEmpty()){
+            reqForInfoSearchListDto.setHciName("-");
+        }
         reqForInfoSearchListDto.setBlkNo(rfiApplicationQueryDto.getBlkNo());
 
         reqForInfoSearchListDto.setCurrentRiskTagging(MasterCodeUtil.retrieveOptionsByCodes(new String[]{rfiApplicationQueryDto.getRiskLevel()}).get(0).getText());
