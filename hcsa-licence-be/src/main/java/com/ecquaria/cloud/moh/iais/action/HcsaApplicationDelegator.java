@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -149,7 +150,8 @@ public class HcsaApplicationDelegator {
     @Autowired
     LicenceService licenceService;
     @Autowired
-    AppPremisesCorrClient appPremisesCorrClient;
+    CessationClient cessationClient;
+
 
     @Value("${iais.email.sender}")
     private String mailSender;
@@ -227,13 +229,12 @@ public class HcsaApplicationDelegator {
 
         //set selection value
         setSelectionValue(bpc.request,applicationViewDto,taskDto);
-
-        ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         //check inspection
         checkShowInspection(bpc,applicationViewDto,taskDto,applicationViewDto.getNewAppPremisesCorrelationDto().getOldCorrelationId());
         //set recommendation show name
         checkRecommendationShowName(bpc,applicationViewDto);
-
+        //set session
+        ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
 
@@ -1709,9 +1710,28 @@ public class HcsaApplicationDelegator {
     }
 
     private void setAppealRecommendationDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        boolean isOtherAppealType = false;
+        boolean isChangePeriodAppealType = false;
+        boolean isLateFeeAppealType = false;
+        String applicationType = applicationDto.getApplicationType();
         //get appeal type
-        String appId = applicationViewDto.getApplicationDto().getId();
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = appPremisesCorrClient.getAppPremisesCorrelationsByAppId(appId).getEntity();
+        String appId = applicationDto.getId();
+        AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
+        String appealType = premiseMiscDto.getAppealType();
+        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+            isOtherAppealType = true;
+            if(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD.equals(appealType)){
+                isChangePeriodAppealType = true;
+                isOtherAppealType = false;
+            }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE.equals(appealType)){
+                isLateFeeAppealType = true;
+                isOtherAppealType = false;
+            }
+        }
+        ParamUtil.setSessionAttr(request,"isOtherAppealType",isOtherAppealType);
+        ParamUtil.setSessionAttr(request,"isChangePeriodAppealType",isChangePeriodAppealType);
+        ParamUtil.setSessionAttr(request,"isLateFeeAppealType",isLateFeeAppealType);
     }
 
     public void setNormalProcessingDecisionDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto){
