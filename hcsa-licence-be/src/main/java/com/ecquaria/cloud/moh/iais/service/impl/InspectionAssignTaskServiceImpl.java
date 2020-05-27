@@ -45,7 +45,6 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -594,6 +593,8 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         if (!StringUtil.isEmpty(leadRole)) {
             if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(leadRole)) {
                 groupLeadName = MasterCodeUtil.getCodeDesc(RoleConsts.USER_MASTER_INSPECTION_LEAD);
+            } else if(RoleConsts.USER_ROLE_BROADCAST.equals(otherRole)){
+                groupLeadName = MasterCodeUtil.getCodeDesc(RoleConsts.USER_MASTER_BROADCAST_LEAD);
             } else {
                 groupLeadName = MasterCodeUtil.getCodeDesc(leadRole);
             }
