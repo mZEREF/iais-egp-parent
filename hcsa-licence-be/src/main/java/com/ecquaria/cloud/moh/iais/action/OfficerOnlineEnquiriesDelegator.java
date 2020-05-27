@@ -64,7 +64,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -447,7 +446,7 @@ public class OfficerOnlineEnquiriesDelegator {
         String licExpToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "expiry_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
 
-        Map<String,Object> filters=new HashMap<>(10);
+        Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
         List<String> svcNames=IaisCommonUtils.genNewArrayList();
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();

@@ -41,7 +41,7 @@
                                     Search By Application&nbsp;
                                     <b >&nbsp;
                                         <input  id="applicationChk" type="radio"
-                                               checked name="searchChk" disabled value="2"/>
+                                               checked name="searchChk"  value="2"/>
                                     </b>
                                 </span>
                             </h4>
@@ -122,9 +122,7 @@
                                             <iais:field value="Service Type"/>
                                             <div class="col-sm-7 col-md-4 col-xs-10">
                                                 <div id="service_licence_type">
-                                                    <iais:select name="service_licence_type" options="licSvcTypeOption"
-                                                                 firstOption="Please Select"
-                                                                 value="${SearchParam.filters['svc_name']}"></iais:select>
+                                                    <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please Select" value="${SearchParam.filters['svc_name']}"></iais:select>
                                                 </div>
                                             </div>
                                         </iais:row>
@@ -132,9 +130,7 @@
                                             <iais:field value="Service Sub-Type"/>
                                             <div class="col-sm-7 col-md-4 col-xs-10">
                                                 <div id="service_sub_type">
-                                                    <iais:select name="service_sub_type" options="licSvcSubTypeOption"
-                                                                 firstOption="Please Select"
-                                                                 value="${SearchParam.filters['serviceSubTypeName']}"></iais:select>
+                                                    <iais:select name="service_sub_type" options="licSvcSubTypeOption" firstOption="Please Select" value="${SearchParam.filters['serviceSubTypeName']}"></iais:select>
                                                 </div>
                                             </div>
                                         </iais:row>
@@ -198,7 +194,7 @@
                             <span>Search By HCI&nbsp;
                                 <strong >&nbsp;
                                     <input  id="hciChk" type="radio"
-                                           checked name="searchChk" disabled value="1"/>
+                                           checked name="searchChk"  value="1"/>
                                 </strong>
                             </span>
                             </h4>
@@ -259,7 +255,7 @@
                             <span>Search By Licensee&nbsp;
                                 <strong >&nbsp;
                                     <input  id="licenseeChk" type="radio"
-                                           checked name="searchChk" disabled value="4"/>
+                                           checked name="searchChk"  value="4"/>
                                 </strong>
                             </span>
                             </h4>
@@ -308,7 +304,7 @@
                             <span>Search By Service Personnel Details (CGO, PO, DPO & MedAlert)&nbsp;
                                 <strong >&nbsp;
                                     <input  id="servicePersonnelChk"
-                                           type="radio" checked name="searchChk" disabled value="5"/>
+                                           type="radio" checked name="searchChk"  value="5"/>
                                 </strong>
                             </span>
                             </h4>
