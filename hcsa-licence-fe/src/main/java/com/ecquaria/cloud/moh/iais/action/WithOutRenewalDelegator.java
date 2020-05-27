@@ -567,25 +567,31 @@ public class WithOutRenewalDelegator {
         AppSubmissionListDto appSubmissionListDto =new AppSubmissionListDto();
         String submissionId = generateIdClient.getSeqId().getEntity();
         Long l = System.currentTimeMillis();
-        List<AppSubmissionDto> appSubmissionDtos1=new ArrayList<>(rfcAppSubmissionDtos.size());
+        List<AppSubmissionDto> appSubmissionDtos1=IaisCommonUtils.genNewArrayList();
 
         String totalStr = Formatter.formatCurrency(total);
         //do app submit
-        ApplicationGroupDto applicationGroupDto = appSubmissionService.createApplicationDataByWithOutRenewal(renewDto);
-
+        String appGrpNo = appSubmissionDtos.get(0).getAppGrpNo();
+        appSubmissionDtos1.addAll(appSubmissionDtos);
+  /*      ApplicationGroupDto applicationGroupDto = appSubmissionService.createApplicationDataByWithOutRenewal(renewDto);*/
         if(!rfcAppSubmissionDtos.isEmpty()){
             for(AppSubmissionDto appSubmissionDto : rfcAppSubmissionDtos){
-                appSubmissionDto.setAppGrpId(applicationGroupDto.getId());
-                appSubmissionDto.setAppGrpNo(applicationGroupDto.getGroupNo());
+                appSubmissionDto.setAppGrpNo(appGrpNo);
             }
-            appSubmissionListDto.setAppSubmissionDtos(rfcAppSubmissionDtos);
-            appSubmissionListDto.setEventRefNo(l.toString());
-            eventBusHelper.submitAsyncRequest(appSubmissionListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                    EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT,l.toString(),bpc.process);
         }
+        appSubmissionDtos1.addAll(rfcAppSubmissionDtos);
+
+        List<AppSubmissionDto> appSubmissionDtos3 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos1);
+
+        appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos3);
+        appSubmissionListDto.setEventRefNo(l.toString());
+        eventBusHelper.submitAsyncRequest(appSubmissionListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT,l.toString(),bpc.process);
+
+
 
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos=IaisCommonUtils.genNewArrayList();
-        for(AppSubmissionDto appSubmissionDto : appSubmissionDtos1){
+        for(AppSubmissionDto appSubmissionDto : rfcAppSubmissionDtos){
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             appSvcRelatedInfoDtoList.get(0).setAmount(appSubmissionDto.getAmount());
             appSvcRelatedInfoDtoList.get(0).setApplicationType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
@@ -594,8 +600,8 @@ public class WithOutRenewalDelegator {
         }
         //set group no.
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
-            appSubmissionDto.setAppGrpNo(applicationGroupDto.getGroupNo());
-            appSubmissionDto.setAppGrpId(applicationGroupDto.getId());
+            appSubmissionDto.setAppGrpNo(appGrpNo);
+            appSubmissionDto.setAppGrpId(appSubmissionDtos3.get(0).getAppGrpId());
             appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAmount(renewTotal);
             appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setApplicationType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
             appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setGroupNo(appSubmissionDto.getAppGrpNo());
@@ -603,7 +609,7 @@ public class WithOutRenewalDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
         bpc.request.getSession().setAttribute("otherAppSubmissionDtos",appSubmissionDtos1);
-        ParamUtil.setRequestAttr(bpc.request,"applicationGroupDto",applicationGroupDto);
+    /*    ParamUtil.setRequestAttr(bpc.request,"applicationGroupDto",applicationGroupDto);*/
         ParamUtil.setSessionAttr(bpc.request,"totalStr",totalStr);
         ParamUtil.setSessionAttr(bpc.request,"totalAmount",total);
         //has app submit

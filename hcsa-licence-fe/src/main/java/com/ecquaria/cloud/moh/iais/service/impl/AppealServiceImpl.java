@@ -132,6 +132,13 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public String saveData(HttpServletRequest req) {
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(req,AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId;
+        if(loginContext!=null){
+            licenseeId = loginContext.getLicenseeId();
+        }else {
+            licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
+        }
         CommonsMultipartFile file =( CommonsMultipartFile) req.getSession().getAttribute("file");
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String saveDraftId =(String) req.getSession().getAttribute("saveDraftNo");
@@ -181,6 +188,7 @@ public class AppealServiceImpl implements AppealService {
                 if(!StringUtil.isEmpty(draftStatus)){
                     entity.setDraftStatus(draftStatus);
                 }
+                entity.setLicenseeId(licenseeId);
                 applicationClient.saveDraft(entity).getEntity();
             }
             appPremiseMiscDto.setRemarks(remarks);
@@ -201,7 +209,8 @@ public class AppealServiceImpl implements AppealService {
         appSubmissionDto.setDraftStatus(AppConsts.COMMON_STATUS_ACTIVE);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_APPEAL);
         //todo
-        appSubmissionDto.setLicenseeId("9ED45E34-B4E9-E911-BE76-000C29C8FBE4");
+
+        appSubmissionDto.setLicenseeId(licenseeId);
         AppSubmissionDto entity = applicationClient.saveDraft(appSubmissionDto).getEntity();
         String draftNo = entity.getDraftNo();
         appPremiseMiscDto.setRemarks(remarks);
@@ -216,21 +225,38 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public void getMessage(HttpServletRequest request) {
-        String draftNumber = ParamUtil.getMaskedString(request, "draftNumber");
+        String draftNumber = ParamUtil.getMaskedString(request, "DraftNumber");
         if(draftNumber!=null){
-            AppSubmissionDto appSubmissionDto = applicationClient.getAppSubmissionDtoByAppNo(draftNumber).getEntity();
+            AppSubmissionDto appSubmissionDto = applicationClient.draftNumberGet(draftNumber).getEntity();
             String amountStr = appSubmissionDto.getAmountStr();
             try {
                 AppealPageDto appealPageDto = JsonUtil.parseToObject(amountStr, AppealPageDto.class);
-
+                String appealReason = appealPageDto.getAppealReason();
+                String remarks = appealPageDto.getRemarks();
+                AppPremiseMiscDto appPremiseMiscDto=new AppPremiseMiscDto();
+                appPremiseMiscDto.setReason(appealReason);
+                appPremiseMiscDto.setRemarks(remarks);
+                String appealFor = appealPageDto.getAppealFor();
+                String type = appealPageDto.getType();
+                typeApplicationOrLicence(request,type,appealFor);
+                request.setAttribute("appPremiseMiscDto",appPremiseMiscDto);
+                request.getSession().setAttribute(TYPE,type);
+                request.getSession().setAttribute(APPEALING_FOR,appealFor);
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
 
-
+        return;
         }
         String appealingFor = ParamUtil.getMaskedString(request, APPEALING_FOR);
         String type  = request.getParameter(TYPE);
+        typeApplicationOrLicence(request,type,appealingFor);
+        request.getSession().setAttribute(APPEALING_FOR,appealingFor);
+        request.getSession().setAttribute(TYPE,type);
+
+    }
+
+    private void typeApplicationOrLicence(HttpServletRequest request,String type,String appealingFor){
         if (LICENCE.equals(type)) {
             LicenceDto licenceDto = licenceClient.getLicBylicId(appealingFor).getEntity();
             String svcName = licenceDto.getSvcName();
@@ -256,11 +282,11 @@ public class AppealServiceImpl implements AppealService {
             request.getSession().setAttribute("serviceName",svcName);
             request.getSession().setAttribute("licenceNo",licenceNo);
             request.getSession().setAttribute("appealNo",licenceDto.getLicenceNo());
-        } else if (APPLICATION.equals(type)) {
+        }else if (APPLICATION.equals(type)) {
             ApplicationDto applicationDto = applicationClient.getApplicationById(appealingFor).getEntity();
             boolean maxCGOnumber = isMaxCGOnumber(applicationDto);
             if(!maxCGOnumber){
-                request.getSession().setAttribute("maxCGOnumber",maxCGOnumber);
+                request.getSession().setAttribute("maxCGOnumber",!maxCGOnumber);
             }
             String originLicenceId = applicationDto.getOriginLicenceId();
             if(originLicenceId!=null){
@@ -270,8 +296,8 @@ public class AppealServiceImpl implements AppealService {
                     if(dateDuration[1]==2&&dateDuration[2]==1){
                         request.getSession().setAttribute("lateFee",true);
                     }
-                } catch (ParseException e) {
-                   log.error(e.getMessage()+"------",e);
+                } catch (NullPointerException | ParseException e) {
+                    log.error(e.getMessage()+"------",e);
                 }
             }
             String serviceId = applicationDto.getServiceId();
@@ -309,11 +335,8 @@ public class AppealServiceImpl implements AppealService {
             request.getSession().setAttribute("appealNo",applicationDto.getApplicationNo());
             request.getSession().setAttribute("serviceId",applicationDto.getServiceId());
         }
-        request.getSession().setAttribute(APPEALING_FOR,appealingFor);
-        request.getSession().setAttribute(TYPE,type);
 
     }
-
     @Override
     public Map<String,String> validate(HttpServletRequest request) {
         Map<String,String> errorMap=IaisCommonUtils.genNewHashMap();
@@ -552,11 +575,17 @@ public class AppealServiceImpl implements AppealService {
 
     private AppealPageDto reAppealPage(HttpServletRequest request){
         AppealPageDto appealPageDto=new AppealPageDto();
+
+        String appealingFor =(String) request.getSession().getAttribute(APPEALING_FOR);
+
+        String type = (String)  request.getSession().getAttribute(TYPE);
         List<AppSvcCgoDto> appSvcCgoDtos = reAppSvcCgo(request);
         String reasonSelect = request.getParameter("reasonSelect");
         String proposedHciName = request.getParameter("proposedHciName");
         String remarks = request.getParameter("remarks");
         appealPageDto.setAppealReason(reasonSelect);
+        appealPageDto.setAppealFor(appealingFor);
+        appealPageDto.setType(type);
         appealPageDto.setAppSvcCgoDto(appSvcCgoDtos);
         if (ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME.equals(reasonSelect)) {
             appealPageDto.setNewHciName(proposedHciName);
@@ -627,12 +656,7 @@ public class AppealServiceImpl implements AppealService {
         if(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reasonSelect)){
             appSvcCgoDtos = reAppSvcCgo(request);
         }
-        if (ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION.equals(reasonSelect)) {
-        for(ApplicationDto application:applicationDtoListlist){
-            application.setStatus(ApplicationConsts.APPLICATION_STATUS_APPEAL_APPROVE);
-        }
 
-        }
 
         appealDto.setApplicationGroupDto(applicationGroupDto);
         appealDto.setAppId(licenceDto.getId());
@@ -970,7 +994,7 @@ public class AppealServiceImpl implements AppealService {
         if(hcsaSvcPersonnelDto!=null){
             int maximumCount = hcsaSvcPersonnelDto.getMaximumCount();
             int size = appSvcKeyPersonnelDtos.size();
-            if(size<maximumCount){
+            if(size<=maximumCount){
                 return false;
             }
         }

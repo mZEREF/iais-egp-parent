@@ -149,6 +149,7 @@
         </div>
       </div>
     </div>
+    <ias:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></ias:confirm>
 
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
   </form>
@@ -287,6 +288,16 @@ $('.selectedFile').change(function () {
       SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");
 
   });
+
+
+  function cancelSaveDraft() {
+
+  }
+
+  function cancel() {
+
+  }
+
 
 </script>
 

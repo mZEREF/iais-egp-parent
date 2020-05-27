@@ -1069,19 +1069,19 @@ public class NewApplicationDelegator {
             return;
         }
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtoByGroupNo){
+      /*  for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtoByGroupNo){
             appSubmissionDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
             appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
             appSubmissionRequestInformationDto.setOldAppSubmissionDto(appSubmissionDto1);
             appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
 
-        }
-      /*  oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        }*/
+        oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
-        appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);*/
+        appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
         // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","Y");
         ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE,"The request for information save success");
@@ -3267,6 +3267,10 @@ public class NewApplicationDelegator {
                 ParamUtil.setSessionAttr(bpc.request,DRAFTCONFIG,"test");
             }
             bpc.request.getSession().setAttribute(SELECT_DRAFT_NO,null);
+        }
+        if(draftNumber!=null){
+
+            ParamUtil.setSessionAttr(bpc.request,DRAFTCONFIG,null);
         }
         log.info(StringUtil.changeForLog("the do loadingDraft end ...."));
     }

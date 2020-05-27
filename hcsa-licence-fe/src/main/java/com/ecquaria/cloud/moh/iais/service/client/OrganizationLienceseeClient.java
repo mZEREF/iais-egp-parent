@@ -51,7 +51,7 @@ public interface OrganizationLienceseeClient {
     @PostMapping(value = "/hcsa-resForInfo-fe/licence-accept-rfi",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicPremisesReqForInfoDto> acceptLicPremisesReqForInfo(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto);
 
-    @PostMapping(value = "/iais-orgUserRole/getAdminEmailAdd",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-orgUserRole/getAdminEmailAdd",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getAdminEmailAdd(@RequestParam("orgId") String orgId);
 
 

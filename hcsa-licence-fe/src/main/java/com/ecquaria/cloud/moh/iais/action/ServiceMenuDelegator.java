@@ -68,7 +68,8 @@ public class ServiceMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, null);
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, null);
         ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, null);
-
+        ParamUtil.setSessionAttr(bpc.request,"DraftNumber",null);
+        ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.SELECT_DRAFT_NO,null);
         log.debug(StringUtil.changeForLog("the  doStart end 1...."));
     }
 
