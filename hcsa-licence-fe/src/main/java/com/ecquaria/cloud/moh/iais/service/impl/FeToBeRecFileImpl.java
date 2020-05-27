@@ -88,10 +88,12 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         backups = sharedPath + "backupsRec";
         Map<String, List<AppPremPreInspectionNcDocDto>> fileReportIds = applicationClient.recFileId().getEntity();
         Map<String, String> appIdNcItemIdMap = IaisCommonUtils.genNewHashMap();
-        for(Map.Entry<String, List<AppPremPreInspectionNcDocDto>> entry : fileReportIds.entrySet()){
-            String appId = entry.getKey();
-            List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = entry.getValue();
-            appIdNcItemIdMap = getFileAndClassify(appId, appPremPreInspectionNcDocDtos, appIdNcItemIdMap);
+        if(fileReportIds != null) {
+            for (Map.Entry<String, List<AppPremPreInspectionNcDocDto>> entry : fileReportIds.entrySet()) {
+                String appId = entry.getKey();
+                List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = entry.getValue();
+                appIdNcItemIdMap = getFileAndClassify(appId, appPremPreInspectionNcDocDtos, appIdNcItemIdMap);
+            }
         }
         return appIdNcItemIdMap;
     }
