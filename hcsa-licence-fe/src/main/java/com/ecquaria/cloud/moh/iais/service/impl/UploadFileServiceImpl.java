@@ -263,11 +263,11 @@ public class UploadFileServiceImpl implements UploadFileService {
                    if(b){
                        log.info(StringUtil.changeForLog("----------- new zip file name is"+sharedPath+AppServicesConsts.BACKUPS+File.separator+s+".zip"));
                    }
-                   String string = eicGateway(s + AppServicesConsts.ZIP_NAME, AppServicesConsts.BACKUPS + File.separator + s + AppServicesConsts.ZIP_NAME, groupId);
 /*
-                   String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,AppServicesConsts.BACKUPS + File.separator+s+AppServicesConsts.ZIP_NAME,groupId);
+                   String string = eicGateway(s + AppServicesConsts.ZIP_NAME, AppServicesConsts.BACKUPS + File.separator + s + AppServicesConsts.ZIP_NAME, groupId);
 */
-                   if(!string.equals("SUCCESS")){
+                   String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,AppServicesConsts.BACKUPS + File.separator+s+AppServicesConsts.ZIP_NAME,groupId);
+                   if(!s1.equals("SUCCESS")){
                        MiscUtil.deleteFile(curFile);
                        flag=false;
                        break;
