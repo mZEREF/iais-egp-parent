@@ -82,8 +82,8 @@ public class CessationServiceImpl implements CessationService {
     private AppConfigClient appConfigClient;
     @Autowired
     AppSubmissionService appSubmissionService;
-    private final String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
-    private final String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
+    private final static String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
+    private final static String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
     @Override
     public List<String> getActiveLicence(List<String> licIds) {
@@ -188,7 +188,7 @@ public class CessationServiceImpl implements CessationService {
             }
         }
         List<String> specLicIds = licenceClient.getSpecLicIdsByLicIds(licIds).getEntity();
-        if(!IaisCommonUtils.isEmpty(specLicIds)){
+        if(!IaisCommonUtils.isEmpty(specLicIds) && !IaisCommonUtils.isEmpty(licenceDtos)){
            for(String specId :specLicIds){
                LicenceDto entity = licenceClient.getLicBylicId(specId).getEntity();
                licenceDtos.add(entity);
@@ -425,7 +425,7 @@ public class CessationServiceImpl implements CessationService {
 
     private void setRiskToDto(AppSubmissionDto appSubmissionDto) {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        List<RiskAcceptiionDto> riskAcceptiionDtoList = new ArrayList();
+        List<RiskAcceptiionDto> riskAcceptiionDtoList = IaisCommonUtils.genNewArrayList();
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
             riskAcceptiionDto.setScvCode(appSvcRelatedInfoDto.getServiceCode());

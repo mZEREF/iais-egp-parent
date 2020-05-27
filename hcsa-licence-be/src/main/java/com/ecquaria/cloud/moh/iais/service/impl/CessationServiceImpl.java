@@ -60,8 +60,8 @@ import java.util.Map;
 @Service
 @Slf4j
 public class CessationServiceImpl implements CessationService {
-    private final String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
-    private final String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
+    private final static String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
+    private final static String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
