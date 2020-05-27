@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -44,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -613,5 +615,10 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
      */
     public ApplicationGroupDto getApplicationGroupDtoByAppGroId(String appGroupId) {
         return inspectionTaskClient.getApplicationGroupDtoByAppGroId(appGroupId).getEntity();
+    }
+
+    @Override
+    public AppStageSlaTrackingDto searchSlaTrackById(String appNo,String stageId){
+        return inspectionTaskClient.getSlaTrackByAppNoStageId(appNo,stageId).getEntity();
     }
 }

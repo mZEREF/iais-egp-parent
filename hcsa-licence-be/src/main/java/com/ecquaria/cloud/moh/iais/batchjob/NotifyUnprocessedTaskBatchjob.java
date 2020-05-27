@@ -1,25 +1,36 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
-import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * NotifyUnprocessedTaskBatchjob
@@ -41,86 +52,113 @@ public class NotifyUnprocessedTaskBatchjob {
 
     @Autowired
     MsgTemplateClient msgTemplateClient;
-    @Value("${iais.email.sender}")
-    private String mailSender;
+
+    @Autowired
+    ApplicationService applicationService;
 
     @Autowired
     SystemBeLicClient systemBeLicClient;
+
+    @Autowired
+    InsRepService insRepService;
+
+    @Autowired
+    InspectionAssignTaskService inspectionAssignTaskService;
+
+    @Autowired
+    KpiAndReminderService kpiAndReminderService;
     public void doBatchJob(BaseProcessClass bpc) throws IOException, TemplateException{
 
         log.debug(StringUtil.changeForLog("The NotifyUnprocessedTaskBatchjob is  start..." ));
 
 
         log.debug(StringUtil.changeForLog("Unprocessed Task Notification to Officer..." ));
-        Map<String, List<TaskEmailDto>> emailmap = IaisCommonUtils.genNewHashMap();
-        //get officer groupleader admin to notify
-        emailmap = taskService.getEmailNotifyList();
+        List<TaskEmailDto> taskEmailDtoList = IaisCommonUtils.genNewArrayList();
+        taskEmailDtoList = taskService.getEmailNotifyList();
+
         //get email template
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(EMAILMPLATEID);
 
-
-        List<TaskEmailDto> officerDtoList= emailmap.get("officer");
-        List<TaskEmailDto> workgroupLeaderDtoList= emailmap.get("workgroup");
-        List<TaskEmailDto> adminDtoList= emailmap.get("admin");
-
         String templateHtml = inspectionEmailTemplateDto.getMessageContent();
 
-        if(officerDtoList != null) {
-            for (TaskEmailDto item : officerDtoList
+        if(taskEmailDtoList != null) {
+            for (TaskEmailDto item : taskEmailDtoList
             ) {
-                List<String> emailaddr = IaisCommonUtils.genNewArrayList();
-                emailaddr.add(item.getEmailAddr());
-                sendEmail(item,templateHtml,emailaddr," MOH IAIS – Unprocessed Task Notification to Officer");
-            }
-        }
-
-        if (workgroupLeaderDtoList != null){
-            List<String> groupIdList = IaisCommonUtils.genNewArrayList();
-            for (TaskEmailDto item: workgroupLeaderDtoList
-            ) {
-                if(!groupIdList.contains(item.getWkGrpId())){
-                    groupIdList.add(item.getWkGrpId());
+                //get application
+                ApplicationDto applicationDto = applicationService.getApplicationBytaskId(item.getRefNo());
+                String stage;
+                if(HcsaConsts.ROUTING_STAGE_INS.equals(item.getTaskKey())){
+                    AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
+                            insRepService.getAppPremisesRoutingHistorySubStage(item.getRefNo(), item.getTaskKey());
+                    stage = appPremisesRoutingHistoryDto.getSubStage();
+                } else {
+                    stage = item.getTaskKey();
                 }
-            }
-            Map<String, List<String>> emailList= taskService.getAllWorkGroupMembers(groupIdList);
-            for (TaskEmailDto item: workgroupLeaderDtoList
-            ) {
-                 sendEmail(item,templateHtml,emailList.get(item.getWkGrpId())," MOH IAIS – Unprocessed Task Notification to Supervisors Workgroup");
+                HcsaSvcKpiDto hcsaSvcKpiDto = kpiAndReminderService.searchKpi(HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId()).getSvcCode(), applicationDto.getApplicationType());
+                if(hcsaSvcKpiDto != null) {
+                    //get current stage worked days
+                    int days = 0;
+                    if(!StringUtil.isEmpty(stage)) {
+
+                        AppStageSlaTrackingDto appStageSlaTrackingDto = inspectionAssignTaskService.searchSlaTrackById(applicationDto.getApplicationNo(), stage);
+                        if (appStageSlaTrackingDto != null) {
+                            days = appStageSlaTrackingDto.getKpiSlaDays();
+                        }
+                    }
+                    //get warning value
+                    Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
+                    int kpi = 0;
+                    if(!StringUtil.isEmpty(stage)) {
+                        if (kpiMap != null && kpiMap.get(stage) != null) {
+                            kpi = kpiMap.get(stage);
+                        }
+                    }
+                    //get threshold value
+                    int remThreshold = 0;
+                    if (hcsaSvcKpiDto.getRemThreshold() != null) {
+                        remThreshold = hcsaSvcKpiDto.getRemThreshold();
+                    }
+
+                    if(days == remThreshold){
+                        //send email to leader and admin
+                        List<String> email = IaisCommonUtils.genNewArrayList();
+                        email.add(item.getLeaderEmailAddr());
+                        sendEmail(item,applicationDto,email);
+                    }else if(days == kpi){
+                        //send email to officer
+                        List<String> email = IaisCommonUtils.genNewArrayList();
+                        email.add(item.getUserEmail());
+                        sendEmail(item,applicationDto,email);
+                    }
+
+                }
+
             }
         }
 
-        if(adminDtoList != null){
-            for (TaskEmailDto item: adminDtoList
-            ) {
-                List<String> adminEmailAddr = IaisCommonUtils.genNewArrayList();
-                adminEmailAddr.add(item.getEmailAddr());
-                sendEmail(item,templateHtml,adminEmailAddr," MOH IAIS – Unprocessed Task Notification to the System’s User Administrator");
-            }
-        }
 
         log.debug(StringUtil.changeForLog("Unprocessed Task Notification end..." ));
 
 
     }
 
-    private void sendEmail(TaskEmailDto item,String templateHtml,List<String> emailAddr,String subject) throws IOException, TemplateException{
+    private void sendEmail(TaskEmailDto item, ApplicationDto application,List<String> emailAddr) throws IOException, TemplateException{
         EmailDto email = new EmailDto();
-        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        map.put("OFFICER_NAME",item.getName());
-        map.put("NC_DETAILS","There is an unprocessed task.");
-        map.put("MOH_NAME","MOH");
-        map.put("TASK_HREF",item.getId());
-        String mesContext = null;
-        try {
-            mesContext= MsgUtil.getTemplateMessageByContent(templateHtml,map);
-        } catch (IOException | TemplateException e) {
-            log.error(e.getMessage(),e);
-        }
+        switch (application.getApplicationType()){
+            case ApplicationConsts.APPLICATION_TYPE_APPEAL:
+                email.setSubject("Appeal Unprocessed Task Notification");
+                break;
+            case ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE:
+                email.setSubject("RFC Unprocessed Task Notification");
+                break;
+            default:
+                email.setSubject("Unprocessed Task Notification");
+                break;
 
+        }
         email.setReqRefNum(item.getId());
-        email.setSubject(subject);
-        email.setContent(mesContext);
-        email.setSender(mailSender);
+        email.setContent(application.getApplicationType());
+        email.setSender(AppConsts.MOH_AGENCY_NAME);
         email.setClientQueryCode(item.getId());
         email.setReceipts(emailAddr);
         emailClient.sendNotification(email).getEntity();

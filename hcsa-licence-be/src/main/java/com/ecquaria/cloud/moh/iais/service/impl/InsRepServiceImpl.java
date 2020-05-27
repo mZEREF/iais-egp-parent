@@ -792,6 +792,11 @@ public class InsRepServiceImpl implements InsRepService {
         //applicationClient.saveFeData(applicationListDto);
     }
 
+    @Override
+    public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistorySubStage(String corrId, String stageId){
+        return appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(corrId, stageId).getEntity();
+    }
+
     private void updateInspectionStatus(String appPremisesCorrelationId, String status) {
         AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremisesCorrelationId).getEntity();
         if (appInspectionStatusDto != null) {

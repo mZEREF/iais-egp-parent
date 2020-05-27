@@ -44,4 +44,6 @@ public interface ApplicationService {
       * @Descripation: Hcsa Application Request Information And Send Email
       */
     void applicationRfiAndEmail(ApplicationViewDto applicationViewDto, ApplicationDto applicationDto, String licenseeId, LicenseeDto licenseeDto, LoginContext loginContext, String externalRemarks) throws IOException, TemplateException;
+
+    ApplicationDto getApplicationBytaskId(String ref);
 }

@@ -49,7 +49,7 @@ public interface TaskOrganizationClient {
     FeignResponseEntity<List<TaskDto>> getCommPoolTaskByWorkGroupId(@PathVariable(name = "workGroupId") String workGroupId);
 
     @GetMapping(path = "/iais-task/tasks-notify-all",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Map<String, List<TaskEmailDto>>> getEmailNotifyList();
+    FeignResponseEntity<List<TaskEmailDto>> getEmailNotifyList();
 
     @PostMapping(value = "/iais-task/allWorkGroupMembers", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity <Map<String, List<String>>> getAllWorkGroupMembers(@RequestBody List<String> groupId);

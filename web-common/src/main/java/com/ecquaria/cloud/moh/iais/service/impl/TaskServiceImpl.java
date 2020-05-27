@@ -22,13 +22,17 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
-
-import java.util.*;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * TaskServiceImpl
@@ -303,7 +307,7 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public Map<String, List<TaskEmailDto>> getEmailNotifyList(){
+    public List<TaskEmailDto> getEmailNotifyList(){
         return taskOrganizationClient.getEmailNotifyList().getEntity();
     }
 

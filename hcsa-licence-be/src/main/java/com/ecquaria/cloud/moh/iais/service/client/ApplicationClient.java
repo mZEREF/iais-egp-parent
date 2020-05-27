@@ -241,4 +241,8 @@ public interface ApplicationClient {
 
     @GetMapping(path = "/iais-self-assessment-be/correlation/self-assessment/{correlationId}")
     FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> getAppPremisesSelfDeclByCorrelationId(@PathVariable(value = "correlationId") String correlationId);
+
+    @GetMapping(value = "/iais-application-be/application-by-taskid",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationDto> getApplicationBytaskId(@RequestParam ("ref") String ref);
+
 }

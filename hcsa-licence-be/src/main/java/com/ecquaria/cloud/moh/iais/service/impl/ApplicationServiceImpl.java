@@ -38,13 +38,13 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -346,4 +346,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         return result;
     }
 
+    @Override
+    public ApplicationDto getApplicationBytaskId(String ref){
+        return applicationClient.getApplicationBytaskId(ref).getEntity();
+    }
 }
