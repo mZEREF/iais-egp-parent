@@ -38,19 +38,10 @@
                         <span>Update Non-Availability Form</span>
                       </h2>
                       <iais:row>
-                        <c:if test="${curRole eq 'INSPECTOR_LEAD'}">
-                          <iais:field value="Name" required="true"/>
-                          <iais:value width="7">
-                            <iais:select name="nonAvaUserNameId" options="nonAvaUserName" firstOption="Please Select" value="${inspNonAvailabilityDto.userCorrId}" ></iais:select>
-                            <br><span class="error-msg" name="iaisErrorMsg" id="error_userName"></span>
-                          </iais:value>
-                        </c:if>
-                        <c:if test="${curRole ne 'INSPECTOR_LEAD'}">
-                          <iais:field value="Name"/>
-                          <iais:value width="7">
-                            <span style="font-size: 16px"><c:out value="${userName}"/></span>
-                          </iais:value>
-                        </c:if>
+                        <iais:field value="Name"/>
+                        <iais:value width="7">
+                          <span style="font-size: 16px"><c:out value="${userName}"/></span>
+                        </iais:value>
                       </iais:row>
                       <div class="form-group" style="margin-bottom: 0px;">
                         <iais:field value="Blocked Out Date" required="true"/>

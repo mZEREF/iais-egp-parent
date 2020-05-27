@@ -101,5 +101,5 @@ public interface InspSupAddAvailabilityService {
       * @return: String
       * @Descripation: getApptUserSysCorrIdByLoginId
       */
-    String getApptUserSysCorrIdByLoginId(String loginId);
+    List<String> getApptUserSysCorrIdByLoginId(String loginId, LoginContext loginContext);
 }

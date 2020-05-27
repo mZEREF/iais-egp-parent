@@ -38,14 +38,14 @@
                         <span>Add Non-Availability Form</span>
                       </h2>
                       <iais:row>
-                        <c:if test="${curRole eq 'INSPECTOR_LEAD'}">
+                        <c:if test="${curRole eq 'lead'}">
                           <iais:field value="Name" required="true"/>
                           <iais:value width="7">
                             <iais:select name="nonAvaUserNameId" options="nonAvaUserName" firstOption="Please Select" value="${inspNonAvailabilityDto.userCorrId}" ></iais:select>
                             <br><span class="error-msg" name="iaisErrorMsg" id="error_userName"></span>
                           </iais:value>
                         </c:if>
-                        <c:if test="${curRole ne 'INSPECTOR_LEAD'}">
+                        <c:if test="${curRole ne 'lead'}">
                           <iais:field value="Name"/>
                           <iais:value width="7">
                             <span style="font-size: 16px"><c:out value="${userName}"/></span>

@@ -17,8 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * InspSupAddAvailabilityServiceImpl
@@ -115,6 +118,8 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
         for(String workId:workGroupIds){
             List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(workId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
             userIdList = getUserIdList(orgUserDtoList, userIdList);
+            Set<String> userIdSet = new HashSet<>(userIdList);
+            userIdList = new ArrayList<>(userIdSet);
         }
         List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(userIdList)){
@@ -134,7 +139,7 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
     }
 
     @Override
-    public String getApptUserSysCorrIdByLoginId(String loginId) {
+    public List<String> getApptUserSysCorrIdByLoginId(String loginId, LoginContext loginContext) {
 
         return null;
     }

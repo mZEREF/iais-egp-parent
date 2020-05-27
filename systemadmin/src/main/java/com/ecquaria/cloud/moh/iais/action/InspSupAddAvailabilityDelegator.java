@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDat
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.InspectorCalendarQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -135,20 +136,20 @@ public class InspSupAddAvailabilityDelegator {
         log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityAdd start ...."));
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = (ApptNonAvailabilityDateDto) ParamUtil.getSessionAttr(bpc.request, "inspNonAvailabilityDto");
-        List<String> roleList = new ArrayList<>(loginContext.getRoleIds());
-        if(roleList.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
-            List<String> workGroupIds = inspSupAddAvailabilityService.getWorkGroupIdsByLogin(loginContext);
+        List<String> workGroupIds = inspSupAddAvailabilityService.getWorkGroupIdsByLogin(loginContext);
+        if(!IaisCommonUtils.isEmpty(workGroupIds)){
             GroupRoleFieldDto groupRoleFieldDto = new GroupRoleFieldDto();
             groupRoleFieldDto = inspSupAddAvailabilityService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
             List<SelectOption> inspectorOption = groupRoleFieldDto.getMemberOption();
-            ParamUtil.setSessionAttr(bpc.request, "curRole", RoleConsts.USER_ROLE_INSPECTION_LEAD);
+            ParamUtil.setSessionAttr(bpc.request, "curRole", "lead");
+            ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
             ParamUtil.setSessionAttr(bpc.request, "nonAvaUserName", (Serializable) inspectorOption);
         } else {
-            ParamUtil.setSessionAttr(bpc.request, "curRole", RoleConsts.USER_ROLE_INSPECTIOR);
+            ParamUtil.setSessionAttr(bpc.request, "curRole", "member");
             OrgUserDto oDto = inspSupAddAvailabilityService.getOrgUserDtoById(loginContext.getUserId());
             String loginId = oDto.getUserId();
-            String apptUserSysCorrId = inspSupAddAvailabilityService.getApptUserSysCorrIdByLoginId(loginId);
-            apptNonAvailabilityDateDto.setUserCorrId(apptUserSysCorrId);
+            List<String> apptUserSysCorrIds = inspSupAddAvailabilityService.getApptUserSysCorrIdByLoginId(loginId, loginContext);
+            apptNonAvailabilityDateDto.setUserSysCorrIds(apptUserSysCorrIds);
             ParamUtil.setSessionAttr(bpc.request, "userName", oDto.getDisplayName());
         }
         List<SelectOption> recurrenceOption = inspSupAddAvailabilityService.getRecurrenceOption();
@@ -236,6 +237,10 @@ public class InspSupAddAvailabilityDelegator {
      */
     public void inspSupAddAvailabilityConfirm(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityConfirm start ...."));
+        ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = (ApptNonAvailabilityDateDto) ParamUtil.getSessionAttr(bpc.request, "inspNonAvailabilityDto");
+        String containDate = inspSupAddAvailabilityService.dateIsContainNonWork(apptNonAvailabilityDateDto);
+        ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", apptNonAvailabilityDateDto);
+        ParamUtil.setSessionAttr(bpc.request, "containDate", containDate);
     }
 
     /**
