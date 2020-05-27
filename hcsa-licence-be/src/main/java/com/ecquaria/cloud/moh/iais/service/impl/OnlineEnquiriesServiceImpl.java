@@ -273,9 +273,15 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 Calendar c = Calendar.getInstance();
                 for (AppPremisesRecommendationDto appPremisesRecommendationDto:appPremisesRecommendationDtos
                 ) {
-                    c.setTime(appPremisesRecommendationDto.getRecomInDate());
+                    List<AppPremisesRecommendationDto> appPremisesRecommendationDtoDate = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesRecommendationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                    try {
+                        c.setTime(appPremisesRecommendationDtoDate.get(0).getRecomInDate());
+                        complianceHistoryDto.setInspectionDateYear(c.get(Calendar.YEAR));
+                    }catch (NullPointerException e){
+                        log.error(e.getMessage(), e);
+                        complianceHistoryDto.setInspectionDateYear(null);
+                    }
                     complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
-                    complianceHistoryDto.setInspectionDateYear(c.get(Calendar.YEAR));
                     try {
                         String riskTag=MasterCodeUtil.retrieveOptionsByCodes(new String[]{fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesRecommendationDto.getAppPremCorreId(), InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity().getRecomDecision()}).get(0).getText();
                         complianceHistoryDto.setRiskTag(riskTag);
