@@ -134,6 +134,9 @@ public class ApplicationServiceImpl implements ApplicationService {
               }
 
           }
+          for(ApplicationDto applicationDto : applicationDtoList){
+              applicationDto.setStatus(status);
+          }
         }
         return result;
     }
