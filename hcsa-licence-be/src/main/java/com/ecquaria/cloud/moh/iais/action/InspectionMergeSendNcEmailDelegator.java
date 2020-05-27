@@ -418,7 +418,7 @@ public class InspectionMergeSendNcEmailDelegator {
                 InterMessageDto interMessageDto = new InterMessageDto();
                 interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
                 interMessageDto.setSubject(inspectionEmailTemplateDto.getSubject());
-                interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
+                interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
                 String mesNO = inboxMsgService.getMessageNo();
                 interMessageDto.setRefNo(mesNO);
                 interMessageDto.setService_id(applicationViewDto.getApplicationDto().getServiceId());
