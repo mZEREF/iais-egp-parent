@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -27,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
@@ -53,6 +53,9 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
     @Autowired
     private TaskApplicationClient taskApplicationClient;
+
+    @Autowired
+    private BeEicGatewayClient gatewayClient;
 
     @Autowired
     private HcsaChklClient hcsaChklClient;
@@ -146,14 +149,14 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
     @Override
     public void saveAdhocChecklist(AdhocCheckListConifgDto adhocConfig) {
-        FeignResponseEntity<List<AdhocChecklistItemDto>> result = applicationClient.saveAdhocChecklist(adhocConfig);
+        FeignResponseEntity<AdhocCheckListConifgDto> result = applicationClient.saveAdhocChecklist(adhocConfig);
         if (HttpStatus.SC_OK == result.getStatusCode()) {
-            List<AdhocChecklistItemDto> entity = result.getEntity();
+            AdhocCheckListConifgDto entity = result.getEntity();
 
             EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT,
                     AdhocChecklistServiceImpl.class.getName(),
                     "callEicGatewaySaveItem", currentApp + "-" + currentDomain,
-                    AdhocChecklistItemDto.class.getName(), JsonUtil.parseToJson(entity));
+                    AdhocCheckListConifgDto.class.getName(), JsonUtil.parseToJson(entity));
 
             try {
                 FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
@@ -175,11 +178,12 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
         }
     }
 
-    private void callEicGatewaySaveItem(List<AdhocChecklistItemDto> data) {
+    private void callEicGatewaySaveItem(AdhocCheckListConifgDto data) {
         //route to fe
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 
-
+        gatewayClient.syncAdhocItemData(data, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
     }
 }

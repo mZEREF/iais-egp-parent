@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
@@ -19,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDt
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -165,4 +167,13 @@ public interface BeEicGatewayClient {
                                                                   @RequestHeader("authorization") String authorization,
                                                                   @RequestHeader("date-Secondary") String dateSec,
                                                                   @RequestHeader("authorization-Secondary") String authorizationSec);
+
+
+    @PutMapping(value = "/v1/hcsa-adhoc-chkl-sync", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<HttpStatus> syncAdhocItemData(@RequestBody AdhocCheckListConifgDto configDto,
+                                                      @RequestHeader("date") String date,
+                                                      @RequestHeader("authorization") String authorization,
+                                                      @RequestHeader("date-Secondary") String dateSec,
+                                                      @RequestHeader("authorization-Secondary") String authorizationSec);
 }

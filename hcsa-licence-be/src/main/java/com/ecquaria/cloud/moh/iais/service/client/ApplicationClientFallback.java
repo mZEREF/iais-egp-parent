@@ -168,7 +168,7 @@ public class ApplicationClientFallback implements ApplicationClient{
     }
 
     @Override
-    public FeignResponseEntity<List<AdhocChecklistItemDto>> saveAdhocChecklist(AdhocCheckListConifgDto adhocConfigDto) {
+    public FeignResponseEntity<AdhocCheckListConifgDto> saveAdhocChecklist(AdhocCheckListConifgDto adhocConfigDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
