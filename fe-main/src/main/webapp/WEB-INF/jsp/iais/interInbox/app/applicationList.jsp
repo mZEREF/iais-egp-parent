@@ -205,6 +205,7 @@
     function delDraftYesBtn() {
         $('#deleteDraftModal').modal('hide');
         submit('appDoDelete');
+        showWaiting();
     }
 
     function delDraftCancelBtn() {
