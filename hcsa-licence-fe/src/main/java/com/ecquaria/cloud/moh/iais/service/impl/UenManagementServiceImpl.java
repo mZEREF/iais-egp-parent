@@ -9,9 +9,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.UenManagementService;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.UenManagementClient;
@@ -19,7 +18,6 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -46,15 +44,7 @@ public class UenManagementServiceImpl implements UenManagementService {
     private EmailHelper emailHelper;
 
     @Autowired
-    private FeEicGatewayClient feEicGatewayClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
+    AppSubmissionService appSubmissionService;
 
     private UenDto getUenDetails(String uenNo) {
         //等ACRA api
@@ -117,10 +107,7 @@ public class UenManagementServiceImpl implements UenManagementService {
             licenseeIds.add(licenceId);
             List<String> emailAddress = emailHelper.getEmailAddressListByLicenseeId(licenseeIds);
             emailDto.setReceipts(emailAddress);
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
+            appSubmissionService.feSendEmail(emailDto);
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
