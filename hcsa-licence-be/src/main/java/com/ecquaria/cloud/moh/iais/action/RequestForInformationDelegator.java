@@ -44,7 +44,6 @@ import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
@@ -112,8 +111,6 @@ public class RequestForInformationDelegator {
     private SystemParamConfig systemParamConfig;
     @Autowired
     InspectionRectificationProService inspectionRectificationProService;
-    @Autowired
-    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private ApplicationClient applicationClient;
 
@@ -371,7 +368,7 @@ public class RequestForInformationDelegator {
             try {
                 EmailDto emailDto=new EmailDto();
                 emailDto.setContent(mesContext);
-                emailDto.setSubject(rfiEmailTemplateDto.getSubject());
+                emailDto.setSubject(subject);
                 emailDto.setSender(mailSender);
                 emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                 emailDto.setClientQueryCode(licPremId);
