@@ -88,7 +88,7 @@ public class InputTag extends DivTagSupport{
         try {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {
-            throw new JspTagException("ValueTag: " + ex.getMessage());
+            throw new JspTagException("ValueTag: " + ex.getMessage(),ex);
         }
         return EVAL_BODY_INCLUDE;
     }
@@ -104,7 +104,7 @@ public class InputTag extends DivTagSupport{
             pageContext.getOut().print(html.toString());
 
         } catch (Exception ex) {
-            throw new JspTagException("ValueTag: " + ex.getMessage());
+            throw new JspTagException("ValueTag: " + ex.getMessage(),ex);
         }
         return EVAL_PAGE;
     }

@@ -103,7 +103,7 @@ public final class FieldTag extends DivTagSupport {
         try {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {
-            throw new JspTagException("FieldTag: " + ex.getMessage());
+            throw new JspTagException("FieldTag: " + ex.getMessage(),ex);
         }
         return SKIP_BODY;
     }

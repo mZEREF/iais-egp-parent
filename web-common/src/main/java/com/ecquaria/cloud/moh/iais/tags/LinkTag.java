@@ -69,7 +69,7 @@ public class LinkTag extends DivTagSupport {
         try {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {
-            throw new JspTagException("LinkTag: " + ex.getMessage());
+            throw new JspTagException("LinkTag: " + ex.getMessage(),ex);
         }
         return SKIP_BODY;
     }

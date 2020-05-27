@@ -74,7 +74,7 @@ public class HcsaServiceTag extends DivTagSupport{
 		try {
 			pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString().trim()));
 		} catch (Exception ex) {
-			throw new JspTagException("HcsaServiceTag: " + ex.getMessage());
+			throw new JspTagException("HcsaServiceTag: " + ex.getMessage(),ex);
 		}
 
 		return SKIP_BODY;

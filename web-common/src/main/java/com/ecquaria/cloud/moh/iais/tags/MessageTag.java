@@ -61,7 +61,7 @@ public final class MessageTag extends DivTagSupport {
                 pageContext.getOut().print(message);
             }
         } catch (Exception ex) {
-            throw new JspTagException("MessageTag: " + ex.getMessage());
+            throw new JspTagException("MessageTag: " + ex.getMessage(),ex);
         }
         return SKIP_BODY;
     }
