@@ -96,6 +96,13 @@ public class MasterCodeDelegator {
         selectCodeStatusList.add(new SelectOption("", "Please Select"));
         selectCodeStatusList.add(new SelectOption("CMSTAT001", "Active"));
         selectCodeStatusList.add(new SelectOption("CMSTAT003", "Inactive"));
+        List<MasterCodeCategoryDto> masterCodeCategoryDtoList = masterCodeService.getAllCodeCategory();
+        List<SelectOption> mcCategorySelectList = IaisCommonUtils.genNewArrayList();
+        for (MasterCodeCategoryDto masterCodeCategoryDto:masterCodeCategoryDtoList
+                ) {
+            mcCategorySelectList.add(new SelectOption(masterCodeCategoryDto.getCategoryDescription(), masterCodeCategoryDto.getCategoryDescription()));
+        }
+        ParamUtil.setRequestAttr(bpc.request, "allCodeCategory", mcCategorySelectList);
         ParamUtil.setRequestAttr(bpc.request, "codeStatus", selectCodeStatusList);
         SearchParam searchParam = SearchResultHelper.getSearchParam(request,filterParameter,true);
         QueryHelp.setMainSql(MasterCodeConstants.MSG_TEMPLATE_FILE, MasterCodeConstants.MSG_TEMPLATE_SQL,searchParam);
@@ -104,7 +111,7 @@ public class MasterCodeDelegator {
         for (MasterCodeQueryDto masterCodeQueryDto:masterCodeQueryDtoList
                 ) {
             if (StringUtil.isEmpty(masterCodeQueryDto.getCodeValue())){
-                masterCodeQueryDto.setCodeValue("N.A");
+                masterCodeQueryDto.setCodeValue("N/A");
             }
             masterCodeQueryDto.setStatus(MasterCodeUtil.getCodeDesc(masterCodeQueryDto.getStatus()));
         }
@@ -216,9 +223,8 @@ public class MasterCodeDelegator {
         String codeStartDate = Formatter.formatDateTime(codeEffFrom,SystemAdminBaseConstants.DATE_FORMAT);
         String codeEndDate = Formatter.formatDateTime(codeEffTo, SystemAdminBaseConstants.DATE_FORMAT);
         Map<String,Object> masterCodeMap = IaisCommonUtils.genNewHashMap();
-        if (!StringUtil.isEmpty(categoryDescription)){
-//            String codeCategory = masterCodeService.findCodeCategoryByDescription(categoryDescription);
-            masterCodeMap.put(MasterCodeConstants.MASTER_CODE_CATEGORY,"%"+categoryDescription+"%");
+        if (!StringUtil.isEmpty(categoryDescription) && !"Please Select".equals(categoryDescription)){
+            masterCodeMap.put(MasterCodeConstants.MASTER_CODE_CATEGORY,categoryDescription);
         }else{
             masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_CATEGORY);
         }
@@ -243,7 +249,7 @@ public class MasterCodeDelegator {
             masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE);
         }
         if (codeEffFrom != null && codeEffTo != null){
-            if (codeEffFrom.compareTo(codeEffTo)>=0 ){
+            if (codeEffFrom.compareTo(codeEffTo) <=0 ){
                 if(!StringUtil.isEmpty(codeStartDate)){
                     masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,codeStartDate);
                 }else{
@@ -483,6 +489,7 @@ public class MasterCodeDelegator {
 
     private void getCategoryValueFromPage(MasterCodeDto masterCodeDto, HttpServletRequest request) throws ParseException {
         masterCodeDto.setMasterCodeId(null);
+        masterCodeDto.setFilterValue(ParamUtil.getString(request,"codeCategoryFilterValue"));
         masterCodeDto.setMasterCodeKey(ParamUtil.getString(request,"codeCategoryKey"));
         masterCodeDto.setCodeValue(ParamUtil.getString(request,"codeCategoryValue"));
         masterCodeDto.setCodeDescription(ParamUtil.getString(request,"codeCategoryDescription"));

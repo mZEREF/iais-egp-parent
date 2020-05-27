@@ -28,13 +28,15 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Filter Value</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <p>${MasterCodeView.filterValue}</p>
+                                <p>${MasterCodeView.codeValue}</p>
+                                <input name="codeCategoryFilterValue" type="text" value="${MasterCodeView.codeValue}" hidden>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Version</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <p>${MasterCodeView.version}</p>
+
                             </div>
                         </div>
                         <div class="form-group">
@@ -111,31 +113,10 @@
                                 <div><a href="/system-admin-web/eservice/INTRANET/MohMasterCode"><em class="fa fa-angle-left"></em> Back</a></div>
                             </div>
                             <div class="col-xs-10 col-sm-10">
-                                <div class="text-right text-center-mobile"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Create</button></div>
+                                <div class="text-right text-center-mobile"><button type="button" class="btn btn-primary" onclick="submitCategoryAction('save')">Create</button></div>
                             </div>
                         </div>
                     </div>
-                    <!-- Modal -->
-                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the modification ?</span></div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="submitCategoryAction('save')">Confirm</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Modal End-->
                 </div>
             </div>
         </div>

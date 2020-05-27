@@ -92,7 +92,6 @@
                                                 <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal">Delete</button>
                                             </td>
                                         </tr>
-
                                         <!-- Modal -->
                                         <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                                             <div class="modal-dialog" role="document">
@@ -125,7 +124,7 @@
                                 <input id="selectedFile" name="selectedFile" type="file" style="display: none;"
                                        aria-label="selectedFile1">
                                 <a class="btn btn-file-upload btn-primary" href="#">Upload</a>
-                                <a class="btn btn-primary" onclick="doCreate()">Create New Code Category</a>
+                                <a class="btn btn-primary" onclick="doCreate()">Create Master Code Category</a>
                             </div>
                         </div>
                     </div>

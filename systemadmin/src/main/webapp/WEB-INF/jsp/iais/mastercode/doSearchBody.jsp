@@ -8,7 +8,8 @@
                     <%String codeKey = request.getParameter("codeCategory")==null?"":request.getParameter("codeCategory");%>
                     <label class="col-xs-4 col-md-4 control-label" for="codeCategory">Master Code Category</label>
                     <div class="col-xs-8 col-sm-8 col-md-8">
-                        <input id="codeCategory" type="text" name="codeCategory" value="<%=codeKey%>" maxlength="25">
+                        <iais:select name="codeCategory" firstOption="Pelect Select" options="allCodeCategory"
+                                     value="<%=codeKey%>"/>
                     </div>
                 </iais:value>
             </div>
@@ -17,7 +18,7 @@
                     <%String codeValue = request.getParameter("codeValue")==null?"":request.getParameter("codeValue");%>
                     <label class="col-xs-4 col-md-4 control-label">Code Value</label>
                     <div class="col-xs-8 col-sm-8 col-md-8">
-                        <input id="codeValue" type="text" name="codeValue" value="<%=codeValue%>" maxlength="255">
+                        <input id="codeValue" type="text" name="codeValue" value="<%=codeValue%>" maxlength="25">
                     </div>
                 </iais:value>
             </div>

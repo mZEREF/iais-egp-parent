@@ -18,12 +18,12 @@
             FROM CM_MASTER_CODE as mc) AS ACM
             WHERE ACM.STATUS != 'CMSTAT002'
             <#if id??> AND CHARINDEX(:id, ACM.master_code_id) >0</#if>
-            <#if codeCategory??> AND ACM.code_category LIKE :codeCategory</#if>
+            <#if codeCategory??> AND ACM.code_category = :codeCategory</#if>
             <#if codeValue??> AND ACM.code_value LIKE :codeValue</#if>
             <#if codeDescription??> AND ACM.code_description LIKE :codeDescription</#if>
             <#if filterValue??> AND ACM.filter_value LIKE :filterValue</#if>
-            <#if esd??> AND ACM.effective_from > :esd</#if>
-            <#if eed??> AND ACM.effective_to < :eed</#if>
+            <#if esd??> AND ACM.effective_from >= :esd</#if>
+            <#if eed??> AND ACM.effective_to <= :eed</#if>
             <#if codeStatus??> AND ACM.status = :codeStatus</#if>
         ]]>
     </sql>
