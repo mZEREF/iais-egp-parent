@@ -19,5 +19,4 @@ public interface MasterCodeService {
     MasterCodeDto findMasterCodeByMcId(String masterCodeId);
     String findCodeCategoryByDescription(String description);
     List<MasterCodeCategoryDto> getAllCodeCategory();
-    MasterCodeCategoryDto saveMasterCodeCategory(MasterCodeCategoryDto masterCodeCategoryDto);
 }
