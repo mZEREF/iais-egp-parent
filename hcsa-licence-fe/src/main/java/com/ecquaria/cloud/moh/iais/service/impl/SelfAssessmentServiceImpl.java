@@ -96,6 +96,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     private String currentApp;
     @Value("${iais.current.domain}")
     private String currentDomain;
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
@@ -248,7 +250,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         EmailDto emailDto = new EmailDto();
         emailDto.setContent(templateMessageByContent);
         emailDto.setSubject("Self-Assessment submission for Application Number");
-        emailDto.setSender("yichen_guo@ecquaria.com");
+        emailDto.setSender(mailSender);
         emailDto.setReceipts(emailAddress);
 
         feEmailClient.sendNotification(emailDto);

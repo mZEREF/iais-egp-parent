@@ -84,6 +84,9 @@ public class AppealServiceImpl implements AppealService {
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
+    @Value("${iais.email.sender}")
+    private String mailSender;
+
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
@@ -910,7 +913,7 @@ public class AppealServiceImpl implements AppealService {
         EmailDto emailDto=new EmailDto();
         emailDto.setContent(templateMessageByContent);
         emailDto.setSubject(" MOH IAIS –Submission of Appeal - "+newApplicationNo);
-        emailDto.setSender("Ministry of Health");
+        emailDto.setSender(mailSender);
         emailDto.setClientQueryCode("Appeal");
         if(loginContext!=null){
             List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(loginContext.getLicenseeId());
@@ -937,7 +940,7 @@ public class AppealServiceImpl implements AppealService {
         EmailDto emailDto=new EmailDto();
         emailDto.setContent("Send notification to Admin Officer when appeal application is submitted.");
         emailDto.setSubject(" MOH IAIS –Submission of Appeal - "+newApplicationNo);
-        emailDto.setSender("Ministry of Health");
+        emailDto.setSender(mailSender);
         emailDto.setClientQueryCode(newApplicationNo);
         emailDto.setReceipts(email);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);

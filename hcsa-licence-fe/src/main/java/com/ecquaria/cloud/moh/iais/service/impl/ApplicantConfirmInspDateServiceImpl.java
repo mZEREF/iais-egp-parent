@@ -100,6 +100,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
+    @Value("${iais.email.sender}")
+    private String mailSender;
+
     /**
      *System Date
      */
@@ -473,7 +476,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             }
             emailDto.setContent(mesContext);
             emailDto.setSubject(msgTemplateDto.getTemplateName());
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setSender(mailSender);
             emailDto.setClientQueryCode(appPremCorrId);
         }
         return emailDto;

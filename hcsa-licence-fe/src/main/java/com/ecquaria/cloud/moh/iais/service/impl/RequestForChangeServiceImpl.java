@@ -80,6 +80,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     @Override
     public List<PremisesListQueryDto> getPremisesList(String licenseeId) {
@@ -201,7 +203,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     EmailDto emailDto = new EmailDto();
                     emailDto.setContent(mesContext);
                     emailDto.setSubject("MOH IAIS – Successful Submission of Request for Change " + appNo);
-                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                    emailDto.setSender(mailSender);
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                     emailDto.setClientQueryCode(appGrpId);
                     //send
@@ -219,7 +221,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     EmailDto emailDto = new EmailDto();
                     emailDto.setContent(mesContext);
                     emailDto.setSubject("MOH IAIS – Successful Submission of Request for Change " + appNo);
-                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                    emailDto.setSender(mailSender);
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                     emailDto.setClientQueryCode(appGrpId);
                     //send
@@ -236,7 +238,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     EmailDto emailDto = new EmailDto();
                     emailDto.setContent(mesContext);
                     emailDto.setSubject("MOH IAIS – Request for Change "+appNo+" – Approved ");
-                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                    emailDto.setSender(mailSender);
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                     emailDto.setClientQueryCode(appGrpId);
                     //send
@@ -253,7 +255,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     EmailDto emailDto = new EmailDto();
                     emailDto.setContent(mesContext);
                     emailDto.setSubject("MOH IAIS – Request for Change "+appNo+" – Rejected  ");
-                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                    emailDto.setSender(mailSender);
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                     emailDto.setClientQueryCode(appGrpId);
                     //send
@@ -271,7 +273,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     EmailDto emailDto = new EmailDto();
                     emailDto.setContent(mesContext);
                     emailDto.setSubject("MOH IAIS – Notification of Change of Licensee");
-                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                    emailDto.setSender(mailSender);
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                     emailDto.setClientQueryCode(appGrpId);
                     //send
@@ -289,7 +291,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     EmailDto emailDto = new EmailDto();
                     emailDto.setContent(mesContext);
                     emailDto.setSubject("MOH IAIS – Internal Clarification for Request for Change "+appNo);
-                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                    emailDto.setSender(mailSender);
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                     emailDto.setClientQueryCode(appGrpId);
                     //send
@@ -308,7 +310,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     EmailDto emailDto = new EmailDto();
                     emailDto.setContent(mesContext);
                     emailDto.setSubject("MOH IAIS – Notification of Change of Licensee ");
-                    emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+                    emailDto.setSender(mailSender);
                     emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                     emailDto.setClientQueryCode(appGrpId);
                     //send

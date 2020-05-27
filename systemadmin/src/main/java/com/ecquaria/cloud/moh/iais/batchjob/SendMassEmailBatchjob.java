@@ -20,6 +20,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -34,6 +35,8 @@ public class SendMassEmailBatchjob {
 
     @Autowired
     BlastManagementListService blastManagementListService;
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     public void start(BaseProcessClass bpc){
 
@@ -51,7 +54,7 @@ public class SendMassEmailBatchjob {
             EmailDto email = new EmailDto();
 
             email.setContent(item.getMsgContent());
-            email.setSender("system@wangyi.com");
+            email.setSender(mailSender);
             email.setSubject(item.getSubject());
             email.setClientQueryCode(item.getId());
             email.setReceipts(item.getEmailAddress());
