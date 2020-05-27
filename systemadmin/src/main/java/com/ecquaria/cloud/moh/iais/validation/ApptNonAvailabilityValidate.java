@@ -40,12 +40,19 @@ public class ApptNonAvailabilityValidate implements CustomizeValidator {
         List<Date> nonAvaDate = MiscUtil.getDateInPeriodByRecurrence(apptNonAvailabilityDateDto.getBlockOutStart(),
                         apptNonAvailabilityDateDto.getBlockOutEnd(), apptNonAvailabilityDateDto.getRecurrence());
         List<String> inspectionDate = getInspDateByCalendar(apptUserCalendarDto);
+        if(apptNonAvailabilityDateDto.getBlockOutStart() == null || apptNonAvailabilityDateDto.getBlockOutEnd() == null){
+            return null;
+        }
+        if(apptNonAvailabilityDateDto.getBlockOutStart().after(apptNonAvailabilityDateDto.getBlockOutEnd())){
+            errMap.put("nonAvaDate", "UC_INSP_ERR0007");
+            return errMap;
+        }
         if(!IaisCommonUtils.isEmpty(inspectionDate)) {
             for (Date date : nonAvaDate) {
                 for (String inspDate : inspectionDate) {
                     String nonDate = sdf2.format(date);
                     if (nonDate.equals(inspDate)) {
-                        errMap.put("nonAvaStartDate", "UC_INSP_ERR0004");
+                        errMap.put("nonAvaDate", "UC_INSP_ERR0004");
                     }
                 }
             }

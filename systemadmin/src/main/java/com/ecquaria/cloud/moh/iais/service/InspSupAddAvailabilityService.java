@@ -56,7 +56,7 @@ public interface InspSupAddAvailabilityService {
       * @return: ApptNonAvailabilityDateDto
       * @Descripation: create Non-Availability
       */
-    ApptNonAvailabilityDateDto createNonAvailability(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto);
+    List<ApptNonAvailabilityDateDto> createNonAvailability(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto, GroupRoleFieldDto groupRoleFieldDto);
 
     /**
       * @author: shicheng
@@ -101,5 +101,5 @@ public interface InspSupAddAvailabilityService {
       * @return: String
       * @Descripation: getApptUserSysCorrIdByLoginId
       */
-    List<String> getApptUserSysCorrIdByLoginId(String loginId, LoginContext loginContext);
+    List<String> getApptUserSysCorrIdByLoginId(String loginId, List<String> wrkGrpIdList);
 }

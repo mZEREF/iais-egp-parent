@@ -1,14 +1,23 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAgencyUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserSystemCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InspSupAddAvailabilityService;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
@@ -18,10 +27,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * InspSupAddAvailabilityServiceImpl
@@ -71,9 +82,56 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
     }
 
     @Override
-    public ApptNonAvailabilityDateDto createNonAvailability(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto) {
+    public List<ApptNonAvailabilityDateDto> createNonAvailability(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto, GroupRoleFieldDto groupRoleFieldDto) {
         if(apptNonAvailabilityDateDto != null){
-            return appointmentClient.createNonAvailability(apptNonAvailabilityDateDto).getEntity();
+            //get AuditTrailDto
+            AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+            //get apptRefNo
+            String apptRefNo = UUID.randomUUID().toString();
+            //get USER_SYS_CORRE_ID
+            List<String> userSysCorrIds = apptNonAvailabilityDateDto.getUserSysCorrIds();
+            if(IaisCommonUtils.isEmpty(userSysCorrIds)){
+                String checkUserName = apptNonAvailabilityDateDto.getCheckUserName();
+                Map<String, String> userIdMap = groupRoleFieldDto.getUserIdMap();
+                Map<String, String> userLoginIdMap = groupRoleFieldDto.getUserLoginIdMap();
+                String userPkId = userIdMap.get(checkUserName);
+                String userLoginId = userLoginIdMap.get(checkUserName);
+                List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(userPkId).getEntity();
+                List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
+                for(UserGroupCorrelationDto userGroupCorrelationDto : userGroupCorrelationDtos){
+                    workGroupIds.add(userGroupCorrelationDto.getGroupId());
+                }
+                userSysCorrIds = getApptUserSysCorrIdByLoginId(userLoginId, workGroupIds);
+                //save date
+                List<ApptUserCalendarDto> apptUserCalendarDtos = IaisCommonUtils.genNewArrayList();
+                //get Non-Availability Date
+                List<Date> timeSlots = MiscUtil.getDateInPeriodByRecurrence(apptNonAvailabilityDateDto.getBlockOutStart(),
+                        apptNonAvailabilityDateDto.getBlockOutEnd(), apptNonAvailabilityDateDto.getRecurrence());
+
+                for(String userSysCorrId : userSysCorrIds){
+                    //add create ApptNonAvailabilityDateDto List
+                    ApptNonAvailabilityDateDto apptNonAvailabilityDateDto1 = new ApptNonAvailabilityDateDto();
+                    apptNonAvailabilityDateDto1.setId(null);
+                    apptNonAvailabilityDateDto1.setBlockOutStart(apptNonAvailabilityDateDto.getBlockOutStart());
+                    apptNonAvailabilityDateDto1.setBlockOutEnd(apptNonAvailabilityDateDto.getBlockOutEnd());
+                    apptNonAvailabilityDateDto1.setRecurrence(apptNonAvailabilityDateDto.getRecurrence());
+                    apptNonAvailabilityDateDto1.setRefNo(apptRefNo);
+                    apptNonAvailabilityDateDto1.setNonAvaDescription(apptNonAvailabilityDateDto.getNonAvaDescription());
+                    apptNonAvailabilityDateDto1.setUserCorrId(userSysCorrId);
+                    apptNonAvailabilityDateDto1.setNonAvaStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    apptNonAvailabilityDateDto1.setAuditTrailDto(auditTrailDto);
+                    appointmentClient.createNonAvailability(apptNonAvailabilityDateDto1);
+                    //add create ApptUserCalendarDto List
+                    ApptUserCalendarDto apptUserCalendarDto = new ApptUserCalendarDto();
+                    apptUserCalendarDto.setSysUserCorrId(userSysCorrId);
+                    apptUserCalendarDto.setApptRefNo(apptRefNo);
+                    apptUserCalendarDto.setStartSlot(timeSlots);
+                    apptUserCalendarDto.setAuditTrailDto(auditTrailDto);
+                    apptUserCalendarDtos.add(apptUserCalendarDto);
+                }
+                //create do
+                appointmentClient.createApptUserCalendarDtoList(apptUserCalendarDtos);
+            }
         }
         return null;
     }
@@ -111,6 +169,7 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
     public GroupRoleFieldDto getInspectorOptionByLogin(LoginContext loginContext, List<String> workGroupIds, GroupRoleFieldDto groupRoleFieldDto) {
         List<SelectOption> inspectorOption = IaisCommonUtils.genNewArrayList();
         Map<String, String> userIdMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> userLoginIdMap = IaisCommonUtils.genNewHashMap();
         if(IaisCommonUtils.isEmpty(workGroupIds)){
             return null;
         }
@@ -128,19 +187,51 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
         //get Login Id and User Name
         if(orgUserDtos != null && !(orgUserDtos.isEmpty())){
             for(int i = 0; i < orgUserDtos.size(); i++){
-                userIdMap.put(i + "", orgUserDtos.get(i).getUserId());
+                userLoginIdMap.put(i + "", orgUserDtos.get(i).getUserId());
+                userIdMap.put(i + "", orgUserDtos.get(i).getId());
                 SelectOption so = new SelectOption(i + "", orgUserDtos.get(i).getDisplayName());
                 inspectorOption.add(so);
             }
         }
         groupRoleFieldDto.setUserIdMap(userIdMap);
         groupRoleFieldDto.setMemberOption(inspectorOption);
+        groupRoleFieldDto.setUserLoginIdMap(userLoginIdMap);
         return groupRoleFieldDto;
     }
 
     @Override
-    public List<String> getApptUserSysCorrIdByLoginId(String loginId, LoginContext loginContext) {
+    public List<String> getApptUserSysCorrIdByLoginId(String loginId, List<String> workGroupIds) {
+        ApptAgencyUserDto apptAgencyUserDto = appointmentClient.getApptAgencyUserDtoLogin(loginId).getEntity();
+        List<ApptUserSystemCorrelationDto> apptUserSystemCorrelationDtos;
+        if(apptAgencyUserDto == null){
+            ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
+            List<String> workGroupNames = getWorkGroupNamesByIds(workGroupIds);
+            apptAppInfoShowDto.setUserLoginId(loginId);
+            apptAppInfoShowDto.setGroupNames(workGroupNames);
+            apptAppInfoShowDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            apptUserSystemCorrelationDtos = appointmentClient.createApptUserInfo(apptAppInfoShowDto).getEntity();
+        } else {
+            String apptUserAgencyId = apptAgencyUserDto.getId();
+            apptUserSystemCorrelationDtos = appointmentClient.getApptUserSystemCorrelationDtos(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID, apptUserAgencyId).getEntity();
+        }
+        List<String> apptUserSysCorrIds = IaisCommonUtils.genNewArrayList();
+        for(ApptUserSystemCorrelationDto apptUserSystemCorrelationDto : apptUserSystemCorrelationDtos){
+            apptUserSysCorrIds.add(apptUserSystemCorrelationDto.getId());
+        }
+        return apptUserSysCorrIds;
+    }
 
+    private List<String> getWorkGroupNamesByIds(List<String> workGroupIds) {
+        if(!IaisCommonUtils.isEmpty(workGroupIds)){
+            List<String> workGroupNames = IaisCommonUtils.genNewArrayList();
+            for(String workGroupId : workGroupIds){
+                WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
+                if(!AppConsts.DOMAIN_TEMPORARY.equals(workingGroupDto.getGroupDomain())){
+                    workGroupNames.add(workingGroupDto.getGroupName());
+                }
+            }
+            return workGroupNames;
+        }
         return null;
     }
 

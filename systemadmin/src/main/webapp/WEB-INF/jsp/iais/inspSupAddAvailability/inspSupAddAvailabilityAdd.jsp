@@ -56,10 +56,11 @@
                         <iais:field value="Blocked Out Date" required="true"/>
                         <iais:value width="7">
                           <iais:datePicker id = "nonAvaStartDate" name = "nonAvaStartDate" value="${inspNonAvailabilityDto.blockOutStart}"></iais:datePicker>
+                          <br><span class="error-msg" name="iaisErrorMsg" id="error_blockOutStart"></span>
                           <span style="font-size: 16px">To</span><p></p>
                           <iais:datePicker id = "nonAvaEndDate" name = "nonAvaEndDate" value="${inspNonAvailabilityDto.blockOutEnd}"></iais:datePicker>
-                          <br><span class="error-msg" name="iaisErrorMsg" id="error_blockOutStart"></span>
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_blockOutEnd"></span>
+                          <br><span class="error-msg" name="iaisErrorMsg" id="error_nonAvaDate"></span>
                         </iais:value>
                       </div>
                       <div class="form-group">

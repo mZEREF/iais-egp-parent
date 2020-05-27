@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Delegator("inspSupAddAvailabilityDelegator")
 @Slf4j
@@ -80,6 +81,7 @@ public class InspSupAddAvailabilityDelegator {
         ParamUtil.setSessionAttr(bpc.request, "inspSupAddAvailabilityType", null);
         ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", null);
         ParamUtil.setSessionAttr(bpc.request, "nonAvaUserName", null);
+        ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
     }
 
     /**
@@ -147,7 +149,9 @@ public class InspSupAddAvailabilityDelegator {
         } else {
             OrgUserDto oDto = inspSupAddAvailabilityService.getOrgUserDtoById(loginContext.getUserId());
             String loginId = oDto.getUserId();
-            List<String> apptUserSysCorrIds = inspSupAddAvailabilityService.getApptUserSysCorrIdByLoginId(loginId, loginContext);
+            Set<String> wrkGrpIds = loginContext.getWrkGrpIds();
+            List<String> wrkGrpIdList = new ArrayList<>(wrkGrpIds);
+            List<String> apptUserSysCorrIds = inspSupAddAvailabilityService.getApptUserSysCorrIdByLoginId(loginId, wrkGrpIdList);
             apptNonAvailabilityDateDto.setUserSysCorrIds(apptUserSysCorrIds);
             ParamUtil.setSessionAttr(bpc.request, "curRole", "member");
             ParamUtil.setSessionAttr(bpc.request, "userName", oDto.getDisplayName());
@@ -169,8 +173,7 @@ public class InspSupAddAvailabilityDelegator {
         ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = (ApptNonAvailabilityDateDto) ParamUtil.getSessionAttr(bpc.request, "inspNonAvailabilityDto");
         String nonActionValue = ParamUtil.getRequestString(bpc.request, "nonActionValue");
         if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(nonActionValue))){
-            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            List<String> roleList = new ArrayList<>(loginContext.getRoleIds());
+            String curRole = (String)ParamUtil.getSessionAttr(bpc.request, "curRole");
             String nonAvaStart = ParamUtil.getRequestString(bpc.request, "nonAvaStartDate");
             String nonAvaEnd = ParamUtil.getRequestString(bpc.request, "nonAvaEndDate");
             String nonDescription = ParamUtil.getRequestString(bpc.request, "blockOutDesc");
@@ -179,15 +182,12 @@ public class InspSupAddAvailabilityDelegator {
             Date nonAvaEndDate = nonAvaStringToDate(nonAvaEnd);
             apptNonAvailabilityDateDto.setBlockOutStart(nonAvaStartDate);
             apptNonAvailabilityDateDto.setBlockOutEnd(nonAvaEndDate);
-            apptNonAvailabilityDateDto.setId(null);
             apptNonAvailabilityDateDto.setRecurrence(recurrence);
             apptNonAvailabilityDateDto.setNonAvaDescription(nonDescription);
-            apptNonAvailabilityDateDto.setNonAvaStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            apptNonAvailabilityDateDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             ValidationResult validationResult;
-            if(roleList.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
-                String userId = ParamUtil.getRequestString(bpc.request, "nonAvaUserNameId");
-                apptNonAvailabilityDateDto.setUserCorrId(userId);
+            if("lead".equals(curRole)){
+                String userLoginId = ParamUtil.getRequestString(bpc.request, "nonAvaUserNameId");
+                apptNonAvailabilityDateDto.setCheckUserName(userLoginId);
                 validationResult = WebValidationHelper.validateProperty(apptNonAvailabilityDateDto,"lead");
             } else {
                 validationResult = WebValidationHelper.validateProperty(apptNonAvailabilityDateDto,"inspector");
@@ -252,11 +252,12 @@ public class InspSupAddAvailabilityDelegator {
     public void inspSupAddAvailabilityStep2(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityStep2 start ...."));
         String actionValue = (String)ParamUtil.getSessionAttr(bpc.request, "inspSupAddAvailabilityType");
+        GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto)ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
         ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = (ApptNonAvailabilityDateDto) ParamUtil.getSessionAttr(bpc.request, "inspNonAvailabilityDto");
         String nonActionValue = ParamUtil.getRequestString(bpc.request, "nonActionValue");
         if(InspectionConstants.SWITCH_ACTION_SUBMIT.equals(nonActionValue)) {
             if (InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue)) {
-                inspSupAddAvailabilityService.createNonAvailability(apptNonAvailabilityDateDto);
+                inspSupAddAvailabilityService.createNonAvailability(apptNonAvailabilityDateDto, groupRoleFieldDto);
             } else if (InspectionConstants.SWITCH_ACTION_EDIT.equals(actionValue)) {
                 inspSupAddAvailabilityService.updateNonAvailability(apptNonAvailabilityDateDto);
             }

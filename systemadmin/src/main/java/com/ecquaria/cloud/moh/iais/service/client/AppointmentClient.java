@@ -85,8 +85,8 @@ public interface AppointmentClient {
     @PostMapping(value = "/iais-appointment/appt-c-calendar",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApptUserCalendarDto>> createApptUserCalendarDtoList(@RequestBody List<ApptUserCalendarDto> apptUserCalendarDtos);
 
-    @GetMapping(value = "/iais-appointment/appt-sys-corr/{srcSysId}/{userLoginId}")
-    FeignResponseEntity<List<ApptUserSystemCorrelationDto>> getApptUserSystemCorrelationDtos(@PathVariable("srcSysId") String srcSysId, @PathVariable("userLoginId") String userLoginId);
+    @GetMapping(value = "/iais-appointment/appt-sys-corr/{srcSysId}/{userAgencyId}")
+    FeignResponseEntity<List<ApptUserSystemCorrelationDto>> getApptUserSystemCorrelationDtos(@PathVariable("srcSysId") String srcSysId, @PathVariable("userAgencyId") String userAgencyId);
 
     @GetMapping(value = "/iais-appointment/appt-sys-corr/{userLoginId}")
     FeignResponseEntity<ApptAgencyUserDto> getApptAgencyUserDtoLogin(@PathVariable("userLoginId") String userLoginId);

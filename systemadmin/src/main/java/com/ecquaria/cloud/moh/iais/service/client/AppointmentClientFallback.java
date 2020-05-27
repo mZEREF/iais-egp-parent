@@ -161,7 +161,7 @@ public class AppointmentClientFallback implements AppointmentClient{
     }
 
     @Override
-    public FeignResponseEntity<List<ApptUserSystemCorrelationDto>> getApptUserSystemCorrelationDtos(String srcSysId, String userLoginId) {
+    public FeignResponseEntity<List<ApptUserSystemCorrelationDto>> getApptUserSystemCorrelationDtos(String srcSysId, String userAgencyId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
