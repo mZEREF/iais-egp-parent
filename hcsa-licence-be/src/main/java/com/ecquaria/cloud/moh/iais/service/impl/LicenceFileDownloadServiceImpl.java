@@ -706,7 +706,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                     }
                     int i=v.size();
-                    if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(application.getApplicationType())){
+                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(application.getStatus())){
                         requestForChange++;
                     }else if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(application.getStatus())){
                         requestForChange--;
@@ -735,7 +735,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                     }
                     int i=v.size();
-                    if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_RENEWAL)){
+                    if(application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING)){
                         reNew++;
                     }else if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(application.getStatus())){
                         reNew--;
