@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
@@ -64,6 +65,9 @@ public class NotifyUnprocessedTaskBatchjob {
 
     @Autowired
     InspectionAssignTaskService inspectionAssignTaskService;
+
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     @Autowired
     KpiAndReminderService kpiAndReminderService;
@@ -158,7 +162,7 @@ public class NotifyUnprocessedTaskBatchjob {
         }
         email.setReqRefNum(item.getId());
         email.setContent(application.getApplicationType());
-        email.setSender(AppConsts.MOH_AGENCY_NAME);
+        email.setSender(mailSender);
         email.setClientQueryCode(item.getId());
         email.setReceipts(emailAddr);
         emailClient.sendNotification(email).getEntity();
