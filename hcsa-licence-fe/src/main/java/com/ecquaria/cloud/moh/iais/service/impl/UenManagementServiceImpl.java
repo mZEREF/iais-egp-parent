@@ -18,6 +18,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -45,6 +46,9 @@ public class UenManagementServiceImpl implements UenManagementService {
 
     @Autowired
     AppSubmissionService appSubmissionService;
+
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     private UenDto getUenDetails(String uenNo) {
         //ACRA api
@@ -102,7 +106,7 @@ public class UenManagementServiceImpl implements UenManagementService {
             EmailDto emailDto=new EmailDto();
             emailDto.setContent(mesContext);
             emailDto.setSubject(rfiEmailTemplateDto.getTemplateName());
-            emailDto.setSender(AppConsts.MOH_AGENCY_NAME);
+            emailDto.setSender(mailSender);
             List<String> licenseeIds= IaisCommonUtils.genNewArrayList();
             licenseeIds.add(licenceId);
             List<String> emailAddress = emailHelper.getEmailAddressListByLicenseeId(licenseeIds);
