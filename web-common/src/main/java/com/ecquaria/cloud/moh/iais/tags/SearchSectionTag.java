@@ -127,7 +127,7 @@ public final class SearchSectionTag extends DivTagSupport {
         try {
             pageContext.getOut().print("</div></div>");
         } catch (Exception ex) {
-            throw new JspTagException("RowTag: " + ex.getMessage());
+            throw new JspTagException("RowTag: " + ex.getMessage(),ex);
         }
         return EVAL_PAGE;
     }

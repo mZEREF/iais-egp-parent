@@ -65,7 +65,7 @@ public class ProcessUrlTag extends TagSupport {
             pageContext.getOut().print(showUrl);
         } catch (Exception ex) {
             log.error("", ex);
-            throw new JspTagException("ProcessUrlTag: " + ex.getMessage());
+            throw new JspTagException("ProcessUrlTag: " + ex.getMessage(),ex);
         }
         release();
 

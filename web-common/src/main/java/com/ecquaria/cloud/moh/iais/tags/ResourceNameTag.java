@@ -60,7 +60,7 @@ public final class ResourceNameTag extends DivTagSupport{
         try {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString().trim()));
         } catch (Exception ex) {
-            throw new JspTagException("ResourceNameTag: " + ex.getMessage());
+            throw new JspTagException("ResourceNameTag: " + ex.getMessage(),ex);
         }
 
         return EVAL_BODY_INCLUDE;

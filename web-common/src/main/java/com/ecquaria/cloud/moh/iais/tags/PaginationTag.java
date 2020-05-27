@@ -79,7 +79,7 @@ public class PaginationTag extends DivTagSupport {
             }
         } catch (Exception ex) {
             log.error("", ex);
-            throw new JspTagException("PaginationTag: " + ex.getMessage());
+            throw new JspTagException("PaginationTag: " + ex.getMessage(),ex);
         }
         release();
 

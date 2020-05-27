@@ -55,7 +55,7 @@ public class MultipleSelectTag extends DivTagSupport {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {
             log.error("", ex);
-            throw new JspTagException("MultipleSelectTag: " + ex.getMessage());
+            throw new JspTagException("MultipleSelectTag: " + ex.getMessage(),ex);
         }
         release();
 
