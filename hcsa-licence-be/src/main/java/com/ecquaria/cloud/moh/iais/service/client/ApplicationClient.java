@@ -83,7 +83,7 @@ public interface ApplicationClient {
     FeignResponseEntity<BroadcastApplicationDto> createBroadcast(@RequestBody BroadcastApplicationDto broadcastApplicationDto);
 
     @PostMapping(value = "/iais-adhoc-checklist-conifg/adhoc-items", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AdhocChecklistItemDto>> saveAdhocChecklist(@RequestBody AdhocCheckListConifgDto adhocConfigDto);
+    FeignResponseEntity<AdhocCheckListConifgDto> saveAdhocChecklist(@RequestBody AdhocCheckListConifgDto adhocConfigDto);
 
     @GetMapping(value = "/iais-adhoc-checklist-conifg/adhocchecklistbyappremid/{appremId}",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AdhocChecklistItemDto>> getAdhocByAppPremCorrId(@PathVariable(name = "appremId") String appremId);
@@ -241,9 +241,6 @@ public interface ApplicationClient {
 
     @GetMapping(path = "/iais-self-assessment-be/correlation/self-assessment/{correlationId}")
     FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> getAppPremisesSelfDeclByCorrelationId(@PathVariable(value = "correlationId") String correlationId);
-
-    @PostMapping(value = "/iais-application-be/application-group-cess",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<ApplicationLicenceDto>> getCessGroup(@RequestBody List<String>  groupIds);
 
     @GetMapping(value = "/iais-application-be/application-by-taskid",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationBytaskId(@RequestParam ("ref") String ref);
