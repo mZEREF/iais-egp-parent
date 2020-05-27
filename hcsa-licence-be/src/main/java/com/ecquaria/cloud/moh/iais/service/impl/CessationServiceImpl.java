@@ -140,17 +140,39 @@ public class CessationServiceImpl implements CessationService {
     public List<String> saveCessations(List<AppCessationDto> appCessationDtos, String licenseeId) {
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
-        for (int i = 0; i < appCessationDtos.size(); i++) {
-            AppCessationDto appCessationDto = appCessationDtos.get(0);
+        Map<String, List<String>> licPremiseIdMap = IaisCommonUtils.genNewHashMap();
+        for (AppCessationDto appCessationDto : appCessationDtos) {
             String licId = appCessationDto.getLicId();
             String premiseId = appCessationDto.getPremiseId();
+            List<String> premiseIds = licPremiseIdMap.get(licId);
+            if (premiseIds == null) {
+                List<String> premisesIds = IaisCommonUtils.genNewArrayList();
+                premisesIds.add(premiseId);
+                licPremiseIdMap.put(licId, premisesIds);
+            } else {
+                premiseIds.add(premiseId);
+            }
+        }
+        Map<String, String> appIdPremisesMap = IaisCommonUtils.genNewHashMap();
+        for (String licId : licPremiseIdMap.keySet()) {
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.clear();
             licIds.add(licId);
-            String appId = transform(licIds,licenseeId,premiseId);
-            appIds.add(appId);
-            AppCessMiscDto appCessMiscDto = setMiscData(appCessationDto, appId);
-            appCessMiscDtos.add(appCessMiscDto);
+            AppSubmissionDto appSubmissionDto = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity().get(0);
+            List<String> premiseIds = licPremiseIdMap.get(licId);
+            Map<String, String> transform = transform(appSubmissionDto, licenseeId, premiseIds);
+            appIdPremisesMap.putAll(transform);
+        }
+        for (String premiseId : appIdPremisesMap.keySet()) {
+            String appId = appIdPremisesMap.get(premiseId);
+            for (AppCessationDto appCessationDto : appCessationDtos) {
+                String premiseId1 = appCessationDto.getPremiseId();
+                if (premiseId.equals(premiseId1)) {
+                    AppCessMiscDto appCessMiscDto = setMiscData(appCessationDto, appId);
+                    appCessMiscDtos.add(appCessMiscDto);
+                    appIds.add(appId);
+                }
+            }
         }
         cessationClient.saveCessation(appCessMiscDtos).getEntity();
         return appIds;
@@ -271,15 +293,13 @@ public class CessationServiceImpl implements CessationService {
         taskService.createHistorys(appPremisesRoutingHistoryDtos);
     }
 
-    private String transform(List<String> licIds, String licenseeId,String premiseId) {
+    private Map<String, String> transform(AppSubmissionDto appSubmissionDto, String licenseeId,List<String> premiseIds) {
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
         Double amount = 0.0;
-        String appId = null;
         AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_CESSATION, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
-        List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
-        AppSubmissionDto appSubmissionDto = appSubmissionDtoList.get(0);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
         log.info(StringUtil.changeForLog("============================serviceName" + serviceName));
@@ -306,14 +326,19 @@ public class CessationServiceImpl implements CessationService {
             String id = applicationDto.getId();
             AppGrpPremisesDto dto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
             String hciCode = dto.getHciCode();
-            PremisesDto entity1 = hcsaLicenceClient.getLicPremisesDtoById(premiseId).getEntity();
-            String hciCode1 = entity1.getHciCode();
-            if (hciCode1.equals(hciCode)) {
-                appId = id ;
-                break;
+            for(String premiseId :premiseIds){
+                PremisesDto entity1 = hcsaLicenceClient.getLicPremisesDtoById(premiseId).getEntity();
+                String hciCode1 = entity1.getHciCode();
+                if (hciCode1.equals(hciCode)) {
+                    String appId = id ;
+                    map.put(premiseId, appId);
+                    applicationDto.setNeedNewLicNo(false);
+                    applicationDto.setGroupLicenceFlag(null);
+                    applicationClient.updateApplication(applicationDto);
+                }
             }
         }
-        return appId;
+        return map;
     }
 
     private AppCessMiscDto setMiscData(AppCessationDto appCessationDto, String appId) {

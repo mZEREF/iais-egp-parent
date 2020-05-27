@@ -117,6 +117,7 @@ public class CessationApplicationDelegator {
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + WHICHTODO + j);
                 if (!StringUtil.isEmpty(whichTodo)) {
                     choose = Boolean.TRUE;
+                    break;
                 }
             }
         }
