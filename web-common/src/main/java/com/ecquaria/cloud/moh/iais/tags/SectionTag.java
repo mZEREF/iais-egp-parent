@@ -93,7 +93,7 @@ public final class SectionTag extends DivTagSupport {
         try {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {
-            throw new JspTagException("RowTag: " + ex.getMessage());
+            throw new JspTagException("RowTag: " + ex.getMessage(),ex);
         }
         return EVAL_BODY_INCLUDE;
     }
@@ -103,7 +103,7 @@ public final class SectionTag extends DivTagSupport {
         try {
             pageContext.getOut().print(isBE ? "</div></div></div>" : "</div></div></div></div>");
         } catch (Exception ex) {
-            throw new JspTagException("RowTag: " + ex.getMessage());
+            throw new JspTagException("RowTag: " + ex.getMessage(),ex);
         }
         return EVAL_PAGE;
     }
