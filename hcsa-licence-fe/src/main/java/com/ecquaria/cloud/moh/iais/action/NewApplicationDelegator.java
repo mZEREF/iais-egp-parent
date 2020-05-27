@@ -1359,6 +1359,7 @@ public class NewApplicationDelegator {
                             }
                             appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
                             RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
+                            appSubmissionDtoByLicenceId.setAuditTrailDto(   IaisEGPHelper.getCurrentAuditTrailDto());
                             appSubmissionDtos.add(appSubmissionDtoByLicenceId);
 
                     }
@@ -1408,6 +1409,7 @@ public class NewApplicationDelegator {
 
         appSubmissionDto.setPartPremise(appSubmissionDto.isGroupLic());
         appSubmissionDto.setGetAppInfoFromDto(true);
+        appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appSubmissionDtos.add(appSubmissionDto);
         AppSubmissionListDto appSubmissionListDto =new AppSubmissionListDto();
         String submissionId = generateIdClient.getSeqId().getEntity();
