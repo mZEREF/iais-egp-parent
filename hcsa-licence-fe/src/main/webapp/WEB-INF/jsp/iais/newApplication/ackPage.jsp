@@ -34,7 +34,7 @@
                         </c:forEach>
                         <div class="ack-font-16">
                             <div class="col-xs-12">
-                                A confirmation email will be sent to XXXXX.
+                                A confirmation email will be sent to ${emailAddress}.
                                 <br/>
                                 <br/>
                             </div>

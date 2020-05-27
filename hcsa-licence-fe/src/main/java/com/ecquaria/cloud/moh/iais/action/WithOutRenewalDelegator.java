@@ -55,12 +55,14 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -657,10 +659,12 @@ public class WithOutRenewalDelegator {
         //
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
         String groupNo = "";
+        String appGrpId = "";
         String licenseeId=null;
         if(appSubmissionDtos.size() != 0){
             groupNo = appSubmissionDtos.get(0).getAppGrpNo();
             licenseeId = appSubmissionDtos.get(0).getLicenseeId();
+            appGrpId = appSubmissionDtos.get(0).getAppGrpId();
         }
         if(ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
@@ -685,14 +689,20 @@ public class WithOutRenewalDelegator {
                 log.error(e.getMessage(),e);
             }
 
-        }else if(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
+        }else if(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod) && !StringUtil.isEmpty(appGrpId)){
+            ApplicationGroupDto appGrp = new ApplicationGroupDto();
+            appGrp.setId(appGrpId);
+            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
+            serviceConfigService.updatePaymentStatus(appGrp);
             try {
                 sendEmail(bpc.request,groupNo,ApplicationConsts.PAYMENT_METHOD_NAME_GIRO,licenseeId,totalAmount,"xxxx-xxxx-xxxx");
 
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
-
+            String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
+            ParamUtil.setSessionAttr(bpc.request,"txnDt",txnDt);
+            ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE4);
         }
 
     }
@@ -889,12 +899,7 @@ public class WithOutRenewalDelegator {
         log.info(StringUtil.changeForLog("the do toPrepareData end ...."));
     }
 
-
-    //=============================================================================
-    //private method
-    //=============================================================================
-
-    private String emailAddressesToString(List<String> emailAddresses){
+    public static String emailAddressesToString(List<String> emailAddresses){
         String emailAddress = "";
         if(emailAddresses.isEmpty()){
             return emailAddress;
@@ -913,9 +918,9 @@ public class WithOutRenewalDelegator {
         }
         return emailAddress;
     }
-
-
-
+    //=============================================================================
+    //private method
+    //=============================================================================
 
     public void sendEmail(HttpServletRequest request,String applicationNumber, String type, String licenseeId, Double amount,  String GIROAccountNumber ) throws IOException, TemplateException {
         List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request,AppServicesConsts.HCSASERVICEDTOLIST);

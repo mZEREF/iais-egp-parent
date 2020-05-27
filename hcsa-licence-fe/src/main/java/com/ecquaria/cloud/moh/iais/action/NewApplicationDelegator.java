@@ -39,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -1805,6 +1806,16 @@ public class NewApplicationDelegator {
             String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
             ParamUtil.setSessionAttr(bpc.request,"txnDt",txnDt);
         }
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto)ParamUtil.getSessionAttr(bpc.request,"INTER_INBOX_USER_INFO");
+        String licenseeId = null;
+        if(interInboxUserDto!=null){
+            licenseeId = interInboxUserDto.getLicenseeId();
+        }else{
+            log.error(StringUtil.changeForLog("interInboxUserDto null"));
+        }
+        List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
+        String emailAddress = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);
+        ParamUtil.setRequestAttr(bpc.request,"emailAddress",emailAddress);
         log.info(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 
