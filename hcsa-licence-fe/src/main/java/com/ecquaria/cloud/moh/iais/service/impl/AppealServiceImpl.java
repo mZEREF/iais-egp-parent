@@ -750,9 +750,6 @@ public class AppealServiceImpl implements AppealService {
         //info
 
         applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
-        if(ApplicationConsts.APPEAL_REASON_APPLICATION_REJECTION.equals(reasonSelect)){
-            applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_APPEAL_APPROVE);
-        }
         applicationDto1.setServiceId(applicationDto.getServiceId());
         String status = applicationDto.getStatus();
         applicationDto1.setVersion(1);

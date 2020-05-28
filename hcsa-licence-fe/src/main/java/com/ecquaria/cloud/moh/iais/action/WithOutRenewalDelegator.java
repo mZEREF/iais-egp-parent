@@ -421,7 +421,6 @@ public class WithOutRenewalDelegator {
                                     amendmentFeeDto.setChangeInHCIName(!b);
                                     String olAddress = oldAppGrpPremisesDto.getAddress();
                                     equals = olAddress.equals(address);
-                                    amendmentFeeDto.setChangeInLocation(!equals);
                                 }else {
                                     String oldAddress = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getAddress();
                                     equals = oldAddress.equals(address);
@@ -479,6 +478,7 @@ public class WithOutRenewalDelegator {
                                     appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
                                 }
                                 RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
+                                NewApplicationDelegator.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
                                 rfcAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
                             }
                         }

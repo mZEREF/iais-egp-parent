@@ -92,7 +92,7 @@ public interface ApplicationClient  {
     FeignResponseEntity<AppSubmissionDto> saveReqeustInformationSubmision(@RequestBody AppSubmissionRequestInformationDto appSubmissionRequestInformationDto);
 
     @GetMapping(path = "/iais-application/application-premises-by-app-id/{applicationId}")
-    FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppGroId(@PathVariable("applicationId") String applicationId);
+    FeignResponseEntity<List<AppGrpPremisesDto>> getAppGrpPremisesDtoByAppGroId(@PathVariable("applicationId") String applicationId);
 
     @GetMapping(path = "/iais-application/application-premises-by-corr-id/{corrId}")
     FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesByCorrId(@PathVariable("corrId") String corrId);

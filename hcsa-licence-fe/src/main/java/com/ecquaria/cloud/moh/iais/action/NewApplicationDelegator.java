@@ -1040,9 +1040,19 @@ public class NewApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void doRequestInformationSubmit(BaseProcessClass bpc) throws IOException {
+    public void doRequestInformationSubmit(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doRequestInformationSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        AppSubmissionDto submitAppSubmissionDto=  (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,"submitAppSubmissionDto");
+        AppSubmissionDto oldSubmitAppSubmissionDto =(AppSubmissionDto)  bpc.request.getSession().getAttribute("oldSubmitAppSubmissionDto");
+        List<AppGrpPremisesDto> appGrpPremisesDtoList1 = submitAppSubmissionDto.getAppGrpPremisesDtoList();
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
+            String premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+            appGrpPremisesDto=   appGrpPremisesDtoList.get(0);
+            appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo);
+        }
+
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
         String appGrpNo = appSubmissionDto.getAppGrpNo();
         //oldAppSubmissionDtos
@@ -1079,8 +1089,9 @@ public class NewApplicationDelegator {
         }*/
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
-        appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
-        appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
+        appSubmissionRequestInformationDto.setAppSubmissionDto(submitAppSubmissionDto);
+        appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldSubmitAppSubmissionDto);
+    /*    applicationClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto);*/
         appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
         // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","Y");
@@ -1470,7 +1481,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
 
-    private void premisesDocToSvcDoc( AppSubmissionDto appSubmissionDtoByLicenceId){
+    public static void premisesDocToSvcDoc( AppSubmissionDto appSubmissionDtoByLicenceId){
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDtoByLicenceId.getAppGrpPrimaryDocDtos();
         List<AppSvcDocDto> appSvcDocDtoList=IaisCommonUtils.genNewArrayList();
         if(appGrpPrimaryDocDtos!=null){
@@ -3353,6 +3364,48 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
         if(!StringUtil.isEmpty(appNo)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
+
+            AppSubmissionDto oldSubmitAppSubmissionDto =(AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
+            AppSubmissionDto newSubmitAppSubmissionDto =(AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
+            bpc.request.getSession().setAttribute("submitAppSubmissionDto",newSubmitAppSubmissionDto);
+            bpc.request.getSession().setAttribute("oldSubmitAppSubmissionDto",oldSubmitAppSubmissionDto);
+            List<AppGrpPremisesDto> appGrpPremisesDtoList= appSubmissionService.getAppGrpPremisesDto(appNo);
+            List<String> ids=IaisCommonUtils.genNewArrayList();
+            String premisesIndexNo=null;
+            for(AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()){
+                for(AppGrpPremisesDto appGrpPremisesDto1 : appGrpPremisesDtoList){
+                    if(appGrpPremisesDto.getId().equals(appGrpPremisesDto1.getId())){
+                        appGrpPremisesDto1.setPremisesIndexNo(appGrpPremisesDto.getPremisesIndexNo());
+                    }
+                }
+            }
+            if(appGrpPremisesDtoList!=null&&!appGrpPremisesDtoList.isEmpty()){
+                for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+                    ids.add(appGrpPremisesDto.getId());
+                    premisesIndexNo=appGrpPremisesDto.getPremisesIndexNo();
+                }
+            }
+            appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
+
+            ApplicationDto entity = applicationClient.getApplicationDtoByVersion(appNo).getEntity();
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos =IaisCommonUtils.genNewArrayList();
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
+                if(entity.getServiceId().equals(appSvcRelatedInfoDto.getServiceId())){
+                  /*  appSvcRelatedInfoDto.setAppSvcDocDtoLit(null);*/
+                    appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
+                    List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+                    List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtos=IaisCommonUtils.genNewArrayList();
+                    for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList){
+                        if(appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(premisesIndexNo)){
+                            appSvcLaboratoryDisciplinesDtos.add(appSvcLaboratoryDisciplinesDto);
+                        }
+
+                    }
+                    appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtos);
+                }
+            }
+            appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
             if(appSubmissionDto != null){
                 String appType =  appSubmissionDto.getAppType();
                 boolean isRenewalOrRfc = ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);

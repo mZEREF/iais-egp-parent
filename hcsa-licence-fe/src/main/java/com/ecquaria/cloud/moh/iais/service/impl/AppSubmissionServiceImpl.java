@@ -648,6 +648,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         applicationClient.deleteOverdueDraft(draftValidity);
     }
 
+    @Override
+    public List<AppGrpPremisesDto> getAppGrpPremisesDto(String appNo) {
+        List<AppGrpPremisesDto> entity = applicationClient.getAppGrpPremisesDtoByAppGroId(appNo).getEntity();
+        return entity;
+    }
+
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             return appSvcRelatedInfoDtos.get(0);
