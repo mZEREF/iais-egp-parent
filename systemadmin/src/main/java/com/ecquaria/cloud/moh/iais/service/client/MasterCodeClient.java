@@ -12,12 +12,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Hc
@@ -58,6 +53,9 @@ public interface MasterCodeClient {
 
     @GetMapping(path = "/iais-mastercode/mastercode-catergory")
     FeignResponseEntity<List<MasterCodeCategoryDto>> getAllMasterCodeCategory();
+
+    @GetMapping(path = "/iais-mastercode/master-code/master-code-key")
+    FeignResponseEntity<Boolean> masterCodeKeyIsExist(@RequestParam(value = "masterCodeKey") String masterCodeKey);
 
 
 }

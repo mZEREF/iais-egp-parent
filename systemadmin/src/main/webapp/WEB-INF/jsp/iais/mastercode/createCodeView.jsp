@@ -28,15 +28,14 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Filter Value</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <p>${MasterCodeView.codeValue}</p>
-                                <input name="codeCategoryFilterValue" type="text" value="${MasterCodeView.codeValue}" hidden>
+                                <p>${MasterCodeView.filterValue}</p>
+                                <input name="codeCategoryFilterValue" type="text" value="${MasterCodeView.filterValue}" hidden>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Version</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <p>${MasterCodeView.version}</p>
-
                             </div>
                         </div>
                         <div class="form-group">
@@ -61,7 +60,8 @@
                             <iais:field value="Code Description" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeCategoryDescription" type="text" name="codeCategoryDescription"  maxlength="255" value="${param.codeCategoryDescription}">
+                                    <textarea id="codeCategoryDescription" cols="93" rows="6" name="codeCategoryDescription"
+                                              maxlength="255">${param.codeCategoryDescription}</textarea>
                                     <span id="error_codeDescription" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -76,7 +76,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="codeCategoryRemarks">Remark</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <form><textarea cols="53" rows="6" id="codeCategoryRemarks"  name="codeCategoryRemarks" maxlength="255">${param.codeCategoryRemarks}</textarea></form>
+                                <form><textarea cols="93" rows="6" id="codeCategoryRemarks"  name="codeCategoryRemarks" maxlength="255">${param.codeCategoryRemarks}</textarea></form>
                             </div>
                         </div>
                         <div class="form-group">

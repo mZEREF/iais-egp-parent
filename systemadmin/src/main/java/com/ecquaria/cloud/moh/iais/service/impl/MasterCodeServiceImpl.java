@@ -66,6 +66,11 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     }
 
     @Override
+    public boolean masterCodeKeyIsExist(String masterCodekey) {
+        return masterCodeClient.masterCodeKeyIsExist(masterCodekey).getEntity();
+    }
+
+    @Override
     public String findCodeKeyByDescription(String description) {
         return masterCodeClient.getCodeKeyByDescription(description).getEntity();
     }

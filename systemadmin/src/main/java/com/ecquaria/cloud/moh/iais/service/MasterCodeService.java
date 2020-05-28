@@ -19,4 +19,5 @@ public interface MasterCodeService {
     MasterCodeDto findMasterCodeByMcId(String masterCodeId);
     String findCodeCategoryByDescription(String description);
     List<MasterCodeCategoryDto> getAllCodeCategory();
+    boolean masterCodeKeyIsExist(String masterCodekey);
 }
