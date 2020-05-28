@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDe
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -188,5 +189,13 @@ public interface FeEicGatewayClient {
                                             @RequestHeader("authorization") String authorization,
                                             @RequestHeader("date-Secondary") String dateSec,
                                             @RequestHeader("authorization-Secondary") String authorizationSec);
+
+    @PostMapping(value = "/v1/hcsa-config-gol-risk", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<GobalRiskAccpetDto>  getGobalRiskAccpetDtoCallBeByGobalRiskAccpetDto(@RequestBody GobalRiskAccpetDto gobalRiskAccpetDto,
+                                                                     @RequestHeader("date") String date,
+                                                                     @RequestHeader("authorization") String authorization,
+                                                                     @RequestHeader("date-Secondary") String dateSec,
+                                                                     @RequestHeader("authorization-Secondary") String authorizationSec);
 
 }
