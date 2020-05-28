@@ -1706,7 +1706,7 @@ public class HcsaApplicationDelegator {
         //set recommendation other dropdown value
         setRecommendationOtherDropdownValue(request);
         //set appeal recommendation dropdown value
-        setAppealRecommendationDropdownValue(request,applicationViewDto);
+        //setAppealRecommendationDropdownValue(request,applicationViewDto);
     }
 
     private void setAppealRecommendationDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
