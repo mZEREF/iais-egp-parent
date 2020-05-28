@@ -169,7 +169,7 @@ public interface BeEicGatewayClient {
                                                                   @RequestHeader("authorization-Secondary") String authorizationSec);
 
 
-    @PutMapping(value = "/v1/hcsa-adhoc-chkl-sync", produces = MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/v1/hcsa-adhoc-chkl-sync", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HttpStatus> syncAdhocItemData(@RequestBody AdhocCheckListConifgDto configDto,
                                                       @RequestHeader("date") String date,
