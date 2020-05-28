@@ -175,10 +175,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         for(Map.Entry<String, List<ApptUserCalendarDto>> apptInspDateMap : apptFeConfirmDateDto.getApptInspDateMap().entrySet()){
             String apptRefNo = apptInspDateMap.getKey();
             List<ApptUserCalendarDto> apptUserCalendarDtoList = apptInspDateMap.getValue();
-            int daySize = apptUserCalendarDtoList.size();
-            int timeSize = apptUserCalendarDtoList.get(daySize - 1).getEndSlot().size();
+            int timeSize = apptUserCalendarDtoList.get(0).getEndSlot().size();
             Date startDate = apptUserCalendarDtoList.get(0).getStartSlot().get(0);
-            Date endDate = apptUserCalendarDtoList.get(daySize - 1).getEndSlot().get(timeSize - 1);
+            Date endDate = apptUserCalendarDtoList.get(0).getEndSlot().get(timeSize - 1);
             String inspStartDate = apptDateToStringShow(startDate);
             String inspEndDate = apptDateToStringShow(endDate);
             String dateStr = inspStartDate + " - " + inspEndDate;
@@ -323,10 +322,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 for (Map.Entry<String, List<ApptUserCalendarDto>> map : appInspDateMap.entrySet()) {
                     String apptRefNo = map.getKey();
                     List<ApptUserCalendarDto> apptUserCalendarDtoList = map.getValue();
-                    int daySize = apptUserCalendarDtoList.size();
-                    int timeSize = apptUserCalendarDtoList.get(daySize - 1).getEndSlot().size();
+                    int timeSize = apptUserCalendarDtoList.get(0).getEndSlot().size();
                     Date startDate = apptUserCalendarDtoList.get(0).getStartSlot().get(0);
-                    Date endDate = apptUserCalendarDtoList.get(daySize - 1).getEndSlot().get(timeSize - 1);
+                    Date endDate = apptUserCalendarDtoList.get(0).getEndSlot().get(timeSize - 1);
                     String inspStartDate = apptDateToStringShow(startDate);
                     String inspEndDate = apptDateToStringShow(endDate);
                     String dateStr = inspStartDate + " - " + inspEndDate;
