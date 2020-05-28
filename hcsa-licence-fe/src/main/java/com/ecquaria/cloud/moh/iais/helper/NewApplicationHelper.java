@@ -27,6 +27,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
@@ -34,10 +39,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * NewApplicationHelper
@@ -1265,6 +1266,36 @@ public class NewApplicationHelper {
                 }
             }
         }
+    }
+
+    public static void setPremEditStatus(List<AppGrpPremisesDto> appGrpPremisesDtos, List<AppGrpPremisesDto> oldAppGrpPremisesDtos){
+        if(IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(oldAppGrpPremisesDtos)){
+            return;
+        }
+        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+            String premKey = getPremKey(appGrpPremisesDto);
+            for(AppGrpPremisesDto oldAppGrppremisesDto:oldAppGrpPremisesDtos){
+                String oldPremKey = getPremKey(oldAppGrppremisesDto);
+                if(premKey.equals(oldPremKey)){
+                    appGrpPremisesDto.setExistingData(AppConsts.NO);
+                    break;
+                }
+            }
+        }
+
+    }
+
+    public static String getPremKey(AppGrpPremisesDto appGrpPremisesDto){
+        String premKey = "";
+        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+            premKey = IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getPostalCode(),appGrpPremisesDto.getBlkNo(),appGrpPremisesDto.getFloorNo(),appGrpPremisesDto.getUnitNo());
+        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+            premKey = IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getConveyancePostalCode(),appGrpPremisesDto.getConveyanceBlockNo(),appGrpPremisesDto.getConveyanceFloorNo(),appGrpPremisesDto.getConveyanceUnitNo());
+        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
+            premKey = IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getOffSitePostalCode(),appGrpPremisesDto.getOffSiteBlockNo(),appGrpPremisesDto.getOffSiteFloorNo(),appGrpPremisesDto.getOffSiteUnitNo());
+
+        }
+        return premKey;
     }
 
     //=============================================================================

@@ -125,8 +125,11 @@ public class ClinicalLaboratoryDelegator {
         }
         ServiceStepDto serviceStepDto = (ServiceStepDto)ParamUtil.getSessionAttr(bpc.request,ShowServiceFormsDelegator.SERVICESTEPDTO);
         String svcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request,svcId);
         List<HcsaServiceDto> hcsaServiceDtoList= (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-        serviceStepDto = getServiceStepDto(serviceStepDto,action,hcsaServiceDtoList,svcId);
+        serviceStepDto = getServiceStepDto(serviceStepDto,action,hcsaServiceDtoList,svcId,appSvcRelatedInfoDto);
+        //reset value
+        action = serviceStepDto.getCurrentStep().getStepCode();
         ParamUtil.setSessionAttr(bpc.request, ShowServiceFormsDelegator.SERVICESTEPDTO, (Serializable) serviceStepDto);
 
         if(StringUtil.isEmpty(action)||IaisEGPConstant.YES.equals(formTab)){
@@ -1222,7 +1225,7 @@ public class ClinicalLaboratoryDelegator {
     //private method
     //=============================================================================
 
-    private ServiceStepDto getServiceStepDto(ServiceStepDto serviceStepDto,String action,List<HcsaServiceDto> hcsaServiceDtoList,String svcId){
+    private ServiceStepDto getServiceStepDto(ServiceStepDto serviceStepDto,String action,List<HcsaServiceDto> hcsaServiceDtoList,String svcId,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
         //get the service information
         int serviceNum = -1;
         if(svcId!=null && hcsaServiceDtoList!=null && hcsaServiceDtoList.size() >0){
@@ -1252,12 +1255,20 @@ public class ClinicalLaboratoryDelegator {
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceStepDto.getHcsaServiceStepSchemeDtos();
         if(hcsaServiceStepSchemeDtos!=null && hcsaServiceStepSchemeDtos.size()>0){
             int number = -1;
+            int currentNumber = serviceStepDto.getCurrentNumber();
             if(StringUtil.isEmpty(action)){
                 number = 0;
             }else{
                 for (int i = 0 ;i<hcsaServiceStepSchemeDtos.size();i++){
                     if(action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())){
                         number =i;
+                        if(HcsaLicenceFeConstant.DISCIPLINEALLOCATION.equals(action) && skipDisciplineAllocationPage(appSvcRelatedInfoDto)){
+                            if(currentNumber < i){
+                                number++;
+                            }else if(currentNumber > i){
+                                number--;
+                            }
+                        }
                         break;
                     }
                 }
@@ -1323,6 +1334,24 @@ public class ClinicalLaboratoryDelegator {
 
         return serviceStepDto;
     }
+
+    private boolean skipDisciplineAllocationPage(AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        boolean flag = false;
+        if(appSvcRelatedInfoDto != null){
+            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtos = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDtos)){
+                for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtos){
+                    List<AppSvcChckListDto> appSvcChckListDtos = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                    if(!IaisCommonUtils.isEmpty(appSvcChckListDtos)){
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return !flag;
+    }
+
     private void turn(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos,Map<String,HcsaSvcSubtypeOrSubsumedDto> allCheckListMap){
 
         for(HcsaSvcSubtypeOrSubsumedDto dto:hcsaSvcSubtypeOrSubsumedDtos){

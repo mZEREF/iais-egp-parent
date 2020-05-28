@@ -13,6 +13,9 @@
   .app-font-size-22{
     font-size: 22px;
   }
+  .ack-font-16{
+    font-size: 16px;
+  }
 </style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
@@ -30,61 +33,62 @@
             <%@ include file="./navTabs.jsp" %>
             <div class="tab-content  ">
               <div class="tab-pane active" id="premisesTab" role="tabpanel">
-                <c:if test="${AppSubmissionDto.needEditController}">
-                  <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
-                    <c:if test="${'APPPN01' == clickEditPage}">
-                      <c:set var="isClickEdit" value="true"/>
-                    </c:if>
-                  </c:forEach>
+                  <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+                <%--<c:if test="${AppSubmissionDto.needEditController}">--%>
+                  <%--<c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">--%>
+                    <%--<c:if test="${'APPPN01' == clickEditPage}">--%>
+                      <%--<c:set var="isClickEdit" value="true"/>--%>
+                    <%--</c:if>--%>
+                  <%--</c:forEach>--%>
 
-                  <c:choose>
-                    <c:when test="${'true' != isClickEdit}">
-                      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
-                    </c:when>
-                    <c:otherwise>
-                      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
-                    </c:otherwise>
-                  </c:choose>
-                  <c:if test="${'true' != isClickEdit}">
-                    <c:set var="showPreview" value="true"/>
-                    <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.premisesEdit}"/>
-                    <div class="premises-summary-preview <c:if test="${'true' != showPreview}">hidden</c:if>">
-                      <c:choose>
-                        <c:when test="${'true' == canEdit}">
-                          <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a></p>
-                        </c:when>
-                        <c:otherwise>
+                  <%--<c:choose>--%>
+                    <%--<c:when test="${'true' != isClickEdit}">--%>
+                      <%--<input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>--%>
+                    <%--</c:when>--%>
+                    <%--<c:otherwise>--%>
+                      <%--<input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>--%>
+                    <%--</c:otherwise>--%>
+                  <%--</c:choose>--%>
+                  <%--<c:if test="${'true' != isClickEdit}">--%>
+                    <%--<c:set var="showPreview" value="true"/>--%>
+                    <%--<c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.premisesEdit}"/>--%>
+                    <%--<div class="premises-summary-preview <c:if test="${'true' != showPreview}">hidden</c:if>">--%>
+                      <%--<c:choose>--%>
+                        <%--<c:when test="${'true' == canEdit}">--%>
+                          <%--<p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a></p>--%>
+                        <%--</c:when>--%>
+                        <%--<c:otherwise>--%>
 
-                        </c:otherwise>
-                      </c:choose>
-                      <c:forEach var="appGrpPremDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="stat">
-                        <h3 class="without-header-line">Premises ${stat.index+1}</h3>
-                        <p class="premise-address-gp">
-                          <span class="premise-type">
-                            <strong>
-                              <c:if test="${'ONSITE' == appGrpPremDto.premisesType}">
-                                <c:out value="On-site: "/>
-                              </c:if>
-                              <c:if test="${'CONVEYANCE' == appGrpPremDto.premisesType}">
-                                <c:out value="Conveyance: "/>
-                              </c:if>
-                              <c:if test="${'OFFSIET' == appGrpPremDto.premisesType}">
-                                <c:out value="Off-site: "/>
-                              </c:if>
-                            </strong>
-                          </span>
-                          <span class="premise-address">
-                            <c:out value="${appGrpPremDto.address}"/>
-                          </span>
-                        </p>
-                        <c:if test="${'CONVEYANCE' == appGrpPremDto.premisesType}">
-                          <p class="vehicle-txt hidden"><strong>Vehicle No:</strong> <span class="vehicle-info">${appGrpPremDto.conveyanceVehicleNo}</span></p>
-                        </c:if>
-                      </c:forEach>
-                    </div>
-                  </c:if>
-                </c:if>
-                <div class="premises-content <c:if test="${'true' == showPreview}">hidden</c:if>" >
+                        <%--</c:otherwise>--%>
+                      <%--</c:choose>--%>
+                      <%--<c:forEach var="appGrpPremDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="stat">--%>
+                        <%--<h3 class="without-header-line">Premises ${stat.index+1}</h3>--%>
+                        <%--<p class="premise-address-gp">--%>
+                          <%--<span class="premise-type">--%>
+                            <%--<strong>--%>
+                              <%--<c:if test="${'ONSITE' == appGrpPremDto.premisesType}">--%>
+                                <%--<c:out value="On-site: "/>--%>
+                              <%--</c:if>--%>
+                              <%--<c:if test="${'CONVEYANCE' == appGrpPremDto.premisesType}">--%>
+                                <%--<c:out value="Conveyance: "/>--%>
+                              <%--</c:if>--%>
+                              <%--<c:if test="${'OFFSIET' == appGrpPremDto.premisesType}">--%>
+                                <%--<c:out value="Off-site: "/>--%>
+                              <%--</c:if>--%>
+                            <%--</strong>--%>
+                          <%--</span>--%>
+                          <%--<span class="premise-address">--%>
+                            <%--<c:out value="${appGrpPremDto.address}"/>--%>
+                          <%--</span>--%>
+                        <%--</p>--%>
+                        <%--<c:if test="${'CONVEYANCE' == appGrpPremDto.premisesType}">--%>
+                          <%--<p class="vehicle-txt hidden"><strong>Vehicle No:</strong> <span class="vehicle-info">${appGrpPremDto.conveyanceVehicleNo}</span></p>--%>
+                        <%--</c:if>--%>
+                      <%--</c:forEach>--%>
+                    <%--</div>--%>
+                  <%--</c:if>--%>
+                <%--</c:if>--%>
+                <div class="premises-content <%--<c:if test="${'true' == showPreview}">hidden</c:if>--%>" >
                   <div class="row ">
                     <div class="col-xs-12">
                       <div class="premises-txt">
@@ -211,14 +215,14 @@
                 submit('premises','saveDraft',$('#selectDraftNo').val());
         });
 
-        <c:if test="${(AppSubmissionDto.appEditSelectDto!=null && !AppSubmissionDto.appEditSelectDto.premisesEdit) || AppSubmissionDto.onlySpecifiedSvc}">
-        disabledPage();
+        <c:if test="${AppSubmissionDto.needEditController || AppSubmissionDto.onlySpecifiedSvc}">
+        readonlyPartPage($('div.premises-content'));
         </c:if>
 
-        <c:if test="${PageCanEdit}">
-        var $PremEle = $('.premises-content');
-        unreadonlyPartPage($PremEle);
-        </c:if>
+        <%--<c:if test="${PageCanEdit}">--%>
+        <%--var $PremEle = $('.premises-content');--%>
+        <%--unreadonlyPartPage($PremEle);--%>
+        <%--</c:if>--%>
         <!-- init end-->
         init = 1;
     });

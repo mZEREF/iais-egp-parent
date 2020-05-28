@@ -65,6 +65,7 @@
             }
             // initPhForm(premDivName,$premContent);
 
+
             if("newPremise" == premSelectVal){
                 $premContent.find('.new-premise-form-on-site').removeClass('hidden');
                 $premContent.find('.new-premise-form-conv').addClass('hidden');
@@ -151,7 +152,8 @@
                             <!--hidden btn -->
                             $premContent.find('a.retrieveAddr').addClass('hidden');
                             $premContent.find('button.addPubHolDay').addClass('hidden');
-
+                            //
+                            $premContent.find('input[name="chooseExistData"]').val('1');
                         }
                     },
                     'error':function () {
@@ -275,10 +277,15 @@
     }
 
     var doEdit = function () {
-        $('#edit').click(function () {
-            $('.premises-summary-preview').addClass('hidden');
-            $('.premises-content').removeClass('hidden');
+        $('.premisesEdit').click(function () {
+            var premContent = $(this).closest('.premContent');
+            <!--hidden edit btn -->
+            premContent.find('.premises-summary-preview').addClass('hidden');
+            <!--unDisabled -->
+            unDisabledPartPage(premContent);
+            unreadonlyPartPage(premContent);
             $('#isEditHiddenVal').val('1');
+            premContent.find('input[name="isPartEdit"]').val('1');
         });
     }
 

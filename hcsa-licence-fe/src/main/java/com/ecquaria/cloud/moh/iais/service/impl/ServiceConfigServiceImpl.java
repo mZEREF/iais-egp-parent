@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -114,6 +115,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
             if(!StringUtil.isEmpty(appGrpPremisesDto.getPremisesSelect())){
                 NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                appGrpPremisesDto.setExistingData(AppConsts.YES);
                 appGrpPremisesDtoMap.put(appGrpPremisesDto.getPremisesSelect(),appGrpPremisesDto);
             }
         }

@@ -174,6 +174,16 @@
         $('input[type="text"]').css('color','');
     }
 
+    function unDisabledPartPage($Ele){
+        $Ele.find('input[type="radio"]').prop('disabled',false);
+        $Ele.find('input[type="text"]').prop('disabled',false);
+        $Ele.find('input[type="file"]').prop('disabled',false);
+        $Ele.find('input[type="checkbox"]').prop('disabled',false);
+        $Ele.find('div.nice-select').removeClass('disabled');
+        $Ele.find('input[type="text"]').css('border-color','');
+        $Ele.find('input[type="text"]').css('color','');
+    }
+
     function readonlyPartPage($Ele) {
         $Ele.find('input[type="radio"]').prop('disabled',true);
         $Ele.find('input[type="text"]').prop('readonly',true);

@@ -4,6 +4,15 @@
         <c:set var="onSite" value="ONSITE" ></c:set>
         <c:set var="conv" value="CONVEYANCE" ></c:set>
         <c:set var="offSite" value="OFFSIET" ></c:set>
+        <input type="hidden" name="chooseExistData" value="0"/>
+        <c:choose>
+            <c:when test="${'1' == premisesList}">
+                <input type="hidden" name="isPartEdit" value="1"/>
+            </c:when>
+            <c:otherwise>
+                <input type="hidden" name="isPartEdit" value="0"/>
+            </c:otherwise>
+        </c:choose>
         <!--for ph -->
         <input class="premValue" type="hidden" name="premValue" value="${status.index}"/>
         <input class="premisesIndexNo" type="hidden" name="premisesIndexNo" value="${appGrpPremisesDto.premisesIndexNo}"/>
@@ -48,12 +57,46 @@
                         <strong class="app-font-size-22 premHeader">Premises ${status.index+1}</strong>
                     </div>
                     <div class="col-xs-6 text-right">
-                        <c:if test="${!status.first && requestInformationConfig==null && 'APTY004' !=AppSubmissionDto.appType && 'APTY005' !=AppSubmissionDto.appType}">
-                            <h4 class="text-danger"><em class="fa fa-times-circle removeBtn"></em></h4>
+                        <c:choose>
+                            <c:when test="${!status.first && requestInformationConfig==null && 'APTY004' !=AppSubmissionDto.appType && 'APTY005' !=AppSubmissionDto.appType}">
+                                <h4 class="text-danger"><em class="fa fa-times-circle removeBtn"></em></h4>
+                            </c:when>
+                            <c:when test="${(requestInformationConfig != null || 'APTY004' ==AppSubmissionDto.appType || 'APTY005' ==AppSubmissionDto.appType) && '1' != appGrpPremisesDto.existingData}">
+                                <a class="premises-summary-preview premisesEdit ack-font-16"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>
+                            </c:when>
+                        </c:choose>
+                    </div>
+                </div>
+            </div>
+            <c:if test="${requestInformationConfig != null || 'APTY004' ==AppSubmissionDto.appType || 'APTY005' ==AppSubmissionDto.appType}">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <span class="premise-type ack-font-16">
+                            <strong>
+                              <c:if test="${'ONSITE' == appGrpPremisesDto.premisesType}">
+                                  <c:out value="On-site: "/>
+                              </c:if>
+                              <c:if test="${'CONVEYANCE' == appGrpPremisesDto.premisesType}">
+                                  <c:out value="Conveyance: "/>
+                              </c:if>
+                              <c:if test="${'OFFSIET' == appGrpPremisesDto.premisesType}">
+                                  <c:out value="Off-site: "/>
+                              </c:if>
+                            </strong>
+                        </span>
+                            <span class="premise-address ack-font-16">
+                            <c:out value="${appGrpPremisesDto.address}"/>
+                        </span>
+                    </div>
+                    <div class="col-xs-12 ack-font-16">
+                        <c:if test="${'CONVEYANCE' == appGrpPremDto.premisesType}">
+                            <strong>Vehicle No:</strong> <span class="vehicle-info">${appGrpPremDto.conveyanceVehicleNo}</span>
                         </c:if>
                     </div>
                 </div>
             </div>
+            </c:if>
             <div class="form-horizontal">
                 <div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType}">hidden</c:if> >
                     <label class="col-xs-12 col-md-4 control-label error-msg-type" for="premisesType">What is your premises type ? <span class="mandatory">*</span></label>
@@ -100,10 +143,8 @@
                                     </c:if>
                                 </label>
                             </div>
-
                         </div>
                     </c:forEach>
-
                 </div>
                 <div class="row">
                     <div class="col-xs-12 col-md-4"></div>
@@ -111,7 +152,6 @@
                         <span class="error-msg" name="iaisErrorMsg" id="error_premisesType${status.index}" ></span>
                     </div>
                 </div>
-
                 <iais:row cssClass="onSiteSelect hidden">
                     <iais:field value="Add or select a premises from the list : " width="12" mandatory="true"/>
                     <iais:value id="onSiteSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
@@ -125,7 +165,6 @@
                         </c:choose>
                     </iais:value>
                 </iais:row>
-
                 <iais:row cssClass="conveyanceSelect hidden">
                     <iais:field value="Add or select a premises from the list : " width="12" mandatory="true"/>
                     <iais:value id="conveyanceSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
@@ -139,7 +178,6 @@
                         </c:choose>
                     </iais:value>
                 </iais:row>
-
                 <iais:row cssClass="offSiteSelect hidden">
                     <iais:field value="Add or select a premises from the list : " width="12" mandatory="true"/>
                     <iais:value id="offSiteSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
@@ -153,8 +191,6 @@
                         </c:choose>
                     </iais:value>
                 </iais:row>
-
-
                 <iais:row>
                     <div class="col-xs-12 col-md-4 "></div>
                     <div class=" col-xs-11 col-sm-7 col-md-5" style="margin-bottom: 2%">

@@ -2353,7 +2353,8 @@ public class NewApplicationDelegator {
         //every prem's ph length
         String [] phLength = ParamUtil.getStrings(request,"phLength");
         String [] premValue = ParamUtil.getStrings(request, "premValue");
-
+        String [] isParyEdit = ParamUtil.getStrings(request,"isPartEdit");
+        String [] chooseExistData = ParamUtil.getStrings(request,"chooseExistData");
         Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, LICAPPGRPPREMISESDTOMAP);
         for(int i =0 ; i<count;i++){
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
@@ -2381,7 +2382,29 @@ public class NewApplicationDelegator {
                     }
                     continue;
                 }
-            }else{
+            }else if(!StringUtil.isEmpty(isParyEdit[i])){
+                if(!AppConsts.YES.equals(isParyEdit[i])){
+                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+                    for(AppGrpPremisesDto prem:appGrpPremisesDtos){
+                        if(prem.getPremisesSelect().equals(premisesSel)){
+                            appGrpPremisesDto = prem;
+                            break;
+                        }
+                    }
+                    appGrpPremisesDtoList.add(appGrpPremisesDto);
+                    continue;
+                }
+                if(AppConsts.YES.equals(chooseExistData[i])){
+                    appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
+                    //get value for jsp page
+                    if(StringUtil.isEmpty(premisesIndexNo[i])){
+                        appGrpPremisesDto.setPremisesIndexNo(UUID.randomUUID().toString());
+                    }else{
+                        appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo[i]);
+                    }
+                    appGrpPremisesDtoList.add(appGrpPremisesDto);
+                    continue;
+                }
                 //set hciCode
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
                 for(AppGrpPremisesDto premDto:appGrpPremisesDtos){
@@ -2413,9 +2436,6 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setOnsiteEndHH(onsiteEndHHS[i]);
                 appGrpPremisesDto.setOnsiteEndMM(onsiteEndMMS[i]);
                 appGrpPremisesDto.setPremisesSelect(premisesSelect[i]);
-                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-
-                }
                 appGrpPremisesDto.setHciName(hciName[i]);
                 appGrpPremisesDto.setPostalCode(postalCode[i]);
                 appGrpPremisesDto.setBlkNo(blkNo[i]);
@@ -2547,6 +2567,11 @@ public class NewApplicationDelegator {
             }
             appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriods);
             appGrpPremisesDtoList.add(appGrpPremisesDto);
+        }
+        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) ||
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            //set premises edit status
+            NewApplicationHelper.setPremEditStatus(appGrpPremisesDtoList,getAppGrpPremisesDtos(appSubmissionDto.getOldAppSubmissionDto()));
         }
         return  appGrpPremisesDtoList;
     }
@@ -4437,6 +4462,14 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
         log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
+    }
+
+    private static List<AppGrpPremisesDto> getAppGrpPremisesDtos(AppSubmissionDto appSubmissionDto){
+        List<AppGrpPremisesDto> appGrpPremisesDtos = IaisCommonUtils.genNewArrayList();
+        if(appSubmissionDto != null){
+            appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+        }
+        return appGrpPremisesDtos;
     }
 
 }
