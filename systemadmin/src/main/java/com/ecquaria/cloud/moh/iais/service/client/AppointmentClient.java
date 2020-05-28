@@ -99,4 +99,10 @@ public interface AppointmentClient {
 
     @PutMapping(value = "/iais-appointment/appt-calendar-refno", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApptUserCalendarDto>> cancelCalenderByApptRefNoAndStatus(ApptUserCalendarDto apptUserCalendarDto);
+
+    @GetMapping(value = "/iais-appointment/appt-agency-one/{userSysCorrId}")
+    FeignResponseEntity<ApptAgencyUserDto> getAgencyUserByUserSysCorrId(@PathVariable("userSysCorrId") String userSysCorrId);
+
+    @GetMapping(value = "/iais-appointment/appt-nonava-some/{apptRefNo}")
+    FeignResponseEntity<List<ApptNonAvailabilityDateDto>> getNonAvailabilityListByApptRefNo(@PathVariable("apptRefNo") String apptRefNo);
 }

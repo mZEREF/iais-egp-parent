@@ -25,7 +25,7 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="inspSupAddAvailabilityType" value="">
     <input type="hidden" name="nonActionValue" value="">
-    <input type="hidden" name="lastActionValue" id="lastActionValue" value="<c:out value="${actionValue}"/>">
+    <input type="hidden" name="lastActionValue" id="lastActionValue" value="<c:out value="${lastActionValue}"/>">
     <div class="main-content">
       <div class="row">
         <div class="col-lg-12 col-xs-12">
@@ -40,7 +40,7 @@
                       </h2>
                       <div class="row">
                         <div class="col-md-2">
-                          <label style="font-size: 16px">Name</label>
+                          <label style="font-size: 16px">Inspector ID</label>
                         </div>
                         <div class="col-md-6">
                           <span style="font-size: 16px"><iais:code code="${inspNonAvailabilityDto.checkUserName}"/></span>
@@ -48,7 +48,7 @@
                       </div>
                       <div class="row">
                         <div class="col-md-2">
-                          <label style="font-size: 16px">Blocked Out Date</label>
+                          <label style="font-size: 16px">Non-Available Date</label>
                         </div>
                         <div class="col-md-6">
                           <span style="font-size: 16px"><fmt:formatDate value='${inspNonAvailabilityDto.blockOutStart}' pattern='dd/MM/yyyy'/> To <fmt:formatDate value='${inspNonAvailabilityDto.blockOutEnd}' pattern='dd/MM/yyyy' /></span>
@@ -56,7 +56,7 @@
                       </div>
                       <div class="row">
                         <div class="col-md-2">
-                          <label style="font-size: 16px">Blocked Out Date Description</label>
+                          <label style="font-size: 16px">Non-Available Date Description</label>
                         </div>
                         <div class="col-md-6">
                           <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" maxlength="255" disabled><c:out value="${inspNonAvailabilityDto.blockOutDesc}"></c:out></textarea>

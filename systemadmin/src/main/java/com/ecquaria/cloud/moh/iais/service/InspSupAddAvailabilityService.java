@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAgencyUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -43,15 +44,6 @@ public interface InspSupAddAvailabilityService {
     /**
       * @author: shicheng
       * @Date 2020/2/3
-      * @Param: removeId
-      * @return: void
-      * @Descripation: delete Non-Availability By Id
-      */
-    void deleteNonAvailabilityById(String removeId);
-
-    /**
-      * @author: shicheng
-      * @Date 2020/2/3
       * @Param: apptNonAvailabilityDateDto
       * @return: ApptNonAvailabilityDateDto
       * @Descripation: create Non-Availability
@@ -65,7 +57,7 @@ public interface InspSupAddAvailabilityService {
       * @return: ApptNonAvailabilityDateDto
       * @Descripation: update Non-Availability
       */
-    ApptNonAvailabilityDateDto updateNonAvailability(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto);
+    List<ApptNonAvailabilityDateDto> updateNonAvailability(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto);
 
     /**
       * @author: shicheng
@@ -102,4 +94,31 @@ public interface InspSupAddAvailabilityService {
       * @Descripation: getApptUserSysCorrIdByLoginId
       */
     List<String> getApptUserSysCorrIdByLoginId(String loginId, List<String> wrkGrpIdList);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/5/28
+      * @Param: userSysCorrId
+      * @return: ApptAgencyUserDto
+      * @Descripation: getAgencyUserByUserSysCorrId
+      */
+    ApptAgencyUserDto getAgencyUserByUserSysCorrId(String userSysCorrId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/5/28
+      * @Param: useAgencyId
+      * @return: List<String>
+      * @Descripation: getUserSysCorrIdByAgencyId
+      */
+    List<String> getUserSysCorrIdByAgencyId(String useAgencyId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/5/28
+      * @Param: apptRefNo
+      * @return: void
+      * @Descripation: deleteNonAvailabilityByApptRefNo
+      */
+    void deleteNonAvailabilityByApptRefNo(String apptRefNo);
 }

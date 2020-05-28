@@ -75,13 +75,6 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
     }
 
     @Override
-    public void deleteNonAvailabilityById(String removeId) {
-        ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = getApptNonAvailabilityDateDtoById(removeId);
-        apptNonAvailabilityDateDto.setNonAvaStatus(AppConsts.COMMON_STATUS_DELETED);
-        updateNonAvailability(apptNonAvailabilityDateDto);
-    }
-
-    @Override
     public List<ApptNonAvailabilityDateDto> createNonAvailability(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto, GroupRoleFieldDto groupRoleFieldDto) {
         if(apptNonAvailabilityDateDto != null){
             //get AuditTrailDto
@@ -137,11 +130,52 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
     }
 
     @Override
-    public ApptNonAvailabilityDateDto updateNonAvailability(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto) {
+    public List<ApptNonAvailabilityDateDto> updateNonAvailability(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto) {
+        List<ApptNonAvailabilityDateDto> apptNonAvailabilityDateDtos = IaisCommonUtils.genNewArrayList();
         if(apptNonAvailabilityDateDto != null){
-            return appointmentClient.updateNonAvailability(apptNonAvailabilityDateDto).getEntity();
+            //get AuditTrailDto
+            AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+            //get new apptRefNo
+            String apptNewRefNo = UUID.randomUUID().toString();
+            //get USER_SYS_CORRE_ID
+            List<String> userSysCorrIds = apptNonAvailabilityDateDto.getUserSysCorrIds();
+            //get old apptRefNo
+            String apptRefNo = apptNonAvailabilityDateDto.getRefNo();
+            apptNonAvailabilityDateDtos = appointmentClient.getNonAvailabilityListByApptRefNo(apptRefNo).getEntity();
+            for(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto1 : apptNonAvailabilityDateDtos){
+                apptNonAvailabilityDateDto1.setBlockOutStart(apptNonAvailabilityDateDto.getBlockOutStart());
+                apptNonAvailabilityDateDto1.setBlockOutEnd(apptNonAvailabilityDateDto.getBlockOutEnd());
+                apptNonAvailabilityDateDto1.setRecurrence(apptNonAvailabilityDateDto.getRecurrence());
+                apptNonAvailabilityDateDto1.setRefNo(apptNewRefNo);
+                apptNonAvailabilityDateDto1.setNonAvaDescription(apptNonAvailabilityDateDto.getNonAvaDescription());
+                apptNonAvailabilityDateDto1.setNonAvaStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                apptNonAvailabilityDateDto1.setAuditTrailDto(auditTrailDto);
+                appointmentClient.updateNonAvailability(apptNonAvailabilityDateDto1);
+            }
+            //cancel old calendar
+            ApptUserCalendarDto cancelCalendarDto = new ApptUserCalendarDto();
+            cancelCalendarDto.setApptRefNo(apptRefNo);
+            cancelCalendarDto.setAuditTrailDto(auditTrailDto);
+            cancelCalendarDto.setStatus(AppointmentConstants.CALENDAR_STATUS_NON_AVAILIBLE);
+            appointmentClient.cancelCalenderByApptRefNoAndStatus(cancelCalendarDto);
+            //save date
+            List<ApptUserCalendarDto> apptUserCalendarDtos = IaisCommonUtils.genNewArrayList();
+            //get Non-Availability Date
+            List<Date> timeSlots = MiscUtil.getDateInPeriodByRecurrence(apptNonAvailabilityDateDto.getBlockOutStart(),
+                    apptNonAvailabilityDateDto.getBlockOutEnd(), apptNonAvailabilityDateDto.getRecurrence());
+            for(String userSysCorrId : userSysCorrIds){
+                //add create ApptUserCalendarDto List
+                ApptUserCalendarDto apptUserCalendarDto = new ApptUserCalendarDto();
+                apptUserCalendarDto.setSysUserCorrId(userSysCorrId);
+                apptUserCalendarDto.setApptRefNo(apptRefNo);
+                apptUserCalendarDto.setStartSlot(timeSlots);
+                apptUserCalendarDto.setAuditTrailDto(auditTrailDto);
+                apptUserCalendarDtos.add(apptUserCalendarDto);
+            }
+            //create do
+            appointmentClient.createApptUserCalendarDtoList(apptUserCalendarDtos);
         }
-        return null;
+        return apptNonAvailabilityDateDtos;
     }
 
     @Override
@@ -189,7 +223,7 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
             for(int i = 0; i < orgUserDtos.size(); i++){
                 userLoginIdMap.put(i + "", orgUserDtos.get(i).getUserId());
                 userIdMap.put(i + "", orgUserDtos.get(i).getId());
-                SelectOption so = new SelectOption(i + "", orgUserDtos.get(i).getDisplayName());
+                SelectOption so = new SelectOption(i + "", orgUserDtos.get(i).getUserId());
                 inspectorOption.add(so);
             }
         }
@@ -219,6 +253,40 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
             apptUserSysCorrIds.add(apptUserSystemCorrelationDto.getId());
         }
         return apptUserSysCorrIds;
+    }
+
+    @Override
+    public ApptAgencyUserDto getAgencyUserByUserSysCorrId(String userSysCorrId) {
+        ApptAgencyUserDto apptAgencyUserDto = appointmentClient.getAgencyUserByUserSysCorrId(userSysCorrId).getEntity();
+        return apptAgencyUserDto;
+    }
+
+    @Override
+    public List<String> getUserSysCorrIdByAgencyId(String useAgencyId) {
+        List<String> userSysCorrIds = IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(useAgencyId)){
+            List<ApptUserSystemCorrelationDto> apptUserSystemCorrelationDtos = appointmentClient.getApptUserSystemCorrelationDtos(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID, useAgencyId).getEntity();
+            for(ApptUserSystemCorrelationDto apptUserSystemCorrelationDto : apptUserSystemCorrelationDtos){
+                userSysCorrIds.add(apptUserSystemCorrelationDto.getId());
+            }
+        }
+        return userSysCorrIds;
+    }
+
+    @Override
+    public void deleteNonAvailabilityByApptRefNo(String apptRefNo) {
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        //cancel old calendar
+        ApptUserCalendarDto cancelCalendarDto = new ApptUserCalendarDto();
+        cancelCalendarDto.setApptRefNo(apptRefNo);
+        cancelCalendarDto.setAuditTrailDto(auditTrailDto);
+        cancelCalendarDto.setStatus(AppointmentConstants.CALENDAR_STATUS_NON_AVAILIBLE);
+        appointmentClient.cancelCalenderByApptRefNoAndStatus(cancelCalendarDto);
+        //cancel Non-Availability date
+        ApptNonAvailabilityDateDto cancelNonAvailabilityDateDto = new ApptNonAvailabilityDateDto();
+        cancelNonAvailabilityDateDto.setRefNo(apptRefNo);
+        cancelNonAvailabilityDateDto.setAuditTrailDto(auditTrailDto);
+        appointmentClient.cancelNonAvailabilityByApptRefNo(cancelNonAvailabilityDateDto);
     }
 
     private List<String> getWorkGroupNamesByIds(List<String> workGroupIds) {

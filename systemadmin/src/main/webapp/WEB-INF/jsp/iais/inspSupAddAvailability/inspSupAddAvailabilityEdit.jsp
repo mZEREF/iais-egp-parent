@@ -38,13 +38,13 @@
                         <span>Update Non-Availability Form</span>
                       </h2>
                       <iais:row>
-                        <iais:field value="Name"/>
+                        <iais:field value="Inspector ID"/>
                         <iais:value width="7">
                           <span style="font-size: 16px"><c:out value="${userName}"/></span>
                         </iais:value>
                       </iais:row>
                       <div class="form-group" style="margin-bottom: 0px;">
-                        <iais:field value="Blocked Out Date" required="true"/>
+                        <iais:field value="Non-Available Date" required="true"/>
                         <iais:value width="7">
                           <iais:datePicker id = "nonAvaStartDate" name = "nonAvaStartDate" value="${inspNonAvailabilityDto.blockOutStart}"></iais:datePicker>
                           <span style="font-size: 16px">To</span><p></p>
@@ -54,7 +54,7 @@
                         </iais:value>
                       </div>
                       <div class="form-group">
-                        <iais:field value="Blocked Out Date Description"/>
+                        <iais:field value="Non-Available Date Description"/>
                         <iais:value width="7">
                           <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" maxlength="255" ><c:out value="${inspNonAvailabilityDto.nonAvaDescription}"></c:out></textarea>
                         </iais:value>
