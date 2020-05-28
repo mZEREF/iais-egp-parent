@@ -156,10 +156,8 @@ public class MohIntranetUserDelegator {
         if (request == null) {
             return;
         }
-
         String id  = ParamUtil.getMaskedString(bpc.request, "maskUserId");
         OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
-
         if (id != null && orgUserDto == null) {
             OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, intranetUserById);
@@ -190,7 +188,7 @@ public class MohIntranetUserDelegator {
 
     public void doDelete(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String id = ParamUtil.getString(request, IntranetUserConstant.CRUD_ACTION_VALUE);
+        String id  = ParamUtil.getMaskedString(bpc.request, "maskUserId");
         OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(id);
         String userDomain = orgUserDto.getUserDomain();
         String userId = orgUserDto.getUserId();
@@ -213,7 +211,7 @@ public class MohIntranetUserDelegator {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String userAccId = ParamUtil.getRequestString(bpc.request,"userAccId");
         if(request !=null){
-            userAccId = request.getParameter(IntranetUserConstant.CRUD_ACTION_VALUE);
+            userAccId = ParamUtil.getMaskedString(bpc.request, "maskUserId");
         }
         List<String> assignRoleOption = getAssignRoleOption();
         List<OrgUserRoleDto> orgUserRoleDtos = intranetUserService.retrieveRolesByuserAccId(userAccId);

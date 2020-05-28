@@ -1670,4 +1670,33 @@ public class LicenceApproveBatchjob {
         private String errorMessage;
         private LicenceGroupDto licenceGroupDto;
     }
+
+    public void createCessLicence(ApplicationGroupDto applicationGroupDto,GenerateResult generalGenerateResult ,GenerateResult groupGenerateResult){
+        List<LicenceGroupDto> licenceGroupDtos = IaisCommonUtils.genNewArrayList();
+        List<ApplicationGroupDto> success = IaisCommonUtils.genNewArrayList();
+        List<Map<String, String>> fail = IaisCommonUtils.genNewArrayList();
+        toDoResult(licenceGroupDtos, generalGenerateResult, groupGenerateResult, success, fail, applicationGroupDto);
+        if (success.size() > 0) {
+            AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+            EventBusLicenceGroupDtos eventBusLicenceGroupDtos = new EventBusLicenceGroupDtos();
+            String evenRefNum = String.valueOf(System.currentTimeMillis());
+            eventBusLicenceGroupDtos.setEventRefNo(evenRefNum);
+            eventBusLicenceGroupDtos.setLicenceGroupDtos(licenceGroupDtos);
+            eventBusLicenceGroupDtos.setAuditTrailDto(auditTrailDto);
+            //step1 create Licence to BE DB
+            licenceService.createSuperLicDto(eventBusLicenceGroupDtos);
+            //if create licence success
+            //todo:update the success application group.
+            //get the application
+            List<ApplicationDto> applicationDtos = getApplications(licenceGroupDtos);
+            EventApplicationGroupDto eventApplicationGroupDto = new EventApplicationGroupDto();
+            eventApplicationGroupDto.setEventRefNo(evenRefNum);
+            eventApplicationGroupDto.setRollBackApplicationGroupDtos(success);
+            eventApplicationGroupDto.setApplicationGroupDtos(updateStatusToGenerated(success));
+            eventApplicationGroupDto.setRollBackApplicationDto(applicationDtos);
+            eventApplicationGroupDto.setApplicationDto(updateApplicationStatusToGenerated(applicationDtos));
+            eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
+            applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
+        }
+    }
 }

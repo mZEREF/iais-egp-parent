@@ -245,6 +245,6 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-application-be/application-by-taskid",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationBytaskId(@RequestParam ("ref") String ref);
 
-    @PostMapping(value = "/application-group-cess",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-application-be/application-group-cess",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationLicenceDto>> getCessGroup(@RequestBody List<String>  groupIds);
 }

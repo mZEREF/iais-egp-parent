@@ -334,8 +334,10 @@ public class CessationServiceImpl implements CessationService {
                     map.put(premiseId, appId);
                     applicationDto.setNeedNewLicNo(false);
                     applicationDto.setGroupLicenceFlag(null);
-                    applicationClient.updateApplication(applicationDto);
+                }else {
+                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                 }
+                applicationClient.updateApplication(applicationDto);
             }
         }
         return map;

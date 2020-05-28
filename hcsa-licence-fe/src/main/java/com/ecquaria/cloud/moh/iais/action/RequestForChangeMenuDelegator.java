@@ -40,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -473,6 +474,8 @@ public class RequestForChangeMenuDelegator {
         }
         QueryHelp.setMainSql("applicationPersonnelQuery", "appPersonnelQuery", searchParam);
         SearchResult searchResult = requestForChangeService.psnDoQuery(searchParam);
+        PaginationHandler<PersonnelListDto> handler = new PaginationHandler<>("personPagDiv", "personBodyDiv");
+
         if (!StringUtil.isEmpty(searchResult)) {
             ParamUtil.setSessionAttr(bpc.request, "PersonnelSearchParam", searchParam);
             ParamUtil.setRequestAttr(bpc.request, "PersonnelSearchResult", searchResult);
@@ -512,7 +515,7 @@ public class RequestForChangeMenuDelegator {
                                 map.put(licNo, licPsnTypeDto);
                             } else {
                                 List<String> psnTypes = licPsnTypeDto.getPsnTypes();
-                                if(!psnTypes.contains(psnType)){
+                                if (!psnTypes.contains(psnType)) {
                                     psnTypes.add(psnType);
                                 }
                             }
@@ -524,13 +527,14 @@ public class RequestForChangeMenuDelegator {
                         }
                     }
                 }
+            }
                 List<SelectOption> personelRoles = getPsnType();
                 ParamUtil.setRequestAttr(bpc.request, "PersonnelRoleList", personelRoles);
                 ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtos);
                 ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Personnel List");
+            ParamUtil.setRequestAttr(bpc.request, "psnType", psnTypeSearch);
                 return;
             }
-        }
         List<PersonnelQueryDto> personnelQueryDtos = searchResult.getRows();
         List<PersonnelListDto> personnelListDtos = IaisCommonUtils.genNewArrayList();
         for (PersonnelQueryDto dto : personnelQueryDtos) {
@@ -587,6 +591,8 @@ public class RequestForChangeMenuDelegator {
                 personnelListDtos.add(personnelListDto);
             }
         }
+        handler.setAllData(personnelListDtos);
+        handler.preLoadingPage();
         List<SelectOption> personelRoles = getPsnType();
         ParamUtil.setRequestAttr(bpc.request, "PersonnelRoleList", personelRoles);
         ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtos);
@@ -728,9 +734,6 @@ public class RequestForChangeMenuDelegator {
         PersonnelListDto personnelEditDto = (PersonnelListDto) ParamUtil.getSessionAttr(bpc.request, "personnelEditDto");
         //update
         String salutation = ParamUtil.getString(bpc.request, "salutation");
-        String psnName = ParamUtil.getString(bpc.request, "psnName");
-        String idType = ParamUtil.getString(bpc.request, "idType");
-        String idNo = ParamUtil.getString(bpc.request, "idNo");
         String email = ParamUtil.getString(bpc.request, "emailAddr");
         String mobile = ParamUtil.getString(bpc.request, "mobileNo");
         String designation = ParamUtil.getString(bpc.request, "designation");
@@ -767,7 +770,7 @@ public class RequestForChangeMenuDelegator {
             personnelEditDto.setProfessionType(professionType);
             personnelEditDto.setProfessionRegnNo(professionRegnNo);
             personnelEditDto.setDesignation(designation);
-        } else if (psnTypes.contains("PO")) {
+        } if (psnTypes.contains("PO")) {
             personnelEditDto.setDesignation(designation);
             personnelEditDto.setOfficeTelNo(officeTelNo);
         }

@@ -57,13 +57,13 @@
                         <td>
                             <p class="visible-xs visible-sm table-row-title">Action</p>
                             <button type="button" class="btn btn-default btn-sm"
-                                    onclick="doEdit(<iais:mask name="maskUserId" value="${user.id}"/>)">Edit
+                                    onclick="doEdit('<iais:mask name="maskUserId" value="${user.id}"/>')">Edit
                             </button>
                             <button type="button" class="btn btn-default btn-sm"
-                                    onclick="doDelete('${user.id}')">Delete
+                                    onclick="doDelete('<iais:mask name="maskUserId" value="${user.id}"/>')">Delete
                             </button>
                             <button type="button" class="btn btn-default btn-sm"
-                                    onclick="doRole('${user.id}')">role
+                                    onclick="doRole('<iais:mask name="maskUserId" value="${user.id}"/>')">role
                             </button>
                         </td>
                     </tr>

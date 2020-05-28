@@ -1,16 +1,17 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
@@ -72,7 +73,7 @@ public class CessationEffectiveDateBatchjob {
                                 //cease old grpLicence
                                 String originLicenceId = applicationDto.getOriginLicenceId();
                                 LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(originLicenceId).getEntity();
-                                //updateLicenceStatusAndSendMails(licenceDto, date);
+                                updateLicenceStatusAndSendMails(licenceDto, date);
                             }
                         }else{
                             activeAppDtos.add(applicationDto);
@@ -99,10 +100,10 @@ public class CessationEffectiveDateBatchjob {
                             }
                         }
                         applicationLicenceDto.setApplicationListDtoList(newApplicationListDtoLists);
-                        licenceApproveBatchjob.generateGroupLicence(applicationLicenceDto,hcsaServiceDtos);
+                        LicenceApproveBatchjob.GenerateResult groupGenerateResult = licenceApproveBatchjob.generateGroupLicence(applicationLicenceDto, hcsaServiceDtos);
+                        licenceApproveBatchjob.createCessLicence(applicationGroupDto,null,groupGenerateResult);
                     }
                 } else {
-                    //
                     for (ApplicationDto applicationDto : applicationDtos) {
                         String appId = applicationDto.getId();
                         String originLicenceId = applicationDto.getOriginLicenceId();
@@ -146,6 +147,9 @@ public class CessationEffectiveDateBatchjob {
     }
 
     private void updateLicenceStatusAndSendMails(LicenceDto licenceDto, Date date) throws Exception {
+        if(licenceDto==null){
+            return;
+        }
         licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
         licenceDto.setEndDate(date);
         String svcName = licenceDto.getSvcName();
@@ -157,4 +161,4 @@ public class CessationEffectiveDateBatchjob {
         hcsaLicenceClient.updateLicences(licenceDtos);
         cessationService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
     }
-}
+    }
