@@ -1208,7 +1208,6 @@ a.article, a.article:hover {
   box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.12);
   border: 1px solid white;
   border-top: 0;
-  margin: 0;
   padding: 0;
 }
 .profile-dropdown .dropdown-menu > li {
@@ -1687,7 +1686,6 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
   footer.footerlogin .footer-link ul li a {
     position: relative;
     font-size: 11px;
-    position: relative;
   }
   footer.footerlogin .footer-link ul li a:before {
     content: none;
@@ -1920,7 +1918,6 @@ input[type=number] {
   background: linear-gradient(to right, #efefef 0%, white 100%);
   font-size: 1.6rem;
   line-height: 22px;
-  color: #333333;
   padding: 13px 15px;
   height: auto;
   width: 100%;
@@ -2434,7 +2431,6 @@ input[type=number]::-webkit-outer-spin-button {
   background: linear-gradient(to right, #efefef 0%, white 100%);
   font-size: 1.6rem;
   line-height: 22px;
-  color: #333333;
   padding: 14px 15px;
   height: auto;
 }
@@ -2973,7 +2969,6 @@ span.error-msg {
   height: 26px;
   line-height: 26px;
   text-align: center;
-  display: block;
   color: #333333;
 }
 .tab-gp .tab-nav-mobile .swiper-button-prev.whitecolor:before,
@@ -4381,7 +4376,6 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     border-top: 0;
     margin-top: 0;
     padding-top: 0;
-    border-top: 0;
   }
 }
 @media only screen and (min-width : 993px) and (max-width : 1200px) {
@@ -5370,11 +5364,6 @@ table select.form-control.control-input {
   min-height: 22px;
   line-height: 22px !important;
   font-family: "Open Sans", sans-serif;
-  color: #333333;
-  font-size: 1.6rem;
-  font-weight: 400;
-  position: relative;
-  padding-left: 30px;
 }
 @media only screen and (max-width : 767px) {
   .control-item-container input.control-input[type=checkbox] + label.control-label,

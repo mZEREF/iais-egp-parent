@@ -80,7 +80,7 @@ public class SortableHeaderTag extends DivTagSupport {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(sb.toString()));
         } catch (Exception ex) {
             log.error("", ex);
-            throw new JspTagException("SortableHeaderTag: " + ex.getMessage());
+            throw new JspTagException("SortableHeaderTag: " + ex.getMessage(),ex);
         }
         release();
 
