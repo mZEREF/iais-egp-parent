@@ -152,14 +152,20 @@ public class InspTeamNonWorkingDayDelegator {
 			nonWorkingDateDto.setId(UUID.randomUUID().toString());
 			nonWorkingDateDto.setSrcSystemId(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID);
 			nonWorkingDateDto.setRecursivceDate(wkrDays.get(i));
-			nonWorkingDateDto.setNonWkrDay(false);
 			nonWorkingDateDto.setDesc("");
-
 			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
 			nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
-			nonWorkingDateDto.setAm(true);
-			nonWorkingDateDto.setPm(true);
+			if(i < 5){
+				nonWorkingDateDto.setNonWkrDay(false);
+				nonWorkingDateDto.setAm(false);
+				nonWorkingDateDto.setPm(false);
+			}else{
+				nonWorkingDateDto.setNonWkrDay(true);
+				nonWorkingDateDto.setAm(true);
+				nonWorkingDateDto.setPm(true);
+			}
+
 			map.put(wkrDays.get(i), nonWorkingDateDto);
 
 			for (ApptNonWorkingDateDto workingDateDto : nonWorkingDateList){
