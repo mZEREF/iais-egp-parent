@@ -349,7 +349,7 @@
                                                             <p>&nbsp;HCI Code</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <p><c:out value="${insRepDto.hciCode}"/></p>
+                                                            <p><c:out value="${insRepDto.hciCode}"/><c:if test="${empty insRepDto.hciCode}">-</c:if></p>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
@@ -358,7 +358,7 @@
                                                             <p>&nbsp;HCI Name</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <p><c:out value="${insRepDto.hciName}"/></p>
+                                                            <p><c:out value="${insRepDto.hciName}"/><c:if test="${empty insRepDto.hciName}">-</c:if></p>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>

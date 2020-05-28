@@ -446,7 +446,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         String inspectionEndTime = "-";
         try{
             List<AppPremisesRecommendationDto> appPreRecommentdationDtoStart = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME).getEntity();
-            List<AppPremisesRecommendationDto> appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+            List<AppPremisesRecommendationDto> appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
             List<AppPremisesRecommendationDto> appPreRecommentdationDtoEnd = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME).getEntity();
             if(appPreRecommentdationDtoDate!=null){
                 inspectionDate = appPreRecommentdationDtoDate.get(0).getRecomInDate();
