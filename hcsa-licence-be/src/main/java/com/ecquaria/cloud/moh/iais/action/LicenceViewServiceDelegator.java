@@ -216,7 +216,10 @@ public class LicenceViewServiceDelegator {
 
             }
         }
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = null;
+        if(appSubmissionDto != null){
+            appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        }
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
             String serviceId = appSvcRelatedInfoDtos.get(0).getServiceId();
             HcsaServiceDto hcsaServiceDto = applicationViewService.getHcsaServiceDtoById(serviceId);

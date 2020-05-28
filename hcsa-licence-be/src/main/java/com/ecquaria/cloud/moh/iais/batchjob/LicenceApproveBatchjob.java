@@ -701,7 +701,7 @@ public class LicenceApproveBatchjob {
                         }
                     }
 
-                    if (applicationDto != null) {
+                    if (applicationDto != null && originLicenceDto != null) {
                         sendEmailAndSms(applicationDto, licenceDto, oldLicenseeDto, originLicenceDto, serviceId);
                     }
                 }

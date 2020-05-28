@@ -114,7 +114,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                  workGroupIds.add(temp.getWorkGroupId());
              }
          }
-        Map<String, List<OrgUserDto>> map = new HashMap<>(workGroupIds.size());
+        Map<String, List<OrgUserDto>> map = IaisCommonUtils.genNewHashMap();
          for(String workGroupId :  workGroupIds){
              map.put(workGroupId,getOrgDtos(workGroupId));
          }
@@ -131,7 +131,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                 svcNames.add(auditTaskDataFillterDto.getSvcName());
             }
         }
-        Map<String,String> map = new HashMap<>(svcNames.size());
+        Map<String,String> map = IaisCommonUtils.genNewHashMap();
         for(String s : svcNames){
             map.put(s,getWorkGroupIdBySvcName(s)) ;
         }
@@ -171,7 +171,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void doSubmit(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
         if (!IaisCommonUtils.isEmpty(auditTaskDataDtos)) {
             for (AuditTaskDataFillterDto temp : auditTaskDataDtos) {

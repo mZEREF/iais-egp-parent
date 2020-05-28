@@ -244,17 +244,17 @@ public class AppealApproveBatchjob {
             }
         }
         try {
+            if(appealDto != null){
+                String relateRecId = appealDto.getRelateRecId();
+                if(relateRecId!=null){
+                    ApplicationDto applicationDto = applicationClient.getApplicationById(relateRecId).getEntity();
+                    if(applicationDto!=null){
+                        sendEmailApproved(applicationDto,ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO,"",
+                                "","" );
+                    }
 
-            String relateRecId = appealDto.getRelateRecId();
-            if(relateRecId!=null){
-                ApplicationDto applicationDto = applicationClient.getApplicationById(relateRecId).getEntity();
-                if(applicationDto!=null){
-                    sendEmailApproved(applicationDto,ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO,"",
-                           "","" );
                 }
-
             }
-
         }catch (Exception e){
 
             log.error(e.getMessage(),e);
