@@ -77,11 +77,11 @@
                                                     </c:choose>
                                                     <tr>
                                                         <td align="right">Submission Date</td>
-                                                        <td>${applicationViewDto.submissionDate}</td>
+                                                        <td>${applicationViewDto.submissionDate}<c:if test="${empty applicationViewDto.submissionDate}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Current Status</td>
-                                                        <td>${applicationViewDto.currentStatus}</td>
+                                                        <td>${applicationViewDto.currentStatus}<c:if test="${empty applicationViewDto.currentStatus}">-</c:if></td>
                                                     </tr>
 
                                                     </tbody>
@@ -101,23 +101,23 @@
                                                     <tbody>
                                                     <tr>
                                                         <td class="col-xs-6" align="right">HCI Code</td>
-                                                        <td class="col-xs-6">${applicationViewDto.hciCode}</td>
+                                                        <td class="col-xs-6">${applicationViewDto.hciCode}<c:if test="${empty applicationViewDto.hciCode}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">HCI Name</td>
-                                                        <td>${applicationViewDto.hciName}</td>
+                                                        <td>${applicationViewDto.hciName}<c:if test="${empty applicationViewDto.hciName}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">HCI Address</td>
-                                                        <td>${applicationViewDto.hciAddress}</td>
+                                                        <td>${applicationViewDto.hciAddress}<c:if test="${empty applicationViewDto.hciAddress}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Telephone</td>
-                                                        <td>${applicationViewDto.telephone}</td>
+                                                        <td>${applicationViewDto.telephone}<c:if test="${empty applicationViewDto.telephone}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Email</td>
-                                                        <td><c:out value="${licenseeDto.emilAddr}"/></td>
+                                                        <td>${licenseeDto.emilAddr}<c:if test="${empty licenseeDto.emilAddr}">-</c:if></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -217,7 +217,7 @@
                                                             <c:forEach var="pool" items="${serviceStep}" >
                                                                 <tr>
                                                                     <td align="right">Service (Lab Discipline, Modality, Subsumed and etc)</td>
-                                                                    <td class="row_no"><c:out value="${pool.scopeName}"/></td>
+                                                                    <td class="row_no"><c:out value="${pool.scopeName}"/><c:if test="${empty pool.scopeName}">-</c:if></td>
                                                                 </tr>
                                                             </c:forEach>
                                                         </c:otherwise>
@@ -242,15 +242,15 @@
                                                 <c:forEach var="disciplineAllocation" items="${appSvcRelatedInfoDto.appSvcDisciplineAllocationDtoList}" varStatus="stat">
                                                     <tr>
                                                         <td style="text-align: center" >
-                                                            <p>${disciplineAllocation.premiseVal}</p>
+                                                            <p>${disciplineAllocation.premiseVal}<c:if test="${empty disciplineAllocation.premiseVal}">-</c:if></p>
                                                         </td>
 
                                                         <td style="text-align: center">
-                                                            <p>${disciplineAllocation.chkLstName}</p>
+                                                            <p>${disciplineAllocation.chkLstName}<c:if test="${empty disciplineAllocation.chkLstName}">-</c:if></p>
 
                                                         </td>
                                                         <td style="text-align: center">
-                                                            <p>${disciplineAllocation.cgoSelName}</p>
+                                                            <p>${disciplineAllocation.cgoSelName}<c:if test="${empty disciplineAllocation.cgoSelName}">-</c:if></p>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>

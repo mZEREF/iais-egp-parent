@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -154,15 +155,13 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
         try{
             organizationLicDto.getLicenseeIndividualDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{organizationLicDto.getLicenseeIndividualDto().getSalutation()}).get(0).getText());
-        }catch (Exception e){
+        }catch (NullPointerException e){
             log.error(e.getMessage(), e);
-            organizationLicDto.getLicenseeIndividualDto().setSalutation("-");
         }
         try{
             organizationLicDto.setDoMain(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()).get(0));
         }catch (Exception e){
             log.error(e.getMessage(), e);
-            organizationLicDto.setDoMain("-");
         }
         List<PersonnelsDto> personnelsDto= hcsaLicenceClient.getPersonnelDtoByLicId(licenceId).getEntity();
 
@@ -173,13 +172,11 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);
-                org.setDesignation("-");
             }
             try {
                 org.setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{org.getSalutation()}).get(0).getText());
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);
-                org.setSalutation("-");
             }
         }
         for (PersonnelsDto per:personnelsDto
@@ -188,25 +185,22 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 per.getLicKeyPersonnelDto().setPsnType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getLicKeyPersonnelDto().getPsnType()}).get(0).getText());
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);
-                per.getLicKeyPersonnelDto().setPsnType("-");
             }
             try {
                 per.getKeyPersonnelDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getSalutation()}).get(0).getText());
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);
-                per.getKeyPersonnelDto().setSalutation("-");
             }
             try {
                 per.getKeyPersonnelDto().setDesignation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelDto().getDesignation()}).get(0).getText());
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);
-                per.getKeyPersonnelDto().setDesignation("-");
             }
             try {
                 per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{per.getKeyPersonnelExtDto().getProfessionType()}).get(0).getText());
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);
-                per.getKeyPersonnelExtDto().setProfessionType("-");
+                per.setKeyPersonnelExtDto(new KeyPersonnelExtDto());
             }
             try {
                 switch (per.getKeyPersonnelExtDto().getPreferredMode()){
@@ -216,7 +210,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     default:per.getKeyPersonnelExtDto().setPreferredMode("-");break;
                 }
             }catch (NullPointerException e){
-                per.getKeyPersonnelExtDto().setPreferredMode("-");
                 log.error(e.getMessage(), e);
             }
         }
@@ -265,18 +258,15 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             }catch (Exception e){
                 log.error(e.getMessage(), e);
             }
-            try{
+            //try{
                 List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
                 Calendar c = Calendar.getInstance();
                 for (AppPremisesRecommendationDto appPremisesRecommendationDto:appPremisesRecommendationDtos
                 ) {
                     List<AppPremisesRecommendationDto> appPremisesRecommendationDtoDate = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesRecommendationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-                    try {
+                    if(appPremisesRecommendationDtoDate!=null&&appPremisesRecommendationDtoDate.size()!=0){
                         c.setTime(appPremisesRecommendationDtoDate.get(0).getRecomInDate());
                         complianceHistoryDto.setInspectionDateYear(c.get(Calendar.YEAR));
-                    }catch (NullPointerException e){
-                        log.error(e.getMessage(), e);
-                        complianceHistoryDto.setInspectionDateYear(null);
                     }
                     complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
                     try {
@@ -289,10 +279,10 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     complianceHistoryDtos.add(complianceHistoryDto);
                 }
 
-            }catch (Exception e){
-                log.error(e.getMessage(), e);
-                // complianceHistoryDtos.add(complianceHistoryDto);
-            }
+//            }catch (Exception e){
+//                log.error(e.getMessage(), e);
+//                // complianceHistoryDtos.add(complianceHistoryDto);
+//            }
         }
         return complianceHistoryDtos;
     }
@@ -556,6 +546,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto,licenceId);
         ParamUtil.setSessionAttr(request, "insRepDto", insRepDto);
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDtos.get(indexNo).getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+        appPremisesRecommendationDto.setChronoUnit(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getChronoUnit()}).get(0).getText());
         LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
         if(licenceDto!=null){
             SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);

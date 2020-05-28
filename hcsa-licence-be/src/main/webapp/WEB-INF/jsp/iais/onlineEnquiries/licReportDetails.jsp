@@ -38,7 +38,7 @@
                         </div>
 
                         <div class="tab-content ">
-                            <div class="tab-pane" id="tabLicenseeDetails" role="tabpanel">
+                            <div class="tab-pane " id="tabLicenseeDetails" role="tabpanel">
 
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
@@ -54,7 +54,11 @@
                                                     </tr>
                                                     <tr>
                                                         <td align="right">UEN</td>
-                                                        <td>${organizationLicDto.uenNo}</td>
+                                                        <td>${organizationLicDto.uenNo}<c:if test="${empty organizationLicDto.uenNo}">-</c:if></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Are you registered with ACRA/ROS</td>
+                                                        <td>wait UEN API</td>
                                                     </tr>
 
                                                     </tbody>
@@ -74,31 +78,31 @@
                                                     <tbody>
                                                     <tr>
                                                         <td class="col-xs-6" align="right">Company Name</td>
-                                                        <td class="col-xs-6">${organizationLicDto.licenseeDto.name}</td>
+                                                        <td class="col-xs-6">${organizationLicDto.licenseeDto.name}<c:if test="${empty organizationLicDto.licenseeDto.name}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Postal code</td>
-                                                        <td>${organizationLicDto.licenseeDto.postalCode}</td>
+                                                        <td>${organizationLicDto.licenseeDto.postalCode}<c:if test="${empty organizationLicDto.licenseeDto.postalCode}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Block No</td>
-                                                        <td>${organizationLicDto.licenseeDto.blkNo}</td>
+                                                        <td>${organizationLicDto.licenseeDto.blkNo}<c:if test="${empty organizationLicDto.licenseeDto.blkNo}">-</c:if></td>
                                                     </tr>
 
                                                     <tr>
                                                         <td align="right">Unit No</td>
-                                                        <td>${organizationLicDto.licenseeDto.unitNo}</td>
+                                                        <td>${organizationLicDto.licenseeDto.unitNo}<c:if test="${empty organizationLicDto.licenseeDto.unitNo}">-</c:if></td>
                                                     </tr><tr>
                                                         <td align="right">Street Name</td>
-                                                        <td>${organizationLicDto.licenseeDto.streetName}</td>
+                                                        <td>${organizationLicDto.licenseeDto.streetName}<c:if test="${empty organizationLicDto.licenseeDto.streetName}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Building Name</td>
-                                                        <td>${organizationLicDto.licenseeDto.buildingName}</td>
+                                                        <td>${organizationLicDto.licenseeDto.buildingName}<c:if test="${empty organizationLicDto.licenseeDto.buildingName}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Office Number</td>
-                                                        <td>${organizationLicDto.licenseeEntityDto.officeTelNo}</td>
+                                                        <td>${organizationLicDto.licenseeEntityDto.officeTelNo}<c:if test="${empty organizationLicDto.licenseeDto.officeTelNo}">-</c:if></td>
                                                     </tr>
 
                                                     </tbody>
@@ -119,27 +123,27 @@
                                                         <tbody>
                                                         <tr>
                                                             <td class="col-xs-6" align="right">Name</td>
-                                                            <td class="col-xs-6">${member.name}</td>
+                                                            <td class="col-xs-6">${member.name}<c:if test="${empty member.name}">-</c:if></td>
                                                         </tr>
                                                         <tr>
                                                             <td align="right">Salutation</td>
-                                                            <td>${member.salutation}</td>
+                                                            <td>${member.salutation}<c:if test="${empty member.salutation}">-</c:if></td>
                                                         </tr>
                                                         <tr>
                                                             <td align="right">ID Type</td>
-                                                            <td>${member.idType}</td>
+                                                            <td>${member.idType}<c:if test="${empty member.idType}">-</c:if></td>
                                                         </tr>
                                                         <tr>
                                                             <td align="right">ID No</td>
-                                                            <td>${member.idNo}</td>
+                                                            <td>${member.idNo}<c:if test="${empty member.idNo}">-</c:if></td>
                                                         </tr>
                                                         <tr>
                                                             <td align="right">Designation</td>
-                                                            <td>${member.designation}</td>
+                                                            <td>${member.designation}<c:if test="${empty member.designation}">-</c:if></td>
                                                         </tr>
                                                         <tr>
                                                             <td align="right">Designation Appointment Date</td>
-                                                            <td><fmt:formatDate value="${member.apptDt}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
+                                                            <td><fmt:formatDate value="${member.apptDt}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /><c:if test="${empty member.apptDt}">-</c:if></td>
                                                         </tr>
 
                                                         </tbody>
@@ -160,58 +164,58 @@
                                                     <tbody>
                                                     <tr>
                                                         <td class="col-xs-6" align="right">Name</td>
-                                                        <td class="col-xs-6">${organizationLicDto.licenseeDto.name}</td>
+                                                        <td class="col-xs-6">${organizationLicDto.licenseeDto.name}<c:if test="${empty organizationLicDto.licenseeDto.name}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Salutation</td>
-                                                        <td>${organizationLicDto.licenseeIndividualDto.salutation}</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.salutation}<c:if test="${empty organizationLicDto.licenseeIndividualDto.salutation}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">ID Type</td>
-                                                        <td>${organizationLicDto.licenseeIndividualDto.idType}</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.idType}<c:if test="${empty organizationLicDto.licenseeIndividualDto.idType}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">ID No</td>
-                                                        <td>${organizationLicDto.licenseeIndividualDto.idNo}</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.idNo}<c:if test="${empty organizationLicDto.licenseeIndividualDto.idNo}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Postal code</td>
-                                                        <td>${organizationLicDto.licenseeDto.postalCode}</td>
+                                                        <td>${organizationLicDto.licenseeDto.postalCode}<c:if test="${empty organizationLicDto.licenseeDto.postalCode}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Address Type</td>
-                                                        <td>${organizationLicDto.licenseeDto.addrType}</td>
+                                                        <td>${organizationLicDto.licenseeDto.addrType}<c:if test="${empty organizationLicDto.licenseeDto.addrType}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Block No</td>
-                                                        <td>${organizationLicDto.licenseeDto.blkNo}</td>
+                                                        <td>${organizationLicDto.licenseeDto.blkNo}<c:if test="${empty organizationLicDto.licenseeDto.blkNo}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Floor No</td>
-                                                        <td>${organizationLicDto.licenseeDto.floorNo}</td>
+                                                        <td>${organizationLicDto.licenseeDto.floorNo}<c:if test="${empty organizationLicDto.licenseeDto.floorNo}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Unit No</td>
-                                                        <td>${organizationLicDto.licenseeDto.unitNo}</td>
+                                                        <td>${organizationLicDto.licenseeDto.unitNo}<c:if test="${empty organizationLicDto.licenseeDto.unitNo}">-</c:if></td>
                                                     </tr><tr>
                                                         <td align="right">Street Name</td>
-                                                        <td>${organizationLicDto.licenseeDto.streetName}</td>
+                                                        <td>${organizationLicDto.licenseeDto.streetName}<c:if test="${empty organizationLicDto.licenseeDto.streetName}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Building Name</td>
-                                                        <td>${organizationLicDto.licenseeDto.buildingName}</td>
+                                                        <td>${organizationLicDto.licenseeDto.buildingName}<c:if test="${empty organizationLicDto.licenseeDto.buildingName}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Mobile No</td>
-                                                        <td>${organizationLicDto.licenseeIndividualDto.mobileNo}</td>
+                                                        <td>${organizationLicDto.licenseeIndividualDto.mobileNo}<c:if test="${empty organizationLicDto.licenseeIndividualDto.mobileNo}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Office Telephone No</td>
-                                                        <td>${organizationLicDto.licenseeEntityDto.officeTelNo}</td>
+                                                        <td>${organizationLicDto.licenseeEntityDto.officeTelNo}<c:if test="${empty organizationLicDto.licenseeEntityDto.officeTelNo}">-</c:if></td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Email Address</td>
-                                                        <td>${organizationLicDto.licenseeEntityDto.officeEmailAddr}</td>
+                                                        <td><c:out value="${organizationLicDto.licenseeEntityDto.officeEmailAddr}"/><c:if test="${empty organizationLicDto.licenseeEntityDto.officeEmailAddr}">-</c:if></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -234,48 +238,64 @@
                                                         <tbody>
                                                         <tr>
                                                             <td class="col-xs-6" align="right">Name</td>
-                                                            <td class="col-xs-6">${personnel.keyPersonnelDto.name}</td>
+                                                            <td class="col-xs-6">${personnel.keyPersonnelDto.name}<c:if test="${empty personnel.keyPersonnelDto.name}">-</c:if></td>
                                                         </tr>
                                                         <tr>
                                                             <td align="right">Salutation</td>
-                                                            <td>${personnel.keyPersonnelDto.salutation}</td>
+                                                            <td>${personnel.keyPersonnelDto.salutation}<c:if test="${empty personnel.keyPersonnelDto.salutation}">-</c:if></td>
                                                         </tr>
                                                         <tr>
                                                             <td align="right">ID Type</td>
-                                                            <td>${personnel.keyPersonnelDto.idType}</td>
+                                                            <td>${personnel.keyPersonnelDto.idType}<c:if test="${empty personnel.keyPersonnelDto.idType}">-</c:if></td>
                                                         </tr>
                                                         <tr>
                                                             <td align="right">ID No</td>
-                                                            <td>${personnel.keyPersonnelDto.idNo}</td>
+                                                            <td>${personnel.keyPersonnelDto.idNo}<c:if test="${empty personnel.keyPersonnelDto.idNo}">-</c:if></td>
                                                         </tr>
-
-                                                        <tr>
-                                                            <td align="right">Designation</td>
-                                                            <td>${personnel.keyPersonnelDto.designation}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td align="right">Professional Type</td>
-                                                            <td>${personnel.keyPersonnelExtDto.professionType}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td align="right">Professional Regn No</td>
-                                                            <td>${personnel.keyPersonnelExtDto.profRegNo}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td align="right">Specialty</td>
-                                                            <td>${personnel.keyPersonnelExtDto.speciality}</td>
-                                                        </tr><tr>
-                                                            <td align="right">SubSpeciality or relevant qualification</td>
-                                                            <td>${personnel.keyPersonnelExtDto.subSpeciality}</td>
-                                                        </tr>
+                                                        <c:if test="${personnel.licKeyPersonnelDto.psnType!='MedAlert'}">
+                                                            <tr>
+                                                                <td align="right">Designation</td>
+                                                                <td>${personnel.keyPersonnelDto.designation}<c:if test="${empty personnel.keyPersonnelDto.designation}">-</c:if></td>
+                                                            </tr>
+                                                        </c:if>
+                                                        <c:if test="${personnel.licKeyPersonnelDto.psnType=='Clinical Governance Officer'}">
+                                                            <tr>
+                                                                <td align="right">Professional Type</td>
+                                                                <td>${personnel.keyPersonnelExtDto.professionType}<c:if test="${empty personnel.keyPersonnelExtDto.professionType}">-</c:if></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td align="right">Professional Regn No</td>
+                                                                <td>${personnel.keyPersonnelExtDto.profRegNo}<c:if test="${empty personnel.keyPersonnelExtDto.profRegNo}">-</c:if></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td align="right">Specialty</td>
+                                                                <td>${personnel.keyPersonnelExtDto.speciality}<c:if test="${empty personnel.keyPersonnelExtDto.speciality}">-</c:if></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td align="right">Subspecialty or relevant qualification</td>
+                                                                <td>${personnel.keyPersonnelExtDto.subSpeciality}<c:if test="${empty personnel.keyPersonnelExtDto.subSpeciality}">-</c:if></td>
+                                                            </tr>
+                                                        </c:if>
                                                         <tr>
                                                             <td align="right">Mobile No</td>
-                                                            <td>${personnel.keyPersonnelDto.mobileNo}</td>
+                                                            <td>${personnel.keyPersonnelDto.mobileNo}<c:if test="${empty personnel.keyPersonnelDto.mobileNo}">-</c:if></td>
                                                         </tr>
+                                                        <c:if test="${personnel.licKeyPersonnelDto.psnType!='MedAlert' && personnel.licKeyPersonnelDto.psnType!='Clinical Governance Officer'}">
+                                                            <tr>
+                                                                <td align="right">Office Telephone No</td>
+                                                                <td>${personnel.keyPersonnelDto.officeTelNo}<c:if test="${empty personnel.keyPersonnelDto.officeTelNo}">-</c:if></td>
+                                                            </tr>
+                                                        </c:if>
                                                         <tr>
                                                             <td align="right">Email Address</td>
-                                                            <td>${personnel.keyPersonnelDto.emailAddr}</td>
+                                                            <td>${personnel.keyPersonnelDto.emailAddr}<c:if test="${empty personnel.keyPersonnelDto.emailAddr}">-</c:if></td>
                                                         </tr>
+                                                        <c:if test="${personnel.licKeyPersonnelDto.psnType=='MedAlert'}">
+                                                            <tr>
+                                                                <td align="right">Preferred Mode of Receiving MedAlert</td>
+                                                                <td>${personnel.keyPersonnelExtDto.preferredMode}<c:if test="${empty personnel.keyPersonnelExtDto.preferredMode}">-</c:if></td>
+                                                            </tr>
+                                                        </c:if>
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -308,7 +328,7 @@
                                                 <table class="table">
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Licence No.</p>
+                                                            <p>&nbsp;Licence No.</p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <p><c:out value="${insRepDto.licenceNo}"/></p>
@@ -317,7 +337,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Service Name</p>
+                                                            <p>&nbsp;Service Name</p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <p><c:out value="${insRepDto.serviceName}"/></p>
@@ -326,7 +346,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>HCI Code</p>
+                                                            <p>&nbsp;HCI Code</p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <p><c:out value="${insRepDto.hciCode}"/></p>
@@ -335,7 +355,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>HCI Name</p>
+                                                            <p>&nbsp;HCI Name</p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <p><c:out value="${insRepDto.hciName}"/></p>
@@ -344,7 +364,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>HCI Address</p>
+                                                            <p>&nbsp;HCI Address</p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <p><c:out value="${insRepDto.hciAddress}"/></p>
@@ -353,7 +373,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Licensee Name</p>
+                                                            <p>&nbsp;Licensee Name</p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <p><c:out value="${insRepDto.licenseeName}"/></p>
@@ -362,7 +382,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Principal Officers</p>
+                                                            <p>&nbsp;Principal Officers</p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <c:if test="${insRepDto.principalOfficers != null && not empty insRepDto.principalOfficers}">
@@ -375,7 +395,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Subsumed Services</p>
+                                                            <p>&nbsp;Subsumed Services</p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <c:if test="${insRepDto.subsumedServices != null && not empty insRepDto.subsumedServices}">
@@ -401,16 +421,15 @@
                                                 <table class="table">
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Date of Inspection</p>
+                                                            <p>&nbsp;Date of Inspection</p>
                                                         </td>
                                                         <td class="col-xs-8">
-                                                            <fmt:formatDate value="${insRepDto.inspectionDate}"
-                                                                            pattern="dd/MM/yyyy"></fmt:formatDate>
+                                                            <fmt:formatDate value="${insRepDto.inspectionDate}" pattern="dd/MM/yyyy"></fmt:formatDate> <c:if test="${empty insRepDto.inspectionDate}">-</c:if>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Time of Inspection</p>
+                                                            <p>&nbsp;Time of Inspection</p>
                                                         </td>
                                                         <td class="col-xs-8">
                                                             <c:out value="${insRepDto.inspectionStartTime}"></c:out>-<c:out value="${insRepDto.inspectionEndTime}"></c:out>
@@ -418,7 +437,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Reason for Visit</p>
+                                                            <p>&nbsp;Reason for Visit</p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <p>${insRepDto.reasonForVisit}</p>
@@ -427,33 +446,35 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Inspected By</p>
+                                                            <p>&nbsp;Inspected By</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <c:if test="${insRepDto.inspectors != null && not empty insRepDto.inspectors}">
+                                                            <c:if test="${not empty insRepDto.inspectors}">
                                                                 <p><c:forEach items="${insRepDto.inspectors}" var="inspector" varStatus="status">
                                                                 <c:out value="${inspector}"></c:out>
                                                             </c:forEach></p>
                                                             </c:if>
+                                                            <c:if test="${empty insRepDto.inspectors}">-</c:if>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Other Inspection Officer</p>
+                                                            <p>&nbsp;Other Inspection Officer</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <c:if test="${insRepDto.inspectOffices != null && not empty insRepDto.inspectOffices}">
+                                                            <c:if test="${not empty insRepDto.inspectOffices}">
                                                                 <p><c:forEach items="${insRepDto.inspectOffices}" var="ioName">
                                                                     <c:out value="${ioName}"/><br>
                                                                 </c:forEach></p>
                                                             </c:if>
+                                                            <c:if test="${ empty insRepDto.inspectOffices}">-</c:if>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Reported By</p>
+                                                            <p>&nbsp;Reported By</p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <p>${insRepDto.reportedBy}</p>
@@ -462,7 +483,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Report Noted By</p>
+                                                            <p>&nbsp;Report Noted By</p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <p>${insRepDto.reportNoteBy}</p>
@@ -482,12 +503,12 @@
                                         <div class="col-xs-12">
                                             <div class="table-gp">
                                                 <div class="text">
-                                                    <p><h4><strong><span>Part I: Inspection Checklist</span></strong></h4></p>
+                                                    <p><h4><strong><span>&nbsp;Part I: Inspection Checklist</span></strong></h4></p>
                                                 </div>
                                                 <table class="table">
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Checklist Used</p>
+                                                            <p>&nbsp;Checklist Used</p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <p>${insRepDto.serviceName}</p>
@@ -496,13 +517,13 @@
                                                     </tr>
                                                 </table>
                                                 <div class="text">
-                                                    <p><h4><strong><span>Part II: Findings</span></strong></h4></p>
+                                                    <p><h4><strong><span>&nbsp;Part II: Findings</span></strong></h4></p>
                                                 </div>
                                                 <div class="table-gp">
                                                     <table class="table" >
                                                         <tr>
                                                             <td class="col-xs-4">
-                                                                <p>Remarks</p>
+                                                                <p>&nbsp;Remarks</p>
                                                             </td>
                                                             <td class="col-xs-4">
                                                                 <p>${insRepDto.taskRemarks}</p>
@@ -511,7 +532,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td class="col-xs-4">
-                                                                <p>Marked for Audit</p>
+                                                                <p>&nbsp;Marked for Audit</p>
                                                             </td>
                                                             <td class="col-xs-4">
                                                                 <p><c:out value="${insRepDto.markedForAudit}"/>&nbsp;&nbsp;<fmt:formatDate value="${insRepDto.tcuDate}" pattern="dd/MM/yyyy"/></p>
@@ -520,7 +541,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td class="col-xs-4">
-                                                                <p>Recommended Best Practices</p>
+                                                                <p>&nbsp;Recommended Best Practices</p>
                                                             </td>
                                                             <td class="col-xs-4">
                                                                 <p>${insRepDto.bestPractice}</p>
@@ -529,7 +550,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td class="col-xs-4">
-                                                                <p>Non-Compliances</p>
+                                                                <p>&nbsp;Non-Compliances</p>
                                                             </td>
                                                             <td colspan="2" class="col-xs-8">
                                                                 <c:if test="${insRepDto.ncRegulation != null && not empty insRepDto.ncRegulation}">
@@ -566,7 +587,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td class="col-xs-4">
-                                                                <p>Status</p>
+                                                                <p>&nbsp;Status</p>
                                                             </td>
                                                             <td class="col-xs-4">
                                                                 <p>${insRepDto.status}</p>
@@ -575,10 +596,10 @@
                                                         </tr>
                                                         <tr>
                                                             <td class="col-xs-4">
-                                                                <p>Risk Level </p>
+                                                                <p>&nbsp;Risk Level </p>
                                                             </td>
                                                             <td class="col-xs-4">
-                                                                ${appPremisesRecommendationDto.riskLevel}
+                                                                ${appPremisesRecommendationDto.riskLevel}<c:if test="${empty appPremisesRecommendationDto.riskLevel}">-</c:if>
                                                             </td>
                                                             <td class="col-xs-4">
                                                             </td>
@@ -599,7 +620,7 @@
                                                 <table class="table">
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Rectified</p>
+                                                            <p>&nbsp;Rectified</p>
                                                         </td>
                                                         <td colspan="2" class="col-xs-8">
                                                             <c:if test="${insRepDto.ncRectification != null}">
@@ -636,7 +657,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Remarks</p>
+                                                            <p>&nbsp;Remarks</p>
                                                         </td>
                                                         <div>
                                                             <td class="col-xs-4">
@@ -649,7 +670,7 @@
 
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Rectified Within KPI?</p>
+                                                            <p>&nbsp;Rectified Within KPI?</p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <p><c:out value="${insRepDto.rectifiedWithinKPI}"></c:out></p>
@@ -671,7 +692,7 @@
                                                 <table class="table">
                                                     <tr>
                                                         <td class="col-xs-4">
-                                                            <p>Recommendation </p>
+                                                            <p>&nbsp;Recommendation </p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             ${appPremisesRecommendationDto.recommendation}
@@ -680,7 +701,7 @@
                                                     </tr>
                                                     <tr id="period" >
                                                         <td class="col-xs-4">
-                                                            <p>Period </p>
+                                                            <p>&nbsp;Period </p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             ${appPremisesRecommendationDto.period}
@@ -689,7 +710,7 @@
                                                     </tr>
                                                     <tr id="selfPeriod" >
                                                         <td class="col-xs-4">
-                                                            <p>Other Period </p>
+                                                            <p>&nbsp;Other Period </p>
                                                         </td>
                                                         <td class="col-xs-4">
                                                             ${appPremisesRecommendationDto.recomInNumber} ${appPremisesRecommendationDto.chronoUnit}
