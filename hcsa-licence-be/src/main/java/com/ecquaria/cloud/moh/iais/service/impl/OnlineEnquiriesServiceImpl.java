@@ -56,7 +56,6 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
-import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
@@ -107,8 +106,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     @Autowired
     private InsRepClient insRepClient;
     @Autowired
-    LicenceService licenceService;
-    @Autowired
     private HcsaChklClient hcsaChklClient;
     @Autowired
     private InsepctionNcCheckListService insepctionNcCheckListService;
@@ -153,7 +150,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     public void setLicInfo(HttpServletRequest request) {
         String licenceId = (String) ParamUtil.getSessionAttr(request, "id");
 
-        LicenceDto licenceDto=licenceService.getLicenceDto(licenceId);
+        LicenceDto licenceDto=hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
         OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
         try{
             organizationLicDto.getLicenseeIndividualDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{organizationLicDto.getLicenseeIndividualDto().getSalutation()}).get(0).getText());
@@ -321,7 +318,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         if(StringUtil.isEmpty(licenceId)){
             inspectionReportDto.setLicenceNo("-");
         }else{
-            LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licenceId).getEntity();
+            LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
             if(licenceDto!=null){
                 String licenceNo = licenceDto.getLicenceNo();
                 inspectionReportDto.setLicenceNo(licenceNo);
@@ -559,7 +556,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto,licenceId);
         ParamUtil.setSessionAttr(request, "insRepDto", insRepDto);
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDtos.get(indexNo).getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-        LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licenceId).getEntity();
+        LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
         if(licenceDto!=null){
             SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
             appPremisesRecommendationDto.setPeriod(sdf.format(licenceDto.getStartDate())+"-"+sdf.format(licenceDto.getExpiryDate()));

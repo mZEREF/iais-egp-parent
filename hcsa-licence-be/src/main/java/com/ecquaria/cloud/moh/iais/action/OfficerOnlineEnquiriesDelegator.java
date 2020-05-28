@@ -760,7 +760,7 @@ public class OfficerOnlineEnquiriesDelegator {
         reqForInfoSearchListDto.setServiceName(rfiApplicationQueryDto.getSvcId());
         reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getHciCode());
         reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getHciName());
-        if(rfiApplicationQueryDto.getHciName().isEmpty()){
+        if(rfiApplicationQueryDto.getHciName()==null){
             reqForInfoSearchListDto.setHciName("-");
         }
         reqForInfoSearchListDto.setBlkNo(rfiApplicationQueryDto.getBlkNo());
