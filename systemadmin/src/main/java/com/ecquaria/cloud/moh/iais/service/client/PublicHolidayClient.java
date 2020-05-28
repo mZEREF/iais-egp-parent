@@ -36,4 +36,8 @@ public interface PublicHolidayClient {
 
     @PostMapping(value = "/iais-publicHoliday/doDelete", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> doDelete(@RequestBody List<String> id);
+
+    @PostMapping(value = "/iais-publicHoliday/getPublicHolidayInCalender", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> getPublicHolidayInCalender(@RequestParam("fromDate") String fromDate);
+
 }

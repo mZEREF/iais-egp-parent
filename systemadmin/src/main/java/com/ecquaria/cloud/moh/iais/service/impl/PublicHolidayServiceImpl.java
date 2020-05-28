@@ -48,4 +48,9 @@ public class PublicHolidayServiceImpl implements PublicHolidayService {
         publicHolidayClient.doDelete(id).getEntity();
     }
 
+    @Override
+    public String getPublicHolidayInCalender(String from){
+        return publicHolidayClient.getPublicHolidayInCalender(from).getEntity();
+    }
+
 }

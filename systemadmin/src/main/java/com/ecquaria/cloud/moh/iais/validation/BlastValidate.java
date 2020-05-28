@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
  * @Program: iais-egp
  * @Create: 2020-03-09 12:41
  **/
+@Component
 public class BlastValidate implements CustomizeValidator {
 
     @Override

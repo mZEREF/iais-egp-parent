@@ -39,7 +39,7 @@
                             <label class="col-xs-12 col-md-4 control-label" >Holiday Description</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <textarea id="description" type="text" name="description"  style="width: 100%;height: 150px">${holiday.description}</textarea>
+                                    <textarea id="description" type="text" name="description" maxlength="255"  style="width: 100%;height: 150px">${holiday.description}</textarea>
                                     <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -51,7 +51,6 @@
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:select name="status" options="statusOption" cssClass="statusOption" firstOption="Please Select"
                                                  value="${holiday.status}"></iais:select>
-                                    <span id="error_to_date" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>

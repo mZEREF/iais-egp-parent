@@ -444,7 +444,8 @@ public class BackendInboxDelegator {
                 //update application Group status
                 ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                 broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
-                applicationGroupDto.setStatus(appStatus);
+                applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                applicationGroupDto.setAo3ApprovedDt(new Date());
                 applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
             }
@@ -690,7 +691,7 @@ public class BackendInboxDelegator {
             String appNo =  application.getApplicationNo();
             log.info(StringUtil.changeForLog("The appNo is -->:"+appNo));
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =  appPremisesRoutingHistoryService.
-                    getAppPremisesRoutingHistoryForCurrentStage(appNo,HcsaConsts.ROUTING_STAGE_INS);
+                    getAppPremisesRoutingHistoryForCurrentStage(appNo,"14848A70-820B-EA11-BE7D-000C29F371DC",RoleConsts.USER_ROLE_INSPECTIOR);
             if(appPremisesRoutingHistoryDto == null){
                 appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.
                         getAppPremisesRoutingHistoryForCurrentStage(appNo,HcsaConsts.ROUTING_STAGE_ASO);
