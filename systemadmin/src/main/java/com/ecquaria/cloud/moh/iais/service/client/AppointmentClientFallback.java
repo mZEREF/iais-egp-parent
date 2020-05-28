@@ -137,7 +137,7 @@ public class AppointmentClientFallback implements AppointmentClient{
     }
 
     @Override
-    public FeignResponseEntity<ApptUserCalendarDto> getCalenderBySysUserCorrIdAndStatus(String sysUserCorrId, String status) {
+    public FeignResponseEntity<ApptUserCalendarDto> getCalenderBySysUserCorrIdAndStatus(ApptAppInfoShowDto apptAppInfoShowDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

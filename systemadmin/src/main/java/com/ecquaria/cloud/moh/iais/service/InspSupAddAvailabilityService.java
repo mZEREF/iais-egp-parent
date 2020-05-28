@@ -121,4 +121,13 @@ public interface InspSupAddAvailabilityService {
       * @Descripation: deleteNonAvailabilityByApptRefNo
       */
     void deleteNonAvailabilityByApptRefNo(String apptRefNo);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/5/28
+      * @Param: apptNonAvailabilityDateDto, groupRoleFieldDto
+      * @return: ApptNonAvailabilityDateDto
+      * @Descripation: setUserSysCorrIdsByDto
+      */
+    ApptNonAvailabilityDateDto setUserSysCorrIdsByDto(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto, GroupRoleFieldDto groupRoleFieldDto);
 }

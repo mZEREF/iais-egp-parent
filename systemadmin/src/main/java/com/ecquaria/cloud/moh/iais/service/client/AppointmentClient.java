@@ -76,8 +76,8 @@ public interface AppointmentClient {
     @PutMapping(value = "/iais-appointment/user-calendar/status",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> updateUserCalendarStatus(@RequestBody ApptCalendarStatusDto apptCalDto);
 
-    @GetMapping(value = "/iais-appointment/appt-calendar/{sysUserCorrId}/{status}")
-    FeignResponseEntity<ApptUserCalendarDto> getCalenderBySysUserCorrIdAndStatus(@PathVariable("sysUserCorrId") String sysUserCorrId, @PathVariable("status") String status);
+    @PostMapping(value = "/appt-calendar-status", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApptUserCalendarDto> getCalenderBySysUserCorrIdAndStatus(@RequestBody ApptAppInfoShowDto apptAppInfoShowDto);
 
     @PutMapping(value = "/iais-appointment/appt-u-calendar",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApptUserCalendarDto>> updateApptUserCalendarDtoList(@RequestBody List<ApptUserCalendarDto> apptUserCalendarDtos);

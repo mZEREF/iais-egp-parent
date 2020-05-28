@@ -172,6 +172,7 @@ public class InspSupAddAvailabilityDelegator {
         log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityVali start ...."));
         ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = (ApptNonAvailabilityDateDto) ParamUtil.getSessionAttr(bpc.request, "inspNonAvailabilityDto");
         String nonActionValue = ParamUtil.getRequestString(bpc.request, "nonActionValue");
+        GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto)ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
         if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(nonActionValue))){
             String curRole = (String)ParamUtil.getSessionAttr(bpc.request, "curRole");
             String nonAvaStart = ParamUtil.getRequestString(bpc.request, "nonAvaStartDate");
@@ -188,6 +189,7 @@ public class InspSupAddAvailabilityDelegator {
             if("lead".equals(curRole)){
                 String userLoginId = ParamUtil.getRequestString(bpc.request, "nonAvaUserNameId");
                 apptNonAvailabilityDateDto.setCheckUserName(userLoginId);
+                apptNonAvailabilityDateDto = inspSupAddAvailabilityService.setUserSysCorrIdsByDto(apptNonAvailabilityDateDto, groupRoleFieldDto);
                 validationResult = WebValidationHelper.validateProperty(apptNonAvailabilityDateDto,"lead");
             } else {
                 validationResult = WebValidationHelper.validateProperty(apptNonAvailabilityDateDto,"inspector");

@@ -52,6 +52,7 @@
                         </div>
                         <div class="col-md-6">
                           <span style="font-size: 16px"><fmt:formatDate value='${inspNonAvailabilityDto.blockOutStart}' pattern='dd/MM/yyyy'/> To <fmt:formatDate value='${inspNonAvailabilityDto.blockOutEnd}' pattern='dd/MM/yyyy' /></span>
+                          <iais:message key="ACK027" escape="true"></iais:message>
                         </div>
                       </div>
                       <div class="row">
