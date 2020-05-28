@@ -158,11 +158,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }catch (NullPointerException e){
             log.error(e.getMessage(), e);
         }
-        try{
-            organizationLicDto.setDoMain(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()).get(0));
-        }catch (Exception e){
-            log.error(e.getMessage(), e);
-        }
+
         List<PersonnelsDto> personnelsDto= hcsaLicenceClient.getPersonnelDtoByLicId(licenceId).getEntity();
 
         for (LicenseeKeyApptPersonDto org:organizationLicDto.getLicenseeKeyApptPersonDtos()

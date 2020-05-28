@@ -66,7 +66,6 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -156,7 +155,7 @@ public class RequestForInformationDelegator {
             ) {
                 OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licPreRfi.getLicenseeId()).getEntity();
                 if(organizationLicDto.getLicenseeEntityDto()!=null){
-                    licPreRfi.setEmail(Arrays.toString(organizationLicDto.getLicenseeEntityDto().getOfficeEmailAddr()));
+                    licPreRfi.setEmail(organizationLicDto.getLicenseeEntityDto().getOfficeEmailAddr());
                 }
             }
             licPremisesReqForInfoDtoLists.addAll(licPremisesReqForInfoDtoList);
