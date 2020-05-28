@@ -82,7 +82,7 @@
                                     <iais:field value="Licence No."/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
                                         <label>
-                                            <input type="text" maxlength="20" style="width:165%; font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
+                                            <input type="text" maxlength="24" style="width:165%; font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
                                         </label>
                                     </div >
                                 </iais:row>

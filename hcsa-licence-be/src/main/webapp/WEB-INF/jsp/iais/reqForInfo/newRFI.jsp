@@ -63,7 +63,7 @@
                                                     <label class="col-xs-9 col-md-3 control-label" > Licence No.<strong style="color:#ff0000;">*</strong></label>
                                                     <div class=" col-xs-7 col-sm-4 col-md-5">
                                                         <label>
-                                                            <input type="text" style="width:170%; font-weight:normal;" name="licenceNo${status.index}" value="${newRfi.licenceNo}"/>
+                                                            <input type="text" maxlength="24" style="width:170%; font-weight:normal;" name="licenceNo${status.index}" value="${newRfi.licenceNo}"/>
                                                         </label>
                                                             <%--                                                        <iais:select name="licenceNo${status.index}" options="salutationLicList" firstOption="Please Select" value="${newRfi.licenceNo}"></iais:select>--%>
                                                     </div>
