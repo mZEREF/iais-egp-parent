@@ -89,11 +89,11 @@
                                                     <button type="button" class="btn btn-default btn-sm" onclick="doCreateCategory('${masterCodeResult.masterCodeId}')">Create</button>
                                                 </c:if>
                                                 <button type="button" class="btn btn-default btn-sm" onclick="doEdit('${masterCodeResult.masterCodeId}')">Edit</button>
-                                                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                                                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal${status.index}">Delete</button>
                                             </td>
                                         </tr>
                                         <!-- Modal -->
-                                        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                                        <div class="modal fade" id="deleteModal${status.index}" tabindex="-1" role="dialog" aria-labelledby="deleteModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -107,7 +107,7 @@
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                        <button type="button" class="btn btn-primary" onclick="doDelete('${masterCodeResult.masterCodeId}')">Confirm</button>
+                                                        <button type="button" class="btn btn-primary" onclick="doDeleteOrDeactivate('${masterCodeResult.masterCodeId}')">Confirm</button>
                                                     </div>
                                                 </div>
                                             </div>

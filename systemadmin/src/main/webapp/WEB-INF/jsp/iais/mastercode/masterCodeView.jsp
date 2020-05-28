@@ -24,14 +24,8 @@
         submit('doEdit');
     }
 
-    function doDelete(mcId){
+    function doDeleteOrDeactivate(mcId){
         $("[name='crud_action_value']").val(mcId);
-        submit('doDelete');
-    }
-    
-    function doDeactivate(mcId) {
-        $("[name='crud_action_value']").val(mcId);
-        $("[name='crud_action_deactivate']").val('doDeactivate');
         submit('doDelete');
     }
 
