@@ -21,8 +21,15 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-md-4 control-label">Upload your files <span style="color: red"> *</span></label>
                         <div class="col-xs-8 col-sm-8 col-md-8">
-                            <p><input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file"/></p>
-                            <br /> <small class="error"><span id="selectedFileShow" style="color: #D22727; font-size: 1.6rem"></span></small>
+                            <div style="margin-left: -15px" class="col-md-5">
+                            <p><input  id = "selectedFileShowText" name = "selectedFileShowText"  type="text"   value="Select File" readonly>
+                                </p>
+                            </div>
+                            <div style="margin-left: -15px" class="col-md-8">
+                                <input  id = "selectedFileShowTextName" name = "selectedFileShowTextName"  type="text"   readonly>
+                            </div>
+                            <div hidden><input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file"></div>
+                          <small class="error"><span id="selectedFileShow" style="color: #D22727; font-size: 1.6rem"></span></small>
                         </div>
                     </div>
                     </div>
@@ -121,8 +128,16 @@
 
     function doDeleteShowFileName() {
         var file = $("#selectedFile");
-        file.after(file.clone().val(""));
+        var fileClone = file.clone();
+        fileClone.change(function (){
+            var file = $(this).val();
+            if(file != null && file !=""){
+                $('#selectedFileShowTextName').val(getFileName(file));
+            }
+        });
+        file.after(fileClone.val(""));
         file.remove();
+        $('#selectedFileShowTextName').val("");
     }
     
     function doAddTr(tr) {
@@ -137,6 +152,7 @@
         $('#selectedFileShow').html('')
         $('#fileRemarkShow').html('')
         var selectedFile = $('#uploadDoc').find('[name="selectedFile"]').val();
+
         var file = $('#selectedFile').get(0).files[0];
         if(selectedFile == null || selectedFile== "" ||file==null|| file==undefined){
             $('#selectedFileShow').html('The file cannot be empty.');
@@ -158,5 +174,25 @@
             flag = flag && false;
         }
         return flag;
+    }
+
+    $('#selectedFileShowText').click(function (){
+        $('#selectedFile').click();
+    });
+    $('#selectedFileShowTextName').click(function (){
+        $('#selectedFile').click();
+    });
+
+
+    $('#selectedFile').change(function () {
+        var file = $(this).val();
+        if(file != null && file !=""){
+            $('#selectedFileShowTextName').val(getFileName(file));
+        }
+    });
+
+    function getFileName(o) {
+        var pos = o.lastIndexOf("\\");
+        return o.substring(pos + 1);
     }
 </script>
