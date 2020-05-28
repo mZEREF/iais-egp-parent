@@ -31,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -113,7 +112,8 @@ public class CreateDoInspTaskBatchJob {
                 String todayStr = Formatter.formatDateTime(today, Formatter.DATE);
                 if(todayStr.equals(inspecDateStr)) {
                     ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(aRecoDto.getAppPremCorreId()).getEntity();
-                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION.equals(applicationDto.getStatus())) {
+                    AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(aRecoDto.getAppPremCorreId()).getEntity();
+                    if(InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION.equals(appInspectionStatusDto.getStatus())) {
                         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
                         applicationDtos.add(applicationDto);
                         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);

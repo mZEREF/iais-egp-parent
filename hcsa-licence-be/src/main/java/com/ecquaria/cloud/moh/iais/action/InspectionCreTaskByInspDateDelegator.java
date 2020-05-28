@@ -105,7 +105,8 @@ public class InspectionCreTaskByInspDateDelegator {
         for(AppPremisesRecommendationDto aRecoDto:appPremisesRecommendationDtos){
             if(aRecoDto.getRecomInDate() != null && aRecoDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
                 ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(aRecoDto.getAppPremCorreId()).getEntity();
-                if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION.equals(applicationDto.getStatus())) {
+                AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(aRecoDto.getAppPremCorreId()).getEntity();
+                if(InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION.equals(appInspectionStatusDto.getStatus())) {
                     List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
                     applicationDtos.add(applicationDto);
                     List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
