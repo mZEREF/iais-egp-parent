@@ -72,7 +72,17 @@
 
 
 <script>
-    $('#proceed').click(function () {
+    $('#proceed').click(function () {var flag=false;
+        $("input[name='payMethod']").each(function () {
+
+            if ( $(this).prop("checked")){
+                flag=true;
+            }
+        });
+        if(!flag){
+            $('#error_pay').html("The field is mandatory.");
+            return;
+        }
         doSubmitForm('prePayment','', '');
     });
 

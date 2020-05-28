@@ -336,6 +336,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "oldAppSubmissionDto", oldAppSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Premises Amendment");
+        ParamUtil.setRequestAttr(bpc.request, "premisesList",AppConsts.YES);
         log.debug(StringUtil.changeForLog("the do preparePremisesEdit end ...."));
         ParamUtil.setRequestAttr(bpc.request, "not_view", "notView");
     }
@@ -1046,6 +1047,7 @@ public class RequestForChangeMenuDelegator {
             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
             serviceConfigService.updatePaymentStatus(appGrp);
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
+            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
         }
 
         log.debug(StringUtil.changeForLog("the do jumpBank end ...."));
