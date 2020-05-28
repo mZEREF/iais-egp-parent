@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDe
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -161,6 +162,14 @@ public class FeEicGatewayClientFallback implements FeEicGatewayClient{
 
     @Override
     public FeignResponseEntity<String> getMessageNo(String date, String authorization, String dateSec, String authorizationSec) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<GobalRiskAccpetDto> getGobalRiskAccpetDtoCallBeByGobalRiskAccpetDto(GobalRiskAccpetDto gobalRiskAccpetDto, String date, String authorization, String dateSec, String authorizationSec) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
