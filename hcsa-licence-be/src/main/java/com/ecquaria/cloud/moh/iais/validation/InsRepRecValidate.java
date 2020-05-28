@@ -26,11 +26,11 @@ public class InsRepRecValidate implements CustomizeValidator {
         String enforcementRemarks = ParamUtil.getRequestString(httpServletRequest, "enforcementRemarks");
         String periods = ParamUtil.getRequestString(httpServletRequest, "periods");
         String recommendation = ParamUtil.getRequestString(httpServletRequest, "recommendation");
-        if(!StringUtil.isEmpty(recommendation)){
-            if(StringUtil.isEmpty(periods)){
-                errorMap.put("period", "ERR0009");
-            }
-        }
+//        if(!StringUtil.isEmpty(recommendation)){
+//            if(StringUtil.isEmpty(periods)){
+//                errorMap.put("period", "ERR0009");
+//            }
+//        }
         if (OTHERS.equals(periods)) {
             if (StringUtil.isEmpty(chrono)) {
                 errorMap.put("chronoUnit", "ERR0009");
