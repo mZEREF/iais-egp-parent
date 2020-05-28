@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -34,7 +35,10 @@ public class ApptNonAvailabilityValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = (ApptNonAvailabilityDateDto) ParamUtil.getSessionAttr(request, "inspNonAvailabilityDto");
-        ApptUserCalendarDto apptUserCalendarDto = appointmentClient.getCalenderBySysUserCorrIdAndStatus(apptNonAvailabilityDateDto.getUserCorrId(), AppointmentConstants.CALENDAR_STATUS_RESERVED).getEntity();
+        ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
+        apptAppInfoShowDto.setSysUserCorrIds(apptNonAvailabilityDateDto.getUserSysCorrIds());
+        apptAppInfoShowDto.setCalendarStatus(AppointmentConstants.CALENDAR_STATUS_RESERVED);
+        ApptUserCalendarDto apptUserCalendarDto = appointmentClient.getCalenderBySysUserCorrIdAndStatus(apptAppInfoShowDto).getEntity();
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
         List<Date> nonAvaDate = MiscUtil.getDateInPeriodByRecurrence(apptNonAvailabilityDateDto.getBlockOutStart(),
