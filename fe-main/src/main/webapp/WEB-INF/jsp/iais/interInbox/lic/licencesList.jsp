@@ -11,7 +11,7 @@
                         <label class="col-xs-4 col-md-4" for="licNoPath" style="text-align:left;margin-top: 1.5%">Search
                             by Licence No or Part of:</label>
                         <div class="col-xs-8 col-md-8">
-                            <input id="licNoPath" name="licNoPath" type="text" maxlength="20"
+                            <input id="licNoPath" name="licNoPath" type="text" maxlength="24"
                                    value="${param.licNoPath}">
                         </div>
                     </iais:value>
