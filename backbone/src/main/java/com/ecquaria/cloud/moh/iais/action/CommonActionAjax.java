@@ -1,9 +1,9 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.moh.iais.common.base.TableRowHtmlGenerater;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
-import com.ecquaria.cloud.moh.iais.dto.memorypage.TableRowHtmlGenerater;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
