@@ -19,6 +19,9 @@
             <input type="hidden" name="interalFileId" id="interalFileId"/>
             <input type="hidden" name="dateTimeShow" value="${recomInDateOnlyShow}"/>
             <input type="hidden" name="recommendationShow" value="${recommendationOnlyShow}"/>
+            <input type="hidden" id="isOtherAppealType" value="${isOtherAppealType}"/>
+            <input type="hidden" id="isChangePeriodAppealType" value="${isChangePeriodAppealType}"/>
+            <input type="hidden" id="isLateFeeAppealType" value="${isLateFeeAppealType}"/>
             <c:set var="isAoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST062' || applicationViewDto.applicationDto.status == 'APST065' || applicationViewDto.applicationDto.status == 'APST066' || applicationViewDto.applicationDto.status == 'APST067'}"/>
             <c:set var="isPsoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST063'}"/>
             <c:set var="isInspectorRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST064'}"/>
@@ -26,6 +29,8 @@
             <c:set var="isBroadcastStatus" value="${applicationViewDto.applicationDto.status == 'APST013'}"/>
             <c:set var="isBroacastAsoPso" value="${broadcastAsoPso}"/>
             <c:set var="isBroacastAso" value="${broadcastAso}"/>
+            <c:set var="isAppealType" value="${applicationViewDto.applicationDto.applicationType == 'APTY001'}"/>
+            <input type="hidden" id="isAppealType" value="${isAppealType}"/>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
@@ -207,6 +212,32 @@
                                                         </div>
                                                     </c:if>
 
+                                                    <%--application type == appeal --%>
+                                                    <c:if test="${isAppealType}">
+                                                        <div id="appealRecommendation">
+                                                            <iais:row>
+                                                                <iais:field value="Recommendation" required="true"/>
+                                                                <iais:value width="10">
+                                                                    <iais:select cssClass="appealRecommendationValues" name="appealRecommendationValues" id="appealRecommendationValues"
+                                                                                 firstOption="Please Select"
+                                                                                 options="appealRecommendationValues"
+                                                                                 value="${selectAppealRecommendationValue}"></iais:select>
+                                                                </iais:value>
+                                                            </iais:row>
+                                                        </div>
+
+                                                        <%-- Appeal against late application renewal fee --%>
+                                                        <div id="appealReturnFee" class="hidden">
+                                                            <iais:row>
+                                                                <iais:field value="Amount to be returned" required="true"/>
+                                                                <iais:value width="10">
+                                                                    <input id="returnFee" type="text" name="returnFee" maxlength="6" value="${applicationViewDto.returnFee}">
+                                                                    <span id="error_returnFee" name="iaisErrorMsg" class="error-msg"></span>
+                                                                </iais:value>
+                                                            </iais:row>
+                                                        </div>
+                                                    </c:if>
+
                                                     <div id="recommendationDropdown">
                                                         <iais:row>
                                                             <div id="recommendationFieldTrue" class="hidden"><iais:field value="${recommendationShowName}" required="true"/></div>
@@ -229,10 +260,8 @@
                                                     </div>
                                                     <div id="recommendationOtherDropdown">
                                                         <iais:row>
-                                                            <iais:field value="Other Period" required="true"/>
+                                                            <iais:field value="${isAppealType ? 'Recommended Licence Period' : 'Other Period'}" required="true"/>
                                                             <iais:value width="10">
-                                                                <%--                                                                <%String otherNumber = request.getParameter("number");%>--%>
-                                                                <%--                                                                <%String otherChrono = request.getParameter("chrono");%>--%>
                                                                 <input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" id=recomInNumber type="text" name="number" maxlength="2" value="${otherNumber}">
                                                                 <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
                                                                 <iais:select cssClass="chrono" id="chronoUnit" name="chrono" options="recommendationOtherDropdown" value="${otherChrono}"/>
@@ -242,7 +271,7 @@
                                                     </div>
 
                                                     <%--application type != appeal --%>
-                                                    <c:if test="${applicationViewDto.applicationDto.applicationType != 'APTY001'}">
+                                                    <c:if test="${!isAppealType}">
                                                         <div class="fastTrack">
                                                             <iais:row>
                                                                 <iais:field value="Fast Tracking?" required="false"/>
@@ -351,6 +380,11 @@
             $('#recommendationFieldTrue').removeClass('hidden');
             $('#recommendationFieldFalse').addClass('hidden');
         }
+        //appeal
+        if (${isAppealType}){
+            $('#recommendationDropdown').addClass('hidden');
+            checkAppealRecommendation();
+        }
         $('#rfiSelect').hide();
         check();
         validate();
@@ -389,6 +423,36 @@
         }else if(selectValue == "decisionApproval"){
             $('#recommendationDropdown').removeClass('hidden');
             checkRecommendationOtherDropdown();
+        }
+    }
+
+    //appeal
+        $("[name='appealRecommendationValues']").change(function selectChange() {
+            if (${isAppealType}) {
+                checkAppealRecommendation();
+            }
+        });
+
+
+    function checkAppealRecommendation(){
+        var selectValue = $("[name='appealRecommendationValues']").val();
+        var isOtherAppealType = $('#isOtherAppealType').val();
+        var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
+        var isLateFeeAppealType = $('#isLateFeeAppealType').val();
+        if(selectValue == "appealApprove"){
+            if(isLateFeeAppealType == 'true'){
+                $('#appealReturnFee').removeClass('hidden');
+                $('#recommendationOtherDropdown').addClass('hidden');
+            }else if(isChangePeriodAppealType == 'true'){
+                $('#recommendationOtherDropdown').removeClass('hidden');
+                $('#appealReturnFee').addClass('hidden');
+            }else if(isOtherAppealType == 'true'){
+                $('#appealReturnFee').addClass('hidden');
+                $('#recommendationOtherDropdown').addClass('hidden');
+            }
+        }else{
+            $('#recommendationOtherDropdown').addClass('hidden');
+            $('#appealReturnFee').addClass('hidden');
         }
     }
 
@@ -441,7 +505,9 @@
 
     function checkRecommendationOtherDropdown(){
         var recommendation = $("[name='recommendation']").val();
-        if('other' == recommendation){
+        var appealRecommendation = $("[name='appealRecommendationValues']").val();
+        var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
+        if('other' == recommendation || (isChangePeriodAppealType == 'true' && 'appealApprove' == appealRecommendation)){
             $('#recommendationOtherDropdown').removeClass('hidden');
         }else{
             $('#recommendationOtherDropdown').addClass('hidden');

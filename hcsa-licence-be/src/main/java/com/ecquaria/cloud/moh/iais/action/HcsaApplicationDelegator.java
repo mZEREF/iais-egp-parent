@@ -255,6 +255,20 @@ public class HcsaApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, "doDocument", "Y");
             return;
         }
+//        ParamUtil.setSessionAttr(request,"isOtherAppealType",isOtherAppealType);
+//        ParamUtil.setSessionAttr(request,"isChangePeriodAppealType",isChangePeriodAppealType);
+//        ParamUtil.setSessionAttr(request,"isLateFeeAppealType",isLateFeeAppealType);
+        //appeal
+        String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
+        boolean isAppealType = ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType);
+        boolean isOtherAppealType = false;
+        boolean isChangePeriodAppealType = false;
+        boolean isLateFeeAppealType = false;
+        if(isAppealType){
+            isOtherAppealType = (boolean)ParamUtil.getSessionAttr(bpc.request,"isOtherAppealType");
+            isChangePeriodAppealType = (boolean)ParamUtil.getSessionAttr(bpc.request,"isChangePeriodAppealType");
+            isLateFeeAppealType = (boolean)ParamUtil.getSessionAttr(bpc.request,"isLateFeeAppealType");
+        }
         //validate
         HcsaApplicationViewValidate hcsaApplicationViewValidate = new HcsaApplicationViewValidate();
         Map<String, String> errorMap = hcsaApplicationViewValidate.validate(bpc.request);
@@ -287,7 +301,15 @@ public class HcsaApplicationDelegator {
                 if(isRejectDMS){
                     recommendationStr = "reject";
                 }
+            }else if(isAppealType){
+                String appealRecommendationValues = ParamUtil.getString(bpc.request,"appealRecommendationValues");
+                if("appealReject".equals(appealRecommendationValues)){
+                    recommendationStr = "reject";
+                }else{
+                    recommendationStr = "other";
+                }
             }
+
             String dateStr = ParamUtil.getDate(bpc.request, "tuc");
             String dateTimeShow = ParamUtil.getString(bpc.request,"dateTimeShow");
             if(StringUtil.isEmpty(recommendationStr)){
@@ -297,6 +319,9 @@ public class HcsaApplicationDelegator {
                 appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
                 appPremisesRecommendationDto.setRecomInNumber(0);
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
+                if(isAppealType){
+                    appPremisesRecommendationDto.setRecomDecision("reject");
+                }
                 appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 //save date
                 if(!StringUtil.isEmpty(dateStr)){
@@ -311,12 +336,24 @@ public class HcsaApplicationDelegator {
                 AppPremisesRecommendationDto appPremisesRecommendationDto=new AppPremisesRecommendationDto();
                 appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
+                if(isAppealType){
+                    appPremisesRecommendationDto.setRecomDecision("approve");
+                }
                 if("other".equals(recommendationStr)){
-                    String number = ParamUtil.getString(bpc.request,"number");
-                    if(!StringUtil.isEmpty(number)){
-                        appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number));
-                        String chrono = ParamUtil.getString(bpc.request,"chrono");
-                        appPremisesRecommendationDto.setChronoUnit(chrono);
+                    if((isAppealType && isChangePeriodAppealType) || !isAppealType){
+                        String number = ParamUtil.getString(bpc.request,"number");
+                        if(!StringUtil.isEmpty(number)){
+                            appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number));
+                            String chrono = ParamUtil.getString(bpc.request,"chrono");
+                            appPremisesRecommendationDto.setChronoUnit(chrono);
+                        }
+                    }
+                    if(isAppealType){
+                        appPremisesRecommendationDto.setRecomDecision("approve");
+                        if(isLateFeeAppealType){
+                            String returnFee = ParamUtil.getString(bpc.request,"returnFee");
+                            appPremisesRecommendationDto.setRemarks(returnFee);
+                        }
                     }
                 }else{
                     String[] strs=recommendationStr.split("\\s+");
@@ -1706,7 +1743,7 @@ public class HcsaApplicationDelegator {
         //set recommendation other dropdown value
         setRecommendationOtherDropdownValue(request);
         //set appeal recommendation dropdown value
-        //setAppealRecommendationDropdownValue(request,applicationViewDto);
+        setAppealRecommendationDropdownValue(request,applicationViewDto);
     }
 
     private void setAppealRecommendationDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
@@ -1715,11 +1752,11 @@ public class HcsaApplicationDelegator {
         boolean isChangePeriodAppealType = false;
         boolean isLateFeeAppealType = false;
         String applicationType = applicationDto.getApplicationType();
-        //get appeal type
-        String appId = applicationDto.getId();
-        AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
-        String appealType = premiseMiscDto.getAppealType();
         if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+            //get appeal type
+            String appId = applicationDto.getId();
+            AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
+            String appealType = premiseMiscDto.getAppealType();
             isOtherAppealType = true;
             if(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD.equals(appealType)){
                 isChangePeriodAppealType = true;
@@ -1728,6 +1765,11 @@ public class HcsaApplicationDelegator {
                 isLateFeeAppealType = true;
                 isOtherAppealType = false;
             }
+            //appealRecommendationValues
+            List<SelectOption> appealRecommendationValues = IaisCommonUtils.genNewArrayList();
+            appealRecommendationValues.add(new SelectOption("appealApprove", "Approve"));
+            appealRecommendationValues.add(new SelectOption("appealReject", "Reject"));
+            ParamUtil.setSessionAttr(request, "appealRecommendationValues", (Serializable)appealRecommendationValues);
         }
         ParamUtil.setSessionAttr(request,"isOtherAppealType",isOtherAppealType);
         ParamUtil.setSessionAttr(request,"isChangePeriodAppealType",isChangePeriodAppealType);
