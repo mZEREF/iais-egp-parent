@@ -191,11 +191,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         }
     }
 
-    private void spontaneousSyncData(String refNo, OrganizationDto dto){
-
-    }
-
-
     @Override
     public void updateUserBe(OrganizationDto organizationDto){
         try {
