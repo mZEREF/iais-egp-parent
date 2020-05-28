@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -33,11 +32,11 @@ public class HolidayValidate implements CustomizeValidator {
 
         String from = Formatter.formatDateTime(publicHolidayDto.getFromDate(), "ddMMyyyy");
         if(from == null || from.isEmpty()){
-            errMap.put("sub_date", MessageUtil.getMessageDesc(MessageCodeKey.USER_ERR001));
+            errMap.put("sub_date", MessageUtil.getMessageDesc("USER_ERR001"));
         }else{
             String res = publicHolidayService.getPublicHolidayInCalender(from);
             if(AppConsts.TRUE.equals(res)) {
-                errMap.put("sub_date", MessageUtil.getMessageDesc(MessageCodeKey.OAPPT004));
+                errMap.put("sub_date", MessageUtil.getMessageDesc("OAPPT_004"));
             }
         }
 
