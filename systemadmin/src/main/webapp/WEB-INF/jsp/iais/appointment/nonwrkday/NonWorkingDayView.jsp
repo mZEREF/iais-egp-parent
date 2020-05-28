@@ -37,7 +37,7 @@
 
     <div class="bg-title"><h2>Inspection Team's Weekly Non-Working Days</h2></div>
     <div class="col-md-3">
-      <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  onchange="doSearch()" options = "wrlGrpNameOpt" firstOption="Please Select" value="${currentGroupId}" ></iais:select>
+      <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  onchange="doSearch()" options = "wrlGrpNameOpt" value="${currentGroupId}" ></iais:select>
     </div>
     <br><br><br>
     <div>

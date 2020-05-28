@@ -113,17 +113,17 @@ public class InspTeamNonWorkingDayDelegator {
 		}else {
 			Optional<WorkingGroupQueryDto> wrkOtional = Optional.ofNullable(workingGroupQueryList.get(0));
 			if (wrkOtional.isPresent()){
-				String defualtId = wrkOtional.get().getId();
-				nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(defualtId);
-				ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, defualtId);
+				String defaultId = wrkOtional.get().getId();
+				String defualtGroupName = wrkOtional.get().getGroupName();
+				nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(defaultId);
+				ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, defualtGroupName);
 			}
 		}
 
 		List<SelectOption> wrlGrpNameOpt = IaisCommonUtils.genNewArrayList();
 		workingGroupQueryList.forEach(wkr -> {
-			String groupId = wkr.getId();
 			String groupName = wkr.getGroupName();
-			wrlGrpNameOpt.add(new SelectOption(groupId, groupName));
+			wrlGrpNameOpt.add(new SelectOption(groupName, groupName));
 		});
 
 		if (IaisCommonUtils.isEmpty(nonWorkingDateListByWorkGroupId)){
@@ -154,6 +154,7 @@ public class InspTeamNonWorkingDayDelegator {
 			nonWorkingDateDto.setRecursivceDate(wkrDays.get(i));
 			nonWorkingDateDto.setNonWkrDay(false);
 			nonWorkingDateDto.setDesc("");
+
 			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
 			nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
