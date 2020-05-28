@@ -152,8 +152,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount start ...."));
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-        List<LicenceFeeDto> linenceFeeQuaryDtos = new ArrayList();
-        List<String> premisessTypes =  new ArrayList();
+        List<LicenceFeeDto> linenceFeeQuaryDtos = IaisCommonUtils.genNewArrayList();
+        List<String> premisessTypes =  IaisCommonUtils.genNewArrayList();
 
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
             premisessTypes.add(appGrpPremisesDto.getPremisesType());
@@ -186,7 +186,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
         }
-        log.info("base service size:"+baseServiceIds.size());
+        log.info(StringUtil.changeForLog("base service size:"+baseServiceIds.size()));
 
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
             LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
@@ -258,7 +258,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public PreOrPostInspectionResultDto judgeIsPreInspection(AppSubmissionDto appSubmissionDto) {
         RecommendInspectionDto recommendInspectionDto = new RecommendInspectionDto();
-        List<RiskAcceptiionDto> riskAcceptiionDtos = new ArrayList();
+        List<RiskAcceptiionDto> riskAcceptiionDtos = IaisCommonUtils.genNewArrayList();
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
             RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
@@ -274,7 +274,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public void setRiskToDto(AppSubmissionDto appSubmissionDto) {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        List<RiskAcceptiionDto> riskAcceptiionDtoList = new ArrayList();
+        List<RiskAcceptiionDto> riskAcceptiionDtoList = IaisCommonUtils.genNewArrayList();
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
             RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
             riskAcceptiionDto.setScvCode(appSvcRelatedInfoDto.getServiceCode());

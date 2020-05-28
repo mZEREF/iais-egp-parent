@@ -154,7 +154,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
 
     private void checkBroadcast(String roleId, Map<String, String> errMap,String status, String recommendationStr,HttpServletRequest request){
         boolean broadcastAsoPso = (boolean)ParamUtil.getSessionAttr(request,"broadcastAsoPso");
-        if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status) && broadcastAsoPso){
+        if(broadcastAsoPso && ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
             if(StringUtil.isEmpty(recommendationStr)){
                 errMap.put("recommendation","Please key in recommendation");
             }

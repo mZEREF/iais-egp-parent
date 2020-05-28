@@ -911,23 +911,27 @@ public class WithOutRenewalDelegator {
     }
 
     public static String emailAddressesToString(List<String> emailAddresses){
-        String emailAddress = "";
+        StringBuffer emailAddress = new StringBuffer();
+        //String emailAddress = "";
         if(emailAddresses.isEmpty()){
-            return emailAddress;
+            return emailAddress.toString();
         }
 
         if(emailAddresses.size() == 1){
-            emailAddress += emailAddresses.get(0);
+            emailAddress.append(emailAddresses.get(0));
+//            emailAddress += emailAddresses.get(0);
         }else{
             for(int i = 0;i < emailAddresses.size(); i++){
                 if(i == emailAddresses.size() -1){
-                    emailAddress += emailAddresses.get(i);
+//                    emailAddress += emailAddresses.get(i);
+                    emailAddress.append(emailAddresses.get(i));
                 }else{
-                    emailAddress += emailAddresses.get(i) + ", ";
+//                    emailAddress += emailAddresses.get(i) + ", ";
+                    emailAddress.append(emailAddresses.get(i)).append(", ");
                 }
             }
         }
-        return emailAddress;
+        return emailAddress.toString();
     }
     //=============================================================================
     //private method

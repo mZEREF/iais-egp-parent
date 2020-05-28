@@ -222,7 +222,7 @@ public class ServiceMenuDelegator {
         //get correlatrion base service
         List<String> speString = (List<String>)ParamUtil.getSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED);
         List<HcsaServiceDto> hcsaServiceDtosMap = getBaseInSpe(speString);
-        Map<String ,HcsaServiceDto> specifiedName = new HashMap<>();
+        Map<String ,HcsaServiceDto> specifiedName = IaisCommonUtils.genNewHashMap();
         for (HcsaServiceDto item:allspecifiedService
         ) {
             specifiedName.put(item.getId(),item);
@@ -429,7 +429,7 @@ public class ServiceMenuDelegator {
         List<String> chkslistcopy = IaisCommonUtils.genNewArrayList();
         chkslistcopy.addAll(basechkslist);
         List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getCorrelation();
-        Map<String ,String> necessaryBaseServiceList = new HashMap<>();
+        Map<String ,String> necessaryBaseServiceList = IaisCommonUtils.genNewHashMap();
         for (String item: sepcifiedchkslist) {
             for (HcsaServiceCorrelationDto dto:hcsaServiceCorrelationDtoList) {
                 if(dto.getSpecifiedSvcId().equals(item)){

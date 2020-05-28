@@ -161,7 +161,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 if(miEditNumFlag == 1){
                     errMap.put(serviceCode + "miEffDate", "ERR0012");
                 }
-            }else if("A".equals(level)&&mjEditNumFlag == 1){
+            }else if(mjEditNumFlag == 1 && "A".equals(level)){
                 errMap.put(serviceCode + "mjEffDate", "ERR0012");
             }
         } else if (endDate.getTime() < effDate.getTime()) {
