@@ -19,7 +19,7 @@ public class GatewayMd5Encrypt {
         try {
             return content.getBytes(charset);
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("MD5 encrypt error, your charset is:" + charset);
+            throw new RuntimeException("MD5 encrypt error, your charset is:" + charset,e);
         }
     }
 }

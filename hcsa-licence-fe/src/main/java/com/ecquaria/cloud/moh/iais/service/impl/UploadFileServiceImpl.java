@@ -194,7 +194,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                CheckedOutputStream cos=new CheckedOutputStream(outputStream,new CRC32());
                ZipOutputStream zos=new ZipOutputStream(cos)) {
 
-            log.info("------------zip file name is"+sharedPath+AppServicesConsts.BACKUPS+File.separator+ l+".zip"+"--------------------");
+            log.info(StringUtil.changeForLog("------------zip file name is"+sharedPath+AppServicesConsts.BACKUPS+File.separator+ l+".zip"+"--------------------"));
             File file = new File(sharedPath + AppServicesConsts.FILE_NAME + File.separator + groupId);
 
             zipFile(zos, file);

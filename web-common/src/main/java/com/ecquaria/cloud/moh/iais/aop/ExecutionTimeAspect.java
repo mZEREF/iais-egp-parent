@@ -36,7 +36,7 @@ public class ExecutionTimeAspect {
 
         long end = System.currentTimeMillis();
         long timeMillis = end - start;
-        float seconds = (end - start) / 1000;
+        float seconds = (float) (end - start) / 1000;
 
         log.info(StringUtil.changeForLog("feign call execution timer end [ " + timeMillis + "]" + "ms"));
         log.info(StringUtil.changeForLog("feign call execution timer end [ " + seconds + "]" + "s"));

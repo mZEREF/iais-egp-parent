@@ -109,7 +109,7 @@ public final class ExcelReader {
             workBook = suffix.equals(EXCEL_TYPE_XSSF) ? new XSSFWorkbook(in) : new HSSFWorkbook(in);
             return workBook.getSheetAt(0);
         } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new IllegalArgumentException(e.getMessage(),e);
         }finally {
             try {
                 if (workBook != null){

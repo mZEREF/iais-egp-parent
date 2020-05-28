@@ -70,7 +70,7 @@ public class ValidationAjaxController {
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new IaisRuntimeException("");
+            throw new IaisRuntimeException("",e);
         }
 
         return null;

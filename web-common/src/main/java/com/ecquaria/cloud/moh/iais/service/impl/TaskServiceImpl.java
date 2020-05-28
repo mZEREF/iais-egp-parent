@@ -132,7 +132,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId,String roleId, AuditTrailDto auditTrailDto) throws FeignException {
         log.debug(StringUtil.changeForLog("the do getRoutingTaskOneUserForSubmisison start ...."));
-        log.info("---------------"+applicationDtos+"--------"+stageId);
+        log.info(StringUtil.changeForLog("---------------"+applicationDtos+"--------"+stageId));
         TaskHistoryDto result = new TaskHistoryDto();
         if(applicationDtos != null && applicationDtos.size() > 0){
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,stageId);
@@ -263,7 +263,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList();
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
         for(ApplicationDto applicationDto : applicationDtos){
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);
