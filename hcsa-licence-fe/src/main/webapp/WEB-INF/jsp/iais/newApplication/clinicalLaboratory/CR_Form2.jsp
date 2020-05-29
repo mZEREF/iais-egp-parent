@@ -89,7 +89,7 @@
                     <tr height="1">
                       <td class="first last" style="width: 100%;">
                         <c:choose>
-                          <c:when test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType }">
+                          <c:when test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null}">
                             <div id="control--runtime--2" class="control control-caption-horizontal">
                               <c:if test="${currentCgo != null}">
                                 <div class="form-group form-horizontal formgap">
