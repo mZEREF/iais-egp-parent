@@ -283,13 +283,17 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
         Map<String, String> userLoginIdMap = groupRoleFieldDto.getUserLoginIdMap();
         String userPkId = userIdMap.get(checkUserName);
         String userLoginId = userLoginIdMap.get(checkUserName);
-        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(userPkId).getEntity();
-        List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
-        for(UserGroupCorrelationDto userGroupCorrelationDto : userGroupCorrelationDtos){
-            workGroupIds.add(userGroupCorrelationDto.getGroupId());
+        if(!StringUtil.isEmpty(userPkId)) {
+            List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(userPkId).getEntity();
+            List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
+            for (UserGroupCorrelationDto userGroupCorrelationDto : userGroupCorrelationDtos) {
+                workGroupIds.add(userGroupCorrelationDto.getGroupId());
+            }
+            List<String> userSysCorrIds = getApptUserSysCorrIdByLoginId(userLoginId, workGroupIds);
+            apptNonAvailabilityDateDto.setUserSysCorrIds(userSysCorrIds);
+        } else {
+            apptNonAvailabilityDateDto.setUserSysCorrIds(null);
         }
-        List<String> userSysCorrIds = getApptUserSysCorrIdByLoginId(userLoginId, workGroupIds);
-        apptNonAvailabilityDateDto.setUserSysCorrIds(userSysCorrIds);
         return apptNonAvailabilityDateDto;
     }
 

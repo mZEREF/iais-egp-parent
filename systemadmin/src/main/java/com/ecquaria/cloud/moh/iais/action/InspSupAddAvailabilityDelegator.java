@@ -61,6 +61,12 @@ public class InspSupAddAvailabilityDelegator {
      */
     public void inspSupAddAvailabilityStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityStart start ...."));
+        ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", null);
+        String nonAvaId = ParamUtil.getMaskedString(bpc.request, "nonAvailId");
+        if(!StringUtil.isEmpty(nonAvaId)) {
+            ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = inspSupAddAvailabilityService.getApptNonAvailabilityDateDtoById(nonAvaId);
+            ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", apptNonAvailabilityDateDto);
+        }
         AuditTrailHelper.auditFunction("Inspection Sup Add Availability", "Inspection Sup Add Availability");
     }
 
@@ -78,7 +84,6 @@ public class InspSupAddAvailabilityDelegator {
         ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.INSPECTOR_CALENDAR_RESULT_ATTR, searchResult);
         ParamUtil.setSessionAttr(bpc.request, "curRole", null);
         ParamUtil.setSessionAttr(bpc.request, "inspSupAddAvailabilityType", null);
-        ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", null);
         ParamUtil.setSessionAttr(bpc.request, "nonAvaUserName", null);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
     }
@@ -98,16 +103,9 @@ public class InspSupAddAvailabilityDelegator {
             ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", apptNonAvailabilityDateDto);
 
         } else if(InspectionConstants.SWITCH_ACTION_EDIT.equals(actionValue)) {
-            String nonAvaId = ParamUtil.getMaskedString(bpc.request, "nonAvailId");
-            ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = inspSupAddAvailabilityService.getApptNonAvailabilityDateDtoById(nonAvaId);
             ParamUtil.setSessionAttr(bpc.request, "inspSupAddAvailabilityType", actionValue);
-            ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", apptNonAvailabilityDateDto);
-
         } else if(InspectionConstants.SWITCH_ACTION_DELETE.equals(actionValue)) {
-            String nonAvaId = ParamUtil.getMaskedString(bpc.request, "nonAvailId");
-            ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = inspSupAddAvailabilityService.getApptNonAvailabilityDateDtoById(nonAvaId);
             ParamUtil.setSessionAttr(bpc.request, "inspSupAddAvailabilityType", actionValue);
-            ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", apptNonAvailabilityDateDto);
         } else {
             ParamUtil.setSessionAttr(bpc.request, "inspSupAddAvailabilityType", InspectionConstants.SWITCH_ACTION_BACK);
         }
@@ -175,8 +173,8 @@ public class InspSupAddAvailabilityDelegator {
         GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto)ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
         if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(nonActionValue))){
             String curRole = (String)ParamUtil.getSessionAttr(bpc.request, "curRole");
-            String nonAvaStart = ParamUtil.getRequestString(bpc.request, "nonAvaStartDate");
-            String nonAvaEnd = ParamUtil.getRequestString(bpc.request, "nonAvaEndDate");
+            String nonAvaStart = ParamUtil.getRequestString(bpc.request, "blockOutStart");
+            String nonAvaEnd = ParamUtil.getRequestString(bpc.request, "blockOutEnd");
             String nonDescription = ParamUtil.getRequestString(bpc.request, "blockOutDesc");
             String recurrence = ParamUtil.getRequestString(bpc.request, "recurrence");
             Date nonAvaStartDate = nonAvaStringToDate(nonAvaStart);
@@ -319,8 +317,8 @@ public class InspSupAddAvailabilityDelegator {
         ApptNonAvailabilityDateDto apptNonAvailabilityDateDto = (ApptNonAvailabilityDateDto) ParamUtil.getSessionAttr(bpc.request, "inspNonAvailabilityDto");
         String nonActionValue = ParamUtil.getRequestString(bpc.request, "nonActionValue");
         if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(nonActionValue))){
-            String nonAvaStart = ParamUtil.getRequestString(bpc.request, "nonAvaStartDate");
-            String nonAvaEnd = ParamUtil.getRequestString(bpc.request, "nonAvaEndDate");
+            String nonAvaStart = ParamUtil.getRequestString(bpc.request, "blockOutStart");
+            String nonAvaEnd = ParamUtil.getRequestString(bpc.request, "blockOutEnd");
             String nonDescription = ParamUtil.getRequestString(bpc.request, "blockOutDesc");
             String recurrence = ParamUtil.getRequestString(bpc.request, "recurrence");
             Date nonAvaStartDate = nonAvaStringToDate(nonAvaStart);

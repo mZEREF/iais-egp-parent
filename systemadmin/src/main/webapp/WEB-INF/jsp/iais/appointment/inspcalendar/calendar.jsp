@@ -20,6 +20,7 @@
 <div class="main-content">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+    <input type="hidden" id="nonAvailId" name="nonAvailId" value="">
     <div class="bg-title"><h2>Define Non-Availability</h2></div>
 
     <form class="form-horizontal">
@@ -156,9 +157,9 @@
                             <td><iais:code code="${calendar.recurrence}"></iais:code></td>
                             <td><fmt:formatDate value="${calendar.recurrenceEndate}" pattern="MM/dd/yyyy"/></td>
                             <td>
-                              <input type="hidden" id="nonAvailId" name="nonAvailId" value="">
-                                <button type="button"   onclick="doDelete('<iais:mask name="calendarId" value="${calendar.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
-                                <button type="button"  onclick="doEdit('<iais:mask name="calendarId" value="${calendar.id}"/>')" class="btn btn-default btn-sm" >Update</button>
+
+                                <button type="button"   onclick="doDelete('<iais:mask name="nonAvailId" value="${calendar.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
+                                <button type="button"  onclick="doEdit('<iais:mask name="nonAvailId" value="${calendar.id}"/>')" class="btn btn-default btn-sm" >Update</button>
                             </td>
                           </tr>
                         </c:forEach>

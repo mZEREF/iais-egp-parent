@@ -52,15 +52,16 @@
                         </div>
                         <div class="col-md-6">
                           <span style="font-size: 16px"><fmt:formatDate value='${inspNonAvailabilityDto.blockOutStart}' pattern='dd/MM/yyyy'/> To <fmt:formatDate value='${inspNonAvailabilityDto.blockOutEnd}' pattern='dd/MM/yyyy' /></span>
-                          <iais:message key="ACK027" escape="true"></iais:message>
+                          <br><span class="error-msg"><iais:message key="ACK027" escape="false"></iais:message></span>
                         </div>
                       </div>
-                      <div class="row">
+                      <p></p>
+                      <div class="row form-group" style="margin-bottom: 15px;">
                         <div class="col-md-2">
                           <label style="font-size: 16px">Non-Available Date Description</label>
                         </div>
                         <div class="col-md-6">
-                          <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" maxlength="255" disabled><c:out value="${inspNonAvailabilityDto.blockOutDesc}"></c:out></textarea>
+                          <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" maxlength="255" disabled><c:out value="${inspNonAvailabilityDto.nonAvaDescription}"></c:out></textarea>
                         </div>
                       </div>
                       <div class="row">
@@ -68,7 +69,7 @@
                           <label style="font-size: 16px">Recurrence</label>
                         </div>
                         <div class="col-md-6">
-                          <span style="font-size: 16px"><c:out value="${inspNonAvailabilityDto.recurrence}"/></span>
+                          <span style="font-size: 16px"><iais:code code ="${inspNonAvailabilityDto.recurrence}"/></span>
                         </div>
                       </div>
                       <iais:action >

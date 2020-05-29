@@ -69,7 +69,6 @@
                             <th width="5%">N/A</th>
                             <th width="15%">Remark</th>
                             <th width="10%">Rectified</th>
-                            <th></th>
                           </tr>
                           </thead>
                           <tbody>
@@ -89,15 +88,6 @@
                                 <div id="<c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>comck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
                                   <input disabled name="<c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>comrec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameSub}"/>comrec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                 </div>
-                              </td>
-                              <td>
-                                <c:set var="fir" value="${one.index}"></c:set>
-                                <c:set var="sec" value="${two.index}"></c:set>
-                                <c:forEach var="oldcom" items="${allComChkDtoList}">
-                                  <wrms:value width="7">
-                                    <span class="oldVal compareTdStyle" attr="${oldcom.sectionDtoList[fir].itemDtoList[sec].incqDto.chkanswer}"><label><c:out value="${oldcom.sectionDtoList[fir].itemDtoList[sec].incqDto.chkanswer}"/></label></span>
-                                  </wrms:value>
-                                </c:forEach>
                               </td>
                             </tr>
                           </c:forEach>
@@ -126,7 +116,6 @@
                               <th width="5%">N/A</th>
                               <th width="15%">Remark</th>
                               <th width="10%">Rectified</th>
-                              <th></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -147,17 +136,6 @@
                                     <input disabled name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameSub}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${cdto.subName}${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameSub}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                   </div>
                                   <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameSub}${item.incqDto.itemId}" var = "err"/>
-                                </td>
-                                <td>
-                                  <c:set var="fir" value="${one.index}"></c:set>
-                                  <c:set var="sec" value="${two.index}"></c:set>
-                                  <c:set var="thr" value="${status.index}"></c:set>
-                                  <c:forEach var="oldser" items="${otherVersionfdtos}">
-                                    <wrms:value width="7">
-                                      <span class="oldVal compareTdStyle" attr="${oldser.fdtoList[fir].sectionDtoList[sec].itemDtoList[thr].incqDto.chkanswer}"><label><c:out value="${oldser.fdtoList[fir].sectionDtoList[sec].itemDtoList[thr].incqDto.chkanswer}"/></label></span>
-                                    </wrms:value>
-                                  </c:forEach>
-
                                 </td>
                               </tr>
                             </c:forEach>
@@ -183,7 +161,6 @@
                             <th width="5%">N/A</th>
                             <th width="15%">Remark</th>
                             <th width="10%">Rectified</th>
-                            <th></th>
                           </tr>
                           </thead>
                           <tbody>
@@ -205,14 +182,6 @@
                                 </div>
                                 <c:set value = "error_${item.id}adhoc" var = "err"/>
                                 <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
-                              </td>
-                              <td>
-                                <c:set var="fir" value="${status.index}"></c:set>
-                                <c:forEach var="adhocdraft" items="${otherVersionAdhocDraftList}">
-                                  <wrms:value width="7">
-                                    <span class="oldVal compareTdStyle" attr="${adhocdraft.adItemList[fir].adAnswer}"><label><c:out value="${adhocdraft.adItemList[fir].adAnswer}"/></label></span>
-                                  </wrms:value>
-                                </c:forEach>
                               </td>
                             </tr>
                           </c:forEach>

@@ -20,6 +20,17 @@
 <%
   String webroot=IaisEGPConstant.BE_CSS_ROOT;
 %>
+<style type="text/css">
+  #blockOutStart {
+    margin-bottom: 0px;
+  }
+  #blockOutEnd {
+    margin-bottom: 0px;
+  }
+  div.nice-select.input-large {
+    margin-bottom: 0px;
+  }
+</style>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="mainAddForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
@@ -41,8 +52,8 @@
                         <c:if test="${curRole eq 'lead'}">
                           <iais:field value="Inspector ID" required="true"/>
                           <iais:value width="7">
-                            <iais:select name="nonAvaUserNameId" options="nonAvaUserName" firstOption="Please Select" value="${inspNonAvailabilityDto.userCorrId}" ></iais:select>
-                            <br><span class="error-msg" name="iaisErrorMsg" id="error_userName"></span>
+                            <iais:select name="nonAvaUserNameId" options="nonAvaUserName" firstOption="Please Select" value="${inspNonAvailabilityDto.checkUserName}" ></iais:select>
+                            <br><span class="error-msg" name="iaisErrorMsg" id="error_checkUserName"></span>
                           </iais:value>
                         </c:if>
                         <c:if test="${curRole ne 'lead'}">
@@ -52,15 +63,13 @@
                           </iais:value>
                         </c:if>
                       </iais:row>
-                      <div class="form-group" style="margin-bottom: 0px;">
+                      <div class="form-group">
                         <iais:field value="Non-Available Date" required="true"/>
                         <iais:value width="7">
-                          <iais:datePicker id = "nonAvaStartDate" name = "nonAvaStartDate" value="${inspNonAvailabilityDto.blockOutStart}"></iais:datePicker>
-                          <span style="font-size: 16px">To</span><p></p>
-                          <iais:datePicker id = "nonAvaEndDate" name = "nonAvaEndDate" value="${inspNonAvailabilityDto.blockOutEnd}"></iais:datePicker>
-                          <br><span class="error-msg" name="iaisErrorMsg" id="error_blockOutStart"></span>
-                          <br><span class="error-msg" name="iaisErrorMsg" id="error_blockOutEnd"></span>
-                          <br><span class="error-msg" name="iaisErrorMsg" id="error_nonAvaDate"></span>
+                          <iais:datePicker id = "blockOutStart" name = "blockOutStart" dateVal="${inspNonAvailabilityDto.blockOutStart}"></iais:datePicker>
+                          <br><span style="font-size: 16px">To</span><br><br>
+                          <iais:datePicker id = "blockOutEnd" name = "blockOutEnd" dateVal="${inspNonAvailabilityDto.blockOutEnd}"></iais:datePicker>
+                          <span class="error-msg" name="iaisErrorMsg" id="error_nonAvaDate"></span>
                         </iais:value>
                       </div>
                       <div class="form-group">
@@ -69,7 +78,7 @@
                           <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" maxlength="255" ><c:out value="${inspNonAvailabilityDto.nonAvaDescription}"></c:out></textarea>
                         </iais:value>
                       </div>
-                      <div class="form-group" style="margin-bottom: 100px;">
+                      <div class="form-group" style="margin-bottom: 150px;">
                         <iais:field value="Recurrence" required="true"/>
                         <iais:value width="7">
                           <iais:select name="recurrence" options="recurrenceOption" firstOption="Please Select" value="${inspNonAvailabilityDto.recurrence}" ></iais:select>
