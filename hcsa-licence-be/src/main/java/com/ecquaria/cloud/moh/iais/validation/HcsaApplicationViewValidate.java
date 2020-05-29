@@ -32,6 +32,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
         String status = applicationViewDto.getApplicationDto().getStatus();
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
+        String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         String roleId = "";
         if(taskDto != null){
             roleId = taskDto.getRoleId();
@@ -61,7 +62,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
 
         //verified recommendation other dropdown
         //0063971
-        checkRecommendationOtherDropdown(errMap,recommendationStr,request);
+        checkRecommendationOtherDropdown(errMap,recommendationStr,request,applicationType,roleId);
 
         //DMS recommendation
         if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
@@ -97,6 +98,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 errMap.put("decisionValues","The field is mandatory.");
             }
         }else {
+            //special status
             if (isRouteBackStatus(status) || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
                 String nextStageReplys = ParamUtil.getRequestString(request, "nextStageReplys");
                 if (StringUtil.isEmpty(nextStageReplys)) {
@@ -110,12 +112,19 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         errMap.put("recommendation", "Please key in recommendation");
                     }
                 }
+                //appeal if route back to ASO or PSO
+                if(isRouteBackStatus(status) && ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+                    appealTypeValidate(errMap,request,applicationType,roleId);
+                }
                 //ASO PSO broadcast
                 if (ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
                     checkBroadcast(roleId, errMap, status, recommendationStr, request);
                 }
             } else {
+                //normal flow
                 String nextStage = ParamUtil.getRequestString(request, "nextStage");
+                //verify appeal type
+                appealTypeValidate(errMap,request,applicationType,roleId);
                 if (StringUtil.isEmpty(nextStage)) {
                     errMap.put("nextStage", "The field is mandatory.");
                 } else {
@@ -169,11 +178,52 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }
     }
 
+    private void appealTypeValidate(Map<String, String> errMap, HttpServletRequest request, String applicationType, String roleId){
+        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+            boolean isAso = RoleConsts.USER_ROLE_ASO.equals(roleId);
+            boolean isPso = RoleConsts.USER_ROLE_PSO.equals(roleId);
+            boolean isLateFeeAppealType = (boolean)ParamUtil.getSessionAttr(request,"isLateFeeAppealType");
+            if(isAso || isPso){
+                String appealRecommendationValues = ParamUtil.getString(request, "appealRecommendationValues");
+                if(StringUtil.isEmpty(appealRecommendationValues)){
+                    errMap.put("appealRecommendationValues","Please key in recommendation");
+                }else{
+                    ParamUtil.setRequestAttr(request,"selectAppealRecommendationValue",appealRecommendationValues);
+                }
+                if(isLateFeeAppealType){
+                    String returnFee = ParamUtil.getString(request, "returnFee");
+                    if(StringUtil.isEmpty(returnFee)){
+                        errMap.put("returnFee","Please key in recommendation");
+                    }else{
+                        if(!verifyReturnFee(returnFee)){
+                            errMap.put("returnFee","The amount keyed in has exceeded the original amount licensee has paid");
+                        }
+                        ParamUtil.setRequestAttr(request,"returnFee",returnFee);
+                    }
+                }
+            }
+        }
+    }
 
-    private void checkRecommendationOtherDropdown(Map<String, String> errMap,String recommendationStr,HttpServletRequest request){
-        if("other".equals(recommendationStr)){
-            ParamUtil.setRequestAttr(request,"selectDecisionValue",DECISION_APPROVAL);
-            ParamUtil.setRequestAttr(request,"recommendationStr","other");
+    public boolean verifyReturnFee(String returnFee){
+        boolean flag = true;
+        //verify numeric
+
+        //verify less than renew late fee
+        //The amount keyed in has exceeded the original amount licensee has paid
+        return flag;
+    }
+
+
+    private void checkRecommendationOtherDropdown(Map<String, String> errMap,String recommendationStr,HttpServletRequest request, String applicationType, String roleId){
+        boolean isChangePeriodAppealType = (boolean)ParamUtil.getSessionAttr(request, "isChangePeriodAppealType");
+        boolean isAsoPso = RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId);
+        boolean isAppealType = ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType);
+        if("other".equals(recommendationStr) || (isAppealType && isChangePeriodAppealType && isAsoPso)){
+            if(!isAppealType){
+                ParamUtil.setRequestAttr(request,"selectDecisionValue",DECISION_APPROVAL);
+                ParamUtil.setRequestAttr(request,"recommendationStr","other");
+            }
             String number = ParamUtil.getString(request,"number");
             if(StringUtil.isEmpty(number)){
                 errMap.put("recomInNumber","The field is mandatory.");
