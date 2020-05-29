@@ -99,9 +99,11 @@
                                     </div>
                                   </div>
                                   <div class="col-sm-8 text-right">
-                                    <div class="">
-                                      <h4 class="text-danger"><em class="fa fa-times-circle removeBtn cursorPointer"></em></h4>
-                                    </div>
+                                    <c:if test="${status.index - HcsaSvcPersonnel.mandatoryCount >=0}">
+                                      <div class="">
+                                        <h4 class="text-danger"><em class="fa fa-times-circle removeBtn cursorPointer"></em></h4>
+                                      </div>
+                                    </c:if>
                                     <div class="hidden">
                                       <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
                                     </div>
@@ -129,7 +131,7 @@
                                   </div>
                                 </div>
                                 <div class="col-sm-8 text-right">
-                                  <c:if test="${!status.first}">
+                                  <c:if test="${status.index - HcsaSvcPersonnel.mandatoryCount >=0}">
                                     <div class="">
                                       <h4 class="text-danger"><em class="fa fa-times-circle cursorPointer removeBtn"></em></h4>
                                     </div>

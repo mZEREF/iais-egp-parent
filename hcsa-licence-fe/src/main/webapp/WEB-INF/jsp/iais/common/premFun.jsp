@@ -51,21 +51,25 @@
             var thisId = $(this).attr('id');
             <!--remove disable -->
             unreadonlyPartPage($premContent);
-            <!--remove hidden-->
+            /*remove hidden*/
             $premContent.find('a.retrieveAddr').removeClass('hidden');
             $premContent.find('button.addPubHolDay').removeClass('hidden');
             <!--regen ph form  -->
             var premDivName = "";
             if("onSiteSel" == thisId){
                 premDivName = 'new-premise-form-on-site';
+                //
+                var fireIssueDateHtml = '<input type="text" autocomplete="off" class="date_picker form-control fireIssuedDate" name="onSiteFireSafetyCertIssuedDate"  value="13/05/2020" placeholder="dd/mm/yyyy" maxlength="10">';
+                $premContent.find('div.fireIssuedDateDiv').html(fireIssueDateHtml);
+                $premContent.find('.date_picker').datepicker({
+                    format:"dd/mm/yyyy"
+                });
             }else if ("conveyanceSel" == thisId) {
                 premDivName = 'new-premise-form-on-site';
             }else if ('offSiteSel' == thisId){
                 premDivName = 'new-premise-form-off-site';
             }
             // initPhForm(premDivName,$premContent);
-
-
             if("newPremise" == premSelectVal){
                 $premContent.find('.new-premise-form-on-site').removeClass('hidden');
                 $premContent.find('.new-premise-form-conv').addClass('hidden');
@@ -284,6 +288,7 @@
             <!--unDisabled -->
             unDisabledPartPage(premContent);
             unreadonlyPartPage(premContent);
+            premContent.find('.retrieveAddr').removeClass('hidden');
             $('#isEditHiddenVal').val('1');
             premContent.find('input[name="isPartEdit"]').val('1');
         });

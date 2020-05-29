@@ -1,5 +1,6 @@
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
     <c:set value="${errorMap_premises[premIndexNo]}" var="errMsg"/>
+    <c:set var="canEdit" value="true"/>
     <div class="row premContent <c:if test="${!status.first}">underLine</c:if>  " id="mainPrem">
         <c:set var="onSite" value="ONSITE" ></c:set>
         <c:set var="conv" value="CONVEYANCE" ></c:set>
@@ -60,9 +61,13 @@
                         <c:choose>
                             <c:when test="${!status.first && requestInformationConfig==null && 'APTY004' !=AppSubmissionDto.appType && 'APTY005' !=AppSubmissionDto.appType}">
                                 <h4 class="text-danger"><em class="fa fa-times-circle removeBtn"></em></h4>
+                                <c:set var="canEdit" value="false"/>
                             </c:when>
-                            <c:when test="${(requestInformationConfig != null || 'APTY004' ==AppSubmissionDto.appType || 'APTY005' ==AppSubmissionDto.appType) && '1' != appGrpPremisesDto.existingData}">
-                                <a class="premises-summary-preview premisesEdit ack-font-16"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>
+                            <c:when test="${(requestInformationConfig != null || 'APTY004' ==AppSubmissionDto.appType || 'APTY005' ==AppSubmissionDto.appType) && '1' != appGrpPremisesDto.existingData }">
+                                <c:set var="canEdit" value="false"/>
+                                <c:if test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
+                                    <a class="premises-summary-preview premisesEdit ack-font-16"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>
+                                </c:if>
                             </c:when>
                         </c:choose>
                     </div>
@@ -214,7 +219,7 @@
                     </div>
                     <iais:row>
                         <iais:field value="Fire Safety Certificate Issued Date" width="12"/>
-                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
+                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
                             <iais:datePicker cssClass="fireIssuedDate " name="onSiteFireSafetyCertIssuedDate" value="${appGrpPremisesDto.certIssuedDtStr}" />
                         </iais:value>
                     </iais:row>
@@ -232,7 +237,7 @@
                             <span  id="error_postalCode${status.index}" class="error-msg" name="iaisErrorMsg"></span>
                         </iais:value>
                         <div class="col-xs-7 col-sm-6 col-md-3">
-                            <p><a class="retrieveAddr" id="onSite" >Retrieve your address</a></p>
+                            <p><a class="retrieveAddr <c:if test="${!canEdit}">hidden</c:if>" id="onSite" >Retrieve your address</a></p>
                         </div>
 
                     </iais:row>
@@ -475,7 +480,7 @@
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyancePostalCode${status.index}"></span>
                         </iais:value>
                         <div class="col-xs-7 col-sm-6 col-md-3">
-                            <p><a class="retrieveAddr" id="conveyance">Retrieve your address</a></p>
+                            <p><a class="retrieveAddr <c:if test="${!canEdit}">hidden</c:if>" id="conveyance">Retrieve your address</a></p>
                         </div>
 
                     </iais:row>
@@ -688,7 +693,7 @@
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSitePostalCode${status.index}"></span>
                         </iais:value>
                         <div class="col-xs-7 col-sm-6 col-md-3">
-                            <p><a class="retrieveAddr" id="offSite">Retrieve your address</a></p>
+                            <p><a class="retrieveAddr <c:if test="${!canEdit}">hidden</c:if>" id="offSite">Retrieve your address</a></p>
                         </div>
 
                     </iais:row>

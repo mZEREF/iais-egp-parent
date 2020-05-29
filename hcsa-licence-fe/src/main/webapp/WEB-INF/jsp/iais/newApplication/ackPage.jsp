@@ -101,7 +101,9 @@
             </div>
             <div class="row margin-bottom-10 text-right">
                 <div class="col-xs-12 col-md-1">
-                    <p class="print"><a href="#" id="print-ack"> <em class="fa fa-print"></em>Print</a></p>
+                    <c:if test="${requestInformationConfig == null && 'error' != AckStatus}">
+                        <p class="print"><a href="#" id="print-ack"> <em class="fa fa-print"></em>Print</a></p>
+                    </c:if>
                 </div>
                 <div class="col-xs-11 col-md-11">
                     <c:choose>
