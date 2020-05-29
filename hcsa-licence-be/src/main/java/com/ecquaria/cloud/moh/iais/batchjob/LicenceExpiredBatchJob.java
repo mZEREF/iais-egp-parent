@@ -14,6 +14,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author weilu
@@ -50,8 +51,8 @@ public class LicenceExpiredBatchJob {
                 String svcName = licenceDto.getSvcName();
                 String licenceNo = licenceDto.getLicenceNo();
                 String licenseeId = licenceDto.getLicenseeId();
-                Boolean result = cessationService.listResultCeased(ids);
-                if(result){
+                Map<String, Boolean> stringBooleanMap = cessationService.listResultCeased(ids);
+                if(stringBooleanMap.get(id)){
                     licenceDtosForSave.add(licenceDto);
                 }
                 cessationService.sendEmail(LICENCEENDDATE,date,svcName,id,licenseeId,licenceNo);

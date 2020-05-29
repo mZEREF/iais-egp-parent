@@ -11,6 +11,7 @@ import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author weilu
@@ -22,7 +23,7 @@ public interface CessationService {
 
     List<String> saveCessations(List<AppCessationDto> appCessationDtos,String licenseeId);
 
-    Boolean listResultCeased(List<String> licIds);
+    Map<String,Boolean> listResultCeased(List<String> licIds);
 
     List<String> listHciName();
 

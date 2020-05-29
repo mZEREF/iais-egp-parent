@@ -179,8 +179,10 @@ public class CessationServiceImpl implements CessationService {
     }
 
     @Override
-    public Boolean listResultCeased(List<String> licIds) {
-        return cessationClient.listCanCeased(licIds).getEntity();
+    public Map<String,Boolean> listResultCeased(List<String> licIds) {
+        Map<String,Boolean> map = IaisCommonUtils.genNewHashMap();
+//        return cessationClient.listCanCeased(licIds).getEntity();
+        return map;
     }
 
     @Override
