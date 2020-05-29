@@ -73,8 +73,6 @@ public class CessationEffectiveDateBatchjob {
                                 //send email
                                 String originLicenceId = applicationDto.getOriginLicenceId();
                                 LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(originLicenceId).getEntity();
-                                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
-                                licenceDto.setEndDate(date);
                                 String svcName = licenceDto.getSvcName();
                                 String licenseeId = licenceDto.getLicenseeId();
                                 String licenceNo = licenceDto.getLicenceNo();

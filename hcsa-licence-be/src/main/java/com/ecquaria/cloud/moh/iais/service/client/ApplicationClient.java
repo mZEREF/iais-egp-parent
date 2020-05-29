@@ -85,10 +85,10 @@ public interface ApplicationClient {
     @PostMapping(value = "/iais-adhoc-checklist-conifg/adhoc-items", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AdhocCheckListConifgDto> saveAdhocChecklist(@RequestBody AdhocCheckListConifgDto adhocConfigDto);
 
-    @GetMapping(value = "/iais-adhoc-checklist-conifg/adhocchecklistbyappremid/{appremId}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-adhoc-checklist-conifg/adhoc-checklist/config/{appremId}/results}",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AdhocChecklistItemDto>> getAdhocByAppPremCorrId(@PathVariable(name = "appremId") String appremId);
 
-    @GetMapping(value = "/iais-adhoc-checklist-conifg/allversionshowdtolist/{appremId}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-adhoc-checklist-conifg/all-version-show/results/{appremId}",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AdCheckListShowDto>> getAllVersionAdhocList(@PathVariable(name = "appremId") String appremId);
 
     @PostMapping(path = "/iais-adhoc-checklist-conifg/singleconfig",produces = { MediaType.APPLICATION_JSON_VALUE },
@@ -100,10 +100,10 @@ public interface ApplicationClient {
     FeignResponseEntity<AdhocCheckListConifgDto> updateAppAdhocConfig(@RequestBody AdhocCheckListConifgDto adhocCheckListConifgDto);
 
 
-    @GetMapping(value = "/iais-adhoc-checklist-conifg/adhoccheckconfigbyappremid/{premId}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-adhoc-checklist-conifg/adhoc-checklist/config/{premId}",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AdhocCheckListConifgDto> getAdhocConfigByAppPremCorrId(@PathVariable(name = "premId") String appremId);
 
-    @GetMapping(value = "/iais-adhoc-checklist-conifg/adhoccheckconfigfordraftbyappremid/{premId}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-adhoc-checklist-conifg/adhoc-check-config-for-draft/{premId}",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AdhocCheckListConifgDto>> getAdhocCheckConfigFOrDraftById(@PathVariable(name = "premId") String appremId);
 
     @PostMapping(path = "/iais-adhoc-checklist-conifg/itemstorage",produces = { MediaType.APPLICATION_JSON_VALUE },

@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
@@ -34,10 +36,13 @@ public class UserDownloadDelegator {
     private IntranetUserService intranetUserService;
     public void action(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>download");
-        String [] ids = (String [])ParamUtil.getSessionAttr(bpc.request, "ids");
+        String [] ids = (String [])ParamUtil.getRequestAttr(bpc.request, "ids");
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>download");
-        byte[] xml = createXML(bpc,ids);
-        bpc.request.setAttribute("xml", xml);
+        if(ids!=null){
+            byte[] xml = createXML(bpc,ids);
+            bpc.request.setAttribute("xml", xml);
+        }
+
     }
     private byte[] createXML(BaseProcessClass bpc,String [] ids) {
         byte[] bytes = null;
@@ -47,7 +52,8 @@ public class UserDownloadDelegator {
             //2.create rootElement
             Element userGroups = document.addElement("user-groups");
             for(String id :ids){
-                OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(id);
+                String maskUserId = MaskUtil.unMaskValue("maskUserId", id);
+                OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(maskUserId);
                 String userIdText = orgUserDto.getUserId();
                 String displayNameText = orgUserDto.getDisplayName();
                 String userDomainText = orgUserDto.getUserDomain();

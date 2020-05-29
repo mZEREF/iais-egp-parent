@@ -42,7 +42,7 @@ public interface BlastManagementListClient {
     FeignResponseEntity<List<BlastManagementDto>> getBlastBySendTime(@RequestParam("date") String date);
 
     @PostMapping(value = "/iais-emails/setActual", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> setActual(@RequestParam("date") String id);
+    FeignResponseEntity<Void> setActual(@RequestParam("id") String id);
 
     @PostMapping(value = "/iais-emails/setSchedule",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> setSchedule(@RequestBody BlastManagementDto blastManagementDto);

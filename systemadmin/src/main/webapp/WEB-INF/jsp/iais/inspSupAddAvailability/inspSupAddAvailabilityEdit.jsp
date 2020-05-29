@@ -48,12 +48,12 @@
                       <h2>
                         <span>Update Non-Availability Form</span>
                       </h2>
-                      <iais:row>
+                      <div class="form-group" style="margin-bottom: 0px;">
                         <iais:field value="Inspector ID"/>
                         <iais:value width="7">
-                          <span style="font-size: 16px"><c:out value="${userName}"/></span>
+                          <p><span style="font-size: 16px"><c:out value="${userName}"/></span></p>
                         </iais:value>
-                      </iais:row>
+                      </div>
                       <div class="form-group">
                         <iais:field value="Non-Available Date" required="true"/>
                         <iais:value width="7">

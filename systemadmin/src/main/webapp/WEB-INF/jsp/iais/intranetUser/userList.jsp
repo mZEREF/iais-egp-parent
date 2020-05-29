@@ -9,10 +9,20 @@
 <tr>
 <c:choose>
     <c:when test="${empty IntranetUserSearchResult.rows}">
-        <th><input type="checkbox" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll();" hidden/></th>
+        <th>
+            <div class="form-check">
+            <input type="checkbox" class="form-check-input" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll();" hidden/>
+            <label class="form-check-label" for="checkboxAll"><span class="check-square"></span></label>
+            </div>
+        </th>
     </c:when>
     <c:otherwise>
-        <th><input type="checkbox" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll();"/></th>
+        <th>
+            <div class="form-check">
+            <input type="checkbox" class="form-check-input" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll();"/>
+            <label class="form-check-label" for="checkboxAll"><span class="check-square"></span></label>
+            </div>
+        </th>
     </c:otherwise>
 </c:choose>
         <iais:sortableHeader needSort="false" field="index" value="No."/>
@@ -34,8 +44,13 @@
             <c:otherwise>
                 <c:forEach var="user" items="${IntranetUserSearchResult.rows}" varStatus="status">
                     <tr>
-                        <td><input type="checkbox" value="<c:out value='${user.id}'/>" name="userUid"
-                                   id="userUid<c:out value='${user.id}'/>"></td>
+                        <td>
+                            <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="<iais:mask name="maskUserId" value="${user.id}"/>" name="userUid"
+                                   id="userUid<iais:mask name="maskUserId" value="${user.id}"/>">
+                            <label class="form-check-label" for="userUid<iais:mask name="maskUserId" value="${user.id}"/>"><span class="check-square"></span></label>
+                            </div>
+                        </td>
                         </td>
                         <td>
                             <p class="visible-xs visible-sm table-row-title">Code Category</p>

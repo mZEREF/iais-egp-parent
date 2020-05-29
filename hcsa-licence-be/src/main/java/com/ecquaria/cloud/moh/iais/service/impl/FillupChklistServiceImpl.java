@@ -526,7 +526,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             List<AdhocNcCheckItemDto> adhocItemList = adDto.getAdItemList();
             List<AdhocDraftDto> adhocSaveList = IaisCommonUtils.genNewArrayList();
             if (adhocItemList != null && !adhocItemList.isEmpty()) {
-                AdhocDraftDto saveDto = null;
+                AdhocDraftDto saveDto;
                 for (AdhocNcCheckItemDto temp : adhocItemList) {
                     saveDto = new AdhocDraftDto();
                     AdhocSaveAnswerDto anwAnswerDto = new AdhocSaveAnswerDto();

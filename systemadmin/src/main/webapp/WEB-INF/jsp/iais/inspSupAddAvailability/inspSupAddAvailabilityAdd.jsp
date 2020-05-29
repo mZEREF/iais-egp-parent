@@ -48,21 +48,23 @@
                       <h2>
                         <span>Add Non-Availability Form</span>
                       </h2>
-                      <iais:row>
-                        <c:if test="${curRole eq 'lead'}">
+                      <c:if test="${curRole eq 'lead'}">
+                        <iais:row>
                           <iais:field value="Inspector ID" required="true"/>
                           <iais:value width="7">
                             <iais:select name="nonAvaUserNameId" options="nonAvaUserName" firstOption="Please Select" value="${inspNonAvailabilityDto.checkUserName}" ></iais:select>
                             <br><span class="error-msg" name="iaisErrorMsg" id="error_checkUserName"></span>
                           </iais:value>
-                        </c:if>
-                        <c:if test="${curRole ne 'lead'}">
+                        </iais:row>
+                      </c:if>
+                      <c:if test="${curRole ne 'lead'}">
+                        <div class="form-group" style="margin-bottom: 0px;">
                           <iais:field value="Name"/>
                           <iais:value width="7">
-                            <span style="font-size: 16px"><c:out value="${userName}"/></span>
+                            <p><span style="font-size: 16px"><c:out value="${userName}"/></span></p>
                           </iais:value>
-                        </c:if>
-                      </iais:row>
+                        </div>
+                      </c:if>
                       <div class="form-group">
                         <iais:field value="Non-Available Date" required="true"/>
                         <iais:value width="7">
