@@ -21,11 +21,8 @@ public class LicenseeClientFallback {
         return entity;
     }
 
-    public FeignResponseEntity<List<String>> getLicenseeEmails(String licenseeId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+    public ResponseEntity<List<String>> getLicenseeEmails(String licenseeId) {
+        return null;
     }
 
     public ResponseEntity<List<String>> getLicenseeMobiles(String licenseeId) {
