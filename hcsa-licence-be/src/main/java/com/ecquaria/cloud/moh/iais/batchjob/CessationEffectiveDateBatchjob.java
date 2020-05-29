@@ -70,16 +70,22 @@ public class CessationEffectiveDateBatchjob {
                         if (appPremiseMiscDto != null) {
                             Date effectiveDate = appPremiseMiscDto.getEffectiveDate();
                             if (effectiveDate.compareTo(date) <= 0) {
-                                //cease old grpLicence
+                                //send email
                                 String originLicenceId = applicationDto.getOriginLicenceId();
                                 LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(originLicenceId).getEntity();
-                                updateLicenceStatusAndSendMails(licenceDto, date);
+                                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
+                                licenceDto.setEndDate(date);
+                                String svcName = licenceDto.getSvcName();
+                                String licenseeId = licenceDto.getLicenseeId();
+                                String licenceNo = licenceDto.getLicenceNo();
+                                String id = licenceDto.getId();
+                                cessationService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
                             }
                         }else{
                             activeAppDtos.add(applicationDto);
                         }
                     }
-                    //create grp licence and
+                    //create grp licence and ceased old licence
                     List<String> grpLicIds = IaisCommonUtils.genNewArrayList();
                     grpLicIds.clear();
                     grpLicIds.add(appGrpId);
