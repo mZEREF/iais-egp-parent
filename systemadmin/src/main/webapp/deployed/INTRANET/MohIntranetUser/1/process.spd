@@ -128,6 +128,12 @@
     <JavaCode defClass="" executor="" methodName="doAddRole_OnStepProcess_0" name="doAddRole_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="Step1" processname="IntranetUserDownload" project="INTRANET" version="-1" x="670" y="300">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="UserList" stageIndicator="" x="280" y="60">
@@ -294,6 +300,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareRole" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond4" style="rectanular">
    <position>{(450,550)(384,549)(430,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Step1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Export" style="oblique">
+   <position>{(730,210)(690,320)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

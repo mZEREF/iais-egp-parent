@@ -4,8 +4,11 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.client.rbac.UserClient;
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -24,6 +27,8 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
+import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
+import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -183,6 +188,18 @@ public class MohIntranetUserDelegator {
         }
         intranetUserService.updateOrgUser(orgUserDto);
         editEgpUser(orgUserDto);
+        List<AuditTrailDto> trailDtoList = IaisCommonUtils.genNewArrayList(1);
+        AuditTrailDto auditTrailDto = new AuditTrailDto();
+        auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+        auditTrailDto.setOperation(AuditTrailConsts.OPERATION_USER_UPDATE);
+        IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
+        trailDtoList.add(auditTrailDto);
+        SubmissionClient client = SpringContextHelper.getContext().getBean(SubmissionClient.class);
+        try {
+            AuditLogUtil.callWithEventDriven(trailDtoList, client);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
     }
 
@@ -301,12 +318,7 @@ public class MohIntranetUserDelegator {
             ParamUtil.setRequestAttr(request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         }
-        ParamUtil.setSessionAttr(bpc.request, "ids", ids);
-        StringBuilder url = new StringBuilder();
-        url.append("https://").append(bpc.request.getServerName())
-                .append("/system-admin-web/eservice/INTRANET/IntranetUserDownload");
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
+        ParamUtil.setRequestAttr(bpc.request, "ids", ids);
         return;
     }
 

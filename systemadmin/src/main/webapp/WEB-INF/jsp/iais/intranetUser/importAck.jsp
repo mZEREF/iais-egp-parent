@@ -16,7 +16,7 @@
                         <table>
                             <c:forEach items="${results}" var="result">
                                 <tr>
-                                    <td><c:out value="${result}"></c:out></td>
+                                    <td><c:out value="${result}"></c:out><br/></td>
                                 </tr>
                             </c:forEach>
                         </table>
