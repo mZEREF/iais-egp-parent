@@ -255,17 +255,12 @@ public class HcsaApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, "doDocument", "Y");
             return;
         }
-//        ParamUtil.setSessionAttr(request,"isOtherAppealType",isOtherAppealType);
-//        ParamUtil.setSessionAttr(request,"isChangePeriodAppealType",isChangePeriodAppealType);
-//        ParamUtil.setSessionAttr(request,"isLateFeeAppealType",isLateFeeAppealType);
         //appeal
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         boolean isAppealType = ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType);
-        boolean isOtherAppealType = false;
         boolean isChangePeriodAppealType = false;
         boolean isLateFeeAppealType = false;
         if(isAppealType){
-            isOtherAppealType = (boolean)ParamUtil.getSessionAttr(bpc.request,"isOtherAppealType");
             isChangePeriodAppealType = (boolean)ParamUtil.getSessionAttr(bpc.request,"isChangePeriodAppealType");
             isLateFeeAppealType = (boolean)ParamUtil.getSessionAttr(bpc.request,"isLateFeeAppealType");
         }
@@ -279,6 +274,8 @@ public class HcsaApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
         }else{
             TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+            String roleId = taskDto.getRoleId();
+            boolean isAsoPso = RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId);
             String appPremCorreId=taskDto.getRefNo();
             //save recommendation
             String recommendationStr = ParamUtil.getString(bpc.request,"recommendation");
@@ -301,7 +298,7 @@ public class HcsaApplicationDelegator {
                 if(isRejectDMS){
                     recommendationStr = "reject";
                 }
-            }else if(isAppealType){
+            }else if(isAppealType && isAsoPso){
                 String appealRecommendationValues = ParamUtil.getString(bpc.request,"appealRecommendationValues");
                 if("appealReject".equals(appealRecommendationValues)){
                     recommendationStr = "reject";
@@ -1215,10 +1212,18 @@ public class HcsaApplicationDelegator {
         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
             AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
             if(appPremisesRecommendationDto!=null){
-                Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
-                if(null != recomInNumber && recomInNumber == 0){
-                    appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
-                    rejectSendNotification(applicationViewDto);
+                String applicationType = applicationDto.getApplicationType();
+                if(!ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+                    Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
+                    if(null != recomInNumber && recomInNumber == 0){
+                        appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
+                        rejectSendNotification(applicationViewDto);
+                    }
+                }else{
+                    String recomDecision = appPremisesRecommendationDto.getRecomDecision();
+                    if("reject".equals(recomDecision)){
+                        appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
+                    }
                 }
             }
         }
@@ -1709,6 +1714,9 @@ public class HcsaApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request,"date",date);
         }
 
+        //appeal
+        setAppealTypeValues(bpc.request,applicationViewDto,roleId);
+
 //        try{
 //            sendSMS("",applicationViewDto.getApplicationGroupDto().getLicenseeId(),IaisCommonUtils.genNewHashMap());
 //        }catch (Exception e){
@@ -1746,34 +1754,85 @@ public class HcsaApplicationDelegator {
         setAppealRecommendationDropdownValue(request,applicationViewDto);
     }
 
-    private void setAppealRecommendationDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
+    private void setAppealTypeValues(HttpServletRequest request, ApplicationViewDto applicationViewDto, String roleId){
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         boolean isOtherAppealType = false;
         boolean isChangePeriodAppealType = false;
         boolean isLateFeeAppealType = false;
         String applicationType = applicationDto.getApplicationType();
-        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+        AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
+        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)) {
             //get appeal type
             String appId = applicationDto.getId();
             AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
             String appealType = premiseMiscDto.getAppealType();
             isOtherAppealType = true;
-            if(ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD.equals(appealType)){
+            if (ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD.equals(appealType)) {
                 isChangePeriodAppealType = true;
                 isOtherAppealType = false;
-            }else if(ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE.equals(appealType)){
+            } else if (ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE.equals(appealType)) {
                 isLateFeeAppealType = true;
                 isOtherAppealType = false;
             }
+            //test
+            isChangePeriodAppealType = true;
+            //first ASO have no recommendation
+            if(appPremisesRecommendationDto != null){
+                //set filling back
+                String recomDecision = appPremisesRecommendationDto.getRecomDecision();
+                Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
+                String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
+                boolean isAppealApprove = "approve".equals(recomDecision);
+                boolean isAppealReject = "reject".equals(recomDecision);
+                //pso
+                if(RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId)){
+                    if(isAppealApprove){
+                        recomDecision = "appealApprove";
+                    }else if(isAppealReject){
+                        recomDecision = "appealReject";
+                    }
+                    ParamUtil.setRequestAttr(request,"selectAppealRecommendationValue",recomDecision);
+                    if(isLateFeeAppealType && isAppealApprove){
+                        String returnFee = appPremisesRecommendationDto.getRemarks();
+                        ParamUtil.setRequestAttr(request,"returnFee",returnFee);
+                    }else if(isChangePeriodAppealType && isAppealApprove){
+                        ParamUtil.setRequestAttr(request,"otherChrono",chronoUnit);
+                        ParamUtil.setRequestAttr(request,"otherNumber",recomInNumber);
+                    }
+                }else if(RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId)){
+                    if(isAppealApprove){
+                        recomDecision = "Approve";
+                    }else if(isAppealReject){
+                        recomDecision = "Reject";
+                    }
+                    ParamUtil.setSessionAttr(request,"appealRecommendationValueOnlyShow",recomDecision);
+                    if(isLateFeeAppealType && isAppealApprove){
+                        String returnFee = appPremisesRecommendationDto.getRemarks();
+                        ParamUtil.setSessionAttr(request,"returnFeeOnlyShow",returnFee);
+                    }else if(isChangePeriodAppealType && isAppealApprove){
+                        String codeDesc = "";
+                        codeDesc = MasterCodeUtil.getCodeDesc(chronoUnit);
+                        String appealRecommendationOtherOnlyShow = recomInNumber + " " + codeDesc;
+                        ParamUtil.setSessionAttr(request,"appealRecommendationOtherOnlyShow",appealRecommendationOtherOnlyShow);
+                    }
+                }
+            }
+        }
+        ParamUtil.setSessionAttr(request,"isOtherAppealType",isOtherAppealType);
+        ParamUtil.setSessionAttr(request,"isChangePeriodAppealType",isChangePeriodAppealType);
+        ParamUtil.setSessionAttr(request,"isLateFeeAppealType",isLateFeeAppealType);
+    }
+
+    private void setAppealRecommendationDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String applicationType = applicationDto.getApplicationType();
+        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
             //appealRecommendationValues
             List<SelectOption> appealRecommendationValues = IaisCommonUtils.genNewArrayList();
             appealRecommendationValues.add(new SelectOption("appealApprove", "Approve"));
             appealRecommendationValues.add(new SelectOption("appealReject", "Reject"));
             ParamUtil.setSessionAttr(request, "appealRecommendationValues", (Serializable)appealRecommendationValues);
         }
-        ParamUtil.setSessionAttr(request,"isOtherAppealType",isOtherAppealType);
-        ParamUtil.setSessionAttr(request,"isChangePeriodAppealType",isChangePeriodAppealType);
-        ParamUtil.setSessionAttr(request,"isLateFeeAppealType",isLateFeeAppealType);
     }
 
     public void setNormalProcessingDecisionDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto){

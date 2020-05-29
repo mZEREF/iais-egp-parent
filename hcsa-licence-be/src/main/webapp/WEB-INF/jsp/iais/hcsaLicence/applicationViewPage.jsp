@@ -22,6 +22,8 @@
             <input type="hidden" id="isOtherAppealType" value="${isOtherAppealType}"/>
             <input type="hidden" id="isChangePeriodAppealType" value="${isChangePeriodAppealType}"/>
             <input type="hidden" id="isLateFeeAppealType" value="${isLateFeeAppealType}"/>
+            <input type="hidden" id="appealRecommendationOtherOnlyShow" value="${appealRecommendationOtherOnlyShow}"/>
+            <input type="hidden" id="returnFeeOnlyShow" value="${returnFeeOnlyShow}"/>
             <c:set var="isAoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST062' || applicationViewDto.applicationDto.status == 'APST065' || applicationViewDto.applicationDto.status == 'APST066' || applicationViewDto.applicationDto.status == 'APST067'}"/>
             <c:set var="isPsoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST063'}"/>
             <c:set var="isInspectorRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST064'}"/>
@@ -30,6 +32,8 @@
             <c:set var="isBroacastAsoPso" value="${broadcastAsoPso}"/>
             <c:set var="isBroacastAso" value="${broadcastAso}"/>
             <c:set var="isAppealType" value="${applicationViewDto.applicationDto.applicationType == 'APTY001'}"/>
+            <c:set var="isAso" value="${taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC'}"/>
+            <c:set var="isPso" value="${taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC'}"/>
             <input type="hidden" id="isAppealType" value="${isAppealType}"/>
             <div class="row">
                 <div class="col-xs-12">
@@ -218,10 +222,17 @@
                                                             <iais:row>
                                                                 <iais:field value="Recommendation" required="true"/>
                                                                 <iais:value width="10">
-                                                                    <iais:select cssClass="appealRecommendationValues" name="appealRecommendationValues" id="appealRecommendationValues"
-                                                                                 firstOption="Please Select"
-                                                                                 options="appealRecommendationValues"
-                                                                                 value="${selectAppealRecommendationValue}"></iais:select>
+                                                                    <c:choose>
+                                                                        <c:when test="${isAso || isPso}">
+                                                                                <iais:select cssClass="appealRecommendationValues" name="appealRecommendationValues" id="appealRecommendationValues"
+                                                                                             firstOption="Please Select"
+                                                                                             options="appealRecommendationValues"
+                                                                                             value="${selectAppealRecommendationValue}"></iais:select>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <p>${(appealRecommendationValueOnlyShow == "" || appealRecommendationValueOnlyShow == null) ? "-" : appealRecommendationValueOnlyShow}</p>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
                                                                 </iais:value>
                                                             </iais:row>
                                                         </div>
@@ -231,8 +242,15 @@
                                                             <iais:row>
                                                                 <iais:field value="Amount to be returned" required="true"/>
                                                                 <iais:value width="10">
-                                                                    <input id="returnFee" type="text" name="returnFee" maxlength="6" value="${applicationViewDto.returnFee}">
-                                                                    <span id="error_returnFee" name="iaisErrorMsg" class="error-msg"></span>
+                                                                    <c:choose>
+                                                                        <c:when test="${isAso || isPso}">
+                                                                            <input id="returnFee" type="text" name="returnFee" maxlength="6" value="${returnFee}" onkeypress="if(!this.value.match(/^[\+\-]?\d*?\.?\d*?$/))this.value=this.t_value;else this.t_value=this.value;if(this.value.match(/^(?:[\+\-]?\d+(?:\.\d+)?)?$/))this.o_value=this.value" onkeyup="if(!this.value.match(/^[\+\-]?\d*?\.?\d*?$/))this.value=this.t_value;else this.t_value=this.value;if(this.value.match(/^(?:[\+\-]?\d+(?:\.\d+)?)?$/))this.o_value=this.value" onblur="if(!this.value.match(/^(?:[\+\-]?\d+(?:\.\d+)?|\.\d*?)?$/))this.value=this.o_value;else{if(this.value.match(/^\.\d+$/))this.value=0+this.value;if(this.value.match(/^\.$/))this.value=0;this.o_value=this.value}">
+                                                                            <span id="error_returnFee" name="iaisErrorMsg" class="error-msg"></span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <p>${returnFeeOnlyShow}</p>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
                                                                 </iais:value>
                                                             </iais:row>
                                                         </div>
@@ -244,7 +262,7 @@
                                                             <div id="recommendationFieldFalse"><iais:field value="${recommendationShowName}" required="false"/></div>
                                                             <iais:value width="10">
                                                                 <c:choose>
-                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || applicationViewDto.applicationDto.status=='APST014' || (isRouteBackStatus && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC') || (isRouteBackStatus && taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC') || isBroacastAsoPso}">
+                                                                    <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || applicationViewDto.applicationDto.status=='APST014' || (isRouteBackStatus && isAso) || (isRouteBackStatus && isPso) || isBroacastAsoPso}">
                                                                         <iais:select cssClass="recommendation" name="recommendation"
                                                                                      options="recommendationDropdown"
                                                                                      firstOption="Please Select"
@@ -262,10 +280,17 @@
                                                         <iais:row>
                                                             <iais:field value="${isAppealType ? 'Recommended Licence Period' : 'Other Period'}" required="true"/>
                                                             <iais:value width="10">
-                                                                <input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" id=recomInNumber type="text" name="number" maxlength="2" value="${otherNumber}">
-                                                                <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
-                                                                <iais:select cssClass="chrono" id="chronoUnit" name="chrono" options="recommendationOtherDropdown" value="${otherChrono}"/>
-                                                                <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
+                                                                <c:choose>
+                                                                    <c:when test="${!isAppealType || (isAppealType && (isAso || isPso))}">
+                                                                        <input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" id=recomInNumber type="text" name="number" maxlength="2" value="${otherNumber}">
+                                                                        <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
+                                                                        <iais:select cssClass="chrono" id="chronoUnit" name="chrono" options="recommendationOtherDropdown" value="${otherChrono}"/>
+                                                                        <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <p>${appealRecommendationOtherOnlyShow}</p>
+                                                                    </c:otherwise>
+                                                                </c:choose>
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
@@ -384,6 +409,7 @@
         if (${isAppealType}){
             $('#recommendationDropdown').addClass('hidden');
             checkAppealRecommendation();
+
         }
         $('#rfiSelect').hide();
         check();
@@ -402,6 +428,7 @@
             $('#processingDecision').addClass('hidden');
             $('.fastTrack').addClass('hidden');
         }
+        appealAoFillBack();
     });
 
     function checkInspectionShow(){
@@ -453,6 +480,17 @@
         }else{
             $('#recommendationOtherDropdown').addClass('hidden');
             $('#appealReturnFee').addClass('hidden');
+        }
+    }
+
+    function appealAoFillBack(){
+        var appealRecommendationOtherOnlyShow = $('#appealRecommendationOtherOnlyShow').val();
+        if((appealRecommendationOtherOnlyShow != null) && (appealRecommendationOtherOnlyShow.length > 0)){
+            $('#recommendationOtherDropdown').removeClass('hidden');
+        }
+        var returnFeeOnlyShow = $('#returnFeeOnlyShow').val();
+        if((returnFeeOnlyShow != null) && (returnFeeOnlyShow.length > 0)){
+            $('#appealReturnFee').removeClass('hidden');
         }
     }
 
