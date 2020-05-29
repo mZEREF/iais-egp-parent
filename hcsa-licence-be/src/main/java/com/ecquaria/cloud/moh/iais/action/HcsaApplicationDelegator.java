@@ -1353,7 +1353,7 @@ public class HcsaApplicationDelegator {
                          *  Send SMS when withdrawal Application Approve
                          */
                         Map<String, Object> smsInfoMap = IaisCommonUtils.genNewHashMap();
-//                        sendSMS("",taskDto.getUserId(),smsInfoMap);
+                        sendSMS("",taskDto.getUserId(),smsInfoMap);
                     }else{
                         String subjectSuppInfo = applicationNo + " is Rejected";
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
@@ -1365,10 +1365,10 @@ public class HcsaApplicationDelegator {
                          *  Send SMS when withdrawal Application Reject
                          */
                         Map<String, Object> smsInfoMap = IaisCommonUtils.genNewHashMap();
-//                        sendSMS("",taskDto.getUserId(),smsInfoMap);
+                        sendSMS("",taskDto.getUserId(),smsInfoMap);
                     }
                     Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-//                    sendEmail("",msgInfoMap,applicationNo,taskDto.getUserId(),"");
+                    sendEmail("",msgInfoMap,applicationNo,taskDto.getUserId(),"");
                 }
             }
         }
