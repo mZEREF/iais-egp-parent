@@ -493,7 +493,7 @@ public class ClinicalLaboratoryDelegator {
                         appSvcChckListDto.setChkLstConfId(checkInfo.getId());
                         if(PLEASEINDICATE.equals(checkInfo.getName())){
                             String subName = ParamUtil.getString(bpc.request, "pleaseIndicate"+i);
-                            appGrpPremisesDto.setOtherScopeName(subName);
+                            //appGrpPremisesDto.setOtherScopeName(subName);
                             appSvcChckListDto.setOtherScopeName(subName);
                         }
                         appSvcChckListDto.setChkLstType(checkInfo.getType());

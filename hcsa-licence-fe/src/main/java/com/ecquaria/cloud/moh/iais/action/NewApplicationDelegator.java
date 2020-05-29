@@ -3412,12 +3412,16 @@ public class NewApplicationDelegator {
                 String appType =  appSubmissionDto.getAppType();
                 boolean isRenewalOrRfc = ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);
                 appSubmissionDto.setNeedEditController(true);
+                AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
+                if(appEditSelectDto == null){
+                    appEditSelectDto = new AppEditSelectDto();
+                    appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
+                }
                 if (isRenewalOrRfc){
                     // set the required information
                     String licenceId = appSubmissionDto.getLicenceId();
                     appSubmissionDto.setLicenceNo(withOutRenewalService.getLicenceNumberByLicenceId(licenceId));
                 }
-
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
                 //ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
