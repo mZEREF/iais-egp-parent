@@ -27,6 +27,19 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label" for="description">Filter Value</label>
+                            <div class="col-xs-8 col-sm-6 col-md-5">
+                                <input id="filterValue" type="text" value="${MasterCodeDto.filterValue}" name="filterValue">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label" for="description">Version</label>
+                            <div class="col-xs-8 col-sm-6 col-md-5">
+                                <input id="version" type="text" value="${MasterCodeDto.version}" name="codeVersion" onkeyup= "this.value=this.value.replace(/^\D*(\d{0,1}(?:\.\d{0,2})?).*$/g, '$1')">
+                                <span id="error_version" name="iaisErrorMsg" class="error-msg"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="category">Code Value</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <input id="codeValue" type="text" value="${MasterCodeDto.codeValue}" name="codeValue" maxlength="25" >
@@ -42,14 +55,9 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="description">Code Description</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="description" type="text" value="${MasterCodeDto.codeDescription}" name="codeDescription"  maxlength="255">
+                                <form><textarea cols="70" rows="6" id="description" name="codeDescription"
+                                                maxlength="255">${MasterCodeDto.codeDescription}</textarea></form>
                                 <span id="error_codeDescription" name="iaisErrorMsg" class="error-msg"></span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="description">Filter Value</label>
-                            <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="filterValue" type="text" value="${MasterCodeDto.filterValue}" name="filterValue">
                             </div>
                         </div>
                         <div class="form-group">
@@ -62,20 +70,14 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="description">Remark</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                 <form><textarea cols="53" rows="6" id="codeRemarks"  name="codeRemarks" maxlength="255">${MasterCodeDto.remarks}</textarea></form>
+                                 <form><textarea cols="70" rows="6" id="codeRemarks"  name="codeRemarks" maxlength="255">${MasterCodeDto.remarks}</textarea></form>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="description">Version.</label>
-                            <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="version" type="text" value="${MasterCodeDto.version}" name="codeVersion" onkeyup= "this.value=this.value.replace(/^\D*(\d{0,1}(?:\.\d{0,2})?).*$/g, '$1')">
-                                <span id="error_version" name="iaisErrorMsg" class="error-msg"></span>
-                            </div>
-                        </div>
+
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="codeStatus">Status</label>
-                            <div class="col-xs-6 col-sm-4 col-md-3">
-                                <iais:select name="codeStatus" id="codeStatus" options="mcStatusSelectList"></iais:select>
+                            <div class="col-xs-8 col-sm-6 col-md-5">
+                                <iais:select name="codeStatus" id="codeStatus" options="mcStatusSelectList"/>
                                 <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
@@ -89,7 +91,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="eed">Effective End Date</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <iais:datePicker id="eed" name="eed" dateVal="${MasterCodeDto.effectiveTo}" ></iais:datePicker>
+                                <iais:datePicker id="eed" name="eed" dateVal="${MasterCodeDto.effectiveTo}" />
                                 <span id="error_effectiveTo" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>

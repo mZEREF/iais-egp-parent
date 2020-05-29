@@ -52,7 +52,7 @@
                             <iais:field value="Code Description" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <textarea id="codeDescription" cols="93" rows="6" name="codeDescription"
+                                    <textarea id="codeDescription" cols="70" rows="6" name="codeDescription"
                                               maxlength="255">${param.codeDescription}</textarea>
                                     <span id="error_codeDescription" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
@@ -72,7 +72,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="codeRemarks">Remarks</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <form><textarea cols="93" rows="6" id="codeRemarks" name="codeRemarks"
+                                    <form><textarea cols="70" rows="6" id="codeRemarks" name="codeRemarks"
                                                     maxlength="255">${param.codeRemarks}</textarea></form>
                                 </div>
                             </iais:value>
