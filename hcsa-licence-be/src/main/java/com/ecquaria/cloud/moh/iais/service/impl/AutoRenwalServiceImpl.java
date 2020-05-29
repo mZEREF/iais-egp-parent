@@ -67,6 +67,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     @Override
     public void startRenwal(HttpServletRequest request) {
         List<Integer> dayList= IaisCommonUtils.genNewArrayList();
+        dayList.add(-1);
         dayList.add(30);
         dayList.add(45);
         dayList.add(60);
@@ -90,11 +91,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                         isAuto(v.get(i),request);
 
                     } catch (Exception e) {
-
                         log.info(e.getMessage(),e);
-
                     }
-
                 }else {
 
                     try {
@@ -103,6 +101,15 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                         log.error(e.getMessage(),e);
                     }
 
+                }
+                if ("-1".equals(k)){
+                    try {
+                        sendEmailToOffice(v.get(i),request);
+                    } catch (IOException e) {
+                        log.error(e.getMessage(), e);
+                    } catch (TemplateException e) {
+                        log.error(e.getMessage(), e);
+                    }
                 }
                 if ("30".equals(k)){
                     try {
