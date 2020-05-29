@@ -39,9 +39,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         }
 
 
-        if(StringUtil.isEmpty(internalRemarks)){
-            //errMap.put("internalRemarks","The field is mandatory.");
-        }else{
+        if(!StringUtil.isEmpty(internalRemarks)){
             ParamUtil.setRequestAttr(request,"internalRemarks",internalRemarks);
         }
 
@@ -81,11 +79,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         errMap.put("recommendation","The value of recommendation cannot be 'Reject'.");
                     }
                 }else if(DECISION_REJECT.equals(decisionValue)){
-//                    if(StringUtil.isEmpty(recommendationStr)){
-//                        errMap.put("recommendation","Please key in recommendation");
-//                    }else if(!RECOMMENDATION_REJECT.equals(recommendationStr)){
-//                        errMap.put("recommendation","The value of recommendation must be 'Reject'.");
-//                    }
+
                 }
                 ParamUtil.setRequestAttr(request,"selectDecisionValue",decisionValue);
             }
