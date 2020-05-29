@@ -43,7 +43,7 @@
                           <label style="font-size: 16px">Inspector ID</label>
                         </div>
                         <div class="col-md-6">
-                          <span style="font-size: 16px"><iais:code code="${inspNonAvailabilityDto.checkUserName}"/></span>
+                          <span style="font-size: 16px"><c:out value="${userName}"/></span>
                         </div>
                       </div>
                       <div class="row">

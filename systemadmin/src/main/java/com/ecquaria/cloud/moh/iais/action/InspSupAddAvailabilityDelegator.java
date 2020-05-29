@@ -198,6 +198,7 @@ public class InspSupAddAvailabilityDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
             } else {
+                setCheckUserLoginIdShow(apptNonAvailabilityDateDto, groupRoleFieldDto, bpc);
                 ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.TRUE);
                 ParamUtil.setRequestAttr(bpc.request,"lastActionValue", InspectionConstants.SWITCH_ACTION_ADD);
             }
@@ -206,6 +207,19 @@ public class InspSupAddAvailabilityDelegator {
         }
 
         ParamUtil.setSessionAttr(bpc.request, "inspNonAvailabilityDto", apptNonAvailabilityDateDto);
+    }
+
+    private void setCheckUserLoginIdShow(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto, GroupRoleFieldDto groupRoleFieldDto, BaseProcessClass bpc) {
+        String userLoginId = apptNonAvailabilityDateDto.getCheckUserName();
+        if(!StringUtil.isEmpty(userLoginId)){
+            if(groupRoleFieldDto != null) {
+                Map<String, String> userLoginIdMap = groupRoleFieldDto.getUserLoginIdMap();
+                if (userLoginIdMap != null) {
+                    String checkLoginId = userLoginIdMap.get(userLoginId);
+                    ParamUtil.setSessionAttr(bpc.request, "userName", checkLoginId);
+                }
+            }
+        }
     }
 
     private Date nonAvaStringToDate(String stringDate) {
