@@ -46,4 +46,6 @@ public interface ApplicationService {
     void applicationRfiAndEmail(ApplicationViewDto applicationViewDto, ApplicationDto applicationDto, String licenseeId, LicenseeDto licenseeDto, LoginContext loginContext, String externalRemarks) throws IOException, TemplateException;
 
     ApplicationDto getApplicationBytaskId(String ref);
+
+    public ApplicationDto getApplicationDtoByGroupIdAndStatus(String appGroupId,String status);
 }

@@ -170,7 +170,7 @@ public interface ApplicationClient {
     @PutMapping(value = "/iais-appt-inspec-be", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesInspecApptDto> updateAppPremisesInspecApptDto(@RequestBody AppPremisesInspecApptDto appPremisesInspecApptDto);
 
-    @GetMapping(value = "/iais-application-be//appCount/{groupId}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-application-be/appCount/{groupId}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Integer> getAppCountByGroupIdAndStatus(@PathVariable(name = "groupId") String groupId,
                                                                @PathVariable(name = "status") String status);
 

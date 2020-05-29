@@ -35,20 +35,18 @@ import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
-import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * ApplicationServiceImpl
@@ -378,5 +376,30 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public ApplicationDto getApplicationBytaskId(String ref){
         return applicationClient.getApplicationBytaskId(ref).getEntity();
+    }
+
+    @Override
+    public ApplicationDto getApplicationDtoByGroupIdAndStatus(String appGroupId, String status) {
+        log.info(StringUtil.changeForLog("The containStatus is start ..."));
+        log.info(StringUtil.changeForLog("The containStatus appGrpId is -->:"+appGroupId));
+        log.info(StringUtil.changeForLog("The containStatus status is -->:"+status));
+        ApplicationDto result = null;
+        if(!StringUtil.isEmpty(appGroupId)&&!StringUtil.isEmpty(appGroupId)){
+            List<ApplicationDto> applicationDtoList = getApplicaitonsByAppGroupId(appGroupId);
+            if(!IaisCommonUtils.isEmpty(applicationDtoList)){
+                log.info(StringUtil.changeForLog("The containStatus applicationDtoList.size() is -->:"+applicationDtoList.size()));
+                for (ApplicationDto applicationDto : applicationDtoList){
+                    if(status.equals(applicationDto.getStatus())){
+                        log.info(StringUtil.changeForLog("The containStatus had approved ApplicationNo is -->:"+applicationDto.getApplicationNo()));
+                        result = applicationDto;
+                        break;
+                    }
+                }
+            }
+        }
+
+        //log.info(StringUtil.changeForLog("The containStatus result is -->:" + result));
+        log.info(StringUtil.changeForLog("The containStatus is end ..."));
+        return result;
     }
 }

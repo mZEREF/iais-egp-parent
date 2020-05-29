@@ -263,18 +263,7 @@ public class LicenceViewServiceDelegator {
     private boolean canEidtPremise(String appGrpId){
         log.info(StringUtil.changeForLog("The canEidtPremise is start ..."));
         log.info(StringUtil.changeForLog("The canEidtPremise appGrpId is -->:"+appGrpId));
-        boolean result = true;
-        List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(appGrpId);
-        if(!IaisCommonUtils.isEmpty(applicationDtoList)){
-          log.info(StringUtil.changeForLog("The canEidtPremise applicationDtoList.size() is -->:"+applicationDtoList.size()));
-          for (ApplicationDto applicationDto : applicationDtoList){
-           if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus())){
-               log.info(StringUtil.changeForLog("The canEidtPremise had approved ApplicationNo is -->:"+applicationDto.getApplicationNo()));
-               result = false;
-               break;
-           }
-          }
-        }
+        boolean result = applicationService.getApplicationDtoByGroupIdAndStatus(appGrpId,ApplicationConsts.APPLICATION_STATUS_APPROVED) == null;
         log.info(StringUtil.changeForLog("The canEidtPremise result is -->:" + result));
         log.info(StringUtil.changeForLog("The canEidtPremise is end ..."));
         return result;
