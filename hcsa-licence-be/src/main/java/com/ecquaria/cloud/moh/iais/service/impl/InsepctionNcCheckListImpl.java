@@ -594,12 +594,12 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             appDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             try {
                 List<InspectionCheckListAnswerDto> answerDtoList = IaisCommonUtils.genNewArrayList();
-                InspectionCheckListAnswerDto answerDto = null;
                 for (InspectionCheckQuestionDto inspectionCheckQuestionDto : icqDtoList) {
-                    answerDto = new InspectionCheckListAnswerDto();
+                    InspectionCheckListAnswerDto  answerDto = new InspectionCheckListAnswerDto();
                     answerDto.setAnswer(inspectionCheckQuestionDto.getChkanswer());
                     answerDto.setRemark(inspectionCheckQuestionDto.getRemark());
                     answerDto.setItemId(inspectionCheckQuestionDto.getItemId());
+                    answerDto.setSectionId(inspectionCheckQuestionDto.getSectionId());
                     if ( ncflag && inspectionCheckQuestionDto.isRectified() &&"No".equals(inspectionCheckQuestionDto.getChkanswer())  ) {
                         answerDto.setIsRec("1");
                     } else {

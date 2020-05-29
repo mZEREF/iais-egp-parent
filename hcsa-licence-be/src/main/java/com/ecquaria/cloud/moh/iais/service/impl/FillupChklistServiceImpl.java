@@ -362,9 +362,10 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                     inquest.setItemId(item.getItemId());
                     inquest.setAppPreCorreId(appPremCorrId);
                     inquest.setSectionName(temp.getSection());
+                    inquest.setSectionId(temp.getId());
                     inquest.setConfigId(temp.getConfigId());
                     inquest.setRegClauseNo(item.getRegulationClauseNo());
-                    inquest.setRegClause(item.getRegulationClause());
+                    inquest.setRegClause(item.getRegulationClause());;
                     if(temp.getSection()!=null){
                         inquest.setSectionNameSub(temp.getSection().replace(" ",""));
                     }
