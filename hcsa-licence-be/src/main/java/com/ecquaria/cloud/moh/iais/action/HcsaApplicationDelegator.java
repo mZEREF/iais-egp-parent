@@ -271,6 +271,9 @@ public class HcsaApplicationDelegator {
         //validate
         HcsaApplicationViewValidate hcsaApplicationViewValidate = new HcsaApplicationViewValidate();
         Map<String, String> errorMap = hcsaApplicationViewValidate.validate(bpc.request);
+        //do not have the rfi applicaiton can approve.
+        String approveSelect = ParamUtil.getString(bpc.request,"nextStage");
+        validateCanApprove(approveSelect,applicationViewDto,errorMap);
         if(!errorMap.isEmpty()){
             String doProcess = "Y";
             ParamUtil.setRequestAttr(bpc.request, "doProcess",doProcess);
@@ -433,6 +436,28 @@ public class HcsaApplicationDelegator {
         }
     }
 
+    private void  validateCanApprove(String approveSelect,ApplicationViewDto applicationViewDto,Map<String, String> errMap){
+        log.info(StringUtil.changeForLog("The validateCanApprove start ..."));
+        log.info(StringUtil.changeForLog("The approveSelect is -->:"+approveSelect));
+        if(!StringUtil.isEmpty(approveSelect) && ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL.equals(approveSelect)){
+            ApplicationDto rfiApplicationDto = applicationService.getApplicationDtoByGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(),ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+            if(rfiApplicationDto!=null){
+                List<AppEditSelectDto>  appEditSelectDtos = applicationService.getAppEditSelectDtos(rfiApplicationDto.getId(),ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
+                if(!IaisCommonUtils.isEmpty(appEditSelectDtos)){
+                    AppEditSelectDto appEditSelectDto = appEditSelectDtos.get(0);
+                    log.info(StringUtil.changeForLog("The appEditSelectDto id is  -->:"+appEditSelectDto.getId()));
+                    if(appEditSelectDto.isPremisesEdit()){
+                        errMap.put("nextStage", "You can not submit now, because there is request for information pending now.");
+                    }
+                }else{
+                    log.error(StringUtil.changeForLog("There is the Data error for this Application id -->:"+rfiApplicationDto.getId()));
+                }
+            }else{
+                log.info(StringUtil.changeForLog("This applicationGroup do not have the rfi -->:"+applicationViewDto.getApplicationGroupDto().getGroupNo()));
+            }
+        }
+        log.info(StringUtil.changeForLog("The validateCanApprove end ..."));
+    }
 
     /**
      * StartStep: chooseAckValue

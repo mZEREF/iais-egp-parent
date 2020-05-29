@@ -3,21 +3,16 @@ package com.ecquaria.cloud.moh.iais.validation;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
 public class HcsaApplicationViewValidate implements CustomizeValidator {
@@ -27,8 +22,6 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     private final String DECISION_REJECT = "decisionReject";
     private final String RECOMMENDATION_REJECT = "reject";
 
-    @Autowired
-    private ApplicationService applicationService;
 
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
@@ -155,35 +148,12 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 }
             }
         }
-        //do not have the rfi applicaiton can approve.
-        String approveSelect = ParamUtil.getString(request,"nextStage");
-        validateCanApprove(approveSelect,applicationViewDto,errMap);
+
         return errMap;
     }
 
 
-    private void  validateCanApprove(String approveSelect,ApplicationViewDto applicationViewDto,Map<String, String> errMap){
-        log.info(StringUtil.changeForLog("The validateCanApprove start ..."));
-        log.info(StringUtil.changeForLog("The approveSelect is -->:"+approveSelect));
-        if(!StringUtil.isEmpty(approveSelect) && ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL.equals(approveSelect)){
-            ApplicationDto rfiApplicationDto = applicationService.getApplicationDtoByGroupIdAndStatus(applicationViewDto.getApplicationGroupDto().getId(),ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
-            if(rfiApplicationDto!=null){
-                List<AppEditSelectDto>  appEditSelectDtos = applicationService.getAppEditSelectDtos(rfiApplicationDto.getId(),ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
-                if(!IaisCommonUtils.isEmpty(appEditSelectDtos)){
-                    AppEditSelectDto appEditSelectDto = appEditSelectDtos.get(0);
-                    log.info(StringUtil.changeForLog("The appEditSelectDto id is  -->:"+appEditSelectDto.getId()));
-                    if(appEditSelectDto.isPremisesEdit()){
-                        errMap.put("nextStage", "You can not submit now, because there is request for information pending now.");
-                    }
-                }else{
-                    log.error(StringUtil.changeForLog("There is the Data error for this Application id -->:"+rfiApplicationDto.getId()));
-                }
-            }else{
-                log.info(StringUtil.changeForLog("This applicationGroup do not have the rfi -->:"+applicationViewDto.getApplicationGroupDto().getGroupNo()));
-            }
-        }
-        log.info(StringUtil.changeForLog("The validateCanApprove end ..."));
-    }
+
 
     /**
      * private method
