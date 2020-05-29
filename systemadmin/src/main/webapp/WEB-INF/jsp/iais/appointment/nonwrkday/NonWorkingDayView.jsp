@@ -78,16 +78,16 @@
                             <td>${nonwkrDay.recursivceDate}</td>
                             <td>
                               <c:if test="${nonwkrDay.nonWkrDay == false}">
-                                <input type="radio" name="nonWkrDay${status.index + 1}" id="yradio${status.index + 1}" value="Y" checked>&nbsp;Yes
-                                <input type="radio" name="nonWkrDay${status.index + 1}" id="nradio${status.index + 1}" value="N" >&nbsp;No
+                                <input type="radio" name="nonWkrDay${status.index + 1}" id="yradio${status.index + 1}" value="Y" checked <c:if test="${nonwkrDay.prohibit}">disabled</c:if>>&nbsp;Yes
+                                <input type="radio" name="nonWkrDay${status.index + 1}" id="nradio${status.index + 1}" value="N" <c:if test="${nonwkrDay.prohibit}">disabled</c:if>>&nbsp;No
                               </c:if>
                               <c:if test="${nonwkrDay.nonWkrDay == true}">
-                                <input type="radio" name="nonWkrDay${status.index + 1}" id="yradio${status.index + 1}" value="Y" >&nbsp;Yes
-                                <input type="radio" name="nonWkrDay${status.index + 1}" id="nradio${status.index + 1}" value="N" checked>&nbsp;No
+                                <input type="radio" name="nonWkrDay${status.index + 1}" id="yradio${status.index + 1}" value="Y" <c:if test="${nonwkrDay.prohibit}">disabled</c:if>>&nbsp;Yes
+                                <input type="radio" name="nonWkrDay${status.index + 1}" id="nradio${status.index + 1}" value="N" checked <c:if test="${nonwkrDay.prohibit}">disabled</c:if>>&nbsp;No
                               </c:if>
                             </td>
                             <td>
-                              <input class="form-check-input" type="checkbox"  aria-invalid="false"
+                              <input class="form-check-input" type="checkbox"  aria-invalid="false" <c:if test="${nonwkrDay.prohibit}">disabled</c:if>
                               <c:if test="${nonwkrDay.am == true}">
                               checked="checked"
                               </c:if>
@@ -95,7 +95,7 @@
                                       value="<iais:mask name="nonWkrDayId" value="${nonwkrDay.id}"/>">
                             </td>
                             <td>
-                              <input class="form-check-input" type="checkbox"  aria-invalid="false"
+                              <input class="form-check-input" type="checkbox"  aria-invalid="false" <c:if test="${nonwkrDay.prohibit}">disabled</c:if>
                               <c:if test="${nonwkrDay.pm == true}">
                                       checked="checked"
                               </c:if>

@@ -18,4 +18,5 @@ public interface PublicHolidayService {
     PublicHolidayDto updateHoliday(PublicHolidayDto publicHolidayDto);
     void deleteHoliday(List<String> id);
     String getPublicHolidayInCalender(String form);
+    List<String> getScheduleInCalender();
 }

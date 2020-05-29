@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
+import com.ecquaria.cloud.moh.iais.service.PublicHolidayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -56,6 +57,9 @@ public class InspTeamNonWorkingDayDelegator {
 
 	@Autowired
 	private AppointmentService appointmentService;
+
+	@Autowired
+    private PublicHolidayService publicHolidayService;
 
 	/**
 	 * StartStep: startStep
@@ -113,9 +117,8 @@ public class InspTeamNonWorkingDayDelegator {
 		}else {
 			Optional<WorkingGroupQueryDto> wrkOtional = Optional.ofNullable(workingGroupQueryList.get(0));
 			if (wrkOtional.isPresent()){
-				String defaultId = wrkOtional.get().getId();
 				String defualtGroupName = wrkOtional.get().getGroupName();
-				nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(defaultId);
+				nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(defualtGroupName);
 				ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, defualtGroupName);
 			}
 		}
@@ -147,6 +150,7 @@ public class InspTeamNonWorkingDayDelegator {
 		List<String> wkrDays = new ArrayList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"));
 		List<ApptNonWorkingDateDto> retList = new ArrayList<>(7);
 		LinkedHashMap<String, ApptNonWorkingDateDto> map = new LinkedHashMap<>(7);
+        List<String> prohibitlist = publicHolidayService.getScheduleInCalender();
 		for (int i = 0; i < wkrDays.size(); i++){
 			ApptNonWorkingDateDto nonWorkingDateDto = new ApptNonWorkingDateDto();
 			nonWorkingDateDto.setId(UUID.randomUUID().toString());
@@ -165,7 +169,12 @@ public class InspTeamNonWorkingDayDelegator {
 				nonWorkingDateDto.setAm(true);
 				nonWorkingDateDto.setPm(true);
 			}
-
+			String weekend = Integer.toString(i + 1);
+            if(prohibitlist.contains(weekend)){
+				nonWorkingDateDto.setProhibit(true);
+            }else{
+				nonWorkingDateDto.setProhibit(false);
+			}
 			map.put(wkrDays.get(i), nonWorkingDateDto);
 
 			for (ApptNonWorkingDateDto workingDateDto : nonWorkingDateList){
@@ -174,6 +183,8 @@ public class InspTeamNonWorkingDayDelegator {
 					map.put(wkrDays.get(i), workingDateDto);
 				}
 			}
+
+
 		}
 
 		for (Map.Entry<String, ApptNonWorkingDateDto> entry : map.entrySet()) {

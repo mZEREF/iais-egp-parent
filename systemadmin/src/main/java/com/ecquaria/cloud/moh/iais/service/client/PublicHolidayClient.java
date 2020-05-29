@@ -40,4 +40,6 @@ public interface PublicHolidayClient {
     @PostMapping(value = "/iais-publicHoliday/getPublicHolidayInCalender", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getPublicHolidayInCalender(@RequestParam("fromDate") String fromDate);
 
+    @PostMapping(value = "/iais-publicHoliday/getScheduleInCalender", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getScheduleInCalender();
 }

@@ -56,37 +56,41 @@ public class NonWorkingDayAjaxController {
         nonWorkingDateDto = nonWorkingDateListByWorkGroupId.stream()
                 .filter(apptNonWorkingDateDto ->  !StringUtils.isEmpty(apptNonWorkingDateDto.getId()))
                 .filter(apptNonWorkingDateDto -> apptNonWorkingDateDto.getId().equals(nonWkrDayId)).findFirst().orElse(null);
-        nonWorkingDateListByWorkGroupId.remove(nonWorkingDateDto);
+        if(!nonWorkingDateDto.isProhibit()){
+            nonWorkingDateListByWorkGroupId.remove(nonWorkingDateDto);
 
-        String shortName = (String) ParamUtil.getSessionAttr(request, CURRENT_SHORT_NAME);
-        String amAvailability = ParamUtil.getString(request, AM_AVAILABILITY__ATTR);
-        String pmAvailability = ParamUtil.getString(request, PM_AVAILABILITY__ATTR);
+            String shortName = (String) ParamUtil.getSessionAttr(request, CURRENT_SHORT_NAME);
+            String amAvailability = ParamUtil.getString(request, AM_AVAILABILITY__ATTR);
+            String pmAvailability = ParamUtil.getString(request, PM_AVAILABILITY__ATTR);
 
-        nonWorkingDateDto.setShortName(shortName);
-        nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            nonWorkingDateDto.setShortName(shortName);
+            nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
-        int am = "Y".equals(amAvailability) ?  0x1 : 0x0;
-        int pm = "Y".equals(pmAvailability) ?  0x1 : 0x0;
+            int am = "Y".equals(amAvailability) ?  0x1 : 0x0;
+            int pm = "Y".equals(pmAvailability) ?  0x1 : 0x0;
 
-        nonWorkingDateDto.setStartAt(Time.valueOf(PM_START));
-        nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
+            nonWorkingDateDto.setStartAt(Time.valueOf(PM_START));
+            nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
 
-        if((am & 0x1) == 1){
-            nonWorkingDateDto.setAm(true);
-        }else {
-            nonWorkingDateDto.setAm(false);
+            if((am & 0x1) == 1){
+                nonWorkingDateDto.setAm(true);
+            }else {
+                nonWorkingDateDto.setAm(false);
+            }
+            if((pm & 0x1) == 1){
+                nonWorkingDateDto.setPm(true);
+            }else {
+                nonWorkingDateDto.setPm(false);
+            }
+
+            ApptNonWorkingDateDto apptNonWorkingDateDto = appointmentService.updateNonWorkingDate(nonWorkingDateDto);
+            nonWorkingDateListByWorkGroupId.add(apptNonWorkingDateDto);
+            ParamUtil.setSessionAttr(request, NON_WKR_DAY_LIST_ATTR,(Serializable) nonWorkingDateListByWorkGroupId);
+            map.put("nonWorkingDateId", MaskUtil.maskValue(NON_WKR_DAY_ID_ATTR , apptNonWorkingDateDto.getId()));
+            return map;
+        }else{
+            return map;
         }
-        if((pm & 0x1) == 1){
-            nonWorkingDateDto.setPm(true);
-        }else {
-            nonWorkingDateDto.setPm(false);
-        }
-
-        ApptNonWorkingDateDto apptNonWorkingDateDto = appointmentService.updateNonWorkingDate(nonWorkingDateDto);
-        nonWorkingDateListByWorkGroupId.add(apptNonWorkingDateDto);
-        ParamUtil.setSessionAttr(request, NON_WKR_DAY_LIST_ATTR,(Serializable) nonWorkingDateListByWorkGroupId);
-        map.put("nonWorkingDateId", MaskUtil.maskValue(NON_WKR_DAY_ID_ATTR , apptNonWorkingDateDto.getId()));
-        return map;
     }
 
 }
