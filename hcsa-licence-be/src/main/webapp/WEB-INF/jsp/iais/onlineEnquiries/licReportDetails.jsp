@@ -331,7 +331,7 @@
                                                             <p>&nbsp;Licence No.</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <p><c:out value="${insRepDto.licenceNo}"/></p>
+                                                            <p>&nbsp;<c:out value="${insRepDto.licenceNo}"/></p>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
@@ -340,7 +340,7 @@
                                                             <p>&nbsp;Service Name</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <p><c:out value="${insRepDto.serviceName}"/></p>
+                                                            <p>&nbsp;<c:out value="${insRepDto.serviceName}"/></p>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
@@ -349,7 +349,7 @@
                                                             <p>&nbsp;HCI Code</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <p><c:out value="${insRepDto.hciCode}"/><c:if test="${empty insRepDto.hciCode}">-</c:if></p>
+                                                            <p>&nbsp;<c:out value="${insRepDto.hciCode}"/><c:if test="${empty insRepDto.hciCode}">-</c:if></p>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
@@ -358,7 +358,7 @@
                                                             <p>&nbsp;HCI Name</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <p><c:out value="${insRepDto.hciName}"/><c:if test="${empty insRepDto.hciName}">-</c:if></p>
+                                                            <p>&nbsp;<c:out value="${insRepDto.hciName}"/><c:if test="${empty insRepDto.hciName}">-</c:if></p>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
@@ -367,7 +367,7 @@
                                                             <p>&nbsp;HCI Address</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <p><c:out value="${insRepDto.hciAddress}"/></p>
+                                                            <p>&nbsp;<c:out value="${insRepDto.hciAddress}"/></p>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
@@ -376,7 +376,7 @@
                                                             <p>&nbsp;Licensee Name</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <p><c:out value="${insRepDto.licenseeName}"/></p>
+                                                            <p>&nbsp;<c:out value="${insRepDto.licenseeName}"/></p>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -399,7 +399,7 @@
                                                         <td class="col-xs-4">
                                                             <c:if test="${insRepDto.subsumedServices != null && not empty insRepDto.subsumedServices}">
                                                                 <c:forEach var="service" items="${insRepDto.subsumedServices}">
-                                                                    <p><c:out value="${service}"></c:out></p>
+                                                                    <p>&nbsp;<c:out value="${service}"></c:out></p>
                                                                 </c:forEach>
                                                             </c:if>
                                                         </td>
@@ -438,7 +438,7 @@
                                                             <p>&nbsp;Reason for Visit</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <p>${insRepDto.reasonForVisit}</p>
+                                                            <p>&nbsp;${insRepDto.reasonForVisit}</p>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
@@ -475,7 +475,7 @@
                                                             <p>&nbsp;Reported By</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <p>${insRepDto.reportedBy}</p>
+                                                            <p>&nbsp;${insRepDto.reportedBy}</p>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
@@ -484,7 +484,7 @@
                                                             <p>&nbsp;Report Noted By</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <p>${insRepDto.reportNoteBy}</p>
+                                                            <p>&nbsp;${insRepDto.reportNoteBy}</p>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
@@ -509,7 +509,7 @@
                                                             <p>&nbsp;Checklist Used</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <p>${insRepDto.serviceName}</p>
+                                                            <p>&nbsp;${insRepDto.serviceName}</p>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
@@ -524,7 +524,7 @@
                                                                 <p>&nbsp;Remarks</p>
                                                             </td>
                                                             <td class="col-xs-4">
-                                                                <p>${insRepDto.taskRemarks}</p>
+                                                                <p>&nbsp;${insRepDto.taskRemarks}</p>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -532,7 +532,7 @@
                                                                 <p>&nbsp;Marked for Audit</p>
                                                             </td>
                                                             <td class="col-xs-4">
-                                                                <p><c:out value="${insRepDto.markedForAudit}"/>&nbsp;&nbsp;<fmt:formatDate value="${insRepDto.tcuDate}" pattern="dd/MM/yyyy"/></p>
+                                                                <p>&nbsp;<c:out value="${insRepDto.markedForAudit}"/>&nbsp;&nbsp;<fmt:formatDate value="${insRepDto.tcuDate}" pattern="dd/MM/yyyy"/></p>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -540,7 +540,7 @@
                                                                 <p>&nbsp;Recommended Best Practices</p>
                                                             </td>
                                                             <td class="col-xs-4">
-                                                                <p>${insRepDto.bestPractice}</p>
+                                                                <p>&nbsp;${insRepDto.bestPractice}</p>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -562,13 +562,13 @@
                                                                                    varStatus="status">
                                                                             <tr>
                                                                                 <td>
-                                                                                    <p><c:out value="${status.count}"></c:out></p>
+                                                                                    <p>&nbsp;<c:out value="${status.count}"></c:out></p>
                                                                                 </td>
                                                                                 <td>
-                                                                                    <p><c:out value="${ncRegulations.nc}"></c:out></p>
+                                                                                    <p>&nbsp;<c:out value="${ncRegulations.nc}"></c:out></p>
                                                                                 </td>
                                                                                 <td>
-                                                                                    <p><c:out value="${ncRegulations.regulation}"></c:out></p>
+                                                                                    <p>&nbsp;<c:out value="${ncRegulations.regulation}"></c:out></p>
                                                                                 </td>
                                                                             </tr>
                                                                         </c:forEach>
@@ -585,7 +585,7 @@
                                                                 <p>&nbsp;Status</p>
                                                             </td>
                                                             <td class="col-xs-4">
-                                                                <p>${insRepDto.status}</p>
+                                                                <p>&nbsp;${insRepDto.status}</p>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -631,13 +631,13 @@
                                                                                varStatus="status">
                                                                         <tr>
                                                                             <td>
-                                                                                <p><c:out value="${status.count}"></c:out></p>
+                                                                                <p>&nbsp;<c:out value="${status.count}"></c:out></p>
                                                                             </td>
                                                                             <td>
-                                                                                <p><c:out value="${ncRectification.nc}"></c:out></p>
+                                                                                <p>&nbsp;<c:out value="${ncRectification.nc}"></c:out></p>
                                                                             </td>
                                                                             <td>
-                                                                                <p><c:out value="${ncRectification.rectified}"></c:out></p>
+                                                                                <p>&nbsp;<c:out value="${ncRectification.rectified}"></c:out></p>
                                                                             </td>
                                                                         </tr>
                                                                     </c:forEach>
@@ -655,7 +655,7 @@
                                                         </td>
                                                         <div>
                                                             <td class="col-xs-4">
-                                                                <p><c:out value="${insRepDto.inspectypeRemarks}"></c:out></p>
+                                                                <p>&nbsp;<c:out value="${insRepDto.inspectypeRemarks}"></c:out></p>
                                                             </td>
                                                         </div>
                                                         <td class="col-xs-4">
@@ -667,7 +667,7 @@
                                                             <p>&nbsp;Rectified Within KPI?</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <p><c:out value="${insRepDto.rectifiedWithinKPI}"></c:out></p>
+                                                            <p>&nbsp;<c:out value="${insRepDto.rectifiedWithinKPI}"></c:out></p>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
