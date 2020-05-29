@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -519,6 +520,17 @@ public class BlastManagementDelegator {
         }
 
 
+    }
+
+    public void auditTrial(BaseProcessClass bpc){
+        String id =  ParamUtil.getString(bpc.request, "editBlast");
+        SearchParam auditSearchParam = new SearchParam(EmailAuditTrailDto.class.getName());
+        auditSearchParam.setSort("history_id", SearchParam.ASCENDING);
+        auditSearchParam.addFilter("refNum", id,true);
+        CrudHelper.doPaging(auditSearchParam,bpc.request);
+        QueryHelp.setMainSql("systemAdmin", "audit",auditSearchParam);
+        SearchResult<EmailAuditTrailDto> searchResult = blastManagementListService.auditList(auditSearchParam);
+        ParamUtil.setRequestAttr(bpc.request,"SearchResult",searchResult);
     }
 
     private void setModeSelection(BaseProcessClass bpc){
