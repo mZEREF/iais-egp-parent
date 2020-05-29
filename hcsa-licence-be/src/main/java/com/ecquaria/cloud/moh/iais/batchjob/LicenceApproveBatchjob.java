@@ -1533,7 +1533,10 @@ public class LicenceApproveBatchjob {
         smsDto.setSender(mailSender);
         smsDto.setOnlyOfficeHour(true);
         String refNo = inboxMsgService.getMessageNo();
-        emailClient.sendSMS(IaisEGPHelper.getLicenseeMobiles(licenseeId), smsDto, refNo);
+        List<String> recipts = IaisEGPHelper.getLicenseeMobiles(licenseeId);
+        if (!IaisCommonUtils.isEmpty(recipts)) {
+            emailClient.sendSMS(recipts,smsDto,refNo);
+        }
     }
 
     //send email helper
