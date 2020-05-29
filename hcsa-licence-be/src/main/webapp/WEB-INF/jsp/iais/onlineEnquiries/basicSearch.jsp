@@ -153,7 +153,7 @@
                                             </td>
                                             <td><c:out value="${pool.applicationType}"/></td>
                                             <td><a onclick="javascript:doLicInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.licenceId)}')">${pool.licenceNo}</a></td>
-                                            <td><c:out value="${pool.hciCode}"/></td>
+                                            <td><c:out value="${pool.hciCode}"/><c:if test="${empty pool.hciCode}">-</c:if></td>
                                             <td><c:out value="${pool.hciName}"/></td>
                                             <td>
                                                 <c:if test="${pool.licenceNo==null}">

@@ -346,16 +346,17 @@ public class OfficerOnlineEnquiriesDelegator {
     private void setSearchResult(HttpServletRequest request,SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult,List<String> licenceIds,List<ReqForInfoSearchListDto> reqForInfoSearchListDtos){
 
 
-        List<Boolean> licIds=cessationService.listResultCeased(licenceIds);
-        int i=0;
+        Map<String,Boolean> licIds=cessationService.listResultCeased(licenceIds);
+
         for(ReqForInfoSearchListDto rfi:reqForInfoSearchListDtos){
             if("Active".equals(rfi.getLicenceStatus())){
-                rfi.setIsCessation(licIds.get(i)?1:0);
+                try {
+                    rfi.setIsCessation(licIds.get(rfi.getLicenceId())?1:0);
+                }catch (NullPointerException e){
+                    rfi.setIsCessation(0);
+                }
             }else {
                 rfi.setIsCessation(0);
-            }
-            if(rfi.getLicenceId()!=null){
-                i++;
             }
         }
         String uenNo = ParamUtil.getString(request, "uen_no");
