@@ -129,7 +129,9 @@ public class ClinicalLaboratoryDelegator {
         List<HcsaServiceDto> hcsaServiceDtoList= (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         serviceStepDto = getServiceStepDto(serviceStepDto,action,hcsaServiceDtoList,svcId,appSvcRelatedInfoDto);
         //reset value
-        action = serviceStepDto.getCurrentStep().getStepCode();
+        if(HcsaLicenceFeConstant.DISCIPLINEALLOCATION.equals(action)){
+            action = serviceStepDto.getCurrentStep().getStepCode();
+        }
         ParamUtil.setSessionAttr(bpc.request, ShowServiceFormsDelegator.SERVICESTEPDTO, (Serializable) serviceStepDto);
 
         if(StringUtil.isEmpty(action)||IaisEGPConstant.YES.equals(formTab)){
