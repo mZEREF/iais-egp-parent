@@ -176,7 +176,7 @@ public class CessationApplicationDelegator {
 
     public void response(BaseProcessClass bpc) throws IOException {
         StringBuilder url = new StringBuilder();
-        url.append("https://").append(bpc.request.getServerName()).append("/hcsa-licence-web/eservice/INTRANET/MohOnlineEnquiries");
+        url.append("https://").append(bpc.request.getServerName()).append("/hcsa-licence-web/eservice/INTRANET/MohLicenceManagement");
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
