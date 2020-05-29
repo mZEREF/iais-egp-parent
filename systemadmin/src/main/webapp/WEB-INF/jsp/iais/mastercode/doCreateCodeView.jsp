@@ -23,8 +23,8 @@
                             <iais:field value="Master Code Category" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:select name="codeCategory" firstOption="Pelect Select" options="codeCategory"
-                                                 value="${param.codeCategory}"/>
+                                    <iais:select name="codeCategoryCMC" firstOption="Pelect Select" options="codeCategory"
+                                                 value="${param.codeCategoryCMC}"/>
                                 </div>
                             </iais:value>
                         </div>
@@ -32,7 +32,7 @@
                             <iais:field value="Master Code Key" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeKey" type="text" name="codeKey" value="${param.codeKey}"
+                                    <input id="codeKeyCMC" type="text" name="codeKeyCMC" value="${param.codeKeyCMC}"
                                            maxlength="50">
                                     <span id="error_masterCodeKey" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
@@ -42,7 +42,7 @@
                             <iais:field value="Code Value" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeValue" type="text" name="codeValue" value="${param.codeValue}"
+                                    <input id="codeValueCMC" type="text" name="codeValueCMC" value="${param.codeValueCMC}"
                                            maxlength="25">
                                     <span id="error_codeValue" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
@@ -52,8 +52,8 @@
                             <iais:field value="Code Description" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <textarea id="codeDescription" cols="70" rows="6" name="codeDescription"
-                                              maxlength="255">${param.codeDescription}</textarea>
+                                    <textarea id="codeDescriptionCMC" cols="70" rows="6" name="codeDescriptionCMC"
+                                              maxlength="255">${param.codeDescriptionCMC}</textarea>
                                     <span id="error_codeDescription" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -62,18 +62,18 @@
                             <iais:field value="Sequence"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeSequence" type="text" name="codeSequence"
-                                           value="${param.codeSequence}" maxlength="3"/>
+                                    <input id="codeSequenceCMC" type="text" name="codeSequenceCMC"
+                                           value="${param.codeSequenceCMC}" maxlength="3"/>
                                     <span id="error_sequence" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="codeRemarks">Remarks</label>
+                            <label class="col-xs-12 col-md-4 control-label" for="codeRemarksCMC">Remarks</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <form><textarea cols="70" rows="6" id="codeRemarks" name="codeRemarks"
-                                                    maxlength="255">${param.codeRemarks}</textarea></form>
+                                    <form><textarea cols="70" rows="6" id="codeRemarksCMC" name="codeRemarksCMC"
+                                                    maxlength="255">${param.codeRemarksCMC}</textarea></form>
                                 </div>
                             </iais:value>
                         </div>
@@ -81,7 +81,7 @@
                             <iais:field value="Version" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeVersion" type="text" name="codeVersion" value="${param.codeVersion}"
+                                    <input id="codeVersionCMC" type="text" name="codeVersionCMC" value="${param.codeVersionCMC}"
                                            onkeyup="this.value=this.value.replace(/^\D*(\d{0,1}(?:\.\d{0,2})?).*$/g, '$1')"/>
                                     <span id="error_version" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
@@ -91,8 +91,8 @@
                             <iais:field value="Status" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:select name="codeStatus" id="codeStatus" options="codeStatus"
-                                                 value="${param.codeStatus}"/>
+                                    <iais:select name="codeStatusCMC" id="codeStatusCMC" options="codeStatus"
+                                                 value="${param.codeStatusCMC}"/>
                                     <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -101,7 +101,7 @@
                             <iais:field value="Effective Start Date" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:datePicker id="esd" name="esd" value="${param.esd}"/>
+                                    <iais:datePicker id="esdCMC" name="esdCMC" value="${param.esdCMC}"/>
                                     <span id="error_effectiveFrom" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -110,7 +110,7 @@
                             <iais:field value="Effective End Date" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:datePicker id="eed" name="eed" value="${param.eed}"/>
+                                    <iais:datePicker id="eedCMC" name="eedCMC" value="${param.eedCMC}"/>
                                     <span id="error_effectiveTo" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>

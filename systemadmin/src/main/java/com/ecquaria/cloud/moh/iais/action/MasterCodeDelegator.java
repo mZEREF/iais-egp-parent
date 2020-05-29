@@ -81,6 +81,7 @@ public class MasterCodeDelegator {
         ParamUtil.setSessionAttr(request, MasterCodeConstants.SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(request, MasterCodeConstants.SEARCH_RESULT, null);
         ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, null);
+        filterParameter.setFilters(null);
     }
 
     /**
@@ -157,6 +158,7 @@ public class MasterCodeDelegator {
     public void prepareCreate(BaseProcessClass bpc) {
         logAboutStart("prepareCreate");
         HttpServletRequest request = bpc.request;
+
     }
 
     /**
@@ -492,17 +494,17 @@ public class MasterCodeDelegator {
     }
 
     private void getValueFromPage(MasterCodeDto masterCodeDto, HttpServletRequest request) throws ParseException {
-        masterCodeDto.setMasterCodeKey(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_KEY));
-        masterCodeDto.setCodeValue(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VALUE));
-        masterCodeDto.setCodeCategory(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_CATEGORY));
-        masterCodeDto.setCodeDescription(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_DESCRIPTION));
-        masterCodeDto.setFilterValue(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_FILTER_VALUE));
-        masterCodeDto.setStatus(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_STATUS));
-        masterCodeDto.setRemarks(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_REMRAKS));
-        masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_SEQUENCE)) ? 100 : ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE));
-        masterCodeDto.setVersion(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION)) ? null : Float.parseFloat(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION)));
-        masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM)));
-        masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO)));
+        masterCodeDto.setMasterCodeKey(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_KEY_CMC));
+        masterCodeDto.setCodeValue(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VALUE_CMC));
+        masterCodeDto.setCodeCategory(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_CATEGORY_CMC));
+        masterCodeDto.setCodeDescription(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_DESCRIPTION_CMC));
+        masterCodeDto.setFilterValue(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_FILTER_VALUE_CMC));
+        masterCodeDto.setStatus(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_STATUS_CMC));
+        masterCodeDto.setRemarks(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_REMARKS_CMC));
+        masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC)) ? 100 : ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC));
+        masterCodeDto.setVersion(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)) ? null : Float.parseFloat(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)));
+        masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_FROM_CMC)));
+        masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_TO_CMC)));
         masterCodeDto.setIsEditable(0);
         masterCodeDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
     }
