@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = "hcsa-application", configuration = {FeignConfiguration.class},
         fallback =CessationClientFallback.class)
@@ -53,5 +54,5 @@ import java.util.List;
     FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppId(@RequestParam("appId") String appId);
 
     @PostMapping(value = "/iais-cessation/list-can-ceased",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Boolean> listCanCeased(@RequestBody List<String> licIds);
+    FeignResponseEntity<Map<String,Boolean>> listCanCeased(@RequestBody List<String> licIds);
 }
