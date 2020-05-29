@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -361,7 +362,7 @@ public class WithOutRenewalDelegator {
         appEditSelectDto.setDocEdit(true);
         appEditSelectDto.setPoEdit(true);
         appEditSelectDto.setDocEdit(true);
-
+        AppFeeDetailsDto appFeeDetailsDto=new AppFeeDetailsDto();
         String hasSubmit = (String)ParamUtil.getSessionAttr(bpc.request,"hasAppSubmit");
         if("Y".equals(hasSubmit)){
             return;
@@ -478,7 +479,7 @@ public class WithOutRenewalDelegator {
                                     appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
                                 }
                                 RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
-                                NewApplicationDelegator.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
+                            /*    NewApplicationDelegator.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);*/
                                 rfcAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
                             }
                         }
@@ -497,6 +498,14 @@ public class WithOutRenewalDelegator {
                 log.error(StringUtil.changeForLog("feeDto detailFeeDtos null"));
             }
             Double amount = feeDto.getTotal();
+      /*      Double lateFee=0.0;
+            for(FeeExtDto feeExtDto : detailFeeDtos){
+                Double lateFeeAmoumt = feeExtDto.getLateFeeAmoumt();
+                lateFee+=lateFeeAmoumt;
+            }
+            appFeeDetailsDto.setAdmentFee(0.0);
+            appFeeDetailsDto.setLaterFee(lateFee);
+            appFeeDetailsDto.setBaseFee(amount);*/
             if(!StringUtil.isEmpty(amount)){
                 renewTotal+=amount;
                 total +=amount;
@@ -584,6 +593,8 @@ public class WithOutRenewalDelegator {
                 appSubmissionDto.setAppGrpNo(appGrpNo);
             }
         }
+        appFeeDetailsDto.setApplicationNo(appGrpNo+"-01");
+      /*  appSubmissionService.saveAppFeeDetails(appFeeDetailsDto);*/
         appSubmissionDtos1.addAll(rfcAppSubmissionDtos);
 
         List<AppSubmissionDto> appSubmissionDtos3 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos1);

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -273,5 +274,13 @@ public interface ApplicationClient  {
     FeignResponseEntity<ApplicationDto> updateApplicationDto(@RequestBody ApplicationDto applicationDto);
     @PutMapping(value = "/iais-submission/delete-app-overdue-draft",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> deleteOverdueDraft(@RequestBody String draftValidity);
+    @PostMapping(value = "/iais-application/app-fee-details-renew",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppFeeDetailsDto> saveAppFeeDetails(@RequestBody AppFeeDetailsDto appFeeDetailsDto);
+    @GetMapping(value = "/iais-application/app-fee-detail-by-application-no",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppFeeDetailsDto> getAppFeeDetailsDtoByApplicationNo(@RequestParam("applicationNo") String applicationNo);
 
+    @GetMapping(value = "/iais-application/app-grp-premises-by-hci-name",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppGrpPremisesDto>> getAppGrpPremisesDtoByHciName(@RequestParam("hciName") String hciName);
+    @GetMapping(value = "/iais-application/application-dto-by-appNo",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationDto> getApplicationDtoByAppNo(@RequestParam("appNo") String appNo);
 }

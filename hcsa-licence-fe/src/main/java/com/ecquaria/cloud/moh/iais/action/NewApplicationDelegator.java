@@ -1093,8 +1093,8 @@ public class NewApplicationDelegator {
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
         appSubmissionRequestInformationDto.setAppSubmissionDto(submitAppSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldSubmitAppSubmissionDto);
-    /*    applicationClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto);*/
-        appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
+        applicationClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto);
+      /*  appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);*/
         // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","Y");
         ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE,"The request for information save success");
@@ -4375,9 +4375,11 @@ public class NewApplicationDelegator {
                 //set oldAppSubmission when rfi,rfc,renew
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+            /*    ParamUtil.setSessionAttr(bpc.request,"oldSubmitAppSubmissionDto",oldAppSubmissionDto);*/
             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
                 AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+             /*   ParamUtil.setSessionAttr(bpc.request,"oldSubmitAppSubmissionDto",oldAppSubmissionDto);*/
             }
 
 
