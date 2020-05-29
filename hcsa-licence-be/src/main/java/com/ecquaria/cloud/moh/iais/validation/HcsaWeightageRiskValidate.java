@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,7 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
         }else {
             errMap.put("All","Please do some change");
         }
+        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         return errMap;
     }
     public void dateVad(Map<String, String> errMap, HcsaRiskWeightageDto fdto){

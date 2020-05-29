@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,6 +53,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             }
         }
         auditVad( request,errMap);
+        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         return errMap;
     }
 

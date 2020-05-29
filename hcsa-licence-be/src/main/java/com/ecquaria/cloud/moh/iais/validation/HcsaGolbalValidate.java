@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -40,6 +41,7 @@ public class HcsaGolbalValidate implements CustomizeValidator {
         }else{
             errMap.put("All","please do some change");
         }
+        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         return errMap;
     }
     public void dateVad(Map<String, String> errMap, GobalRiskTotalDto fdto){

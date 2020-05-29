@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +48,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             errMap.put("All","Please do some change");
         }
         mergeList(editList,financeList);
+        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         return errMap;
     }
 

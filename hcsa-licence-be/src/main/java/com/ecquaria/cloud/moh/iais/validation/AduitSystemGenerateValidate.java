@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import sop.util.DateUtil;
 
 import java.util.Map;
@@ -53,6 +54,7 @@ public class AduitSystemGenerateValidate implements CustomizeValidator {
                errMap.put("inspectionStartDate","Last Inspection done before(Start) cannot be later than Last Inspection done before(End)");
            }
         }
+        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         return errMap;
     }
 }

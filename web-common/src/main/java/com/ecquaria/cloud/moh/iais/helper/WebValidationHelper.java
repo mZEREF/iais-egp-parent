@@ -320,6 +320,22 @@ public class WebValidationHelper {
         dto.setValidationFail(null);
     }
 
+    public static void saveAuditTrailForNoUseResult(Map<String, String> errors){
+        AuditTrailDto dto = IaisEGPHelper.getCurrentAuditTrailDto();
+        String errorMsg = generateJsonStr(errors);
+        dto.setValidationFail(errorMsg);
+        List<AuditTrailDto> dtoList = IaisCommonUtils.genNewArrayList();
+        dtoList.add(dto);
+        dto.setOperation(AuditTrailConsts.OPERATION_VALIDATION_FAIL);
+        SubmissionClient client = SpringContextHelper.getContext().getBean(SubmissionClient.class);
+        try {
+            AuditLogUtil.callWithEventDriven(dtoList, client);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        dto.setValidationFail(null);
+    }
+
     private static String formatValuesMessage(String message, String val){
         return message + "/" + val;
     }

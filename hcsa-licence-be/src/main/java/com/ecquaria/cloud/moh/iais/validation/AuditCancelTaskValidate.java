@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -37,6 +38,7 @@ public class AuditCancelTaskValidate implements CustomizeValidator {
                 index++;
             }
         }
+        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         return  errMap;
     }
 }
