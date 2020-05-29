@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 
 /**
  * LicenseeClientFallback
@@ -27,10 +28,7 @@ public class LicenseeClientFallback {
         return entity;
     }
 
-    public FeignResponseEntity<List<String>> getLicenseeMobiles(String licenseeId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+    public ResponseEntity<List<String>> getLicenseeMobiles(String licenseeId) {
+        return null;
     }
 }

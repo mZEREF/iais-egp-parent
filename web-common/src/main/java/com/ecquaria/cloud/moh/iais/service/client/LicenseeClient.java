@@ -5,6 +5,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -24,5 +25,5 @@ public interface LicenseeClient {
     FeignResponseEntity<List<String>> getLicenseeEmails(@PathVariable(name = "licenseeId") String licenseeId);
 
     @GetMapping(value = "/iais-licensee/user-mobile-nos/{licenseeId}")
-    FeignResponseEntity<List<String>> getLicenseeMobiles(@PathVariable(name = "licenseeId") String licenseeId);
+    ResponseEntity<List<String>> getLicenseeMobiles(@PathVariable(name = "licenseeId") String licenseeId);
 }

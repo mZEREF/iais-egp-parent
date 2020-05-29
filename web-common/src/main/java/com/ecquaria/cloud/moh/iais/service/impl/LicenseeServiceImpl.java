@@ -32,6 +32,6 @@ public class LicenseeServiceImpl implements LicenseeService {
 
     @Override
     public List<String> getLicenseeMobiles(String licenseeId) {
-        return licenseeClient.getLicenseeMobiles(licenseeId).getEntity();
+        return licenseeClient.getLicenseeMobiles(licenseeId).getBody();
     }
 }
