@@ -22,7 +22,7 @@ public interface CessationService {
 
     List<String> saveCessations(List<AppCessationDto> appCessationDtos,String licenseeId);
 
-    List<Boolean> listResultCeased(List<String> licIds);
+    Boolean listResultCeased(List<String> licIds);
 
     List<String> listHciName();
 

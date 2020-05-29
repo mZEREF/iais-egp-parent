@@ -50,13 +50,9 @@ public class LicenceExpiredBatchJob {
                 String svcName = licenceDto.getSvcName();
                 String licenceNo = licenceDto.getLicenceNo();
                 String licenseeId = licenceDto.getLicenseeId();
-                List<Boolean> booleans = cessationService.listResultCeased(ids);
-                if(booleans!=null&&!booleans.isEmpty()){
-                    for(Boolean b :booleans){
-                        if(b){
-                            licenceDtosForSave.add(licenceDto);
-                        }
-                    }
+                Boolean result = cessationService.listResultCeased(ids);
+                if(result){
+                    licenceDtosForSave.add(licenceDto);
                 }
                 cessationService.sendEmail(LICENCEENDDATE,date,svcName,id,licenseeId,licenceNo);
             }

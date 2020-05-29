@@ -179,31 +179,8 @@ public class CessationServiceImpl implements CessationService {
     }
 
     @Override
-    public List<Boolean> listResultCeased(List<String> licIds) {
-        List<Boolean> results = IaisCommonUtils.genNewArrayList();
-        for (String licId : licIds) {
-            List<String> appIds = hcsaLicenceClient.getAppIdsByLicId(licId).getEntity();
-            List<String> appIdsTrue = IaisCommonUtils.genNewArrayList();
-            if (appIds != null && !appIds.isEmpty()) {
-                for (String appId : appIds) {
-                    ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
-                    String status = applicationDto.getStatus();
-                    if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status) || ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(status) || ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(status)) {
-                        appIdsTrue.add(appId);
-                    }
-                }
-            int size = appIds.size();
-                int size1 = appIdsTrue.size();
-                if (size == size1) {
-                    results.add(Boolean.TRUE);
-                }else {
-                    results.add(Boolean.FALSE);
-                }
-            } else {
-                results.add(Boolean.FALSE);
-            }
-        }
-        return results;
+    public Boolean listResultCeased(List<String> licIds) {
+        return cessationClient.listCanCeased(licIds).getEntity();
     }
 
     @Override
@@ -317,7 +294,7 @@ public class CessationServiceImpl implements CessationService {
         appSubmissionDto.setRequirement(true);
         appSubmissionDto.setLicenseeId(licenseeId);
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
-        appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         setRiskToDto(appSubmissionDto);
         AppSubmissionDto entity = applicationClient.saveApps(appSubmissionDto).getEntity();
         AppSubmissionDto appSubmissionDtoSave = applicationClient.saveSubmision(entity).getEntity();
