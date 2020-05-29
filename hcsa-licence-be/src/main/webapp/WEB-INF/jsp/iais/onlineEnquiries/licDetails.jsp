@@ -144,7 +144,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td align="right">Designation Appointment Date</td>
-                                                            <td><fmt:formatDate value="${member.apptDt}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /><c:if test="${empty member.apptDt}">-</c:if></td>
+                                                            <td>&nbsp;<fmt:formatDate value="${member.apptDt}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /><c:if test="${empty member.apptDt}">-</c:if></td>
                                                         </tr>
 
                                                         </tbody>
@@ -216,7 +216,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Email Address</td>
-                                                        <td><c:out value="${organizationLicDto.licenseeEntityDto.officeEmailAddr}"/><c:if test="${empty organizationLicDto.licenseeEntityDto.officeEmailAddr}">-</c:if></td>
+                                                        <td>&nbsp;<c:out value="${organizationLicDto.licenseeEntityDto.officeEmailAddr}"/><c:if test="${empty organizationLicDto.licenseeEntityDto.officeEmailAddr}">-</c:if></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>

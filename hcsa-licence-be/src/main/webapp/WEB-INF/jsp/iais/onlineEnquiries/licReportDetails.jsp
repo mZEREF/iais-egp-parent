@@ -143,7 +143,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td align="right">Designation Appointment Date</td>
-                                                            <td><fmt:formatDate value="${member.apptDt}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /><c:if test="${empty member.apptDt}">-</c:if></td>
+                                                            <td>&nbsp;<fmt:formatDate value="${member.apptDt}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /><c:if test="${empty member.apptDt}">-</c:if></td>
                                                         </tr>
 
                                                         </tbody>
@@ -215,7 +215,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Email Address</td>
-                                                        <td><c:out value="${organizationLicDto.licenseeEntityDto.officeEmailAddr}"/><c:if test="${empty organizationLicDto.licenseeEntityDto.officeEmailAddr}">-</c:if></td>
+                                                        <td>&nbsp;<c:out value="${organizationLicDto.licenseeEntityDto.officeEmailAddr}"/><c:if test="${empty organizationLicDto.licenseeEntityDto.officeEmailAddr}">-</c:if></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -378,6 +378,7 @@
                                                         <td class="col-xs-4">
                                                             <p>&nbsp;<c:out value="${insRepDto.licenseeName}"/></p>
                                                         </td>
+                                                        <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
@@ -385,12 +386,15 @@
                                                         </td>
                                                         <td class="col-xs-4">
                                                             <c:if test="${ not empty insRepDto.principalOfficers}">
-                                                                <p><c:forEach items="${insRepDto.principalOfficers}" var="poName">
-                                                                    <c:out value="${poName}"/><br>
-                                                                </c:forEach></p>
+                                                                <p>
+                                                                    <c:forEach items="${insRepDto.principalOfficers}" var="poName">
+                                                                        &nbsp;<c:out value="${poName}"/><br>
+                                                                    </c:forEach>
+                                                                </p>
                                                             </c:if>
                                                             <c:if test="${ empty insRepDto.principalOfficers}">-</c:if>
                                                         </td>
+                                                        <td class="col-xs-4"></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="col-xs-4">
@@ -403,6 +407,7 @@
                                                                 </c:forEach>
                                                             </c:if>
                                                         </td>
+                                                        <td class="col-xs-4"></td>
                                                     </tr>
                                                 </table>
                                             </div>
@@ -422,7 +427,7 @@
                                                             <p>&nbsp;Date of Inspection</p>
                                                         </td>
                                                         <td class="col-xs-8">
-                                                            <fmt:formatDate value="${insRepDto.inspectionDate}" pattern="dd/MM/yyyy"></fmt:formatDate> <c:if test="${empty insRepDto.inspectionDate}">-</c:if>
+                                                            &nbsp;<fmt:formatDate value="${insRepDto.inspectionDate}" pattern="dd/MM/yyyy"></fmt:formatDate> <c:if test="${empty insRepDto.inspectionDate}">-</c:if>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -430,7 +435,7 @@
                                                             <p>&nbsp;Time of Inspection</p>
                                                         </td>
                                                         <td class="col-xs-8">
-                                                            <c:out value="${insRepDto.inspectionStartTime}"></c:out>-<c:out value="${insRepDto.inspectionEndTime}"></c:out>
+                                                            &nbsp;<c:out value="${insRepDto.inspectionStartTime}"></c:out>-<c:out value="${insRepDto.inspectionEndTime}"></c:out>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -449,10 +454,10 @@
                                                         <td class="col-xs-4">
                                                             <c:if test="${not empty insRepDto.inspectors}">
                                                                 <p><c:forEach items="${insRepDto.inspectors}" var="inspector" varStatus="status">
-                                                                <c:out value="${inspector}"></c:out>
+                                                                    &nbsp;<c:out value="${inspector}"/>
                                                             </c:forEach></p>
                                                             </c:if>
-                                                            <c:if test="${empty insRepDto.inspectors}">-</c:if>
+                                                            <c:if test="${empty insRepDto.inspectors}">&nbsp;-</c:if>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
@@ -463,10 +468,10 @@
                                                         <td class="col-xs-4">
                                                             <c:if test="${not empty insRepDto.inspectOffices}">
                                                                 <p><c:forEach items="${insRepDto.inspectOffices}" var="ioName">
-                                                                    <c:out value="${ioName}"/><br>
+                                                                    &nbsp;<c:out value="${ioName}"/><br>
                                                                 </c:forEach></p>
                                                             </c:if>
-                                                            <c:if test="${ empty insRepDto.inspectOffices}">-</c:if>
+                                                            <c:if test="${ empty insRepDto.inspectOffices}">&nbsp;-</c:if>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
@@ -526,6 +531,7 @@
                                                             <td class="col-xs-4">
                                                                 <p>&nbsp;${insRepDto.taskRemarks}</p>
                                                             </td>
+                                                            <td class="col-xs-4"></td>
                                                         </tr>
                                                         <tr>
                                                             <td class="col-xs-4">
@@ -534,6 +540,7 @@
                                                             <td class="col-xs-4">
                                                                 <p>&nbsp;<c:out value="${insRepDto.markedForAudit}"/>&nbsp;&nbsp;<fmt:formatDate value="${insRepDto.tcuDate}" pattern="dd/MM/yyyy"/></p>
                                                             </td>
+                                                            <td class="col-xs-4"></td>
                                                         </tr>
                                                         <tr>
                                                             <td class="col-xs-4">
@@ -542,6 +549,7 @@
                                                             <td class="col-xs-4">
                                                                 <p>&nbsp;${insRepDto.bestPractice}</p>
                                                             </td>
+                                                            <td class="col-xs-4"></td>
                                                         </tr>
                                                         <tr>
                                                             <td class="col-xs-4">
@@ -562,13 +570,13 @@
                                                                                    varStatus="status">
                                                                             <tr>
                                                                                 <td>
-                                                                                    <p>&nbsp;<c:out value="${status.count}"></c:out></p>
+                                                                                    <p>&nbsp;<c:out value="${status.count}"/></p>
                                                                                 </td>
                                                                                 <td>
-                                                                                    <p>&nbsp;<c:out value="${ncRegulations.nc}"></c:out></p>
+                                                                                    <p>&nbsp;<c:out value="${ncRegulations.nc}"/></p>
                                                                                 </td>
                                                                                 <td>
-                                                                                    <p>&nbsp;<c:out value="${ncRegulations.regulation}"></c:out></p>
+                                                                                    <p>&nbsp;<c:out value="${ncRegulations.regulation}"/></p>
                                                                                 </td>
                                                                             </tr>
                                                                         </c:forEach>
@@ -576,9 +584,10 @@
                                                                     </table>
                                                                 </c:if>
                                                                 <c:if test="${insRepDto.ncRegulation == null}">
-                                                                    <p>0</p>
+                                                                    <p>&nbsp;0</p>
                                                                 </c:if>
                                                             </td>
+                                                            <td class="col-xs-4"></td>
                                                         </tr>
                                                         <tr>
                                                             <td class="col-xs-4">
@@ -587,16 +596,16 @@
                                                             <td class="col-xs-4">
                                                                 <p>&nbsp;${insRepDto.status}</p>
                                                             </td>
+                                                            <td class="col-xs-4"></td>
                                                         </tr>
                                                         <tr>
                                                             <td class="col-xs-4">
                                                                 <p>&nbsp;Risk Level </p>
                                                             </td>
                                                             <td class="col-xs-4">
-                                                                ${appPremisesRecommendationDto.riskLevel}<c:if test="${empty appPremisesRecommendationDto.riskLevel}">-</c:if>
+                                                                &nbsp;${appPremisesRecommendationDto.riskLevel}<c:if test="${empty appPremisesRecommendationDto.riskLevel}">&nbsp;-</c:if>
                                                             </td>
-                                                            <td class="col-xs-4">
-                                                            </td>
+                                                            <td class="col-xs-4"></td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -645,7 +654,7 @@
                                                                 </table>
                                                             </c:if>
                                                             <c:if test="${insRepDto.ncRectification == null}">
-                                                                <p>NA</p>
+                                                                <p>&nbsp;NA</p>
                                                             </c:if>
                                                         </td>
                                                     </tr>
@@ -658,8 +667,7 @@
                                                                 <p>&nbsp;<c:out value="${insRepDto.inspectypeRemarks}"></c:out></p>
                                                             </td>
                                                         </div>
-                                                        <td class="col-xs-4">
-                                                        </td>
+                                                        <td class="col-xs-4"></td>
                                                     </tr>
 
                                                     <tr>
@@ -689,7 +697,7 @@
                                                             <p>&nbsp;Recommendation </p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            ${appPremisesRecommendationDto.recommendation}<c:if test="${empty appPremisesRecommendationDto.recommendation}">-</c:if>
+                                                            &nbsp;${appPremisesRecommendationDto.recommendation}<c:if test="${empty appPremisesRecommendationDto.recommendation}">-</c:if>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
@@ -698,7 +706,7 @@
                                                             <p>&nbsp;Period </p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            ${appPremisesRecommendationDto.period}
+                                                            &nbsp;${appPremisesRecommendationDto.period}
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
@@ -707,7 +715,7 @@
                                                             <p>&nbsp;Other Period </p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            ${appPremisesRecommendationDto.recomInNumber} ${appPremisesRecommendationDto.chronoUnit}
+                                                            &nbsp;${appPremisesRecommendationDto.recomInNumber} ${appPremisesRecommendationDto.chronoUnit}
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
