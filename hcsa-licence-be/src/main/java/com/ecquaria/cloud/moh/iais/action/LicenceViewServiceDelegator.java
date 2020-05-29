@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -80,6 +81,9 @@ public class LicenceViewServiceDelegator {
     private AppointmentClient appointmentClient;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
+
+    @Autowired
+    private ApplicationService applicationService;
 
     /**
      * StartStep: doStart
@@ -249,8 +253,31 @@ public class LicenceViewServiceDelegator {
         }
         contrastNewAndOld(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        boolean canEidtPremise  = canEidtPremise(applicationViewDto.getApplicationGroupDto().getId());
+        ParamUtil.setRequestAttr(bpc.request,"canEidtPremise",canEidtPremise);
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData end ..."));
         prepareViewServiceForm(bpc);
+
+    }
+
+    private boolean canEidtPremise(String appGrpId){
+        log.info(StringUtil.changeForLog("The canEidtPremise is start ..."));
+        log.info(StringUtil.changeForLog("The canEidtPremise appGrpId is -->:"+appGrpId));
+        boolean result = true;
+        List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(appGrpId);
+        if(!IaisCommonUtils.isEmpty(applicationDtoList)){
+          log.info(StringUtil.changeForLog("The canEidtPremise applicationDtoList.size() is -->:"+applicationDtoList.size()));
+          for (ApplicationDto applicationDto : applicationDtoList){
+           if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus())){
+               log.info(StringUtil.changeForLog("The canEidtPremise had approved ApplicationNo is -->:"+applicationDto.getApplicationNo()));
+               result = false;
+               break;
+           }
+          }
+        }
+        log.info(StringUtil.changeForLog("The canEidtPremise result is -->:" + result));
+        log.info(StringUtil.changeForLog("The canEidtPremise is end ..."));
+        return result;
     }
 
     private void formatDate(List<AppGrpPremisesDto> appGrpPremisesDtoList, List<PublicHolidayDto> publicHolidayDtos)  {

@@ -53,7 +53,7 @@
                             <div class="panel-body">
                               <p class="text-right">
                                 <c:if test="${rfi=='rfi'}">
-                                  <c:if test="${appEdit.premisesEdit || appEdit.premisesListEdit }">
+                                  <c:if test="${(appEdit.premisesEdit || appEdit.premisesListEdit)&& canEidtPremise }">
                                     <input class="form-check-input" id="premisesCheckbox" type="checkbox"
                                            name="editCheckbox" aria-invalid="false" value="premises">
                                   </c:if>
