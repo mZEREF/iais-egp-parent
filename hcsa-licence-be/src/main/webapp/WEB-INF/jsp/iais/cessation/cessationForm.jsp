@@ -221,7 +221,7 @@
             <label style="font-weight: normal" for="confirmInfo">I have read the information</label>
         </div>
         <iais:action>
-            <a href="/hcsa-licence-web/eservice/INTRANET/MohOnlineEnquiries" style="margin-bottom: 1%;margin-left: 1%"><em class="fa fa-angle-left"></em> Back</a>
+            <a href="/hcsa-licence-web/eservice/INTRANET/MohLicenceManagement" style="margin-bottom: 1%;margin-left: 1%"><em class="fa fa-angle-left"></em> Back</a>
             <a style="margin-bottom: 1%;margin-left: 89%" class="btn btn-primary" onclick="submitSure('submit')">Next</a>
         </iais:action>
     </div>
