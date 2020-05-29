@@ -69,7 +69,7 @@
                                             <td><c:out value="${txnRefNo}"/></td>
                                         </c:if>
                                         <td><c:out value="${txnDt}"/></td>
-                                        <td><c:if test="${AppSubmissionDto.amountStr==null}">NA</c:if>
+                                        <td><c:if test="${AppSubmissionDto.amountStr==null}">N/A</c:if>
                                             <c:if test="${AppSubmissionDto.amountStr!=null}">
                                                 <c:out value="${AppSubmissionDto.amountStr}"/>
                                             </c:if>
@@ -80,7 +80,7 @@
                                                     Credit Card
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <c:if test="${AppSubmissionDto.paymentMethod==null}">NA</c:if>
+                                                    <c:if test="${AppSubmissionDto.paymentMethod==null}">N/A</c:if>
                                                     <c:if test="${AppSubmissionDto.paymentMethod!=null}">
                                                         <c:out value="${AppSubmissionDto.paymentMethod}"/>
                                                     </c:if>
@@ -104,19 +104,19 @@
                     <p class="print"><a href="#" id="print-ack"> <em class="fa fa-print"></em>Print</a></p>
                 </div>
                 <div class="col-xs-11 col-md-11">
-
-                    <c:if test="${requestInformationConfig == null}">
+                    <c:choose>
+                    <c:when test="${requestInformationConfig == null && 'error' != AckStatus}">
                         <a class="btn btn-primary aMarginleft col-md-2 pull-right" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to <br>Dashboard</a>
                         <a class="btn btn-secondary aMarginleft col-md-3 pull-right" href="/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu">Apply for <br>Another Licence</a>
                         <c:if test="${AppSubmissionDto.appType!='APTY005'}">
                             <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doSelfAssessment">Submit <br>Self-Assessment</a>
-
+                            <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doPrefInsDate">Indicate preferred<br>Inspection Date</a>
                         </c:if>
-                    </c:if>
-                    <c:if test="${AppSubmissionDto.appType!='APTY005'}">
-                        <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doPrefInsDate">Indicate preferred<br>Inspection Date</a>
-
-                    </c:if>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="btn btn-primary aMarginleft col-md-2 pull-right" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to <br>Dashboard</a>
+                    </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
         </div>

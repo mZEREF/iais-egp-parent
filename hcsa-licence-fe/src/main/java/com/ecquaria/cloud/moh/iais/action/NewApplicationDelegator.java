@@ -217,6 +217,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,DRAFTCONFIG,null);
         Map<String,AppSvcPrincipalOfficersDto> psnMap = IaisCommonUtils.genNewHashMap();
         ParamUtil.setSessionAttr(bpc.request, PERSONSELECTMAP, (Serializable) psnMap);
+        ParamUtil.setSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST, null);
 
         HashMap<String,String> coMap=new HashMap<>(4);
         coMap.put("premises","");
@@ -237,6 +238,7 @@ public class NewApplicationDelegator {
         boolean flag = loadingServiceConfig(bpc);
         log.info(StringUtil.changeForLog("The loadingServiceConfig -->:"+flag));
         if(flag){
+            //init session and data
             initSession(bpc);
         }
         log.info(StringUtil.changeForLog("the do Start end ...."));
@@ -3410,19 +3412,19 @@ public class NewApplicationDelegator {
                 String appType =  appSubmissionDto.getAppType();
                 boolean isRenewalOrRfc = ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);
                 appSubmissionDto.setNeedEditController(true);
-                    //appSubmissionDto.getAppEditSelectDto().setDocEdit(true);
-                    //appSubmissionDto.getAppEditSelectDto().setServiceEdit(true);
-                    if (isRenewalOrRfc){
+                if (isRenewalOrRfc){
                     // set the required information
                     String licenceId = appSubmissionDto.getLicenceId();
                     appSubmissionDto.setLicenceNo(withOutRenewalService.getLicenceNumberByLicenceId(licenceId));
                 }
 
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+                //ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+            }else{
+                String errMsg = "You hava already replied to this RFI";
+                jumpToAckPage(bpc,NewApplicationConstant.ACK_STATUS_ERROR,errMsg);
             }
-
-            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
-            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-            //ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,"test");
         }
         log.info(StringUtil.changeForLog("the do requestForInformationLoading end ...."));
@@ -3465,9 +3467,8 @@ public class NewApplicationDelegator {
 
         if(IaisCommonUtils.isEmpty(serviceConfigIds) && IaisCommonUtils.isEmpty(names)){
             log.info(StringUtil.changeForLog("service id is empty"));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "errorAck");
-            ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
-            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "you have encountered some problems, please contact the administrator !!!");
+            String errMsg = "you have encountered some problems, please contact the administrator !!!";
+            jumpToAckPage(bpc,NewApplicationConstant.ACK_STATUS_ERROR,errMsg);
             return false;
         }
 
@@ -4313,6 +4314,7 @@ public class NewApplicationDelegator {
             //set svc info,this fun will set oldAppSubmission
             appSubmissionDto = NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
             Object rfi = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
+            //rfi just show one service
             if(rfi != null){
                 List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST);
                 List<HcsaServiceDto> oneHcsaServiceDto = IaisCommonUtils.genNewArrayList();
@@ -4476,12 +4478,6 @@ public class NewApplicationDelegator {
         List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licence");
         List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "specifiedServiceChecked");
         List<String> baseSvcIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseServiceChecked");
-        /*List<String> licenceIds = IaisCommonUtils.genNewArrayList();
-        licenceIds.add("5F621E18-227E-EA11-BE82-000C29F371DC");
-        List<String> specifiedServiceIds = IaisCommonUtils.genNewArrayList();
-        specifiedServiceIds.add("A21ADD49-820B-EA11-BE7D-000C29F371DC");
-        List<String> baseSvcIds = IaisCommonUtils.genNewArrayList();
-        baseSvcIds.add("35F99D15-820B-EA11-BE7D-000C29F371DC");*/
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,APPSUBMISSIONDTO);
         if(!IaisCommonUtils.isEmpty(licenceIds) && !IaisCommonUtils.isEmpty(specifiedServiceIds) && appSubmissionDto == null){
             appSubmissionDto = appSubmissionService.getExistBaseSvcInfo(licenceIds);
@@ -4507,10 +4503,6 @@ public class NewApplicationDelegator {
                 appSubmissionDto.setOnlySpecifiedSvc(true);
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
                 appSubmissionDto.setExistBaseServiceList(baseSvcIds);
-               /* appSubmissionDto.setNeedEditController(true);
-                AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-                appEditSelectDto.setServiceEdit(true);
-                appSubmissionDto.setAppEditSelectDto(appEditSelectDto);*/
             }
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
@@ -4525,5 +4517,15 @@ public class NewApplicationDelegator {
         return appGrpPremisesDtos;
     }
 
+    private static void jumpToAckPage(BaseProcessClass bpc, String ackStatus, String errorMsg){
+        String actionType = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(StringUtil.isEmpty(actionType)){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "errorAck");
+            if(NewApplicationConstant.ACK_STATUS_ERROR.equals(ackStatus)){
+                ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
+                ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, errorMsg);
+            }
+        }
+    }
 }
 

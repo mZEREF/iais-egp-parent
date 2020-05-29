@@ -14,4 +14,5 @@ public class NewApplicationConstant {
     public static final String SESSION_SELF_DECL_RFI_CORR_ID = "selfDeclRfiCorrId";
     public static final String SESSION_SELF_DECL_ACTION = "selfDeclAction";
 
+    public static final String ACK_STATUS_ERROR = "error";
 }
