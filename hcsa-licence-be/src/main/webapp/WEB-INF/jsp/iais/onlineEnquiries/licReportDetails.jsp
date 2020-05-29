@@ -385,11 +385,12 @@
                                                             <p>&nbsp;Principal Officers</p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            <c:if test="${insRepDto.principalOfficers != null && not empty insRepDto.principalOfficers}">
+                                                            <c:if test="${ not empty insRepDto.principalOfficers}">
                                                                 <p><c:forEach items="${insRepDto.principalOfficers}" var="poName">
                                                                     <c:out value="${poName}"/><br>
                                                                 </c:forEach></p>
                                                             </c:if>
+                                                            <c:if test="${ empty insRepDto.principalOfficers}">-</c:if>
                                                         </td>
                                                         <td class="col-xs-4"/>
                                                     </tr>
@@ -695,7 +696,7 @@
                                                             <p>&nbsp;Recommendation </p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            ${appPremisesRecommendationDto.recommendation}
+                                                            ${appPremisesRecommendationDto.recommendation}<c:if test="${empty appPremisesRecommendationDto.recommendation}">-</c:if>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
