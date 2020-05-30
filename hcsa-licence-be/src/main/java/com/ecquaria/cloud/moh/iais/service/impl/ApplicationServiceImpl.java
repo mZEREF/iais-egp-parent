@@ -384,7 +384,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         log.info(StringUtil.changeForLog("The containStatus appGrpId is -->:"+appGroupId));
         log.info(StringUtil.changeForLog("The containStatus status is -->:"+status));
         ApplicationDto result = null;
-        if(!StringUtil.isEmpty(appGroupId)&&!StringUtil.isEmpty(appGroupId)){
+        if(!StringUtil.isEmpty(appGroupId)){
             List<ApplicationDto> applicationDtoList = getApplicaitonsByAppGroupId(appGroupId);
             if(!IaisCommonUtils.isEmpty(applicationDtoList)){
                 log.info(StringUtil.changeForLog("The containStatus applicationDtoList.size() is -->:"+applicationDtoList.size()));
