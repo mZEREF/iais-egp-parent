@@ -1859,7 +1859,7 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
-        isLateFeeAppealType = true;
+//        isLateFeeAppealType = true;
         ParamUtil.setSessionAttr(request,"isOtherAppealType",isOtherAppealType);
         ParamUtil.setSessionAttr(request,"isChangePeriodAppealType",isChangePeriodAppealType);
         ParamUtil.setSessionAttr(request,"isLateFeeAppealType",isLateFeeAppealType);
