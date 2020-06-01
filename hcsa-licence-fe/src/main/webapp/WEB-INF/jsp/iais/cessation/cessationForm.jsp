@@ -210,6 +210,37 @@
                 </c:forEach>
                 </tbody>
             </table>
+            <br/>
+            <div style="width: 70%;margin-left: 1%;margin-right: 1%"><c:out value="${text3}"/></div>
+            <br/>
+            <table border="1" style="width: 60%">
+                <tr>
+                    <th style="text-align:center;width: 4%">S/N</th>
+                    <th style="text-align:center;width: 10%">Specified Service Licence No.</th>
+                    <th style="text-align:center;width: 16%">Specified Service Name</th>
+                    <th style="text-align:center;width: 10%">Base Service Licence No.</th>
+                    <th style="text-align:center;width: 16%">Base Service Name</th>
+                </tr>
+                <tr style="text-align:center">
+                    <c:forEach items="${specLicInfo}" var="spec" varStatus="index">
+                    <td>
+                        <p><c:out value="${index.count}"/></p>
+                    </td>
+                    <td>
+                        <p><c:out value="${spec.specLicNo}"/></p>
+                    </td>
+                    <td>
+                        <p><c:out value="${spec.specSvcName}"/></p>
+                    </td>
+                    <td>
+                        <p><c:out value="${spec.baseLicNo}"/></p>
+                    </td>
+                    <td>
+                        <p><c:out value="${spec.baseSvcName}"/></p>
+                    </td>
+                </tr>
+                </c:forEach>
+            </table>
         </div>
         <div style="width: 70%;margin-left: 1%;margin-right: 1%"><c:out value="${text1}"/></div>
         <br/>

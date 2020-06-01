@@ -9,6 +9,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author weilu
@@ -67,7 +68,7 @@ public class CessationClientFallback implements CessationClient {
     }
 
     @Override
-    public FeignResponseEntity<Boolean> listCanCeased(List<String> licIds) {
+    public FeignResponseEntity<Map<String, Boolean>> listCanCeased(List<String> licIds) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

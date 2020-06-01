@@ -11,11 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -83,19 +79,6 @@ public class CessationFeServiceImpl implements CessationFeService {
     AppSubmissionService appSubmissionService;
     private final static String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
     private final static String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
-
-    @Override
-    public List<String> getActiveLicence(List<String> licIds) {
-        List<String> activeLicIds = IaisCommonUtils.genNewArrayList();
-        for (String licId : licIds) {
-            LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
-            String status = licenceDto.getStatus();
-            if (ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)) {
-                activeLicIds.add(licId);
-            }
-        }
-        return activeLicIds;
-    }
 
     @Override
     public List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds) {
@@ -238,32 +221,43 @@ public class CessationFeServiceImpl implements CessationFeService {
     }
 
     @Override
-    public List<Boolean> listResultCeased(List<String> licIds) {
-        List<Boolean> results = IaisCommonUtils.genNewArrayList();
-        for (String licId : licIds) {
-            List<String> appIds = licenceClient.getAppIdsByLicId(licId).getEntity();
-            List<String> appIdsTrue = IaisCommonUtils.genNewArrayList();
-            if (appIds != null && !appIds.isEmpty()) {
-                for (String appId : appIds) {
-                    ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
-                    String status = applicationDto.getStatus();
-                    if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status) || ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(status) || ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(status)) {
-                        appIdsTrue.add(appId);
+    public List<AppSpecifiedLicDto> getSpecLicInfo(List<String> licIds) {
+        List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
+        if(IaisCommonUtils.isEmpty(licIds)){
+            return appSpecifiedLicDtos;
+        }
+        for(String licId :licIds){
+            LicenceDto licenceDto = licenceClient.getLicenceDtoById(licId).getEntity();
+            String svcName = licenceDto.getSvcName();
+            String licenceNo = licenceDto.getLicenceNo();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
+            String svcType = hcsaServiceDto.getSvcType();
+            if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
+                List<String> specLicIds = licenceClient.getSpecIdsByBaseId(licId).getEntity();
+                if(!IaisCommonUtils.isEmpty(specLicIds)){
+                    for(String specLicId :specLicIds){
+                        AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
+                        LicenceDto specLicenceDto = licenceClient.getLicenceDtoById(specLicId).getEntity();
+                        if(specLicenceDto!=null){
+                            String specLicenceNo = specLicenceDto.getLicenceNo();
+                            String specSvcName = specLicenceDto.getSvcName();
+                            appSpecifiedLicDto.setBaseLicNo(licenceNo);
+                            appSpecifiedLicDto.setBaseSvcName(svcName);
+                            appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
+                            appSpecifiedLicDto.setSpecSvcName(specSvcName);
+                            appSpecifiedLicDtos.add(appSpecifiedLicDto);
+                        }
                     }
                 }
             }
-
-            if(appIds!=null){
-                int size  = appIds.size();
-                int size1 = appIdsTrue.size();
-                if (size == size1) {
-                    results.add(Boolean.TRUE);
-                } else {
-                    results.add(Boolean.FALSE);
-                }
-            }
         }
-        return results;
+
+        return appSpecifiedLicDtos;
+    }
+
+    @Override
+    public Map<String, Boolean> listResultCeased(List<String> licIds) {
+        return cessationClient.listCanCeased(licIds).getEntity();
     }
 
 

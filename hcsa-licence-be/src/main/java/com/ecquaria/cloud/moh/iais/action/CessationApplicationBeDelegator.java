@@ -6,10 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -45,8 +42,6 @@ public class CessationApplicationBeDelegator {
 
     @Autowired
     private CessationBeService cessationBeService;
-    @Autowired
-    private HcsaLicenceClient hcsaLicenceClient;
 
     private static final String APPCESSATIONDTOS = "appCessationDtos";
     private static final String READINFO = "readInfo";
@@ -76,6 +71,7 @@ public class CessationApplicationBeDelegator {
             licIds.add("B61C1AE8-5988-EA11-BE82-000C29F371DC");
         }
         List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIds(licIds);
+        List<AppSpecifiedLicDto> specLicInfo = cessationBeService.getSpecLicInfo(licIds);
         int size = appCessDtosByLicIds.size();
         List<SelectOption> reasonOption = getReasonOption();
         List<SelectOption> patientsOption = getPatientsOption();
@@ -84,11 +80,16 @@ public class CessationApplicationBeDelegator {
         String text2 = "(2). Any licensee of a licensed healthcare institution (For e.g a medical clinic) who intends to cease operating the medical clinic" +
                 " shall take all measures as are reasonable and necessary to ensure that the medical records of every patient are " +
                 "properly transferred to the medical clinic or other healthcare institution to which such patient is to be transferred.";
+
+        String text3 = "The following specified healthcare services will also be ceased as their underlying licensable healthcare service(s) is/are listed above.";
+
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, (Serializable) appCessDtosByLicIds);
+        ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) specLicInfo);
         ParamUtil.setSessionAttr(bpc.request, "reasonOption", (Serializable) reasonOption);
         ParamUtil.setSessionAttr(bpc.request, "patientsOption", (Serializable) patientsOption);
         ParamUtil.setSessionAttr(bpc.request, "text1", text1);
         ParamUtil.setSessionAttr(bpc.request, "text2", text2);
+        ParamUtil.setSessionAttr(bpc.request, "text3", text3);
         ParamUtil.setSessionAttr(bpc.request, "size", size);
         ParamUtil.setSessionAttr(bpc.request, READINFO, null);
     }
@@ -153,16 +154,6 @@ public class CessationApplicationBeDelegator {
         }
 
         List<AppCessationDto> appCessationDtos = transformDto(cloneAppCessHciDtos);
-        String licId = appCessationDtos.get(0).getLicId();
-        LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
-        String svcName = licenceDto.getSvcName();
-        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
-        String svcType = hcsaServiceDto.getSvcType();
-        if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
-            ParamUtil.setRequestAttr(bpc.request, "svcType","baseService");
-        }else{
-            ParamUtil.setRequestAttr(bpc.request, "svcType","baseService");
-        }
         ParamUtil.setSessionAttr(bpc.request, "confirmDtos", (Serializable) confirmDtos);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtosSave", (Serializable) appCessationDtos);

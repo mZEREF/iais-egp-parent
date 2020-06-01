@@ -6,10 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -69,8 +66,8 @@ public class CessationApplicationFeDelegator {
             licIds = IaisCommonUtils.genNewArrayList();
             licIds.add("4176FF73-895E-EA11-BE7F-000C29F371DC");
         }
-        List<String> activeLicence = cessationFeService.getActiveLicence(licIds);
-        List<AppCessLicDto> appCessDtosByLicIds = cessationFeService.getAppCessDtosByLicIds(activeLicence);
+        List<AppCessLicDto> appCessDtosByLicIds = cessationFeService.getAppCessDtosByLicIds(licIds);
+        List<AppSpecifiedLicDto> specLicInfo = cessationFeService.getSpecLicInfo(licIds);
         int size = appCessDtosByLicIds.size();
         List<SelectOption> reasonOption = getReasonOption();
         List<SelectOption> patientsOption = getPatientsOption();
@@ -79,11 +76,15 @@ public class CessationApplicationFeDelegator {
         String text2 = "(2). Any licensee of a licensed healthcare institution (For e.g a medical clinic) who intends to cease operating the medical clinic" +
                 " shall take all measures as are reasonable and necessary to ensure that the medical records of every patient are " +
                 "properly transferred to the medical clinic or other healthcare institution to which such patient is to be transferred.";
+        String text3 = "The following specified healthcare services will also be ceased as their underlying licensable healthcare service(s) is/are listed above.";
+
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, (Serializable) appCessDtosByLicIds);
         ParamUtil.setSessionAttr(bpc.request, "reasonOption", (Serializable) reasonOption);
+        ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) specLicInfo);
         ParamUtil.setSessionAttr(bpc.request, "patientsOption", (Serializable) patientsOption);
         ParamUtil.setSessionAttr(bpc.request, "text1", text1);
         ParamUtil.setSessionAttr(bpc.request, "text2", text2);
+        ParamUtil.setSessionAttr(bpc.request, "text3", text3);
         ParamUtil.setSessionAttr(bpc.request, "size", size);
         ParamUtil.setSessionAttr(bpc.request, READINFO, null);
     }

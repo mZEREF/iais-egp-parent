@@ -106,4 +106,7 @@ public interface LicenceClient {
 
     @GetMapping(value = "/hcsa-licence/premise-cessation-id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PremisesDto> getLicPremisesDtoById(@RequestParam(value = "id")String id);
+
+    @GetMapping(value = "/hcsa-licence/baseLicId-list-specLicId",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getSpecIdsByBaseId(@RequestParam("licId") String licId);
 }

@@ -140,40 +140,33 @@
         <br/>
         <div style="width: 70%;margin-left: 1%;margin-right: 1%"><c:out value="${text2}"/></div>
         <br/>
-        <div style="margin-left: 1%;margin-right: 1%"><input type="checkbox" onclick="return false" checked name="sure" id="confirmInfo"><label style="font-weight: normal" for="confirmInfo">I have read the information</label></div>
-       <c:if test="${svcType eq 'baseService'}">
-           <iais:action>
-               <a onclick="confirmBack('back')"><em class="fa fa-angle-left" style="margin-bottom: 1%;margin-left: 1%"></em> Back</a>
-               <a style="margin-left: 90%" class="btn btn-primary" data-toggle="modal" data-target= "#base">SUBMIT</a>
-           </iais:action>
-       </c:if>
-        <c:if test="${svcType eq 'specifiedService'}">
-            <iais:action>
-                <a onclick="confirmBack('back')"><em class="fa fa-angle-left" style="margin-bottom: 1%;margin-left: 1%"></em> Back</a>
-                <a style="margin-bottom: 1%;margin-left: 87%" class="btn btn-primary" onclick="confirmSpecSubmit('submit')">Submit</a>
-            </iais:action>
-        </c:if>
-    </div>
-    <div class="modal fade" id="base" tabindex="-1" role="dialog" aria-labelledby="base" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem"></span>
+        <div class="modal fade" id="base" tabindex="-1" role="dialog" aria-labelledby="base" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the modification ?</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="confirmBaseSubmit('submit')">Confirm</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="confirmBaseSubmit('submit')">Confirm</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div style="margin-left: 1%;margin-right: 1%"><input type="checkbox" onclick="return false" checked name="sure" id="confirmInfo"><label style="font-weight: normal" for="confirmInfo">I have read the information</label></div>
+            <iais:action>
+                <a onclick="confirmBack('back')"><em class="fa fa-angle-left" style="margin-bottom: 1%;margin-left: 1%"></em> Back</a>
+                <a style="margin-bottom: 1%;margin-bottom: 1%;margin-left: 87%" class="btn btn-primary" onclick="confirmSubmit('submit')">Submit</a>
+            </iais:action>
     </div>
 </form>
 
@@ -194,12 +187,7 @@
 </style>
 <script type="text/javascript">
 
-    function confirmBaseSubmit(action) {
-        $("[name='crud_action_type']").val(action);
-        $("#mainForm").submit();
-    }
-
-    function confirmSpecSubmit(action) {
+    function confirmSubmit(action) {
         $("[name='crud_action_type']").val(action);
         $("#mainForm").submit();
     }

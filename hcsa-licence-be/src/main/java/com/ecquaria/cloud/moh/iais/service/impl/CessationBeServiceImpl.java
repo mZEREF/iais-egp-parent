@@ -11,11 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -177,7 +173,7 @@ public class CessationBeServiceImpl implements CessationBeService {
     }
 
     @Override
-    public Map<String,Boolean> listResultCeased(List<String> licIds) {
+    public Map<String, Boolean> listResultCeased(List<String> licIds) {
         return cessationClient.listCanCeased(licIds).getEntity();
     }
 
@@ -185,6 +181,41 @@ public class CessationBeServiceImpl implements CessationBeService {
     public List<String> listHciName() {
         List<String> hciNames = cessationClient.listHciNames().getEntity();
         return hciNames;
+    }
+
+    @Override
+    public List<AppSpecifiedLicDto> getSpecLicInfo(List<String> licIds) {
+        List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
+        if (IaisCommonUtils.isEmpty(licIds)) {
+            return appSpecifiedLicDtos;
+        }
+        for (String licId : licIds) {
+            LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
+            String svcName = licenceDto.getSvcName();
+            String licenceNo = licenceDto.getLicenceNo();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
+            String svcType = hcsaServiceDto.getSvcType();
+            if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
+                List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(licId).getEntity();
+                if (!IaisCommonUtils.isEmpty(specLicIds)) {
+                    for (String specLicId : specLicIds) {
+                        AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
+                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
+                        if (specLicenceDto != null) {
+                            String specLicenceNo = specLicenceDto.getLicenceNo();
+                            String specSvcName = specLicenceDto.getSvcName();
+                            appSpecifiedLicDto.setBaseLicNo(licenceNo);
+                            appSpecifiedLicDto.setBaseSvcName(svcName);
+                            appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
+                            appSpecifiedLicDto.setSpecSvcName(specSvcName);
+                            appSpecifiedLicDtos.add(appSpecifiedLicDto);
+                        }
+                    }
+                }
+            }
+        }
+
+        return appSpecifiedLicDtos;
     }
 
     @Override
@@ -268,7 +299,7 @@ public class CessationBeServiceImpl implements CessationBeService {
         taskService.createHistorys(appPremisesRoutingHistoryDtos);
     }
 
-    private Map<String, String> transform(AppSubmissionDto appSubmissionDto, String licenseeId,List<String> premiseIds) {
+    private Map<String, String> transform(AppSubmissionDto appSubmissionDto, String licenseeId, List<String> premiseIds) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         Double amount = 0.0;
         AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
@@ -297,19 +328,19 @@ public class CessationBeServiceImpl implements CessationBeService {
         AppSubmissionDto entity = applicationClient.saveApps(appSubmissionDto).getEntity();
         AppSubmissionDto appSubmissionDtoSave = applicationClient.saveSubmision(entity).getEntity();
         List<ApplicationDto> applicationDtos = appSubmissionDtoSave.getApplicationDtos();
-        for(ApplicationDto applicationDto :applicationDtos) {
+        for (ApplicationDto applicationDto : applicationDtos) {
             String id = applicationDto.getId();
             AppGrpPremisesDto dto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
             String hciCode = dto.getHciCode();
-            for(String premiseId :premiseIds){
+            for (String premiseId : premiseIds) {
                 PremisesDto entity1 = hcsaLicenceClient.getLicPremisesDtoById(premiseId).getEntity();
                 String hciCode1 = entity1.getHciCode();
                 if (hciCode1.equals(hciCode)) {
-                    String appId = id ;
+                    String appId = id;
                     map.put(premiseId, appId);
                     applicationDto.setNeedNewLicNo(false);
                     applicationDto.setGroupLicenceFlag(null);
-                }else {
+                } else {
                     applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                 }
                 applicationClient.updateApplication(applicationDto);
@@ -384,9 +415,9 @@ public class CessationBeServiceImpl implements CessationBeService {
         return result;
     }
 
-    private List<LicenceDto> updateLicenceStatus(List<LicenceDto> licenceDtos,Date date){
+    private List<LicenceDto> updateLicenceStatus(List<LicenceDto> licenceDtos, Date date) {
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
-        for(LicenceDto licenceDto :licenceDtos){
+        for (LicenceDto licenceDto : licenceDtos) {
             licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
             licenceDto.setEndDate(date);
             updateLicenceDtos.add(licenceDto);
