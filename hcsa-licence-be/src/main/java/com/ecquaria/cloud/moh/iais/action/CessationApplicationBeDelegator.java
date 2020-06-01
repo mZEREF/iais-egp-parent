@@ -10,13 +10,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
@@ -41,6 +45,8 @@ public class CessationApplicationBeDelegator {
 
     @Autowired
     private CessationBeService cessationBeService;
+    @Autowired
+    private HcsaLicenceClient hcsaLicenceClient;
 
     private static final String APPCESSATIONDTOS = "appCessationDtos";
     private static final String READINFO = "readInfo";
@@ -147,6 +153,16 @@ public class CessationApplicationBeDelegator {
         }
 
         List<AppCessationDto> appCessationDtos = transformDto(cloneAppCessHciDtos);
+        String licId = appCessationDtos.get(0).getLicId();
+        LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
+        String svcName = licenceDto.getSvcName();
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
+        String svcType = hcsaServiceDto.getSvcType();
+        if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
+            ParamUtil.setRequestAttr(bpc.request, "svcType","baseService");
+        }else{
+            ParamUtil.setRequestAttr(bpc.request, "svcType","baseService");
+        }
         ParamUtil.setSessionAttr(bpc.request, "confirmDtos", (Serializable) confirmDtos);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtosSave", (Serializable) appCessationDtos);
@@ -162,11 +178,11 @@ public class CessationApplicationBeDelegator {
     }
 
     public void saveData(BaseProcessClass bpc) throws Exception {
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
-        List<String> appIds = cessationBeService.saveCessations(appCessationDtos, loginContext.getLicenseeId());
-        List<AppCessatonConfirmDto> confirmDto = cessationBeService.getConfirmDto(appCessationDtos, appIds, loginContext);
-        ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) confirmDto);
+//        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+//        List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
+//        List<String> appIds = cessationBeService.saveCessations(appCessationDtos, loginContext.getLicenseeId());
+//        List<AppCessatonConfirmDto> confirmDto = cessationBeService.getConfirmDto(appCessationDtos, appIds, loginContext);
+//        ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) confirmDto);
     }
 
     public void response(BaseProcessClass bpc) throws IOException {
