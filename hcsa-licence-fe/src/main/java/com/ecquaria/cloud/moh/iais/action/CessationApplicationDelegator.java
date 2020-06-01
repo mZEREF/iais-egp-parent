@@ -185,13 +185,12 @@ public class CessationApplicationDelegator {
         for (int i = 1; i <= size; i++) {
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(i - 1);
             List<AppCessHciDto> appCessHciDtoso = appCessLicDto.getAppCessHciDtos();
-            String licenceId = appCessLicDto.getLicenceId();
             int size1 = appCessHciDtoso.size();
             List<AppCessHciDto> appCessHciDtos = IaisCommonUtils.genNewArrayList();
             for (int j = 1; j <= size1; j++) {
                 AppCessHciDto appCessHciDto = appCessHciDtoso.get(j - 1);
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + WHICHTODO + j);
-                if (!StringUtil.isEmpty(whichTodo)) {
+//                if (!StringUtil.isEmpty(whichTodo)) {
                     String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i + EFFECTIVEDATE + j);
                     Date effectiveDate = DateUtil.parseDate(effectiveDateStr, AppConsts.DEFAULT_DATE_FORMAT);
                     String reason = ParamUtil.getRequestString(bpc.request, i + REASON + j);
@@ -225,9 +224,9 @@ public class CessationApplicationDelegator {
                     appCessHciDto.setPatOthers(patOthers);
                     appCessHciDto.setPremiseIdChecked(whichTodo);
                     appCessHciDto.setReadInfo(readInfo);
-                } else {
-                    appCessHciDto.setPremiseIdChecked(null);
-                }
+//                } else {
+//                    appCessHciDto.setPremiseIdChecked(null);
+//                }
                 appCessHciDtos.add(appCessHciDto);
             }
             appCessLicDto.setAppCessHciDtos(appCessHciDtos);

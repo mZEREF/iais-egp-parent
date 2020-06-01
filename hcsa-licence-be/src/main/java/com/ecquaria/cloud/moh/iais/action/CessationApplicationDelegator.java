@@ -191,44 +191,39 @@ public class CessationApplicationDelegator {
         for (int i = 1; i <= size; i++) {
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(i - 1);
             List<AppCessHciDto> appCessHciDtoso = appCessLicDto.getAppCessHciDtos();
-            String licenceId = appCessLicDto.getLicenceId();
             int size1 = appCessHciDtoso.size();
             List<AppCessHciDto> appCessHciDtos = IaisCommonUtils.genNewArrayList();
             for (int j = 1; j <= size1; j++) {
                 AppCessHciDto appCessHciDto = appCessHciDtoso.get(j - 1);
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + WHICHTODO + j);
-                if (!StringUtil.isEmpty(whichTodo)) {
-                    String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i + EFFECTIVEDATE + j);
-                    Date effectiveDate = DateUtil.parseDate(effectiveDateStr, AppConsts.DEFAULT_DATE_FORMAT);
-                    String reason = ParamUtil.getRequestString(bpc.request, i + REASON + j);
-                    String otherReason = ParamUtil.getRequestString(bpc.request, i + OTHERREASON + j);
-                    String patRadio = ParamUtil.getRequestString(bpc.request, i + PATRADIO + j);
-                    boolean patNeedTrans = "yes".equals(patRadio);
-                    String patientSelect = ParamUtil.getRequestString(bpc.request, i + PATIENTSELECT + j);
-                    String patNoRemarks = ParamUtil.getRequestString(bpc.request, i + PATNOREMARKS + j);
-                    String patHciName = ParamUtil.getRequestString(bpc.request, i + PATHCINAME + j);
-                    String patRegNo = ParamUtil.getRequestString(bpc.request, i + PATREGNO + j);
-                    String patOthers = ParamUtil.getRequestString(bpc.request, i + PATOTHERS + j);
-                    String readInfo = ParamUtil.getRequestString(bpc.request, READINFO);
-                    String hciName = appCessHciDto.getHciName();
-                    String hciAddress = appCessHciDto.getHciAddress();
+                String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i + EFFECTIVEDATE + j);
+                Date effectiveDate = DateUtil.parseDate(effectiveDateStr, AppConsts.DEFAULT_DATE_FORMAT);
+                String reason = ParamUtil.getRequestString(bpc.request, i + REASON + j);
+                String otherReason = ParamUtil.getRequestString(bpc.request, i + OTHERREASON + j);
+                String patRadio = ParamUtil.getRequestString(bpc.request, i + PATRADIO + j);
+                boolean patNeedTrans = "yes".equals(patRadio);
+                String patientSelect = ParamUtil.getRequestString(bpc.request, i + PATIENTSELECT + j);
+                String patNoRemarks = ParamUtil.getRequestString(bpc.request, i + PATNOREMARKS + j);
+                String patHciName = ParamUtil.getRequestString(bpc.request, i + PATHCINAME + j);
+                String patRegNo = ParamUtil.getRequestString(bpc.request, i + PATREGNO + j);
+                String patOthers = ParamUtil.getRequestString(bpc.request, i + PATOTHERS + j);
+                String readInfo = ParamUtil.getRequestString(bpc.request, READINFO);
+                String hciName = appCessHciDto.getHciName();
+                String hciAddress = appCessHciDto.getHciAddress();
 
-                    appCessHciDto.setHciAddress(hciAddress);
-                    appCessHciDto.setHciName(hciName);
-                    appCessHciDto.setEffectiveDate(effectiveDate);
-                    appCessHciDto.setReason(reason);
-                    appCessHciDto.setOtherReason(otherReason);
-                    appCessHciDto.setPatNeedTrans(patNeedTrans);
-                    appCessHciDto.setPatientSelect(patientSelect);
-                    appCessHciDto.setPatNoRemarks(patNoRemarks);
-                    appCessHciDto.setPatHciName(patHciName);
-                    appCessHciDto.setPatRegNo(patRegNo);
-                    appCessHciDto.setPatOthers(patOthers);
-                    appCessHciDto.setPremiseIdChecked(whichTodo);
-                    appCessHciDto.setReadInfo(readInfo);
-                } else {
-                    appCessHciDto.setPremiseIdChecked(null);
-                }
+                appCessHciDto.setHciAddress(hciAddress);
+                appCessHciDto.setHciName(hciName);
+                appCessHciDto.setEffectiveDate(effectiveDate);
+                appCessHciDto.setReason(reason);
+                appCessHciDto.setOtherReason(otherReason);
+                appCessHciDto.setPatNeedTrans(patNeedTrans);
+                appCessHciDto.setPatientSelect(patientSelect);
+                appCessHciDto.setPatNoRemarks(patNoRemarks);
+                appCessHciDto.setPatHciName(patHciName);
+                appCessHciDto.setPatRegNo(patRegNo);
+                appCessHciDto.setPatOthers(patOthers);
+                appCessHciDto.setPremiseIdChecked(whichTodo);
+                appCessHciDto.setReadInfo(readInfo);
                 appCessHciDtos.add(appCessHciDto);
             }
             appCessLicDto.setAppCessHciDtos(appCessHciDtos);
