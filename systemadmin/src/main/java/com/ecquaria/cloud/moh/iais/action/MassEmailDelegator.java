@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -110,7 +109,7 @@ public class MassEmailDelegator {
 
         DistributionListWebDto distributionListDto = new DistributionListWebDto();
         if(email != null){
-            List<String> rnemaillist = Arrays.asList(email.split("\r\n"));
+            List<String> rnemaillist = Arrays.asList(email.split(" "));
             List<String> commaemaillist = Arrays.asList(email.split(","));
             if(rnemaillist.size() > commaemaillist.size() ){
                 distributionListDto.setEmailAddress(rnemaillist);
@@ -209,8 +208,7 @@ public class MassEmailDelegator {
         setServiceSelect(bpc);
         setModeSelection(bpc);
         setRoleSelection(bpc, HcsaServiceCacheHelper.getServiceByCode(distributionListDto.getService()).getId());
-        distributionListDto.setId(MaskUtil.maskValue("distributionId",distributionListDto.getId()));
-        String emailAddress = StringUtils.join(distributionListDto.getEmailAddress(),"\n");
+        String emailAddress = StringUtils.join(distributionListDto.getEmailAddress(),"\r\n");
         ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
         ParamUtil.setRequestAttr(bpc.request,"distribution",distributionListDto);
         ParamUtil.setRequestAttr(bpc.request, "firstOption", distributionListDto.getService());
