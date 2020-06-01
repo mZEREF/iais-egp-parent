@@ -107,31 +107,20 @@
                             <div class="row">
                                 <div class="col-xs-11 col-md-11">
                                     <div class="text-right">
+                                        <div class="file-upload-gp" style="display: inline">
+                                            <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                                        </div>
                                         <a class="btn btn-secondary" id="delete">Delete</a>
                                         <a class="btn btn-primary" id="createholiday">Create</a>
                                     </div>
                                 </div>
                             </div>
+                            <p><span id="error_selectedFile" name="iaisErrorMsg" class="error-msg"></span></p>
                         </div>
                     </div>
                 </div>
             </div>
         <input id="holidayId" name="holidayId" hidden value="">
-        <div class="form-group">
-            <label class="col-xs-4 col-md-4 control-label">Attachments</label>
-            <div class="document-upload-gp">
-                <div class="document-upload-list">
-                    <div class="file-upload-gp ">
-                        <div class="fileNameDisplay">${filename}</div>
-                        <div class="text-right">
-                            <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
-                            <a class="btn btn-primary" id="commit">commit</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <p><span id="error_selectedFile" name="iaisErrorMsg" class="error-msg"></span></p>
-        </div>
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
@@ -172,7 +161,7 @@
         SOP.Crud.cfxSubmit("mainForm", "page");
     }
 
-    $('#commit').click(function () {
+    $('#selectedFile').change(function () {
         SOP.Crud.cfxSubmit("mainForm", "upload");
     })
 
