@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppPremInsDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -207,79 +206,36 @@ public class KpiColourByWorkDaysBatchJob {
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         int allWorkDays = 0;
         int allHolidays = 0;
-        if(HcsaConsts.ROUTING_STAGE_INP.equals(subStage)){
-            AppPremInsDraftDto appPremInsDraftDto = inspectionTaskClient.getAppPremInsDraftDtoByAppPreCorrId(taskDto.getRefNo()).getEntity();
-            Date startDate = appPremInsDraftDto.getClockin();
-            Date completeDate;
-            for(String role : roleIds) {
-                TaskDto tDto = new TaskDto();
-                InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
-                tDto.setRefNo(taskDto.getRefNo());
-                tDto.setRoleId(role);
-                tDto.setWkGrpId(taskDto.getWkGrpId());
-                tDto.setTaskKey(taskDto.getTaskKey());
-                inspecTaskCreAndAssDto.setTaskDto(tDto);
+        for(String role : roleIds) {
+            TaskDto tDto = new TaskDto();
+            InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
+            tDto.setRefNo(taskDto.getRefNo());
+            tDto.setRoleId(role);
+            tDto.setWkGrpId(taskDto.getWkGrpId());
+            tDto.setTaskKey(taskDto.getTaskKey());
+            inspecTaskCreAndAssDto.setTaskDto(tDto);
+            if(HcsaConsts.ROUTING_STAGE_PRE.equals(subStage)){
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
+            } else if(HcsaConsts.ROUTING_STAGE_POT.equals(subStage)) {
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_NCEMAIL);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECK_FILLUP);
+            } else if(HcsaConsts.ROUTING_STAGE_INP.equals(subStage)){
                 processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY);
-                inspecTaskCreAndAssDto.setProcessUrls(processUrls);
-                List<TaskDto> taskDtos = organizationClient.getInsKpiTask(inspecTaskCreAndAssDto).getEntity();
-                if(!IaisCommonUtils.isEmpty(taskDtos)){
-                    for(TaskDto taskDtoSingle : taskDtos){
-                        taskDtoList.add(taskDtoSingle);
-                    }
+            }
+            inspecTaskCreAndAssDto.setProcessUrls(processUrls);
+            List<TaskDto> taskDtos = organizationClient.getInsKpiTask(inspecTaskCreAndAssDto).getEntity();
+            if(!IaisCommonUtils.isEmpty(taskDtos)){
+                for(TaskDto taskDtoSingle : taskDtos){
+                    taskDtoList.add(taskDtoSingle);
                 }
             }
-            for(TaskDto td : taskDtoList){
-                if(td.getSlaDateCompleted() == null){
-                    completeDate = new Date();
-                } else {
-                    completeDate = td.getSlaDateCompleted();
-                }
-                workAndNonWorkDays = getWorkAndNonWorkDays(workAndNonWorkDays, startDate, completeDate);
-            }
-            Set<Date> setDate = new HashSet<>(workAndNonWorkDays);
-            workAndNonWorkDays = new ArrayList<>(setDate);
-            //count work days
-            KpiCountDto kpiCountDto = new KpiCountDto();
-            kpiCountDto.setTaskDates(workAndNonWorkDays);
-            kpiCountDto.setTimeList(holidayTime);
-            Map<Integer, Integer> workAndNonMapS = appointmentClient.getWorkAndNonMap(kpiCountDto).getEntity();
-            if(workAndNonMapS != null && workAndNonMapS.size() > 0) {
-                for (Map.Entry<Integer, Integer> map : workAndNonMapS.entrySet()) {
-                    allWorkDays = allWorkDays + map.getKey();
-                    allHolidays = allHolidays + map.getValue();
-                }
-            }
-            workAndNonMap.put(allWorkDays, allHolidays);
-        } else {
-            for(String role : roleIds) {
-                TaskDto tDto = new TaskDto();
-                InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
-                tDto.setRefNo(taskDto.getRefNo());
-                tDto.setRoleId(role);
-                tDto.setWkGrpId(taskDto.getWkGrpId());
-                tDto.setTaskKey(taskDto.getTaskKey());
-                inspecTaskCreAndAssDto.setTaskDto(tDto);
-                if(HcsaConsts.ROUTING_STAGE_PRE.equals(subStage)){
-                    processUrls.add(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
-                } else if(HcsaConsts.ROUTING_STAGE_POT.equals(subStage)) {
-                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
-                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
-                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_NCEMAIL);
-                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
-                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
-                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1);
-                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECK_FILLUP);
-                }
-                inspecTaskCreAndAssDto.setProcessUrls(processUrls);
-                List<TaskDto> taskDtos = organizationClient.getInsKpiTask(inspecTaskCreAndAssDto).getEntity();
-                if(!IaisCommonUtils.isEmpty(taskDtos)){
-                    for(TaskDto taskDtoSingle : taskDtos){
-                        taskDtoList.add(taskDtoSingle);
-                    }
-                }
-            }
-            workAndNonMap = getActualWorkingDays(taskDtoList, allWorkDays, allHolidays, holidayTime);
         }
+        workAndNonMap = getActualWorkingDays(taskDtoList, allWorkDays, allHolidays, holidayTime);
         return workAndNonMap;
     }
 
