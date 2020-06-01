@@ -11,7 +11,6 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
-
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___SyncFEAuditTrail___1 extends BaseProcessClass {
@@ -25,11 +24,6 @@ public class INTERNET___SyncFEAuditTrail___1 extends BaseProcessClass {
 	public void step2_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "preDate", this); 
 	// 		Step2->OnStepProcess
-	}
-
-	public void step4_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "end", this); 
-	// 		Step4->OnStepProcess
 	}
 
 }

@@ -1,9 +1,7 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.SyncAuditTrailRecordsService;
 import lombok.extern.slf4j.Slf4j;
@@ -40,14 +38,10 @@ public class SyncFEAuditTrailBatchjob {
         syncAuditTrailRecordsService.compressFile();
         log.info("------------------- compressFile  end --------------");
 
-        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
-        if(auditTrailDtos.size()==0){
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
-        }
+
+
 
     }
 
-    public void end(BaseProcessClass bpc){
-        log.info("-------------------   end --------------");
-    }
+
 }
