@@ -617,7 +617,7 @@ public class LicenceViewServiceDelegator {
             for (int i = 0; i < oldAppGrpPrimaryDocDtos.size(); i++) {
                 AppGrpPrimaryDocDto appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                 appGrpPrimaryDocDto.setSvcDocId(oldAppGrpPrimaryDocDtos.get(i).getSvcDocId());
-                appGrpPrimaryDocDto.setDocName("NA");
+                appGrpPrimaryDocDto.setDocName("-");
                 appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
             }
         } else if (appGrpPrimaryDocDtos != null && oldAppGrpPrimaryDocDtos != null) {
@@ -639,7 +639,7 @@ public class LicenceViewServiceDelegator {
             for (int i = 0; i < oldAppSvcDocDtoLit.size(); i++) {
                 AppSvcDocDto appSvcDocDto = new AppSvcDocDto();
                 appSvcDocDto.setSvcDocId(oldAppSvcDocDtoLit.get(i).getSvcDocId());
-                appSvcDocDto.setDocName("NA");
+                appSvcDocDto.setDocName("-");
                 appSvcDocDtoLit.add(appSvcDocDto);
             }
         } else if (appSvcDocDtoLit != null && oldAppSvcDocDtoLit != null) {
