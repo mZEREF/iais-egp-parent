@@ -211,6 +211,7 @@
                 </tbody>
             </table>
             <br/>
+            <c:if test="${specLicInfoFlag eq 'exist'}">
             <div style="width: 70%;margin-left: 1%;margin-right: 1%"><c:out value="${text3}"/></div>
             <br/>
             <table border="1" style="width: 60%">
@@ -241,6 +242,7 @@
                 </tr>
                 </c:forEach>
             </table>
+            </c:if>
         </div>
         <div style="width: 70%;margin-left: 1%;margin-right: 1%"><c:out value="${text1}"/></div>
         <br/>

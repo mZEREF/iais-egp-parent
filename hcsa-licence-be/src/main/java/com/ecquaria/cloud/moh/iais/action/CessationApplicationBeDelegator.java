@@ -169,11 +169,11 @@ public class CessationApplicationBeDelegator {
     }
 
     public void saveData(BaseProcessClass bpc) throws Exception {
-//        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-//        List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
-//        List<String> appIds = cessationBeService.saveCessations(appCessationDtos, loginContext.getLicenseeId());
-//        List<AppCessatonConfirmDto> confirmDto = cessationBeService.getConfirmDto(appCessationDtos, appIds, loginContext);
-//        ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) confirmDto);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
+        List<String> appIds = cessationBeService.saveCessations(appCessationDtos, loginContext.getLicenseeId());
+        List<AppCessatonConfirmDto> confirmDto = cessationBeService.getConfirmDto(appCessationDtos, appIds, loginContext);
+        ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) confirmDto);
     }
 
     public void response(BaseProcessClass bpc) throws IOException {
