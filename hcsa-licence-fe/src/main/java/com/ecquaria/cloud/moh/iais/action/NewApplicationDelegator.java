@@ -240,8 +240,8 @@ public class NewApplicationDelegator {
         if(flag){
             //init session and data
             initSession(bpc);
-            initOldSession(bpc);
         }
+        initOldSession(bpc);
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }
 
@@ -4433,29 +4433,7 @@ public class NewApplicationDelegator {
 
     private void initOldSession(BaseProcessClass bpc) throws CloneNotSupportedException {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "oldSubmitAppSubmissionDto");
-        if(appSubmissionDto == null){
-            appSubmissionDto = new AppSubmissionDto();
-            appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
-            AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-            appGrpPremisesDtoList.add(appGrpPremisesDto);
-            appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,  AppServicesConsts.HCSASERVICEDTOLIST);
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = IaisCommonUtils.genNewArrayList();
-            AppSvcRelatedInfoDto appSvcRelatedInfoDto = null;
-            for(HcsaServiceDto svc:hcsaServiceDtos){
-                appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
-                appSvcRelatedInfoDto.setServiceId(svc.getId());
-                appSvcRelatedInfoDto.setServiceCode(svc.getSvcCode());
-                appSvcRelatedInfoDto.setServiceType(svc.getSvcType());
-                appSvcRelatedInfoDto.setServiceName(svc.getSvcName());
-                appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
-            }
-            appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
-        }else{
-            //set dropDown
-
-            //set svc info,this fun will set oldAppSubmission
+        if(appSubmissionDto != null){
             appSubmissionDto = NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
             Object rfi = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
             //rfi just show one service
@@ -4522,33 +4500,7 @@ public class NewApplicationDelegator {
 
             }
 
-
         }
-        AppEditSelectDto changeSelectDto1 = appSubmissionDto.getChangeSelectDto()==null?new AppEditSelectDto():appSubmissionDto.getChangeSelectDto();
-        appSubmissionDto.setChangeSelectDto(changeSelectDto1);
-        //set licenseeId
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
-        if(loginContext != null){
-            appSubmissionDto.setLicenseeId(loginContext.getLicenseeId());
-        }else{
-            appSubmissionDto.setLicenseeId("");
-            log.info(StringUtil.changeForLog("user info is empty....."));
-        }
-
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        ParamUtil.setSessionAttr(bpc.request, "IndexNoCount", 0);
-
-        //reload
-        Map<String,AppGrpPrimaryDocDto> initBeforeReloadDocMap = IaisCommonUtils.genNewHashMap();
-        ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, (Serializable) initBeforeReloadDocMap);
-
-        //error_msg
-        ParamUtil.setSessionAttr(bpc.request, ERRORMAP_PREMISES, null);
-        ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, null);
-
-        //init svc psn conifg
-        Map<String,List<HcsaSvcPersonnelDto>> svcConfigInfo =  null;
-        ParamUtil.setSessionAttr(bpc.request, SERVICEALLPSNCONFIGMAP, (Serializable) svcConfigInfo);
 
     }
 

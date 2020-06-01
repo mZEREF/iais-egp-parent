@@ -523,7 +523,7 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.name ? '-' : oldLicenceDto.name}"
+                                                  <span class="newVal " attr="${empty oldLicenceDto.name ? '-' : oldLicenceDto.name}"
                                                         style="display: none"><label><c:out
                                                           value="${oldLicenceDto.name}"/></label></span>
                                               </div>
@@ -540,7 +540,7 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.postalCode ? '-' : oldLicenceDto.postalCode}"
+                                                  <span class="newVal " attr="${empty oldLicenceDto.postalCode ? '-' : oldLicenceDto.postalCode}"
                                                         style="display: none"><label><c:out
                                                           value="${oldLicenceDto.postalCode}"/></label></span>
                                               </div>
@@ -557,7 +557,7 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.addrType ? '-' : oldLicenceDto.addrType}"
+                                                  <span class="newVal " attr="${empty oldLicenceDto.addrType ? '-' : oldLicenceDto.addrType}"
                                                         style="display: none"><label><c:out
                                                           value="${oldLicenceDto.addrType}"/></label></span>
                                               </div>
@@ -574,7 +574,7 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.unitNo ? '-' : oldLicenceDto.unitNo}"
+                                                  <span class="newVal " attr="${empty oldLicenceDto.unitNo ? '-' : oldLicenceDto.unitNo}"
                                                         style="display: none"><label><c:out
                                                           value="${oldLicenceDto.unitNo}"/></label></span>
                                               </div>
@@ -591,7 +591,7 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                   <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.floorNo ? '-' : oldLicenceDto.floorNo}"
+                                                   <span class="newVal " attr="${empty oldLicenceDto.floorNo ? '-' : oldLicenceDto.floorNo}"
                                                          style="display: none"><label><c:out
                                                            value="${oldLicenceDto.floorNo}"/></label></span>
                                               </div>
@@ -608,7 +608,7 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.unitNo ? '-' : oldLicenceDto.unitNo}"
+                                                  <span class="newVal " attr="${empty oldLicenceDto.unitNo ? '-' : oldLicenceDto.unitNo}"
                                                         style="display: none"></span>
                                               </div>
                                               <div class="col-md-6">
@@ -624,7 +624,7 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.streetName ? '-' : oldLicenceDto.streetName}"
+                                                  <span class="newVal " attr="${empty oldLicenceDto.streetName ? '-' : oldLicenceDto.streetName}"
                                                         style="display: none"><label><c:out
                                                           value="${oldLicenceDto.streetName}"/></label></span>
                                               </div>
@@ -641,7 +641,7 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.buildingName ? '-' : oldLicenceDto.buildingName}"
+                                                  <span class="newVal " attr="${empty oldLicenceDto.buildingName ? '-' : oldLicenceDto.buildingName}"
                                                         style="display: none"><label><c:out
                                                           value="${oldLicenceDto.buildingName}"/></label></span>
                                               </div>
@@ -658,7 +658,7 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.officeTelNo ? '-' : oldLicenceDto.officeTelNo}"
+                                                  <span class="newVal " attr="${empty oldLicenceDto.officeTelNo ? '-' : oldLicenceDto.officeTelNo}"
                                                         style="display: none"><label><c:out
                                                           value="${oldLicenceDto.officeTelNo}"/></label></span>
                                               </div>
@@ -675,7 +675,7 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.emilAddr ? '-' : oldLicenceDto.emilAddr}"
+                                                  <span class="newVal " attr="${empty oldLicenceDto.emilAddr ? '-' : oldLicenceDto.emilAddr}"
                                                         style="display: none"><label><c:out
                                                           value="${oldLicenceDto.emilAddr}"/></label></span>
                                               </div>
@@ -1006,13 +1006,6 @@
             if (oldVal.length > 0 && newVal.length > 0) {
                 if (oldVal != newVal) {
                     $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            } else if ($("#view").val() == "") {
-                if (oldVal != newVal) {
-                    $(this).show();
-                    $(this).html("NA");
                 } else {
                     $(this).hide();
                 }
