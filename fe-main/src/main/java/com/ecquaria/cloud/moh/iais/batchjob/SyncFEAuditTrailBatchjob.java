@@ -30,15 +30,18 @@ public class SyncFEAuditTrailBatchjob {
 
         log.debug(StringUtil.changeForLog("The SyncFEAuditTrailBatchjob is start..." ));
         List<AuditTrailEntityDto> auditTrailDtos= syncAuditTrailRecordsService.getAuditTrailsByMigrated1();
-        log.info("------------------- getData  start --------------");
-        String data = syncAuditTrailRecordsService.getData(auditTrailDtos);
-        log.info("------------------- getData  end --------------");
-        syncAuditTrailRecordsService.saveFile(data);
-        log.info("------------------- saveFile  end --------------");
-        syncAuditTrailRecordsService.compressFile();
-        log.info("------------------- compressFile  end --------------");
+        do {
+            log.info("------------------- getData  start --------------");
+            String data = syncAuditTrailRecordsService.getData(auditTrailDtos);
+            log.info("------------------- getData  end --------------");
+            syncAuditTrailRecordsService.saveFile(data);
+            log.info("------------------- saveFile  end --------------");
+            syncAuditTrailRecordsService.compressFile();
+            log.info("------------------- compressFile  end --------------");
+            auditTrailDtos= syncAuditTrailRecordsService.getAuditTrailsByMigrated1();
+        }while (auditTrailDtos.size()>2);
 
-
+        log.info("------------------- End --------------");
 
 
     }
