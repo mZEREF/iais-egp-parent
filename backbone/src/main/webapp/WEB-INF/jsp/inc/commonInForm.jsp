@@ -12,6 +12,20 @@
 
 <script type="text/javascript">
 
-
+    <%if (ParamUtil.getRequestAttr(request, "memoryPagingLoading__Flag_Attr") != null) {%>
+    $(document).ready(function() {
+        <%
+          Set<String> pageSet = (Set<String>) ParamUtil.getRequestAttr(request, "memoryPagingLoading__Flag_Attr");
+          for (String divStr : pageSet) {
+              PaginationHandler hand = (PaginationHandler) ParamUtil.getSessionAttr(request, divStr + "__SessionAttr");
+              if (hand != null) {
+        %>
+        initMemoryPage('<%=divStr%>', '<%=hand.getCheckType()%>', <%=hand.getCurrentPageNo()%>);
+        <%
+              }
+          }
+        %>
+    });
+    <%}%>
 
 </script>
