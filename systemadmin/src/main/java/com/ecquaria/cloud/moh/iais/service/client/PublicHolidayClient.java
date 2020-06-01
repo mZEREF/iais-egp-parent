@@ -31,6 +31,9 @@ public interface PublicHolidayClient {
     @PostMapping(value = "/iais-publicHoliday/doSave", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PublicHolidayDto> doSave(@RequestBody PublicHolidayDto publicHolidayDto);
 
+    @PostMapping(value = "/iais-publicHoliday/doSaves", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> doSaves(@RequestBody List<PublicHolidayDto> publicHolidayDtos);
+
     @PostMapping(value = "/iais-publicHoliday/doUpdate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PublicHolidayDto> doUpdate(@RequestBody PublicHolidayDto publicHolidayDto);
 

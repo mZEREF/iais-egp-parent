@@ -39,6 +39,11 @@ public class PublicHolidayServiceImpl implements PublicHolidayService {
     }
 
     @Override
+    public void createHolidays(List<PublicHolidayDto> publicHolidayDtos){
+        publicHolidayClient.doSaves(publicHolidayDtos).getEntity();
+    }
+
+    @Override
     public PublicHolidayDto updateHoliday(PublicHolidayDto publicHolidayDto){
         return publicHolidayClient.doUpdate(publicHolidayDto).getEntity();
     }
