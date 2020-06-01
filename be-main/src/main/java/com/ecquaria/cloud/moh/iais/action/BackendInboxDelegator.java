@@ -305,6 +305,8 @@ public class BackendInboxDelegator {
                         }else{
                             successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
                         }
+                    }else{
+                        successStatus = ApplicationConsts.APPLICATION_STATUS_APPROVED;
                     }
                     log.debug(StringUtil.changeForLog("the do approve start ...."));
                     routingTask(bpc,null,successStatus,null,applicationViewDto,taskDto);
