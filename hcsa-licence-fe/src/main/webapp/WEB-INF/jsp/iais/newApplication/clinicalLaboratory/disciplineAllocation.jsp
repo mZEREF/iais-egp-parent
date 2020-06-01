@@ -136,7 +136,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        if(${AppSubmissionDto.needEditController && AppSubmissionDto.appEditSelectDto.serviceEdit && !isClickEdit}){
+        if(${AppSubmissionDto.needEditController && !isClickEdit}){
             $('div.nice-select').addClass('disabled');
         }
 

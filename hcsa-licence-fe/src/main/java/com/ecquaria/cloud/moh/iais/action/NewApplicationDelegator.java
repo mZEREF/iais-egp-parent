@@ -3427,8 +3427,17 @@ public class NewApplicationDelegator {
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
                 //ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
             }else{
-                String errMsg = "You hava already replied to this RFI";
-                jumpToAckPage(bpc,NewApplicationConstant.ACK_STATUS_ERROR,errMsg);
+                ApplicationDto applicationDto = appSubmissionService.getMaxVersionApp(appNo);
+                if(applicationDto != null){
+                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
+                    if(hcsaServiceDto != null){
+                        List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
+                        hcsaServiceDtoList.add(hcsaServiceDto);
+                        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+                    }
+                    String errMsg = "You hava already replied to this RFI";
+                    jumpToAckPage(bpc,NewApplicationConstant.ACK_STATUS_ERROR,errMsg);
+                }
             }
             ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,"test");
         }
@@ -4315,7 +4324,6 @@ public class NewApplicationDelegator {
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         }else{
             //set dropDown
-
             //set svc info,this fun will set oldAppSubmission
             appSubmissionDto = NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
             Object rfi = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
@@ -4369,6 +4377,16 @@ public class NewApplicationDelegator {
                         NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcCgoDtos,svcCode);
                         NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(),svcCode);
                         NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(),svcCode);
+                    }
+                    //set dpo select flag
+                    List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+                    if(!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)){
+                        for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto:appSvcPrincipalOfficersDtos){
+                            if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(appSvcPrincipalOfficersDto.getPsnType())){
+                                appSvcRelatedInfoDto.setDeputyPoFlag(AppConsts.YES);
+                                break;
+                            }
+                        }
                     }
                 }
             }

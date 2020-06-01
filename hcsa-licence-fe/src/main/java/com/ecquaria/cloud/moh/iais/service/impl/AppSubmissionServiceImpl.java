@@ -57,7 +57,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.webflow.rt.api.Process;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -658,6 +657,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public AppFeeDetailsDto saveAppFeeDetails(AppFeeDetailsDto appFeeDetailsDto) {
         return   applicationClient.saveAppFeeDetails(appFeeDetailsDto).getEntity();
+    }
+
+    @Override
+    public ApplicationDto getMaxVersionApp(String appNo) {
+        return applicationClient.getApplicationDtoByVersion(appNo).getEntity();
     }
 
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){

@@ -469,7 +469,7 @@
         $('select.deputyPoSelect').trigger('change');
 
         //disabled
-        if(${AppSubmissionDto.needEditController && (AppSubmissionDto.appEditSelectDto.serviceEdit || AppSubmissionDto.appEditSelectDto.poEdit) && !isClickEdit}){
+        if(${AppSubmissionDto.needEditController && !isClickEdit}){
             $('.po-content input[type="text"]').prop('disabled',true);
             $('.po-content div.nice-select').addClass('disabled');
             $('.po-content input[type="text"]').css('border-color','#ededed');
@@ -477,7 +477,7 @@
             $('#addPoBtn').addClass('hidden');
             $('#addPoBtn').unbind('click');
         }
-        if(${AppSubmissionDto.needEditController && (AppSubmissionDto.appEditSelectDto.serviceEdit || AppSubmissionDto.appEditSelectDto.dpoEdit) && !isClickEditDpo}){
+        if(${AppSubmissionDto.needEditController && !isClickEditDpo}){
             $('.deputySelect').addClass('disabled');
             $('.deputy-content input[type="text"]').prop('disabled',true);
             $('.deputy-content div.nice-select').addClass('disabled');
@@ -485,7 +485,6 @@
             $('.deputy-content input[type="text"]').css('color','#999');
             $('#addDpoBtn').unbind('click');
         }
-
         <!-- init end-->
         init = 1;
     });

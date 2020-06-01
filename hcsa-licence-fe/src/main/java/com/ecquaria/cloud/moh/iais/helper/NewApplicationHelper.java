@@ -254,6 +254,7 @@ public class NewApplicationHelper {
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtoList){
+                    //set hcsaService info
                     for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtoList){
                         String svcId = appSvcRelatedInfoDto.getServiceId();
                         String name = appSvcRelatedInfoDto.getServiceName();
