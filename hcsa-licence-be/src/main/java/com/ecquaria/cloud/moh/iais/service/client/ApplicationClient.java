@@ -3,10 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
@@ -247,4 +244,10 @@ public interface ApplicationClient {
 
     @PostMapping(value = "/iais-application-be/application-group-cess",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationLicenceDto>> getCessGroup(@RequestBody List<String>  groupIds);
+
+    @GetMapping(value = "/iais-application-be/app-fee-detail-by-application-no",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppFeeDetailsDto> getAppFeeDetailsDtoByApplicationNo(@RequestParam ("applicationNo") String applicationNo);
+
+    @PostMapping(value = "/iais-application-be/save-app-return-fee",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppReturnFeeDto> saveAppReturnFee(@RequestBody AppReturnFeeDto appReturnFeeDto);
 }

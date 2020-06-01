@@ -7,6 +7,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -376,6 +378,16 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public ApplicationDto getApplicationBytaskId(String ref){
         return applicationClient.getApplicationBytaskId(ref).getEntity();
+    }
+
+    @Override
+    public AppFeeDetailsDto getAppFeeDetailsDtoByApplicationNo(String applicationNo) {
+        return applicationClient.getAppFeeDetailsDtoByApplicationNo(applicationNo).getEntity();
+    }
+
+    @Override
+    public AppReturnFeeDto saveAppReturnFee(AppReturnFeeDto appReturnFeeDto) {
+        return applicationClient.saveAppReturnFee(appReturnFeeDto).getEntity();
     }
 
     @Override
