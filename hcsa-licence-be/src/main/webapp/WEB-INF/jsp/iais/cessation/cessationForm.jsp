@@ -25,10 +25,10 @@
             <table border="1">
                 <thead>
                 <tr>
-                    <th style="text-align:center;width: 3%">S/N</th>
-                    <th style="text-align:center;width: 10%">Licence No.</th>
+                    <th style="text-align:center;width: 4%">S/N</th>
+                    <th style="text-align:center;width: 8%">Licence No.</th>
                     <th style="text-align:center;width: 10%">Service Name</th>
-                    <th style="text-align:center;width: 7%">HCI Name</th>
+                    <th style="text-align:center;width: 8%">HCI Name</th>
                     <th style="text-align:center;width: 10%">HCI Address</th>
                     <th style="text-align:center;width: 10%">Effective Date <a
                             class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true"

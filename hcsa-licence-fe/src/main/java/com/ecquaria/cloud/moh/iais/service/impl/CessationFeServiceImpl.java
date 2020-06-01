@@ -2,15 +2,15 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
@@ -21,88 +21,90 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
-import com.ecquaria.cloud.moh.iais.helper.*;
-import com.ecquaria.cloud.moh.iais.service.CessationService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.CessationFeService;
+import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
-import com.ecquaria.cloudfeign.FeignException;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * @author weilu
- * @date 2020/2/26 16:29
+ * @date 2020/2/7 13:17
  */
 @Service
-@Slf4j
-public class CessationServiceImpl implements CessationService {
-    private final static String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
-    private final static String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
+public class CessationFeServiceImpl implements CessationFeService {
 
     @Autowired
-    private HcsaLicenceClient hcsaLicenceClient;
+    private LicenceClient licenceClient;
     @Autowired
     private CessationClient cessationClient;
     @Autowired
+    private SystemAdminClient systemAdminClient;
+    @Autowired
     private ApplicationClient applicationClient;
     @Autowired
-    private BeEicGatewayClient beEicGatewayClient;
-    @Autowired
-    private HcsaConfigClient hcsaConfigClient;
-    @Autowired
-    private TaskService taskService;
-    @Autowired
-    private MsgTemplateClient msgTemplateClient;
-    @Autowired
-    private EicRequestTrackingHelper eicRequestTrackingHelper;
-    @Autowired
-    private EmailClient emailClient;
+    private FeEicGatewayClient feEicGatewayClient;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
     private String secKeyId;
-
     @Value("${iais.hmac.secretKey}")
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
-
-
     @Value("${iais.email.sender}")
     private String mailSender;
+    @Autowired
+    private AppConfigClient appConfigClient;
+    @Autowired
+    AppSubmissionService appSubmissionService;
+    private final static String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
+    private final static String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
+
+    @Override
+    public List<String> getActiveLicence(List<String> licIds) {
+        List<String> activeLicIds = IaisCommonUtils.genNewArrayList();
+        for (String licId : licIds) {
+            LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
+            String status = licenceDto.getStatus();
+            if (ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)) {
+                activeLicIds.add(licId);
+            }
+        }
+        return activeLicIds;
+    }
 
     @Override
     public List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds) {
-        List<AppCessLicDto> appCessDtos = IaisCommonUtils.genNewArrayList();
+        List<AppCessLicDto> appCessLicDtos = IaisCommonUtils.genNewArrayList();
         if (licIds != null && !licIds.isEmpty()) {
             for (String licId : licIds) {
                 AppCessLicDto appCessDto = new AppCessLicDto();
-                LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
-                List<PremisesDto> premisesDtos = hcsaLicenceClient.getPremisess(licId).getEntity();
+                LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
+                List<PremisesDto> premisesDtos = licenceClient.getPremisesDto(licId).getEntity();
                 String svcName = licenceDto.getSvcName();
                 String licenceNo = licenceDto.getLicenceNo();
                 appCessDto.setLicenceNo(licenceNo);
@@ -128,59 +130,105 @@ public class CessationServiceImpl implements CessationService {
                     }
                 }
                 appCessDto.setAppCessHciDtos(appCessHciDtos);
-                appCessDtos.add(appCessDto);
+                appCessLicDtos.add(appCessDto);
             }
-            return appCessDtos;
+            return appCessLicDtos;
         } else {
             return null;
         }
+
+    }
+
+
+    @Override
+    public List<AppCessLicDto> getOldCessationByIds(List<String> licIds) {
+        List<AppCessLicDto> appCessLicDtos = cessationClient.getCessationByLicIds(licIds).getEntity();
+        if (appCessLicDtos != null && !appCessLicDtos.isEmpty()) {
+            for (AppCessLicDto appCessLicDto : appCessLicDtos) {
+                String licenceId = appCessLicDto.getLicenceId();
+                LicenceDto licenceDto = licenceClient.getLicBylicId(licenceId).getEntity();
+                List<PremisesDto> premisesDtos = licenceClient.getPremisesDto(licenceId).getEntity();
+                String svcName = licenceDto.getSvcName();
+                String licenceNo = licenceDto.getLicenceNo();
+                appCessLicDto.setLicenceNo(licenceNo);
+                appCessLicDto.setSvcName(svcName);
+                if (premisesDtos != null && !premisesDtos.isEmpty()) {
+                    String hciAddress;
+                    String hciName;
+                    List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
+                    for (int i = 0; i < premisesDtos.size(); i++) {
+                        PremisesDto premisesDto = premisesDtos.get(i);
+                        String blkNo = premisesDto.getBlkNo();
+                        String streetName = premisesDto.getStreetName();
+                        String buildingName = premisesDto.getBuildingName();
+                        String floorNo = premisesDto.getFloorNo();
+                        String unitNo = premisesDto.getUnitNo();
+                        String postalCode = premisesDto.getPostalCode();
+                        hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
+                        hciName = premisesDto.getHciName();
+                        AppCessHciDto appCessHciDto = appCessHciDtos.get(i);
+                        appCessHciDto.setHciName(hciName);
+                        appCessHciDto.setHciAddress(hciAddress);
+                    }
+                }
+            }
+        }
+        return appCessLicDtos;
     }
 
     @Override
-    public List<String> saveCessations(List<AppCessationDto> appCessationDtos, String licenseeId) {
+    public void updateLicenceFe(List<String> licNos) {
+        List<LicenceDto> licenceDtos = licenceClient.getLicDtosByLicNos(licNos).getEntity();
+        List<String> licIds = IaisCommonUtils.genNewArrayList();
+        if (licenceDtos != null && !licenceDtos.isEmpty()) {
+            for (LicenceDto licenceDto : licenceDtos) {
+                String licId = licenceDto.getId();
+                licIds.add(licId);
+            }
+        }
+        List<String> specLicIds = licenceClient.getSpecLicIdsByLicIds(licIds).getEntity();
+        if(!IaisCommonUtils.isEmpty(specLicIds) && !IaisCommonUtils.isEmpty(licenceDtos)){
+           for(String specId :specLicIds){
+               LicenceDto entity = licenceClient.getLicBylicId(specId).getEntity();
+               licenceDtos.add(entity);
+           }
+        }
+        if (licenceDtos != null && !licenceDtos.isEmpty()) {
+            for (LicenceDto licenceDto : licenceDtos) {
+                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
+                licenceClient.doUpdate(licenceDto);
+            }
+
+            }
+
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        feEicGatewayClient.updateLicenceStatus(licenceDtos, signature.date(), signature.authorization(), signature2.date(), signature2.authorization());
+    }
+
+    @Override
+    public List<String> saveCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext) {
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
-        Map<String, List<String>> licPremiseIdMap = IaisCommonUtils.genNewHashMap();
-        for (AppCessationDto appCessationDto : appCessationDtos) {
+        String licenseeId = loginContext.getLicenseeId();
+        for(AppCessationDto appCessationDto : appCessationDtos){
             String licId = appCessationDto.getLicId();
             String premiseId = appCessationDto.getPremiseId();
-            List<String> premiseIds = licPremiseIdMap.get(licId);
-            if (premiseIds == null) {
-                List<String> premisesIds = IaisCommonUtils.genNewArrayList();
-                premisesIds.add(premiseId);
-                licPremiseIdMap.put(licId, premisesIds);
-            } else {
-                premiseIds.add(premiseId);
-            }
-        }
-        Map<String, String> appIdPremisesMap = IaisCommonUtils.genNewHashMap();
-        for (String licId : licPremiseIdMap.keySet()) {
-            List<String> licIds = IaisCommonUtils.genNewArrayList();
-            licIds.clear();
-            licIds.add(licId);
-            AppSubmissionDto appSubmissionDto = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity().get(0);
-            List<String> premiseIds = licPremiseIdMap.get(licId);
-            Map<String, String> transform = transform(appSubmissionDto, licenseeId, premiseIds);
-            appIdPremisesMap.putAll(transform);
-        }
-        for (String premiseId : appIdPremisesMap.keySet()) {
-            String appId = appIdPremisesMap.get(premiseId);
-            for (AppCessationDto appCessationDto : appCessationDtos) {
-                String premiseId1 = appCessationDto.getPremiseId();
-                if (premiseId.equals(premiseId1)) {
-                    AppCessMiscDto appCessMiscDto = setMiscData(appCessationDto, appId);
-                    appCessMiscDtos.add(appCessMiscDto);
-                    appIds.add(appId);
-                }
-            }
+            AppSubmissionDto appSubmissionDto = licenceClient.getAppSubmissionDto(licId).getEntity();
+            String appId = transform(appSubmissionDto, licenseeId, premiseId);
+            AppCessMiscDto appCessMiscDto = setMiscData(appCessationDto, appId);
+            appCessMiscDtos.add(appCessMiscDto);
+            appIds.add(appId);
         }
         cessationClient.saveCessation(appCessMiscDtos).getEntity();
         return appIds;
     }
 
+
     @Override
-    public Map<String,Boolean> listResultCeased(List<String> licIds) {
-        return cessationClient.listCanCeased(licIds).getEntity();
+    public AppPremisesCorrelationDto getAppPreCorDto(String appId) {
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = applicationClient.listAppPremisesCorrelation(appId).getEntity();
+        return appPremisesCorrelationDtoList.get(0);
     }
 
     @Override
@@ -190,18 +238,69 @@ public class CessationServiceImpl implements CessationService {
     }
 
     @Override
+    public List<Boolean> listResultCeased(List<String> licIds) {
+        List<Boolean> results = IaisCommonUtils.genNewArrayList();
+        for (String licId : licIds) {
+            List<String> appIds = licenceClient.getAppIdsByLicId(licId).getEntity();
+            List<String> appIdsTrue = IaisCommonUtils.genNewArrayList();
+            if (appIds != null && !appIds.isEmpty()) {
+                for (String appId : appIds) {
+                    ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+                    String status = applicationDto.getStatus();
+                    if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status) || ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(status) || ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(status)) {
+                        appIdsTrue.add(appId);
+                    }
+                }
+            }
+
+            if(appIds!=null){
+                int size  = appIds.size();
+                int size1 = appIdsTrue.size();
+                if (size == size1) {
+                    results.add(Boolean.TRUE);
+                } else {
+                    results.add(Boolean.FALSE);
+                }
+            }
+        }
+        return results;
+    }
+
+
+    @Override
+    public void sendEmail(String msgId, Date date,String svcName,String appGrpId,String licenseeId,String licNo) throws IOException, TemplateException {
+        Map<String,Object> map = new HashMap<>(34);
+        String dateStr = DateUtil.formatDateTime(date, "dd/MM/yyyy");
+        map.put("date",dateStr);
+        map.put("licenceA",svcName+": "+licNo);
+        MsgTemplateDto entity = appSubmissionService.getMsgTemplateById(msgId);
+        String messageContent = entity.getMessageContent();
+        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+        EmailDto emailDto = new EmailDto();
+        emailDto.setContent(templateMessageByContent);
+        emailDto.setSubject("MOH IAIS – Cessation");
+        emailDto.setSender(mailSender);
+        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+        emailDto.setClientQueryCode(appGrpId);
+        appSubmissionService.feSendEmail(emailDto);
+    }
+
+    @Override
     public List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, List<String> appIds, LoginContext loginContext) throws Exception {
-        List<String> licIds = IaisCommonUtils.genNewArrayList();
-        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+        List<String> licIds = IaisCommonUtils.genNewArrayList();
+        List<String> listAppIds = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < appCessationDtos.size(); i++) {
             AppCessationDto appCessationDto = appCessationDtos.get(i);
             String licId = appCessationDto.getLicId();
-            LicenceDto entity = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
-            String licenseeId = entity.getLicenseeId();
+            LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
+            String licenseeId = licenceDto.getLicenseeId();
             licIds.clear();
             licIds.add(licId);
             String appId = appIds.get(i);
+            listAppIds.clear();
+            listAppIds.add(appId);
             ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
             applicationDtos.add(applicationDto);
             List<AppCessLicDto> appCessDtosByLicIds = getAppCessDtosByLicIds(licIds);
@@ -212,10 +311,10 @@ public class CessationServiceImpl implements CessationService {
             String hciAddress = appCessLicDto.getAppCessHciDtos().get(0).getHciAddress();
             String applicationNo = applicationDto.getApplicationNo();
             Date effectiveDate = appCessationDto.getEffectiveDate();
-            if (effectiveDate.after(new Date())) {
-                sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
-            } else {
-                sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
+            if(effectiveDate.after(new Date())){
+                sendEmail(FURTHERDATECESSATION,effectiveDate,svcName,licId,licenseeId,licenceNo);
+            }else {
+                sendEmail(PRESENTDATECESSATION,effectiveDate,svcName,licId,licenseeId,licenceNo);
             }
             AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
             appCessatonConfirmDto.setAppNo(applicationNo);
@@ -226,101 +325,73 @@ public class CessationServiceImpl implements CessationService {
             appCessatonConfirmDto.setHciName(hciName);
             appCessationDtosConfirms.add(appCessatonConfirmDto);
         }
-        routingTaskToAo3(applicationDtos, loginContext);
         List<String> licNos = IaisCommonUtils.genNewArrayList();
-        for (AppCessatonConfirmDto appCessatonConfirmDto : appCessationDtosConfirms) {
+        for(AppCessatonConfirmDto appCessatonConfirmDto :appCessationDtosConfirms){
             String licenceNo = appCessatonConfirmDto.getLicenceNo();
             Date effectiveDate = appCessatonConfirmDto.getEffectiveDate();
-            if (effectiveDate.before(new Date())) {
+            if(effectiveDate.before(new Date())){
                 licNos.add(licenceNo);
             }
+        }
+        if(!licNos.isEmpty()){
+            updateLicenceFe(licNos);
         }
         return appCessationDtosConfirms;
     }
 
-    @Override
-    public void sendEmail(String msgId, Date date, String svcName, String appGrpId, String licenseeId, String licNo) throws IOException, TemplateException {
-        Map<String, Object> map = new HashMap<>(34);
-        String dateStr = DateUtil.formatDateTime(date, "dd/MM/yyyy");
-        map.put("date", dateStr);
-        map.put("licenceA", svcName + ": " + licNo);
-        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate(msgId).getEntity();
-        String messageContent = entity.getMessageContent();
-        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
-        EmailDto emailDto = new EmailDto();
-        emailDto.setContent(templateMessageByContent);
-        emailDto.setSubject("MOH IAIS – Cessation");
-        emailDto.setSender(mailSender);
-        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-        emailDto.setClientQueryCode(appGrpId);
-        emailClient.sendNotification(emailDto).getEntity();
-    }
-
-    private void routingTaskToAo3(List<ApplicationDto> applicationDtos, LoginContext loginContext) throws FeignException {
-        String curRoleId = loginContext.getCurRoleId();
-        log.info(StringUtil.changeForLog("=============>>>roleId" + curRoleId));
-        TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtos, HcsaConsts.ROUTING_STAGE_AO3, RoleConsts.USER_ROLE_AO3, IaisEGPHelper.getCurrentAuditTrailDto());
-        List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
-        taskService.createTasks(taskDtos);
-        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryDtos.get(0);
-        appPremisesRoutingHistoryDto.setRoleId(curRoleId);
-        appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
-        appPremisesRoutingHistoryDto.setProcessDecision(ApplicationConsts.PROCESSING_DECISION_VERIFIED);
-        taskService.createHistorys(appPremisesRoutingHistoryDtos);
-    }
-
-    private Map<String, String> transform(AppSubmissionDto appSubmissionDto, String licenseeId,List<String> premiseIds) {
-        Map<String, String> map = IaisCommonUtils.genNewHashMap();
+    /*
+    utils
+     */
+    private String transform(AppSubmissionDto appSubmissionDto,String licenseeId,String premiseId){
         Double amount = 0.0;
-        AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_CESSATION, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+        String appId = null;
+        AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
+        String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_CESSATION).getEntity();
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
-        log.info(StringUtil.changeForLog("============================serviceName" + serviceName));
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
         String svcId = hcsaServiceDto.getId();
         String svcCode = hcsaServiceDto.getSvcCode();
         appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
         appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
         appSubmissionDto.setAppGrpNo(grpNo);
+        appSubmissionDto.setFromBe(false);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
         appSubmissionDto.setAmount(amount);
         appSubmissionDto.setAuditTrailDto(internet);
-        appSubmissionDto.setFromBe(true);
         appSubmissionDto.setPreInspection(true);
         appSubmissionDto.setRequirement(true);
         appSubmissionDto.setLicenseeId(licenseeId);
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
         setRiskToDto(appSubmissionDto);
-        AppSubmissionDto entity = applicationClient.saveApps(appSubmissionDto).getEntity();
-        AppSubmissionDto appSubmissionDtoSave = applicationClient.saveSubmision(entity).getEntity();
+
+        AppSubmissionDto entity = applicationClient.saveSubmision(appSubmissionDto).getEntity();
+        AppSubmissionDto appSubmissionDtoSave = applicationClient.saveApps(entity).getEntity();
         List<ApplicationDto> applicationDtos = appSubmissionDtoSave.getApplicationDtos();
+        List<ApplicationDto> needNewGroupLic = IaisCommonUtils.genNewArrayList();
         for(ApplicationDto applicationDto :applicationDtos) {
             String id = applicationDto.getId();
             AppGrpPremisesDto dto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
             String hciCode = dto.getHciCode();
-            for(String premiseId :premiseIds){
-                PremisesDto entity1 = hcsaLicenceClient.getLicPremisesDtoById(premiseId).getEntity();
-                String hciCode1 = entity1.getHciCode();
-                if (hciCode1.equals(hciCode)) {
-                    String appId = id ;
-                    map.put(premiseId, appId);
-                    applicationDto.setNeedNewLicNo(false);
-                    applicationDto.setGroupLicenceFlag(null);
-                }else {
-                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-                }
-                applicationClient.updateApplication(applicationDto);
+            PremisesDto entity1 = licenceClient.getLicPremisesDtoById(premiseId).getEntity();
+            String hciCode1 = entity1.getHciCode();
+            if (hciCode1.equals(hciCode)) {
+                appId = id ;
+            }else {
+                needNewGroupLic.add(applicationDto);
             }
         }
-        return map;
+        String appGrpId = needNewGroupLic.get(0).getAppGrpId();
+        ApplicationGroupDto applicationGroupDto = applicationClient.getApplicationGroup(appGrpId).getEntity();
+        ApplicationLicenceDto groupApplicationLicenceDto = new ApplicationLicenceDto();
+        groupApplicationLicenceDto.setApplicationGroupDto(applicationGroupDto);
+
+        return appId;
+
     }
 
-    private AppCessMiscDto setMiscData(AppCessationDto appCessationDto, String appId) {
+    private AppCessMiscDto setMiscData(AppCessationDto appCessationDto,String appId) {
         Date effectiveDate = appCessationDto.getEffectiveDate();
         String reason = appCessationDto.getReason();
         String otherReason = appCessationDto.getOtherReason();
@@ -361,7 +432,7 @@ public class CessationServiceImpl implements CessationService {
             riskAcceptiionDtoList.add(riskAcceptiionDto);
         }
 
-        List<RiskResultDto> riskResultDtoList = hcsaConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
+        List<RiskResultDto> riskResultDtoList = appConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
 
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             String serviceCode = appSvcRelatedInfoDto.getServiceCode();
@@ -384,15 +455,5 @@ public class CessationServiceImpl implements CessationService {
             }
         }
         return result;
-    }
-
-    private List<LicenceDto> updateLicenceStatus(List<LicenceDto> licenceDtos,Date date){
-        List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
-        for(LicenceDto licenceDto :licenceDtos){
-            licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
-            licenceDto.setEndDate(date);
-            updateLicenceDtos.add(licenceDto);
-        }
-        return updateLicenceDtos;
     }
 }

@@ -17,7 +17,7 @@ import java.util.Map;
  * @author weilu
  * @date 2020/2/26 16:27
  */
-public interface CessationService {
+public interface CessationBeService {
 
     List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds);
 

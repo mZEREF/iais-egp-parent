@@ -16,7 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.CessationService;
+import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
@@ -35,26 +35,26 @@ import java.util.Map;
  * @author weilu
  * @date 2020/2/7 13:12
  */
-@Delegator("CessationApplication")
+@Delegator("CessationApplicationBe")
 @Slf4j
-public class CessationApplicationDelegator {
+public class CessationApplicationBeDelegator {
 
     @Autowired
-    private CessationService cessationService;
+    private CessationBeService cessationBeService;
 
-    private static final String APPCESSATIONDTOS ="appCessationDtos";
-    private static final String READINFO ="readInfo";
-    private static final String WHICHTODO ="whichTodo";
-    private static final String EFFECTIVEDATE ="effectiveDate";
-    private static final String REASON ="reason";
-    private static final String OTHERREASON ="otherReason";
-    private static final String PATRADIO ="patRadio";
-    private static final String PATIENTSELECT ="patientSelect";
-    private static final String PATNOREMARKS ="patNoRemarks";
-    private static final String PATHCINAME ="patHciName";
-    private static final String PATREGNO ="patRegNo";
-    private static final String PATOTHERS ="patOthers";
-    private static final String ERROR ="ERR0009";
+    private static final String APPCESSATIONDTOS = "appCessationDtos";
+    private static final String READINFO = "readInfo";
+    private static final String WHICHTODO = "whichTodo";
+    private static final String EFFECTIVEDATE = "effectiveDate";
+    private static final String REASON = "reason";
+    private static final String OTHERREASON = "otherReason";
+    private static final String PATRADIO = "patRadio";
+    private static final String PATIENTSELECT = "patientSelect";
+    private static final String PATNOREMARKS = "patNoRemarks";
+    private static final String PATHCINAME = "patHciName";
+    private static final String PATREGNO = "patRegNo";
+    private static final String PATOTHERS = "patOthers";
+    private static final String ERROR = "ERR0009";
 
 
     public void start(BaseProcessClass bpc) {
@@ -64,13 +64,12 @@ public class CessationApplicationDelegator {
     }
 
     public void init(BaseProcessClass bpc) {
-        List<String> licIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "licIds");
-        if(licIds==null){
+        List<String> licIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licIds");
+        if (licIds == null || licIds.size() == 0) {
             licIds = IaisCommonUtils.genNewArrayList();
-            licIds.add("4176FF73-895E-EA11-BE7F-000C29F371DC");
+            licIds.add("B61C1AE8-5988-EA11-BE82-000C29F371DC");
         }
-        List<String> activeLicence = cessationService.getActiveLicence(licIds);
-        List<AppCessLicDto> appCessDtosByLicIds = cessationService.getAppCessDtosByLicIds(activeLicence);
+        List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIds(licIds);
         int size = appCessDtosByLicIds.size();
         List<SelectOption> reasonOption = getReasonOption();
         List<SelectOption> patientsOption = getPatientsOption();
@@ -89,17 +88,19 @@ public class CessationApplicationDelegator {
     }
 
     public void prepareData(BaseProcessClass bpc) {
+        log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>CessationApplicationDelegator");
     }
 
     public void valiant(BaseProcessClass bpc) throws IOException {
-        String action_type = ParamUtil.getRequestString(bpc.request, "crud_action_type");
-        if ("back".equals(action_type)) {
+        String actionType = ParamUtil.getRequestString(bpc.request, "crud_action_type");
+        if ("back".equals(actionType)) {
             StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
+            url.append("https://").append(bpc.request.getServerName()).append("/hcsa-licence-web/eservice/INTRANET/MohLicenceManagement");
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
             return;
         }
+
         List<AppCessLicDto> appCessDtosByLicIds = (List<AppCessLicDto>) ParamUtil.getSessionAttr(bpc.request, APPCESSATIONDTOS);
         int size = (int) ParamUtil.getSessionAttr(bpc.request, "size");
         List<AppCessLicDto> appCessHciDtos = prepareDataForValiant(bpc, size, appCessDtosByLicIds);
@@ -110,14 +111,13 @@ public class CessationApplicationDelegator {
         String readInfo = ParamUtil.getRequestString(bpc.request, READINFO);
         ParamUtil.setSessionAttr(bpc.request, READINFO, readInfo);
         Map<String, String> errorMap = new HashMap<>(34);
-        Boolean choose = Boolean.FALSE;
+        boolean choose = false;
         for (int i = 1; i <= size; i++) {
-            int size1 = appCessDtosByLicIds.get(i-1).getAppCessHciDtos().size();
-            for (int j = 1; j <=size1 ; j++) {
+            int size1 = appCessHciDtos.get(i - 1).getAppCessHciDtos().size();
+            for (int j = 1; j <= size1; j++) {
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + WHICHTODO + j);
                 if (!StringUtil.isEmpty(whichTodo)) {
-                    choose = Boolean.TRUE;
-                    break;
+                    choose = true;
                 }
             }
         }
@@ -152,32 +152,32 @@ public class CessationApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appCessationDtosSave", (Serializable) appCessationDtos);
     }
 
-    public void action(BaseProcessClass bpc) throws IOException {
-        String action_type = ParamUtil.getRequestString(bpc.request, "crud_action_type");
-        if ("submit".equals(action_type)) {
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-        } else if ("back".equals(action_type)) {
+    public void action(BaseProcessClass bpc) {
+        String actionType = ParamUtil.getRequestString(bpc.request, "crud_action_type");
+        if ("submit".equals(actionType)) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+        } else if ("back".equals(actionType)) {
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         }
     }
 
     public void saveData(BaseProcessClass bpc) throws Exception {
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
-        List<String> appIds = cessationService.saveCessations(appCessationDtos,loginContext);
-        List<AppCessatonConfirmDto> confirmDto = cessationService.getConfirmDto(appCessationDtos, appIds, loginContext);
-        ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable)confirmDto);
+        List<String> appIds = cessationBeService.saveCessations(appCessationDtos, loginContext.getLicenseeId());
+        List<AppCessatonConfirmDto> confirmDto = cessationBeService.getConfirmDto(appCessationDtos, appIds, loginContext);
+        ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) confirmDto);
     }
 
     public void response(BaseProcessClass bpc) throws IOException {
         StringBuilder url = new StringBuilder();
-        url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
+        url.append("https://").append(bpc.request.getServerName()).append("/hcsa-licence-web/eservice/INTRANET/MohLicenceManagement");
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
 
     /*
-     * utils
+        utils
      */
 
     private List<AppCessLicDto> prepareDataForValiant(BaseProcessClass bpc, int size, List<AppCessLicDto> appCessDtosByLicIds) {
@@ -190,43 +190,34 @@ public class CessationApplicationDelegator {
             for (int j = 1; j <= size1; j++) {
                 AppCessHciDto appCessHciDto = appCessHciDtoso.get(j - 1);
                 String whichTodo = ParamUtil.getRequestString(bpc.request, i + WHICHTODO + j);
-//                if (!StringUtil.isEmpty(whichTodo)) {
-                    String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i + EFFECTIVEDATE + j);
-                    Date effectiveDate = DateUtil.parseDate(effectiveDateStr, AppConsts.DEFAULT_DATE_FORMAT);
-                    String reason = ParamUtil.getRequestString(bpc.request, i + REASON + j);
-                    String otherReason = ParamUtil.getRequestString(bpc.request, i + OTHERREASON + j);
-                    String patRadio = ParamUtil.getRequestString(bpc.request, i + PATRADIO + j);
-                    Boolean patNeedTrans = null;
-                    if ("yes".equals(patRadio)) {
-                        patNeedTrans = Boolean.TRUE;
-                    } else if ("no".equals(patRadio)) {
-                        patNeedTrans = Boolean.FALSE;
-                    }
-                    String patientSelect = ParamUtil.getRequestString(bpc.request, i + PATIENTSELECT + j);
-                    String patNoRemarks = ParamUtil.getRequestString(bpc.request, i + PATNOREMARKS + j);
-                    String patHciName = ParamUtil.getRequestString(bpc.request, i + PATHCINAME + j);
-                    String patRegNo = ParamUtil.getRequestString(bpc.request, i + PATREGNO + j);
-                    String patOthers = ParamUtil.getRequestString(bpc.request, i + PATOTHERS + j);
-                    String readInfo = ParamUtil.getRequestString(bpc.request, READINFO);
-                    String hciName = appCessHciDto.getHciName();
-                    String hciAddress = appCessHciDto.getHciAddress();
+                String effectiveDateStr = ParamUtil.getRequestString(bpc.request, i + EFFECTIVEDATE + j);
+                Date effectiveDate = DateUtil.parseDate(effectiveDateStr, AppConsts.DEFAULT_DATE_FORMAT);
+                String reason = ParamUtil.getRequestString(bpc.request, i + REASON + j);
+                String otherReason = ParamUtil.getRequestString(bpc.request, i + OTHERREASON + j);
+                String patRadio = ParamUtil.getRequestString(bpc.request, i + PATRADIO + j);
+                boolean patNeedTrans = "yes".equals(patRadio);
+                String patientSelect = ParamUtil.getRequestString(bpc.request, i + PATIENTSELECT + j);
+                String patNoRemarks = ParamUtil.getRequestString(bpc.request, i + PATNOREMARKS + j);
+                String patHciName = ParamUtil.getRequestString(bpc.request, i + PATHCINAME + j);
+                String patRegNo = ParamUtil.getRequestString(bpc.request, i + PATREGNO + j);
+                String patOthers = ParamUtil.getRequestString(bpc.request, i + PATOTHERS + j);
+                String readInfo = ParamUtil.getRequestString(bpc.request, READINFO);
+                String hciName = appCessHciDto.getHciName();
+                String hciAddress = appCessHciDto.getHciAddress();
 
-                    appCessHciDto.setHciAddress(hciAddress);
-                    appCessHciDto.setHciName(hciName);
-                    appCessHciDto.setEffectiveDate(effectiveDate);
-                    appCessHciDto.setReason(reason);
-                    appCessHciDto.setOtherReason(otherReason);
-                    appCessHciDto.setPatNeedTrans(patNeedTrans);
-                    appCessHciDto.setPatientSelect(patientSelect);
-                    appCessHciDto.setPatNoRemarks(patNoRemarks);
-                    appCessHciDto.setPatHciName(patHciName);
-                    appCessHciDto.setPatRegNo(patRegNo);
-                    appCessHciDto.setPatOthers(patOthers);
-                    appCessHciDto.setPremiseIdChecked(whichTodo);
-                    appCessHciDto.setReadInfo(readInfo);
-//                } else {
-//                    appCessHciDto.setPremiseIdChecked(null);
-//                }
+                appCessHciDto.setHciAddress(hciAddress);
+                appCessHciDto.setHciName(hciName);
+                appCessHciDto.setEffectiveDate(effectiveDate);
+                appCessHciDto.setReason(reason);
+                appCessHciDto.setOtherReason(otherReason);
+                appCessHciDto.setPatNeedTrans(patNeedTrans);
+                appCessHciDto.setPatientSelect(patientSelect);
+                appCessHciDto.setPatNoRemarks(patNoRemarks);
+                appCessHciDto.setPatHciName(patHciName);
+                appCessHciDto.setPatRegNo(patRegNo);
+                appCessHciDto.setPatOthers(patOthers);
+                appCessHciDto.setPremiseIdChecked(whichTodo);
+                appCessHciDto.setReadInfo(readInfo);
                 appCessHciDtos.add(appCessHciDto);
             }
             appCessLicDto.setAppCessHciDtos(appCessHciDtos);
@@ -340,7 +331,7 @@ public class CessationApplicationDelegator {
                 errorMap.put(i + PATHCINAME + j, ERROR);
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect) && !StringUtil.isEmpty(patHciName)) {
-                List<String> hciName = cessationService.listHciName();
+                List<String> hciName = cessationBeService.listHciName();
                 if (!hciName.contains(patHciName)) {
                     errorMap.put(i + "patHciName" + j, "HCI Name cannot be found.");
                 }
@@ -379,5 +370,4 @@ public class CessationApplicationDelegator {
         riskLevelResult.add(so3);
         return riskLevelResult;
     }
-
 }

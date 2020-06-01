@@ -18,7 +18,7 @@ import java.util.List;
  * @author weilu
  * @date 2020/2/7 13:16
  */
-public interface CessationService {
+public interface CessationFeService {
 
 
     List<String> getActiveLicence(List<String> licIds);
