@@ -5,7 +5,6 @@
   Time: 9:48
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
@@ -79,9 +78,12 @@
                             </table>
                         </div>
                         <div class="application-tab-footer">
-                            <iais:action style="text-align:left;">
-                                <a  id="backLastPageId" >< Back</a>
-                            </iais:action>
+
+                            <c:if test="${!selfDeclAction eq 'rfi'}">
+                                <iais:action style="text-align:left;">
+                                    <a  id="backLastPageId" >< Back</a>
+                                </iais:action>
+                            </c:if>
 
                             <td>
                                 <div class="text-right text-center-mobile">
