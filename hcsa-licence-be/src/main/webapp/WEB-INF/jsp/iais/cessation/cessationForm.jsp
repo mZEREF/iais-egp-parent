@@ -56,13 +56,19 @@
                             <td style="text-align:center"><p><c:out value="${appCessHci.hciName}"></c:out></p></td>
                             <td style="text-align:center"><p><c:out value="${appCessHci.hciAddress}"></c:out></p></td>
                             <td>
-                                <iais:datePicker id="effectiveDate" name="${num.count}effectiveDate${uid.count}" dateVal="${appCessHci.effectiveDate}"/>
+                                <iais:datePicker id="effectiveDate" name="${num.count}effectiveDate${uid.count}"
+                                                 dateVal="${appCessHci.effectiveDate}"/>
                             </td>
-                            <td><iais:select needErrorSpan="false" name="${num.count}reason${uid.count}" id="${num.count}reasonId${uid.count}" options="reasonOption" firstOption="Please Select" onchange="javascirpt:changeReason(this.value);" value="${appCessHci.reason}"/>
+                            <td><iais:select needErrorSpan="false" name="${num.count}reason${uid.count}"
+                                             id="${num.count}reasonId${uid.count}" options="reasonOption"
+                                             firstOption="Please Select" onchange="javascirpt:changeReason(this.value);"
+                                             value="${appCessHci.reason}"/>
                                 <div style="margin-top: 40%" id="${num.count}reason${uid.count}" hidden>
-                                    <iais:input type="text" maxLength="200" name="${num.count}otherReason${uid.count}" value="${appCessHci.otherReason}"></iais:input>
+                                    <iais:input type="text" maxLength="200" name="${num.count}otherReason${uid.count}"
+                                                value="${appCessHci.otherReason}"></iais:input>
                                 </div>
-                                <span id="error_${num.count}reason${uid.count}" name="iaisErrorMsg" class="error-msg"></span>
+                                <span id="error_${num.count}reason${uid.count}" name="iaisErrorMsg"
+                                      class="error-msg"></span>
                             </td>
                             <td style="width: 30em; position: relative">
                                 <table>
@@ -100,7 +106,9 @@
                                                 name="${num.count}patHciName${uid.count}"></iais:input></td>
                                     </tr>
                                     <tr id="${num.count}patRegNo${uid.count}" hidden>
-                                        <td style="position: absolute;top: 55%;left: 3% ;width: 30%">Professional Regn No.</td>
+                                        <td style="position: absolute;top: 55%;left: 3% ;width: 30%">Professional Regn
+                                            No.
+                                        </td>
                                         <td style="position: absolute;top: 55%;right: 3% ;width: 55%"><iais:input
                                                 type="text" maxLength="20" name="${num.count}patRegNo${uid.count}"
                                                 value="${appCessHci.patRegNo}"></iais:input></td>
@@ -122,8 +130,10 @@
                                     </tr>
                                 </table>
                             </td>
-                            <td style="text-align:center"><input type="checkbox" name="${num.count}whichTodo${uid.count}" value="${appCessHci.premiseId}"
-                                                          <c:if test="${appCessHci.premiseIdChecked != null}">checked</c:if>>
+                            <td style="text-align:center"><input type="checkbox"
+                                                                 name="${num.count}whichTodo${uid.count}"
+                                                                 value="${appCessHci.premiseId}"
+                                                                 <c:if test="${appCessHci.premiseIdChecked != null}">checked</c:if>>
                                 <span id="error_whichTodo" name="iaisErrorMsg" class="error-msg"></span></td>
                         </c:forEach>
                     </tr>
@@ -133,7 +143,8 @@
                             <td style="text-align:center"><p><c:out value="${appCessHci.hciName}"></c:out></p></td>
                             <td style="text-align:center"><p><c:out value="${appCessHci.hciAddress}"></c:out></p></td>
                             <td>
-                                <iais:datePicker id="effectiveDate" name="${num.count}effectiveDate${uid.count+1}" dateVal="${appCessHci.effectiveDate}"/>
+                                <iais:datePicker id="effectiveDate" name="${num.count}effectiveDate${uid.count+1}"
+                                                 dateVal="${appCessHci.effectiveDate}"/>
                             </td>
                             <td><iais:select
                                     name="${num.count}reason${uid.count+1}" id="${num.count}reasonId${uid.count+1}"
@@ -141,9 +152,11 @@
                                     onchange="javascirpt:changeReason(this.value);"
                                     value="${appCessHci.reason}" needErrorSpan="false"/>
                                 <div style="margin-top: 30%" id="${num.count}reason${uid.count+1}" hidden>
-                                    <iais:input type="text" maxLength="200" name="${num.count}otherReason${uid.count+1}" value="${appCessHci.otherReason}"></iais:input>
+                                    <iais:input type="text" maxLength="200" name="${num.count}otherReason${uid.count+1}"
+                                                value="${appCessHci.otherReason}"></iais:input>
                                 </div>
-                                <span id="error_${num.count}reason${uid.count+1}" name="iaisErrorMsg" class="error-msg"></span>
+                                <span id="error_${num.count}reason${uid.count+1}" name="iaisErrorMsg"
+                                      class="error-msg"></span>
                             </td>
                             <td style="padding-left: 4%;width: 30em; position: relative">
                                 <table>
@@ -170,7 +183,8 @@
                                         </td>
                                         <td style="position: absolute;top: 25%;right: 3% ;width: 55%"><iais:select
                                                 name="${num.count}patientSelect${uid.count+1}" options="patientsOption"
-                                                firstOption="Please Select" id="${num.count}patientSelectId${uid.count+1}"
+                                                firstOption="Please Select"
+                                                id="${num.count}patientSelectId${uid.count+1}"
                                                 onchange="javascirpt:changePatient(this.value);"
                                                 value="${appCessHci.patientSelect}"/></td>
                                     </tr>
@@ -205,56 +219,63 @@
                                     </tr>
                                 </table>
                             </td>
-                            <td style="text-align:center"><input type="checkbox" name="${num.count}whichTodo${uid.count+1}" value="${appCessHci.premiseId}"
-                                                          <c:if test="${appCessHci.premiseIdChecked != null}">checked</c:if>>
+                            <td style="text-align:center"><input type="checkbox"
+                                                                 name="${num.count}whichTodo${uid.count+1}"
+                                                                 value="${appCessHci.premiseId}"
+                                                                 <c:if test="${appCessHci.premiseIdChecked != null}">checked</c:if>>
                         </tr>
                     </c:forEach>
                 </c:forEach>
                 </tbody>
             </table>
             <br/>
-            <div style="width: 70%;margin-left: 1%;margin-right: 1%"><c:out value="${text3}"/></div>
-            <br/>
-            <table border="1" style="width: 60%">
-                <tr>
-                    <th style="text-align:center;width: 4%">S/N</th>
-                    <th style="text-align:center;width: 10%">Specified Service Licence No.</th>
-                    <th style="text-align:center;width: 16%">Specified Service Name</th>
-                    <th style="text-align:center;width: 10%">Base Service Licence No.</th>
-                    <th style="text-align:center;width: 16%">Base Service Name</th>
-                </tr>
-                <tr style="text-align:center">
-                <c:forEach items="${specLicInfo}" var="spec" varStatus="index">
-                    <td>
-                        <p><c:out value="${index.count}"/></p>
-                    </td>
-                    <td>
-                        <p><c:out value="${spec.specLicNo}"/></p>
-                    </td>
-                    <td>
-                        <p><c:out value="${spec.specSvcName}"/></p>
-                    </td>
-                    <td>
-                        <p><c:out value="${spec.baseLicNo}"/></p>
-                    </td>
-                    <td>
-                        <p><c:out value="${spec.baseSvcName}"/></p>
-                    </td>
-                </tr>
-                </c:forEach>
-            </table>
+            <c:if test="${specLicInfoFlag eq 'exist'}">
+                <div style="width: 70%;margin-left: 1%;margin-right: 1%"><c:out value="${text3}"/></div>
+                <br/>
+                <table border="1" style="width: 60%">
+                    <tr>
+                        <th style="text-align:center;width: 4%">S/N</th>
+                        <th style="text-align:center;width: 10%">Specified Service Licence No.</th>
+                        <th style="text-align:center;width: 16%">Specified Service Name</th>
+                        <th style="text-align:center;width: 10%">Base Service Licence No.</th>
+                        <th style="text-align:center;width: 16%">Base Service Name</th>
+                    </tr>
+                    <tr style="text-align:center">
+                        <c:forEach items="${specLicInfo}" var="spec" varStatus="index">
+                        <td>
+                            <p><c:out value="${index.count}"/></p>
+                        </td>
+                        <td>
+                            <p><c:out value="${spec.specLicNo}"/></p>
+                        </td>
+                        <td>
+                            <p><c:out value="${spec.specSvcName}"/></p>
+                        </td>
+                        <td>
+                            <p><c:out value="${spec.baseLicNo}"/></p>
+                        </td>
+                        <td>
+                            <p><c:out value="${spec.baseSvcName}"/></p>
+                        </td>
+                    </tr>
+                    </c:forEach>
+                </table>
+            </c:if>
         </div>
         <br/>
         <div style="width: 70%;margin-left: 1%;margin-right: 1%"><c:out value="${text1}"/></div>
         <br/>
         <div style="width: 70%;margin-left: 1%;margin-right: 1%"><c:out value="${text2}"/></div>
         <br/>
-        <div style="margin-left: 1%;margin-right: 1%"><input type="checkbox" name="readInfo" id="confirmInfo" <c:if test="${readInfo != null}">checked</c:if>>
+        <div style="margin-left: 1%;margin-right: 1%"><input type="checkbox" name="readInfo" id="confirmInfo"
+                                                             <c:if test="${readInfo != null}">checked</c:if>>
             <label style="font-weight: normal" for="confirmInfo">I have read the information</label>
         </div>
         <iais:action>
-            <a href="/hcsa-licence-web/eservice/INTRANET/MohLicenceManagement" style="margin-bottom: 1%;margin-left: 1%"><em class="fa fa-angle-left"></em> Back</a>
-            <a style="margin-bottom: 1%;margin-left: 89%" class="btn btn-primary" onclick="submitSure('submit')">Next</a>
+            <a href="/hcsa-licence-web/eservice/INTRANET/MohLicenceManagement"
+               style="margin-bottom: 1%;margin-left: 1%"><em class="fa fa-angle-left"></em> Back</a>
+            <a style="margin-bottom: 1%;margin-left: 89%" class="btn btn-primary"
+               onclick="submitSure('submit')">Next</a>
         </iais:action>
     </div>
     <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
@@ -264,19 +285,21 @@
         word-wrap: break-word;
         padding: 1%;
     }
+
     th {
         padding: 1%
     }
-    #effectiveDate{
+
+    #effectiveDate {
         margin-bottom: 0px;
     }
-    input[type='text']{
+
+    input[type='text'] {
         margin-bottom: 0px;
     }
 
 </style>
 <script type="text/javascript">
-
 
 
     function submit(action) {

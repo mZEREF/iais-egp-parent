@@ -72,6 +72,10 @@ public class CessationApplicationBeDelegator {
         }
         List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIds(licIds);
         List<AppSpecifiedLicDto> specLicInfo = cessationBeService.getSpecLicInfo(licIds);
+        if(specLicInfo.size()>0) {
+            ParamUtil.setRequestAttr(bpc.request, "specLicInfo", specLicInfo);
+            ParamUtil.setRequestAttr(bpc.request, "specLicInfoFlag","exist");
+        }
         int size = appCessDtosByLicIds.size();
         List<SelectOption> reasonOption = getReasonOption();
         List<SelectOption> patientsOption = getPatientsOption();
@@ -82,9 +86,7 @@ public class CessationApplicationBeDelegator {
                 "properly transferred to the medical clinic or other healthcare institution to which such patient is to be transferred.";
 
         String text3 = "The following specified healthcare services will also be ceased as their underlying licensable healthcare service(s) is/are listed above.";
-
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, (Serializable) appCessDtosByLicIds);
-        ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) specLicInfo);
         ParamUtil.setSessionAttr(bpc.request, "reasonOption", (Serializable) reasonOption);
         ParamUtil.setSessionAttr(bpc.request, "patientsOption", (Serializable) patientsOption);
         ParamUtil.setSessionAttr(bpc.request, "text1", text1);
