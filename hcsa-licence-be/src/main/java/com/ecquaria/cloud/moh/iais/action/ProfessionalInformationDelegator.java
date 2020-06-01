@@ -54,12 +54,9 @@ public class ProfessionalInformationDelegator {
 
 	private OnlineEnquiriesService onlineEnquiriesService;
 
-	private HcsaChklService hcsaChklService;
-	
 	@Autowired
 	public ProfessionalInformationDelegator(OnlineEnquiriesService onlineEnquiriesService, HcsaChklService hcsaChklService) {
 		this.onlineEnquiriesService = onlineEnquiriesService;
-		this.hcsaChklService = hcsaChklService;
 	}
 
 	private FilterParameter filterParameter = new FilterParameter.Builder()

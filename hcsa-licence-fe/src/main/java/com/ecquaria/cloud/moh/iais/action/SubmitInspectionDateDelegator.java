@@ -75,7 +75,7 @@ public class SubmitInspectionDateDelegator {
             return;
         }
 
-        List<ApplicationDto> applicationList = submitInspectionDate.listApplicationByGroupId(groupId);
+/*        List<ApplicationDto> applicationList = submitInspectionDate.listApplicationByGroupId(groupId);
         Date submitDate = group.getSubmitDt();
 
         List<HcsaServicePrefInspPeriodDto> afterAppPeriodList = submitInspectionDate.getPrefInspPeriodList(applicationList);
@@ -94,7 +94,7 @@ public class SubmitInspectionDateDelegator {
         if (licenceExpire != null){
             ParamUtil.setSessionAttr(servletRequest, "inspEndDate" , IaisEGPHelper.yesterday(licenceExpire));
             ParamUtil.setSessionAttr(servletRequest, "inspEndDateDefault" , licenceExpire);
-        }
+        }*/
     }
 
     /**
@@ -104,8 +104,8 @@ public class SubmitInspectionDateDelegator {
      * @author: yichen
      */
     public void validate(BaseProcessClass bpc){
-        Date afterApp = (Date) ParamUtil.getSessionAttr(bpc.request, "inspStartDateDefault" );
-        Date licenceExpire = (Date) ParamUtil.getSessionAttr(bpc.request, "inspEndDateDefault");
+        /*Date afterApp = (Date) ParamUtil.getSessionAttr(bpc.request, "inspStartDateDefault" );
+        Date licenceExpire = (Date) ParamUtil.getSessionAttr(bpc.request, "inspEndDateDefault");*/
 
         String startDate = ParamUtil.getString(bpc.request, "inspStartDate");
         String endDate = ParamUtil.getString(bpc.request, "inspEndDate");
@@ -122,7 +122,7 @@ public class SubmitInspectionDateDelegator {
         ParamUtil.setRequestAttr(bpc.request, "inspEndDate", eDate);
 
         // applicant submit start date and end date that it need in a period
-        if (afterApp != null){
+        /*if (afterApp != null){
             boolean isAfterDate = IaisEGPHelper.isAfterDate(afterApp, sDate);
             if (!isAfterDate){
                 Date tomorrowD = IaisEGPHelper.tomorrow(afterApp);
@@ -140,7 +140,7 @@ public class SubmitInspectionDateDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 return;
             }
-        }
+        }*/
 
         if (sDate != null && eDate != null){
             boolean isAfterDate = IaisEGPHelper.isAfterDateSecond(sDate, eDate);
