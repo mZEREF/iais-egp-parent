@@ -105,7 +105,7 @@
                                                         <iais:row>
                                                             <td class="col-xs-2">
                                                                 <strong>
-                                                                    Processing Decision<strong style="color:#ff0000;">*</strong>
+                                                                    Processing Decision<strong style="color:#ff0000;"> *</strong>
                                                                 </strong>
                                                             </td>
                                                             <td>
@@ -163,7 +163,7 @@
                                                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
                                                         <tr height="1">
                                                             <td class="col-xs-2">
-                                                                <label style="font-size: 16px">Licence Start Date</label>
+                                                                <strong>Licence Start Date</strong>
                                                             </td>
                                                             <td>
                                                                 <div class="col-sm-9">
