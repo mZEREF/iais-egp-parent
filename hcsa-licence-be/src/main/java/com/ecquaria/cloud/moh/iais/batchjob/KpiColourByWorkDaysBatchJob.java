@@ -91,6 +91,7 @@ public class KpiColourByWorkDaysBatchJob {
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         if(!IaisCommonUtils.isEmpty(taskDtos)){
             for(TaskDto taskDto : taskDtos){
+                log.debug(StringUtil.changeForLog("Task Id = " + taskDto.getId()));
                 getTimeLimitWarningColourByTask(taskDto, intranet, holidayTime);
             }
         }
@@ -127,7 +128,11 @@ public class KpiColourByWorkDaysBatchJob {
                 List<Date> endDates = IaisCommonUtils.genNewArrayList();
                 List<Date> beginDates = IaisCommonUtils.genNewArrayList();
                 for(TaskDto tDto : taskDtoList){
-                    startDate = tDto.getDateAssigned();
+                    if(tDto.getDateAssigned() != null){
+                        startDate = tDto.getDateAssigned();
+                    } else {
+                        startDate = new Date();
+                    }
                     if(taskDto.getSlaDateCompleted() != null){
                         completeDate = tDto.getSlaDateCompleted();
                     } else {
@@ -246,6 +251,7 @@ public class KpiColourByWorkDaysBatchJob {
         appPremisesRoutingHistoryDto.setRoleId(taskDto.getRoleId());
         appPremisesRoutingHistoryDto.setApplicationNo(applicationDto.getApplicationNo());
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = inspectionTaskClient.getHistoryForKpi(appPremisesRoutingHistoryDto).getEntity();
+        log.debug(StringUtil.changeForLog("History Size = " + appPremisesRoutingHistoryDtos.size()));
         List<String> roleIds = getRoleIdsByHistory(appPremisesRoutingHistoryDtos);
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         int allWorkDays = 0;
@@ -278,7 +284,9 @@ public class KpiColourByWorkDaysBatchJob {
                     taskDtoList.add(taskDtoSingle);
                 }
             }
+            log.debug(StringUtil.changeForLog("Task Size = " + taskDtos.size()));
         }
+        log.debug(StringUtil.changeForLog("All Task Size = " + taskDtoList.size()));
         Map<Integer, Integer> workAndNonMap = getActualWorkingDays(taskDtoList, allWorkDays, allHolidays, holidayTime, taskDto.getWkGrpId());
         return workAndNonMap;
     }
