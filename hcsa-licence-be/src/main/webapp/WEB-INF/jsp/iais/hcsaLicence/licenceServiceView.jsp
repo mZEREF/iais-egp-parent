@@ -218,18 +218,18 @@
                                         Block / House No.
                                       </div>
                                       <div class="col-md-6">
-                                        <span class="col-md-6">
-                                            ${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}
-                                        </span>
-                                        <span class="col-md-6">
-                                           <wrms:value width="7">
-                                              <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}"
-                                                    style="display: none"><label><c:out value=""/></label></span>
-                                             <span class="oldVal compareTdStyle"
-                                                   attr="${appGrpPremDto.blkNo}"
-                                                   style="display: none"><label><c:out
-                                                     value="${appGrpPremDto.blkNo}"/></label></span>
-                                           </wrms:value>
+                                        <div class="col-md-6">
+                                            <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}"
+                                                  style="display: none"><label><c:out value=""/></label></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                          <span class="oldVal compareTdStyle"
+                                                attr="${appGrpPremDto.blkNo}"
+                                               ><label><c:out
+                                                  value="${appGrpPremDto.blkNo}"/></label></span>
+
+                                        </div>
+
                                         </span>
                                       </div>
                                     </div>
@@ -239,20 +239,15 @@
                                         Floor No.
                                       </div>
                                       <div class="col-md-6">
-                                        <span class="col-md-6">
-                                            ${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}
-                                        </span>
-                                        <span class="col-md-6">
-                                            <wrms:value width="7">
-                                              <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}"
-                                                style="display: none"><label><c:out value=""/></label></span>
-                                              <span class="oldVal compareTdStyle"
-                                                    attr="${appGrpPremDto.floorNo}"
-                                                    style="display: none"><label><c:out
-                                                      value="${appGrpPremDto.floorNo}"/></label></span>
-                                            </wrms:value>
-                                        </span>
-
+                                        <div class="col-md-6">
+                                            <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}"
+                                                  style="display: none"><label><c:out value=""/></label></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span class="oldVal compareTdStyle"
+                                                  attr="${appGrpPremDto.floorNo}"><label><c:out
+                                                    value="${appGrpPremDto.floorNo}"/></label></span>
+                                        </div>
                                       </div>
                                     </div>
 

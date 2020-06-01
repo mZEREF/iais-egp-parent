@@ -1154,11 +1154,11 @@
     });
 
 
-    hightLightChangeVal('newVal', 'oldVal');
+    hightLightChangeVal('oldVal', 'newVal');
     function hightLightChangeVal(newValClass, oldValClass) {
         $('.' + oldValClass).each(function () {
             var oldVal = $(this).attr('attr');
-            var newEle = $(this).parent().find('.' + newValClass);
+            var newEle = $(this).parent().next().find('.' + newValClass);
             var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
             if (oldVal.length > 0 && newVal.length > 0) {
                 if (oldVal != newVal) {
