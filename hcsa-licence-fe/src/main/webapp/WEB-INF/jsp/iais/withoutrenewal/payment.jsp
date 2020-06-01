@@ -24,8 +24,8 @@
                             <div class="tab-pane active" id="paymentTab" role="tabpanel">
                                 <br/>
                                 <ul class="progress-tracker" style="margin-top: 50px">
-                                    <li class="tracker-item active disabled">Instructions</li>
-                                    <li class="tracker-item active disabled">Licence Review</li>
+                                    <li class="tracker-item active">Instructions</li>
+                                    <li class="tracker-item active">Licence Review</li>
                                     <li class="tracker-item active">Payment</li>
                                     <li class="tracker-item disabled">Acknowledgement</li>
                                 </ul>

@@ -26,9 +26,9 @@
                     <div class="center-content">
                         <div class="licence-renewal-content">
                             <ul class="progress-tracker">
-                                <li class="tracker-item disabled">Instructions</li>
-                                <li class="tracker-item disabled">Licence Review</li>
-                                <li class="tracker-item disabled">Payment</li>
+                                <li class="tracker-item active">Instructions</li>
+                                <li class="tracker-item active">Licence Review</li>
+                                <li class="tracker-item active">Payment</li>
                                 <li class="tracker-item active">Acknowledgement</li>
                             </ul>
 
