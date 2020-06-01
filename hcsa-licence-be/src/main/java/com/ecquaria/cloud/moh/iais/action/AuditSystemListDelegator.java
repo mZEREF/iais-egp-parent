@@ -119,8 +119,10 @@ public class AuditSystemListDelegator {
             ParamUtil.setSessionAttr(request, "aduitTypeOp", (Serializable) aduitTypeOp);
             List<AuditTaskDataFillterDto> auditTaskDataDtos = auditSystemPotitalListService.getSystemPotentailAdultList(dto);
             auditSystemListService.getInspectors(auditTaskDataDtos);
-            for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos ){
-                ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
+            if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)){
+                for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos ){
+                    ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
+                }
             }
             ParamUtil.setSessionAttr(request, "auditTaskDataDtos", (Serializable) auditTaskDataDtos);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);

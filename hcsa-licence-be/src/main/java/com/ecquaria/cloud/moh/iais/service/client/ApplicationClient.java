@@ -85,7 +85,7 @@ public interface ApplicationClient {
     @PostMapping(value = "/iais-adhoc-checklist-conifg/adhoc-items", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AdhocCheckListConifgDto> saveAdhocChecklist(@RequestBody AdhocCheckListConifgDto adhocConfigDto);
 
-    @GetMapping(value = "/iais-adhoc-checklist-conifg/adhoc-checklist/config/{appremId}/results}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-adhoc-checklist-conifg/adhoc-checklist/config/{appremId}/results",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AdhocChecklistItemDto>> getAdhocByAppPremCorrId(@PathVariable(name = "appremId") String appremId);
 
     @GetMapping(value = "/iais-adhoc-checklist-conifg/all-version-show/results/{appremId}",consumes = MediaType.APPLICATION_JSON_VALUE)
