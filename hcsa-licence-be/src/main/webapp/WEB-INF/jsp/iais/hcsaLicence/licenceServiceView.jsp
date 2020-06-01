@@ -68,22 +68,15 @@
                                         <label>Premises ${status.index+1} </label>
                                       </div>
                                       <div class="col-md-6">
-                                        <span  class="col-md-6">
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='ONSITE'}">On-site</c:if>
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='CONVEYANCE'}">Conveyance</c:if>
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='OFFSIET'}">Off-site</c:if>
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType==null}">-</c:if>
-                                        </span>
-                                        <span class="col-md-6">
-                                           <wrms:value width="7">
-                                        <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"
-                                              style="display: none"><label><c:out value=""/></label></span>
-                                             <span class="oldVal compareTdStyle"
-                                                   attr="${appGrpPremDto.premisesType}"
-                                                   style="display: none"><label><c:out
-                                                     value="${appGrpPremDto.premisesType}"/></label></span>
-                                           </wrms:value>
-                                        </span>
+                                          <div class="col-md-6">
+                                              <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"
+                                                    style="display: none"><label><c:out value=""/></label></span>
+                                          </div>
+                                          <div class="col-md-6">
+                                              <span class="oldVal compareTdStyle"
+                                                    attr="${appGrpPremDto.premisesType}"><label><c:out
+                                                      value="${appGrpPremDto.premisesType}"/></label></span>
+                                          </div>
                                       </div>
                                     </div>
                                     <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
@@ -190,27 +183,19 @@
                                        Address Type
                                       </div>
                                       <div class="col-md-6">
-                                        <span class="col-md-6" >
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType=='ADDTY001'}"> Apt Blk</c:if>
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType=='ADDTY002'}"> Without Apt Blk</c:if>
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType== null}">-</c:if>
-                                        </span>
-                                        <span class="col-md-6">
-                                           <wrms:value width="7">
+                                          <div class="col-md-6">
                                               <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType}"
-                                              style="display: none"><label><c:out value=""/></label></span>
+                                                    style="display: none"><label><c:out value=""/></label></span>
+                                          </div>
+                                          <div class="col-md-6">
                                               <span class="oldVal compareTdStyle"
-                                                   attr="${appGrpPremDto.addrType}"
-                                                   style="display: none">
+                                                    attr="${appGrpPremDto.addrType}">
                                               <label>
-<%--                                              <c:out--%>
-<%--                                                  value="${appGrpPremDto.addrType}"/>--%>
                                               <c:if test="${appGrpPremDto.addrType=='ADDTY001'}"> Apt Blk</c:if>
                                               <c:if test="${appGrpPremDto.addrType=='ADDTY002'}"> Without Apt Blk</c:if>
                                               </label>
                                               </span>
-                                           </wrms:value>
-                                        </span>
+                                          </div>
                                       </div>
                                     </div>
                                     <div class="row">
@@ -257,19 +242,15 @@
                                         Unit No.
                                       </div>
                                       <div class="col-md-6">
-                                        <span class="col-md-6">
-                                            ${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo}
-                                        </span>
-                                        <span class="col-md-6">
-                                           <wrms:value width="7">
-                                              <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo}"
-                                                    style="display: none"><label><c:out value=""/></label></span>
-                                             <span class="oldVal compareTdStyle"
-                                                   attr="${appGrpPremDto.unitNo}"
-                                                   style="display: none"><label><c:out
-                                                     value="${appGrpPremDto.unitNo}"/></label></span>
-                                           </wrms:value>
-                                        </span>
+                                          <div class="col-md-6">
+                                                <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo}"
+                                                      style="display: none"><label><c:out value=""/></label></span>
+                                          </div>
+                                          <div class="col-md-6">
+                                                <span class="oldVal compareTdStyle"
+                                                      attr="${appGrpPremDto.unitNo}"><label><c:out
+                                                        value="${appGrpPremDto.unitNo}"/></label></span>
+                                          </div>
                                       </div>
                                     </div>
 
@@ -279,19 +260,15 @@
                                        Street Name
                                       </div>
                                       <div class="col-md-6">
-                                        <span  class="col-md-6">
-                                            ${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].streetName ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].streetName}
-                                        </span>
-                                        <span class="col-md-6">
-                                           <wrms:value width="7">
+                                          <div class="col-md-6">
                                               <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].streetName ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].streetName}"
                                                     style="display: none"><label><c:out value=""/></label></span>
+                                          </div>
+                                          <div class="col-md-6">
                                               <span class="oldVal compareTdStyle"
-                                                   attr="${appGrpPremDto.streetName}"
-                                                   style="display: none"><label><c:out
-                                                     value="${appGrpPremDto.streetName}"/></label></span>
-                                           </wrms:value>
-                                        </span>
+                                                    attr="${appGrpPremDto.streetName}"><label><c:out
+                                                      value="${appGrpPremDto.streetName}"/></label></span>
+                                          </div>
                                       </div>
 
                                     </div>
@@ -300,19 +277,15 @@
                                        Building Name
                                       </div>
                                       <div class="col-md-6">
-                                        <span class="col-md-6">
-                                            ${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].buildingName ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].buildingName}
-                                        </span>
-                                        <span class="col-md-6">
-                                           <wrms:value width="7">
+                                          <div class="col-md-6">
                                               <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].buildingName ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].buildingName}"
                                                     style="display: none"><label><c:out value=""/></label></span>
-                                             <span class="oldVal compareTdStyle"
-                                                   attr="${appGrpPremDto.buildingName}"
-                                                   style="display: none"><label><c:out
-                                                     value="${appGrpPremDto.buildingName}"/></label></span>
-                                           </wrms:value>
-                                        </span>
+                                          </div>
+                                          <div class="col-md-6">
+                                              <span class="oldVal compareTdStyle"
+                                                    attr="${appGrpPremDto.buildingName}"><label><c:out
+                                                      value="${appGrpPremDto.buildingName}"/></label></span>
+                                          </div>
                                       </div>
                                     </div>
 
@@ -332,19 +305,15 @@
                                          Office Telephone No.
                                         </div>
                                         <div class="col-md-6">
-                                          <span class="col-md-6">
-                                              ${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}
-                                          </span>
-                                          <span class="col-md-6">
-                                             <wrms:value width="7">
+                                            <div class="col-md-6">
                                                 <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}"
-                                                  style="display: none"><label><c:out value=""/></label></span>
+                                                      style="display: none"><label><c:out value=""/></label></span>
+                                            </div>
+                                            <div class="col-md-6">
                                                 <span class="oldVal compareTdStyle"
-                                                     attr="${appGrpPremDto.offTelNo}"
-                                                     style="display: none"><label><c:out
-                                                       value="${appGrpPremDto.offTelNo}"/></label></span>
-                                             </wrms:value>
-                                          </span>
+                                                      attr="${appGrpPremDto.offTelNo}"><label><c:out
+                                                        value="${appGrpPremDto.offTelNo}"/></label></span>
+                                            </div>
                                         </div>
                                       </div>
                                     </c:if>
@@ -354,28 +323,17 @@
                                         Operating Hours (Start)
                                       </div>
                                       <div class="col-md-6">
-<%--                                          ${appGrpPremDto.onsiteStartHH} : ${appGrpPremDto.onsiteStartMM}--%>
-                                        <span class="col-md-6">
-                                            <c:if test="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}">
-                                              <c:out value="-"/>
-                                            </c:if>
-                                            <c:if test="${!empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}">
-                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"
-                                                              pattern="HH : mm"></fmt:formatDate>
-                                            </c:if>
-                                        </span>
-                                        <span class="col-md-6">
-                                          <wrms:value width="7">
-                                            <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}" style="display: none"><label><c:out
-                                                  value=""/></label></span>
-                                            <span class="oldVal compareTdStyle"
-                                                  attr="${appGrpPremDto.wrkTimeFrom}"
-                                                  style="display: none">
-                                            <fmt:formatDate value="${appGrpPremDto.wrkTimeFrom}"
+                                          <div class="col-md-6">
+                                              <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}" style="display: none"><label><c:out
+                                                      value=""/></label></span>
+                                          </div>
+                                          <div class="col-md-6">
+                                              <span class="oldVal compareTdStyle"
+                                                    attr="${appGrpPremDto.wrkTimeFrom}">
+                                                    <fmt:formatDate value="${appGrpPremDto.wrkTimeFrom}"
                                                             pattern="HH : mm"></fmt:formatDate>
-                                          </span>
-                                          </wrms:value>
-                                        </span>
+                                                </span>
+                                          </div>
                                       </div>
                                     </div>
 
@@ -384,28 +342,17 @@
                                        Operating Hours (End)
                                       </div>
                                       <div class="col-md-6">
-<%--                                          ${appGrpPremDto.onsiteEndHH} : ${appGrpPremDto.onsiteEndMM}--%>
-                                        <span class="col-md-6">
-                                           <c:if test="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}">
-                                             <c:out value="-"/>
-                                           </c:if>
-                                            <c:if test="${!empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}">
-                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"
-                                                              pattern="HH : mm"></fmt:formatDate>
-                                            </c:if>
-                                        </span>
-                                        <span class="col-md-6">
-                                           <wrms:value width="7">
+                                          <div class="col-md-6">
                                               <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"
                                                     style="display: none"><label><c:out value=""/></label></span>
+                                          </div>
+                                          <div class="col-md-6">
                                               <span class="oldVal compareTdStyle"
-                                                   attr="${appGrpPremDto.wrkTimeTo}"
-                                                   style="display: none">
+                                                    attr="${appGrpPremDto.wrkTimeTo}">
                                                   <fmt:formatDate value="${appGrpPremDto.wrkTimeTo}"
                                                                   pattern="HH : mm"></fmt:formatDate>
                                               </span>
-                                           </wrms:value>
-                                        </span>
+                                          </div>
                                       </div>
                                     </div>
                                 <c:forEach items="${appGrpPremDto.appPremPhOpenPeriodList}"
@@ -416,19 +363,15 @@
                                       Select Public Holiday
                                     </div>
                                     <div class="col-md-6">
-                                      <span  class="col-md-6">
-                                          ${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].dayName ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].dayName}
-                                      </span>
-                                      <span class="col-md-6">
-                                        <wrms:value width="7">
-                                          <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].phDate ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].phDate}" style="display: none"><label><c:out
-                                                  value=""/></label></span>
-                                          <span class="oldVal compareTdStyle"
-                                                attr="${appPremPhOpenPeriod.phDate}"
-                                                style="display: none"><label><c:out
-                                                  value="${appPremPhOpenPeriod.dayName}"/></label></span>
-                                        </wrms:value>
-                                      </span >
+                                        <div class="col-md-6">
+                                            <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].phDate ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].phDate}" style="display: none"><label><c:out
+                                                    value=""/></label></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span class="oldVal compareTdStyle"
+                                                  attr="${appPremPhOpenPeriod.phDate}"><label><c:out
+                                                    value="${appPremPhOpenPeriod.dayName}"/></label></span>
+                                        </div>
                                     </div>
                                   </div>
 
@@ -437,24 +380,15 @@
                                      Public Holidays Operating Hours (Start)
                                     </div>
                                     <div class="col-md-6">
-                                      <span class="col-md-6">
-                                         <c:if test="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH && empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromMM}">
-                                           <c:out value="-"/>
-                                         </c:if>
-                                      <c:if test="${!empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH && !empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromMM}">
-                                        <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH} : ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromMM}"/>
-                                      </c:if>
-                                      </span>
-                                      <span class="col-md-6">
-                                        <wrms:value width="7">
-                                          <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH}" style="display: none"><label><c:out
-                                                  value=""/></label></span>
-                                          <span class="oldVal compareTdStyle"
-                                                attr="${appPremPhOpenPeriod.convStartFromHH}"
-                                                style="display: none"><label><c:out
-                                                  value="${appPremPhOpenPeriod.convStartFromHH} : ${appPremPhOpenPeriod.convStartFromMM}"/></label></span>
-                                        </wrms:value>
-                                      </span>
+                                        <div class="col-md-6">
+                                            <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH}" style="display: none"><label><c:out
+                                                    value=""/></label></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span class="oldVal compareTdStyle"
+                                                  attr="${appPremPhOpenPeriod.convStartFromHH}"><label><c:out
+                                                    value="${appPremPhOpenPeriod.convStartFromHH} : ${appPremPhOpenPeriod.convStartFromMM}"/></label></span>
+                                        </div>
                                     </div>
                                   </div>
 
@@ -463,28 +397,17 @@
                                       Public Holidays Operating Hours (End)
                                     </div>
                                     <div class="col-md-6">
-<%--                                        ${appPremPhOpenPeriod.convEndToHH} : ${appPremPhOpenPeriod.convEndToMM}--%>
-                                      <span  class="col-md-6">
-                                          <c:if test="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}">
-                                            <c:out value="-"/>
-                                          </c:if>
-                                          <c:if test="${!empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}">
-                                            <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}"
-                                                            pattern="HH : mm"></fmt:formatDate>
-                                          </c:if>
-                                      </span>
-                                      <span  class="col-md-6">
-                                         <wrms:value width="7">
+                                        <div class="col-md-6">
                                             <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}"
-                                                style="display: none"><label><c:out value=""/></label></span>
+                                                  style="display: none"><label><c:out value=""/></label></span>
+                                        </div>
+                                        <div class="col-md-6">
                                             <span class="oldVal compareTdStyle"
-                                                 attr="${appPremPhOpenPeriod.endTo}"
-                                                 style="display: none">
+                                                  attr="${appPremPhOpenPeriod.endTo}">
                                               <fmt:formatDate value="${appPremPhOpenPeriod.endTo}"
                                                               pattern="HH : mm"></fmt:formatDate>
                                             </span>
-                                         </wrms:value>
-                                      </span>
+                                        </div>
                                     </div>
                                   </div>
                                 </c:forEach>
@@ -599,17 +522,15 @@
                                           Name of Licensee
                                           </div>
                                           <div class="col-md-6">
-                                            <span>
-                                              ${empty oldLicenceDto.name ? '-' : oldLicenceDto.name}
-                                            </span>
-                                              <wrms:value width="7">
+                                              <div class="col-md-6">
                                                   <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.name ? '-' : oldLicenceDto.name}"
                                                         style="display: none"><label><c:out
                                                           value="${oldLicenceDto.name}"/></label></span>
-                                                <span class="oldVal compareTdStyle" attr="${newLicenceDto.name}"
-                                                      style="display: none"><label><c:out
-                                                        value="${newLicenceDto.name}"/></label></span>
-                                              </wrms:value>
+                                              </div>
+                                              <div class="col-md-6">
+                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.name}"><label><c:out
+                                                          value="${newLicenceDto.name}"/></label></span>
+                                              </div>
                                           </div>
                                         </div>
 
@@ -618,15 +539,15 @@
                                            Postal Code
                                           </div>
                                           <div class="col-md-6">
-                                            ${empty oldLicenceDto.postalCode ? '-' : oldLicenceDto.postalCode}
-                                              <wrms:value width="7">
+                                              <div class="col-md-6">
                                                   <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.postalCode ? '-' : oldLicenceDto.postalCode}"
                                                         style="display: none"><label><c:out
                                                           value="${oldLicenceDto.postalCode}"/></label></span>
-                                                <span class="oldVal compareTdStyle" attr="${newLicenceDto.postalCode}"
-                                                      style="display: none"><label><c:out
-                                                        value="${newLicenceDto.postalCode}"/></label></span>
-                                              </wrms:value>
+                                              </div>
+                                              <div class="col-md-6">
+                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.postalCode}"><label><c:out
+                                                          value="${newLicenceDto.postalCode}"/></label></span>
+                                              </div>
                                           </div>
                                         </div>
 
@@ -635,15 +556,15 @@
                                             Address Type
                                           </div>
                                           <div class="col-md-6">
-                                            ${empty oldLicenceDto.addrType ? '-' : oldLicenceDto.addrType}
-                                              <wrms:value width="7">
+                                              <div class="col-md-6">
                                                   <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.addrType ? '-' : oldLicenceDto.addrType}"
                                                         style="display: none"><label><c:out
                                                           value="${oldLicenceDto.addrType}"/></label></span>
-                                                <span class="oldVal compareTdStyle" attr="${newLicenceDto.addrType}"
-                                                      style="display: none"><label><c:out
-                                                        value="${newLicenceDto.addrType}"/></label></span>
-                                              </wrms:value>
+                                              </div>
+                                              <div class="col-md-6">
+                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.addrType}"><label><c:out
+                                                          value="${newLicenceDto.addrType}"/></label></span>
+                                              </div>
                                           </div>
                                         </div>
 
@@ -652,15 +573,15 @@
                                             Blk No.
                                           </div>
                                           <div class="col-md-6">
-                                            ${empty oldLicenceDto.unitNo ? '-' : oldLicenceDto.unitNo}
-                                              <wrms:value width="7">
+                                              <div class="col-md-6">
                                                   <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.unitNo ? '-' : oldLicenceDto.unitNo}"
                                                         style="display: none"><label><c:out
                                                           value="${oldLicenceDto.unitNo}"/></label></span>
-                                                <span class="oldVal compareTdStyle" attr="${newLicenceDto.unitNo}"
-                                                      style="display: none"><label><c:out
-                                                        value="${newLicenceDto.unitNo}"/></label></span>
-                                              </wrms:value>
+                                              </div>
+                                              <div class="col-md-6">
+                                                   <span class="oldVal compareTdStyle" attr="${newLicenceDto.unitNo}"><label><c:out
+                                                           value="${newLicenceDto.unitNo}"/></label></span>
+                                              </div>
                                           </div>
                                         </div>
 
@@ -669,15 +590,15 @@
                                             Floor No.
                                           </div>
                                           <div class="col-md-6">
-                                            ${empty oldLicenceDto.floorNo ? '-' : oldLicenceDto.floorNo}
-                                              <wrms:value width="7">
-                                                  <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.floorNo ? '-' : oldLicenceDto.floorNo}"
-                                                        style="display: none"><label><c:out
-                                                          value="${oldLicenceDto.floorNo}"/></label></span>
-                                                <span class="oldVal compareTdStyle" attr="${newLicenceDto.floorNo}"
-                                                      style="display: none"><label><c:out
-                                                        value="${newLicenceDto.floorNo}"/></label></span>
-                                              </wrms:value>
+                                              <div class="col-md-6">
+                                                   <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.floorNo ? '-' : oldLicenceDto.floorNo}"
+                                                         style="display: none"><label><c:out
+                                                           value="${oldLicenceDto.floorNo}"/></label></span>
+                                              </div>
+                                              <div class="col-md-6">
+                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.floorNo}"><label><c:out
+                                                          value="${newLicenceDto.floorNo}"/></label></span>
+                                              </div>
                                           </div>
                                         </div>
 
@@ -686,14 +607,14 @@
                                             Unit No.
                                           </div>
                                           <div class="col-md-6">
-                                            ${empty oldLicenceDto.unitNo ? '-' : oldLicenceDto.unitNo}
-                                              <wrms:value width="7">
+                                              <div class="col-md-6">
                                                   <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.unitNo ? '-' : oldLicenceDto.unitNo}"
                                                         style="display: none"></span>
-                                                <span class="oldVal compareTdStyle" attr="${newLicenceDto.unitNo}"
-                                                      style="display: none"><label><c:out
-                                                        value="${newLicenceDto.unitNo}"/></label></span>
-                                              </wrms:value>
+                                              </div>
+                                              <div class="col-md-6">
+                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.unitNo}"><label><c:out
+                                                          value="${newLicenceDto.unitNo}"/></label></span>
+                                              </div>
                                           </div>
                                         </div>
 
@@ -702,15 +623,15 @@
                                             Street Name
                                           </div>
                                           <div class="col-md-6">
-                                            ${empty oldLicenceDto.streetName ? '-' : oldLicenceDto.streetName}
-                                              <wrms:value width="7">
+                                              <div class="col-md-6">
                                                   <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.streetName ? '-' : oldLicenceDto.streetName}"
                                                         style="display: none"><label><c:out
                                                           value="${oldLicenceDto.streetName}"/></label></span>
-                                                <span class="oldVal compareTdStyle" attr="${newLicenceDto.streetName}"
-                                                      style="display: none"><label><c:out
-                                                        value="${newLicenceDto.streetName}"/></label></span>
-                                              </wrms:value>
+                                              </div>
+                                              <div class="col-md-6">
+                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.streetName}"><label><c:out
+                                                          value="${newLicenceDto.streetName}"/></label></span>
+                                              </div>
                                           </div>
                                         </div>
 
@@ -719,15 +640,15 @@
                                             Building Name
                                           </div>
                                           <div class="col-md-6">
-                                            ${empty oldLicenceDto.buildingName ? '-' : oldLicenceDto.buildingName}
-                                              <wrms:value width="7">
+                                              <div class="col-md-6">
                                                   <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.buildingName ? '-' : oldLicenceDto.buildingName}"
                                                         style="display: none"><label><c:out
                                                           value="${oldLicenceDto.buildingName}"/></label></span>
-                                                <span class="oldVal compareTdStyle" attr="${newLicenceDto.buildingName}"
-                                                      style="display: none"><label><c:out
-                                                        value="${newLicenceDto.buildingName}"/></label></span>
-                                              </wrms:value>
+                                              </div>
+                                              <div class="col-md-6">
+                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.buildingName}"><label><c:out
+                                                          value="${newLicenceDto.buildingName}"/></label></span>
+                                              </div>
                                           </div>
                                         </div>
 
@@ -736,15 +657,15 @@
                                             Office Telephone No.
                                           </div>
                                           <div class="col-md-6">
-                                            ${empty oldLicenceDto.officeTelNo ? '-' : oldLicenceDto.officeTelNo}
-                                              <wrms:value width="7">
+                                              <div class="col-md-6">
                                                   <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.officeTelNo ? '-' : oldLicenceDto.officeTelNo}"
                                                         style="display: none"><label><c:out
                                                           value="${oldLicenceDto.officeTelNo}"/></label></span>
-                                                <span class="oldVal compareTdStyle" attr="${newLicenceDto.officeTelNo}"
-                                                      style="display: none"><label><c:out
-                                                        value="${newLicenceDto.officeTelNo}"/></label></span>
-                                              </wrms:value>
+                                              </div>
+                                              <div class="col-md-6">
+                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.officeTelNo}"><label><c:out
+                                                          value="${newLicenceDto.officeTelNo}"/></label></span>
+                                              </div>
                                           </div>
                                         </div>
 
@@ -753,15 +674,15 @@
                                             Office Email Address
                                           </div>
                                           <div class="col-md-6">
-                                            ${empty oldLicenceDto.emilAddr ? '-' : oldLicenceDto.emilAddr}
-                                              <wrms:value width="7">
+                                              <div class="col-md-6">
                                                   <span class="newVal compareTdStyle" attr="${empty oldLicenceDto.emilAddr ? '-' : oldLicenceDto.emilAddr}"
                                                         style="display: none"><label><c:out
                                                           value="${oldLicenceDto.emilAddr}"/></label></span>
-                                                <span class="oldVal compareTdStyle" attr="${newLicenceDto.emilAddr}"
-                                                      style="display: none"><label><c:out
-                                                        value="${newLicenceDto.emilAddr}"/></label></span>
-                                              </wrms:value>
+                                              </div>
+                                              <div class="col-md-6">
+                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.emilAddr}"><label><c:out
+                                                          value="${newLicenceDto.emilAddr}"/></label></span>
+                                              </div>
                                           </div>
                                         </div>
 
