@@ -23,5 +23,5 @@ public interface SyncAuditTrailRecordsService {
 
     void   updateSysAdmEicRequestTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto);
 
-    String createBeRfiLicProcessFileTrack(ProcessFileTrackDto processFileTrackDto);
+    String createBeAuditTrailProcessFileTrack(ProcessFileTrackDto processFileTrackDto);
 }

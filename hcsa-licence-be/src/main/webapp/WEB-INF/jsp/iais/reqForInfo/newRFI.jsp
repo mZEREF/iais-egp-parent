@@ -105,7 +105,7 @@
                                                 </div>
                                                 <div id="dochidden" class="hidden">
                                                     <div class="row" >
-                                                        <div id="docTitle"></div>
+                                                        &nbsp;&nbsp;&nbsp;<div id="docTitle"></div>
                                                     </div>
                                                     <div class="row" >
                                                         <div class=" col-xs-7 col-sm-4 col-md-5">

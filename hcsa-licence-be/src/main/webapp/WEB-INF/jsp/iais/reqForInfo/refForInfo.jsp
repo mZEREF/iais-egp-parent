@@ -56,7 +56,7 @@
                                             <td><c:out value="${pool.email}"/></td>
                                             <td><fmt:formatDate value="${pool.requestDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
                                             <td>
-                                                <iais:action style="text-align:right;">
+                                                <iais:action >
                                                     <a onclick="javascript:doView('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.reqInfoId)}');" >View</a>
                                                 </iais:action>
                                             </td>
