@@ -464,7 +464,7 @@ public class NewApplicationDelegator {
             int premCount = appGrpPremisesDtos.size();
             int svcCount = hcsaServiceDtos.size();
             log.info(StringUtil.changeForLog("premises count:"+premCount+" ,service count:"+svcCount));
-            if(premCount >1 && svcCount == 1){
+            if(premCount >1 && svcCount >= 1){
                 //multi prem one svc
                 ParamUtil.setRequestAttr(bpc.request,GROUPLICENCECONFIG,"test");
             }
