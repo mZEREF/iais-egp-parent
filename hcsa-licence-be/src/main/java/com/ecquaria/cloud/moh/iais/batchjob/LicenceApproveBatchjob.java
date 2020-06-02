@@ -1382,7 +1382,7 @@ public class LicenceApproveBatchjob {
                     log.info(StringUtil.changeForLog("The  getLicenceDto ao3ApprovedDt is " + ao3ApprovedDt));
                     Date recommendDate = null;
                     if (appPremisesRecommendationDto != null) {
-                        Date date = appPremisesRecommendationDto.getRecomInDate();
+                        recommendDate = appPremisesRecommendationDto.getRecomInDate();
                     }
                     log.info(StringUtil.changeForLog("The  getLicenceDto recommendDate is " + recommendDate));
                     startDate = LicenceUtil.getLasterDate(paymentDt, ao3ApprovedDt, recommendDate);

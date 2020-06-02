@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * LicenceUtil
@@ -18,7 +19,7 @@ import java.util.List;
  * @author suocheng
  * @date 2/7/2020
  */
-
+@Slf4j
 public class LicenceUtil {
 
     public static Date getLasterDate(Date paymentDt,Date ao3ApprovedDt,Date recommendDate){
@@ -46,10 +47,13 @@ public class LicenceUtil {
 
     }
     public static Date getExpiryDate(Date startDate, AppPremisesRecommendationDto appPremisesRecommendationDto){
+        log.info(StringUtil.changeForLog("The getExpiryDate start ..."));
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startDate);
         calendar.add(Calendar.DATE,-1);
         if(appPremisesRecommendationDto != null){
+            log.info(StringUtil.changeForLog("The getExpiryDateappPremisesRecommendationDto.getChronoUnit() is -->:")
+                    + appPremisesRecommendationDto.getChronoUnit());
             switch (appPremisesRecommendationDto.getChronoUnit()){
                 case RiskConsts.YEAR :
                     calendar.add(Calendar.YEAR,appPremisesRecommendationDto.getRecomInNumber());
@@ -62,8 +66,11 @@ public class LicenceUtil {
                     break;
             }
         }else{
+            log.info(StringUtil.changeForLog("The getExpiryDate appPremisesRecommendationDto is  null"));
             calendar.add(Calendar.YEAR,1);
         }
+        log.info(StringUtil.changeForLog("The getExpiryDate calendar.getTime() is -->:"+calendar.getTime()));
+        log.info(StringUtil.changeForLog("The getExpiryDate end ..."));
         return  calendar.getTime();
     }
     public static Date getExpiryDate(Date startDate, int yearLength){
