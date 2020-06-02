@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -1234,10 +1235,10 @@ public class HcsaApplicationDelegator {
         String processDecision = ParamUtil.getString(bpc.request,"nextStage");
         log.info(StringUtil.changeForLog("The processDecision is -- >:"+processDecision));
         //judge the final status is Approve or Reject.
+        AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
+        String applicationType = applicationDto.getApplicationType();
         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
-            AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
             if(appPremisesRecommendationDto!=null){
-                String applicationType = applicationDto.getApplicationType();
                 if(!ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
                     Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
                     if(null != recomInNumber && recomInNumber == 0){
@@ -1252,6 +1253,21 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
+        //appeal save rturn fee
+        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+            if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
+                String returnFee = appPremisesRecommendationDto.getRemarks();
+                if(!StringUtil.isEmpty(returnFee)){
+                    String oldApplicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "oldApplicationNo");
+                    AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
+                    appReturnFeeDto.setApplicationNo(oldApplicationNo);
+                    appReturnFeeDto.setReturnAmount(Double.valueOf(returnFee));
+                    appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL);
+                    applicationService.saveAppReturnFee(appReturnFeeDto);
+                }
+            }
+        }
+
         //complated this task and create the history
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
@@ -1859,7 +1875,6 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
-//        isLateFeeAppealType = true;
         ParamUtil.setSessionAttr(request,"isOtherAppealType",isOtherAppealType);
         ParamUtil.setSessionAttr(request,"isChangePeriodAppealType",isChangePeriodAppealType);
         ParamUtil.setSessionAttr(request,"isLateFeeAppealType",isLateFeeAppealType);
