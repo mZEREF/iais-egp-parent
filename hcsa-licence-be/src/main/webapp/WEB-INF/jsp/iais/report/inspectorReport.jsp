@@ -477,13 +477,14 @@
             $("#selfPeriod").show();
         } else {
             $("#selfPeriod").hide();
-            //$("#period").hide();
         }
     }
 
     function changeRecommendation(obj) {
         if (obj == "IRE001" || obj == "IRE002") {
             $("#period").show();
+            const v = $("#periods").val();
+            $("[name='readRecom']").val(v);
         } else {
             $("#period").hide();
             $("#selfPeriod").hide();

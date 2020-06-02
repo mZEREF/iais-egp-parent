@@ -24,7 +24,7 @@ public interface IntranetUserClient {
     @PostMapping(value = "/iais-orguser-be/user-management", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> createOrgUserDto(@RequestBody OrgUserDto user);
 
-    @PostMapping(value = "/iais-orguser-be/users-management")
+    @PostMapping(value = "/iais-orguser-be/users-management", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> createOrgUserDtos(@RequestBody List<OrgUserDto> orgUserDtos);
 
     @PostMapping(value = "/iais-orguser-be/intranet-user-param", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -179,7 +179,7 @@ public class InsReportAoDelegator {
             applicationDto.setFastTracking(true);
         }
         if(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK.equals(applicationDto.getStatus())){
-            insRepService.routTastToRoutBack(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto.getProcessRemarks());
+            insRepService.routTaskToRoutBack(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto.getProcessRemarks());
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         }

@@ -199,7 +199,7 @@
                           '<thead>' +
                           '<tr>';
 
-                  html += '<th>Application No</th>' +
+                  html += '<th>Application No.</th>' +
                           '<th>Application Status</th>' +
                           '<th>HCI Code</th>' +
                           '<th>HCI Name / Address</th>' +

@@ -161,7 +161,7 @@ public class MohIntranetUserDelegator {
         if (request == null) {
             return;
         }
-        String id  = ParamUtil.getMaskedString(bpc.request, "maskUserId");
+        String id = ParamUtil.getMaskedString(bpc.request, "maskUserId");
         OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         if (id != null && orgUserDto == null) {
             OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
@@ -205,7 +205,7 @@ public class MohIntranetUserDelegator {
 
     public void doDelete(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String id  = ParamUtil.getMaskedString(bpc.request, "maskUserId");
+        String id = ParamUtil.getMaskedString(bpc.request, "maskUserId");
         OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(id);
         String userDomain = orgUserDto.getUserDomain();
         String userId = orgUserDto.getUserId();
@@ -224,10 +224,10 @@ public class MohIntranetUserDelegator {
         }
     }
 
-    public void prepareAddRole(BaseProcessClass bpc){
+    public void prepareAddRole(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String userAccId = ParamUtil.getRequestString(bpc.request,"userAccId");
-        if(request !=null){
+        String userAccId = ParamUtil.getRequestString(bpc.request, "userAccId");
+        if (request != null) {
             userAccId = ParamUtil.getMaskedString(bpc.request, "maskUserId");
         }
         List<String> assignRoleOption = getAssignRoleOption();
@@ -236,8 +236,8 @@ public class MohIntranetUserDelegator {
         List<String> assignRoleIds = IaisCommonUtils.genNewArrayList();
         roleNames.clear();
         assignRoleIds.clear();
-        if(orgUserRoleDtos!=null&&!userAccId.isEmpty()){
-            for(OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos){
+        if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
+            for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
                 String roleName = orgUserRoleDto.getRoleName();
                 String assignRoleId = orgUserRoleDto.getId();
                 roleNames.add(roleName);
@@ -252,29 +252,27 @@ public class MohIntranetUserDelegator {
         if (userAccId != null) {
             OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(userAccId);
             String userId = orgUserDto.getUserId();
-            ParamUtil.setRequestAttr(bpc.request,"userIdName", userId);
+            ParamUtil.setRequestAttr(bpc.request, "userIdName", userId);
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
         }
 
     }
 
-    public void addRole(BaseProcessClass bpc){
+    public void addRole(BaseProcessClass bpc) {
         String actionType = ParamUtil.getString(bpc.request, "crud_action_type");
         if ("back".equals(actionType)) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         }
-        OrgUserDto orgUserDto = (OrgUserDto)ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
-        ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR,orgUserDto);
-        String[] assignRoles = ParamUtil.getMaskedStrings(bpc.request, "assignRole");
-        String[] removeRoles = ParamUtil.getMaskedStrings(bpc.request, "removeRole");
-        String userDomain = orgUserDto.getUserDomain();
-        String userId = orgUserDto.getUserId();
+        OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
+        ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
+        String[] assignRoles = ParamUtil.getStrings(bpc.request, "assignRole");
+        String[] removeRoles = ParamUtil.getStrings(bpc.request, "removeRole");
         String userAccId = orgUserDto.getId();
-        if(assignRoles!=null){
+        if (assignRoles != null) {
             List<OrgUserRoleDto> orgUserRoleDtos = IaisCommonUtils.genNewArrayList();
             orgUserRoleDtos.clear();
-            for(String assignRole : assignRoles){
+            for (String assignRole : assignRoles) {
                 OrgUserRoleDto orgUserRoleDto = new OrgUserRoleDto();
                 orgUserRoleDto.setUserAccId(userAccId);
                 orgUserRoleDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -283,16 +281,16 @@ public class MohIntranetUserDelegator {
             }
             intranetUserService.assignRole(orgUserRoleDtos);
         }
-        if(removeRoles!=null){
+        if (removeRoles != null) {
             List<String> removeRoleIds = IaisCommonUtils.genNewArrayList();
             removeRoleIds.clear();
-            for(String removeRole : removeRoles){
+            for (String removeRole : removeRoles) {
                 removeRoleIds.add(removeRole);
             }
             intranetUserService.removeRole(removeRoleIds);
         }
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-        ParamUtil.setRequestAttr(bpc.request, "userAccId",userAccId);
+        ParamUtil.setRequestAttr(bpc.request, "userAccId", userAccId);
         return;
         //ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, userDomain);
 
@@ -346,50 +344,50 @@ public class MohIntranetUserDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                 return;
-            }else{
+            } else {
                 String status = orgUserDto.getStatus();
-                if (IntranetUserConstant.DEACTIVATE.equals(actionType)&&IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status)) {
+                if (IntranetUserConstant.DEACTIVATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status)) {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                     errorMap.put("userId", "This user is already in Deactivated status.");
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
-                }else if(IntranetUserConstant.DEACTIVATE.equals(actionType)&&!IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status)){
+                } else if (IntranetUserConstant.DEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
                     intranetUserService.updateOrgUser(orgUserDto);
                     clientUser.setAccountStatus(ClientUser.STATUS_INACTIVE);
                     intranetUserService.updateEgpUser(clientUser);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
                     return;
-                }else if (IntranetUserConstant.REDEACTIVATE.equals(actionType)&&IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
+                } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                     errorMap.put("userId", "This user is already in Active status.");
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
-                }else if (IntranetUserConstant.REDEACTIVATE.equals(actionType)&&!IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
+                } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
                     intranetUserService.updateOrgUser(orgUserDto);
                     clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
                     intranetUserService.updateEgpUser(clientUser);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
                     return;
-                }else if (IntranetUserConstant.TERMINATE.equals(actionType)&&IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+                } else if (IntranetUserConstant.TERMINATE.equals(actionType) && IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                     errorMap.put("userId", "This user is already in Terminated status.");
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
-                }else if (IntranetUserConstant.TERMINATE.equals(actionType)&&!IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+                } else if (IntranetUserConstant.TERMINATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_TERMINATED);
                     intranetUserService.updateOrgUser(orgUserDto);
                     clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
                     intranetUserService.updateEgpUser(clientUser);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
                     return;
-                }  else if (IntranetUserConstant.UNLOCK.equals(actionType)&&IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
+                } else if (IntranetUserConstant.UNLOCK.equals(actionType) && IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                     errorMap.put("userId", "This user is already in Active status.");
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
-                }else if (IntranetUserConstant.UNLOCK.equals(actionType)&&!IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
+                } else if (IntranetUserConstant.UNLOCK.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
                     intranetUserService.updateOrgUser(orgUserDto);
                     clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
@@ -663,21 +661,30 @@ public class MohIntranetUserDelegator {
             orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
             orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
             orgUserDto.setStatus(status);
+            orgUserDto.setAvailable(Boolean.FALSE);
             orgUserDtos.add(orgUserDto);
         }
         List<StringBuilder> results = IaisCommonUtils.genNewArrayList();
+        Map<String,OrgUserDto> map = IaisCommonUtils.genNewHashMap();
         for (OrgUserDto orgUserDto : orgUserDtos) {
             StringBuilder valiant = valiant(orgUserDto);
+            map.put(orgUserDto.getUserId(),orgUserDto);
             results.add(valiant);
         }
-        if(!results.isEmpty()){
-            bpc.request.setAttribute("results",results);
+        int mapSize = map.size();
+        int dtoSize = orgUserDtos.size();
+        if(mapSize!=dtoSize){
+            results.get(0).append("Contains duplicate user information");
+        }
+
+        if (!"".equals(results.get(0))) {
+            bpc.request.setAttribute("results", results);
             return;
         }
         intranetUserService.createIntranetUsers(orgUserDtos);
-        StringBuilder sb = new StringBuilder("import success!") ;
+        StringBuilder sb = new StringBuilder("import success!");
         results.add(sb);
-        bpc.request.setAttribute("results",results);
+        bpc.request.setAttribute("results", results);
     }
 
 
@@ -774,20 +781,20 @@ public class MohIntranetUserDelegator {
         return result;
     }
 
-    private List<String> getAssignRoleOption(){
+    private List<String> getAssignRoleOption() {
         List<String> roleOptions = IaisCommonUtils.genNewArrayList();
         String so1 = "INSPECTOR";
         String so2 = "INSPECTOR_LEAD";
         String so3 = "AO1";
         String so4 = "AO1_LEAD";
-        String so5 =  "AO2";
+        String so5 = "AO2";
         String so6 = "AO2_LEAD";
         String so7 = "AO3";
         String so8 = "AO3_LEAD";
-        String so9 =  "ASO";
+        String so9 = "ASO";
         String so10 = "ASO_LEAD";
-        String so11 =  "PSO";
-        String so12 =  "PSO_LEAD";
+        String so11 = "PSO";
+        String so12 = "PSO_LEAD";
         roleOptions.add(so1);
         roleOptions.add(so2);
         roleOptions.add(so3);

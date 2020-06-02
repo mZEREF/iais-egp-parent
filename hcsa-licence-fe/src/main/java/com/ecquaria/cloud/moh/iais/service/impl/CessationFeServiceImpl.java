@@ -276,7 +276,6 @@ public class CessationFeServiceImpl implements CessationFeService {
                 }
             }
         }
-
         return appSpecifiedLicDtos;
     }
 
@@ -284,7 +283,6 @@ public class CessationFeServiceImpl implements CessationFeService {
     public Map<String, Boolean> listResultCeased(List<String> licIds) {
         return cessationClient.listCanCeased(licIds).getEntity();
     }
-
 
     @Override
     public void sendEmail(String msgId, Date date,String svcName,String appGrpId,String licenseeId,String licNo) throws IOException, TemplateException {
@@ -447,9 +445,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             riskAcceptiionDto.setApptype(appSubmissionDto.getAppType());
             riskAcceptiionDtoList.add(riskAcceptiionDto);
         }
-
         List<RiskResultDto> riskResultDtoList = appConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
-
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             String serviceCode = appSvcRelatedInfoDto.getServiceCode();
             RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList, serviceCode);

@@ -17,6 +17,7 @@
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_additional" value="">
+        <input type="hidden" name="readRecom" value="">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -140,45 +141,13 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </c:if>
-<%--                                                                    <iais:row>--%>
-<%--                                                                        <iais:field value="Recommendation"--%>
-<%--                                                                                    required="true"/>--%>
-<%--                                                                        <iais:value width="10">--%>
-<%--                                                                            <iais:select id="recommendation1"--%>
-<%--                                                                                         name="recommendation"--%>
-<%--                                                                                         options="recommendationOption"--%>
-<%--                                                                                         firstOption="Please Select"--%>
-<%--                                                                                         value="${appPremisesRecommendationDto.recommendation}"--%>
-<%--                                                                                         onchange="javascirpt:changeRecommendation1(this.value);"/>--%>
-<%--                                                                        </iais:value>--%>
-<%--                                                                    </iais:row>--%>
-<%--                                                                    <div id="period1" hidden>--%>
-<%--                                                                        <iais:row>--%>
-<%--                                                                            <iais:field value="Period" required="true"/>--%>
-<%--                                                                            <iais:value width="10">--%>
-<%--                                                                                <iais:select name="periods"--%>
-<%--                                                                                             options="riskOption"--%>
-<%--                                                                                             firstOption="Please Select"--%>
-<%--                                                                                             onchange="javascirpt:changePeriod1(this.value);"--%>
-<%--                                                                                             value="${appPremisesRecommendationDto.period}"/>--%>
-<%--                                                                            </iais:value>--%>
-<%--                                                                        </iais:row>--%>
-<%--                                                                    </div>--%>
-<%--                                                                    <div id="selfPeriod1" hidden>--%>
-<%--                                                                        <iais:row>--%>
-<%--                                                                            <iais:field value="Other Period"--%>
-<%--                                                                                        required="true"/>--%>
-<%--                                                                            <iais:value width="10">--%>
-<%--                                                                                <input id=recomInNumber type="text"--%>
-<%--                                                                                       name="number" maxlength="2"--%>
-<%--                                                                                       value="${appPremisesRecommendationDto.recomInNumber}">--%>
-<%--                                                                                <iais:select id="chronoUnit"--%>
-<%--                                                                                             name="chrono"--%>
-<%--                                                                                             options="chronoOption"--%>
-<%--                                                                                             value="${appPremisesRecommendationDto.chronoUnit}"/>--%>
-<%--                                                                            </iais:value>--%>
-<%--                                                                        </iais:row>--%>
-<%--                                                                    </div>--%>
+                                                                    <iais:row>
+                                                                        <iais:field value="Recommendation"
+                                                                                    required="false"/>
+                                                                        <iais:value width="10">
+                                                                            <c:out value="${readRecom}"></c:out>
+                                                                        </iais:value>
+                                                                    </iais:row>
                                                                     <div class="fastTrack">
                                                                         <iais:row>
                                                                             <iais:field value="Fast Tracking?"
@@ -304,23 +273,6 @@
             $("#error_submit").hide();
         }
     }
-
-    // function changePeriod1(obj) {
-    //     if (obj == "Others") {
-    //         $("#selfPeriod1").show();
-    //     } else {
-    //         $("#selfPeriod1").hide();
-    //     }
-    // }
-    //
-    // function changeRecommendation1(obj) {
-    //     if (obj == "IRE001" || obj == "IRE002") {
-    //         $("#period1").show();
-    //     } else {
-    //         $("#selfPeriod1").hide();
-    //         $("#period1").hide();
-    //     }
-    // }
 
 
 </script>
