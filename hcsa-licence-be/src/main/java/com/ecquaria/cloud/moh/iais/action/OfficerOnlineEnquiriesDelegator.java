@@ -921,14 +921,16 @@ public class OfficerOnlineEnquiriesDelegator {
 
         SearchResult<ReqForInfoSearchListDto>  results = (SearchResult<ReqForInfoSearchListDto>) ParamUtil.getSessionAttr(request,"SearchResult");
 
-        for (ReqForInfoSearchListDto info:results.getRows()
-             ) {
-            info.setServiceName(HcsaServiceCacheHelper.getServiceNameById(info.getServiceName()));
-        }
+        List<ReqForInfoSearchListDto> queryList=IaisCommonUtils.genNewArrayList();
         if (!Objects.isNull(results)){
-            List<ReqForInfoSearchListDto> queryList = results.getRows();
-            file = ExcelWriter.exportExcel(queryList, ReqForInfoSearchListDto.class, "Officer Online Enquiries Information_Search_Template");
+            for (ReqForInfoSearchListDto info:results.getRows()
+            ) {
+                info.setServiceName(HcsaServiceCacheHelper.getServiceNameById(info.getServiceName()));
+            }
+
+             queryList = results.getRows();
         }
+        file = ExcelWriter.exportExcel(queryList, ReqForInfoSearchListDto.class, "Officer Online Enquiries Information_Search_Template");
 
         try {
             FileUtils.writeFileResponseContent(response, file);
