@@ -45,8 +45,14 @@ public class SelfAssessmentDelegator {
      */
     public void startStep(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction("Application", "Self assessment");
 
+        String action = ParamUtil.getString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
+        if (SelfAssessmentConstant.SELF_ASSESSMENT_RFI_ACTION.equals(action)){
+            String corrId = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
+            ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID, corrId);
+        }
+
+        AuditTrailHelper.auditFunction("Application", "Self assessment");
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_FLAG, null);
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_ERROR_MSG, null);
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_MAP, null);
@@ -55,7 +61,6 @@ public class SelfAssessmentDelegator {
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR, null);
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_CAN_EDIT_ANSWER_FLAG, null);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION, null);
-        ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID, null);
 
     }
 
@@ -74,8 +79,7 @@ public class SelfAssessmentDelegator {
         List<SelfAssessment> selfAssessmentList;
         boolean hasSubmitted;
         if (SelfAssessmentConstant.SELF_ASSESSMENT_RFI_ACTION.equals(action)){
-            String corrId = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
-            ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID, corrId);
+            String corrId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
             if (StringUtil.isEmpty(corrId)) {
                 log.debug("the corrId id is null");
                 return;
