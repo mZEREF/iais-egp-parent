@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
@@ -39,4 +41,6 @@ public interface OrgUserManageService {
     OrganizationDto findOrganizationByUen(String uen);
 
     void updateUserBe(OrganizationDto organizationDto);
+    LicenseeDto getLicenseeById(String id);
+    List<LicenseeKeyApptPersonDto> getPersonById(String id);
 }
