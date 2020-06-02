@@ -147,6 +147,12 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     private List<AuditTaskDataFillterDto> inspectionFitter(SearchResult<AuditTaskDataDto> searchResult, AuditSystemPotentialDto dto) {
         List<AuditTaskDataDto> auditTaskDtos = searchResult.getRows();
         if(IaisCommonUtils.isEmpty(auditTaskDtos)) return  null;
+        if( !StringUtil.isEmpty(dto.getTypeOfRisk())){
+            if(ApplicationConsts. RISK_TYPE_FINANCIAL_KEY.equalsIgnoreCase(dto.getTypeOfRisk()) ||  ApplicationConsts.RISK_TYPE_LEADERSHIP_KEY.equalsIgnoreCase(dto.getTypeOfRisk()) ||
+            ApplicationConsts.RISK_TYPE_LEGISLATIVE_BREACHES_KEY.equalsIgnoreCase(dto.getTypeOfRisk()) ||  ApplicationConsts.RISK_TYPE_OVERALL_KEY.equalsIgnoreCase(dto.getTypeOfRisk())){
+                return  null;
+            }
+        }
         Map<String,AuditTaskDataFillterDto> auditTaskDataFillterDtoMap = new HashMap<>(auditTaskDtos.size());
         if (StringUtil.isEmpty(dto.getLastInspectionStart()) && StringUtil.isEmpty(dto.getLastInspectionEnd())) {
         } else {
@@ -301,14 +307,14 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             } else if (ApplicationConsts.RISK_TYPE_SECOND_INSPECTION_KEY.equals(dto.getTypeOfRisk())) {
                 dtoList = sortBySecLastInsp(dto, auditTaskDtos,map);
             } else if (ApplicationConsts.RISK_TYPE_FINANCIAL_KEY.equals(dto.getTypeOfRisk())) {
-                dtoList = sortByScore(dto, auditTaskDtos, HcsaLicenceBeConstant.RISK_TYPE_FINANCIAL,map);
+              // dtoList = sortByScore(dto, auditTaskDtos, HcsaLicenceBeConstant.RISK_TYPE_FINANCIAL,map);
             } else if (ApplicationConsts.RISK_TYPE_LEADERSHIP_KEY.equals(dto.getTypeOfRisk())) {
-                dtoList = sortByScore(dto, auditTaskDtos, HcsaLicenceBeConstant.RISK_TYPE_LEADERSHIP,map);
+              //  dtoList = sortByScore(dto, auditTaskDtos, HcsaLicenceBeConstant.RISK_TYPE_LEADERSHIP,map);
             } else if (ApplicationConsts.RISK_TYPE_LEGISLATIVE_BREACHES_KEY.equals(dto.getTypeOfRisk())) {
-                dtoList = sortByScore(dto, auditTaskDtos, HcsaLicenceBeConstant.RISK_TYPE_LEGISLATIVE_BREACHES,map);
+            //    dtoList = sortByScore(dto, auditTaskDtos, HcsaLicenceBeConstant.RISK_TYPE_LEGISLATIVE_BREACHES,map);
             } else if (ApplicationConsts.RISK_TYPE_OVERALL_KEY.equals(dto.getTypeOfRisk())) {
                 //sortByRiskScore();
-                dtoList = sortByOverallRisk(dto, auditTaskDtos,map);
+             //   dtoList = sortByOverallRisk(dto, auditTaskDtos,map);
             }
         } else {
             dtoList = IaisCommonUtils.genNewArrayList();
