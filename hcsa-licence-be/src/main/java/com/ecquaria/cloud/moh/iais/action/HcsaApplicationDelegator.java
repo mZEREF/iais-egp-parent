@@ -1254,7 +1254,7 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
-        //appeal save rturn fee
+        //appeal save return fee
         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
                 String returnFee = appPremisesRecommendationDto.getRemarks();
