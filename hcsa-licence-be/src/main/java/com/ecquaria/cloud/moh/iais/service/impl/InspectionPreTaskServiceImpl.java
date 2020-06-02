@@ -499,7 +499,24 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     @Override
     public ApplicationViewDto setApplicationRfiInfo(ApplicationViewDto applicationViewDto) {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
+        String appType = applicationDto.getApplicationType();
+        List<AppEditSelectDto> appEditSelectDtos = IaisCommonUtils.genNewArrayList();
+        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+            AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+            appEditSelectDto.setEditType(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
+            appEditSelectDto.setServiceEdit(true);
+            appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appEditSelectDto.setPoEdit(true);
+            appEditSelectDto.setDocEdit(true);
+            appEditSelectDto.setMedAlertEdit(true);
+            appEditSelectDto.setPremisesListEdit(true);
+            appEditSelectDto.setApplicationId(applicationDto.getId());
+            applicationViewDto.setAppEditSelectDto(appEditSelectDto);
+        } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
+            appEditSelectDtos = applicationService.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RENEW);
+        } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+            appEditSelectDtos = applicationService.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
+        }
         if (!IaisCommonUtils.isEmpty(appEditSelectDtos)) {
             applicationViewDto.setAppEditSelectDto(appEditSelectDtos.get(0));
         }
