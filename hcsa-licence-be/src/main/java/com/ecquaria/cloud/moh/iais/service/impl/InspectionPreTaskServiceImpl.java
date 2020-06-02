@@ -384,7 +384,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         //update inspection status
         updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PENDING_REQUEST_FOR_INFORMATION);
         //update App
-        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE);
+        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK);
         applicationDto1.setAuditTrailDto(auditTrailDto);
         applicationService.updateFEApplicaiton(applicationDto1);
         //create history
