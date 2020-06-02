@@ -75,7 +75,7 @@
                                 <iais:row style="color:#ff0000; display: none" id="submittedDateError">
                                     <iais:field value=""/>
                                     <div class="col-sm-7 col-md-8 col-xs-10">
-                                        Application Submitted Date From cannot be later than Application Submitted Date To.                                            </p>
+                                        Application Submitted Date From cannot be later than Application Submitted Date To.
                                     </div >
                                 </iais:row>
                                 <iais:row>
@@ -133,7 +133,7 @@
                                 <iais:row style="color:#ff0000; display: none" id="startDateError">
                                     <iais:field value=""/>
                                     <div class="col-sm-7 col-md-6 col-xs-10">
-                                        Licence Start Date From cannot be later than Licence Start Date To.                                            </p>
+                                        Licence Start Date From cannot be later than Licence Start Date To.
                                     </div >
                                 </iais:row>
                                 <iais:row>
@@ -328,17 +328,43 @@
         var periodTo=$('#to_date').val();
         var periodSub=$('#sub_date').val();
         var flag=true;
-        if(startSub>startTo&&startTo!=""){
-            $("#startDateError").show();
-            flag=false;
+
+        if(startTo!==""){
+            if(startSub.split('/')[2]>startTo.split('/')[2]){
+                $("#startDateError").show();
+                flag=false;
+            }else if(startSub.split('/')[1]>startTo.split('/')[1]){
+                $("#startDateError").show();
+                flag=false;
+            }else if(startSub.split('/')[0]>startTo.split('/')[0]){
+                $("#startDateError").show();
+                flag=false;
+            }
         }
-        if(expirySub>expiryTo&&expiryTo!=""){
-            $("#expiryDateError").show();
-            flag=false;
+        if(expiryTo!==""){
+            if(expirySub.split('/')[2]>expiryTo.split('/')[2]){
+                $("#expiryDateError").show();
+                flag=false;
+            }else if(expirySub.split('/')[1]>expiryTo.split('/')[1]){
+                $("#expiryDateError").show();
+                flag=false;
+            }else if(expirySub.split('/')[0]>expiryTo.split('/')[0]){
+                $("#expiryDateError").show();
+                flag=false;
+            }
+
         }
-        if(periodSub>periodTo&&periodTo!=""){
-            $("#submittedDateError").show();
-            flag=false;
+        if(periodTo!==""){
+            if(periodSub.split('/')[2]>periodTo.split('/')[2]){
+                $("#submittedDateError").show();
+                flag=false;
+            }else if(periodSub.split('/')[1]>periodTo.split('/')[1]){
+                $("#submittedDateError").show();
+                flag=false;
+            }else if(periodSub.split('/')[0]>periodTo.split('/')[0]){
+                $("#submittedDateError").show();
+                flag=false;
+            }
         }
         if(flag)
         {
