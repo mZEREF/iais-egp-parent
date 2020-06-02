@@ -474,8 +474,7 @@ public class RequestForChangeMenuDelegator {
         }
         QueryHelp.setMainSql("applicationPersonnelQuery", "appPersonnelQuery", searchParam);
         SearchResult searchResult = requestForChangeService.psnDoQuery(searchParam);
-        PaginationHandler<PersonnelListDto> handler = new PaginationHandler<>("personPagDiv", "personBodyDiv");
-
+//        PaginationHandler<PersonnelListDto> handler = new PaginationHandler<>("personPagDiv", "personBodyDiv");
         if (!StringUtil.isEmpty(searchResult)) {
             ParamUtil.setSessionAttr(bpc.request, "PersonnelSearchParam", searchParam);
             ParamUtil.setRequestAttr(bpc.request, "PersonnelSearchResult", searchResult);
@@ -591,8 +590,8 @@ public class RequestForChangeMenuDelegator {
                 personnelListDtos.add(personnelListDto);
             }
         }
-        handler.setAllData(personnelListDtos);
-        handler.preLoadingPage();
+//        handler.setAllData(personnelListDtos);
+//        handler.preLoadingPage();
         List<SelectOption> personelRoles = getPsnType();
         ParamUtil.setRequestAttr(bpc.request, "PersonnelRoleList", personelRoles);
         ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtos);

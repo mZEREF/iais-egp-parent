@@ -127,28 +127,25 @@
                                                     </iais:row>
                                                 </div>
                                                 <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
-                                                    <div class="row">
-                                                        <div class="col-md-4">
-                                                            <label style="font-size: 16px">Licence Start Date</label>
-                                                        </div>
-                                                        <div class="col-md-6">
+                                                    <iais:row>
+                                                        <iais:field value="Licence Start Date" />
+                                                        <iais:value width="7">
                                                             <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
                                                                 <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
                                                             </c:if>
                                                             <c:if test="${empty applicationViewDto.recomLiceStartDate}">
                                                                 <p>-</p>
                                                             </c:if>
-                                                        </div>
-                                                    </div>
+                                                        </iais:value>
+                                                    </iais:row>
                                                 </c:if>
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <label style="font-size: 16px">Fast Tracking?</label>
-                                                    </div>
-                                                    <div class="col-md-6">
+                                                <iais:row>
+                                                    <iais:field value="Fast Tracking?" />
+
+                                                    <iais:value width="7">
                                                         <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
-                                                    </div>
-                                                </div>
+                                                    </iais:value >
+                                                </iais:row>
                                                 <iais:action>
                                                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doSend()">Submit</button>
                                                 </iais:action>

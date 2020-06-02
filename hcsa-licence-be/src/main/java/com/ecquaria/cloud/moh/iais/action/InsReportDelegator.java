@@ -95,7 +95,7 @@ public class InsReportDelegator {
             }
         }
         String appStatus = applicationViewDto.getApplicationDto().getStatus();
-        if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION.equals(appStatus)||ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK.equals(appStatus)){
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION.equals(appStatus)||ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(appStatus)){
             initRecommendation(correlationId,applicationViewDto,bpc);
         }
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
@@ -155,8 +155,8 @@ public class InsReportDelegator {
             applicationDto.setFastTracking(true);
         }
 
-        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK.equals(status)){
-            insRepService.routTastToRoutBack(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto.getProcessRemarks());
+        if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)){
+            insRepService.routTaskToRoutBack(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto.getProcessRemarks());
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         }

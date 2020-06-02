@@ -57,7 +57,7 @@
                                             <td><c:out value="${pool.requestUser}" /></td>
                                             <td>
                                                 <iais:action style="text-align:right;">
-                                                    <a onclick="javascript:doView('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.reqInfoId)}');" >View</a>
+                                                    <a onclick="javascript:doView('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.id)}');" >View</a>
                                                 </iais:action>
                                             </td>
                                         </tr>

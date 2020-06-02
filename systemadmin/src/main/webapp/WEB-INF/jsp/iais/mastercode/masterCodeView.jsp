@@ -42,11 +42,6 @@
         submit('appSort');
     }
 
-    $('.selectedFile').change(function () {
-        $("[name='crud_action_type']").val('doUpload');
-        $("#MasterCodeFileForm").submit();
-    });
-
     $("#MC_Clear").click(function () {
         $("[name='codeCategory']").val("");
         $("[name='codeDescription']").val("");
@@ -56,6 +51,10 @@
         $("[name='eed']").val("");
         $("#codeStatus option:first").prop("selected", 'selected').val("Please Select");
         $(".clearMC .current").text("Please Select");
+    });
+
+    $("#MCUploadFile").click(function () {
+        submit('doUpload');
     });
 
     function doCreateCategory(mcId) {

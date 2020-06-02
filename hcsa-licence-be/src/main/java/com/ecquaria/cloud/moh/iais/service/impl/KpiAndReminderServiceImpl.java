@@ -138,7 +138,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
             String service = request.getParameter("service");
             request.setAttribute("service",service);
             if(StringUtil.isEmpty(service)){
-                errorMap.put("service","UC_CHKLMD001_ERR001");
+                errorMap.put("service","ERR0009");
             }
         }
         String module = request.getParameter("module");
@@ -152,24 +152,24 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
             String stageCode1 = request.getParameter(stageCode);
           request.setAttribute(stageCode,stageCode1);
             if(StringUtil.isEmpty(stageCode1)){
-                errorMap.put(stageCode,"UC_CHKLMD001_ERR001");
+                errorMap.put(stageCode,"ERR0009");
             }else {
                 if(!stageCode1.matches("^[0-9]{0,5}$")){
-                    errorMap.put(stageCode,"UC_CHKLMD001_ERR001");
+                    errorMap.put(stageCode,"GENERAL_ERR0002");
                 }
             }
         }
 
         if(StringUtil.isEmpty(module)){
-            errorMap.put("module","UC_CHKLMD001_ERR001");
+            errorMap.put("module","ERR0009");
         }
         request.setAttribute("module",module);
 
         if(StringUtil.isEmpty(reminderThreshold)){
-            errorMap.put("reminderThreshold","UC_CHKLMD001_ERR001");
+            errorMap.put("reminderThreshold","ERR0009");
         }else {
             if(!reminderThreshold.matches("^[0-9]{0,5}$")){
-                errorMap.put("reminderThreshold","UC_CHKLMD001_ERR002");
+                errorMap.put("reminderThreshold","GENERAL_ERR0002");
             }
         }
 

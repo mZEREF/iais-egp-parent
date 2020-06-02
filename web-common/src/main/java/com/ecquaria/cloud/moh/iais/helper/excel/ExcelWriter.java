@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import freemarker.template.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -26,7 +25,6 @@ import java.util.List;
 
 @Slf4j
 public final class ExcelWriter {
-
     private static String EXCEL_TYPE_HSSF			= "xls";
     private static String EXCEL_TYPE_XSSF			= "xlsx";
 
@@ -60,6 +58,10 @@ public final class ExcelWriter {
     }
 
     public static File exportExcel(final List<?> source, final Class<?> clz, final String fileName){
+        return exportExcel(source, clz, fileName, 1);
+    }
+
+    public static File exportExcel(final List<?> source, final Class<?> clz, final String fileName, final int startCellIndex){
         if (source == null || clz == null){
             throw new IaisRuntimeException("Please check the export excel parameters.");
         }
@@ -70,7 +72,7 @@ public final class ExcelWriter {
             wb = new XSSFWorkbook();
             Sheet sheet = wb.createSheet(getSheetName(clz));
             setFieldName(clz, sheet);
-            createCellValue(sheet, source, clz);
+            createCellValue(sheet, source, clz, startCellIndex);
             wb.write(fileOut);
         } catch (FileNotFoundException e) {
             log.debug(e.getMessage());
@@ -95,9 +97,9 @@ public final class ExcelWriter {
         return new File(retFileName);
     }
 
-    private static void createCellValue(final Sheet sheet, final List<?> source, final Class<?> clz) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    private static void createCellValue(final Sheet sheet, final List<?> source, final Class<?> clz, final int startCellIndex) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         //sequence number
-        int sequence = 1;
+        int sequence = startCellIndex;
         for (Object t : source){
             Row sheetRow = sheet.createRow(sequence);
             sheetRow.createCell(0).setCellValue(sequence);

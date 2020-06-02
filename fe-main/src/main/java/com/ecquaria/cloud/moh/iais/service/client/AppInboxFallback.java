@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Hc
@@ -123,6 +124,14 @@ public class AppInboxFallback implements AppInboxClient {
 
     @Override
     public FeignResponseEntity<Void> updateFeAppStatus(String appId, String appStatus) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Map<String, Boolean>> listCanCeased(List<String> licIds) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

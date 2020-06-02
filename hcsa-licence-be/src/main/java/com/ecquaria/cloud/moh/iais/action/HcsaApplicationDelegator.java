@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -66,13 +67,7 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationProcessUploadFileValidate;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
@@ -155,6 +150,8 @@ public class HcsaApplicationDelegator {
     LicenceService licenceService;
     @Autowired
     CessationClient cessationClient;
+    @Autowired
+    ApplicationClient applicationClient;
 
 
     @Value("${iais.email.sender}")
@@ -283,7 +280,8 @@ public class HcsaApplicationDelegator {
             TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
             String roleId = taskDto.getRoleId();
             boolean isAsoPso = RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId);
-            String appPremCorreId=taskDto.getRefNo();
+//            String appPremCorreId=taskDto.getRefNo();
+            String appPremCorreId = applicationViewDto.getNewAppPremisesCorrelationDto().getId();
             //save recommendation
             String recommendationStr = ParamUtil.getString(bpc.request,"recommendation");
             boolean isDMS = ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus());
@@ -1238,10 +1236,10 @@ public class HcsaApplicationDelegator {
         String processDecision = ParamUtil.getString(bpc.request,"nextStage");
         log.info(StringUtil.changeForLog("The processDecision is -- >:"+processDecision));
         //judge the final status is Approve or Reject.
+        AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
+        String applicationType = applicationDto.getApplicationType();
         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
-            AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
             if(appPremisesRecommendationDto!=null){
-                String applicationType = applicationDto.getApplicationType();
                 if(!ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
                     Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
                     if(null != recomInNumber && recomInNumber == 0){
@@ -1256,6 +1254,21 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
+        //appeal save return fee
+        if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
+            if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+                String returnFee = appPremisesRecommendationDto.getRemarks();
+                if(!StringUtil.isEmpty(returnFee)){
+                    String oldApplicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "oldApplicationNo");
+                    AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
+                    appReturnFeeDto.setApplicationNo(oldApplicationNo);
+                    appReturnFeeDto.setReturnAmount(Double.valueOf(returnFee));
+                    appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL);
+                    applicationService.saveAppReturnFee(appReturnFeeDto);
+                }
+            }
+        }
+
         //complated this task and create the history
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
@@ -1362,6 +1375,8 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+        //appeal save return fee
+
 
         if (broadcastApplicationDto != null){
             ApplicationDto withdrawApplicationDto = broadcastApplicationDto.getApplicationDto();
@@ -1423,6 +1438,10 @@ public class HcsaApplicationDelegator {
         interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         interMessageDto.setMaskParams(maskParams);
         inboxMsgService.saveInterMessage(interMessageDto);
+    }
+
+    private void appealSaveReturnFee(){
+        //ParamUtil.setSessionAttr(request,"isLateFeeAppealType",isLateFeeAppealType);
     }
 
     private EmailDto sendEmail(String msgId, Map<String, Object> msgInfoMap, String applicationNo, String licenseeId,String subjectSuppInfo) throws IOException, TemplateException {
@@ -1592,6 +1611,8 @@ public class HcsaApplicationDelegator {
     }
 
     /************************/
+
+
     private void sendAppealApproved(ApplicationDto applicationDto,String licenseeId){
 
         String applicationType = applicationDto.getApplicationType();
@@ -1797,17 +1818,22 @@ public class HcsaApplicationDelegator {
             //get appeal type
             String appId = applicationDto.getId();
             AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
-            String appealType = premiseMiscDto.getAppealType();
-            isOtherAppealType = true;
-            if (ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD.equals(appealType)) {
-                isChangePeriodAppealType = true;
-                isOtherAppealType = false;
-            } else if (ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE.equals(appealType)) {
-                isLateFeeAppealType = true;
-                isOtherAppealType = false;
+            if(premiseMiscDto != null){
+                String appealType = premiseMiscDto.getAppealType();
+                isOtherAppealType = true;
+                if (ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD.equals(appealType)) {
+                    isChangePeriodAppealType = true;
+                    isOtherAppealType = false;
+                } else if (ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE.equals(appealType)) {
+                    isLateFeeAppealType = true;
+                    isOtherAppealType = false;
+                }
+                String oldAppId = premiseMiscDto.getRelateRecId();
+                ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+                if(oldApplication != null){
+                    ParamUtil.setSessionAttr(request, "oldApplicationNo", oldApplication.getApplicationNo());
+                }
             }
-            //test
-            isChangePeriodAppealType = true;
             //first ASO have no recommendation
             if(appPremisesRecommendationDto != null){
                 //set filling back

@@ -22,12 +22,12 @@
             <table border="1">
                 <thead>
                 <tr>
-                    <th style="text-align:center;width: 3%;padding:0">S/N</th>
-                    <th style="text-align:center;width: 12%">Licence No.</th>
+                    <th style="text-align:center;width: 4%;padding:0">S/N</th>
+                    <th style="text-align:center;width: 8%">Licence No.</th>
                     <th style="text-align:center;width: 10%">Service Name</th>
-                    <th style="text-align:center;width: 7%">HCI Name</th>
+                    <th style="text-align:center;width: 8%">HCI Name</th>
                     <th style="text-align:center;width: 10%">HCI Address</th>
-                    <th style="text-align:center;width: 9%">Effective Date <a
+                    <th style="text-align:center;width: 10%">Effective Date <a
                             class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true"
                             data-original-title="<p>The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation, letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.</p>">i</a>
                     </th>
@@ -140,11 +140,33 @@
         <br/>
         <div style="width: 70%;margin-left: 1%;margin-right: 1%"><c:out value="${text2}"/></div>
         <br/>
+        <div class="modal fade" id="base" tabindex="-1" role="dialog" aria-labelledby="base" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the modification ?</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="confirmBaseSubmit('submit')">Confirm</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div style="margin-left: 1%;margin-right: 1%"><input type="checkbox" onclick="return false" checked name="sure" id="confirmInfo"><label style="font-weight: normal" for="confirmInfo">I have read the information</label></div>
-        <iais:action>
-            <a onclick="confirmBack('back')"><em class="fa fa-angle-left" style="margin-bottom: 1%;margin-left: 1%"></em> Back</a>
-            <a style="margin-bottom: 1%;margin-left: 87%" class="btn btn-primary" onclick="confirmSubmit('submit')">Submit</a>
-        </iais:action>
+            <iais:action>
+                <a onclick="confirmBack('back')"><em class="fa fa-angle-left" style="margin-bottom: 1%;margin-left: 1%"></em> Back</a>
+                <a style="margin-bottom: 1%;margin-bottom: 1%;margin-left: 87%" class="btn btn-primary" onclick="confirmSubmit('submit')">Submit</a>
+            </iais:action>
     </div>
 </form>
 

@@ -84,31 +84,34 @@
                                             </iais:value>
                                         </iais:row>
                                         <c:if test="${licPreReqForInfoDto.needDocument}">
-                                            <iais:row >
-                                                <iais:value width="18">
-                                                    <div class="pop-up">
-                                                        <div class="pop-up-body">
+                                            <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoDocDto}" var="rfiDoc">
+                                                <iais:row >
+                                                    <iais:value width="18">
+                                                        <div class="pop-up">
+                                                            <div class="pop-up-body">
 
-                                                            <div class="field col-sm-4 control-label formtext"><label>Docment for Premise:</label></div>
-                                                            <span class="fileType" style="display:none">Docment1</span><span class="fileFilter" style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
-                                                            <div class="control col-sm-5">
-                                                                <div class="fileList ">
+                                                                <div class="field col-sm-4 control-label formtext"><label>Docment for Premise:</label></div>
+                                                                <span class="fileType" style="display:none">Docment1</span><span class="fileFilter" style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
+                                                                <div class="control col-sm-5">
+                                                                    <div class="fileList ">
                                                                     <span class="filename server-site" id="130">
-                                                                        <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo1&fileRo1=<iais:mask name="fileRo1" value="${licPreReqForInfoDto.fileRepoId}"/>&fileRepoName=${licPreReqForInfoDto.docName}" title="Download" class="downloadFile">${licPreReqForInfoDto.docName}(${licPreReqForInfoDto.docSize} KB)</a>
+                                                                        <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo1&fileRo1=<iais:mask name="fileRo1" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}" title="Download" class="downloadFile">${rfiDoc.docName}(${rfiDoc.docSize} KB)</a>
                                                                     </span>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
 
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </iais:value>
-                                            </iais:row>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </c:forEach>
+
                                         </c:if>
                                         <iais:action style="text-align:left;">
                                             <a  onclick="javascript:doBack()">< Back</a>
                                         </iais:action>
                                         <iais:action style="text-align:right;">
-                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doCancel('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,licPreReqForInfoDto.reqInfoId)}')">Cancel</button>
+                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doCancel('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,licPreReqForInfoDto.id)}')">Cancel</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>

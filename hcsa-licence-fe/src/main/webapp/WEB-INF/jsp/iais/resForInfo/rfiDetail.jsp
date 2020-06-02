@@ -83,22 +83,25 @@
                                             </iais:value>
                                         </iais:row>
                                         <c:if test="${licPreReqForInfoDto.needDocument}">
-                                            <iais:row>
-                                                <iais:value width="18">
-                                                    <div class="file-upload-gp">
+                                            <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoDocDto}" var="rfiDoc">
+                                                <iais:row>
+                                                    <iais:value width="18">
+                                                        <div class="file-upload-gp">
 
-                                                        &nbsp;&nbsp;&nbsp;<div id="uploadFileName"></div>
-                                                        <input class="selectedFile commDoc" id="commonDoc"  name = "UploadFile" type="file" style="display: none;" aria-label="selectedFile1" >
-                                                        <a class="btn btn-file-upload btn-secondary" >Attachment</a><span id="error_UploadFile" name="iaisErrorMsg" class="error-msg" ></span><br/>
-                                                    </div>
-                                                </iais:value>
-                                            </iais:row>
+                                                            &nbsp;&nbsp;&nbsp;${rfiDoc.docName} : <div id="uploadFileName"></div>
+                                                            <input class="selectedFile commDoc"  name = "UploadFile" type="file" style="display: none;" aria-label="selectedFile1" >
+                                                            <a class="btn btn-file-upload btn-secondary" >Attachment</a><span id="error_UploadFile" name="iaisErrorMsg" class="error-msg" ></span><br/>
+                                                        </div>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </c:forEach>
+
                                         </c:if>
                                         <iais:action style="text-align:left;">
                                             <a  onclick="javascript:doBack()" >< Back</a>
                                         </iais:action>
                                         <iais:action style="text-align:right;">
-                                            <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit('${licPreReqForInfoDto.reqInfoId}')">Proceed to Submit</button>
+                                            <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit('${licPreReqForInfoDto.id}')">Proceed to Submit</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>

@@ -43,6 +43,14 @@ public class PublicHolidayClientFallback implements PublicHolidayClient{
     }
 
     @Override
+    public FeignResponseEntity<Void> doSaves(List<PublicHolidayDto> publicHolidayDtos) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<PublicHolidayDto> doUpdate(PublicHolidayDto publicHolidayDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

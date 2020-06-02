@@ -146,7 +146,7 @@ function initMemoryPage(paginationDiv, checkType, pageNo) {
         dataType: 'json',
         url:BASE_CONTEXT_PATH + "/commonAjax/changeMemoryPage.do",
         error:function(res){
-            alert("wrong:" + res);
+            $("#iaisErrorFlag").val('Error:Exception');
         },
         success:function(res){
             confirmChangeMemoryPage(res);
@@ -175,7 +175,7 @@ function changeMemoryPage(paginationDiv, checkType, pageNo) {
         dataType: 'json',
         url:BASE_CONTEXT_PATH + "/commonAjax/changeMemoryPage.do",
         error:function(res){
-            alert("wrong:" + res);
+            $("#iaisErrorFlag").val('Error:Exception');
         },
         success:function(res){
             confirmChangeMemoryPage(res);

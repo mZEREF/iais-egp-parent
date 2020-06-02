@@ -27,6 +27,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -65,7 +66,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             errMap.put("All","Please do some change");
         }
         mergeList(editList,financeList);
-
+        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         return errMap;
     }
     public void mergeList( List<HcsaRiskFinanceMatrixDto> editList,List<HcsaRiskFinanceMatrixDto> financeList){

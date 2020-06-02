@@ -284,7 +284,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         updateSysAdmEicRequestTrackingDto(eicRequestTrackingDto);
         String s="FAIL";
         try {
-            s=createBeRfiLicProcessFileTrack(processFileTrackDto);
+            s=createBeAuditTrailProcessFileTrack(processFileTrackDto);
         }catch (Exception e){
             log.error(e.getMessage(),e);
             return s;
@@ -294,7 +294,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
     }
 
     @Override
-    public String createBeRfiLicProcessFileTrack(ProcessFileTrackDto processFileTrackDto) {
+    public String createBeAuditTrailProcessFileTrack(ProcessFileTrackDto processFileTrackDto) {
         EicRequestTrackingDto trackDto = getLicEicRequestTrackingDtoByRefNo(processFileTrackDto.getEventRefNo());
         String s=eicCallSyncAuditTrailProcessFileTrack(processFileTrackDto);
         trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);

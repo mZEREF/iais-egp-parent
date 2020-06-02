@@ -66,9 +66,6 @@ public interface LicenceClient {
     @GetMapping(path= "/hcsa-licence/application-licence-premises", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppGrpPremisesDto>> getDistinctPremisesByLicenseeId(@RequestParam(value = "licenseeId") String licenseeId);
 
-    @GetMapping(value = "/hcsa-licence/licence/{licenceId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<LicenceDto> getLicenceDtoById(@PathVariable(name="licenceId") String licenceId);
-
     @PostMapping(value = "/hcsa-licence-rfc/psn-param", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<PersonnelQueryDto>> psnDoQuery(SearchParam searchParam);
     @PostMapping(value = "/hcsa-licence/exist-base-service-info",consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -106,4 +103,7 @@ public interface LicenceClient {
 
     @GetMapping(value = "/hcsa-licence/premise-cessation-id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PremisesDto> getLicPremisesDtoById(@RequestParam(value = "id")String id);
+
+    @GetMapping(value = "/hcsa-licence/baseLicId-list-specLicId",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getSpecIdsByBaseId(@RequestParam("licId") String licId);
 }

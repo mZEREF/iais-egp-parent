@@ -15,6 +15,7 @@ public interface PublicHolidayService {
     SearchResult<PublicHolidayQueryDto> getHoliday(SearchParam searchParam);
     PublicHolidayDto getHolidayById(String id);
     PublicHolidayDto createHoliday(PublicHolidayDto publicHolidayDto);
+    void createHolidays(List<PublicHolidayDto> publicHolidayDtos);
     PublicHolidayDto updateHoliday(PublicHolidayDto publicHolidayDto);
     void deleteHoliday(List<String> id);
     String getPublicHolidayInCalender(String form);

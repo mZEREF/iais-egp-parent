@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.SelfAssessmentConstant;
@@ -45,8 +46,14 @@ public class SelfAssessmentDelegator {
      */
     public void startStep(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction("Application", "Self assessment");
 
+        String action = ParamUtil.getString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
+        if (SelfAssessmentConstant.SELF_ASSESSMENT_RFI_ACTION.equals(action)){
+            String corrId = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
+            ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID, corrId);
+        }
+
+        AuditTrailHelper.auditFunction("Application", "Self assessment");
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_FLAG, null);
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_HAS_SUBMITTED_ERROR_MSG, null);
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_MAP, null);
@@ -55,7 +62,6 @@ public class SelfAssessmentDelegator {
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR, null);
         ParamUtil.setSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_CAN_EDIT_ANSWER_FLAG, null);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION, null);
-        ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID, null);
 
     }
 
@@ -64,14 +70,18 @@ public class SelfAssessmentDelegator {
      * @Decription preLoad
      */
     public void preLoad(BaseProcessClass bpc) {
-        String action = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
+        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Self-assessment listing");
+        String action = ParamUtil.getString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
+        if (StringUtil.isEmpty(action)){
+            action = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
+        }
+
         ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION, action);
 
         List<SelfAssessment> selfAssessmentList;
         boolean hasSubmitted;
         if (SelfAssessmentConstant.SELF_ASSESSMENT_RFI_ACTION.equals(action)){
-            String corrId = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
-            ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID, corrId);
+            String corrId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
             if (StringUtil.isEmpty(corrId)) {
                 log.debug("the corrId id is null");
                 return;
@@ -195,6 +205,7 @@ public class SelfAssessmentDelegator {
                     if (SelfAssessmentConstant.SELF_ASSESSMENT_RFI_ACTION.equals(action)){
                         String corrId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
                         selfAssessmentService.changePendingSelfAssMtStatus(corrId, false);
+                        ParamUtil.setRequestAttr(bpc.request, "redirectFlag", "Y");
                     }else {
                         String groupId = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
                         selfAssessmentService.changePendingSelfAssMtStatus(groupId, true);

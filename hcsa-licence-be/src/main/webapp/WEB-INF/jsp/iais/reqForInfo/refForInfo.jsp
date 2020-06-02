@@ -56,8 +56,8 @@
                                             <td><c:out value="${pool.email}"/></td>
                                             <td><fmt:formatDate value="${pool.requestDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
                                             <td>
-                                                <iais:action style="text-align:right;">
-                                                    <a onclick="javascript:doView('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.reqInfoId)}');" >View</a>
+                                                <iais:action >
+                                                    <a onclick="javascript:doView('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.id)}');" >View</a>
                                                 </iais:action>
                                             </td>
                                         </tr>
@@ -73,7 +73,7 @@
             </div>
         </div>
         <iais:action style="text-align:left;">
-            <a href="/hcsa-licence-web/eservice/INTRANET/MohOnlineEnquiries" style="margin-bottom: 1%;margin-left: 1%"><em class="fa fa-angle-left"></em> Back</a>
+            <a href="/hcsa-licence-web/eservice/INTRANET/MohLicenceManagement" style="margin-bottom: 1%;margin-left: 1%"><em class="fa fa-angle-left"></em> Back</a>
         </iais:action>
     </div>
 </form>

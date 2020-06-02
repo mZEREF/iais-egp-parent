@@ -10,7 +10,7 @@
 <div class="main-content">
     <form class="form-horizontal" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <div class="row">
+        <div class="row" style="min-height: 600px">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
                     <div class="intranet-content">

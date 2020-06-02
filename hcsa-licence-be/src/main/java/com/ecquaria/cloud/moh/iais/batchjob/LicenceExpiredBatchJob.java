@@ -5,7 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.service.CessationService;
+import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class LicenceExpiredBatchJob {
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
-    private CessationService cessationService;
+    private CessationBeService cessationBeService;
 
     private final String LICENCEENDDATE = "52AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
@@ -51,11 +51,11 @@ public class LicenceExpiredBatchJob {
                 String svcName = licenceDto.getSvcName();
                 String licenceNo = licenceDto.getLicenceNo();
                 String licenseeId = licenceDto.getLicenseeId();
-                Map<String, Boolean> stringBooleanMap = cessationService.listResultCeased(ids);
+                Map<String, Boolean> stringBooleanMap = cessationBeService.listResultCeased(ids);
                 if(stringBooleanMap.get(id)){
                     licenceDtosForSave.add(licenceDto);
                 }
-                cessationService.sendEmail(LICENCEENDDATE,date,svcName,id,licenseeId,licenceNo);
+                cessationBeService.sendEmail(LICENCEENDDATE,date,svcName,id,licenseeId,licenceNo);
             }
         }
         List<LicenceDto> licenceDtos2 = updateLicenceStatus(licenceDtosForSave,date);

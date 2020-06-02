@@ -241,6 +241,7 @@ public class NewApplicationDelegator {
             //init session and data
             initSession(bpc);
         }
+        initOldSession(bpc);
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }
 
@@ -463,7 +464,7 @@ public class NewApplicationDelegator {
             int premCount = appGrpPremisesDtos.size();
             int svcCount = hcsaServiceDtos.size();
             log.info(StringUtil.changeForLog("premises count:"+premCount+" ,service count:"+svcCount));
-            if(premCount >1 && svcCount == 1){
+            if(premCount >1 && svcCount >= 1){
                 //multi prem one svc
                 ParamUtil.setRequestAttr(bpc.request,GROUPLICENCECONFIG,"test");
             }
@@ -1093,8 +1094,8 @@ public class NewApplicationDelegator {
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
         appSubmissionRequestInformationDto.setAppSubmissionDto(submitAppSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldSubmitAppSubmissionDto);
-    /*    applicationClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto);*/
-        appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
+        applicationClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto);
+      /*  appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);*/
         // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","Y");
         ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE,"The request for information save success");
@@ -3426,8 +3427,17 @@ public class NewApplicationDelegator {
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
                 //ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
             }else{
-                String errMsg = "You hava already replied to this RFI";
-                jumpToAckPage(bpc,NewApplicationConstant.ACK_STATUS_ERROR,errMsg);
+                ApplicationDto applicationDto = appSubmissionService.getMaxVersionApp(appNo);
+                if(applicationDto != null){
+                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
+                    if(hcsaServiceDto != null){
+                        List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
+                        hcsaServiceDtoList.add(hcsaServiceDto);
+                        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+                    }
+                    String errMsg = "You hava already replied to this RFI";
+                    jumpToAckPage(bpc,NewApplicationConstant.ACK_STATUS_ERROR,errMsg);
+                }
             }
             ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,"test");
         }
@@ -4314,8 +4324,116 @@ public class NewApplicationDelegator {
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         }else{
             //set dropDown
-
             //set svc info,this fun will set oldAppSubmission
+            appSubmissionDto = NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
+            Object rfi = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
+            //rfi just show one service
+            if(rfi != null){
+                List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST);
+                List<HcsaServiceDto> oneHcsaServiceDto = IaisCommonUtils.genNewArrayList();
+                for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
+                    if(hcsaServiceDto.getId().equals(appSubmissionDto.getRfiServiceId())){
+                        oneHcsaServiceDto.add(hcsaServiceDto);
+                        break;
+                    }
+                }
+                ParamUtil.setSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) oneHcsaServiceDto);
+            }
+
+            //set premises info
+            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+            if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                    appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                }
+            }
+
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
+                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    String currentSvcId = appSvcRelatedInfoDto.getServiceId();
+                    List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = null;
+                    if(!StringUtil.isEmpty(currentSvcId)){
+                        hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(currentSvcId);
+                        //set doc name
+                        List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                        List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
+                        NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos,appSvcDocDtos,primaryDocConfig,svcDocConfig);
+                    }
+                    //set AppSvcLaboratoryDisciplinesDto
+                    if(!IaisCommonUtils.isEmpty(hcsaSvcSubtypeOrSubsumedDtos)){
+                        NewApplicationHelper.setLaboratoryDisciplinesInfo(appGrpPremisesDtos,appSvcRelatedInfoDto,hcsaSvcSubtypeOrSubsumedDtos);
+                    }
+                    //set AppSvcDisciplineAllocationDto
+                    //NewApplicationHelper.setDisciplineAllocationDtoInfo(appSvcRelatedInfoDto);
+                    if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
+                            ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
+                            || rfi != null){
+                        //gen dropdown map
+                        String svcCode = appSvcRelatedInfoDto.getServiceCode();
+                        List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcRelatedInfoDto.getAppSvcCgoDtoList());
+                        NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcCgoDtos,svcCode);
+                        NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(),svcCode);
+                        NewApplicationHelper.setPsnIntoSelMap(bpc.request,appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(),svcCode);
+                    }
+                    //set dpo select flag
+                    List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+                    if(!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)){
+                        for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto:appSvcPrincipalOfficersDtos){
+                            if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(appSvcPrincipalOfficersDto.getPsnType())){
+                                appSvcRelatedInfoDto.setDeputyPoFlag(AppConsts.YES);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) || rfi != null){
+                //set oldAppSubmission when rfi,rfc,renew
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+            /*    ParamUtil.setSessionAttr(bpc.request,"oldSubmitAppSubmissionDto",oldAppSubmissionDto);*/
+            }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+                AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+                ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+             /*   ParamUtil.setSessionAttr(bpc.request,"oldSubmitAppSubmissionDto",oldAppSubmissionDto);*/
+            }
+
+
+        }
+        AppEditSelectDto changeSelectDto1 = appSubmissionDto.getChangeSelectDto()==null?new AppEditSelectDto():appSubmissionDto.getChangeSelectDto();
+        appSubmissionDto.setChangeSelectDto(changeSelectDto1);
+        //set licenseeId
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        if(loginContext != null){
+            appSubmissionDto.setLicenseeId(loginContext.getLicenseeId());
+        }else{
+            appSubmissionDto.setLicenseeId("");
+            log.info(StringUtil.changeForLog("user info is empty....."));
+        }
+
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, "IndexNoCount", 0);
+
+        //reload
+        Map<String,AppGrpPrimaryDocDto> initBeforeReloadDocMap = IaisCommonUtils.genNewHashMap();
+        ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, (Serializable) initBeforeReloadDocMap);
+
+        //error_msg
+        ParamUtil.setSessionAttr(bpc.request, ERRORMAP_PREMISES, null);
+        ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, null);
+
+        //init svc psn conifg
+        Map<String,List<HcsaSvcPersonnelDto>> svcConfigInfo =  null;
+        ParamUtil.setSessionAttr(bpc.request, SERVICEALLPSNCONFIGMAP, (Serializable) svcConfigInfo);
+
+    }
+
+    private void initOldSession(BaseProcessClass bpc) throws CloneNotSupportedException {
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "oldSubmitAppSubmissionDto");
+        if(appSubmissionDto != null){
             appSubmissionDto = NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
             Object rfi = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
             //rfi just show one service
@@ -4374,39 +4492,15 @@ public class NewApplicationDelegator {
             if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) || rfi != null){
                 //set oldAppSubmission when rfi,rfc,renew
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
-                ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request,"oldSubmitAppSubmissionDto",oldAppSubmissionDto);
+
             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
                 AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
-                ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request,"oldSubmitAppSubmissionDto",oldAppSubmissionDto);
+
             }
 
-
         }
-        AppEditSelectDto changeSelectDto1 = appSubmissionDto.getChangeSelectDto()==null?new AppEditSelectDto():appSubmissionDto.getChangeSelectDto();
-        appSubmissionDto.setChangeSelectDto(changeSelectDto1);
-        //set licenseeId
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
-        if(loginContext != null){
-            appSubmissionDto.setLicenseeId(loginContext.getLicenseeId());
-        }else{
-            appSubmissionDto.setLicenseeId("");
-            log.info(StringUtil.changeForLog("user info is empty....."));
-        }
-
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        ParamUtil.setSessionAttr(bpc.request, "IndexNoCount", 0);
-
-        //reload
-        Map<String,AppGrpPrimaryDocDto> initBeforeReloadDocMap = IaisCommonUtils.genNewHashMap();
-        ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, (Serializable) initBeforeReloadDocMap);
-
-        //error_msg
-        ParamUtil.setSessionAttr(bpc.request, ERRORMAP_PREMISES, null);
-        ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, null);
-
-        //init svc psn conifg
-        Map<String,List<HcsaSvcPersonnelDto>> svcConfigInfo =  null;
-        ParamUtil.setSessionAttr(bpc.request, SERVICEALLPSNCONFIGMAP, (Serializable) svcConfigInfo);
 
     }
 

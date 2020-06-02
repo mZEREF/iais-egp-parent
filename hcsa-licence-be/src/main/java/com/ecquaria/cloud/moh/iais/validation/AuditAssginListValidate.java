@@ -8,6 +8,8 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -42,6 +44,7 @@ public class AuditAssginListValidate implements CustomizeValidator {
         if(selectedFlagNum==0){
             errMap.put("selectedOne","AUDIT_UC_ERR0002");
         }
+        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         return errMap;
     }
 }

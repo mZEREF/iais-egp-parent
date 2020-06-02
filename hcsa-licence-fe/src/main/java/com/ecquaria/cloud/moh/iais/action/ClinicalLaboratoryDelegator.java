@@ -780,7 +780,8 @@ public class ClinicalLaboratoryDelegator {
 
         if (isGetDataFromPagePo || isGetDataFromPageDpo) {
             List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = genAppSvcPrincipalOfficersDto(bpc.request, isGetDataFromPagePo, isGetDataFromPageDpo);
-            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
+                    || isRfi){
                 List<AppSvcPrincipalOfficersDto> oldOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
                 for(AppSvcPrincipalOfficersDto officersDto:oldOfficersDtoList){
                     if(!isGetDataFromPagePo && ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(officersDto.getPsnType())){
@@ -1478,6 +1479,7 @@ public class ClinicalLaboratoryDelegator {
 
     private List<AppSvcCgoDto> genAppSvcCgoDto(HttpServletRequest request){
         ParamUtil.setSessionAttr(request, ERRORMAP_GOVERNANCEOFFICERS,null);
+        Object requestInformationConfig = ParamUtil.getSessionAttr(request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         List<AppSvcCgoDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
         AppSvcCgoDto appSvcCgoDto;
         String[] assignSelect = ParamUtil.getStrings(request, "assignSelect");
@@ -1494,8 +1496,8 @@ public class ClinicalLaboratoryDelegator {
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(request,currentSvcId);
         //cgoIndexNo
         String[] cgoIndexNos = ParamUtil.getStrings(request,"cgoIndexNo");
-        boolean rfcOrRenew = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType);
-        if(rfcOrRenew){
+        boolean needEdit = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || requestInformationConfig != null;
+        if(needEdit){
             size = cgoIndexNos.length;
         }
         String[] isPartEdit = ParamUtil.getStrings(request,"isPartEdit");
@@ -1514,7 +1516,7 @@ public class ClinicalLaboratoryDelegator {
         for(int i = 0; i<size; i++){
             appSvcCgoDto = new AppSvcCgoDto();
             String cgoIndexNo = cgoIndexNos[i];
-            if(rfcOrRenew){
+            if(needEdit){
                 if(!StringUtil.isEmpty(cgoIndexNo) && AppConsts.NO.equals(isPartEdit[i])){
                     appSvcCgoDto = getAppSvcCgoByIndexNo(appSvcRelatedInfoDto,cgoIndexNo);
                     appSvcCgoDtoList.add(appSvcCgoDto);

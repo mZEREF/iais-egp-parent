@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -12,14 +13,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppPremInsDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
@@ -62,8 +62,6 @@ public class KpiColourByWorkDaysBatchJob {
     @Autowired
     private AppointmentClient appointmentClient;
 
-    @Autowired
-    private TaskService taskService;
     /**
      * StartStep: mohKpiColourShowStart
      *
@@ -93,6 +91,7 @@ public class KpiColourByWorkDaysBatchJob {
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         if(!IaisCommonUtils.isEmpty(taskDtos)){
             for(TaskDto taskDto : taskDtos){
+                log.debug(StringUtil.changeForLog("Task Id = " + taskDto.getId()));
                 getTimeLimitWarningColourByTask(taskDto, intranet, holidayTime);
             }
         }
@@ -122,24 +121,41 @@ public class KpiColourByWorkDaysBatchJob {
             int allWorkDays = 0;
             int allHolidays = 0;
             Map<Integer, Integer> workAndNonMap = new HashMap();
-            Date startDate = taskDto.getDateAssigned();
+            Date startDate;
             Date completeDate;
             List<TaskDto> taskDtoList = organizationClient.getOtherKpiTask(taskDto).getEntity();
             if(!(IaisCommonUtils.isEmpty(taskDtoList))){
+                List<Date> endDates = IaisCommonUtils.genNewArrayList();
+                List<Date> beginDates = IaisCommonUtils.genNewArrayList();
                 for(TaskDto tDto : taskDtoList){
+                    if(tDto.getDateAssigned() != null){
+                        startDate = tDto.getDateAssigned();
+                    } else {
+                        startDate = new Date();
+                    }
                     if(taskDto.getSlaDateCompleted() != null){
                         completeDate = tDto.getSlaDateCompleted();
                     } else {
                         completeDate = new Date();
                     }
+                    beginDates.add(startDate);
+                    endDates.add(completeDate);
                     workAndNonWorkDays = getWorkAndNonWorkDays(workAndNonWorkDays, startDate, completeDate);
                 }
+                Date endDate = sortLastEndDate(endDates);
+                Date beginDate = sortFirstDate(beginDates);
                 Set<Date> setDate = new HashSet<>(workAndNonWorkDays);
                 workAndNonWorkDays = new ArrayList<>(setDate);
                 //count work days
                 KpiCountDto kpiCountDto = new KpiCountDto();
                 kpiCountDto.setTaskDates(workAndNonWorkDays);
                 kpiCountDto.setTimeList(holidayTime);
+                kpiCountDto.setApptSrcSysId(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID);
+                kpiCountDto.setStartDate(beginDate);
+                String workGroupName = getWorkGroupByPkId(taskDto.getWkGrpId());
+                kpiCountDto.setWorkGroupName(workGroupName);
+                kpiCountDto.setEndDate(endDate);
+                //get The number of holidays and work days
                 Map<Integer, Integer> workAndNonMapS = appointmentClient.getWorkAndNonMap(kpiCountDto).getEntity();
                 if(workAndNonMapS != null && workAndNonMapS.size() > 0) {
                     for (Map.Entry<Integer, Integer> map : workAndNonMapS.entrySet()) {
@@ -167,6 +183,40 @@ public class KpiColourByWorkDaysBatchJob {
         }
     }
 
+    private Date sortFirstDate(List<Date> beginDates) {
+        Date beginDate = null;
+        for(Date date : beginDates){
+            if(beginDate == null){
+                beginDate = date;
+            } else {
+                if(date.before(beginDate)){
+                    beginDate = date;
+                }
+            }
+        }
+        return beginDate;
+    }
+
+    private Date sortLastEndDate(List<Date> endDates) {
+        Date endDate = null;
+        for(Date date : endDates){
+            if(endDate == null){
+                endDate = date;
+            } else {
+                if(date.after(endDate)){
+                    endDate = date;
+                }
+            }
+        }
+        return endDate;
+    }
+
+    private String getWorkGroupByPkId(String wkGrpId) {
+        WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(wkGrpId).getEntity();
+        String workGroupName = workingGroupDto.getGroupName();
+        return workGroupName;
+    }
+
     private void setSalDaysToCurStage(String appNo, String curStage, int days, AuditTrailDto intranet) {
         if(!StringUtil.isEmpty(curStage)) {
             AppStageSlaTrackingDto appStageSlaTrackingDto = inspectionTaskClient.getSlaTrackByAppNoStageId(appNo, curStage).getEntity();
@@ -189,8 +239,6 @@ public class KpiColourByWorkDaysBatchJob {
     }
 
     private Map<Integer, Integer> getWorkingDaysBySubStage(String subStage, TaskDto taskDto, List<Long> holidayTime) {
-        Map<Integer, Integer> workAndNonMap = new HashMap();
-        List<Date> workAndNonWorkDays = IaisCommonUtils.genNewArrayList();
         List<String> processUrls = IaisCommonUtils.genNewArrayList();
         if(StringUtil.isEmpty(subStage)){
             return null;
@@ -203,83 +251,43 @@ public class KpiColourByWorkDaysBatchJob {
         appPremisesRoutingHistoryDto.setRoleId(taskDto.getRoleId());
         appPremisesRoutingHistoryDto.setApplicationNo(applicationDto.getApplicationNo());
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = inspectionTaskClient.getHistoryForKpi(appPremisesRoutingHistoryDto).getEntity();
+        log.debug(StringUtil.changeForLog("History Size = " + appPremisesRoutingHistoryDtos.size()));
         List<String> roleIds = getRoleIdsByHistory(appPremisesRoutingHistoryDtos);
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         int allWorkDays = 0;
         int allHolidays = 0;
-        if(HcsaConsts.ROUTING_STAGE_INP.equals(subStage)){
-            AppPremInsDraftDto appPremInsDraftDto = inspectionTaskClient.getAppPremInsDraftDtoByAppPreCorrId(taskDto.getRefNo()).getEntity();
-            Date startDate = appPremInsDraftDto.getClockin();
-            Date completeDate;
-            for(String role : roleIds) {
-                TaskDto tDto = new TaskDto();
-                InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
-                tDto.setRefNo(taskDto.getRefNo());
-                tDto.setRoleId(role);
-                tDto.setWkGrpId(taskDto.getWkGrpId());
-                tDto.setTaskKey(taskDto.getTaskKey());
-                inspecTaskCreAndAssDto.setTaskDto(tDto);
+        for(String role : roleIds) {
+            TaskDto tDto = new TaskDto();
+            InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
+            tDto.setRefNo(taskDto.getRefNo());
+            tDto.setRoleId(role);
+            tDto.setWkGrpId(taskDto.getWkGrpId());
+            tDto.setTaskKey(taskDto.getTaskKey());
+            inspecTaskCreAndAssDto.setTaskDto(tDto);
+            if(HcsaConsts.ROUTING_STAGE_PRE.equals(subStage)){
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
+            } else if(HcsaConsts.ROUTING_STAGE_POT.equals(subStage)) {
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_NCEMAIL);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1);
+                processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECK_FILLUP);
+            } else if(HcsaConsts.ROUTING_STAGE_INP.equals(subStage)){
                 processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY);
-                inspecTaskCreAndAssDto.setProcessUrls(processUrls);
-                List<TaskDto> taskDtos = organizationClient.getInsKpiTask(inspecTaskCreAndAssDto).getEntity();
-                if(!IaisCommonUtils.isEmpty(taskDtos)){
-                    for(TaskDto taskDtoSingle : taskDtos){
-                        taskDtoList.add(taskDtoSingle);
-                    }
+            }
+            inspecTaskCreAndAssDto.setProcessUrls(processUrls);
+            List<TaskDto> taskDtos = organizationClient.getInsKpiTask(inspecTaskCreAndAssDto).getEntity();
+            if(!IaisCommonUtils.isEmpty(taskDtos)){
+                for(TaskDto taskDtoSingle : taskDtos){
+                    taskDtoList.add(taskDtoSingle);
                 }
             }
-            for(TaskDto td : taskDtoList){
-                if(td.getSlaDateCompleted() == null){
-                    completeDate = new Date();
-                } else {
-                    completeDate = td.getSlaDateCompleted();
-                }
-                workAndNonWorkDays = getWorkAndNonWorkDays(workAndNonWorkDays, startDate, completeDate);
-            }
-            Set<Date> setDate = new HashSet<>(workAndNonWorkDays);
-            workAndNonWorkDays = new ArrayList<>(setDate);
-            //count work days
-            KpiCountDto kpiCountDto = new KpiCountDto();
-            kpiCountDto.setTaskDates(workAndNonWorkDays);
-            kpiCountDto.setTimeList(holidayTime);
-            Map<Integer, Integer> workAndNonMapS = appointmentClient.getWorkAndNonMap(kpiCountDto).getEntity();
-            if(workAndNonMapS != null && workAndNonMapS.size() > 0) {
-                for (Map.Entry<Integer, Integer> map : workAndNonMapS.entrySet()) {
-                    allWorkDays = allWorkDays + map.getKey();
-                    allHolidays = allHolidays + map.getValue();
-                }
-            }
-            workAndNonMap.put(allWorkDays, allHolidays);
-        } else {
-            for(String role : roleIds) {
-                TaskDto tDto = new TaskDto();
-                InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
-                tDto.setRefNo(taskDto.getRefNo());
-                tDto.setRoleId(role);
-                tDto.setWkGrpId(taskDto.getWkGrpId());
-                tDto.setTaskKey(taskDto.getTaskKey());
-                inspecTaskCreAndAssDto.setTaskDto(tDto);
-                if(HcsaConsts.ROUTING_STAGE_PRE.equals(subStage)){
-                    processUrls.add(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
-                } else if(HcsaConsts.ROUTING_STAGE_POT.equals(subStage)) {
-                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
-                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
-                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_NCEMAIL);
-                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
-                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
-                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1);
-                    processUrls.add(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECK_FILLUP);
-                }
-                inspecTaskCreAndAssDto.setProcessUrls(processUrls);
-                List<TaskDto> taskDtos = organizationClient.getInsKpiTask(inspecTaskCreAndAssDto).getEntity();
-                if(!IaisCommonUtils.isEmpty(taskDtos)){
-                    for(TaskDto taskDtoSingle : taskDtos){
-                        taskDtoList.add(taskDtoSingle);
-                    }
-                }
-            }
-            workAndNonMap = getActualWorkingDays(taskDtoList, allWorkDays, allHolidays, holidayTime);
+            log.debug(StringUtil.changeForLog("Task Size = " + taskDtos.size()));
         }
+        log.debug(StringUtil.changeForLog("All Task Size = " + taskDtoList.size()));
+        Map<Integer, Integer> workAndNonMap = getActualWorkingDays(taskDtoList, allWorkDays, allHolidays, holidayTime, taskDto.getWkGrpId());
         return workAndNonMap;
     }
 
@@ -295,9 +303,11 @@ public class KpiColourByWorkDaysBatchJob {
         return roleIds;
     }
 
-    private Map<Integer, Integer> getActualWorkingDays(List<TaskDto> taskDtoList, int allWorkDays, int allHolidays, List<Long> holidayTime) {
+    private Map<Integer, Integer> getActualWorkingDays(List<TaskDto> taskDtoList, int allWorkDays, int allHolidays, List<Long> holidayTime, String wkGrpId) {
         Map<Integer, Integer> workAndNonMap = new HashMap();
         List<Date> workAndNonWorkDays = IaisCommonUtils.genNewArrayList();
+        List<Date> beginDates = IaisCommonUtils.genNewArrayList();
+        List<Date> endDates = IaisCommonUtils.genNewArrayList();
         for(TaskDto td : taskDtoList){
             Date startDate = td.getDateAssigned();
             Date completeDate;
@@ -306,14 +316,26 @@ public class KpiColourByWorkDaysBatchJob {
             } else {
                 completeDate = td.getSlaDateCompleted();
             }
+            beginDates.add(startDate);
+            endDates.add(completeDate);
+
             workAndNonWorkDays = getWorkAndNonWorkDays(workAndNonWorkDays, startDate, completeDate);
         }
+        //get The scope of date
+        Date endDate = sortLastEndDate(endDates);
+        Date beginDate = sortFirstDate(beginDates);
+
         Set<Date> setDate = new HashSet<>(workAndNonWorkDays);
         workAndNonWorkDays = new ArrayList<>(setDate);
         //count work days
         KpiCountDto kpiCountDto = new KpiCountDto();
         kpiCountDto.setTaskDates(workAndNonWorkDays);
         kpiCountDto.setTimeList(holidayTime);
+        kpiCountDto.setApptSrcSysId(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID);
+        kpiCountDto.setStartDate(beginDate);
+        String workGroupName = getWorkGroupByPkId(wkGrpId);
+        kpiCountDto.setWorkGroupName(workGroupName);
+        kpiCountDto.setEndDate(endDate);
         Map<Integer, Integer> workAndNonMapS = appointmentClient.getWorkAndNonMap(kpiCountDto).getEntity();
         if(workAndNonMapS != null && workAndNonMapS.size() > 0) {
             for (Map.Entry<Integer, Integer> map : workAndNonMapS.entrySet()) {

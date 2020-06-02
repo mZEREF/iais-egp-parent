@@ -7,6 +7,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -379,12 +381,22 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    public AppFeeDetailsDto getAppFeeDetailsDtoByApplicationNo(String applicationNo) {
+        return applicationClient.getAppFeeDetailsDtoByApplicationNo(applicationNo).getEntity();
+    }
+
+    @Override
+    public AppReturnFeeDto saveAppReturnFee(AppReturnFeeDto appReturnFeeDto) {
+        return applicationClient.saveAppReturnFee(appReturnFeeDto).getEntity();
+    }
+
+    @Override
     public ApplicationDto getApplicationDtoByGroupIdAndStatus(String appGroupId, String status) {
         log.info(StringUtil.changeForLog("The containStatus is start ..."));
         log.info(StringUtil.changeForLog("The containStatus appGrpId is -->:"+appGroupId));
         log.info(StringUtil.changeForLog("The containStatus status is -->:"+status));
         ApplicationDto result = null;
-        if(!StringUtil.isEmpty(appGroupId)&&!StringUtil.isEmpty(appGroupId)){
+        if(!StringUtil.isEmpty(appGroupId)){
             List<ApplicationDto> applicationDtoList = getApplicaitonsByAppGroupId(appGroupId);
             if(!IaisCommonUtils.isEmpty(applicationDtoList)){
                 log.info(StringUtil.changeForLog("The containStatus applicationDtoList.size() is -->:"+applicationDtoList.size()));

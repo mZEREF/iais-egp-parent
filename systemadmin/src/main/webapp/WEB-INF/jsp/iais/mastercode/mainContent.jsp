@@ -121,9 +121,7 @@
                         <div class="row">
                             <div class="col-xs-12 col-md-12 text-right">
                                 <a class="btn btn-primary" href="${pageContext.request.contextPath}/master-code-file">Download</a>
-                                <input id="selectedFile" name="selectedFile" type="file" style="display: none;"
-                                       aria-label="selectedFile1">
-                                <a class="btn btn-file-upload btn-primary" href="#">Upload</a>
+                                <a class="btn btn-file-upload btn-primary" href="#" id="MCUploadFile">Upload</a>
                                 <a class="btn btn-primary" onclick="doCreate()">Create Master Code Category</a>
                             </div>
                         </div>

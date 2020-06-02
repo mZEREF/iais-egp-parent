@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloudfeign.FeignException;
 import freemarker.template.TemplateException;
@@ -17,7 +18,7 @@ import java.util.Map;
  * @author weilu
  * @date 2020/2/26 16:27
  */
-public interface CessationService {
+public interface CessationBeService {
 
     List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds);
 
@@ -26,6 +27,8 @@ public interface CessationService {
     Map<String,Boolean> listResultCeased(List<String> licIds);
 
     List<String> listHciName();
+
+    List<AppSpecifiedLicDto> getSpecLicInfo(List<String> licIds);
 
     void sendEmail(String msgId, Date date,String svcName,String appGrpId,String licenseeId,String licNo) throws IOException, TemplateException;
 

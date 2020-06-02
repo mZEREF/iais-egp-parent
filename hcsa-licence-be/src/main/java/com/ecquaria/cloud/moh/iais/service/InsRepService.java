@@ -33,7 +33,7 @@ public interface InsRepService {
     void routingTaskToAo1(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,AppPremisesRecommendationDto appPremisesRecommendationDto) throws FeignException;
     void routingTaskToAo2(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,String historyRemarks) throws FeignException;
     void routBackTaskToInspector(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,String historyRemarks) throws FeignException;
-    void routTastToRoutBack(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,String historyRemarks);
+    void routTaskToRoutBack(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,String historyRemarks);
 
 
 

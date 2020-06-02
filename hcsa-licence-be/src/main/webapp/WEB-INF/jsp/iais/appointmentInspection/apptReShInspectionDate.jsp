@@ -122,11 +122,11 @@
                               </div>
                             </div>
                             <div class="row">
-                              <div class="col-md-1">
+                              <div class="col-md-4">
                                 <label style="font-size: 16px"> </label>
                               </div>
                               <div class="col-md-6">
-                                <div class="col-xs-12 col-md-5">
+                                <div class="col-xs-12 col-md-6" style="padding-left: 0px;">
                                   <span class="error-msg" name="iaisErrorMsg" id="error_specificDate"></span>
                                 </div>
                               </div>

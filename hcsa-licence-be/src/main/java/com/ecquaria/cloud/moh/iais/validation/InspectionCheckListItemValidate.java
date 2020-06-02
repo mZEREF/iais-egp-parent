@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +29,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         fillUpVad(request,errMap);
+        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         return errMap;
     }
 

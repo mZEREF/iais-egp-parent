@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
@@ -37,14 +38,17 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EventClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -85,6 +89,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Value("${iais.syncFileTracking.shared.path}")
     private     String sharedPath;
 
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
     @Autowired
     private TaskService taskService;
     @Autowired
@@ -103,6 +115,15 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private EventBusHelper eventBusHelper;
     @Autowired
     private GenerateIdClient generateIdClient;
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
+    @Value("${spring.application.name}")
+    private String currentApp;
+
+    @Value("${iais.current.domain}")
+    private String currentDomain;
+    @Autowired
+    private EicRequestTrackingHelper eicRequestTrackingHelper;
     @Override
     public boolean decompression() {
         log.info("-------------decompression start ---------");
@@ -557,7 +578,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         return appPremisesRoutingHistoryDto;
     }
 
+        private void updateApplication(List<ApplicationDto> applicationDtos){
+            EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, LicenceFileDownloadServiceImpl.class.getName(),
+                    "saveFileName", currentApp + "-" + currentDomain,
+                    ProcessFileTrackDto.class.getName(), JsonUtil.parseToJson(applicationDtos));
 
+        }
 
         public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");

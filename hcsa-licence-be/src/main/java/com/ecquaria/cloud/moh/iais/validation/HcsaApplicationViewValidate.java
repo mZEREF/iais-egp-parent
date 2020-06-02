@@ -1,7 +1,9 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -12,7 +14,14 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import java.util.Map;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
+
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.impl.ApplicationServiceImpl;
+import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 
 @Slf4j
 public class HcsaApplicationViewValidate implements CustomizeValidator {
@@ -21,6 +30,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     private final String DECISION_APPROVAL = "decisionApproval";
     private final String DECISION_REJECT = "decisionReject";
     private final String RECOMMENDATION_REJECT = "reject";
+
+
 
 
     @Override
@@ -35,6 +46,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         String roleId = "";
+        boolean isAppealType = ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType);
         if(taskDto != null){
             roleId = taskDto.getRoleId();
         }
@@ -108,7 +120,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     }
                 }
                 //appeal if route back to ASO or PSO
-                if(isRouteBackStatus(status) && ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+                if(isRouteBackStatus(status) && isAppealType){
                     appealTypeValidate(errMap,request,applicationType,roleId);
                 }
                 //ASO PSO broadcast
@@ -131,7 +143,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         }
                         // if role is AOS or PSO ,check verified's value
                         if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)) {
-                            if (RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)) {
+                            if (RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified) && !isAppealType) {
                                 if (StringUtil.isEmpty(recommendationStr)) {
                                     errMap.put("recommendation", "Please key in recommendation");
                                 }
@@ -187,29 +199,38 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     errMap.put("appealRecommendationValues","Please key in recommendation");
                 }else{
                     ParamUtil.setRequestAttr(request,"selectAppealRecommendationValue",appealRecommendationValues);
-                }
-                if(isLateFeeAppealType){
-                    String returnFee = ParamUtil.getString(request, "returnFee");
-                    if(StringUtil.isEmpty(returnFee)){
-                        errMap.put("returnFee","Please key in recommendation");
-                    }else{
-                        if(!verifyReturnFee(returnFee)){
-                            errMap.put("returnFee","The amount keyed in has exceeded the original amount licensee has paid");
+                    if(isLateFeeAppealType && "appealApprove".equals(appealRecommendationValues)){
+                        String returnFee = ParamUtil.getString(request, "returnFee");
+                        if(StringUtil.isEmpty(returnFee)){
+                            errMap.put("returnFee","Please key in recommendation");
+                        }else{
+                            String oldApplicationNo = (String)ParamUtil.getSessionAttr(request, "oldApplicationNo");
+                            verifyReturnFee(returnFee,errMap,oldApplicationNo);
+                            ParamUtil.setRequestAttr(request,"returnFee",returnFee);
                         }
-                        ParamUtil.setRequestAttr(request,"returnFee",returnFee);
                     }
                 }
             }
         }
     }
 
-    public boolean verifyReturnFee(String returnFee){
-        boolean flag = true;
+    public void verifyReturnFee(String returnFeeStr, Map<String, String> errMap, String oldApplicationNo){
         //verify numeric
-
+        if(!CommonValidator.isCurrency(returnFeeStr)){
+            errMap.put("returnFee","The field is Invalid");
+        }else{
+            ApplicationService applicationService = SpringContextHelper.getContext().getBean(ApplicationServiceImpl.class);
+            AppFeeDetailsDto appFeeDetailsDto = applicationService.getAppFeeDetailsDtoByApplicationNo(oldApplicationNo);
+            if(appFeeDetailsDto != null){
+                Double laterFee = appFeeDetailsDto.getLaterFee();
+                Double returnFee = Double.valueOf(returnFeeStr);
+                if(returnFee>laterFee){
+                    errMap.put("returnFee","The amount keyed in has exceeded the original amount licensee has paid");
+                }
+            }
+        }
         //verify less than renew late fee
         //The amount keyed in has exceeded the original amount licensee has paid
-        return flag;
     }
 
 
@@ -217,7 +238,9 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         boolean isChangePeriodAppealType = (boolean)ParamUtil.getSessionAttr(request, "isChangePeriodAppealType");
         boolean isAsoPso = RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId);
         boolean isAppealType = ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType);
-        if("other".equals(recommendationStr) || (isAppealType && isChangePeriodAppealType && isAsoPso)){
+        String appealRecommendationValues = ParamUtil.getString(request, "appealRecommendationValues");
+        boolean isAppealApprove = "appealApprove".equals(appealRecommendationValues);
+        if("other".equals(recommendationStr) || (isAppealType && isChangePeriodAppealType && isAsoPso && isAppealApprove)){
             if(!isAppealType){
                 ParamUtil.setRequestAttr(request,"selectDecisionValue",DECISION_APPROVAL);
                 ParamUtil.setRequestAttr(request,"recommendationStr","other");

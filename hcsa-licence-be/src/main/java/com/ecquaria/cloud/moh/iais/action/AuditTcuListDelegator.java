@@ -53,8 +53,10 @@ public class AuditTcuListDelegator {
         ParamUtil.setSessionAttr(request, "auditTaskDataDtos", (Serializable) auditTaskDataDtos);
         List<SelectOption> aduitTypeOp = auditSystemListService.getAuditOp();
         auditSystemListService.getInspectors(auditTaskDataDtos);
-        for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos ){
-            ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
+        if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)) {
+            for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos ){
+                ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
+            }
         }
         ParamUtil.setSessionAttr(request, "aduitTypeOp", (Serializable) aduitTypeOp);
         ParamUtil.setSessionAttr(request, "modulename", "TCU Audit List");

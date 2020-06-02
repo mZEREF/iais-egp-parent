@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -111,4 +112,13 @@ public interface InspectionPreTaskService {
       * @Descripation: get history stage with appNo
       */
     InspectionPreTaskDto getPreInspRbOption(String applicationNo, InspectionPreTaskDto inspectionPreTaskDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/6/2
+      * @Param: applicationViewDto
+      * @return: ApplicationViewDto
+      * @Descripation: set Application RFI Info
+      */
+    ApplicationViewDto setApplicationRfiInfo(ApplicationViewDto applicationViewDto);
 }

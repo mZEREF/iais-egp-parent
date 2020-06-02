@@ -85,7 +85,6 @@
                         </c:choose>
                         </c:if>
                         </menu:iterate>
-                        <li><a href="#"><span>Licensee Details</span></a></li>
             </div>
         </div>
     </div>

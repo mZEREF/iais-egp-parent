@@ -194,60 +194,42 @@
     <sql key="rfi-new" cached="no" remarks="new Request For Information Html">
         <![CDATA[
             <div class="reqForInfoContent">
+                <input type="hidden" name="lengths" value="indexRfi" />
+                <div class=" col-xs-11 col-sm-4 col-md-1">
+                    <div class="form-check removeRfiBtn">
+                        <button class=" btn btn-secondary" type="button">-</button>
+                    </div>
+                </div>
                 <div class="panel panel-default">
-                    <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                    <div class="panel-collapse collapse in"  role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                         <div class="panel-body">
                             <div class="form-group">
-                                <p>
-                                <label class="col-xs-9 col-md-4 control-label">Select Category<strong style="color:#ff0000;">*</strong></label>
-                                <div class=" col-xs-11 col-sm-4 col-md-5">
-                                    (rfiSelect)
-                                </div>
-                                    <div class=" col-xs-11 col-sm-4 col-md-3">
-                                        <div class="form-check removeRfiBtn">
-                                          <div class="fa fa-times-circle text-danger"></div>
-                                        </div>
+                                <div class="row" >
+                                    <div class="row" style="text-align:center;">
+                                        <div > #indexRfi Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div>
                                     </div>
-                                </p>
-                            </div>
-                                 <span class="error-msg" name="iaisErrorMsg" id="error_rfiSelectindexRfi"></span>
-                            <br>
-                            <div class="form-group">
-                                <p>
-                                    <label class="col-xs-9 col-md-4 control-label" >Title<strong style="color:#ff0000;">*</strong></label>
-                                    <label >
-                                        <textarea id="rfiTitleindexRfi" maxlength="500" rows="8" cols="95" style=" font-weight:normal;" name="rfiTitleindexRfi" ></textarea><span id="error_rfiTitleindexRfi" name="iaisErrorMsg" class="error-msg" ></span>
-                                    </label>
-                                </p>
-                                <p>
-                                    <label class="col-xs-9 col-md-4 control-label" >Licence No.<strong style="color:#ff0000;">*</strong></label>
-                                    <label >
-                                        <div class=" col-xs-7 col-sm-4 col-md-5">
-                                            (rfiLicSelect) <span id="error_licenceNoindexRfi" name="iaisErrorMsg" class="error-msg" ></span>
-                                        </div>
-                                    </label>
-                                </p>
-                                <div class="row"></div>
-                                <p>
-                                    <label class="col-xs-9 col-md-4 control-label" >Due Date<strong style="color:#ff0000;">*</strong></label>
-                                    <label >
-                                        <div class="form-group">
-                                            <div class=" col-xs-7 col-sm-4 col-md-5">
-                                                <input type="text" autocomplete="off" class="date_picker form-control due-date" name="Due_dateindexRfi" id="-66613756688199" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_Due_dateindexRfi" name="iaisErrorMsg" class="error-msg" ></span>
+                                    <label class="col-xs-9 col-md-3 control-label" ></label>
+                                    <div class=" col-xs-7 col-sm-4 col-md-5">
+                                        <label>
+                                            <textarea  name="docTitelindexRfi" rows="8" style=" font-weight:normal;" cols="70"></textarea><span id="error_docTitleindexRfi" name="iaisErrorMsg" class="error-msg" ></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row" >
+                                    <div class=" col-xs-7 col-sm-4 col-md-5">
+                                        <label>
+                                            <div class="file-upload-gp">
+                                                <input class="selectedFile commDoc"  name = "UploadFile" type="file" style="display: none;" aria-label="selectedFile1" >
+                                                <a class="btn btn-file-upload btn-secondary" >Attachment</a><br/>
                                             </div>
-                                            <div class="clear"></div>
-                                        </div>
-                                    </label>
-                                </p>
-                                <p>
-                                    <label class="col-xs-9 col-md-4 control-label">
-                                        <input type="checkbox" name = "reqTypeindexRfi" />&nbsp;File Upload <input type="hidden" name="lengths" value="indexRfi" />
-                                    </label>
-                                </p>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <br><br><br>
             </div>
          ]]>
     </sql>

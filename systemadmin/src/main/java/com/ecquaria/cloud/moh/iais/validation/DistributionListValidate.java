@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.validation;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +23,7 @@ public class DistributionListValidate implements CustomizeValidator {
         if(distribution.getEmailAddress() != null){
             for (String item :distribution.getEmailAddress()
             ) {
-                if(!item.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")){
+                if(!ValidationUtils.isEmail(item)){
                     errMap.put("addr","Please key in a valid email address");
                 }
             }

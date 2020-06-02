@@ -1,19 +1,15 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.service.CessationService;
+import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
@@ -38,7 +34,7 @@ public class CessationEffectiveDateBatchjob {
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
-    private CessationService cessationService;
+    private CessationBeService cessationBeService;
     @Autowired
     private CessationClient cessationClient;
     @Autowired
@@ -77,7 +73,7 @@ public class CessationEffectiveDateBatchjob {
                                 String licenseeId = licenceDto.getLicenseeId();
                                 String licenceNo = licenceDto.getLicenceNo();
                                 String id = licenceDto.getId();
-                                cessationService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
+                                cessationBeService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
                             }
                         }else{
                             activeAppDtos.add(applicationDto);
@@ -145,7 +141,7 @@ public class CessationEffectiveDateBatchjob {
             String licenseeId = licenceDto.getLicenseeId();
             String licenceNo = licenceDto.getLicenceNo();
             String id = licenceDto.getId();
-            cessationService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
+            cessationBeService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
         }
         hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
     }
@@ -163,6 +159,6 @@ public class CessationEffectiveDateBatchjob {
         List<LicenceDto> licenceDtos = IaisCommonUtils.genNewArrayList();
         licenceDtos.add(licenceDto);
         hcsaLicenceClient.updateLicences(licenceDtos);
-        cessationService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
+        cessationBeService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
     }
     }

@@ -5,7 +5,6 @@
   Time: 9:48
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
@@ -15,17 +14,8 @@
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
-%><%--
-<c:choose>
-    <c:when test="${selfAssessmentQueryAttr == null}">
-        <br><br><br><br>
-        <div id="intro">
-            <p style="padding-left: 600px;"><strong margin-left: 250px;><c:out value="you have encountered some problems, please contact the administrator !!!"></c:out></strong></p>
-            <br><br><br><br><br><br><br>
-        </div>
-    </c:when>
-    <c:otherwise>--%>
-
+%>
+<%@include file="../common/dashboard.jsp"%>
         <div class="main-content">
             <div class = "container">
                 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
@@ -34,7 +24,6 @@
                     <input type="hidden" id="selfAssessmentCorrId" name="selfAssessmentCorrId" value="">
                     <input type="hidden" id="assessmentBySvcId" name="assessmentBySvcId" value="">
                     <div class="personal-info-section">
-                        <h2>Self-assessment listing</h2>
                         <c:if test="${hasSubmitted eq 'Y'}">
                             <span id="hasSubmitted" name="hasSubmitted" class="error-msg"><c:out value="${hasSubmittedMsg}"></c:out></span>
                         </c:if>
@@ -79,9 +68,12 @@
                             </table>
                         </div>
                         <div class="application-tab-footer">
-                            <iais:action style="text-align:left;">
-                                <a  id="backLastPageId" >< Back</a>
-                            </iais:action>
+
+                            <c:if test="${!selfDeclAction eq 'rfi'}">
+                                <iais:action style="text-align:left;">
+                                    <a  id="backLastPageId" >< Back</a>
+                                </iais:action>
+                            </c:if>
 
                             <td>
                                 <div class="text-right text-center-mobile">
@@ -116,10 +108,6 @@
 
 
         </script>
-<%--
-    </c:otherwise>
-</c:choose>
---%>
 
 
 

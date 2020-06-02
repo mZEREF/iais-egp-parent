@@ -369,6 +369,7 @@
                     </div>
                 </div>
             </div>
+            </div>
         </div>
         <br>
         <div class="container">
@@ -433,7 +434,10 @@
                                             <td class="form-check" onclick="javascript:controlCease('${isASO}')">
                                                 <c:if test="${pool.licenceStatus!='Lapsed'&&pool.licenceStatus!='Ceased'&&pool.licenceStatus!='Expired'}">
                                                     <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
-                                                            name="appIds" value="${pool.appId}|${pool.isCessation}|${pool.licenceId}|${pool.licenceStatus}"   >
+                                                           name="appIds" value="${pool.appId}|${pool.isCessation}|${pool.licenceId}|${pool.licenceStatus}"   >
+                                                    <label class="form-check-label" for="licence${status.index + 1}"><span
+                                                            class="check-square"></span>
+                                                    </label>
                                                 </c:if>
                                             </td>
                                             <td class="row_no">
@@ -499,9 +503,9 @@
     </div>
     <iais:action style="text-align:right;">
         <a class="btn btn-secondary" onclick="$(this).attr('class', 'btn btn-secondary disabled')" href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>
-        <button type="button" class="btn btn-primary ReqForInfoBtn" disabled
-                onclick="javascript:doReqForInfo();">ReqForInfo</button>
         <c:if test="${cease==1}">
+            <button type="button" class="btn btn-primary ReqForInfoBtn" disabled
+                    onclick="javascript:doReqForInfo();">ReqForInfo</button>
             <button type="button" class="btn btn-primary CeaseBtn" disabled
                     onclick="javascript:doCessation();">Cease</button>
         </c:if>
@@ -563,17 +567,41 @@
         var periodTo = $('#to_date').val();
         var periodSub = $('#sub_date').val();
         var flag = true;
-        if (startSub > startTo && startTo != "") {
-            $("#startDateError").show();
-            flag = false;
+        if(startTo!==""){
+            if(startSub.split('/')[2]>startTo.split('/')[2]){
+                $("#startDateError").show();
+                flag=false;
+            }else if(startSub.split('/')[1]>startTo.split('/')[1]){
+                $("#startDateError").show();
+                flag=false;
+            }else if(startSub.split('/')[0]>startTo.split('/')[0]){
+                $("#startDateError").show();
+                flag=false;
+            }
         }
-        if (expirySub > expiryTo && expiryTo != "") {
-            $("#expiryDateError").show();
-            flag = false;
+        if(expiryTo!==""){
+            if(expirySub.split('/')[2]>expiryTo.split('/')[2]){
+                $("#expiryDateError").show();
+                flag=false;
+            }else if(expirySub.split('/')[1]>expiryTo.split('/')[1]){
+                $("#expiryDateError").show();
+                flag=false;
+            }else if(expirySub.split('/')[0]>expiryTo.split('/')[0]){
+                $("#expiryDateError").show();
+                flag=false;
+            }
         }
-        if (periodSub > periodTo && periodTo != "") {
-            $("#submittedDateError").show();
-            flag = false;
+        if(periodTo!==""){
+            if(periodSub.split('/')[2]>periodTo.split('/')[2]){
+                $("#submittedDateError").show();
+                flag=false;
+            }else if(periodSub.split('/')[1]>periodTo.split('/')[1]){
+                $("#submittedDateError").show();
+                flag=false;
+            }else if(periodSub.split('/')[0]>periodTo.split('/')[0]){
+                $("#submittedDateError").show();
+                flag=false;
+            }
         }
         if (flag) {
             SOP.Crud.cfxSubmit("mainForm", "search");

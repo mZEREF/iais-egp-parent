@@ -18,14 +18,24 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.PublicHolidayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -88,7 +98,10 @@ public class PublicHolidayDelegate {
      * @param bpc
      */
     public void doSwitch(BaseProcessClass bpc){
-
+        HttpServletRequest request = bpc.request;
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String currentAction = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
     }
 
     /**
@@ -151,7 +164,89 @@ public class PublicHolidayDelegate {
      * doUpload
      * @param bpc
      */
-    public void doUpload(BaseProcessClass bpc){
+    public void doUpload(BaseProcessClass bpc) throws IOException ,ParseException{
+        //setfile
+        List<String> list = IaisCommonUtils.genNewArrayList();
+        List<PublicHolidayDto> publicHolidayDtos = IaisCommonUtils.genNewArrayList();
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        MultipartFile file = mulReq.getFile("selectedFile");
+        String filename = file.getOriginalFilename();
+        String suffix = filename.substring(filename.lastIndexOf(".") + 1);
+        long size = file.getSize()/1024;
+        if(size>5*1024){
+            Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+            errMap.put("selectedFile", MessageUtil.getMessageDesc("UC_CHKLMD001_ERR007"));
+            ParamUtil.setRequestAttr(bpc.request,"filename", filename);
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+        }else if("ics".equals(suffix)){
+            try {
+                InputStreamReader inputReader = new InputStreamReader(file.getInputStream());
+
+                BufferedReader bf = new BufferedReader(inputReader);
+                String str;
+                while ((str = bf.readLine()) != null) {
+                    list.add(str);
+                }
+                bf.close();
+                inputReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            int count = 5;
+            while (count < list.size() ){
+                String[] begin = list.get(count).split(":");
+                if("BEGIN".equals(begin[0])){
+                    PublicHolidayDto publicHolidayDto = new PublicHolidayDto();
+                    count ++;
+                    String[] start = list.get(count).split(":");
+                    count ++;
+                    String[] end = list.get(count).split(":");
+                    count = count +6;
+                    String[] name = list.get(count).split(":");
+                    publicHolidayDto.setDescription(name[1]);
+                    publicHolidayDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    count = count ++;
+                    int startInt = Integer.parseInt(start[1]);
+                    int endInt = Integer.parseInt(end[1]);
+                    String nextDay = start[1];
+                    while (Integer.parseInt(nextDay) < endInt){
+                        DateFormat dft = new SimpleDateFormat("yyyyMMdd");
+                        try {
+                            Date temp = dft.parse(String.valueOf(startInt));
+                            Calendar cld = Calendar.getInstance();
+                            cld.setTime(temp);
+                            cld.add(Calendar.DATE, 1);
+                            temp = cld.getTime();
+                            nextDay = dft.format(temp);
+                            publicHolidayDto.setFromDate(Formatter.parseDateTime(String.valueOf(startInt), "yyyyMMdd"));
+
+                            Date todate= new  Date();
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(Formatter.parseDateTime(String.valueOf(startInt), "yyyyMMdd"));
+                            calendar.add(Calendar.HOUR,23);
+                            calendar.add(Calendar.MINUTE,59);
+                            calendar.add(Calendar.SECOND,59);
+                            todate=calendar.getTime();
+                            publicHolidayDto.setToDate(todate);
+                            publicHolidayDtos.add(publicHolidayDto);
+                            startInt = Integer.parseInt(nextDay);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                count ++;
+            }
+            publicHolidayService.createHolidays(publicHolidayDtos);
+        }else{
+            Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+            errMap.put("selectedFile", MessageUtil.getMessageDesc("CHKL_ERR006"));
+            ParamUtil.setRequestAttr(bpc.request,"filename", filename);
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+        }
+
     }
 
     /**

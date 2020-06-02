@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
@@ -289,18 +290,17 @@ public class AppealServiceImpl implements AppealService {
             if(!maxCGOnumber){
                 request.getSession().setAttribute("maxCGOnumber",!maxCGOnumber);
             }
-            String originLicenceId = applicationDto.getOriginLicenceId();
-            if(originLicenceId!=null){
-                LicenceDto licenceDto = licenceClient.getLicBylicId(originLicenceId).getEntity();
+          /*  AppFeeDetailsDto appFeeDetailsDto =
+                    applicationClient.getAppFeeDetailsDtoByApplicationNo(applicationDto.getApplicationNo()).getEntity();
+            if(appFeeDetailsDto!=null){
                 try {
-                    int[] dateDuration = MiscUtil.getDateDuration(new Date(), licenceDto.getExpiryDate());
-                    if(dateDuration[1]<=1&&dateDuration[2]<=31||dateDuration[1]==2&&dateDuration[2]<=1){
+                    if(appFeeDetailsDto.getLaterFee()>0.0){
                         request.getSession().setAttribute("lateFee",true);
                     }
-                } catch (NullPointerException | ParseException e) {
+                } catch (Exception  e) {
                     log.error(e.getMessage()+"------",e);
                 }
-            }
+            }*/
             String serviceId = applicationDto.getServiceId();
             String id = applicationDto.getId();
             if(id!=null){

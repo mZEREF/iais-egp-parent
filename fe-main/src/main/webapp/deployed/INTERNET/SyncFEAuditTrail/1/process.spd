@@ -21,7 +21,7 @@
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1" style="oblique">
-   <position>{(120,120)(295,150)}</position>
+   <position>{(120,120)(270,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>

@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/initTinyMce.js"></script>
@@ -105,7 +106,7 @@
                                                         <iais:row>
                                                             <td class="col-xs-2">
                                                                 <strong>
-                                                                    Processing Decision<strong style="color:#ff0000;">*</strong>
+                                                                    Processing Decision<strong style="color:#ff0000;"> *</strong>
                                                                 </strong>
                                                             </td>
                                                             <td>
@@ -163,7 +164,7 @@
                                                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
                                                         <tr height="1">
                                                             <td class="col-xs-2">
-                                                                <label style="font-size: 16px">Licence Start Date</label>
+                                                                <strong>Licence Start Date</strong>
                                                             </td>
                                                             <td>
                                                                 <div class="col-sm-9">

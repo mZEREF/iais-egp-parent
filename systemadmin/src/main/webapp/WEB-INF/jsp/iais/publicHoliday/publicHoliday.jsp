@@ -14,8 +14,8 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
-    <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-            <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+    <form method="post" id="mainForm"  enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
+        <input type="hidden" name="crud_action_type" id="crud_action_type" value=""/>
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
                     <div class="intranet-content">
@@ -107,11 +107,15 @@
                             <div class="row">
                                 <div class="col-xs-11 col-md-11">
                                     <div class="text-right">
+                                        <div class="file-upload-gp" style="display: inline">
+                                            <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                                        </div>
                                         <a class="btn btn-secondary" id="delete">Delete</a>
                                         <a class="btn btn-primary" id="createholiday">Create</a>
                                     </div>
                                 </div>
                             </div>
+                            <p><span id="error_selectedFile" name="iaisErrorMsg" class="error-msg"></span></p>
                         </div>
                     </div>
                 </div>
@@ -120,6 +124,7 @@
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+<%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
     $('#createholiday').click(function () {
         SOP.Crud.cfxSubmit("mainForm", "create");
@@ -140,7 +145,8 @@
     })
 
     $('#search').click(function () {
-        SOP.Crud.cfxSubmit("mainForm", "search");
+        $("[name='crud_action_type']").val("search")
+        $("#mainForm").submit();
     });
     
     $('#clear').click(function () {
@@ -154,4 +160,14 @@
     function jumpToPagechangePage() {
         SOP.Crud.cfxSubmit("mainForm", "page");
     }
+
+    $('#selectedFile').change(function () {
+        SOP.Crud.cfxSubmit("mainForm", "upload");
+    })
+
+    $('#selectedFile').change(function () {
+        var file = $(this).val();
+        var fileName = Utils.getFileName(file);
+        $(".fileNameDisplay").text(fileName);
+    });
 </script>

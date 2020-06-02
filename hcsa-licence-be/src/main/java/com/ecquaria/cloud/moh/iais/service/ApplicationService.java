@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -48,4 +50,8 @@ public interface ApplicationService {
     ApplicationDto getApplicationBytaskId(String ref);
 
     public ApplicationDto getApplicationDtoByGroupIdAndStatus(String appGroupId,String status);
+
+    AppFeeDetailsDto getAppFeeDetailsDtoByApplicationNo(String applicationNo);
+
+    AppReturnFeeDto saveAppReturnFee(AppReturnFeeDto appReturnFeeDto);
 }

@@ -2,13 +2,16 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ResponseForInformationService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -16,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
@@ -46,14 +50,13 @@ public class ResponseForInformationDelegator {
     private ServiceConfigService serviceConfigService;
     @Autowired
     OrganizationLienceseeClient organizationLienceseeClient;
+    @Autowired
+    LicenceViewService licenceViewService;
 
     public void Start(BaseProcessClass bpc)  {
         log.debug(StringUtil.changeForLog("the do Start start ...."));
         HttpServletRequest request=bpc.request;
         String licenseeId = ParamUtil.getMaskedString(request,"licenseeId");
-//        if(StringUtil.isEmpty(licenseeId)){
-//            licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
-//        }
 
         ParamUtil.setSessionAttr(request,"licenseeId",licenseeId);
         // 		Start->OnStepProcess
@@ -64,19 +67,6 @@ public class ResponseForInformationDelegator {
         HttpServletRequest request=bpc.request;
         String licenseeId = (String) ParamUtil.getSessionAttr(request,"licenseeId");
         List<LicPremisesReqForInfoDto> reqForInfoSearchListDtos=responseForInformationService.searchLicPreRfiBylicenseeId(licenseeId);
-        //fe没有be的user
-//        List<String> userIds= IaisCommonUtils.genNewArrayList();
-//        for (LicPremisesReqForInfoDto lpr:reqForInfoSearchListDtos
-//             ) {
-//            userIds.add(lpr.getRequestUser());
-//        }
-//        List<OrgUserDto> orgUserDtos=organizationLienceseeClient.retrieveOrgUserAccount(userIds).getEntity();
-//        int i=0;
-//        for (LicPremisesReqForInfoDto lpr:reqForInfoSearchListDtos
-//        ) {
-//            lpr.setRequestUser(orgUserDtos.get(i).getDisplayName());
-//            i++;
-//        }
         ParamUtil.setRequestAttr(request,"reqForInfoSearchList",reqForInfoSearchListDtos);
         // 		preRFI->OnStepProcess
     }
@@ -88,12 +78,12 @@ public class ResponseForInformationDelegator {
         try {
             String id =  ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
              licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(id);
-             logAbout("ReqForInfoId:"+licPremisesReqForInfoDto.getReqInfoId());
+             logAbout("ReqForInfoId:"+licPremisesReqForInfoDto.getId());
         }catch (Exception e){
              licPremisesReqForInfoDto= (LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(request,"licPreReqForInfoDto");
         }
 
-        licPremisesReqForInfoDto.setOfficerRemarks(licPremisesReqForInfoDto.getOfficerRemarks().split("\\|")[0]);
+        licPremisesReqForInfoDto.setOfficerRemarks(licPremisesReqForInfoDto.getOfficerRemarks());
         ParamUtil.setSessionAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
         // 		doRFI->OnStepProcess
     }
@@ -126,7 +116,7 @@ public class ResponseForInformationDelegator {
 
         String userReply=mulReq.getParameter("userReply");
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(crudActionValue);
-        CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile");
+        List<MultipartFile> files=  mulReq.getFiles( "UploadFile");
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         errorMap=validate(bpc.request);
@@ -136,18 +126,23 @@ public class ResponseForInformationDelegator {
             //
             return;
         }
-        if(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename())){
-            file.getFileItem().setFieldName("selectedFile");
-            licPremisesReqForInfoDto.setDocName(file.getOriginalFilename());
-            long size = file.getSize() / 1024;
-            licPremisesReqForInfoDto.setDocSize(Integer.valueOf(String.valueOf(size)));
-            String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
-            licPremisesReqForInfoDto.setFileRepoId(fileRepoGuid);
-            licPremisesReqForInfoDto.setSubmitDt(new Date());
-            licPremisesReqForInfoDto.setSubmitBy(licPremisesReqForInfoDto.getLicenseeId());
+        int i=0;
+        for(MultipartFile file :files){
+            if(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename())){
+                LicPremisesReqForInfoDocDto doc=licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().get(i);
+                long size = file.getSize() / 1024;
+                doc.setDocSize(Integer.valueOf(String.valueOf(size)));
+                String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
+                doc.setFileRepoId(fileRepoGuid);
+                doc.setSubmitDt(new Date());
+                doc.setSubmitBy(licPremisesReqForInfoDto.getLicenseeId());
+            }
+            i++;
         }
+
         licPremisesReqForInfoDto.setReplyDate(new Date());
-        licPremisesReqForInfoDto.setReplyUser(licPremisesReqForInfoDto.getLicenseeId());
+        LicenseeDto licenseeDto=licenceViewService.getLicenseeDtoBylicenseeId(licPremisesReqForInfoDto.getLicenseeId());
+        licPremisesReqForInfoDto.setReplyUser(licenseeDto.getName());
         licPremisesReqForInfoDto.setUserReply(userReply);
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1=responseForInformationService.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
@@ -170,25 +165,29 @@ public class ResponseForInformationDelegator {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) httpServletRequest.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CommonsMultipartFile commonsMultipartFile= (CommonsMultipartFile) mulReq.getFile( "UploadFile");
-        if(commonsMultipartFile.isEmpty()){
-            errMap.put("UploadFile","The file cannot be empty.");
-        }else{
-            Map<String, Boolean> booleanMap = ValidationUtils.validateFile(commonsMultipartFile);
-            Boolean fileSize = booleanMap.get("fileSize");
-            Boolean fileType = booleanMap.get("fileType");
-            //size
-            if(!fileSize){
-                errMap.put("UploadFile","The file size must less than " + 4 + "M.");
+        LicPremisesReqForInfoDto licPreReqForInfoDto= (LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(httpServletRequest ,"licPreReqForInfoDto");
+        if(licPreReqForInfoDto.isNeedDocument()){
+            if(commonsMultipartFile==null){
+                errMap.put("UploadFile","The file cannot be empty.");
+            }else{
+                Map<String, Boolean> booleanMap = ValidationUtils.validateFile(commonsMultipartFile);
+                Boolean fileSize = booleanMap.get("fileSize");
+                Boolean fileType = booleanMap.get("fileType");
+                //size
+                if(!fileSize){
+                    errMap.put("UploadFile","The file size must less than " + 4 + "M.");
+                }
+                //type
+                if(!fileType){
+                    errMap.put("UploadFile","The file type is invalid.");
+                }
             }
-            //type
-            if(!fileType){
-                errMap.put("UploadFile","The file type is invalid.");
+            String userReply=mulReq.getParameter("userReply");
+            if(userReply.isEmpty()){
+                errMap.put("userReply","ERR009");
             }
         }
-        String userReply=mulReq.getParameter("userReply");
-        if(userReply.isEmpty()){
-            errMap.put("userReply","ERR009");
-        }
+
         return errMap;
     }
 }

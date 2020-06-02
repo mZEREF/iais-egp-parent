@@ -884,5 +884,8 @@ public class InterInboxDelegator {
         ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, null);
         ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, null);
         ParamUtil.setSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO, null);
+        inboxParameter.setFilters(null);
+        appParameter.setFilters(null);
+        licenceParameter.setFilters(null);
     }
 }

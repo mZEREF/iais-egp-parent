@@ -37,7 +37,7 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.CessationService;
+import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
@@ -103,7 +103,7 @@ public class OfficerOnlineEnquiriesDelegator {
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
-    CessationService cessationService;
+    CessationBeService cessationBeService;
     @Autowired
     FillupChklistService fillupChklistService;
     @Autowired
@@ -346,7 +346,7 @@ public class OfficerOnlineEnquiriesDelegator {
     private void setSearchResult(HttpServletRequest request,SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult,List<String> licenceIds,List<ReqForInfoSearchListDto> reqForInfoSearchListDtos){
 
 
-        Map<String,Boolean> licIds=cessationService.listResultCeased(licenceIds);
+        Map<String,Boolean> licIds= cessationBeService.listResultCeased(licenceIds);
 
         for(ReqForInfoSearchListDto rfi:reqForInfoSearchListDtos){
             if("Active".equals(rfi.getLicenceStatus())){

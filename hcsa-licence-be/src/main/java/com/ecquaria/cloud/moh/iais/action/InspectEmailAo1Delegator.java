@@ -231,7 +231,7 @@ public class InspectEmailAo1Delegator {
             appInspectionStatusClient.update(appInspectionStatusDto);
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             completedTask(taskDto);
-            createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
+            createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto, userId,inspectionEmailTemplateDto.getRemarks());
 
         }
         else {
@@ -261,9 +261,9 @@ public class InspectEmailAo1Delegator {
             taskDto1.setTaskType(taskDto.getTaskType());
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
             taskService.createTasks(taskDtos);
-            createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER, InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,taskDto1,HcsaConsts.ROUTING_STAGE_POT,taskDto1.getUserId(),inspectionEmailTemplateDto.getRemarks());
+            createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER, ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,taskDto1, userId,inspectionEmailTemplateDto.getRemarks());
 
-            createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId,inspectionEmailTemplateDto.getRemarks());
+            createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, taskDto, userId,inspectionEmailTemplateDto.getRemarks());
 
         }
         inspEmailService.updateEmailDraft(inspectionEmailTemplateDto);
@@ -429,11 +429,11 @@ public class InspectEmailAo1Delegator {
     }
 
 
-    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus,String decision,
-                                                                         TaskDto taskDto,String subStage,String userId ,String remarks) {
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus, String decision,
+                                                                         TaskDto taskDto, String userId, String remarks) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setApplicationNo(appNo);
-        appPremisesRoutingHistoryDto.setStageId(taskDto.getTaskKey());
+        appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_AO1);
         appPremisesRoutingHistoryDto.setProcessDecision(decision);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
         appPremisesRoutingHistoryDto.setActionby(userId);
@@ -441,7 +441,7 @@ public class InspectEmailAo1Delegator {
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesRoutingHistoryDto.setRoleId(taskDto.getRoleId());
         appPremisesRoutingHistoryDto.setWrkGrpId(taskDto.getWkGrpId());
-        appPremisesRoutingHistoryDto.setSubStage(subStage);
+        appPremisesRoutingHistoryDto.setSubStage(HcsaConsts.ROUTING_STAGE_POT);
         appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         return appPremisesRoutingHistoryDto;
     }

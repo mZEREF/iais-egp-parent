@@ -11,15 +11,10 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Hc
@@ -70,5 +65,8 @@ public interface AppInboxClient {
 
     @PutMapping(value = "/app-fe-status")
     FeignResponseEntity<Void> updateFeAppStatus(@RequestParam(value = "appId") String appId,@RequestParam(value = "appStatus") String appStatus);
+
+    @PostMapping(value = "/list-can-ceased",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String,Boolean>> listCanCeased(@RequestBody List<String> licIds);
 
 }
