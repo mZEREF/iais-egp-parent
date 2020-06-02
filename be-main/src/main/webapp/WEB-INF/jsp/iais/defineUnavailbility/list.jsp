@@ -38,7 +38,7 @@
                     </div>
                     <div class="application-tab-footer">
                         <div class="row">
-                            <div class="col-xs-12 col-sm-12">
+                            <div class="col-xs-11 col-sm-11">
                                 <div class="text-right text-center-mobile"><button id="saveDis" type="button" class="btn btn-primary">SAVE</button></div>
                             </div>
                         </div>
