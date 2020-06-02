@@ -434,7 +434,10 @@
                                             <td class="form-check" onclick="javascript:controlCease('${isASO}')">
                                                 <c:if test="${pool.licenceStatus!='Lapsed'&&pool.licenceStatus!='Ceased'&&pool.licenceStatus!='Expired'}">
                                                     <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
-                                                            name="appIds" value="${pool.appId}|${pool.isCessation}|${pool.licenceId}|${pool.licenceStatus}"   >
+                                                           name="appIds" value="${pool.appId}|${pool.isCessation}|${pool.licenceId}|${pool.licenceStatus}"   >
+                                                    <label class="form-check-label" for="licence${status.index + 1}"><span
+                                                            class="check-square"></span>
+                                                    </label>
                                                 </c:if>
                                             </td>
                                             <td class="row_no">
@@ -500,9 +503,9 @@
     </div>
     <iais:action style="text-align:right;">
         <a class="btn btn-secondary" onclick="$(this).attr('class', 'btn btn-secondary disabled')" href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>
-        <button type="button" class="btn btn-primary ReqForInfoBtn" disabled
-                onclick="javascript:doReqForInfo();">ReqForInfo</button>
         <c:if test="${cease==1}">
+            <button type="button" class="btn btn-primary ReqForInfoBtn" disabled
+                    onclick="javascript:doReqForInfo();">ReqForInfo</button>
             <button type="button" class="btn btn-primary CeaseBtn" disabled
                     onclick="javascript:doCessation();">Cease</button>
         </c:if>
