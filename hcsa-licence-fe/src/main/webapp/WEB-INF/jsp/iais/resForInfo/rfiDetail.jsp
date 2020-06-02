@@ -101,7 +101,7 @@
                                             <a  onclick="javascript:doBack()" >< Back</a>
                                         </iais:action>
                                         <iais:action style="text-align:right;">
-                                            <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit('${licPreReqForInfoDto.reqInfoId}')">Proceed to Submit</button>
+                                            <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit('${licPreReqForInfoDto.id}')">Proceed to Submit</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>

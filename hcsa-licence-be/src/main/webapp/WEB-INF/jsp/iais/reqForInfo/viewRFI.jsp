@@ -111,7 +111,7 @@
                                             <a  onclick="javascript:doBack()">< Back</a>
                                         </iais:action>
                                         <iais:action style="text-align:right;">
-                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doCancel('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,licPreReqForInfoDto.reqInfoId)}')">Cancel</button>
+                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doCancel('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,licPreReqForInfoDto.id)}')">Cancel</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>
