@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -134,14 +135,17 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
             fileRepPath.mkdirs();
         }
         String entity1= JsonUtil.parseToJson(licPremisesReqForInfoDto);
-        if(licPremisesReqForInfoDto.getFileRepoId()!=null){
-            byte[] entity = fileRepositoryClient.getFileFormDataBase(licPremisesReqForInfoDto.getFileRepoId()).getEntity();
-            File file = MiscUtil.generateFile(download + File.separator + "files",
-                    licPremisesReqForInfoDto.getFileRepoId() + "@" + licPremisesReqForInfoDto.getDocName());
-            try (FileOutputStream outputStream=new FileOutputStream(file);){
-                outputStream.write(entity);
-            } catch (Exception e) {
-                log.error(e.getMessage(),e);
+        if(licPremisesReqForInfoDto.isNeedDocument()){
+            for (LicPremisesReqForInfoDocDto doc:licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()
+                 ) {
+                byte[] entity = fileRepositoryClient.getFileFormDataBase(doc.getFileRepoId()).getEntity();
+                File file = MiscUtil.generateFile(download + File.separator + "files",
+                        doc.getFileRepoId() + "@" + doc.getDocName());
+                try (FileOutputStream outputStream=new FileOutputStream(file);){
+                    outputStream.write(entity);
+                } catch (Exception e) {
+                    log.error(e.getMessage(),e);
+                }
             }
         }
         return entity1;

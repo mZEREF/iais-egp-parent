@@ -581,7 +581,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     public void eicCallFeRfiLic(LicPremisesReqForInfoDto licPremisesReqForInfoDto1) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        log.info(StringUtil.changeForLog("=======>>>>>"+licPremisesReqForInfoDto1.getAction()+" Lic Request for Information reqInfoId "+licPremisesReqForInfoDto1.getReqInfoId()));
+        log.info(StringUtil.changeForLog("=======>>>>>"+licPremisesReqForInfoDto1.getAction()+" Lic Request for Information reqInfoId "+licPremisesReqForInfoDto1.getId()));
 
         gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1,
                 signature.date(), signature.authorization(), signature2.date(), signature2.authorization());

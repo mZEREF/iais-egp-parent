@@ -203,9 +203,9 @@
 
     <iais:action style="text-align:right;">
         <a class="btn btn-secondary" onclick="$(this).attr('class', 'btn btn-secondary disabled')" href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>
-        <button type="button" class="btn btn-primary ReqForInfoBtn" disabled
-                onclick="javascript:doReqForInfo();">ReqForInfo</button>
         <c:if test="${cease==1}">
+            <button type="button" class="btn btn-primary ReqForInfoBtn" disabled
+                    onclick="javascript:doReqForInfo();">ReqForInfo</button>
             <button type="button" class="btn btn-primary CeaseBtn" disabled
                     onclick="javascript:doCessation();">Cease</button>
         </c:if>
