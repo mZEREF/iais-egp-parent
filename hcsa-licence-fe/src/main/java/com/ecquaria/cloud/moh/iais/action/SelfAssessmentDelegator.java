@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.SelfAssessmentConstant;
@@ -69,6 +70,7 @@ public class SelfAssessmentDelegator {
      * @Decription preLoad
      */
     public void preLoad(BaseProcessClass bpc) {
+        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"Self-assessment listing");
         String action = ParamUtil.getString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
         if (StringUtil.isEmpty(action)){
             action = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
@@ -203,6 +205,7 @@ public class SelfAssessmentDelegator {
                     if (SelfAssessmentConstant.SELF_ASSESSMENT_RFI_ACTION.equals(action)){
                         String corrId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
                         selfAssessmentService.changePendingSelfAssMtStatus(corrId, false);
+                        ParamUtil.setRequestAttr(bpc.request, "redirectFlag", "Y");
                     }else {
                         String groupId = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
                         selfAssessmentService.changePendingSelfAssMtStatus(groupId, true);

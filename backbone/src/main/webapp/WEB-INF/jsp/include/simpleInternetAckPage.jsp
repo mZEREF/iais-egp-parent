@@ -24,9 +24,20 @@
 
         <p><c:out value="${ackMsg}"></c:out></p>
 
-        <div class="text-right text-center-mobile">
-            <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Done</a>
-        </div>
+
+        <c:choose>
+            <c:when test="${redirectFlag == 'Y'}">
+                <div class="text-right text-center-mobile">
+                    <a class="btn btn-primary next" href="/main-web/" >Done</a>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <div class="text-right text-center-mobile">
+                    <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Done</a>
+                </div>
+            </c:otherwise>
+        </c:choose>
+
     </form>
 </div>
 
