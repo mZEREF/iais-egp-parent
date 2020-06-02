@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MasterCodeConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -15,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
@@ -60,7 +62,6 @@ public class MasterCodeDelegator {
 
     private final MasterCodeService masterCodeService;
 
-    private static final String CODE_CATEGORY_UNUSER = "D1181678-0A86-EA11-BE82-000C29F371DC";
 
     @Autowired
     private MasterCodeDelegator(MasterCodeService masterCodeService) {
@@ -130,8 +131,10 @@ public class MasterCodeDelegator {
      */
     public void prepareSwitch(BaseProcessClass bpc) {
         logAboutStart("prepareSwitch");
-        String type = ParamUtil.getString(bpc.request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
-        logAboutStart(type);
+        HttpServletRequest request = bpc.request;
+
+        String currentAction = request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        logAboutStart(currentAction);
     }
 
     public void preateCreateCode(BaseProcessClass bpc) {
@@ -307,11 +310,8 @@ public class MasterCodeDelegator {
     }
 
     public void doUpload(BaseProcessClass bpc) throws Exception {
+        logAboutStart("doUpload");
         HttpServletRequest request = bpc.request;
-        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        MultipartFile file = mulReq.getFile("selectedFile");
-        File toFile = FileUtils.multipartFileToFile(file);
-        List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
     }
 
     /**
@@ -324,6 +324,57 @@ public class MasterCodeDelegator {
         logAboutStart("doPaging");
         HttpServletRequest request = bpc.request;
         SearchResultHelper.doPage(request, filterParameter);
+    }
+
+    /**
+     * AutoStep: doPaging
+     *
+     * @param bpc
+     * @throws
+     */
+    public void uploadStep(BaseProcessClass bpc) throws Exception {
+        HttpServletRequest request = bpc.request;
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String actionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        if (!"doUpload".equals(actionType)){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+            return;
+        }
+        MultipartFile file = mulReq.getFile("selectedFile");
+        File toFile = FileUtils.multipartFileToFile(file);
+        Map<String, String> errorMap = validationFile(request, file);
+        if (errorMap != null && !errorMap.isEmpty()){
+            return;
+        }
+        List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
+        List<String> duplicateCode = IaisCommonUtils.genNewArrayList();
+        List<String> emptyCode = IaisCommonUtils.genNewArrayList();
+        for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
+            String masterCodeKey = masterCodeToExcelDto.getMasterCodeKey();
+            boolean result = false;
+            if (masterCodeToExcelDto.getCodeCategory().isEmpty()
+                    ||masterCodeToExcelDto.getStatus().isEmpty()
+                    ||masterCodeToExcelDto.getEffectiveFrom().isEmpty())
+                    {
+                emptyCode.add(masterCodeToExcelDto.getCodeValue());
+                result = true;
+            }
+            if (!masterCodeService.masterCodeKeyIsExist(masterCodeKey)){
+                result = true;
+                duplicateCode.add(masterCodeToExcelDto.getCodeValue());
+            }
+            if (result){
+                errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "There is an error in the file contents");
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(request,"ERR_CONTENT","SUCCESS");
+                ParamUtil.setRequestAttr(request,"ERR_DUPLICATE_CODE",duplicateCode);
+                ParamUtil.setRequestAttr(request,"ERR_EMPTY_CODE",emptyCode);
+            }else{
+                masterCodeService.saveMasterCodeList(masterCodeToExcelDtoList);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+            }
+        }
     }
 
     /**
@@ -501,7 +552,7 @@ public class MasterCodeDelegator {
         masterCodeDto.setFilterValue(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_FILTER_VALUE_CMC));
         masterCodeDto.setStatus(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_STATUS_CMC));
         masterCodeDto.setRemarks(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_REMARKS_CMC));
-        masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC)) ? 100 : ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC));
+        masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC)) ? null : ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC));
         masterCodeDto.setVersion(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)) ? null : Float.parseFloat(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)));
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_FROM_CMC)));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_TO_CMC)));
@@ -535,5 +586,32 @@ public class MasterCodeDelegator {
         selectCodeStatusList.add(new SelectOption("CMSTAT001", "Active"));
         selectCodeStatusList.add(new SelectOption("CMSTAT003", "Inactive"));
         ParamUtil.setRequestAttr(request, "codeStatus", selectCodeStatusList);
+    }
+
+    private Map<String, String> validationFile(HttpServletRequest request, MultipartFile file){
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+        if (file == null){
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, MessageCodeKey.GENERAL_ERR0004);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            return errorMap;
+        }
+
+        String originalFileName = file.getOriginalFilename();
+        if (!FileUtils.isExcel(originalFileName)){
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, MessageCodeKey.GENERAL_ERR0005);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            return errorMap;
+        }
+
+        if (FileUtils.outFileSize(file.getSize())){
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, MessageCodeKey.GENERAL_ERR0004);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            return errorMap;
+        }
+
+        return errorMap;
     }
 }

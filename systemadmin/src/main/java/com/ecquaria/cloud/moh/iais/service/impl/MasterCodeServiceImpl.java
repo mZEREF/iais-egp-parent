@@ -71,6 +71,11 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     }
 
     @Override
+    public Boolean saveMasterCodeList(List<MasterCodeToExcelDto> masterCodeToExcelDtoList) {
+        return masterCodeClient.saveMasterCodeExcel(masterCodeToExcelDtoList).getEntity();
+    }
+
+    @Override
     public String findCodeKeyByDescription(String description) {
         return masterCodeClient.getCodeKeyByDescription(description).getEntity();
     }

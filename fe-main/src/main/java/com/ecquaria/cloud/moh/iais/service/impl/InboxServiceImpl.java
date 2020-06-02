@@ -330,4 +330,9 @@ public class InboxServiceImpl implements InboxService {
         }
         return errorMap;
     }
+
+    @Override
+    public Map<String, Boolean> listResultCeased(List<String> licIds) {
+        return appInboxClient.listCanCeased(licIds).getEntity();
+    }
 }

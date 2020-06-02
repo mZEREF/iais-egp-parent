@@ -20,4 +20,5 @@ public interface MasterCodeService {
     String findCodeCategoryByDescription(String description);
     List<MasterCodeCategoryDto> getAllCodeCategory();
     boolean masterCodeKeyIsExist(String masterCodekey);
+    Boolean saveMasterCodeList(List<MasterCodeToExcelDto> masterCodeToExcelDtoList);
 }

@@ -74,4 +74,9 @@ public class INTRANET___MohMasterCode___1 extends BaseProcessClass {
 	// 		createCode->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "createCode", this);
 	}
+
+	public void uploadStep_OnStepProcess_0() throws Exception {
+	// 		uploadStep->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "uploadStep", this);
+	}
 }
