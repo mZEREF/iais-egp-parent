@@ -112,10 +112,10 @@
         <div class="col-xs-12 col-md-8"  style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-6 control-label" >Subsumption Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <select  name="Subsumption">
+            <select  name="Subsumption" disabled>
               <option value="" >Select one</option>
               <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
-                <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
+                <option value="${hcsaServiceCategoryDto.id}" <c:if test="${hcsaServiceDto.categoryId==hcsaServiceCategoryDto.id}">selected</c:if>>${hcsaServiceCategoryDto.name}</option>
               </c:forEach>
             </select>
           </div>
@@ -128,10 +128,10 @@
         <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-6 control-label" >Pre-requisite Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <select  name="Pre-requisite">
+            <select  name="Pre-requisite" disabled>
               <option value="">Select one</option>
               <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
-                <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
+                <option value="${hcsaServiceCategoryDto.id}" <c:if test="${hcsaServiceDto.categoryId==hcsaServiceCategoryDto.id}">selected</c:if>>${hcsaServiceCategoryDto.name}</option>
               </c:forEach>
             </select>
           </div>

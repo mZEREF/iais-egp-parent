@@ -49,12 +49,16 @@ public class ConfigServiceDelegator {
 
     public void start(BaseProcessClass bpc){
         log.info("*********startt***********");
+        removeSession(bpc);
         AuditTrailHelper.auditFunction("ConfigServiceDelegator", "Assign Report");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
         OrgUserDto entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
         bpc.request.getSession().setAttribute("orgUserDto",entity);
 
+    }
+    private void removeSession(BaseProcessClass bpc){
+        bpc.request.getSession().removeAttribute("hcsaServiceCategoryDtos");
     }
     private Stack stack=new Stack();
     public void switchOr(BaseProcessClass bpc){
@@ -77,7 +81,7 @@ public class ConfigServiceDelegator {
         bpc.request.getSession().removeAttribute("routingStage");
         configService.addNewService(bpc.request);
     }
-    public void saveOrUpdate(BaseProcessClass bpc){
+    public void saveOrUpdate(BaseProcessClass bpc) throws Exception{
         log.info("*********saveOrUpdate  start***********");
         HcsaServiceConfigDto dateOfHcsaService = getDateOfHcsaService(bpc.request);
         configService.saveOrUpdate(bpc.request,bpc.response,dateOfHcsaService);
@@ -138,7 +142,7 @@ public class ConfigServiceDelegator {
 
     }
 
-    public void update(BaseProcessClass bpc){
+    public void update(BaseProcessClass bpc) throws  Exception{
 
         log.info("*********update  start***********");
         HcsaServiceConfigDto dateOfHcsaService = getDateOfHcsaService(bpc.request);
@@ -146,7 +150,7 @@ public class ConfigServiceDelegator {
 
     }
 
-    private HcsaServiceConfigDto getDateOfHcsaService(HttpServletRequest request) {
+    private HcsaServiceConfigDto getDateOfHcsaService(HttpServletRequest request) throws  Exception {
         HcsaServiceConfigDto hcsaServiceConfigDto = new HcsaServiceConfigDto();
         HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = configService.getHcsaSvcRoutingStageDtos();
@@ -214,22 +218,24 @@ public class ConfigServiceDelegator {
         if("SVTP002".equals(serviceType)){
             if(subsumption!=null){
                 for(String str:subsumption){
-                    HcsaServiceSubTypeDto hcsaServiceSubTypeDto=new HcsaServiceSubTypeDto();
                     if(!"".equals(str)){
+                        HcsaServiceSubTypeDto hcsaServiceSubTypeDto=new HcsaServiceSubTypeDto();
                         hcsaServiceSubTypeDto.setServiceId(str);
+                        list.add(hcsaServiceSubTypeDto);
                     }
-                    list.add(hcsaServiceSubTypeDto);
+
                 }
             }
 
 
         } else if (preRequisite != null && "SVTP003".equals(serviceType)) {
             for(String str : preRequisite){
-                HcsaServiceSubTypeDto hcsaServiceSubTypeDto=new HcsaServiceSubTypeDto();
                 if(!"".equals(str)){
+                    HcsaServiceSubTypeDto hcsaServiceSubTypeDto=new HcsaServiceSubTypeDto();
                     hcsaServiceSubTypeDto.setServiceId(str);
+                    list.add(hcsaServiceSubTypeDto);
                 }
-                list.add(hcsaServiceSubTypeDto);
+
             }
         }
         hcsaServiceDto.setServiceSubTypeDtos(list);
@@ -561,7 +567,13 @@ public class ConfigServiceDelegator {
                 hcsaServiceDto.setStatus("CMSTAT001");
             }
         } catch (Exception e) {
+          /*  Date parse = new SimpleDateFormat("yyyy-MM-dd").parse(startDate);
             hcsaServiceDto.setEffectiveDate(startDate);
+            if(parse.after(new Date())){
+                hcsaServiceDto.setStatus("CMSTAT003");
+            }else {
+                hcsaServiceDto.setStatus("CMSTAT001");
+            }*/
         }
 
 

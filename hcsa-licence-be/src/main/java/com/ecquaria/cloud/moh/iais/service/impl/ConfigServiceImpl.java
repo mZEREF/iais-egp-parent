@@ -190,7 +190,7 @@ public class ConfigServiceImpl implements ConfigService {
         Map<String, List<HcsaConfigPageDto>> tables = getTables(request);
         request.setAttribute("routingStagess", tables);
         List<HcsaServiceCategoryDto> hcsaServiceCategoryDto = getHcsaServiceCategoryDto();
-        request.setAttribute("hcsaServiceCategoryDtos",hcsaServiceCategoryDto);
+        request.getSession().setAttribute("hcsaServiceCategoryDtos",hcsaServiceCategoryDto);
 
     }
 
@@ -924,7 +924,7 @@ public class ConfigServiceImpl implements ConfigService {
         List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getServiceVersions(hcsaServiceDto.getSvcCode()).getEntity();
         request.setAttribute("hcsaServiceDtosVersion",hcsaServiceDtos);
         List<HcsaServiceCategoryDto> hcsaServiceCategoryDto = getHcsaServiceCategoryDto();
-        request.setAttribute("hcsaServiceCategoryDtos",hcsaServiceCategoryDto);
+        request.getSession().setAttribute("hcsaServiceCategoryDtos",hcsaServiceCategoryDto);
         request.setAttribute("hcsaServiceDto", hcsaServiceDto);
         String id = hcsaServiceDto.getId();
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = hcsaConfigClient.getHcsaSvcDocConfigDto(id).getEntity();

@@ -114,7 +114,7 @@
             <select  name="Subsumption">
               <option value="">Select one</option>
               <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
-                <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
+                <option value="${hcsaServiceCategoryDto.id}" <c:if test="${hcsaServiceDto.categoryId==hcsaServiceCategoryDto.id}">selected</c:if>>${hcsaServiceCategoryDto.name}</option>
               </c:forEach>
             </select>
           </div>
@@ -130,7 +130,7 @@
             <select  name="Subsumption">
               <option value="">Select one</option>
               <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
-                <option value="${hcsaServiceCategoryDto.id}">${hcsaServiceCategoryDto.name}</option>
+                <option value="${hcsaServiceCategoryDto.id}" <c:if test="${hcsaServiceDto.categoryId==hcsaServiceCategoryDto.id}">selected</c:if>>${hcsaServiceCategoryDto.name}</option>
               </c:forEach>
             </select>
           </div>
