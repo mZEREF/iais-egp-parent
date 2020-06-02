@@ -19,12 +19,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -235,10 +236,15 @@ public class AuditTrailDelegator {
             }
 
             if(!StringUtil.isEmpty(startDate)){
+                Date d = IaisEGPHelper.parseToDate(startDate);
+                startDate = IaisEGPHelper.parseToString(d, "yyyy-MM-dd HH:mm:ss");
                 searchParam.addFilter(AuditTrailConstants.PARAM_STARTDATE, startDate, true);
             }
 
             if(!StringUtil.isEmpty(endDate)){
+                Date e = IaisEGPHelper.parseToDate(endDate);
+                e = IaisEGPHelper.getLastSecond(e);
+                endDate = IaisEGPHelper.parseToString(e, "yyyy-MM-dd HH:mm:ss");
                 searchParam.addFilter(AuditTrailConstants.PARAM_ENDDATE, endDate, true);
             }
         }

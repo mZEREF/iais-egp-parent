@@ -123,7 +123,7 @@
                         <td><c:out value="${resultRow.uenId}"></c:out></td>
                         <td><c:out value="${resultRow.nricNumber}"></c:out></td>
 
-                        <td><fmt:formatDate value='${resultRow.actionTime}' pattern='MM/dd/yyyy' /></td>
+                        <td><fmt:formatDate value='${resultRow.actionTime}' pattern='dd/MM/yyyy' /></td>
                         <td><fmt:formatDate value='${resultRow.actionTime}' pattern='hh:mm:ss' /></td>
                         <td><c:out value="${resultRow.clientIp}"></c:out></td>
                         <td><c:out value="${resultRow.userAgent}"></c:out></td>

@@ -128,6 +128,27 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     /**
+     * @Author yichen
+     * Get the last second of the day
+     * {@param date} 23:59:59
+     **/
+    public static Date getLastSecond(Date date){
+        if (date == null){
+            throw new IaisRuntimeException("No has input for Date!");
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        Date d = calendar.getTime();
+
+        return d;
+    }
+
+
+    /**
      * It can't be the same day
      * @param start
      * @param end
