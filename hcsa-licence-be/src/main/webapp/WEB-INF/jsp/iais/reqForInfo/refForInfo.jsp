@@ -73,7 +73,7 @@
             </div>
         </div>
         <iais:action style="text-align:left;">
-            <a href="/hcsa-licence-web/eservice/INTRANET/MohOnlineEnquiries" style="margin-bottom: 1%;margin-left: 1%"><em class="fa fa-angle-left"></em> Back</a>
+            <a href="/hcsa-licence-web/eservice/INTRANET/MohLicenceManagement" style="margin-bottom: 1%;margin-left: 1%"><em class="fa fa-angle-left"></em> Back</a>
         </iais:action>
     </div>
 </form>
