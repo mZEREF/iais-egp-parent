@@ -150,6 +150,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         Map<String,AuditTaskDataFillterDto> auditTaskDataFillterDtoMap = new HashMap<>(auditTaskDtos.size());
         if (StringUtil.isEmpty(dto.getLastInspectionStart()) && StringUtil.isEmpty(dto.getLastInspectionEnd())) {
         } else {
+            auditTaskDtos = new ArrayList<>(auditTaskDtos.size());
             for (AuditTaskDataDto temp : searchResult.getRows()) {
                 String licId = temp.getLicId();
                 Date startDate = getInspectionStartDate(licId,  Boolean.TRUE);
