@@ -237,14 +237,12 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public Map<String,String> checkRenewalStatus(String licenceId) {
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-        boolean flag = true;
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
         for(ApplicationDto app : apps){
             if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType())
                     && !(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(app.getStatus()))
                     && !(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(app.getStatus()))
                     && !(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(app.getStatus()))){
-                flag = false;
                 errorMap.put("errorMessage1","This application is performing the renew process");
             }
         }
@@ -253,16 +251,26 @@ public class InboxServiceImpl implements InboxService {
         Date expiryDate = licenceDto.getExpiryDate();
         Date nowDate = new Date();
 
-        Calendar startCalendar = Calendar.getInstance();
-        startCalendar.setTime(nowDate);
+//        Calendar startCalendar = Calendar.getInstance();
+//        startCalendar.setTime(nowDate);
 
+        //expiryDate
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.setTime(expiryDate);
-        int daysBetween = MiscUtil.getDaysBetween(startCalendar,endCalendar);
-        if(nowDate.before(expiryDate) && daysBetween > 180){
-            flag = flag && false;
+
+        //licence expiry date + 1 day - 6 months
+        endCalendar.add(Calendar.DATE,1);
+        endCalendar.add(Calendar.MONTH,-6);
+        Date firstStartRenewTime = endCalendar.getTime();
+
+        if(!(nowDate.after(firstStartRenewTime) && nowDate.before(expiryDate))){
             errorMap.put("errorMessage",licenceDto.getLicenceNo());
         }
+
+//        int daysBetween = MiscUtil.getDaysBetween(startCalendar,endCalendar);
+//        if(nowDate.before(expiryDate) && daysBetween > 180){
+//            errorMap.put("errorMessage",licenceDto.getLicenceNo());
+//        }
         return errorMap;
     }
 
