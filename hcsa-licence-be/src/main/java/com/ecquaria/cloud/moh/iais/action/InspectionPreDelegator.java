@@ -118,6 +118,8 @@ public class InspectionPreDelegator {
         }
         //get application info show
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
+        //set Application RFI Info
+        applicationViewDto = inspectionPreTaskService.setApplicationRfiInfo(applicationViewDto);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appStatus = applicationDto.getStatus();
         inspectionPreTaskDto.setAppStatus(appStatus);

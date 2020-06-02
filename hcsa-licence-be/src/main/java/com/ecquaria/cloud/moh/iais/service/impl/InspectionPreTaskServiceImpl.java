@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -493,6 +494,16 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         inspectionPreTaskDto.setPreInspRbOption(preInspRbOption);
         inspectionPreTaskDto.setStageUserIdMap(userIdMap);
         return inspectionPreTaskDto;
+    }
+
+    @Override
+    public ApplicationViewDto setApplicationRfiInfo(ApplicationViewDto applicationViewDto) {
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
+        if (!IaisCommonUtils.isEmpty(appEditSelectDtos)) {
+            applicationViewDto.setAppEditSelectDto(appEditSelectDtos.get(0));
+        }
+        return applicationViewDto;
     }
 
     private HcsaRiskInspectionComplianceDto getRiskLevelByRefNo(String taskRefNo, String serviceCode) {
