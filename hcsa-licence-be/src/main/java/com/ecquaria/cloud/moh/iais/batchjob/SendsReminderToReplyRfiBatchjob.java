@@ -90,7 +90,7 @@ public class SendsReminderToReplyRfiBatchjob {
         LicenceViewDto licenceViewDto=licInspNcEmailService.getLicenceDtoByLicPremCorrId(rfiEmailTemplateDto.getLicPremCorrId());
         List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
         ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
-        String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto.getReqInfoId()).getLicenseeId();
+        String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto.getId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
         HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
         mapPrem.put("licenseeId",licenseeId);
