@@ -106,4 +106,8 @@ public class WithdrawalDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         }
     }
+
+    public void saveDateStep(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("****The saveDateStep Step****"));
+    }
 }
