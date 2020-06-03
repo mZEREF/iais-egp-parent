@@ -16,7 +16,7 @@ import java.util.List;
  * @Create: 2019-11-26 09:57
  **/
 @Component
-public class InboxFallback implements InboxClient {
+public class LicFeInboxFallback implements LicFeInboxClient {
     @Override
     public FeignResponseEntity<SearchResult<InboxQueryDto>> searchInbox(SearchParam searchParam) {
         FeignResponseEntity entity = new FeignResponseEntity<>();

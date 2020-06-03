@@ -30,7 +30,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -70,14 +72,34 @@ public class BackendAjaxController {
         String hastaskList = (String)ParamUtil.getSessionAttr(request, "hastaskList");
         Map<String, TaskDto> taskMap = (Map<String, TaskDto>) ParamUtil.getSessionAttr(request, "taskMap");
 
-        Map<String, Object> map = new HashMap();
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         if (groupNo != null) {
             searchParamAjax.addFilter("groupNo", groupNo, true);
 
             QueryHelp.setMainSql("inspectionQuery", "AppByGroupAjax", searchParamAjax);
             SearchResult<InspectionAppInGroupQueryDto> ajaxResult = inspectionService.searchInspectionBeAppGroupAjax(searchParamAjax);
             Map<String,String> serviceNameMap = IaisCommonUtils.genNewHashMap();
-            for (InspectionAppInGroupQueryDto item:ajaxResult.getRows()) {
+
+            //get lastest version
+            Map<String, InspectionAppInGroupQueryDto> lastestResultMap = IaisCommonUtils.genNewHashMap();
+            for (InspectionAppInGroupQueryDto item:ajaxResult.getRows()
+                 ) {
+                if(lastestResultMap.get(item.getApplicationNo()) != null){
+                    if(Integer.parseInt(lastestResultMap.get(item.getApplicationNo()).getVersion()) < Integer.parseInt(item.getVersion())){
+                        lastestResultMap.remove(item.getApplicationNo());
+                        lastestResultMap.put(item.getApplicationNo(), item);
+                    }
+                }else{
+                    lastestResultMap.put(item.getApplicationNo(), item);
+                }
+            }
+            List<InspectionAppInGroupQueryDto> lastestResultList = IaisCommonUtils.genNewArrayList();
+            for (String key : lastestResultMap.keySet()) {
+                lastestResultList.add(lastestResultMap.get(key));
+            }
+            Collections.reverse(lastestResultList);
+
+            for (InspectionAppInGroupQueryDto item:lastestResultList) {
                 HcsaServiceDto hcsaServiceDto = inspectionAssignTaskService.getHcsaServiceDtoByServiceId(item.getServiceId());
                 serviceNameMap.put(hcsaServiceDto.getId(),hcsaServiceDto.getSvcName());
                 item.setStatus(MasterCodeUtil.getCodeDesc(item.getStatus()));
@@ -130,7 +152,7 @@ public class BackendAjaxController {
             map.put("appNoUrl", appNoUrl);
             map.put("taskList", taskList);
             map.put("hastaskList", hastaskList);
-            map.put("ajaxResult", ajaxResult);
+            map.put("ajaxResult", lastestResultList);
             map.put("result", "Success");
         } else {
             map.put("result", "Fail");

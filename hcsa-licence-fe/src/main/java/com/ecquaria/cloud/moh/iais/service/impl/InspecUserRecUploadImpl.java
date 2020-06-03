@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -27,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,6 +48,9 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
 
     @Autowired
     private ApplicationClient applicationClient;
+
+    @Autowired
+    private LicFeInboxClient licFeInboxClient;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
@@ -336,8 +341,23 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                     inspecUserRecUploadDto.setCheckClause(cDto.getRegulationClause());
                     inspecUserRecUploadDto.setCheckQuestion(cDto.getChecklistItem());
                     inspecUserRecUploadDto.setIndex(index++);
+                    //Direct return data
                     return inspecUserRecUploadDto;
                 }
+            }
+        }
+        //There are no matching items, search item from adhoc table
+        String adhocItemId = inspecUserRecUploadDto.getItemId();
+        AdhocChecklistItemDto adhocChecklistItemDto = inspectionFeClient.getAdhocChecklistItemById(adhocItemId).getEntity();
+        if(adhocChecklistItemDto != null){
+            String itemId = adhocChecklistItemDto.getItemId();
+            if(!StringUtil.isEmpty(itemId)){
+                ChecklistItemDto checklistItemDto = appConfigClient.getChklItemById(itemId).getEntity();
+                inspecUserRecUploadDto.setCheckClause(checklistItemDto.getRegulationClause());
+                inspecUserRecUploadDto.setCheckQuestion(checklistItemDto.getChecklistItem());
+            } else {
+                inspecUserRecUploadDto.setCheckClause("-");
+                inspecUserRecUploadDto.setCheckQuestion(adhocChecklistItemDto.getQuestion());
             }
         }
         return inspecUserRecUploadDto;
@@ -396,6 +416,13 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
             }
         }
         return inspecUserRecUploadDto;
+    }
+
+    @Override
+    public void updateMessageStatus(String messageId, String messageStatus) {
+        if(!StringUtil.isEmpty(messageId) && !StringUtil.isEmpty(messageStatus)){
+            licFeInboxClient.updateMsgStatusTo(messageId, messageStatus);
+        }
     }
 
     private List<AppPremPreInspectionNcDocDto> deleteNcDoc(String id, List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos) {

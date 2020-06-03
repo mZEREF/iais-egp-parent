@@ -190,7 +190,7 @@ public class PublicHolidayDelegate {
                 bf.close();
                 inputReader.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
 
             int count = 5;
@@ -233,7 +233,7 @@ public class PublicHolidayDelegate {
                             publicHolidayDtos.add(publicHolidayDto);
                             startInt = Integer.parseInt(nextDay);
                         } catch (ParseException e) {
-                            e.printStackTrace();
+                            log.error(e.getMessage(), e);
                         }
                     }
                 }

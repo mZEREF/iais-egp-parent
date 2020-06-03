@@ -23,21 +23,20 @@
     <input type="hidden" id="nonAvailId" name="nonAvailId" value="">
     <div class="bg-title"><h2>Define Non-Availability</h2></div>
 
-    <form class="form-horizontal">
 
+      <form class="form-horizontal">
+        <c:if test="${isGroupLead == 'Y'}">
+        <iais:section title="" id = "demoList">
+          <iais:row>
+            <iais:field value="Working Group:" required="true"/>
+            <iais:value width="18">
+              <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  options = "wrlGrpNameOpt"  value="${param.shortName}" ></iais:select>
+              <span id="error_groupName" name="iaisErrorMsg" class="error-msg"></span>
+            </iais:value>
+          </iais:row>
 
-          <iais:section title="" id = "demoList">
-             <iais:row>
-                <iais:field value="Working Group:" required="true"/>
-                <iais:value width="18">
-                  <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  options = "wrlGrpNameOpt"  value="${param.shortName}" ></iais:select>
-                  <span id="error_groupName" name="iaisErrorMsg" class="error-msg"></span>
-                </iais:value>
-              </iais:row>
+          <div class="clearRow">
 
-            <div class="clearRow">
-
-              <c:if test="${isGroupLead == 'Y'}">
               <iais:row>
                 <iais:field value="Inspector ID:" required="true"/>
                 <iais:value width="18">
@@ -45,13 +44,12 @@
                   <span id="error_userName" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
               </iais:row>
-              </c:if>
 
             <iais:row>
               <iais:field value="Year:" required="true"/>
               <iais:value width="18">
                 <iais:select name="dropYearOpt" id="dropYearOpt"
-                             options = "dropYearOpt" firstOption="Please Select" value="${param.dropYear}" ></iais:select>
+                             options = "dropYearOpt" firstOption="Please Select" value="${param.dropYearOpt}" ></iais:select>
                 <span id="error_year" name="iaisErrorMsg" class="error-msg"></span>
               </iais:value>
             </iais:row>
@@ -88,29 +86,29 @@
               </iais:value>
             </iais:row>
 
-              <iais:row>
-                <iais:field value="Recurrence End Date:"/>
-                <iais:value width="18">
-                  <iais:datePicker id = "recurrenceEndDate" name = "recurrenceEndDate"  value="${param.recurrenceEndDate}"></iais:datePicker>
-                  <span id="error_year" name="iaisErrorMsg" class="error-msg"></span>
-                </iais:value>
-              </iais:row>
+            <iais:row>
+              <iais:field value="Recurrence End Date:"/>
+              <iais:value width="18">
+                <iais:datePicker id = "recurrenceEndDate" name = "recurrenceEndDate"  value="${param.recurrenceEndDate}"></iais:datePicker>
+                <span id="error_year" name="iaisErrorMsg" class="error-msg"></span>
+              </iais:value>
+            </iais:row>
 
-                <iais:action style="text-align:center;">
-                  <div class="text-right">
-                    <a class="btn btn-secondary <c:if test="${isGroupLead != 'Y'}">disabled</c:if>"  onclick="javascript:doClear()" href="#">Clear</a>
-                    <a class="btn btn-primary <c:if test="${isGroupLead != 'Y'}">disabled</c:if>" id="crud_search_button" value="doQuery" href="#">Search</a>
-                  </div>
-                </iais:action>
-
-
-
-            </div>
-          </iais:section>
-    </form>
+            <iais:action style="text-align:center;">
+              <div class="text-right">
+                <a class="btn btn-secondary <c:if test="${isGroupLead != 'Y'}">disabled</c:if>"  onclick="javascript:doClear()" href="#">Clear</a>
+                <a class="btn btn-primary <c:if test="${isGroupLead != 'Y'}">disabled</c:if>" id="crud_search_button" value="doQuery" href="#">Search</a>
+              </div>
+            </iais:action>
 
 
-    <br><br><br>
+
+          </div>
+        </iais:section>
+      </form>
+      <br><br><br>
+    </c:if>
+
     <div>
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
         <div class="tab-content">
@@ -125,7 +123,7 @@
                     <tr>
                       <iais:sortableHeader needSort="false"   field="index" value="No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="NAME" value="Inspector ID"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   field="YEAR" value="Year"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="BLOCK_OUT_START" value="Year"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="BLOCK_OUT_START" value="Non-Available Date Start"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="BLOCK_OUT_END" value="Non-Available Date End"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="REMARKS" value="Non-Available Date Description"></iais:sortableHeader>
@@ -148,14 +146,13 @@
                           <tr>
                             <td>${status.index + 1}</td>
                             <td><c:out value="${calendar.userName}"></c:out></td>
-                            <td><c:out value="${calendar.year}"></c:out></td>
-
-                            <td><fmt:formatDate value="${calendar.userBlockDateStart}" pattern="MM/dd/yyyy"/></td>
-                            <td><fmt:formatDate value="${calendar.userBlockDateEnd}" pattern="MM/dd/yyyy"/></td>
+                            <td><fmt:formatDate value="${calendar.userBlockDateStart}" pattern="yyyy"/></td>
+                            <td><fmt:formatDate value="${calendar.userBlockDateStart}" pattern="dd/MM/yyyy"/></td>
+                            <td><fmt:formatDate value="${calendar.userBlockDateEnd}" pattern="dd/MMyyyy"/></td>
 
                             <td><c:out value="${calendar.description}"></c:out></td>
                             <td><iais:code code="${calendar.recurrence}"></iais:code></td>
-                            <td><fmt:formatDate value="${calendar.recurrenceEndate}" pattern="MM/dd/yyyy"/></td>
+                            <td><fmt:formatDate value="${calendar.recurrenceEndate}" pattern="dd/MM/yyyy"/></td>
                             <td>
 
                                 <button type="button"   onclick="doDelete('<iais:mask name="nonAvailId" value="${calendar.id}"/>')"  class="btn btn-default btn-sm" >Delete</button>
@@ -164,22 +161,10 @@
                           </tr>
                         </c:forEach>
 
-
                       </c:otherwise>
                     </c:choose>
                     </tbody>
                   </table>
-                  <div class="table-footnote">
-                    <div class="row">
-                      <div class="col-xs-6 col-md-8 text-right">
-                        <br><br>
-
-
-                      </div>
-                    </div>
-                  </div>
-
-
                 </div>
               </div>
             </div>
@@ -189,11 +174,11 @@
 
     </div>
 
-    <c:if test="${isGroupLead == 'Y'}">
+
       <div class="text-right text-center-mobile">
         <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doAdd();">Create</a>
       </div>
-    </c:if>
+
 
   </form>
 </div>

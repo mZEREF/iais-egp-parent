@@ -3,6 +3,7 @@
     <div class="tab-search">
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="msg_action_type" value="">
+        <input type="hidden" name="msg_page_type" value="">
         <input type="hidden" name="msg_action_id" value="">
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="msg_page_action" value="">
@@ -66,7 +67,7 @@
                         <c:otherwise>
                             <c:forEach var="inboxQuery" items="${inboxResult.rows}" varStatus="status">
                                 <c:choose>
-                                    <c:when test="${inboxQuery.status == 'MSGRS001' || inboxQuery.status == 'MSGRS002'}">
+                                    <c:when test="${inboxQuery.status == 'MSGRS001'}">
                                         <tr style="font-weight:bold">
                                     </c:when>
                                     <c:otherwise>
@@ -86,9 +87,9 @@
                                 </C:if>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Subject</p>
-                                    <p><a href="#" onclick="toMsgView('<iais:mask name="crud_action_value"
-                                                                                  value="${inboxQuery.msgContent}"/>','<iais:mask name="msg_action_id"
-                                                                                                                                 value="${inboxQuery.id}"/>')">${inboxQuery.subject}</a>
+                                    <p><a href="#" onclick="toMsgView('<iais:mask name="crud_action_value" value="${inboxQuery.msgContent}"/>',
+                                            '<iais:mask name="msg_action_id" value="${inboxQuery.id}"/>',
+                                            '<iais:mask name="msg_page_type" value="${inboxQuery.messageType}"/>')">${inboxQuery.subject}</a>
                                     </p>
                                 </td>
                                 <td>

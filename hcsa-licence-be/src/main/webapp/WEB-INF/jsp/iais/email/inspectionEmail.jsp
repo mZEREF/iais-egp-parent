@@ -69,7 +69,7 @@
                                             <div class="swiper-button-next"></div>
                                         </div>
 
-                                        <iais:row class="tab-content">
+                                        <div class="tab-content">
                                             <div class="tab-pane " id="tabInfo" role="tabpanel">
                                                 <%@include file="/WEB-INF/jsp/iais/inspectionncList/tabViewApp.jsp" %>
                                             </div>
@@ -79,7 +79,7 @@
                                             <div class="tab-pane active" id="tabLetter" role="tabpanel">
                                                 <%@ include file="email.jsp" %>
                                             </div>
-                                            <iais:row class="tab-pane " id="tabProcessing" role="tabpanel">
+                                            <div class="tab-pane " id="tabProcessing" role="tabpanel">
                                                 <div class="alert alert-info" role="alert">
                                                     <strong>
                                                         <h4>Processing Status Update</h4>

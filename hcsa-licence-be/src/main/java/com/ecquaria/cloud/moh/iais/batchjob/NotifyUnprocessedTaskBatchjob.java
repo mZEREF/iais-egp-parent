@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -161,7 +160,7 @@ public class NotifyUnprocessedTaskBatchjob {
 
         }
         email.setReqRefNum(item.getId());
-        email.setContent(application.getApplicationType());
+        email.setContent(application.getApplicationNo());
         email.setSender(mailSender);
         email.setClientQueryCode(item.getId());
         email.setReceipts(emailAddr);
