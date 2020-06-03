@@ -10,6 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppPremInsDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditFillterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -306,6 +308,14 @@ public class FillUpCheckListGetAppClientFallBack implements FillUpCheckListGetAp
 
     @Override
     public FeignResponseEntity<String> saveAppPremisesSpecialDoc(AppPremisesSpecialDocDto appIntranetDocDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<AuditFillterDto> getAuditTaskDataDtoByAuditTaskDataDto(AuditTaskDataDto auditTaskDataDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
