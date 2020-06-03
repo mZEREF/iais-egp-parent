@@ -204,8 +204,9 @@ public class NewApplicationDelegator {
      */
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do Start start ...."));
-
+        //fro draft loading
         String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
+        //for rfi loading
         String appNo = ParamUtil.getMaskedString(bpc.request,"appNo");
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         //clear Session
@@ -1095,6 +1096,9 @@ public class NewApplicationDelegator {
         }
 
        /* applicationClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto);*/
+        //update message status
+        String msgId = (String) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+        appSubmissionService.updateMsgStatus(msgId,MessageConstants.MESSAGE_STATUS_RESPONSE);
         appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
         // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","Y");
@@ -3365,7 +3369,9 @@ public class NewApplicationDelegator {
 
     private void requestForInformationLoading(BaseProcessClass bpc,String appNo) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
-        if(!StringUtil.isEmpty(appNo)){
+        String msgId = (String) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+        //msgId = "415199C2-4AAA-42BF-B068-9B019BF1ED1C";
+        if(!StringUtil.isEmpty(appNo) && !StringUtil.isEmpty(msgId)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
                 AppSubmissionDto oldSubmitAppSubmissionDto =(AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
@@ -3409,6 +3415,10 @@ public class NewApplicationDelegator {
                     }
                 }
                 appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
+            }
+            InterMessageDto interMessageDto = appSubmissionService.getInterMessageById(msgId);
+            if(MessageConstants.MESSAGE_STATUS_RESPONSE.equals(interMessageDto.getStatus())){
+                appSubmissionDto = null;
             }
             if(appSubmissionDto != null){
                 String appType =  appSubmissionDto.getAppType();

@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -46,6 +47,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
@@ -96,6 +98,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private GenerateIdClient generateIdClient;
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
+    @Autowired
+    private FeMessageClient feMessageClient;
 
 
     @Override
@@ -662,6 +666,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public ApplicationDto getMaxVersionApp(String appNo) {
         return applicationClient.getApplicationDtoByVersion(appNo).getEntity();
+    }
+
+    @Override
+    public void updateMsgStatus(String msgId, String status) {
+        feMessageClient.updateMsgStatus(msgId,status);
+    }
+
+    @Override
+    public InterMessageDto getInterMessageById(String msgId) {
+        return feMessageClient.getInterMessageById(msgId).getEntity();
     }
 
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){

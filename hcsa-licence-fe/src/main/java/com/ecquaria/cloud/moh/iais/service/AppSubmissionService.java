@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import sop.webflow.rt.api.Process;
 
@@ -53,4 +54,6 @@ public interface AppSubmissionService {
     List<AppGrpPremisesDto> getAppGrpPremisesDto(String appNo);
     AppFeeDetailsDto saveAppFeeDetails(AppFeeDetailsDto appFeeDetailsDto);
     ApplicationDto getMaxVersionApp(String appNo);
+    void updateMsgStatus(String msgId, String status);
+    InterMessageDto getInterMessageById(String msgId);
 }
