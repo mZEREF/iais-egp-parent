@@ -94,4 +94,13 @@ public interface InspecUserRecUploadService {
       * @Descripation: recover File
       */
     InspecUserRecUploadDto recoverFile(InspecUserRecUploadDto inspecUserRecUploadDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/6/3
+      * @Param: messageId, messageStatus
+      * @return: void
+      * @Descripation: updateMessageSatus
+      */
+    void updateMessageStatus(String messageId, String messageStatus);
 }

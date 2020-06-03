@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspSetMaskValueDto;
@@ -51,6 +52,7 @@ public class InspecUserRecUploadDelegator {
      */
     public void inspecUserRectifiUploadStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadStart start ...."));
+        String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         String appPremCorrId = ParamUtil.getMaskedString(bpc.request, "appPremCorrId");
         String versionStr = ParamUtil.getRequestString(bpc.request, "recVersion");
         InspSetMaskValueDto inspSetMaskValueDto = new InspSetMaskValueDto();
@@ -58,6 +60,7 @@ public class InspecUserRecUploadDelegator {
         inspSetMaskValueDto.setVersion(versionStr);
         ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", inspSetMaskValueDto);
         AuditTrailHelper.auditFunction("User Rectification Upload", "Upload Doc Rectification");
+        ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, messageId);
     }
 
     /**
@@ -344,6 +347,8 @@ public class InspecUserRecUploadDelegator {
             } else {
                 ParamUtil.setRequestAttr(bpc.request, "subflag", AppConsts.TRUE);
                 inspecUserRecUploadService.submitAllRecNc(inspecUserRecUploadDtos, loginContext);
+                String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+                inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
             }
         }
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);

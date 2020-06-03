@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+/**
+ * @author ShiCheng_Xu
+ */
 @FeignClient(name = "inter-inbox",configuration = FeignConfiguration.class,fallback = LicFeInboxFallback.class)
 public interface LicFeInboxClient {
     @PostMapping(path = "/iais-inter-inbox/inbox-param", consumes = MediaType.APPLICATION_JSON_VALUE)

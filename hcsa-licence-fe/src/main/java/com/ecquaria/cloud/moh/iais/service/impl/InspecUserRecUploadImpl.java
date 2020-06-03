@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +48,9 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
 
     @Autowired
     private ApplicationClient applicationClient;
+
+    @Autowired
+    private LicFeInboxClient licFeInboxClient;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
@@ -412,6 +416,13 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
             }
         }
         return inspecUserRecUploadDto;
+    }
+
+    @Override
+    public void updateMessageStatus(String messageId, String messageStatus) {
+        if(!StringUtil.isEmpty(messageId) && !StringUtil.isEmpty(messageStatus)){
+            licFeInboxClient.updateMsgStatusTo(messageId, messageStatus);
+        }
     }
 
     private List<AppPremPreInspectionNcDocDto> deleteNcDoc(String id, List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos) {
