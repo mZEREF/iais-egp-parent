@@ -50,7 +50,7 @@
                          <c:if test="${withdrawDtoView.withdrawnReason != 'WDR005' || withdrawDtoView.withdrawnReason== null}">hidden</c:if>>
                         <div class="row">
                             <div class="center-content">
-                                <label class="col-md-4" style="font-size:3rem">Any supporting remarks</label>
+                                <label class="col-md-4" style="font-size:3rem">Remarks</label>
                             </div>
                         </div>
                         <div class="row">
