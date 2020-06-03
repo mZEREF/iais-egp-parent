@@ -591,4 +591,12 @@ public class ApplicationClientFallback implements ApplicationClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<AdhocChecklistItemDto> getAdhocChecklistItemById(String id) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
