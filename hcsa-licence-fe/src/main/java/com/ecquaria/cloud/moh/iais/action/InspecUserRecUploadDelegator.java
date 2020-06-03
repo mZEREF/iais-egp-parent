@@ -340,7 +340,7 @@ public class InspecUserRecUploadDelegator {
                     errorMap.put("subFlag", "UC_INSP_ERR0008");
                 }
             }
-            if(errorMap != null){
+            if(errorMap != null && errorMap.size() > 0){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, "subflag", AppConsts.FALSE);
