@@ -36,11 +36,9 @@
                             <br>
                             <div class="row">
                                 <label class="col-xs-9 col-md-3 control-label" > Licence No.<strong style="color:#ff0000;">*</strong></label>
-                                <div class=" col-xs-7 col-sm-4 col-md-5">
                                     <label>
                                         <input type="text" maxlength="24" style="width:170%; font-weight:normal;" name="licenceNo" value="${newRfi.licenceNo}"/>
                                     </label>
-                                </div>
                                 <span id="error_licenceNo" name="iaisErrorMsg" class="error-msg" ></span>
                             </div>
                             <div class="row">

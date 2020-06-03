@@ -525,7 +525,7 @@ public class RequestForInformationDelegator {
                 for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
                 ) {
                     if(StringUtil.isEmpty(licPreRfi.getUserReply())){
-                        errMap.put("LicencePending","Licence is still pending Applicant's input.Please do not submit any new Requset For Information.");
+                        errMap.put("LicencePending","Licence is still pending Applicant's input. Please do not submit any new Requset For Information.");
                     }
                 }
             }
