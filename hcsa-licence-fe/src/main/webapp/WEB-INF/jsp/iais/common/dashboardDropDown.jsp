@@ -3,7 +3,6 @@
     <div class="dropdown profile-dropdown"><a class="profile-btn btn" id="profileBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="javascript:;">${loginContext.userName}</a>
         <ul class="dropdown-menu" aria-labelledby="profileBtn">
             <li class="dashboard-icon"><a href="/main-web">Dashboard</a></li>
-            <li class="management-account"><a href="#">Manage Account</a></li>
             <li class="logout"><a href="${pageContext.request.contextPath}/eservice/INTERNET/InterLogout">Logout</a></li>
         </ul>
     </div>
