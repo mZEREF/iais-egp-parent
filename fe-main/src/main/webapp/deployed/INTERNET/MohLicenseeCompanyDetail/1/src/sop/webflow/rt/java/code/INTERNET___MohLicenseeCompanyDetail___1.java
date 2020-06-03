@@ -28,6 +28,10 @@ public class INTERNET___MohLicenseeCompanyDetail___1 extends BaseProcessClass {
 	// 		Company->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "company", this);
 	}
+	public void solo_OnStepProcess_0() throws Exception {
+	// 		Solo->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "solo", this);
+	}
 	
 
 }
