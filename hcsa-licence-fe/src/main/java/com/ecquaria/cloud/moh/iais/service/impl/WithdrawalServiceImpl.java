@@ -91,7 +91,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     @Override
     public void saveWithdrawn(List<WithdrawnDto> withdrawnDtoList) {
-        withdrawnDtoList.stream().forEach(h -> {
+        withdrawnDtoList.forEach(h -> {
             String licenseeId = h.getLicenseeId();
             AppSubmissionDto appSubmissionDto = applicationClient.getAppSubmissionDto(h.getApplicationNo()).getEntity();
             transform(appSubmissionDto,licenseeId);
@@ -103,7 +103,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         });
         List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
         if (!IaisCommonUtils.isEmpty(withdrawnList)){
-            withdrawnDtoList.stream().forEach(h -> {
+            withdrawnDtoList.forEach(h -> {
                 AppSubmissionDto appSubmissionDto = applicationClient.getAppSubmissionDto(h.getApplicationNo()).getEntity();
                 if (appSubmissionDto != null){
                     String serviceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceId();
@@ -117,9 +117,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                             EmailDto emailDto = sendNotification(TEMPLATE_WITHDRAWAL_ID,msgInfoMap,h.getApplicationNo(),h.getLicenseeId());
                             sendInboxMessage(h.getApplicationNo(),h.getLicenseeId(),null,emailDto.getContent(),serviceId,emailDto.getSubject());
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            log.error(e.getMessage(), e);
                         } catch (TemplateException e) {
-                            e.printStackTrace();
+                            log.error(e.getMessage(), e);
                         }
                     }
                 }
