@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
@@ -27,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -43,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -676,6 +679,55 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public InterMessageDto getInterMessageById(String msgId) {
         return feMessageClient.getInterMessageById(msgId).getEntity();
+    }
+
+    @Override
+    public List<String> getHciFromPendAppAndLic(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos) {
+        List<String> result = IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(licenseeId) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+            List<String> svcIds = IaisCommonUtils.genNewArrayList();
+            List<String> svcNames = IaisCommonUtils.genNewArrayList();
+            for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
+                svcIds.add(hcsaServiceDto.getId());
+                svcNames.add(hcsaServiceDto.getSvcName());
+            }
+            String svcNameStr = JsonUtil.parseToJson(svcNames);
+            String svcIdStr = JsonUtil.parseToJson(svcIds);
+            List<PremisesDto> premisesDtos = licenceClient.getPremisesByLicseeIdAndSvcName(licenseeId,svcNameStr).getEntity();
+            List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = applicationClient.getPendAppPremises(licenseeId,svcIdStr).getEntity();
+            if(!IaisCommonUtils.isEmpty(premisesDtos)){
+                for(PremisesDto premisesDto:premisesDtos){
+                    String premisesKey = IaisCommonUtils.genPremisesKey(premisesDto.getPostalCode(),premisesDto.getBlkNo(),premisesDto.getFloorNo(),premisesDto.getUnitNo());
+                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesDto.getPremisesType())){
+                        result.add(premisesDto.getHciName()+premisesKey);
+                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())){
+                        result.add(premisesDto.getVehicleNo()+premisesKey);
+                    }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
+                        result.add(premisesKey);
+                    }
+                }
+            }
+            if(!IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)){
+                for(AppGrpPremisesEntityDto premisesDto:appGrpPremisesEntityDtos){
+                    NewApplicationHelper.setPremiseHciList(premisesDto,result);
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<AppGrpPremisesEntityDto> getPendAppPremises(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos) {
+        List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(licenseeId) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)) {
+            List<String> svcIds = IaisCommonUtils.genNewArrayList();
+            for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
+                svcIds.add(hcsaServiceDto.getId());
+            }
+            String svcIdStr = JsonUtil.parseToJson(svcIds);
+            appGrpPremisesEntityDtos = applicationClient.getPendAppPremises(licenseeId,svcIdStr).getEntity();
+        }
+        return appGrpPremisesEntityDtos;
     }
 
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
