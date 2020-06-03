@@ -177,7 +177,7 @@
                                                                 <iais:value width="10">
                                                                     <p>
                                                                         <input class="form-check-input" id="routeBackReview"
-                                                                           type="checkbox" name="routeBackReview" aria-invalid="false" <c:if test="${routeBackReviewChecked == 'Y'}">selected</c:if> value="Y">
+                                                                           type="checkbox" name="routeBackReview" aria-invalid="false" <c:if test="${routeBackReviewChecked == 'Y'}">checked</c:if> value="Y">
                                                                         <label class="form-check-label" for="routeBackReview"><span class="check-square"></span></label>
                                                                     </p>
                                                                 </iais:value>

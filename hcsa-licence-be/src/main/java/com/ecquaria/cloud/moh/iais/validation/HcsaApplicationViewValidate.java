@@ -71,6 +71,12 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             ParamUtil.setRequestAttr(request,"recommendationOnlyShow",recommendationStr);
         }
 
+        //route back review filling back
+        String routeBackReview  = ParamUtil.getString(request,"routeBackReview");
+        if(!StringUtil.isEmpty(routeBackReview)){
+            ParamUtil.setRequestAttr(request,"routeBackReviewChecked",routeBackReview);
+        }
+
         //verified recommendation other dropdown
         //0063971
         checkRecommendationOtherDropdown(errMap,recommendationStr,request,applicationType,roleId);
