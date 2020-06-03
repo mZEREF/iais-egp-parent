@@ -51,23 +51,15 @@
                                         <iais:row>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="checkbox" disabled name="reqType" checked/>Information
+                                                    <input type="checkbox" disabled name="reqType" <c:if test="${not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}">checked</c:if> />Information
                                                 </label>
-                                                <c:choose>
-                                                    <c:when test="${licPreReqForInfoDto.needDocument}">
-                                                        <label>
-                                                            <input type="checkbox" disabled name="reqType" checked />Supporting Documents
-                                                        </label>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <label>
-                                                            <input type="checkbox" disabled name="reqType" />Supporting Documents
-                                                        </label>
-                                                    </c:otherwise>
-                                                </c:choose>
+                                                <label>
+                                                    <input type="checkbox" disabled name="reqType" <c:if test="${licPreReqForInfoDto.needDocument}">checked</c:if> />Supporting Documents
+                                                </label>
                                             </iais:value>
                                         </iais:row>
                                         <H3></H3>
+                                        <c:forEach items=""></c:forEach>
                                         <iais:row style="text-align:center;">
                                             <iais:value width="18">
                                                 <label>
@@ -78,7 +70,7 @@
                                         <iais:row style="text-align:center;">
                                             <iais:value width="18">
                                                 <label>
-                                                    <textarea id="userReply_rfi" name="userReply" rows="8" style=" font-weight:normal;" cols="70">${licPreReqForInfoDto.userReply}</textarea><span id="error_userReply" name="iaisErrorMsg" class="error-msg" ></span>
+                                                    <textarea  name="userReply" rows="8" style=" font-weight:normal;" cols="70">${licPreReqForInfoDto.userReply}</textarea><span id="error_userReply" name="iaisErrorMsg" class="error-msg" ></span>
                                                 </label>
                                             </iais:value>
                                         </iais:row>

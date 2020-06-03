@@ -82,8 +82,6 @@ public class ResponseForInformationDelegator {
         }catch (Exception e){
              licPremisesReqForInfoDto= (LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(request,"licPreReqForInfoDto");
         }
-
-        licPremisesReqForInfoDto.setOfficerRemarks(licPremisesReqForInfoDto.getOfficerRemarks());
         ParamUtil.setSessionAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
         // 		doRFI->OnStepProcess
     }
@@ -143,7 +141,7 @@ public class ResponseForInformationDelegator {
         licPremisesReqForInfoDto.setReplyDate(new Date());
         LicenseeDto licenseeDto=licenceViewService.getLicenseeDtoBylicenseeId(licPremisesReqForInfoDto.getLicenseeId());
         licPremisesReqForInfoDto.setReplyUser(licenseeDto.getName());
-        licPremisesReqForInfoDto.setUserReply(userReply);
+        //licPremisesReqForInfoDto.setUserReply(userReply);
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1=responseForInformationService.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
         logAbout("preparetionData");

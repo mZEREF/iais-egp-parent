@@ -191,7 +191,7 @@
         ]]>
     </sql>
 
-    <sql key="rfi-new" cached="no" remarks="new Request For Information Html">
+    <sql key="rfi-new" cached="no" remarks="new Request For Information add doc Html">
         <![CDATA[
             <div class="reqForInfoContent">
                 <input type="hidden" name="lengths" value="indexRfi" />
@@ -206,12 +206,47 @@
                             <div class="form-group">
                                 <div class="row" >
                                     <div class="row" style="text-align:center;">
-                                        <div > #indexRfi Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div>
+                                        <div > indexRfi Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div>
                                     </div>
                                     <label class="col-xs-9 col-md-3 control-label" ></label>
                                     <div class=" col-xs-7 col-sm-4 col-md-5">
                                         <label>
                                             <textarea  name="docTitelindexRfi" rows="8" style=" font-weight:normal;" cols="70"></textarea><span id="error_docTitleindexRfi" name="iaisErrorMsg" class="error-msg" ></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br><br><br>
+            </div>
+         ]]>
+    </sql>
+
+
+    <sql key="rfi-info-new" cached="no" remarks="new Request For Information add info Html">
+        <![CDATA[
+            <div class="reqForInfoContentInfo">
+                <input type="hidden" name="lengthsInfo" value="indexRfi" />
+                <div class=" col-xs-11 col-sm-4 col-md-1">
+                    <div class="form-check removeRfiInfoBtn">
+                        <button class=" btn btn-secondary" type="button">-</button>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-collapse collapse in"  role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div class="row" >
+                                    <div class="row" style="text-align:center;">
+                                        <div > indexRfi Title of Information Required <strong style="color:#ff0000;">*</strong></div>
+                                    </div>
+                                    <label class="col-xs-9 col-md-3 control-label" ></label>
+                                    <div class=" col-xs-7 col-sm-4 col-md-5">
+                                        <label>
+                                            <textarea  name="infoTitelindexRfi" rows="8" style=" font-weight:normal;" cols="70"></textarea><span id="error_infoTitleindexRfi" name="iaisErrorMsg" class="error-msg" ></span>
                                         </label>
                                     </div>
                                 </div>

@@ -34,7 +34,7 @@
                             <tr align="center">
                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="REQUEST_DATE " value="Start Date ,Time"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="REQUEST_DATE " value="Start Date"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="REQUESTER_ID" value="Requester ID"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
                             </tr>

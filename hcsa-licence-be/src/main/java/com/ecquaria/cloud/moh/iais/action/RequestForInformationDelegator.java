@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoReplyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -22,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.NewRfiPageListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -34,22 +34,14 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
-import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.LicInspNcEmailService;
-import com.ecquaria.cloud.moh.iais.service.LicenceService;
-import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -88,35 +80,17 @@ public class RequestForInformationDelegator {
     @Autowired
     InspEmailService inspEmailService;
     @Autowired
-    ApplicationViewService applicationViewService;
-    @Autowired
     HcsaConfigClient hcsaConfigClient;
-
-    @Autowired
-    OrganizationClient organizationClient;
     @Autowired
     HcsaLicenceClient hcsaLicenceClient;
-    @Autowired
-    LicenceService licenceService;
-    @Autowired
-    InsepctionNcCheckListService insepctionNcCheckListService;
-    @Autowired
-    InsRepClient insRepClient;
     @Autowired
     private InboxMsgService inboxMsgService;
     @Autowired
     LicInspNcEmailService licInspNcEmailService;
     @Autowired
-    OnlineEnquiriesService onlineEnquiriesService;
-    @Autowired
     private SystemParamConfig systemParamConfig;
     @Autowired
-    InspectionRectificationProService inspectionRectificationProService;
-    @Autowired
     private ApplicationClient applicationClient;
-
-    @Autowired
-    FillupChklistService fillupChklistService;
     @Autowired
     EmailClient emailClient;
     @Value("${iais.email.sender}")
@@ -151,20 +125,19 @@ public class RequestForInformationDelegator {
         HttpServletRequest request=bpc.request;
         List<LicPremisesDto> licPremisesDtos = (List<LicPremisesDto>) ParamUtil.getSessionAttr(request,"licPremisesDtos");
         List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoLists=IaisCommonUtils.genNewArrayList();
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         for(LicPremisesDto licPremisesDto:licPremisesDtos){
             List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licPremisesDto.getId());
+            licPremisesReqForInfoDtoLists.addAll(licPremisesReqForInfoDtoList);
             for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
             ) {
-                OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licPreRfi.getLicenseeId()).getEntity();
-                if(organizationLicDto.getLicenseeEntityDto()!=null){
-                    licPreRfi.setEmail(organizationLicDto.getLicenseeEntityDto().getOfficeEmailAddr());
+                if(!licPreRfi.getRequestUser().equals(loginContext.getUserName())){
+                    licPremisesReqForInfoDtoLists.remove(licPreRfi);
                 }
             }
-            licPremisesReqForInfoDtoLists.addAll(licPremisesReqForInfoDtoList);
         }
 
         ParamUtil.setRequestAttr(request, "isValid", "Y");
-
 
         if(!licPremisesReqForInfoDtoLists.isEmpty()) {
             for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoLists
@@ -178,7 +151,6 @@ public class RequestForInformationDelegator {
         }
 
         ParamUtil.setRequestAttr(request,"licPreReqForInfoDtoList", licPremisesReqForInfoDtoLists);
-
 
     }
 
@@ -204,6 +176,14 @@ public class RequestForInformationDelegator {
                 docTitle.add(ParamUtil.getString(request,"docTitle"+len));
             }
         }
+        String[] lengthsInfo=ParamUtil.getStrings(request,"lengthsInfo");
+        List<String> infoTitle=IaisCommonUtils.genNewArrayList();
+        if(lengths!=null){
+            for (String len:lengthsInfo
+            ) {
+                infoTitle.add(ParamUtil.getString(request,"infoTitle"+len));
+            }
+        }
 
         String decision=ParamUtil.getString(request, "decision");
         String date= ParamUtil.getString(request, "Due_date");
@@ -219,6 +199,7 @@ public class RequestForInformationDelegator {
         newRfiPageListDto.setInfoChk(infoChk);
         newRfiPageListDto.setDocChk(docChk);
         newRfiPageListDto.setDocTitle(docTitle);
+        newRfiPageListDto.setInfoTitle(infoTitle);
         ParamUtil.setRequestAttr(bpc.request, "newRfi", newRfiPageListDto);
 
 
@@ -251,11 +232,11 @@ public class RequestForInformationDelegator {
         }
 
 
-        String info = ParamUtil.getString(request, "info");
         String licenceNo = ParamUtil.getString(request, "licenceNo");
         String date= ParamUtil.getString(request, "Due_date");
         String rfiTitle=ParamUtil.getString(request, "rfiTitle");
         String reqType=ParamUtil.getString(request,"doc");
+        String reqTypeInfo=ParamUtil.getString(request,"info");
         String[] lengths=ParamUtil.getStrings(request,"lengths");
         List<String> docTitle=IaisCommonUtils.genNewArrayList();
         if(lengths!=null){
@@ -264,11 +245,18 @@ public class RequestForInformationDelegator {
                 docTitle.add(ParamUtil.getString(request,"docTitle"+len));
             }
         }
+        String[] lengthsInfo=ParamUtil.getStrings(request,"lengthsInfo");
+        List<String> infoTitle=IaisCommonUtils.genNewArrayList();
+        if(lengths!=null){
+            for (String len:lengthsInfo
+            ) {
+                infoTitle.add(ParamUtil.getString(request,"infoTitle"+len));
+            }
+        }
 
         Map<String, String> lice= (Map<String, String>) ParamUtil.getSessionAttr(request, "licLicPremMap");
         String licPremId=lice.get(licenceNo);
         LicenceViewDto licenceViewDto=licInspNcEmailService.getLicenceDtoByLicPremCorrId(licPremId);
-        StringBuilder officerRemarks=new StringBuilder();
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
         licPremisesReqForInfoDto.setReqType(RequestForInformationConstants.AD_HOC);
         Date dueDate;
@@ -281,21 +269,29 @@ public class RequestForInformationDelegator {
             dueDate =calendar.getTime();
         }
         licPremisesReqForInfoDto.setDueDateSubmission(dueDate);
-        officerRemarks.append(rfiTitle).append(' ');
         licPremisesReqForInfoDto.setLicPremId(licPremId);
 
         boolean isNeedDoc=false;
         List<LicPremisesReqForInfoDocDto> licPremisesReqForInfoDocDtos=IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(reqType)&&"documents".equals(reqType)) {
             isNeedDoc = true;
-            for(String docName :docTitle){
+            for(String docTi :docTitle){
                 LicPremisesReqForInfoDocDto licPremisesReqForInfoDocDto1=new LicPremisesReqForInfoDocDto();
-                licPremisesReqForInfoDocDto1.setDocName(docName);
+                licPremisesReqForInfoDocDto1.setTitle(docTi);
                 licPremisesReqForInfoDocDtos.add(licPremisesReqForInfoDocDto1);
             }
         }
+        List<LicPremisesReqForInfoReplyDto> licPremisesReqForInfoReplyDtos=IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(reqTypeInfo)&&"information".equals(reqTypeInfo)) {
+            isNeedDoc = true;
+            for(String infoTi :infoTitle){
+                LicPremisesReqForInfoReplyDto licPremisesReqForInfoReplyDto=new LicPremisesReqForInfoReplyDto();
+                licPremisesReqForInfoReplyDto.setTitle(infoTi);
+                licPremisesReqForInfoReplyDtos.add(licPremisesReqForInfoReplyDto);
+            }
+        }
         licPremisesReqForInfoDto.setNeedDocument(isNeedDoc);
-        licPremisesReqForInfoDto.setOfficerRemarks(officerRemarks.toString());
+        licPremisesReqForInfoDto.setOfficerRemarks(rfiTitle);
         licPremisesReqForInfoDto.setRequestDate(new Date());
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         licPremisesReqForInfoDto.setRequestUser(loginContext.getUserName());
@@ -308,12 +304,14 @@ public class RequestForInformationDelegator {
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         StringBuilder stringBuilder=new StringBuilder();
-        if("information".equals(info)){
-            stringBuilder.append("<p>   1. ").append("Information ").append(rfiTitle).append("</p>");
+        if(!StringUtil.isEmpty(reqTypeInfo)&&"information".equals(reqTypeInfo)){
+            for (int i=0;i<licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().size();i++) {
+                stringBuilder.append("<p>   ").append(i+1).append(". ").append("information  ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
+            }
         }
         if(licPremisesReqForInfoDto1.isNeedDocument()){
             for (int i=0;i<licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().size();i++) {
-                stringBuilder.append("<p>   ").append(i+2).append(". ").append("Documentations  ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().get(i).getDocName()).append("</p>");
+                stringBuilder.append("<p>   ").append(i+1).append(". ").append("Documentations  ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().get(i).getTitle()).append("</p>");
             }
         }
         map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));
@@ -373,7 +371,7 @@ public class RequestForInformationDelegator {
             emailDto.setSender(mailSender);
             emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
             emailDto.setClientQueryCode(licPremId);
-            String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+            emailClient.sendNotification(emailDto).getEntity();
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
@@ -410,37 +408,14 @@ public class RequestForInformationDelegator {
         requestForInformationService.createFeRfiLicDto(licPremisesReqForInfoDto);
         // 		doCancel->OnStepProcess
     }
-    public void doAccept(BaseProcessClass bpc) {
-        log.info("=======>>>>>doAccept>>>>>>>>>>>>>>>>requestForInformation");
-        String reqInfoId = ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
-        requestForInformationService.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
-        licPremisesReqForInfoDto.setId(reqInfoId);
-        licPremisesReqForInfoDto.setAction("delete");
-        EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        Date now = new Date();
-        eicRequestTrackingDto.setActionClsName("com.ecquaria.cloud.moh.iais.service.RequestForInformationServiceImpl");
-        eicRequestTrackingDto.setActionMethod("eicCallFeRfiLic");
-        eicRequestTrackingDto.setModuleName("hcsa-licence-web-intranet");
-        eicRequestTrackingDto.setDtoClsName(LicPremisesReqForInfoDto.class.getName());
-        eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(licPremisesReqForInfoDto));
-        eicRequestTrackingDto.setProcessNum(1);
-        eicRequestTrackingDto.setFirstActionAt(now);
-        eicRequestTrackingDto.setLastActionAt(now);
-        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-        eicRequestTrackingDto.setRefNo(System.currentTimeMillis()+"");
-        licPremisesReqForInfoDto.setEventRefNo(eicRequestTrackingDto.getRefNo());
-        requestForInformationService.updateLicEicRequestTrackingDto(eicRequestTrackingDto);
-        requestForInformationService.createFeRfiLicDto(licPremisesReqForInfoDto);
-        // 		doAccept->OnStepProcess
-    }
+
+
     public void preViewRfi(BaseProcessClass bpc) {
         log.info("=======>>>>>preViewRfi>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String id = (String) ParamUtil.getSessionAttr(bpc.request, "reqInfoId");
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(id);
-        licPremisesReqForInfoDto.setOfficerRemarks(licPremisesReqForInfoDto.getOfficerRemarks().split("\\|")[0]);
+        licPremisesReqForInfoDto.setOfficerRemarks(licPremisesReqForInfoDto.getOfficerRemarks());
         ParamUtil.setRequestAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
         // 		preViewRfi->OnStepProcess
     }
@@ -484,6 +459,7 @@ public class RequestForInformationDelegator {
     private Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         String[] lengths=ParamUtil.getStrings(request,"lengths");
+        String[] lengthsInfo=ParamUtil.getStrings(request,"lengthsInfo");
         String infoChk=ParamUtil.getString(request, "info");
         String docChk=ParamUtil.getString(request, "doc");
         if(infoChk==null && docChk==null){
@@ -496,6 +472,15 @@ public class RequestForInformationDelegator {
                 String s=ParamUtil.getString(request,"docTitle"+len);
                 if(StringUtil.isEmpty(s)){
                     errMap.put("docTitle"+len,"ERR0010");
+                }
+            }
+        }
+        if(infoChk!=null){
+            for (String len:lengthsInfo
+            ) {
+                String s=ParamUtil.getString(request,"infoTitle"+len);
+                if(StringUtil.isEmpty(s)){
+                    errMap.put("infoTitle"+len,"ERR0010");
                 }
             }
         }
@@ -517,14 +502,16 @@ public class RequestForInformationDelegator {
         String licenceNo=ParamUtil.getString(request, "licenceNo");
         Map<String, String> lice= (Map<String, String>) ParamUtil.getSessionAttr(request, "licLicPremMap");
         String licCorrId=lice.get(licenceNo);
-        if(licenceNo==null|| licCorrId==null){
+        if(licenceNo==null){
             errMap.put("licenceNo","ERR0010");
-        }else {
+        }else if(licCorrId==null){
+            errMap.put("licenceNo","Please provide the correct licence no.");
+            }else {
             List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licCorrId);
             if(!licPremisesReqForInfoDtoList.isEmpty()) {
                 for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
                 ) {
-                    if(StringUtil.isEmpty(licPreRfi.getUserReply())){
+                    if(licPreRfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||licPreRfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER)){
                         errMap.put("LicencePending","Licence is still pending Applicant's input. Please do not submit any new Requset For Information.");
                     }
                 }
@@ -568,20 +555,37 @@ public class RequestForInformationDelegator {
         String sql = SqlMap.INSTANCE.getSql("ReqForInfoQuery", "rfi-new").getSqlStr();
 
 
-        List<LicPremisesDto> licPremisesDtos = (List<LicPremisesDto>) ParamUtil.getSessionAttr(request,"licPremisesDtos");
-        List<SelectOption> salutationLicList= IaisCommonUtils.genNewArrayList();
-        for(LicPremisesDto licPremisesDto:licPremisesDtos){
-            SelectOption selectLicOption=new SelectOption();
-            selectLicOption.setValue(licPremisesDto.getId());
-            LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(licPremisesDto.getLicenceId()).getEntity();
-            selectLicOption.setText(licenceDto.getLicenceNo());
-            salutationLicList.add(selectLicOption);
+//        List<LicPremisesDto> licPremisesDtos = (List<LicPremisesDto>) ParamUtil.getSessionAttr(request,"licPremisesDtos");
+//        List<SelectOption> salutationLicList= IaisCommonUtils.genNewArrayList();
+//        for(LicPremisesDto licPremisesDto:licPremisesDtos){
+//            SelectOption selectLicOption=new SelectOption();
+//            selectLicOption.setValue(licPremisesDto.getId());
+//            LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(licPremisesDto.getLicenceId()).getEntity();
+//            selectLicOption.setText(licenceDto.getLicenceNo());
+//            salutationLicList.add(selectLicOption);
+//        }
+//        Map<String,String> rfiLicSelect = IaisCommonUtils.genNewHashMap();
+//        rfiLicSelect.put("name", "licenceNo"+length);
+//        rfiLicSelect.put("style", "display: none;");
+//        String salutationLicSelectStr = generateDropDownHtml(rfiLicSelect, salutationLicList,"Please Select", null);
+//        sql = sql.replace("(rfiLicSelect)", salutationLicSelectStr);
+
+        sql=sql.replaceAll("indexRfi",length);
+
+        return sql;
+    }
+
+    @GetMapping(value = "/new-rfi-info-html")
+    public @ResponseBody String genNewRfiInfoHtml(HttpServletRequest request){
+        log.debug(StringUtil.changeForLog("the genPublicHolidayHtml start ...."));
+        String length = ParamUtil.getString(request,"Length");
+
+        if(length==null){
+            length="0";
         }
-        Map<String,String> rfiLicSelect = IaisCommonUtils.genNewHashMap();
-        rfiLicSelect.put("name", "licenceNo"+length);
-        rfiLicSelect.put("style", "display: none;");
-        String salutationLicSelectStr = generateDropDownHtml(rfiLicSelect, salutationLicList,"Please Select", null);
-        sql = sql.replace("(rfiLicSelect)", salutationLicSelectStr);
+
+        String sql = SqlMap.INSTANCE.getSql("ReqForInfoQuery", "rfi-info-new").getSqlStr();
+
 
         sql=sql.replaceAll("indexRfi",length);
 
