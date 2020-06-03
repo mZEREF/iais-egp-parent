@@ -1,19 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.AuditSystemResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.AuditSystemRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaLastInspectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.InspectionInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditFillterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditSystemPotentialDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
@@ -100,6 +95,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             auditTaskDataFillterDto.setInsGrpId(auditTaskDataDto.getInsGrpId());
             auditTaskDataFillterDto.setLicPremGrpCorId(auditTaskDataDto.getLicPremGrpCorId());
         }
+        auditTaskDataFillterDto.setLicenseeId(auditTaskDataDto.getLicenseeId());
         auditTaskDataFillterDto.setAuditType(auditTaskDataDto.getAuditType());
         auditTaskDataFillterDto.setInspectorId(auditTaskDataDto.getInspectorId());
         auditTaskDataFillterDto.setAddress(auditTaskDataDto.getAddress());
@@ -153,27 +149,36 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
                 return  null;
             }
         }
-        Map<String,AuditTaskDataFillterDto> auditTaskDataFillterDtoMap = new HashMap<>(auditTaskDtos.size());
-        if (StringUtil.isEmpty(dto.getLastInspectionStart()) && StringUtil.isEmpty(dto.getLastInspectionEnd())) {
-        } else {
-            auditTaskDtos = new ArrayList<>(auditTaskDtos.size());
+        List<AuditTaskDataFillterDto> dtoList  = new ArrayList<>(auditTaskDtos.size());
+            Boolean isHaveSAndEndDate = StringUtil.isEmpty(dto.getLastInspectionStart()) && StringUtil.isEmpty(dto.getLastInspectionEnd());
             for (AuditTaskDataDto temp : searchResult.getRows()) {
-                String licId = temp.getLicId();
-                Date startDate = getInspectionStartDate(licId,  Boolean.TRUE);
-                Date endDate = getInspectionStartDate(licId,  Boolean.FALSE);
-                getAduitTaskDtoByInspecitonDate(endDate, startDate, dto, auditTaskDtos, temp);
+                AuditFillterDto auditFillterDto =  fillUpCheckListGetAppClient. getAuditTaskDataDtoByAuditTaskDataDto(temp).getEntity();
                 AuditTaskDataFillterDto auditTaskDataFillterDto = getAuditTaskDataFillterDto(temp,Boolean.TRUE,Boolean.FALSE,Boolean.FALSE);
-                auditTaskDataFillterDto.setLastInspEnd(Formatter.formatDate(endDate));
-                auditTaskDataFillterDto.setLastInspStart(Formatter.formatDate(startDate));
-                auditTaskDataFillterDtoMap.put(temp.getId(),auditTaskDataFillterDto);
+                auditTaskDataFillterDto.setLastInspEnd(Formatter.formatDate(auditFillterDto.getLastEndDate()));
+                auditTaskDataFillterDto.setLastInspStart(Formatter.formatDate(auditFillterDto.getLastStartDate()));
+                auditTaskDataFillterDto.setResultComplicance(auditFillterDto.getCompliance());
+                auditTaskDataFillterDto.setRiskType(auditFillterDto.getRiskType());
+                if(isHaveSAndEndDate && StringUtil.isEmpty(dto.getResultLastCompliance())){
+                    dtoList.add(auditTaskDataFillterDto);
+                }else if(isHaveSAndEndDate && !StringUtil.isEmpty(dto.getResultLastCompliance()) && doNcFitter(auditTaskDataFillterDto,dto.getResultLastCompliance())){
+                    dtoList.add(auditTaskDataFillterDto);
+                } else if(!isHaveSAndEndDate){
+                    if(getAduitTaskDtoByInspecitonDate(auditFillterDto.getLastEndDate(), auditFillterDto.getLastStartDate(), dto)){
+                        if(StringUtil.isEmpty(dto.getResultLastCompliance())){
+                            dtoList.add(auditTaskDataFillterDto);
+                        }else if(doNcFitter(auditTaskDataFillterDto,dto.getResultLastCompliance())){
+                            dtoList.add(auditTaskDataFillterDto);
+                        }
+                    }
+                }
             }
-        }
-        Map<String,String> map = getAllServiceByAuditTaskDataFillterDtoList(auditTaskDtos);
-        List<AuditTaskDataFillterDto> dtoList = getRiskFillter(dto, auditTaskDtos,map);
-        List<AuditTaskDataFillterDto> ncFdtoList = getNcFitter(dtoList, dto);
-        //get Last inspDate info
-        getLastInspDateInfo(ncFdtoList, dto,map, auditTaskDataFillterDtoMap);
-        return removeDuplicates(ncFdtoList);
+
+          if(dto.getGenerateNum() != null && dto.getGenerateNum() >0)  {
+              Map<String,String> map = getAllServiceByAuditTaskDataFillterDtoList(auditTaskDtos);
+              getRiskFillter(dto, auditTaskDtos,map);
+          }
+
+        return removeDuplicates(dtoList);
     }
 
     private List<AuditTaskDataFillterDto> removeDuplicates(List<AuditTaskDataFillterDto> ncFdtoList){
@@ -196,22 +201,8 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         return ncFdtoList;
     }
 
-    private List<AuditTaskDataFillterDto> getNcFitter(List<AuditTaskDataFillterDto> dtoList, AuditSystemPotentialDto dto) {
-        List<AuditTaskDataFillterDto> fitterDtoList = IaisCommonUtils.genNewArrayList();
-        if (!IaisCommonUtils.isEmpty(dtoList)) {
-            for (AuditTaskDataFillterDto temp : dtoList) {
-                setLastCompliance(temp);
-                if (!StringUtil.isEmpty(dto.getResultLastCompliance())) {
-                    if (doNcFitter(temp, dto.getResultLastCompliance())) {
-                        fitterDtoList.add(temp);
-                    }
-                } else {
-                    fitterDtoList.add(temp);
-                }
-            }
-        }
-        return fitterDtoList;
-    }
+
+
 
     private boolean doNcFitter(AuditTaskDataFillterDto temp, String resultLastCompliance) {
         if (HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_FULL_CODE.equals(resultLastCompliance) && HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_FULL_NAME.equalsIgnoreCase(temp.getResultComplicance())) {
@@ -220,53 +211,6 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             return Boolean.TRUE;
         } else {
             return Boolean.FALSE;
-        }
-    }
-
-    private  void setLastCompliance(AuditTaskDataFillterDto temp){
-        List<LicAppCorrelationDto> licCorrDtoList = hcsaLicenceClient.getLicCorrBylicId(temp.getLicId()).getEntity();
-        List<AppPremPreInspectionNcDto> ncDtoList = IaisCommonUtils.genNewArrayList();
-        if (licCorrDtoList != null && !licCorrDtoList.isEmpty()) {
-            for (LicAppCorrelationDto licAppCorr : licCorrDtoList) {
-                String appId = licAppCorr.getApplicationId();
-                List<AppPremisesCorrelationDto> appPremCorrList = fillUpCheckListGetAppClient.getAppPremiseseCorrDto(appId).getEntity();
-                if (appPremCorrList != null && !appPremCorrList.isEmpty()) {
-                    for (AppPremisesCorrelationDto appprem : appPremCorrList) {
-                        AppPremPreInspectionNcDto ncDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appprem.getId()).getEntity();
-                        if(ncDto != null){
-                            ncDtoList.add(ncDto);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        if(IaisCommonUtils.isEmpty(ncDtoList)){
-            temp.setResultComplicance( HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_FULL_NAME);
-        }else {
-            temp.setResultComplicance(HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_PARTIAL_NAME);
-        }
-    }
-
-    private void getLastInspDateInfo(List<AuditTaskDataFillterDto> dtoList, AuditSystemPotentialDto dto, Map<String,String> map, Map<String,AuditTaskDataFillterDto> auditTaskDataFillterDtoMap) {
-        if (!IaisCommonUtils.isEmpty(dtoList)) {
-            for (AuditTaskDataFillterDto temp : dtoList) {
-                AuditTaskDataFillterDto auditTaskDataFillterDto = auditTaskDataFillterDtoMap.get(temp.getId());
-                if( auditTaskDataFillterDto == null){
-                    String licId = temp.getLicId();
-                    Date startDate = getInspectionStartDate(licId, Boolean.TRUE);
-                    Date endDate = getInspectionStartDate(licId, Boolean.FALSE);
-                    temp.setLastInspEnd(Formatter.formatDate(endDate));
-                    temp.setLastInspStart(Formatter.formatDate(startDate));
-                }else {
-                    temp.setLastInspStart(auditTaskDataFillterDto.getLastInspStart());
-                    temp.setLastInspEnd(auditTaskDataFillterDto.getLastInspEnd());
-                }
-               if(!StringUtil.isEmpty(dto.getTypeOfRisk())){
-                   temp.setRiskType(dto.getTypeOfRisk());
-               }
-                temp.setSvcCode(map.get(temp.getSvcName()));
-            }
         }
     }
 
@@ -316,6 +260,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
                 //sortByRiskScore();
              //   dtoList = sortByOverallRisk(dto, auditTaskDtos,map);
             }
+
         } else {
             dtoList = IaisCommonUtils.genNewArrayList();
             for (AuditTaskDataDto temp : auditTaskDtos) {
@@ -459,7 +404,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     }
 
 
-    private void getAduitTaskDtoByInspecitonDate(Date endDate, Date startDate, AuditSystemPotentialDto dto, List<AuditTaskDataDto> auditTaskDtos, AuditTaskDataDto temp) {
+    private Boolean getAduitTaskDtoByInspecitonDate(Date endDate, Date startDate, AuditSystemPotentialDto dto) {
         Date dtostartDate = null;
         Date dtoEndDate = null;
         if (!StringUtil.isEmpty(dto.getLastInspectionStart())) {
@@ -467,6 +412,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
                 dtostartDate = Formatter.parseDate(dto.getLastInspectionStart());
             } catch (Exception e) {
                 Log.debug(e.toString());
+                return Boolean.FALSE;
             }
         }
         if (!StringUtil.isEmpty(dto.getLastInspectionEnd())) {
@@ -474,79 +420,26 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
                 dtostartDate = Formatter.parseDate(dto.getLastInspectionEnd());
             } catch (Exception e) {
                 Log.debug(e.toString());
+                return Boolean.FALSE;
             }
         }
         if (dtostartDate != null && dtoEndDate == null) {
             if (startDate != null && dtostartDate.getTime() > startDate.getTime()) {
-                auditTaskDtos.add(temp);
+                return Boolean.TRUE;
             }
         } else if (dtostartDate == null && dtoEndDate != null) {
             if (endDate != null && dtoEndDate.getTime() < endDate.getTime()) {
-                auditTaskDtos.add(temp);
+                return Boolean.TRUE;
             }
         } else if ( dtoEndDate != null) {
             if (startDate != null && endDate != null && dtoEndDate.getTime() < endDate.getTime() && dtostartDate.getTime() > startDate.getTime()) {
-                auditTaskDtos.add(temp);
+                return Boolean.TRUE;
             }
         }
+
+        return Boolean.FALSE;
     }
 
-    private Date getInspectionStartDate(String licId, boolean isStartDate) {
-        Date inspectionDate = null;
-        List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = IaisCommonUtils.genNewArrayList();
-        List<InspectionInfoDto> inspInfoList = new ArrayList<InspectionInfoDto>(10);
-        InspectionInfoDto info = new InspectionInfoDto();
-        List<LicAppCorrelationDto> licCorrDtoList = hcsaLicenceClient.getLicCorrBylicId(licId).getEntity();
-        if (licCorrDtoList != null && !licCorrDtoList.isEmpty()) {
-            for (LicAppCorrelationDto licAppCorr : licCorrDtoList) {
-                String appId = licAppCorr.getApplicationId();
-                List<AppPremisesCorrelationDto> appPremCorrList = fillUpCheckListGetAppClient.getAppPremiseseCorrDto(appId).getEntity();
-                if (appPremCorrList != null && !appPremCorrList.isEmpty()) {
-                    for (AppPremisesCorrelationDto appprem : appPremCorrList) {
-                        AppPremisesRecommendationDto appPremCorrDto = null;
-                        if (isStartDate) {
-                            appPremCorrDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appprem.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-                        } else {
-                            try {
-                                appPremCorrDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appprem.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-                            }catch (Exception e){
-                                log.info(StringUtil.changeForLog("------- data error appcId : " + appprem.getId()+ "-------------------------"));
-                            }
-
-                        }
-                        if (appPremCorrDto != null) {
-                            appPremisesRecommendationDtoList.add(appPremCorrDto);
-                            info.setAppId(appId);
-                            info.setAppPremId(appprem.getId());
-                            info.setCreateDate(appPremCorrDto.getRecomInDate() == null ? new Date(): appPremCorrDto.getRecomInDate() );
-                            inspInfoList.add(info);
-                        }
-                    }
-                }
-            }
-            inspectionDate = getInpectionDate(inspInfoList);
-        }
-        return inspectionDate;
-    }
-    public Date getInpectionDate(List<InspectionInfoDto> infoList) {//use
-        HcsaLastInspectionDto lastInspection = new HcsaLastInspectionDto();
-        if (infoList != null && !infoList.isEmpty()) {
-            infoList.sort((InspectionInfoDto i1, InspectionInfoDto i2) -> i2.getCreateDate().compareTo(i1.getCreateDate()));
-            if (infoList.size() >= 2) {
-                lastInspection.setLastInspectionDate(infoList.get(0).getCreateDate());
-                lastInspection.setSecondLastInspectionDate(infoList.get(1).getCreateDate());
-                lastInspection.setLastInspectionAppremId(infoList.get(0).getAppPremId());
-                lastInspection.setSecondLastInspectionAppremId(infoList.get(1).getAppPremId());
-            } else if (infoList.size() == 1) {
-                lastInspection.setLastInspectionDate(infoList.get(0).getCreateDate());
-                lastInspection.setLastInspectionAppremId(infoList.get(0).getAppPremId());
-                lastInspection.setSecondLastInspectionDate(null);
-            }
-        } else {
-            return null;
-        }
-        return lastInspection.getLastInspectionDate();
-    }
 
     private SearchResult<AuditTaskDataDto> getAuditSysParam(SearchParam searchParam) {
         return hcsaLicenceClient.searchSysAduit(searchParam).getEntity();

@@ -415,6 +415,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         adto.setQuestion(dto.getQuestion());
         adto.setRectified(dto.getRectified());
         adto.setRiskLvl(dto.getRiskLvl());
+        adto.setItemId(dto.getItemId());
         return adto;
     }
     @Override

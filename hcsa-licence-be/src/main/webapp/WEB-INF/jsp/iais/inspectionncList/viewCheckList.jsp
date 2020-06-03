@@ -124,8 +124,10 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="ServiceInfo" role="tabpanel">
+                                    <c:if test="${not empty serListDto.fdtoList}">
                                     <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.serviceDo}"/>/<c:out value="${serListDto.serviceTotal}"/><br>
                                     <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.serviceNc}"/>
+                                    </c:if>
                                     <c:forEach var ="cdto" items ="${serListDto.fdtoList}" varStatus="one">
                                         <h3>${cdto.subType}</h3>
                                         <div class="table-gp">
