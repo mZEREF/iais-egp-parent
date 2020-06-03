@@ -203,7 +203,7 @@ public class InspectionRectificationProDelegator {
     private InspecUserRecUploadDto setNcDataByItemId(InspecUserRecUploadDto iDto, String itemId, List<ChecklistItemDto> checklistItemDtos) {
         int index = 0;
         for(ChecklistItemDto checklistItemDto : checklistItemDtos){
-            if(checklistItemDto.getItemId().equals(itemId)){
+            if(itemId.equals(checklistItemDto.getItemId())){
                 iDto.setCheckClause(checklistItemDto.getRegulationClause());
                 iDto.setCheckQuestion(checklistItemDto.getChecklistItem());
                 iDto.setIndex(index++);
@@ -217,7 +217,7 @@ public class InspectionRectificationProDelegator {
         AdhocChecklistItemDto adhocChecklistItemDto = inspectionRectificationProService.getAdhocChecklistItemById(adhocItemId);
         if(adhocChecklistItemDto != null){
             String checkItemId = adhocChecklistItemDto.getItemId();
-            if(!StringUtil.isEmpty(itemId)){
+            if(!StringUtil.isEmpty(checkItemId)){
                 ChecklistItemDto checklistItemDto = inspectionRectificationProService.getChklItemById(checkItemId);
                 iDto.setCheckClause(checklistItemDto.getRegulationClause());
                 iDto.setCheckQuestion(checklistItemDto.getChecklistItem());
