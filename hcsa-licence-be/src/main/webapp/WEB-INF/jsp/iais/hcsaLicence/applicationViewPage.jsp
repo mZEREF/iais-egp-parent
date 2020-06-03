@@ -170,6 +170,20 @@
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
+                                                    <c:if test="${ 'canRouteBackReview' == routeBackReview}">
+                                                        <div id="routeBackReviewBox" class="hidden">
+                                                            <iais:row>
+                                                                <iais:field value="To review application after internal user has clarified?" required="false"/>
+                                                                <iais:value width="10">
+                                                                    <p>
+                                                                        <input class="form-check-input" id="routeBackReview"
+                                                                           type="checkbox" name="routeBackReview" aria-invalid="false" <c:if test="${routeBackReviewChecked == 'Y'}">selected</c:if> value="Y">
+                                                                        <label class="form-check-label" for="routeBackReview"><span class="check-square"></span></label>
+                                                                    </p>
+                                                                </iais:value>
+                                                            </iais:row>
+                                                        </div>
+                                                    </c:if>
                                                     <div id="verifiedDropdown" class="hidden">
                                                         <iais:row>
                                                             <iais:field value="Verified" required="false"/>
@@ -514,19 +528,23 @@
         if (selectValue == "PROCVER") {
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $('#routeBackReviewBox').addClass('hidden');
             $('#comments').addClass('hidden');
         } else if (selectValue == "PROCRB") {
             $('#rollBackDropdown').removeClass('hidden');
+            $('#routeBackReviewBox').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#comments').addClass('hidden');
         } else if (selectValue == "PROCRFI") {
             $('#verifiedDropdown').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $('#routeBackReviewBox').addClass('hidden');
             $('#comments').removeClass('hidden');
             // showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
         } else {
             $('#rollBackDropdown').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
+            $('#routeBackReviewBox').addClass('hidden');
             $('#comments').addClass('hidden');
         }
     }
@@ -559,21 +577,24 @@
         if (selectValue == "PROCVER") {
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $('#routeBackReviewBox').addClass('hidden');
             $('#comments').addClass('hidden');
         } else if (selectValue == "PROCRB") {
             $('#rollBackDropdown').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
+            $('#routeBackReviewBox').removeClass('hidden');
             $('#comments').addClass('hidden');
         } else if (selectValue == "PROCRFI") {
             $('#verifiedDropdown').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $('#routeBackReviewBox').addClass('hidden');
             $('#comments').removeClass('hidden');
             showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
         } else {
             $('#comments').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
-
+            $('#routeBackReviewBox').addClass('hidden');
         }
     });
 
