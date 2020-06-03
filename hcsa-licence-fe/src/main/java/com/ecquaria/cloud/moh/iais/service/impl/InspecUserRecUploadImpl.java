@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -343,7 +344,18 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
         }
         //There are no matching items, search item from adhoc table
         String adhocItemId = inspecUserRecUploadDto.getItemId();
-
+        AdhocChecklistItemDto adhocChecklistItemDto = inspectionFeClient.getAdhocChecklistItemById(adhocItemId).getEntity();
+        if(adhocChecklistItemDto != null){
+            String itemId = adhocChecklistItemDto.getItemId();
+            if(!StringUtil.isEmpty(itemId)){
+                ChecklistItemDto checklistItemDto = appConfigClient.getChklItemById(itemId).getEntity();
+                inspecUserRecUploadDto.setCheckClause(checklistItemDto.getRegulationClause());
+                inspecUserRecUploadDto.setCheckQuestion(checklistItemDto.getChecklistItem());
+            } else {
+                inspecUserRecUploadDto.setCheckClause("-");
+                inspecUserRecUploadDto.setCheckQuestion(adhocChecklistItemDto.getQuestion());
+            }
+        }
         return inspecUserRecUploadDto;
     }
 
