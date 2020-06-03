@@ -81,11 +81,19 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
 
-    private String acquireModule(String appType, Function<String, String> t){
+    private String acquireParameter(String appType, Function<String, String> t){
         return t.apply(appType);
     }
 
-    private static String compareParameters(String appType){
+    private static String compareType(String appType){
+        if (ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)){
+            return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.AUDIT_INSPECTION);
+        } else {
+            return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.INSPECTION);
+        }
+    }
+
+    private static String compareModule(String appType){
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
             return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.NEW);
         }else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
@@ -95,10 +103,11 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
         }else if (ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT.equals(appType)){
             return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.REINSTATEMENT);
         }else if (ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)){
-            return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.AUDIT);
+            return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.AUDIT_INSPECTION);
         }
         return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.NEW);
     }
+
 
     @Override
     public List<ChecklistConfigDto> getInspectionChecklist(ApplicationDto application) {
@@ -110,9 +119,11 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
         HcsaServiceDto hcsaSvcEntity = hcsaConfigClient.getHcsaServiceDtoByServiceId(svcId).getEntity();
         String svcCode = hcsaSvcEntity.getSvcCode();
 
-        String chklModule = acquireModule(application.getApplicationType(), AdhocChecklistServiceImpl::compareParameters);
+        String chklModule = acquireParameter(application.getApplicationType(), AdhocChecklistServiceImpl::compareModule);
+        String type = acquireParameter(application.getApplicationType(), AdhocChecklistServiceImpl::compareType);
 
-        String type = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.INSPECTION);
+        log.info(StringUtil.changeForLog("get checklist for pre , module " + chklModule));
+        log.info(StringUtil.changeForLog("get checklist for pre , type " + type));
 
         List<ChecklistConfigDto> inspChecklist = IaisCommonUtils.genNewArrayList();
         ChecklistConfigDto commonConfig = hcsaChklClient.getMaxVersionCommonConfig().getEntity();
