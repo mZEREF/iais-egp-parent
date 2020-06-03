@@ -52,7 +52,7 @@
             </div>
 
             <div class="form-group">
-              <button type="button" id="login" class="btn btn-primary btn-block" onclick="Utils.submit('mainForm')" onkeypress="doKeyPress(event, 'login')">Login  <i class="fa fa-caret-right" aria-hidden="true"></i></button>
+              <button type="button" id="login" class="btn btn-primary btn-block" onclick="submitCorpPass()" onkeypress="doKeyPress(event, 'login')">Login  <i class="fa fa-caret-right" aria-hidden="true"></i></button>
             </div>
             <div class="checkbox">
               <label class="login-label">
@@ -82,3 +82,19 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
+
+
+<script>
+  function submitCorpPass() {
+      var entityId = $('#entityId').val();
+      var corpPassId = $('#corpPassId').val();
+
+      if (entityId == '' || corpPassId == ''){
+          return;
+      }else {
+          Utils.submit('mainForm')
+      }
+  }
+
+
+</script>

@@ -43,7 +43,7 @@
               </div>
 
               <div class="form-group">
-                <button type="button" id="login" class="btn btn-primary btn-block" onclick="Utils.submit('mainForm')" onkeypress="doKeyPress(event, 'login')">Login  <i class="fa fa-caret-right" aria-hidden="true"></i></button>
+                <button type="button" id="login" class="btn btn-primary btn-block" onclick="submitSingPass()" onkeypress="doKeyPress(event, 'login')">Login  <i class="fa fa-caret-right" aria-hidden="true"></i></button>
               </div>
               <div class="checkbox">
                 <label class="login-label">
@@ -69,3 +69,14 @@
 </div>
 
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
+
+<script>
+  function submitSingPass() {
+    var entityId = $('#entityId').val();
+    if (entityId == '' || corpPassId == ''){
+      return;
+    }else {
+      Utils.submit('mainForm')
+    }
+  }
+</script>
