@@ -30,7 +30,7 @@ public interface InboxService {
     boolean updateMsgStatus(String[] msgId);
     Boolean recallApplication(RecallApplicationDto recallApplicationDto);
     public Map<String,String> checkRenewalStatus(String licenceId);
-    void updateMsgStatusToRead(String msgId);
+    void updateMsgStatusTo(String msgId,String msgStatus);
     Boolean checkEligibility(String appId);
     List<InboxMsgMaskDto> getInboxMaskEntity(String msgId);
     List<PremisesDto> getPremisesByLicId(String licenceId);

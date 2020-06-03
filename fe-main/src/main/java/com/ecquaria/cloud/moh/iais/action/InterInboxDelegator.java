@@ -184,9 +184,15 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
         String msgId = ParamUtil.getMaskedString(request,InboxConst.MSG_ACTION_ID);
-        inboxService.updateMsgStatusToRead(msgId);
+        String msgType = ParamUtil.getMaskedString(request,InboxConst.MSG_PAGE_TYPE);
+        if (MessageConstants.MESSAGE_TYPE_NOTIFICATION.equals(msgType)){
+            inboxService.updateMsgStatusTo(msgId,MessageConstants.MESSAGE_STATUS_READ);
+        }else{
+            inboxService.updateMsgStatusTo(msgId,MessageConstants.MESSAGE_STATUS_UNRESPONSE);
+        }
         String msgContent = ParamUtil.getMaskedString(request,InboxConst.CRUD_ACTION_VALUE);
         ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_CONTENT, msgContent);
+        ParamUtil.setSessionAttr(request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,msgId);
         setNumInfoToRequest(request,interInboxUserDto);
     }
 

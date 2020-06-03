@@ -24,8 +24,8 @@ public interface InboxClient {
     @PutMapping(path = "/iais-inter-inbox/archive", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> updateMsgStatusToArchive(String[] msgIds);
 
-    @PutMapping(path = "/iais-inter-inbox/readed/{msgId}",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> updateMsgStatusToRead(@PathVariable("msgId") String msgId);
+    @PutMapping(path = "/iais-inter-inbox/message-status")
+    FeignResponseEntity<Void> updateMsgStatusTo(@RequestParam(value = "msgId") String msgId,@RequestParam(value = "msgStatus")String msgStatus);
 
     @GetMapping(value = "/iais-inter-inbox/inbox/mask")
     FeignResponseEntity<List<InboxMsgMaskDto>> getInboxMsgMask(@RequestParam(name = "msgId")String msgId);

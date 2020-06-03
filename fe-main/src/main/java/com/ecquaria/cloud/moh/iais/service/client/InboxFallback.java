@@ -42,7 +42,7 @@ public class InboxFallback implements InboxClient {
     }
 
     @Override
-    public FeignResponseEntity<Void> updateMsgStatusToRead(String msgId) {
+    public FeignResponseEntity<Void> updateMsgStatusTo(String msgId, String msgStatus) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

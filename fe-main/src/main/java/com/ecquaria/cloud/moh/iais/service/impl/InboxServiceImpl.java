@@ -275,8 +275,8 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
-    public void updateMsgStatusToRead(String msgId) {
-        inboxClient.updateMsgStatusToRead(msgId);
+    public void updateMsgStatusTo(String msgId,String msgStatus) {
+        inboxClient.updateMsgStatusTo(msgId,msgStatus);
     }
 
     @Override
