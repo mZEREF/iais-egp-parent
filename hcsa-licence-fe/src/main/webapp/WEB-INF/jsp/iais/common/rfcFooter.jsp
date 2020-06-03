@@ -32,14 +32,12 @@
         });
 
         $('#RfcSave').click(function () {
-            submit('preview','next',null);
-            submit('preview','saveDraft',null);
+            submit('preview','next','rfcSaveDraft');
         });
 
         $('#RenewSave').click(function () {
 
-            submit('jump','next',null);
-            submit('jump','saveDraft',null);
+            submit('jump','next','rfcSaveDraft');
 
         });
 

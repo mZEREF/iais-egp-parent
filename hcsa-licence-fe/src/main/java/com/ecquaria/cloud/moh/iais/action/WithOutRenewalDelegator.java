@@ -604,7 +604,10 @@ public class WithOutRenewalDelegator {
         eventBusHelper.submitAsyncRequest(appSubmissionListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT,l.toString(),bpc.process);
 
-
+       /* for(AppSubmissionDto appSubmissionDto : appSubmissionDtos ){
+            appSubmissionDto.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            appSubmissionService.doSaveDraft(appSubmissionDto);
+        }*/
 
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos=IaisCommonUtils.genNewArrayList();
         for(AppSubmissionDto appSubmissionDto : rfcAppSubmissionDtos){

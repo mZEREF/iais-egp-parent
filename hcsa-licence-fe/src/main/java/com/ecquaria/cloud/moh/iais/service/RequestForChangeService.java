@@ -81,4 +81,6 @@ public interface RequestForChangeService {
     void sendMessageHelper(String subject, String messageType, String srcSystemId,String serviceId, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams);
 
     List<String> getAdminEmail(String orgId);
+
+    List<ApplicationDto> isOtherOperation(String licenceId);
 }
