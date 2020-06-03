@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
@@ -54,4 +55,7 @@ public interface InspectionFeClient {
     @DeleteMapping(value = "/iais-inspection-fe/rem-nc-doc", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> deleteNcDocByIds(@RequestBody List<String> ids);
+
+    @GetMapping(value = "/iais-inspection-fe/adhoc-item/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AdhocChecklistItemDto> getAdhocChecklistItemById(@PathVariable(name = "id") String id);
 }

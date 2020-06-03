@@ -235,7 +235,8 @@ public class InspecUserRecUploadDelegator {
             for (InspecUserRecUploadDto iuruDto : inspecUserRecUploadDtos) {
                 if (!StringUtil.isEmpty(ncItemId)) {
                     if (ncItemId.equals(iuruDto.getId())) {
-                        inspecUserRecUploadDto = iuruDto;break;
+                        inspecUserRecUploadDto = iuruDto;
+                        break;
                     }
                 }
             }
@@ -332,15 +333,17 @@ public class InspecUserRecUploadDelegator {
             //do validate
             Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
             for (InspecUserRecUploadDto inspecUserRecUploadDto : inspecUserRecUploadDtos) {
-                if(IaisCommonUtils.isEmpty(inspecUserRecUploadDto.getAppPremPreInspectionNcDocDtos())){
+                if(!AppConsts.SUCCESS.equals((inspecUserRecUploadDto.getRectifyFlag()))){
                     errorMap.put("subFlag", "UC_INSP_ERR0008");
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-                    ParamUtil.setRequestAttr(bpc.request, "subflag", AppConsts.FALSE);
-                } else {
-                    ParamUtil.setRequestAttr(bpc.request, "subflag", AppConsts.TRUE);
-                    inspecUserRecUploadService.submitAllRecNc(inspecUserRecUploadDtos, loginContext);
                 }
+            }
+            if(errorMap != null){
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(bpc.request, "subflag", AppConsts.FALSE);
+            } else {
+                ParamUtil.setRequestAttr(bpc.request, "subflag", AppConsts.TRUE);
+                inspecUserRecUploadService.submitAllRecNc(inspecUserRecUploadDtos, loginContext);
             }
         }
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);

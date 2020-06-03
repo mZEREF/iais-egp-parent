@@ -336,10 +336,14 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                     inspecUserRecUploadDto.setCheckClause(cDto.getRegulationClause());
                     inspecUserRecUploadDto.setCheckQuestion(cDto.getChecklistItem());
                     inspecUserRecUploadDto.setIndex(index++);
+                    //Direct return data
                     return inspecUserRecUploadDto;
                 }
             }
         }
+        //There are no matching items, search item from adhoc table
+        String adhocItemId = inspecUserRecUploadDto.getItemId();
+
         return inspecUserRecUploadDto;
     }
 
