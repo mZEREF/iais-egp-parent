@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -209,6 +210,22 @@ public class InspectionRectificationProDelegator {
                 iDto.setItemId(checklistItemDto.getItemId());
                 //To prevent the repeat, because have the same item by different Config
                 return iDto;
+            }
+        }
+        //There are no matching items, search item from adhoc table
+        String adhocItemId = itemId;
+        AdhocChecklistItemDto adhocChecklistItemDto = inspectionRectificationProService.getAdhocChecklistItemById(adhocItemId);
+        if(adhocChecklistItemDto != null){
+            String checkItemId = adhocChecklistItemDto.getItemId();
+            if(!StringUtil.isEmpty(itemId)){
+                ChecklistItemDto checklistItemDto = inspectionRectificationProService.getChklItemById(checkItemId);
+                iDto.setCheckClause(checklistItemDto.getRegulationClause());
+                iDto.setCheckQuestion(checklistItemDto.getChecklistItem());
+                iDto.setItemId(adhocItemId);
+            } else {
+                iDto.setCheckClause("-");
+                iDto.setCheckQuestion(adhocChecklistItemDto.getQuestion());
+                iDto.setItemId(adhocItemId);
             }
         }
         return iDto;

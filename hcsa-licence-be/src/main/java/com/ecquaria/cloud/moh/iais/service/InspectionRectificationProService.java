@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -129,4 +130,22 @@ public interface InspectionRectificationProService {
      * @Descripation: getFileReportById
      */
     FileRepoDto getFileReportById(String fileRepoId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/6/3
+      * @Param: adhocItemId
+      * @return: AdhocChecklistItemDto
+      * @Descripation: getAdhocChecklistItemById
+      */
+    AdhocChecklistItemDto getAdhocChecklistItemById(String adhocItemId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/6/3
+      * @Param: itemId
+      * @return: ChecklistItemDto
+      * @Descripation: getChklItemById
+      */
+    ChecklistItemDto getChklItemById(String itemId);
 }
