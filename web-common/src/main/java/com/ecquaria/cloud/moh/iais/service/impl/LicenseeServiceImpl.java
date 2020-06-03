@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class LicenseeServiceImpl implements LicenseeService {
 
     @Override
     public List<String> getLicenseeMobiles(String licenseeId) {
-        return licenseeClient.getLicenseeMobiles(licenseeId).getBody();
+//        return licenseeClient.getLicenseeMobiles(licenseeId).getBody();
+        return new ArrayList<>(1);
     }
 }
