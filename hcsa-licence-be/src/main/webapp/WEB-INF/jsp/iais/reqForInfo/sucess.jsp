@@ -20,9 +20,11 @@
             <div class="col-xs-12">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <br><br><br><br>
-                    <h3>
-                        <span>Form has successfully been submitted!</span>
-                    </h3>
+                    <div class="bg-title">
+                        <h2>
+                            <span><iais:message key="${ackMsg}" escape="true"></iais:message></span>
+                        </h2>
+                    </div>
                     <div class="panel panel-default">
                         <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                             <div class="panel-body">

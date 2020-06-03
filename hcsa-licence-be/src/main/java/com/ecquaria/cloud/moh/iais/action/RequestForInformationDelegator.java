@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
@@ -377,6 +378,7 @@ public class RequestForInformationDelegator {
             log.error(e.getMessage(), e);
         }
 
+        ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("ACKRFI001"));
 
 
 

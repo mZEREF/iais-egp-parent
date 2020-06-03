@@ -123,16 +123,6 @@
                                                                     </label>
                                                                 </div>
                                                             </div>
-                                                            <div class="row" >
-                                                                <div class=" col-xs-7 col-sm-4 col-md-5">
-                                                                    <label>
-                                                                        <div class="file-upload-gp">
-                                                                            <input class="selectedFile commDoc"   name = "UploadFile" type="file" style="display: none;" aria-label="selectedFile1" >
-                                                                            <a class="btn btn-file-upload btn-secondary" >Attachment</a>
-                                                                        </div>
-                                                                    </label>
-                                                                </div>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
