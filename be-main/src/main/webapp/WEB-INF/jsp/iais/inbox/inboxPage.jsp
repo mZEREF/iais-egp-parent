@@ -263,43 +263,45 @@
                         '</tr>' +
                         '</thead>' +
                         '<tbody>';
-                    for (var i = 0; i < res.rowCount; i++) {
+                    console.log(res)
+                    console.log(res.size)
+                    for (var i = 0; i < res.length; i++) {
                         var color = "black";
-                        if (res.rows[i].timeLimitWarning == "black") {
+                        if (res[i].timeLimitWarning == "black") {
                             color = "black";
-                        } else if (res.rows[i].timeLimitWarning == "red") {
+                        } else if (res[i].timeLimitWarning == "red") {
                             color = "red";
-                        } else if (res.rows[i].timeLimitWarning == "amber") {
+                        } else if (res[i].timeLimitWarning == "amber") {
                             color = "#DD9C00";
                         }
-                        var address = res.rows[i].address;
-                        // if(res.rows[i].blkNo != null && res.rows[i].blkNo != ""){
-                        //     address = res.rows[i].blkNo;
+                        var address = res[i].address;
+                        // if(res[i].blkNo != null && res[i].blkNo != ""){
+                        //     address = res[i].blkNo;
                         // }
-                        // if(res.rows[i].streetName != null && res.rows[i].streetName != ""){
-                        //     address +=" " + res.rows[i].streetName;
+                        // if(res[i].streetName != null && res[i].streetName != ""){
+                        //     address +=" " + res[i].streetName;
                         // }
-                        // if(res.rows[i].buildingName != null && res.rows[i].buildingName != ""){
-                        //     address +=" " + res.rows[i].buildingName;
+                        // if(res[i].buildingName != null && res[i].buildingName != ""){
+                        //     address +=" " + res[i].buildingName;
                         // }
-                        // if(res.rows[i].floorNo != null && res.rows[i].floorNo != ""){
-                        //     address +=" # " + res.rows[i].floorNo;
+                        // if(res[i].floorNo != null && res[i].floorNo != ""){
+                        //     address +=" # " + res[i].floorNo;
                         // }
-                        // if(res.rows[i].unitNo != null && res.rows[i].unitNo != ""){
-                        //     address += "-" + res.rows[i].unitNo;
+                        // if(res[i].unitNo != null && res[i].unitNo != ""){
+                        //     address += "-" + res[i].unitNo;
                         // }
-                        // if(res.rows[i].postalCode != null && res.rows[i].postalCode != ""){
-                        //     address += "," + res.rows[i].postalCode;
+                        // if(res[i].postalCode != null && res[i].postalCode != ""){
+                        //     address += "," + res[i].postalCode;
                         // }
                         html += '<tr style = "color : ' + color + ';">';
                         if (hastaskList == "true") {
-                            html += '<td><input type="checkbox" name="taskId" value="' + taskList[res.rows[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
+                            html += '<td><input type="checkbox" name="taskId" value="' + taskList[res[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
                         }
-                        html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a class="applicationNoAHref" data-href=' + url[res.rows[i].refNo] +' data-task=' + taskList[res.rows[i].refNo] +  '>' + res.rows[i].applicationNo + '</a></p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res.rows[i].serviceId] + '<p></td>' +
+                        html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a class="applicationNoAHref" data-href=' + url[res[i].refNo] +' data-task=' + taskList[res[i].refNo] +  '>' + res[i].applicationNo + '</a></p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res[i].serviceId] + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">License Expiry Date</p><p>N/A</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].status + '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">HCi Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res[i].status + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">HCi Code</p><p>' + res[i].hciCode + '</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">HCi Address</p><p>' + address + '</p></td>' +
                             '</tr>';
                     }
