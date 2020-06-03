@@ -708,9 +708,10 @@ public class InterInboxDelegator {
         log.debug(StringUtil.changeForLog("Step ---> appDoDelete end..."));
     }
 
-    public void appDoReload(BaseProcessClass bpc){
+    public void appDoReload(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("Step ---> appDoReload"));
         HttpServletRequest request = bpc.request;
+        this.appDoDraft(bpc);
     }
 
     public void appDoRecall(BaseProcessClass bpc){
@@ -815,7 +816,7 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request, "appServiceType", appServiceTypeSelectList);
 
         List<SelectOption> selectDraftApplicationSelectList = IaisCommonUtils.genNewArrayList();
-        selectDraftApplicationSelectList.add(new SelectOption(InboxConst.DRAFT_APP_ACTION_EDIT, InboxConst.DRAFT_APP_ACTION_EDIT));
+        selectDraftApplicationSelectList.add(new SelectOption(InboxConst.DRAFT_APP_ACTION_CONTINUE, InboxConst.DRAFT_APP_ACTION_CONTINUE));
         selectDraftApplicationSelectList.add(new SelectOption(InboxConst.DRAFT_APP_ACTION_DELETE, InboxConst.DRAFT_APP_ACTION_DELETE));
         ParamUtil.setRequestAttr(request, "selectDraftApplication", selectDraftApplicationSelectList);
 

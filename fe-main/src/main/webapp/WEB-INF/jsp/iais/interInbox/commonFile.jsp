@@ -44,9 +44,12 @@
 
     $(".draftAction").change(function () {
         var appNo = $(this).closest("tr").find(".appdraftNo").html();
+        var appType = $(this).closest("tr").find(".apptype").html();
+        showWaiting();
         var action = $(this).val();
-        if ("Edit" == action) {
+        if ("Continue" == action) {
             $("[name='action_no_value']").val(appNo);
+            $("[name='action_type_value']").val(appType);
             submit('appDoReload');
         }
         if ("Delete" == action) {

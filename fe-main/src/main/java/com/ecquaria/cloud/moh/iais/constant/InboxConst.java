@@ -75,7 +75,7 @@ public class InboxConst {
     public static final String APP_ACTION_RECALL            = "Recall";
     public static final String APP_ACTION_APPEAL            = "Appeal";
     public static final String APP_ACTION_WITHDRAW          = "Withdraw";
-    public static final String DRAFT_APP_ACTION_EDIT        = "Edit";
+    public static final String DRAFT_APP_ACTION_CONTINUE    = "Continue";
     public static final String DRAFT_APP_ACTION_DELETE      = "Delete";
 
     public static final String APP_DO_DRAFT_TYPE_RFC        = "Request For Change";
