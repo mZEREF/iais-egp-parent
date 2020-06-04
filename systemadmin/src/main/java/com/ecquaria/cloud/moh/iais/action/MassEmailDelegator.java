@@ -280,6 +280,9 @@ public class MassEmailDelegator {
             case ApplicationConsts.PERSONNEL_PSN_TYPE_MAP:
                 roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT;
                 break;
+            case ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL:
+                roleName = ApplicationConsts.PERSONNEL_PSN_TYPE_SVC;
+                break;
                 default:
                     roleName = roleAbbreviation;
                     break;
