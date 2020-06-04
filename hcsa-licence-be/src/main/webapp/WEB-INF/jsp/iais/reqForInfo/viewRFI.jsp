@@ -58,7 +58,7 @@
                                         <iais:row>
                                             <iais:field value="Status :"/>
                                             <iais:value width="18">
-                                                <iais:select id="rfiViewStatus" name="status" options="salutationStatusList" firstOption="Please Select"  filterValue="RFIST002"></iais:select>
+                                                <iais:select id="rfiViewStatus" name="status" options="salutationStatusList" firstOption="Please Select"  filterValue=""></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
