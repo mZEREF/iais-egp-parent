@@ -271,8 +271,10 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
             Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
             map.put("APPLICANT_NAME",licenseeDto.getName());
+            map.put("APPLICATION_NUMBER",StringUtil.viewHtml(applicationNo));
             map.put("DETAILS","");
             map.put("COMMENTS",StringUtil.viewHtml(""));
+            map.put("EDITSELECT","");
             map.put("A_HREF",url);
             map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
             String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
