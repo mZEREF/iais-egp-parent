@@ -77,7 +77,7 @@ public class SendsReminderToReplyRfiBatchjob {
         List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtos= requestForInformationService.getAllReqForInfo();
         for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
              ) {
-            if(rfi.getDueDateSubmission().compareTo(new Date())>0&&rfi.getUserReply()==null){
+            if(rfi.getDueDateSubmission().compareTo(new Date())>0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
                 reminder(rfi);
             }
         }

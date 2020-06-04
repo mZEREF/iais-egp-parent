@@ -36,7 +36,7 @@
                                             <div class="col-xs-12">
                                                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                                     <%@include file="../common/previewPremises.jsp"%>
-                                                    <%@include file="../common/previewPrimary.jsp"%>
+
                                                     <div class="panel panel-default svc-content">
                                                         <div class="panel-heading"  id="headingServiceInfo" role="tab">
                                                             <h4 class="panel-title"><a class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information </a></h4>

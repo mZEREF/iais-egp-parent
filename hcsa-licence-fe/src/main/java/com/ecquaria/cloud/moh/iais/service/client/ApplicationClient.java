@@ -283,4 +283,8 @@ public interface ApplicationClient  {
     FeignResponseEntity<List<AppGrpPremisesDto>> getAppGrpPremisesDtoByHciName(@RequestParam("hciName") String hciName);
     @GetMapping(value = "/iais-application/application-dto-by-appNo",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationDtoByAppNo(@RequestParam("appNo") String appNo);
+
+    @GetMapping(value = "/iais-application/pending-app-premises",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppGrpPremisesEntityDto>> getPendAppPremises(@RequestParam("licenseeId") String licenseeId, @RequestParam("svcIdStr") String svcIdStr);
+
 }

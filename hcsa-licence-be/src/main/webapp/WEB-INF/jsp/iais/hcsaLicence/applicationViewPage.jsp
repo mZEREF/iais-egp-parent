@@ -34,6 +34,7 @@
             <c:set var="isAppealType" value="${applicationViewDto.applicationDto.applicationType == 'APTY001'}"/>
             <c:set var="isAso" value="${taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC'}"/>
             <c:set var="isPso" value="${taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC'}"/>
+            <c:set var="isCessation" value="${applicationViewDto.applicationDto.applicationType == 'APTY008'}"/>
             <input type="hidden" id="isAppealType" value="${isAppealType}"/>
             <div class="row">
                 <div class="col-xs-12">
@@ -170,6 +171,20 @@
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
+                                                    <c:if test="${ 'canRouteBackReview' == routeBackReview}">
+                                                        <div id="routeBackReviewBox" class="hidden">
+                                                            <iais:row>
+                                                                <iais:field value="To review application after internal user has clarified?" required="false"/>
+                                                                <iais:value width="10">
+                                                                    <p>
+                                                                        <input class="form-check-input" id="routeBackReview"
+                                                                           type="checkbox" name="routeBackReview" aria-invalid="false" <c:if test="${routeBackReviewChecked == 'Y'}">checked</c:if> value="Y">
+                                                                        <label class="form-check-label" for="routeBackReview"><span class="check-square"></span></label>
+                                                                    </p>
+                                                                </iais:value>
+                                                            </iais:row>
+                                                        </div>
+                                                    </c:if>
                                                     <div id="verifiedDropdown" class="hidden">
                                                         <iais:row>
                                                             <iais:field value="Verified" required="false"/>
@@ -296,7 +311,7 @@
                                                     </div>
 
                                                     <%--application type != appeal --%>
-                                                    <c:if test="${!isAppealType}">
+                                                    <c:if test="${!isAppealType && !isCessation}">
                                                         <div class="fastTrack">
                                                             <iais:row>
                                                                 <iais:field value="Fast Tracking?" required="false"/>
@@ -514,19 +529,23 @@
         if (selectValue == "PROCVER") {
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $('#routeBackReviewBox').addClass('hidden');
             $('#comments').addClass('hidden');
         } else if (selectValue == "PROCRB") {
             $('#rollBackDropdown').removeClass('hidden');
+            $('#routeBackReviewBox').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#comments').addClass('hidden');
         } else if (selectValue == "PROCRFI") {
             $('#verifiedDropdown').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $('#routeBackReviewBox').addClass('hidden');
             $('#comments').removeClass('hidden');
             // showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
         } else {
             $('#rollBackDropdown').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
+            $('#routeBackReviewBox').addClass('hidden');
             $('#comments').addClass('hidden');
         }
     }
@@ -559,21 +578,24 @@
         if (selectValue == "PROCVER") {
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $('#routeBackReviewBox').addClass('hidden');
             $('#comments').addClass('hidden');
         } else if (selectValue == "PROCRB") {
             $('#rollBackDropdown').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
+            $('#routeBackReviewBox').removeClass('hidden');
             $('#comments').addClass('hidden');
         } else if (selectValue == "PROCRFI") {
             $('#verifiedDropdown').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $('#routeBackReviewBox').addClass('hidden');
             $('#comments').removeClass('hidden');
             showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
         } else {
             $('#comments').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
-
+            $('#routeBackReviewBox').addClass('hidden');
         }
     });
 

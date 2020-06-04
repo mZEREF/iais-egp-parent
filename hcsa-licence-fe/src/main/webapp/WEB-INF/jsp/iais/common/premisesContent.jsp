@@ -73,6 +73,11 @@
                     </div>
                 </div>
             </div>
+            <div class="form-horizaontal">
+                <div class="form-group">
+                    <span  id="error_premisesHci${status.index}" class="error-msg" name="iaisErrorMsg"></span>
+                </div>
+            </div>
             <c:if test="${requestInformationConfig != null || 'APTY004' ==AppSubmissionDto.appType || 'APTY005' ==AppSubmissionDto.appType}">
             <div class="form-horizontal">
                 <div class="form-group">

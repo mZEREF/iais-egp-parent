@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoReplyDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -19,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
@@ -82,8 +82,6 @@ public class ResponseForInformationDelegator {
         }catch (Exception e){
              licPremisesReqForInfoDto= (LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(request,"licPreReqForInfoDto");
         }
-
-        licPremisesReqForInfoDto.setOfficerRemarks(licPremisesReqForInfoDto.getOfficerRemarks());
         ParamUtil.setSessionAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
         // 		doRFI->OnStepProcess
     }
@@ -114,9 +112,7 @@ public class ResponseForInformationDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
 
-        String userReply=mulReq.getParameter("userReply");
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(crudActionValue);
-        List<MultipartFile> files=  mulReq.getFiles( "UploadFile");
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         errorMap=validate(bpc.request);
@@ -127,10 +123,11 @@ public class ResponseForInformationDelegator {
             return;
         }
         int i=0;
-        for(MultipartFile file :files){
+        for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
+            CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+i);
             if(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename())){
-                LicPremisesReqForInfoDocDto doc=licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().get(i);
                 long size = file.getSize() / 1024;
+                doc.setDocName(file.getOriginalFilename());
                 doc.setDocSize(Integer.valueOf(String.valueOf(size)));
                 String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
                 doc.setFileRepoId(fileRepoGuid);
@@ -139,11 +136,16 @@ public class ResponseForInformationDelegator {
             }
             i++;
         }
+        i=0;
+        for(LicPremisesReqForInfoReplyDto info :licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos()){
+            String userReply=mulReq.getParameter("userReply"+i);
+            info.setUserReply(userReply);
+            i++;
+        }
 
         licPremisesReqForInfoDto.setReplyDate(new Date());
         LicenseeDto licenseeDto=licenceViewService.getLicenseeDtoBylicenseeId(licPremisesReqForInfoDto.getLicenseeId());
         licPremisesReqForInfoDto.setReplyUser(licenseeDto.getName());
-        licPremisesReqForInfoDto.setUserReply(userReply);
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1=responseForInformationService.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
         logAbout("preparetionData");

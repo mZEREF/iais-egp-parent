@@ -60,8 +60,8 @@
                                     <tr>
                                         <c:set var="id" value="${status.index}"></c:set>
                                         <td  width="10%"><c:out value="${item.hclCode}"/></td>
-                                        <td  width="10%"><c:out value="${item.hclName}"/></td>
-                                        <td  width="28%"><c:out value="${item.address}"/></td>
+                                        <td  width="10%"><c:out value="${empty item.hclName ? 'N/A' :item.hclName}"/></td>
+                                        <td  width="28%"><c:out value="${empty item.address ? 'N/A' : item.address}"/></td>
                                         <td width="10%"><c:out value="${item.svcName}"/></td>
                                         <td  width="17%"><c:if test="${ !item.audited}">
                                             <iais:select name="${id}auditType" options="aduitTypeOp"

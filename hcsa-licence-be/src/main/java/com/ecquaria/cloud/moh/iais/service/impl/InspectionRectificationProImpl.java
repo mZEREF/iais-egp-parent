@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -56,6 +57,7 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
@@ -72,7 +74,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -90,6 +91,9 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
+
+    @Autowired
+    private ApplicationClient applicationClient;
 
     @Autowired
     private OrganizationClient organizationClient;
@@ -324,17 +328,15 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         for(InspecUserRecUploadDto inspecUserRecUploadDto : inspectionPreTaskDto.getInspecUserRecUploadDtos()){
             AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = inspecUserRecUploadDto.getAppPremisesPreInspectionNcItemDto();
             if(appPremisesPreInspectionNcItemDto != null){
+                appPremisesPreInspectionNcItemDto.setIsRecitfied(1);
+                appPremisesPreInspectionNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 for(String checkRecRfiNcItem : checkRecRfiNcItems) {
                     if(checkRecRfiNcItem.equals(appPremisesPreInspectionNcItemDto.getId())) {
                         appPremisesPreInspectionNcItemDto.setIsRecitfied(0);
                         appPremisesPreInspectionNcItemDto.setFeRectifiedFlag(0);
-                        appPremisesPreInspectionNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    } else {
-                        appPremisesPreInspectionNcItemDto.setIsRecitfied(1);
-                        appPremisesPreInspectionNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     }
-                    appPremisesPreInspectionNcItemDtos.add(appPremisesPreInspectionNcItemDto);
                 }
+                appPremisesPreInspectionNcItemDtos.add(appPremisesPreInspectionNcItemDto);
             }
         }
         appPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.saveAppPreNcItem(appPremisesPreInspectionNcItemDtos).getEntity();
@@ -379,7 +381,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         List<ChecklistItemDto> checklistItemDtos = IaisCommonUtils.genNewArrayList();
         if(!(StringUtil.isEmpty(appPremCorrId))){
             List<String> itemIds = inspectionTaskClient.getItemIdsByAppNo(appPremCorrId).getEntity();
-            checklistItemDtos = getcheckDtosByItemIds(itemIds);
+            checklistItemDtos = getCheckDtosByItemIds(itemIds);
         }
         return checklistItemDtos;
     }
@@ -466,12 +468,32 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         return null;
     }
 
-    private List<ChecklistItemDto> getcheckDtosByItemIds(List<String> itemIds) {
+    @Override
+    public AdhocChecklistItemDto getAdhocChecklistItemById(String adhocItemId) {
+        AdhocChecklistItemDto adhocChecklistItemDto = new AdhocChecklistItemDto();
+        if(!StringUtil.isEmpty(adhocItemId)){
+            adhocChecklistItemDto = applicationClient.getAdhocChecklistItemById(adhocItemId).getEntity();
+        }
+        return adhocChecklistItemDto;
+    }
+
+    @Override
+    public ChecklistItemDto getChklItemById(String itemId) {
+        ChecklistItemDto checklistItemDto = new ChecklistItemDto();
+        if(!StringUtil.isEmpty(itemId)){
+            checklistItemDto = hcsaChklClient.getChklItemById(itemId).getEntity();
+        }
+        return checklistItemDto;
+    }
+
+    private List<ChecklistItemDto> getCheckDtosByItemIds(List<String> itemIds) {
         List<ChecklistItemDto> checklistItemDtos = IaisCommonUtils.genNewArrayList();
         if(itemIds != null && !(itemIds.isEmpty())) {
             for (String itemId:itemIds) {
                 ChecklistItemDto checklistItemDto = hcsaChklClient.getChklItemById(itemId).getEntity();
-                checklistItemDtos.add(checklistItemDto);
+                if(checklistItemDto != null) {
+                    checklistItemDtos.add(checklistItemDto);
+                }
             }
         }
         return checklistItemDtos;

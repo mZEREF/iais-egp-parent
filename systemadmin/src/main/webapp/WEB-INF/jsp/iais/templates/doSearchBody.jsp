@@ -23,7 +23,7 @@
                 <label class="col-xs-4 col-md-4 control-label" for="templateName">Template Name</label>
                 <div class="col-xs-6 col-sm-6 col-md-6">
                     <%String templateName = request.getParameter("templateName")==null?"":request.getParameter("templateName");%>
-                    <input id="templateName" name="templateName" type="text" maxlength="500" value="<%=templateName%>">
+                    <textarea id="templateName" name="templateName" rows="10" cols="86" maxlength="500" ><%=templateName%></textarea>
                 </div>
             </iais:value>
         </div>

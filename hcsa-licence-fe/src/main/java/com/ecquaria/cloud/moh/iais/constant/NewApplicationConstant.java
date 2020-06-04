@@ -15,4 +15,5 @@ public class NewApplicationConstant {
     public static final String SESSION_SELF_DECL_ACTION = "selfDeclAction";
 
     public static final String ACK_STATUS_ERROR = "error";
+    public static final String PREMISES_HCI_LIST= "premisesHciList";
 }

@@ -158,6 +158,9 @@
                                         <c:when test="${app.status == 'APST006' || app.status == 'APST005'}">
                                             <iais:select name="appAoRAction" cssClass="appAoRAction" id="appAoRAction" options="selectApproveOrRejectSelectList" firstOption="Select"/>
                                         </c:when>
+                                        <c:when test="${app.status == 'APST060'}">
+                                            <iais:select name="appRecalledAction" cssClass="appRecalledAction" id="appRecalledAction" options="selectRecalledSelectList" firstOption="Select"/>
+                                        </c:when>
                                         <c:otherwise>
                                             <iais:select name="appAction" id="appAction" cssClass="appAction" options="selectApplication" firstOption="Select" />
                                         </c:otherwise>

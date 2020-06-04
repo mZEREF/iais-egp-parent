@@ -51,46 +51,39 @@
                                         <iais:row>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="checkbox" disabled name="reqType" checked/>Information
+                                                    <input type="checkbox" disabled name="reqType" <c:if test="${not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}">checked</c:if> />Information
                                                 </label>
-                                                <c:choose>
-                                                    <c:when test="${licPreReqForInfoDto.needDocument}">
-                                                        <label>
-                                                            <input type="checkbox" disabled name="reqType" checked />Supporting Documents
-                                                        </label>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <label>
-                                                            <input type="checkbox" disabled name="reqType" />Supporting Documents
-                                                        </label>
-                                                    </c:otherwise>
-                                                </c:choose>
+                                                <label>
+                                                    <input type="checkbox" disabled name="reqType" <c:if test="${licPreReqForInfoDto.needDocument}">checked</c:if> />Supporting Documents
+                                                </label>
                                             </iais:value>
                                         </iais:row>
                                         <H3></H3>
-                                        <iais:row style="text-align:center;">
-                                            <iais:value width="18">
-                                                <label>
-                                                    <span>${licPreReqForInfoDto.officerRemarks}</span>
-                                                </label>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row style="text-align:center;">
-                                            <iais:value width="18">
-                                                <label>
-                                                    <textarea id="userReply_rfi" name="userReply" rows="8" style=" font-weight:normal;" cols="70">${licPreReqForInfoDto.userReply}</textarea><span id="error_userReply" name="iaisErrorMsg" class="error-msg" ></span>
-                                                </label>
-                                            </iais:value>
-                                        </iais:row>
+                                        <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}" var="infoReply" varStatus="infoStatus">
+                                            <iais:row style="text-align:center;">
+                                                <iais:value width="18">
+                                                    <label>
+                                                        <span>${infoReply.title}</span>
+                                                    </label>
+                                                </iais:value>
+                                            </iais:row>
+                                            <iais:row style="text-align:center;">
+                                                <iais:value width="18">
+                                                    <label>
+                                                        <textarea  name="userReply${infoStatus}" rows="8" style=" font-weight:normal;" cols="70">${infoReply.userReply}</textarea><span id="error_userReply${infoStatus}" name="iaisErrorMsg" class="error-msg" ></span>
+                                                    </label>
+                                                </iais:value>
+                                            </iais:row>
+                                        </c:forEach>
                                         <c:if test="${licPreReqForInfoDto.needDocument}">
-                                            <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoDocDto}" var="rfiDoc">
+                                            <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoDocDto}" var="rfiDoc" varStatus="docStatus">
                                                 <iais:row>
                                                     <iais:value width="18">
                                                         <div class="file-upload-gp">
 
-                                                            &nbsp;&nbsp;&nbsp;${rfiDoc.docName} : <div id="uploadFileName"></div>
-                                                            <input class="selectedFile commDoc"  name = "UploadFile" type="file" style="display: none;" aria-label="selectedFile1" >
-                                                            <a class="btn btn-file-upload btn-secondary" >Attachment</a><span id="error_UploadFile" name="iaisErrorMsg" class="error-msg" ></span><br/>
+                                                            &nbsp;&nbsp;&nbsp;${rfiDoc.title} : <div id="uploadFileName${docStatus}"></div>
+                                                            <input class="selectedFile commDoc"  name = "UploadFile${docStatus}" type="file" style="display: none;" aria-label="selectedFile1" >
+                                                            <a class="btn btn-file-upload btn-secondary" >Attachment</a><span id="error_UploadFile${docStatus}" name="iaisErrorMsg" class="error-msg" ></span><br/>
                                                         </div>
                                                     </iais:value>
                                                 </iais:row>
@@ -121,9 +114,9 @@
     function doSubmit(reqInfoId) {
         SOP.Crud.cfxSubmit("mainForm", "submit",reqInfoId);
     }
-    $("#commonDoc").change(function () {
-        $("#uploadFileName").text(this.files[0].name)
-    })
+    // $("#commonDoc").change(function () {
+    //     $("#uploadFileName").text(this.files[0].name)
+    // })
 
 
 </script>

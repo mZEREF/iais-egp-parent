@@ -95,6 +95,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     ApplicationService applicationService;
     @Autowired
     FileRepoClient fileRepoClient;
+    @Autowired
+    private FillUpCheckListGetAppClient uploadFileClient;
     @Override
     public ApplicationViewDto getAppViewDto(String taskId){
         TaskDto taskDto = taskService.getTaskById(taskId);
@@ -415,6 +417,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         adto.setQuestion(dto.getQuestion());
         adto.setRectified(dto.getRectified());
         adto.setRiskLvl(dto.getRiskLvl());
+        adto.setItemId(dto.getItemId());
         return adto;
     }
     @Override
@@ -1322,7 +1325,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         serListDto.setInspectionofficer(inspeciotnOfficers);
         serListDto.setInspectionLeader(inspectionleader);
         serListDto.setFdtoList(cDtoList);
-        AppPremisesSpecialDocDto appPremisesSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(taskDto.getRefNo()).getEntity();
+
+        AppPremisesSpecialDocDto appPremisesSpecialDocDto = getAppPremisesSpecialDocDtoByRefNo(taskDto.getRefNo());
        if(appPremisesSpecialDocDto != null){
            serListDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto );
            serListDto.setOldFileGuid(appPremisesSpecialDocDto.getFileRepoId());
@@ -1352,6 +1356,22 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     }
 
     @Override
+    public AppPremisesSpecialDocDto getAppPremisesSpecialDocDtoByRefNo(String RefNo){
+       AppIntranetDocDto appIntranetDocDto = uploadFileClient.getAppIntranetDocByPremIdAndStatusAndAppDocType(RefNo,AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.APP_DOC_TYPE_CHECK_LIST).getEntity();
+       if(StringUtil.isEmpty(appIntranetDocDto.getId()))
+           return null;
+        AppPremisesSpecialDocDto appPremisesSpecialDocDto =  new AppPremisesSpecialDocDto();
+        appPremisesSpecialDocDto.setId(appIntranetDocDto.getId());
+        appPremisesSpecialDocDto.setAppPremCorreId(appIntranetDocDto.getAppPremCorrId());
+        appPremisesSpecialDocDto.setSubmitBy(appIntranetDocDto.getSubmitBy());
+        appPremisesSpecialDocDto.setSubmitDt(appIntranetDocDto.getSubmitDt());
+        appPremisesSpecialDocDto.setDocSize(Integer.valueOf(appIntranetDocDto.getDocSize()));
+        appPremisesSpecialDocDto.setFileRepoId(appIntranetDocDto.getFileRepoId());
+        appPremisesSpecialDocDto.setDocName(appIntranetDocDto.getDocName()+"."+appIntranetDocDto.getDocType());
+        return appPremisesSpecialDocDto;
+    }
+
+    @Override
     public  AppIntranetDocDto getCopyAppPremisesSpecialDocDtoByAppPremisesSpecialDocDto(AppPremisesSpecialDocDto appPremisesSpecialDocDto){
         AppIntranetDocDto copyAppPremisesSpecialDocDto = new AppIntranetDocDto();
         String[] docNameSpec = appPremisesSpecialDocDto.getDocName().split("[.]");
@@ -1378,7 +1398,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     @Override
     public  InspectionFDtosDto getInspectionFDtosDtoOnlyForChecklistLetter(String refNo){
         InspectionFDtosDto serListDto = new InspectionFDtosDto();
-        AppPremisesSpecialDocDto appPremisesSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(refNo).getEntity();
+        AppPremisesSpecialDocDto appPremisesSpecialDocDto = getAppPremisesSpecialDocDtoByRefNo(refNo);
         if(appPremisesSpecialDocDto != null){
             serListDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto );
             serListDto.setOldFileGuid(appPremisesSpecialDocDto.getFileRepoId());

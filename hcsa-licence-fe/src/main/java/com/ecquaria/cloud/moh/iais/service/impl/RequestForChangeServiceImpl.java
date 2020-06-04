@@ -401,4 +401,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return organizationLienceseeClient.getAdminEmailAdd(orgId).getEntity();
     }
 
+    @Override
+    public List<ApplicationDto> isOtherOperation(String licenceId) {
+
+        return null;
+    }
+
 }

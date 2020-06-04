@@ -145,6 +145,14 @@ public class AppointmentClientFallback implements AppointmentClient{
     }
 
     @Override
+    public FeignResponseEntity<List<ApptUserCalendarDto>> getAllCalendarBySrcIdAndGroupNameAndStatus(ApptAppInfoShowDto apptAppInfoShowDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<ApptUserCalendarDto>> updateApptUserCalendarDtoList(List<ApptUserCalendarDto> apptUserCalendarDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

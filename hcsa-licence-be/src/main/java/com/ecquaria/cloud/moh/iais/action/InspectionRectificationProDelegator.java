@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -202,13 +203,29 @@ public class InspectionRectificationProDelegator {
     private InspecUserRecUploadDto setNcDataByItemId(InspecUserRecUploadDto iDto, String itemId, List<ChecklistItemDto> checklistItemDtos) {
         int index = 0;
         for(ChecklistItemDto checklistItemDto : checklistItemDtos){
-            if(checklistItemDto.getItemId().equals(itemId)){
+            if(itemId.equals(checklistItemDto.getItemId())){
                 iDto.setCheckClause(checklistItemDto.getRegulationClause());
                 iDto.setCheckQuestion(checklistItemDto.getChecklistItem());
                 iDto.setIndex(index++);
                 iDto.setItemId(checklistItemDto.getItemId());
                 //To prevent the repeat, because have the same item by different Config
                 return iDto;
+            }
+        }
+        //There are no matching items, search item from adhoc table
+        String adhocItemId = itemId;
+        AdhocChecklistItemDto adhocChecklistItemDto = inspectionRectificationProService.getAdhocChecklistItemById(adhocItemId);
+        if(adhocChecklistItemDto != null){
+            String checkItemId = adhocChecklistItemDto.getItemId();
+            if(!StringUtil.isEmpty(checkItemId)){
+                ChecklistItemDto checklistItemDto = inspectionRectificationProService.getChklItemById(checkItemId);
+                iDto.setCheckClause(checklistItemDto.getRegulationClause());
+                iDto.setCheckQuestion(checklistItemDto.getChecklistItem());
+                iDto.setItemId(adhocItemId);
+            } else {
+                iDto.setCheckClause("-");
+                iDto.setCheckQuestion(adhocChecklistItemDto.getQuestion());
+                iDto.setItemId(adhocItemId);
             }
         }
         return iDto;
@@ -386,7 +403,7 @@ public class InspectionRectificationProDelegator {
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         InspectionReportDto inspectionReportDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
         //get fileReportId
-        AppPremisesSpecialDocDto appPremisesSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(taskDto.getRefNo()).getEntity();
+        AppPremisesSpecialDocDto appPremisesSpecialDocDto = fillupChklistService.getAppPremisesSpecialDocDtoByRefNo(taskDto.getRefNo());
         //get file report
         FileRepoDto fileRepoDto = null;
         if(appPremisesSpecialDocDto != null && !StringUtil.isEmpty(appPremisesSpecialDocDto.getFileRepoId())) {

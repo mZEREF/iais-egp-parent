@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -98,6 +99,7 @@ public class HcsaApplicationAjaxController{
             String repo_id = fileRepoClient.saveFiles(selectedFile, JsonUtil.parseToJson(fileRepoDto)).getEntity();
             appIntranetDocDto.setFileRepoId(repo_id);
 //            appIntranetDocDto.set
+            appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_COM);
             String id = uploadFileClient.saveAppIntranetDocByAppIntranetDoc(appIntranetDocDto).getEntity();
             appIntranetDocDto.setId(id);
              // set appIntranetDocDto to seesion

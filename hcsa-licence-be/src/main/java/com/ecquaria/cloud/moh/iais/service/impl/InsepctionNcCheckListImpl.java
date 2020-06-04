@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
@@ -11,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspecti
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
@@ -81,7 +83,8 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     private AppInspectionStatusClient appInspectionStatusClient;
     @Autowired
     FileRepoClient fileRepoClient;
-
+    @Autowired
+    private FillUpCheckListGetAppClient uploadFileClient;
 
     @Autowired
     private BeEicGatewayClient gatewayClient;
@@ -261,7 +264,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         saveEndTime(serListDto,appPremId);
         saveOtherInspection(serListDto,appPremId);
         saveRecommend(serListDto,appPremId);
-        saveLitterFile(serListDto,appPremId);
+        saveLitterFile(serListDto);
         List<InspectionFillCheckListDto> fillcheckDtoList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
             for(InspectionFillCheckListDto temp:serListDto.getFdtoList()){
@@ -276,11 +279,11 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
     }
 
-    public void saveLitterFile(InspectionFDtosDto serListDto,String appPremId){
+    public void saveLitterFile(InspectionFDtosDto serListDto){
         if(serListDto.getAppPremisesSpecialDocDto() != null ){
             AppPremisesSpecialDocDto appPremisesSpecialDocDto = serListDto.getAppPremisesSpecialDocDto();
             if(StringUtil.isEmpty(appPremisesSpecialDocDto.getId())){
-                fillUpCheckListGetAppClient.deleteAppPremisesSpecialDocByPremId(appPremId);
+                uploadFileClient.deleteAppIntranetDocsById(appPremisesSpecialDocDto.getId());
                 String oldFileGuid = serListDto.getOldFileGuid();
                 if(!StringUtil.isEmpty(oldFileGuid)){
                     fileRepoClient.removeFileById(oldFileGuid);
@@ -291,20 +294,47 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 appPremisesSpecialDocDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 appPremisesSpecialDocDto.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
                 appPremisesSpecialDocDto.setSubmitDt(new Date());
-                appPremisesSpecialDocDto.setId(fillUpCheckListGetAppClient.saveAppPremisesSpecialDoc(serListDto.getAppPremisesSpecialDocDto()).getEntity());
+                appPremisesSpecialDocDto.setId(saveAppPremisesSpecialDoc(serListDto.getAppPremisesSpecialDocDto()));
                 serListDto.setCopyAppPremisesSpecialDocDto(fillupChklistService.getCopyAppPremisesSpecialDocDtoByAppPremisesSpecialDocDto(appPremisesSpecialDocDto));
             }
         }else {
             String oldFileGuid = serListDto.getOldFileGuid();
+            if(serListDto.getCopyAppPremisesSpecialDocDto() != null){
+                uploadFileClient.deleteAppIntranetDocsById(serListDto.getCopyAppPremisesSpecialDocDto().getId());
+            }
             if(!StringUtil.isEmpty(oldFileGuid)){
                 fileRepoClient.removeFileById(oldFileGuid);
                 serListDto.setOldFileGuid(null);
                 serListDto.setCopyAppPremisesSpecialDocDto(null);
             }
-            fillUpCheckListGetAppClient.deleteAppPremisesSpecialDocByPremId(appPremId);
+
         }
     }
 
+    public String saveAppPremisesSpecialDoc(AppPremisesSpecialDocDto appPremisesSpecialDocDto){
+        AppIntranetDocDto appIntranetDocDto = new AppIntranetDocDto();
+        appIntranetDocDto.setAuditTrailDto(appPremisesSpecialDocDto.getAuditTrailDto());
+        appIntranetDocDto.setAppPremCorrId(appPremisesSpecialDocDto.getAppPremCorreId());
+        appIntranetDocDto.setSubmitBy( appPremisesSpecialDocDto.getSubmitBy());
+        appIntranetDocDto .setSubmitDt(appPremisesSpecialDocDto.getSubmitDt());
+        appIntranetDocDto.setDocSize(String.valueOf(appPremisesSpecialDocDto.getDocSize()));
+        appIntranetDocDto.setFileRepoId(appPremisesSpecialDocDto.getFileRepoId());
+        String[] fileSplit = appPremisesSpecialDocDto.getDocName() .split("\\.");
+        String fileType = fileSplit[fileSplit.length - 1];
+        //name
+        String fileName = fileSplit[0];
+//            String fileName = UUID.randomUUID().toString();
+        if(!StringUtil.isEmpty(fileName) && fileName.contains("\\")) {
+            String [] DOCS= fileName.split("\\\\");
+            fileName = DOCS[DOCS.length-1];
+        }
+        appIntranetDocDto.setDocType(fileType);
+        appIntranetDocDto.setDocName(fileName);
+        appIntranetDocDto.setDocDesc(fileName);
+        appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_CHECK_LIST);
+        appIntranetDocDto.setDocStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        return   uploadFileClient.saveAppIntranetDocByAppIntranetDoc(appIntranetDocDto).getEntity();
+    }
     @Override
     public  String saveFiles( MultipartFile multipartFile){
         FileRepoDto fileRepoDto = new FileRepoDto();

@@ -68,7 +68,7 @@
         </div>
       </div>
     <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
-    <iais:confirm msg="There is a pending application for a licence associated to this premises" callBack="" popupOrder="ackMessageConfim"></iais:confirm>
+    <iais:confirm msg="There is a pending application for a licence associated to this premises" callBack="cancel()"  needCancel="false" popupOrder="ackMessageConfim"></iais:confirm>
       <%--Validation Field--%>
       <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
       <%@include file="../common/premFun.jsp"%>
@@ -99,6 +99,9 @@
         init = 1;
     });
 
+    function cancel(){
+        $('#ackMessageConfim').modal('hide');
+    }
     $('#previewAndSub').click(function () {
         doSubmitForm('prePayment','', '');
     });

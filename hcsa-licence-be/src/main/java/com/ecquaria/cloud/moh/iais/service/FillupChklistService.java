@@ -77,4 +77,5 @@ public interface FillupChklistService {
     InspectionFDtosDto  getInspectionFDtosDto(String appPremCorrId,TaskDto taskDto,List<InspectionFillCheckListDto> cDtoList);
     AppIntranetDocDto getCopyAppPremisesSpecialDocDtoByAppPremisesSpecialDocDto(AppPremisesSpecialDocDto appPremisesSpecialDocDto);
     InspectionFDtosDto getInspectionFDtosDtoOnlyForChecklistLetter(String refNo);
+    AppPremisesSpecialDocDto getAppPremisesSpecialDocDtoByRefNo(String RefNo);
 }

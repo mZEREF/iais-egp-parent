@@ -76,7 +76,7 @@
                 </thead>
                 <tbody id="tbodyFileListId">
                 <c:choose>
-                    <c:when test="${empty applicationViewDto.appIntranetDocDtoList && empty serListDto.copyAppPremisesSpecialDocDto}">
+                    <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">
                         <tr>
                             <td colspan="6"  align="center" >
                                 <iais:message key="ACK018"
@@ -85,28 +85,6 @@
                         </tr>
                     </c:when>
                     <c:otherwise>
-                        <c:if test="${not empty serListDto.copyAppPremisesSpecialDocDto}">
-                            <tr>
-                                <td  width="30%">
-                                    <p><c:out value="${serListDto.copyAppPremisesSpecialDocDto.docDesc}"></c:out></p>
-                                </td>
-                                <td  width="20%">
-                                    <p><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRoLetter&fileRoLetter=<iais:mask name="fileRoLetter"  value="${serListDto.copyAppPremisesSpecialDocDto.fileRepoId}"/>&fileRepoName=${serListDto.copyAppPremisesSpecialDocDto.docName}.${serListDto.copyAppPremisesSpecialDocDto.docType}" title="Download" class="downloadFile"><c:out
-                                            value="${serListDto.copyAppPremisesSpecialDocDto.docName}.${serListDto.copyAppPremisesSpecialDocDto.docType}"></c:out></a></p>
-                                </td>
-                                <td  width="10%">
-                                    <p><c:out value="${serListDto.copyAppPremisesSpecialDocDto.docSize}"></c:out></p>
-                                </td>
-                                <td  width="20%">
-                                    <p><c:out value="${serListDto.copyAppPremisesSpecialDocDto.submitByName}"></c:out></p>
-                                </td>
-                                <td  width="15%">
-                                    <p>${serListDto.copyAppPremisesSpecialDocDto.submitDtString}</p>
-                                </td>
-                                <td width="5%">
-                                </td>
-                            </tr>
-                        </c:if>
                         <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
                             <tr>
                                 <td  width="30%">
@@ -126,7 +104,9 @@
                                     <p>${interalFile.submitDtString}</p>
                                 </td>
                                 <td width="5%">
+                                    <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_COM}">
                                     <button type="button" class="btn btn-danger btn-sm" onclick="javascript:deleteFile(this,'<iais:mask name="interalFileId" value="${interalFile.id}"/>');"><i class="fa fa-times"></i></button>
+                                    </c:if>
                                 </td>
                             </tr>
                         </c:forEach>

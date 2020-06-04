@@ -546,6 +546,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             entity.setStatus(ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK);
             entity.setEventRefNo(grpNo);
             entity.setLicenceId(auditCombinationDto.getAuditTaskDataFillterDto().getLicId());
+            entity.setLicenseeId(auditCombinationDto.getAuditTaskDataFillterDto().getLicenseeId());
             setRiskToDto(entity);
         }
         auditCombinationDto.setAppSubmissionDtoList(appSubmissionDtoList);

@@ -103,6 +103,9 @@ public interface InspectionTaskClient {
     @GetMapping(value = "/iais-inspection/ins-draf-date/{appPreCorrId}")
     FeignResponseEntity<AppPremInsDraftDto> getAppPremInsDraftDtoByAppPreCorrId(@PathVariable(name = "appPreCorrId") String appPreCorrId);
 
+    @GetMapping(value = "/iais-inspection/insp-history-app/{licenceId}", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<ApplicationDto>> getInspHistoryAppByLicId(@PathVariable(name = "licenceId") String licenceId);
+
     /**
      * Kpi stageId sla days
      */

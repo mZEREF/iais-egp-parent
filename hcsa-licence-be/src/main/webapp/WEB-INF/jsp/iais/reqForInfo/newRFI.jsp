@@ -50,7 +50,7 @@
                             </div>
                             <div class="row">
                                 <label class="col-xs-9 col-md-3 control-label">
-                                    <input type="checkbox"  value="information" name = "info" <c:if test="${newRfi.infoChk!=null}">checked</c:if> />&nbsp;Information
+                                    <input type="checkbox" onchange="checkInfo()" value="information" name = "info" <c:if test="${newRfi.infoChk!=null}">checked</c:if> />&nbsp;Information
                                 </label>
                             </div>
                             <div class="row">
@@ -61,6 +61,69 @@
                             <div class="row">
                                 <label class="col-xs-9 col-md-3 control-label" ></label><span class="error-msg" name="iaisErrorMsg" id="error_rfiSelect"></span>
                             </div>
+
+                            <div id="infohidden" class="reqForInfoContentInfo  hidden">
+                                <input type="hidden" name="lengthsInfo" value="0" />
+                                <div class="col-xs-9 col-sm-5 col-md-1">
+                                    <button class="addNewRfiInfo btn btn-secondary" type="button">+</button>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-collapse collapse in" id="collapseOneInfo" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                                        <div class="panel-body">
+                                            <div class="form-group">
+                                                <div class="row" >
+                                                    <div class="row" style="text-align:center;">
+                                                        <div >  Title of Information Required <strong style="color:#ff0000;">*</strong></div>
+                                                    </div>
+                                                    <label class="col-xs-9 col-md-3 control-label" ></label>
+                                                    <div class=" col-xs-7 col-sm-4 col-md-5">
+                                                        <label>
+                                                            <textarea  name="infoTitle0" rows="8" style=" font-weight:normal;" cols="70">${newRfi.infoTitle[0]}</textarea><span id="error_infoTitle0" name="iaisErrorMsg" class="error-msg" ></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br><br><br>
+
+                                <c:if test="${not empty newRfi.infoTitle}">
+                                    <c:forEach items="${newRfi.infoTitle}" var="newRfiInfo" varStatus="statusInfo">
+                                        <c:if test="${statusInfo.index!=0}">
+                                            <input type="hidden" name="lengthsInfo" value="${statusInfo.index+1}" />
+                                            <div class=" col-xs-11 col-sm-4 col-md-1">
+                                                <div class="form-check removeRfiBtnInfo">
+                                                    <button class=" btn btn-secondary" type="button">-</button>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-default">
+                                                <div class="panel-collapse collapse in"  role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                                                    <div class="panel-body">
+                                                        <div class="form-group">
+                                                            <div class="row" >
+                                                                <div class="row" style="text-align:center;">
+                                                                    <div > ${statusInfo.index+1} Title of Information Required <strong style="color:#ff0000;">*</strong></div>
+                                                                </div>
+                                                                <label class="col-xs-9 col-md-3 control-label" ></label>
+                                                                <div class=" col-xs-7 col-sm-4 col-md-5">
+                                                                    <label>
+                                                                        <textarea  name="infoTitle${statusInfo.index+1}" rows="8" style=" font-weight:normal;" cols="70">${newRfi.infoTitle[0]}</textarea><span id="error_infoTitle${statusInfo.index+1}" name="iaisErrorMsg" class="error-msg" ></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </c:if>
+                                    </c:forEach>
+                                </c:if>
+
+                                <div class="rfiFormMarkPointInfo">
+                                </div>
+                            </div>
+
                             <div id="dochidden" class="reqForInfoContent  hidden">
                                 <input type="hidden" name="lengths" value="0" />
                                 <div class="col-xs-9 col-sm-5 col-md-1">
@@ -72,22 +135,12 @@
                                             <div class="form-group">
                                                 <div class="row" >
                                                     <div class="row" style="text-align:center;">
-                                                        <div > #1 Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div>
+                                                        <div >  Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div>
                                                     </div>
                                                     <label class="col-xs-9 col-md-3 control-label" ></label>
                                                     <div class=" col-xs-7 col-sm-4 col-md-5">
                                                         <label>
                                                             <textarea  name="docTitle0" rows="8" style=" font-weight:normal;" cols="70">${newRfi.docTitle[0]}</textarea><span id="error_docTitle0" name="iaisErrorMsg" class="error-msg" ></span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="row" >
-                                                    <div class=" col-xs-7 col-sm-4 col-md-5">
-                                                        <label>
-                                                            <div class="file-upload-gp">
-                                                                <input class="selectedFile commDoc"   name = "UploadFile" type="file" style="display: none;" aria-label="selectedFile1" >
-                                                                <a class="btn btn-file-upload btn-secondary" >Attachment</a>
-                                                            </div>
                                                         </label>
                                                     </div>
                                                 </div>
@@ -159,7 +212,9 @@
     $(document).ready(function() {
 
         addRfi();
-        removeRFI()
+        removeRFI();
+        addRfiInfo();
+        removeRFIInfo()
     })
 
     function doBack(){
@@ -184,52 +239,113 @@
             var jsonData={
                 'Length': length
             };
-            $.ajax({
-                'url':'${pageContext.request.contextPath}/new-rfi-html',
-                'dataType':'text',
-                'data':jsonData,
-                'type':'GET',
-                'success':function (data) {
-                    if(data == null){
-                        return;
+            if(length<4){
+                $.ajax({
+                    'url':'${pageContext.request.contextPath}/new-rfi-html',
+                    'dataType':'text',
+                    'data':jsonData,
+                    'type':'GET',
+                    'success':function (data) {
+                        if(data == null){
+                            return;
+                        }
+                        <!--use ph mark point -->
+                        $contentDivEle.find('div.rfiFormMarkPoint').addClass('rfiContent');
+                        <!--add html -->
+                        $contentDivEle.find('div.rfiContent').before(data);
+                        <!--init ph mark point -->
+                        $contentDivEle.find('div.rfiFormMarkPoint').removeClass('rfiContent');
+                        <!--change hidden length value -->
+                        //Prevent duplicate binding
+                        $('.removeRfiBtn').unbind('click');
+                        removeRFI();
+                        $('.date_picker').datepicker({
+                            format:"dd/mm/yyyy"
+                        });
+                        length=length+1;
+                    },
+                    'error':function () {
                     }
-                    <!--use ph mark point -->
-                    $contentDivEle.find('div.rfiFormMarkPoint').addClass('rfiContent');
-                    <!--add html -->
-                    $contentDivEle.find('div.rfiContent').before(data);
-                    <!--init ph mark point -->
-                    $contentDivEle.find('div.rfiFormMarkPoint').removeClass('rfiContent');
-                    <!--change hidden length value -->
-                    //Prevent duplicate binding
-                    $('.removeRfiBtn').unbind('click');
-                    removeRFI();
-                    $('.date_picker').datepicker({
-                        format:"dd/mm/yyyy"
-                    });
-                    length=length+1;
-                },
-                'error':function () {
-                }
-            });
-
+                });
+            }
         });
     }
 
     var removeRFI = function () {
         $('.removeRfiBtn').click(function () {
-            var $rfiContentEle = $(this).closest('div.reqForInfoContent');
+            var $rfiContentEle = $(this).closest('div.reqForInfoContentInfo');
             $rfiContentEle.remove();
             length=length-1;
         });
     }
-
-
 
     function checkDoc(){
         if($('input[type = checkbox][name="doc"]')[0].checked){
             $("#dochidden").removeClass('hidden');
         }else {
             $("#dochidden").addClass('hidden');
+        }
+    }
+
+
+    var reqForInfoContentInfoLength=$('div.reqForInfoContentInfo').length;
+    var lengthInfo =0+reqForInfoContentInfoLength;
+
+    var addRfiInfo = function () {
+        $('.addNewRfiInfo').click(function () {
+
+            var $contentDivEle = $(this).closest('div.panel-group');
+
+            var jsonData={
+                'Length': lengthInfo
+            };
+            if(lengthInfo<4){
+                $.ajax({
+                    'url':'${pageContext.request.contextPath}/new-rfi-html',
+                    'dataType':'text',
+                    'data':jsonData,
+                    'type':'GET',
+                    'success':function (data) {
+                        if(data == null){
+                            return;
+                        }
+                        <!--use ph mark point -->
+                        $contentDivEle.find('div.rfiFormMarkPointInfo').addClass('rfiContent');
+                        <!--add html -->
+                        $contentDivEle.find('div.rfiContent').before(data);
+                        <!--init ph mark point -->
+                        $contentDivEle.find('div.rfiFormMarkPointInfo').removeClass('rfiContent');
+                        <!--change hidden length value -->
+                        //Prevent duplicate binding
+                        $('.removeRfiBtnInfo').unbind('click');
+                        removeRFI();
+                        $('.date_picker').datepicker({
+                            format:"dd/mm/yyyy"
+                        });
+                        length=length+1;
+                    },
+                    'error':function () {
+                    }
+                });
+            }
+
+
+        });
+    }
+
+    var removeRFIInfo = function () {
+        $('.removeRfiBtnInfo').click(function () {
+            var $rfiContentEle = $(this).closest('div.reqForInfoContentInfo');
+            $rfiContentEle.remove();
+            length=length-1;
+        });
+    }
+
+    function checkInfo(){
+        if($('input[type = checkbox][name="info"]')[0].checked){
+            $("#infohidden").removeClass('hidden');
+        }else {
+            $("#infohidden").addClass('hidden');
         }
     }
 

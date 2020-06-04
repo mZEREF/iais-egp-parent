@@ -25,7 +25,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionComplianceDto;
@@ -397,14 +396,13 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     public List<InspectionHistoryShowDto> getInspectionHistory(String originLicenceId) {
         List<InspectionHistoryShowDto> inspectionHistoryShowDtos = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(originLicenceId)) {
-            //todo get inspection history app info
-            List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(originLicenceId).getEntity();
-            if (!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
+            List<ApplicationDto> applicationDtos = inspectionTaskClient.getInspHistoryAppByLicId(originLicenceId).getEntity();
+            if (!IaisCommonUtils.isEmpty(applicationDtos)) {
                 int index = 0;
-                for (LicAppCorrelationDto licAppCorrelationDto : licAppCorrelationDtos) {
+                for (ApplicationDto applicationDto : applicationDtos) {
                     if (index <= 1) {
                         InspectionHistoryShowDto inspectionHistoryShowDto = new InspectionHistoryShowDto();
-                        String appId = licAppCorrelationDto.getApplicationId();
+                        String appId = applicationDto.getId();
                         LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(originLicenceId).getEntity();
                         Date licStartDate = licenceDto.getStartDate();
                         Date licEndDate = licenceDto.getExpiryDate();
@@ -414,7 +412,6 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                             String licPeriod = startDateStr + " - " + endDateStr;
                             inspectionHistoryShowDto.setLicencePeriod(licPeriod);
                         }
-                        ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
                         //get service name
                         String serviceId = applicationDto.getServiceId();
                         HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();

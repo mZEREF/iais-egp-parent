@@ -19,14 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -152,6 +145,8 @@ public class HcsaApplicationDelegator {
     CessationClient cessationClient;
     @Autowired
     ApplicationClient applicationClient;
+    @Autowired
+    AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
 
 
     @Value("${iais.email.sender}")
@@ -824,7 +819,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void broadcastReply(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
+    public void broadcastReply(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do broadcastReply start ...."));
         //routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3);
         replay(bpc);
@@ -838,9 +833,10 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void replay(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
+    public void replay(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do replay start ...."));
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         String nextStatus = ApplicationConsts.APPLICATION_STATUS_REPLY;
         String getHistoryStatus = applicationViewDto.getApplicationDto().getStatus();
           if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(getHistoryStatus)){
@@ -875,7 +871,32 @@ public class HcsaApplicationDelegator {
             nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
         }
 
-        rollBack(bpc,stageId,nextStatus,roleId,wrkGrpId,userId);
+        String routeHistoryId = appPremisesRoutingHistoryDto.getId();
+        AppPremisesRoutingHistoryExtDto historyExtDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistoryExtByHistoryAndComponentName(routeHistoryId, ApplicationConsts.APPLICATION_ROUTE_BACK_REVIEW).getEntity();
+        if(historyExtDto == null){
+            rollBack(bpc,stageId,nextStatus,roleId,wrkGrpId,userId);
+        }else{
+            String componentValue = historyExtDto.getComponentValue();
+            if("N".equals(componentValue)){
+                List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),
+                        stageId,applicationViewDto.getApplicationDto().getApplicationType());
+                if(hcsaSvcRoutingStageDtoList != null){
+                    HcsaSvcRoutingStageDto nextStage = hcsaSvcRoutingStageDtoList.get(0);
+                    String stageCode = nextStage.getStageCode();
+                    String routeNextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
+                    String nextStageId = HcsaConsts.ROUTING_STAGE_AO2;
+                    if(RoleConsts.USER_ROLE_AO3.equals(stageCode)){
+                        nextStageId = HcsaConsts.ROUTING_STAGE_AO3;
+                        routeNextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+                    }
+                    routingTask(bpc,nextStageId,routeNextStatus,stageCode);
+                }else{
+                    log.error(StringUtil.changeForLog("RoutingStageDtoList is null"));
+                }
+            }else{
+                rollBack(bpc,stageId,nextStatus,roleId,wrkGrpId,userId);
+            }
+        }
         log.debug(StringUtil.changeForLog("the do replay end ...."));
     }
 
@@ -1445,16 +1466,25 @@ public class HcsaApplicationDelegator {
     }
 
     private EmailDto sendEmail(String msgId, Map<String, Object> msgInfoMap, String applicationNo, String licenseeId,String subjectSuppInfo) throws IOException, TemplateException {
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
-        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
         EmailDto emailDto=new EmailDto();
-        emailDto.setClientQueryCode(applicationNo);
-        emailDto.setSender(mailSender);
-        emailDto.setContent(templateMessageByContent);
-        emailDto.setSubject(msgTemplateDto.getTemplateName()+subjectSuppInfo);
-        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-        emailClient.sendNotification(emailDto).getEntity();
-        return emailDto;
+            //        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
+//        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
+            emailDto.setClientQueryCode(applicationNo);
+            emailDto.setSender(mailSender);
+//        emailDto.setContent(templateMessageByContent);
+            emailDto.setContent("Send Email");
+//        emailDto.setSubject(msgTemplateDto.getTemplateName()+subjectSuppInfo);
+            emailDto.setSubject(subjectSuppInfo);
+            try{
+                List<String> emailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
+                if (emailAddrs != null && emailAddrs.size()>0){
+                    emailDto.setReceipts(emailAddrs);
+                    emailClient.sendNotification(emailDto).getEntity();
+                }
+            }catch (Exception e){
+                log.error(StringUtil.changeForLog("error"));
+            }
+            return emailDto;
     }
 
     private void sendSMS(String msgId,String licenseeId,Map<String, Object> msgInfoMap) throws IOException, TemplateException {
@@ -1462,13 +1492,17 @@ public class HcsaApplicationDelegator {
         //String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
         String templateMessageByContent = "send sms";
         SmsDto smsDto = new SmsDto();
-        smsDto.setContent(templateMessageByContent);
         smsDto.setSender(mailSender);
+        smsDto.setContent(templateMessageByContent);
         smsDto.setOnlyOfficeHour(true);
         String refNo = inboxMsgService.getMessageNo();
-        List<String> recipts = IaisEGPHelper.getLicenseeMobiles(licenseeId);
-        if (!IaisCommonUtils.isEmpty(recipts)) {
-            emailClient.sendSMS(recipts,smsDto,refNo);
+        try{
+            List<String> recipts = IaisEGPHelper.getLicenseeMobiles(licenseeId);
+            if (!IaisCommonUtils.isEmpty(recipts)) {
+                emailClient.sendSMS(recipts,smsDto,refNo);
+            }
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog("error"));
         }
     }
 
@@ -1527,6 +1561,19 @@ public class HcsaApplicationDelegator {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),stageId,null,
                 taskDto.getWkGrpId(),null,null,null,roleId);
         broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
+
+        String routeBackReview = (String)ParamUtil.getSessionAttr(bpc.request,"routeBackReview");
+        if("canRouteBackReview".equals(routeBackReview)){
+            AppPremisesRoutingHistoryExtDto appPremisesRoutingHistoryExtDto = new AppPremisesRoutingHistoryExtDto();
+            appPremisesRoutingHistoryExtDto.setComponentName(ApplicationConsts.APPLICATION_ROUTE_BACK_REVIEW);
+            String[] routeBackReviews =  ParamUtil.getStrings(bpc.request,"routeBackReview");
+            if(routeBackReviews!=null){
+                appPremisesRoutingHistoryExtDto.setComponentValue("Y");
+            }else{
+                appPremisesRoutingHistoryExtDto.setComponentValue("N");
+            }
+            broadcastApplicationDto.setNewTaskHistoryExt(appPremisesRoutingHistoryExtDto);
+        }
 
         //save the broadcast
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -1770,22 +1817,8 @@ public class HcsaApplicationDelegator {
         //appeal
         setAppealTypeValues(bpc.request,applicationViewDto,roleId);
 
-//        try{
-//            sendSMS("",applicationViewDto.getApplicationGroupDto().getLicenseeId(),IaisCommonUtils.genNewHashMap());
-//        }catch (Exception e){
-//
-//        }
-
-//        String appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
-//        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = null;
-//        try{
-//            appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(
-//                    applicationViewDto.getApplicationDto().getApplicationNo(),appStatus);
-//            String internalRemarks = appPremisesRoutingHistoryDto.getInternalRemarks();
-//            ParamUtil.setRequestAttr(bpc.request,"internalRemarks",internalRemarks);
-//        }catch (Exception e){
-//            log.error(StringUtil.changeForLog("first do main flow ,have no two history"));
-//        }
+        //check route back review
+        setRouteBackReview(bpc.request,applicationViewDto,roleId,taskDto,status);
     }
 
     public void setSelectionValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto){
@@ -1805,6 +1838,20 @@ public class HcsaApplicationDelegator {
         setRecommendationOtherDropdownValue(request);
         //set appeal recommendation dropdown value
         setAppealRecommendationDropdownValue(request,applicationViewDto);
+    }
+
+    private void setRouteBackReview(HttpServletRequest request, ApplicationViewDto applicationViewDto, String roleId, TaskDto taskDto, String status){
+        //init session
+        ParamUtil.setSessionAttr(request,"routeBackReview",null);
+        if(!(RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId))){
+            if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(status)){
+                List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),
+                        taskDto.getTaskKey(),applicationViewDto.getApplicationDto().getApplicationType());
+                if(hcsaSvcRoutingStageDtoList != null & hcsaSvcRoutingStageDtoList.size() > 0){
+                    ParamUtil.setSessionAttr(request,"routeBackReview","canRouteBackReview");
+                }
+            }
+        }
     }
 
     private void setAppealTypeValues(HttpServletRequest request, ApplicationViewDto applicationViewDto, String roleId){

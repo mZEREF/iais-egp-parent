@@ -17,8 +17,10 @@
                 <div class="center-content">
                     <div class="internet-content">
                         <div class="bg-title">
-                            <div class="row">
-                                <div style="font-size:3rem">Acknowledgement</div>
+                            <div class="center-content">
+                                <h2>Acknowledgement</h2>
+                            </div>
+                            <div class="center-content">
                                 <span style="font-size:2rem">You have submitted a Withdrawal Application Request</span>
                             </div>
                         </div>

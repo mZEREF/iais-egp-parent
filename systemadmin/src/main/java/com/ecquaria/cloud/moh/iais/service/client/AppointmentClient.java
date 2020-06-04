@@ -79,6 +79,9 @@ public interface AppointmentClient {
     @PostMapping(value = "/iais-appointment/appt-calendar-status", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApptUserCalendarDto> getCalenderBySysUserCorrIdAndStatus(@RequestBody ApptAppInfoShowDto apptAppInfoShowDto);
 
+    @PostMapping(value = "/iais-appointment/user-correlation/user/calendar", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApptUserCalendarDto>> getAllCalendarBySrcIdAndGroupNameAndStatus(@RequestBody ApptAppInfoShowDto apptAppInfoShowDto);
+
     @PutMapping(value = "/iais-appointment/appt-u-calendar",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApptUserCalendarDto>> updateApptUserCalendarDtoList(@RequestBody List<ApptUserCalendarDto> apptUserCalendarDtos);
 
