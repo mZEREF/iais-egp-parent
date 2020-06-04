@@ -52,7 +52,7 @@
                                                 <td>${appSubmissionDtos.licenceNo}</td>
                                                 <td>${appSubmissionDtos.serviceName}</td>
                                                 <c:if test="${isSingle == 'Y'}">
-                                                    <td>${appSubmissionDtos.licenseeId}</td>
+                                                    <td>${loginContext.userName}</td>
                                                 </c:if>
                                                 <td><c:forEach items="${appSubmissionDtos.appGrpPremisesDtoList}" var="appGrpPremisesDtoList"><span>${appGrpPremisesDtoList.renewPremises}</span><br/></c:forEach></td>
                                                 <td><fmt:formatDate value='${appSubmissionDtos.licStartDate}' pattern='dd/MM/yyyy'/></td>
