@@ -247,26 +247,50 @@ public class ApplicationServiceImpl implements ApplicationService {
         //send message to FE user.
         String messageNo = inboxMsgService.getMessageNo();
         String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+applicationDto.getApplicationNo();
+        String editSelect = "";
+        //judge premises amend or licence amend
+        AppEditSelectDto appEditSelectDto = applicationViewDto.getAppEditSelectDto();
         //Request For Change
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())){
-            //judge premises amend or licence amend
-            AppEditSelectDto appEditSelectDto = applicationViewDto.getAppEditSelectDto();
             if(appEditSelectDto != null){
                 if(appEditSelectDto.isPremisesListEdit()){
                     url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_PREMISES_LIST+applicationDto.getApplicationNo();
                 }
             }
         }
+        if(appEditSelectDto != null){
+            if(appEditSelectDto.isPremisesListEdit()){
+                editSelect = editSelect + "<li style=\"padding-left: 0px;\">Premises</li>";
+            }
+            if(appEditSelectDto.isDocEdit()){
+                editSelect = editSelect + "<li style=\"padding-left: 0px;\">Primary Doucument</li>";
+            }
+            if(appEditSelectDto.isServiceEdit()){
+                editSelect = editSelect + "<li style=\"padding-left: 0px;\">Service Related Information - " + applicationViewDto.getServiceType() + "</li>";
+            }
+            if(appEditSelectDto.isPoEdit()){
+                editSelect = editSelect + "<li style=\"padding-left: 0px;\">PO</li>";
+            }
+            if(appEditSelectDto.isDpoEdit()){
+                editSelect = editSelect + "<li style=\"padding-left: 0px;\">DPO</li>";
+            }
+            if(appEditSelectDto.isMedAlertEdit()){
+                editSelect = editSelect + "<li style=\"padding-left: 0px;\">medAlert</li>";
+            }
+        }
+        String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
         MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
         Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
         map.put("APPLICANT_NAME",licenseeDto.getName());
+        map.put("APPLICATION_NUMBER",StringUtil.viewHtml(applicationNo));
         map.put("DETAILS","");
         map.put("COMMENTS",StringUtil.viewHtml(externalRemarks));
+        map.put("EDITSELECT",editSelect);
         map.put("A_HREF",url);
         map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
 
-        InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
+        InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION+applicationNo,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
                 messageNo,applicationDto.getServiceId(),templateMessageByContent, applicationViewDto.getApplicationGroupDto().getLicenseeId(),IaisEGPHelper.getCurrentAuditTrailDto());
         HashMap<String,String> mapParam = IaisCommonUtils.genNewHashMap();
         mapParam.put("appNo",applicationDto.getApplicationNo());
@@ -277,7 +301,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
             MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVAL_OFFICE_ROUTES_ID).getEntity();
             if(msgTemplateDto != null){
-                String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
+
                 String username = licenseeDto.getName();
                 String approvalOfficerName = loginContext.getUserName();
 
@@ -301,7 +325,6 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
             Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
-            String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
             String username = licenseeDto.getName();
             String appGrpId = applicationViewDto.getApplicationDto().getAppGrpId();
             String approvalOfficerName = loginContext.getUserName();

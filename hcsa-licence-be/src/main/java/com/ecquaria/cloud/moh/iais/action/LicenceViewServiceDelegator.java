@@ -328,6 +328,7 @@ public class LicenceViewServiceDelegator {
                     parentMsg = parentMsg + appEditSelectDto.getParentMsg();
                     parentMsg = parentMsg + "</ul>";
                     appEditSelectDto = licenceViewService.saveAppEditSelect(appEditSelectDto);
+                    applicationViewDto.setAppEditSelectDto(appEditSelectDto);
                     licenceViewService.saveAppEditSelectToFe(appEditSelectDto);
                     successMsg = "save success";
                     ParamUtil.setSessionAttr(bpc.request, "isSaveRfiSelect", AppConsts.YES);
@@ -347,6 +348,7 @@ public class LicenceViewServiceDelegator {
         ParamUtil.setRequestAttr(bpc.request, "isSuccess", isSuccess);
         ParamUtil.setRequestAttr(bpc.request, "errorMsg", errorMsg);
         ParamUtil.setRequestAttr(bpc.request, "parentMsg", parentMsg);
+        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator doSaveSelect end ..."));
     }
 
