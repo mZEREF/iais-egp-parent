@@ -4,23 +4,20 @@ import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConsta
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.ApptHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Shicheng
@@ -43,7 +40,7 @@ public class ApptNonAvailabilityValidate implements CustomizeValidator {
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
         List<Date> nonAvaDate = MiscUtil.getDateInPeriodByRecurrence(apptNonAvailabilityDateDto.getBlockOutStart(),
                         apptNonAvailabilityDateDto.getBlockOutEnd(), apptNonAvailabilityDateDto.getRecurrence());
-        List<String> inspectionDate = getInspDateByCalendar(apptUserCalendarDto);
+        List<String> inspectionDate = ApptHelper.getInspDateByCalendar(apptUserCalendarDto);
         if(apptNonAvailabilityDateDto.getBlockOutStart() == null || apptNonAvailabilityDateDto.getBlockOutEnd() == null){
             return null;
         }
@@ -64,20 +61,5 @@ public class ApptNonAvailabilityValidate implements CustomizeValidator {
         return errMap;
     }
 
-    private List<String> getInspDateByCalendar(ApptUserCalendarDto apptUserCalendarDto) {
-        if(apptUserCalendarDto != null){
-            List<Date> timeSlots = apptUserCalendarDto.getStartSlot();
-            if(!IaisCommonUtils.isEmpty(timeSlots)) {
-                List<String> inspDates = IaisCommonUtils.genNewArrayList();
-                for (Date date : timeSlots) {
-                    String inspDate = Formatter.formatDateTime(date, "yyyy-MM-dd");
-                    inspDates.add(inspDate);
-                }
-                Set<String> inspDateSet = new HashSet<>(inspDates);
-                inspDates = new ArrayList<>(inspDateSet);
-                return inspDates;
-            }
-        }
-        return null;
-    }
+
 }

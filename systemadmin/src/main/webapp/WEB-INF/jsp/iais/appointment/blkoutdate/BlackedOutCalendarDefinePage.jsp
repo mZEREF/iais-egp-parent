@@ -40,14 +40,14 @@
     </c:if>
 
     <span id="error_customValidation" name="iaisErrorMsg" class="error-msg"></span>
-
+    <br><br>
 
     <div class="form-horizontal">
         <c:choose>
             <c:when test="${switchPageAction == 'create'}">
                 <div class="form-group">
                     <iais:field value="Working Group" required="true"></iais:field>
-                    <div class="col-md-5">
+                    <div class="col-md-8">
                         <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt" options="wrlGrpNameOpt"
                                      firstOption="Please Select" value="${shortName}"></iais:select>
                         <br><br>  <br><br><span id="error_shortName" name="iaisErrorMsg" class="error-msg"></span>

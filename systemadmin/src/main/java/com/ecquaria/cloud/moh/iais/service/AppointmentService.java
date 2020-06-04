@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
@@ -13,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author anonymity
@@ -39,16 +37,10 @@ public interface AppointmentService {
 
 	List<String> getInspectorGroupLeadByLoginUser(LoginContext loginContext);
 
-	/**
-	 *
-	 * @param appointmentDto
-	 * @return
-	 */
-	Map<String,List<Date>> getUnavailableTime(AppointmentDto appointmentDto);
 
+	Boolean isUnavailableTime(String groupShotName, Date startDate, Date endDate);
 
 	SearchResult<InspectorCalendarQueryDto> queryInspectorCalendar(SearchParam searchParam);
 
-	List<Date> getCurrentWorkingGroupInspectionDate(String wrkGrpId);
 
 }

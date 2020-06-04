@@ -2,25 +2,39 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.*;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.InspectorCalendarQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.ApptHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationBeClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntranetUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.OnlineApptClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -40,12 +54,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 	@Autowired
 	private IntranetUserClient intranetUserClient;
 
+	@Autowired
+	private AppointmentClient appointmentClient;
+
 	@Override
 	@SearchTrack(catalog = "Appointment BlackOut Date", key = "search")
 	public SearchResult<ApptBlackoutDateQueryDto> doQuery(SearchParam searchParam) {
-
-		//List<Date> dates = applicationBeClient.getInspectionRecomInDateByCorreId(null).getEntity();
-
 		return onlineApptClient.doQuery(searchParam).getEntity();
 	}
 
@@ -120,32 +134,39 @@ public class AppointmentServiceImpl implements AppointmentService {
 	}
 
 	@Override
-	public Map<String,List<Date>> getUnavailableTime(AppointmentDto appointmentDto) {
-		return onlineApptClient.getUserCalendarByUserId(appointmentDto).getEntity();
+	public Boolean isUnavailableTime(String groupShotName, Date startDate, Date endDate) {
+		ApptAppInfoShowDto reqParam = new ApptAppInfoShowDto();
+		reqParam.setGroupNames(Arrays.asList(groupShotName));
+		reqParam.setClsStatus(Arrays.asList(AppointmentConstants.CALENDAR_STATUS_RESERVED));
+		reqParam.setSrcSystemId(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID);
+
+
+		List<Date> unavailableTime = MiscUtil.getDateInPeriodByRecurrence(startDate,
+				endDate);
+
+		//current group
+		List<ApptUserCalendarDto> result = appointmentClient.getAllCalendarBySrcIdAndGroupNameAndStatus(reqParam).getEntity();
+		for(ApptUserCalendarDto auc : result){
+			List<String> inspectionDate = ApptHelper.getInspDateByCalendar(auc);
+			for (Date date : unavailableTime) {
+				for (String inspDate : inspectionDate) {
+					String val = IaisEGPHelper.parseToString(date, "yyyy-MM-dd");
+					if (inspDate.equals(val)) {
+						return Boolean.TRUE;
+					}
+				}
+			}
+		}
+
+		return Boolean.FALSE;
 	}
+
+
 
 	@Override
 	@SearchTrack(catalog = "Appointment Inspector Calendar", key = "search")
 	public SearchResult<InspectorCalendarQueryDto> queryInspectorCalendar(SearchParam searchParam) {
 		return onlineApptClient.queryInspectorCalendar(searchParam).getEntity();
-	}
-
-	@Override
-	public List<Date> getCurrentWorkingGroupInspectionDate(String wrkGrpId) {
-		List<TaskDto> taskDtoList = intranetUserClient.getCorrIdsByWorkGroupId(wrkGrpId).getEntity();
-		if (IaisCommonUtils.isEmpty(taskDtoList)) {
-			return null;
-		}
-
-		List<String> refNo = taskDtoList.stream().map(TaskDto::getRefNo).collect(Collectors.toList());
-
-		List<AppPremisesRecommendationDto> recommendationList = applicationBeClient.getInspectionDateByCorrIds(refNo).getEntity();
-
-		if (IaisCommonUtils.isEmpty(recommendationList)) {
-			return null;
-		}
-
-		return recommendationList.stream().map(AppPremisesRecommendationDto::getRecomInDate).collect(Collectors.toList());
 	}
 
 }
