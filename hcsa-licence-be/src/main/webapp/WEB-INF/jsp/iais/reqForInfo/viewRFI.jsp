@@ -64,14 +64,14 @@
                                         <iais:row>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="checkbox" disabled name="reqType" checked/>Information
+                                                    <input type="checkbox" disabled name="reqType" <c:if test="${not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}">checked</c:if>/>&nbsp;Information
                                                 </label>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="checkbox" disabled name="reqType" <c:if test="${licPreReqForInfoDto.needDocument}">checked</c:if> />Supporting Documents
+                                                    <input type="checkbox" disabled name="reqType" <c:if test="${licPreReqForInfoDto.needDocument}">checked</c:if> />&nbsp;Supporting Documents
                                                 </label>
                                             </iais:value>
                                         </iais:row>
@@ -95,7 +95,7 @@
                                                 <iais:row style="text-align:center;">
                                                     <iais:value width="18">
                                                         <label>
-                                                            <textarea id="userReply" rows="10" cols="100">${rfiReply.userReply}</textarea>
+                                                            <textarea id="userReply" disabled rows="10" cols="100">${rfiReply.userReply}</textarea>
                                                         </label>
                                                     </iais:value>
                                                 </iais:row>
