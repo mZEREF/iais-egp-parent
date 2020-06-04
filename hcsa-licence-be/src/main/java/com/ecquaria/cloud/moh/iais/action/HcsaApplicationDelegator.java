@@ -1466,16 +1466,25 @@ public class HcsaApplicationDelegator {
     }
 
     private EmailDto sendEmail(String msgId, Map<String, Object> msgInfoMap, String applicationNo, String licenseeId,String subjectSuppInfo) throws IOException, TemplateException {
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
-        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
         EmailDto emailDto=new EmailDto();
-        emailDto.setClientQueryCode(applicationNo);
-        emailDto.setSender(mailSender);
-        emailDto.setContent(templateMessageByContent);
-        emailDto.setSubject(msgTemplateDto.getTemplateName()+subjectSuppInfo);
-        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-        emailClient.sendNotification(emailDto).getEntity();
-        return emailDto;
+            //        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
+//        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
+            emailDto.setClientQueryCode(applicationNo);
+            emailDto.setSender(mailSender);
+//        emailDto.setContent(templateMessageByContent);
+            emailDto.setContent("Send Email");
+//        emailDto.setSubject(msgTemplateDto.getTemplateName()+subjectSuppInfo);
+            emailDto.setSubject(subjectSuppInfo);
+            try{
+                List<String> emailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
+                if (emailAddrs != null && emailAddrs.size()>0){
+                    emailDto.setReceipts(emailAddrs);
+                    emailClient.sendNotification(emailDto).getEntity();
+                }
+            }catch (Exception e){
+                log.error(StringUtil.changeForLog("error"));
+            }
+            return emailDto;
     }
 
     private void sendSMS(String msgId,String licenseeId,Map<String, Object> msgInfoMap) throws IOException, TemplateException {
@@ -1483,13 +1492,17 @@ public class HcsaApplicationDelegator {
         //String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
         String templateMessageByContent = "send sms";
         SmsDto smsDto = new SmsDto();
-        smsDto.setContent(templateMessageByContent);
         smsDto.setSender(mailSender);
+        smsDto.setContent(templateMessageByContent);
         smsDto.setOnlyOfficeHour(true);
         String refNo = inboxMsgService.getMessageNo();
-        List<String> recipts = IaisEGPHelper.getLicenseeMobiles(licenseeId);
-        if (!IaisCommonUtils.isEmpty(recipts)) {
-            emailClient.sendSMS(recipts,smsDto,refNo);
+        try{
+            List<String> recipts = IaisEGPHelper.getLicenseeMobiles(licenseeId);
+            if (!IaisCommonUtils.isEmpty(recipts)) {
+                emailClient.sendSMS(recipts,smsDto,refNo);
+            }
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog("error"));
         }
     }
 
