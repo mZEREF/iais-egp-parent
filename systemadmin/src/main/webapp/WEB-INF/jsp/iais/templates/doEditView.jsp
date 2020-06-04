@@ -26,7 +26,6 @@
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="msgType">Message Type</label>
-
                             <div class="col-xs-5 col-sm-5 col-md-5">
                                 <iais:select name="msgType" id="msgType" options="messageTypeSelect" disabled="true" value="${MsgTemplateDto.messageType}"/>
                                 <span id="error_msgType" name="iaisErrorMsg" class="error-msg"></span>
@@ -35,8 +34,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="templateName">Template Name</label>
                             <div class="col-xs-5 col-sm-5 col-md-5">
-                                <input id="templateName" type="text" value="${MsgTemplateDto.templateName}"
-                                       name="templateName" maxlength="500">
+                                <textarea id="templateName" rows="10" cols="70" name="templateName" maxlength="500">${MsgTemplateDto.templateName}</textarea>
                                 <span id="error_templateName" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
@@ -46,6 +44,43 @@
                                 <iais:select name="deliveryMode" id="deliveryMode"
                                              options="deliveryModeSelect" value="${MsgTemplateDto.deliveryMode}" disabled="true"/>
                                 <span id="error_deliveryMode" name="iaisErrorMsg"
+                                      class="error-msg"></span>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label">To Recipients</label>
+                            <div class="col-xs-5 col-sm-5 col-md-5">
+                                <input id="toRecipientsEdit" type="text" name="toRecipientsEdit" value="<c:if test="${'to' == MsgTemplateDto.recipientType}">${MsgTemplateDto.recipient}</c:if>"
+                                       maxlength="25">
+                                <span id="error_toRecipients" name="iaisErrorMsg"
+                                      class="error-msg"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label">CC Recipients</label>
+                            <div class="col-xs-5 col-sm-5 col-md-5">
+                                <input id="ccRecipientsEdit" type="text" name="ccRecipientsEdit" value="<c:if test="${'cc' == MsgTemplateDto.recipientType}">${MsgTemplateDto.recipient}</c:if>"
+                                       maxlength="25">
+                                <span id="error_ccRecipients" name="iaisErrorMsg"
+                                      class="error-msg"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label">BCC Recipients</label>
+                            <div class="col-xs-5 col-sm-5 col-md-5">
+                                <input id="bccRecipientsEdit" type="text" name="bccRecipientsEdit" value="<c:if test="${'bcc' == MsgTemplateDto.recipientType}">${MsgTemplateDto.recipient}</c:if>"
+                                       maxlength="25">
+                                <span id="error_bccRecipients" name="iaisErrorMsg"
+                                      class="error-msg"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label">Process</label>
+                            <div class="col-xs-5 col-sm-5 col-md-5">
+                                <input id="processEdit" type="text" name="processEdit" value="${MsgTemplateDto.process}"
+                                       maxlength="25">
+                                <span id="error_process" name="iaisErrorMsg"
                                       class="error-msg"></span>
                             </div>
                         </div>
@@ -123,7 +158,7 @@
             ' alignright alignjustify | bullist numlist outdent indent |' +
             ' removeformat | help | code',
             autoresize_bottom_margin: 20,
-            min_heigh:100,
+            // min_heigh:100,
             ax_wordlimit_num:20,
             ax_wordlimit_callback: function(editor,txt,num){
                 console.log("content-size:"+num);
