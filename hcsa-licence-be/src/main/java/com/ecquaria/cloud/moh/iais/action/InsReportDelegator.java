@@ -25,11 +25,14 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloudfeign.FeignException;
+
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -52,8 +55,6 @@ public class InsReportDelegator {
     private TaskService taskService;
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
-    @Autowired
-    private ApplicationViewService applicationViewService;
 
 
     private final static String RECOMMENDATION_DTO = "appPremisesRecommendationDto";
@@ -123,7 +124,7 @@ public class InsReportDelegator {
         log.debug(StringUtil.changeForLog("the inspectionReportPre start ...."));
     }
 
-    public void inspectorReportSave(BaseProcessClass bpc) throws FeignException {
+    public void inspectorReportSave(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the inspectorReportSave start ...."));
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
@@ -156,7 +157,7 @@ public class InsReportDelegator {
         }
 
         if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)){
-            insRepService.routTaskToRoutBack(taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto.getProcessRemarks());
+            insRepService.routTaskToRoutBack(bpc,taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto.getProcessRemarks());
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         }
@@ -362,7 +363,7 @@ public class InsReportDelegator {
     }
 
     private List<SelectOption> getProcessingDecision(String status) {
-        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK.equals(status)){
+        if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)){
             List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
             SelectOption so1 = new SelectOption("submit", "Give Clarification");
             riskLevelResult.add(so1);

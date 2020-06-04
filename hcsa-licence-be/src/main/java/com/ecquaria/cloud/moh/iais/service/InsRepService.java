@@ -9,7 +9,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloudfeign.FeignException;
+import freemarker.template.TemplateException;
+import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -33,7 +36,7 @@ public interface InsRepService {
     void routingTaskToAo1(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,AppPremisesRecommendationDto appPremisesRecommendationDto) throws FeignException;
     void routingTaskToAo2(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,String historyRemarks) throws FeignException;
     void routBackTaskToInspector(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,String historyRemarks) throws FeignException;
-    void routTaskToRoutBack(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,String historyRemarks);
+    void routTaskToRoutBack(BaseProcessClass bpc,TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) throws TemplateException, FeignException, CloneNotSupportedException, IOException;
 
 
 

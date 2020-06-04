@@ -1238,7 +1238,7 @@ public class HcsaApplicationDelegator {
         return recommendationSelectOption;
     }
 
-    private void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
+    public void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.info(StringUtil.changeForLog("The routingTask start ..."));
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
@@ -1285,7 +1285,7 @@ public class HcsaApplicationDelegator {
             }
         }
 
-        //complated this task and create the history
+        //completed this task and create the history
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
         taskDto =  completedTask(taskDto);

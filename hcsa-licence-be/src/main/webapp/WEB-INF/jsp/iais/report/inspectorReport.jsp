@@ -401,7 +401,7 @@
                             <p>Period <strong style="color:#ff0000;"> *</strong></p>
                         </td>
                         <td class="col-xs-4">
-                            <iais:select name="periods" options="riskOption" firstOption="Please Select" onchange="javascirpt:changePeriod(this.value);" value="${appPremisesRecommendationDto.period}"/>
+                            <iais:select name="periods" options="riskOption" firstOption="Please Select" onchange="javascirpt:changePeriod();" value="${appPremisesRecommendationDto.period}"/>
                             <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
                         </td>
                         <td class="col-xs-4"></td>
@@ -471,20 +471,36 @@
     function insRepsubmit() {
         $("#mainForm").submit();
     }
-
-    function changePeriod(obj) {
-        if (obj == "Others") {
+     function changePeriod() {
+         const val = $("#periods").val();
+        if (val == "Others") {
             $("#selfPeriod").show();
+            const reg = /^[0-9]+.?[0-9]*$/;
+            const num = $("#recomInNumber").val();
+            const period = $("#chronoUnit").val();
+            if(reg.test(num)){
+                if(period.match("DTPE001")){
+                    $("#periodValue").html(num + ' '+ 'Year(s)');
+                }else if(period.match("DTPE002")){
+                    $("#periodValue").html(num + ' '+ 'Month(s)');
+                }
+            }
         } else {
             $("#selfPeriod").hide();
+            const v = $("#periods").val();
+            if(v.match("DTPE001")){
+                const num = v.substring(0, 1);
+                $("#periodValue").html(num + ' '+ 'Year(s)');
+            }else if(v.match("DTPE002")){
+                const num = v.substring(0, 1);
+                $("#periodValue").html(num + ' '+ 'Month(s)');
+            }
         }
     }
 
     function changeRecommendation(obj) {
         if (obj == "IRE001" || obj == "IRE002") {
             $("#period").show();
-            const v = $("#periods").val();
-            $("[name='readRecom']").val(v);
         } else {
             $("#period").hide();
             $("#selfPeriod").hide();
@@ -513,7 +529,6 @@
             $("#selfPeriod").hide();
         }
         if ($("#periods").val() == "Others") {
-            alert("asda");
             changePeriod("Others");
         }
         if ($('#enforcement').is(':checked')) {
