@@ -403,7 +403,7 @@ public class InspectionRectificationProDelegator {
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         InspectionReportDto inspectionReportDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
         //get fileReportId
-        AppPremisesSpecialDocDto appPremisesSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(taskDto.getRefNo()).getEntity();
+        AppPremisesSpecialDocDto appPremisesSpecialDocDto = fillupChklistService.getAppPremisesSpecialDocDtoByRefNo(taskDto.getRefNo());
         //get file report
         FileRepoDto fileRepoDto = null;
         if(appPremisesSpecialDocDto != null && !StringUtil.isEmpty(appPremisesSpecialDocDto.getFileRepoId())) {
