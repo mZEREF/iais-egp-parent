@@ -171,6 +171,14 @@ public class InspectionTaskClientFallback implements InspectionTaskClient {
     }
 
     @Override
+    public FeignResponseEntity<List<ApplicationDto>> getInspHistoryAppByLicId(String licenceId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<AppStageSlaTrackingDto> createAppStageSlaTrackingDto(AppStageSlaTrackingDto appStageSlaTrackingDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
