@@ -34,6 +34,7 @@
             <c:set var="isAppealType" value="${applicationViewDto.applicationDto.applicationType == 'APTY001'}"/>
             <c:set var="isAso" value="${taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC'}"/>
             <c:set var="isPso" value="${taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC'}"/>
+            <c:set var="isCessation" value="${applicationViewDto.applicationDto.applicationType == 'APTY008'}"/>
             <input type="hidden" id="isAppealType" value="${isAppealType}"/>
             <div class="row">
                 <div class="col-xs-12">
@@ -310,7 +311,7 @@
                                                     </div>
 
                                                     <%--application type != appeal --%>
-                                                    <c:if test="${!isAppealType}">
+                                                    <c:if test="${!isAppealType && !isCessation}">
                                                         <div class="fastTrack">
                                                             <iais:row>
                                                                 <iais:field value="Fast Tracking?" required="false"/>
