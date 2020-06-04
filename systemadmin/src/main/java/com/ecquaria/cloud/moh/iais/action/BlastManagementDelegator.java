@@ -185,7 +185,7 @@ public class BlastManagementDelegator {
         String distribution = ParamUtil.getRequestString(bpc.request,"distributionList");
         if(start != null && end !=null && start.compareTo(end)>0){
             Map<String,String> err = new HashMap<>();
-            err.put("errDate","Start Date cannot be later than End Date");
+            err.put("errDate","Scheduled Send Date From cannot be later than Scheduled Send Date To");
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(err));
         }else{
             searchParam.getParams().clear();

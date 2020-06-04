@@ -92,7 +92,7 @@ public class MassEmailDelegator {
         }else{
             setRoleSelection(bpc,HcsaServiceCacheHelper.getServiceByCode(service).getId());
         }
-
+        ParamUtil.setRequestAttr(bpc.request,"title","New");
     }
 
     /**
@@ -212,6 +212,7 @@ public class MassEmailDelegator {
         ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
         ParamUtil.setRequestAttr(bpc.request,"distribution",distributionListDto);
         ParamUtil.setRequestAttr(bpc.request, "firstOption", distributionListDto.getService());
+        ParamUtil.setRequestAttr(bpc.request,"title","Edit");
     }
 
     private void setServiceSelect(BaseProcessClass bpc){

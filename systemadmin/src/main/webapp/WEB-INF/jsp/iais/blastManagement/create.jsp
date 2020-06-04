@@ -96,16 +96,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-11 col-sm-11">
-                                <div class="text-right text-center-mobile">
-                                    <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
-                                    <button id="saveDis" type="button" class="btn btn-primary">Write Message</button>
-                                </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="text-right text-center-mobile">
+                                <button id="saveDis" type="button" class="btn btn-primary">Write Message</button>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

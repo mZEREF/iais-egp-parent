@@ -23,7 +23,7 @@
                         </ul>
                         <h3>New Mass SMS</h3>
                         <div class="form-group">
-                            <label class="col-xs-4 col-md-4 control-label" >Subject</label>
+                            <iais:field value="Header" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="subject" type="text" name="subject" value="${edit.getSubject()}">
@@ -33,15 +33,14 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-4 col-md-4 control-label">Content</label>
+                            <iais:field value="Text" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <textarea id="contentArea" style="width: 100%;height: 200px" name="messageContent" class="textarea" id="messageContent" title="content">${edit.msgContent}</textarea>
                                     <input id="contentCount" style="width: 100%;text-align: right; " value="Characters left: 160" readonly>
-                                    <span id="error_addr" name="iaisErrorMsg" class="error-msg"></span>
+                                    <span id="error_msgContent" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
-                            <span id="error_msgContent" name="iaisErrorMsg" class="error-msg"></span>
                         </div>
 
                         <div class="form-group">
@@ -53,23 +52,23 @@
                                     </div>
                                 </div>
                             </iais:value>
-                            <span id="error_msgContent" name="iaisErrorMsg" class="error-msg"></span>
+
                         </div>
 
                         <div class="form-group">
                             <label class="col-xs-4 col-md-4 control-label">Select Recipients</label>
                             <iais:value width="10">
-                                <iais:select name="distribution" options="distribution" value=""></iais:select>
+                                <iais:select name="distribution" firstOption="Please Select" options="distribution" value=""></iais:select>
                             </iais:value>
                         </div>
                     </div>
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-11 col-sm-11">
-                                <div class="text-right">
-                                    <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
-                                    <a class="btn btn-primary" id="saveDis" >Save</a>
-                                </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="text-right text-center-mobile">
+                                <a class="btn btn-primary" id="saveDis" >Save</a>
                             </div>
                         </div>
                     </div>
@@ -92,6 +91,12 @@
     $('#back').click(function(){
         $("#action").val("back")
         $("#mainForm").submit();
+    });
+    $(function(){
+        var value = $("#contentArea").val();
+        value = value.replace(/\n|\r/gi,"");
+        var res = 160 - value.length;
+        $("#contentCount").val("Characters left: "+res);
     });
     $("#contentArea").on("keyup",function () {
         var value = $(this).val();

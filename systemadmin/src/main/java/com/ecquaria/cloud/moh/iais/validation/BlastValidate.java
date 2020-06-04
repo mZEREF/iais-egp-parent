@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -8,6 +9,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -44,6 +47,17 @@ public class BlastValidate implements CustomizeValidator {
             errMap.put("HH","The field is mandatory.");
         }else if(!(StringUtils.isNumeric(MM) &&  Integer.parseInt(MM) < 60)){
             errMap.put("HH","Field format is wrong");
+        }
+        if(blastManagementDto.getSchedule() != null && HH != null && MM != null) {
+            SimpleDateFormat newformat = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
+            Date schedule = new Date();
+            schedule = blastManagementDto.getSchedule();
+            long time = schedule.getTime() + Long.parseLong(HH) * 60 * 60 * 1000 + Long.parseLong(MM) * 60 * 1000;
+            schedule.setTime(time);
+            Date now = new Date();
+            if (schedule.compareTo(now) < 0) {
+                errMap.put("date", "Send date and time cannot be earlier than now");
+            }
         }
         return errMap;
     }
