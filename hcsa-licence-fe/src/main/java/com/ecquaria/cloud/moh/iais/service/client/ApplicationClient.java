@@ -286,5 +286,6 @@ public interface ApplicationClient  {
 
     @GetMapping(value = "/iais-application/pending-app-premises",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppGrpPremisesEntityDto>> getPendAppPremises(@RequestParam("licenseeId") String licenseeId, @RequestParam("svcIdStr") String svcIdStr);
-
+    @GetMapping(value = "/appeal/licence-appeal-or-cessation-by-licence-id")
+    FeignResponseEntity<Boolean> isLiscenceAppealOrCessation(@RequestParam("licenceId") String licenceId);
 }

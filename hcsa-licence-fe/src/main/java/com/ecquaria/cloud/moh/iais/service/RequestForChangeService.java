@@ -82,5 +82,5 @@ public interface RequestForChangeService {
 
     List<String> getAdminEmail(String orgId);
 
-    List<ApplicationDto> isOtherOperation(String licenceId);
+    Boolean isOtherOperation(String licenceId);
 }

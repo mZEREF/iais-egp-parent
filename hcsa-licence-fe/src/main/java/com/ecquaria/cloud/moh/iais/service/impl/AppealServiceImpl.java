@@ -46,15 +46,26 @@ import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Date;
@@ -156,14 +167,22 @@ public class AppealServiceImpl implements AppealService {
             String filename = selectedFile.getOriginalFilename();
             req.getSession().setAttribute("file",selectedFile);
             req.setAttribute("filename",filename);
-
+            byte[] bytes = selectedFile.getBytes();
+            Long size = selectedFile.getSize();
+            appealPageDto.setFileName(filename);
+            appealPageDto.setFileSize(size);
+            appealPageDto.setFile(bytes);
         }
         else if(file!=null&&file.getSize()>0){
             if(Y.equals(isDelete)){
                 String filename = file.getOriginalFilename();
                 req.getSession().setAttribute("file",file);
                 req.setAttribute("filename",filename);
-
+                Long size = file.getSize();
+                byte[] bytes = file.getBytes();
+                appealPageDto.setFileName(filename);
+                appealPageDto.setFileSize(size);
+                appealPageDto.setFile(bytes);
             }
         }
         if(N.equals(isDelete)){
@@ -240,6 +259,14 @@ public class AppealServiceImpl implements AppealService {
                 appPremiseMiscDto.setRemarks(remarks);
                 String appealFor = appealPageDto.getAppealFor();
                 String type = appealPageDto.getType();
+                byte[] file = appealPageDto.getFile();
+                String fileName = appealPageDto.getFileName();
+                File updateFile=new File(fileName);
+                inputStreamToFile(updateFile,file);
+                FileItem fileItem = getFileItem(updateFile, fileName);
+                CommonsMultipartFile commonsMultipartFile=new CommonsMultipartFile(fileItem);
+                request.getSession().setAttribute("file",commonsMultipartFile);
+                request.getSession().setAttribute("filename",fileName);
                 typeApplicationOrLicence(request,type,appealFor);
                 request.setAttribute("appPremiseMiscDto",appPremiseMiscDto);
                 request.getSession().setAttribute(TYPE,type);
@@ -760,7 +787,7 @@ public class AppealServiceImpl implements AppealService {
 
         appealDto.setAppId(applicationDto.getId());
         appealDto.setApplicationDto(list);
-            appealDto.setAppealType(ApplicationConsts.APPEAL_TYPE_APPLICAITON);
+        appealDto.setAppealType(ApplicationConsts.APPEAL_TYPE_APPLICAITON);
         //if infomation
         if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
             applicationDto1.setVersion(applicationDto.getVersion()+1);
@@ -882,6 +909,7 @@ public class AppealServiceImpl implements AppealService {
                     AppPremisesSpecialDocDto appPremisesSpecialDocDto=new AppPremisesSpecialDocDto();
                     appPremisesSpecialDocDto.setDocName(filename);
                     appPremisesSpecialDocDto.setMd5Code(s);
+                    appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
                     appPremisesSpecialDocDto.setFileRepoId(fileToRepo);
                     if(loginContext!=null){
                         appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
@@ -998,6 +1026,72 @@ public class AppealServiceImpl implements AppealService {
         }
 
         return true;
+    }
+
+
+    private FileItem getFileItem(File file, String fieldName){
+        FileItemFactory factory = new DiskFileItemFactory(16, null);
+        FileItem  item = factory.createItem(fieldName, "text/plain", true, file.getName());
+        int bytesRead = 0;
+        byte[] buffer = new byte[8192];
+        FileInputStream fis = null;
+        OutputStream os = null;
+        try {
+            fis = new FileInputStream(file);
+            os = item.getOutputStream();
+            while((bytesRead = fis.read(buffer, 0, 8192)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if(os != null) {
+                    os.close();
+                }
+                if(fis != null) {
+                    fis.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return item;
+    }
+
+    private static void inputStreamToFile(InputStream ins, File file) {
+        FileOutputStream os = null;
+        try {
+            os = new FileOutputStream(file);
+            int bytesRead = 0;
+            byte[] buffer = new byte[1024];
+            while((bytesRead = ins.read(buffer)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+        }catch(Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }finally {
+            try {
+                if(os != null) {
+                    os.close();
+                }
+                if(ins != null) {
+                    ins.close();
+                }
+            }catch(IOException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
+    }
+    private static void inputStreamToFile(File file,byte [] bytes) {
+        FileOutputStream os = null;
+        try {
+            os = new FileOutputStream(file);
+            os.write(bytes);
+        }catch (Exception e){
+
+        }
     }
 
 }

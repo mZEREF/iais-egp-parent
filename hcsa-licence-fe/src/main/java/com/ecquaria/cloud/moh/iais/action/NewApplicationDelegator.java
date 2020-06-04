@@ -252,6 +252,7 @@ public class NewApplicationDelegator {
     private void removeSession(BaseProcessClass bpc){
         bpc.request.getSession().removeAttribute("oldSubmitAppSubmissionDto");
         bpc.request.getSession().removeAttribute("submitAppSubmissionDto");
+        bpc.request.getSession().removeAttribute("appSubmissionDtos");
     }
     /**
      * StartStep: Prepare
@@ -514,7 +515,9 @@ public class NewApplicationDelegator {
         }
         Double total=0.0;
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos=IaisCommonUtils.genNewArrayList();
-        total+=appSubmissionDto.getAmount();
+        if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())&&!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            total+=appSubmissionDto.getAmount();
+        }
         if(appSubmissionDtos!=null&&!appSubmissionDtos.isEmpty()){
             for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtos){
                 Double amount = appSubmissionDto1.getAmount();
@@ -1263,21 +1266,27 @@ public class NewApplicationDelegator {
 
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
 
-
+        Boolean otherOperation = requestForChangeService.isOtherOperation(appSubmissionDto.getLicenceId());
+        if(!otherOperation){
+          /*  ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
+            ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
+            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, MessageUtil.getMessageDesc("ERRRFC001"));
+            return ;*/
+        }
         boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
         //is need to pay ?
         String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
         if(!IaisCommonUtils.isEmpty(applicationDtos)){
-            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
+       /*     ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
             ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, MessageUtil.getMessageDesc("ERRRFC001"));
-            return ;
+            return ;*/
         }
+
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         boolean grpPremiseIsChange=false;
         boolean serviceIsChange=false;
-        boolean premiseDocChange=false;
         for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
             appGrpPremisesDto.setLicenceDtos(null);
         }
@@ -1300,12 +1309,21 @@ public class NewApplicationDelegator {
                 List<LicenceDto> attribute =(List<LicenceDto>)bpc.request.getSession().getAttribute("selectLicence" + i);
                 if(attribute!=null){
                     for(LicenceDto licenceDto : attribute){
-                        List<ApplicationDto> appByLicIdAndExcludeNew = requestForChangeService.getAppByLicIdAndExcludeNew(licenceDto.getId());
-                        if(!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNew)){
+                        Boolean otherLicenceOperation = requestForChangeService.isOtherOperation(licenceDto.getId());
+                        if(!otherLicenceOperation){
                             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
                             ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
                             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, MessageUtil.getMessageDesc("ERRRFC001"));
                             return ;
+                        }
+                        if(grpPremiseIsChange){
+                         /*   List<ApplicationDto> appByLicIdAndExcludeNew = requestForChangeService.getAppByLicIdAndExcludeNew(licenceDto.getId());
+                            if(!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNew)){
+                                ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
+                                ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
+                                ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, MessageUtil.getMessageDesc("ERRRFC001"));
+                                return ;
+                            }*/
                         }
                     }
                 }
@@ -1670,8 +1688,11 @@ public class NewApplicationDelegator {
         changePerson.setAutoRfc(true);
         String changePersonDraftNo = changePerson.getDraftNo();
         if(StringUtil.isEmpty(changePersonDraftNo)){
-            String draftNo = appSubmissionService.getDraftNo(changePerson.getAppType());
-            changePerson.setDraftNo(draftNo);
+            if(StringUtil.isEmpty(changePerson.getDraftNo())){
+                String draftNo = appSubmissionService.getDraftNo(changePerson.getAppType());
+                changePerson.setDraftNo(draftNo);
+            }
+
         }
         changePerson.setAmount(0.0);
         changePerson.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);

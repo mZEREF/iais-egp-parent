@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineA
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
@@ -117,7 +118,8 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request,"totalStr",null);
         ParamUtil.setSessionAttr(bpc.request,"totalAmount",null);
         ParamUtil.setSessionAttr(bpc.request,"userAgreement",null);
-
+        //inbox draft number
+        String oldDraftNumber= ParamUtil.getMaskedString(bpc.request, "DraftNumber");
         //init page value
         //instructions
         ParamUtil.setRequestAttr(bpc.request,"page_value",PAGE1);
@@ -220,13 +222,19 @@ public class WithOutRenewalDelegator {
             String licenseeId = interInboxUserDto.getLicenseeId();
             appSubmissionDto.setLicenseeId(licenseeId);
 
-            String draftNumber = appSubmissionService.getDraftNo(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+
             String groupNumber =  appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
 
-            log.info(StringUtil.changeForLog("without renewal deafrt number =====>" + draftNumber));
-            log.info(StringUtil.changeForLog("without renewal group number =====>" + groupNumber));
 
-            appSubmissionDto.setDraftNo(draftNumber);
+            log.info(StringUtil.changeForLog("without renewal group number =====>" + groupNumber));
+            if(StringUtil.isEmpty(oldDraftNumber)){
+                String draftNumber = appSubmissionService.getDraftNo(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+                appSubmissionDto.setDraftNo(draftNumber);
+                log.info(StringUtil.changeForLog("without renewal deafrt number =====>" + draftNumber));
+            }else {
+                appSubmissionDto.setDraftNo(oldDraftNumber);
+            }
+
             appSubmissionDto.setAppGrpNo(groupNumber);
             appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
@@ -478,6 +486,7 @@ public class WithOutRenewalDelegator {
                                 }else {
                                     appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
                                 }
+                                appSubmissionDtoByLicenceId.setAppGrpPrimaryDocDtos(null);
                                 RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
                             /*    NewApplicationDelegator.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);*/
                                 rfcAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
@@ -498,14 +507,16 @@ public class WithOutRenewalDelegator {
                 log.error(StringUtil.changeForLog("feeDto detailFeeDtos null"));
             }
             Double amount = feeDto.getTotal();
-      /*      Double lateFee=0.0;
+            Double lateFee=0.0;
             for(FeeExtDto feeExtDto : detailFeeDtos){
                 Double lateFeeAmoumt = feeExtDto.getLateFeeAmoumt();
-                lateFee+=lateFeeAmoumt;
+                if(lateFeeAmoumt!=null){
+                    lateFee+=lateFeeAmoumt;
+                }
             }
             appFeeDetailsDto.setAdmentFee(0.0);
             appFeeDetailsDto.setLaterFee(lateFee);
-            appFeeDetailsDto.setBaseFee(amount);*/
+            appFeeDetailsDto.setBaseFee(amount);
             if(!StringUtil.isEmpty(amount)){
                 renewTotal+=amount;
                 total +=amount;
@@ -622,8 +633,8 @@ public class WithOutRenewalDelegator {
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
             appSubmissionDto.setAppGrpNo(appGrpNo);
             appSubmissionDto.setAppGrpId(appSubmissionDtos3.get(0).getAppGrpId());
-            appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAmount(renewTotal);
-            appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAmountStr(Formatter.formatterMoney(renewTotal));
+            appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAmount(appSubmissionDto.getAmount());
+            appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAmountStr(Formatter.formatterMoney(appSubmissionDto.getAmount()));
             appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setApplicationType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
             appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setGroupNo(appSubmissionDto.getAppGrpNo());
             appSubmissionDto.getAppSvcRelatedInfoDtoList().addAll(appSvcRelatedInfoDtos);
@@ -660,6 +671,53 @@ public class WithOutRenewalDelegator {
 
     //doLicenceReview
     public void doLicenceReview(BaseProcessClass bpc)throws Exception{
+        AppSubmissionDto oldAppSubmissionDto  =(AppSubmissionDto)bpc.request.getSession().getAttribute("oldAppSubmissionDto");
+        List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+        RenewDto renewDto = (RenewDto)ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
+        if(renewDto!=null){
+          /*  List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
+            for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
+                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+                Boolean otherOperation = requestForChangeService.isOtherOperation(appSubmissionDto.getLicenceId());
+                if(!otherOperation){
+                    ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE2);
+                    return;
+                }
+                boolean flag=false;
+                if(!oldAppSubmissionDtoAppGrpPremisesDtoList.equals(appGrpPremisesDtoList)){
+                    flag=true;
+                }
+                if(flag){
+                    List<ApplicationDto> appByLicIdAndExcludeNew = requestForChangeService.getAppByLicIdAndExcludeNew(appSubmissionDto.getLicenceId());
+                    if(!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNew)){
+                        ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE2);
+                        return;
+                    }
+                    for(int i=0;i<appGrpPremisesDtoList.size();i++){
+                        List<LicenceDto> licenceDtos =(List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence"+i);
+                        if(licenceDtos!=null){
+                            for(LicenceDto licenceDto : licenceDtos){
+                                if(flag){
+                                    List<ApplicationDto> appByLicIdAndExcludeNewOther = requestForChangeService.getAppByLicIdAndExcludeNew(licenceDto.getId());
+                                    if(!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNewOther)){
+                                        ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE2);
+                                        return;
+                                    }
+                                }
+                                Boolean otherLicenceOperation = requestForChangeService.isOtherOperation(licenceDto.getId());
+                                if(!otherLicenceOperation){
+                                    ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE2);
+                                    return;
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }*/
+        }
+
+
         //go page3
         ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE3);
     }

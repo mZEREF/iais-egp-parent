@@ -402,9 +402,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public List<ApplicationDto> isOtherOperation(String licenceId) {
+    public Boolean isOtherOperation(String licenceId) {
 
-        return null;
+        return   applicationClient.isLiscenceAppealOrCessation(licenceId).getEntity();
     }
 
 }
