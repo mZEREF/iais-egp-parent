@@ -61,7 +61,7 @@
                           <label style="font-size: 16px">Non-Available Date Description</label>
                         </div>
                         <div class="col-md-6">
-                          <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" maxlength="255" disabled><c:out value="${inspNonAvailabilityDto.nonAvaDescription}"></c:out></textarea>
+                          <textarea id="blockOutDesc" name="blockOutDesc" cols="70" readonly="readonly" rows="7" maxlength="255" disabled><c:out value="${inspNonAvailabilityDto.nonAvaDescription}"></c:out></textarea>
                         </div>
                       </div>
                       <div class="row">

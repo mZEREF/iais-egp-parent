@@ -224,7 +224,7 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
     public List<String> getApptUserSysCorrIdByLoginId(String loginId, List<String> workGroupIds) {
         ApptAgencyUserDto apptAgencyUserDto = appointmentClient.getApptAgencyUserDtoLogin(loginId).getEntity();
         List<ApptUserSystemCorrelationDto> apptUserSystemCorrelationDtos;
-        if(apptAgencyUserDto == null){
+        if(apptAgencyUserDto == null || StringUtil.isEmpty(apptAgencyUserDto.getId())){
             ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
             List<String> workGroupNames = getWorkGroupNamesByIds(workGroupIds);
             apptAppInfoShowDto.setUserLoginId(loginId);
