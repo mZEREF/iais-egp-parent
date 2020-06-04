@@ -1369,7 +1369,7 @@ public class LicenceApproveBatchjob {
         } else {
             if (applicationGroupDto != null) {
                 Date startDate = null;
-                if (applicationDto != null && originLicenceDto != null && (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
+                if (applicationDto != null && originLicenceDto != null && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) {
                     log.info(StringUtil.changeForLog("The  getLicenceDto APPType is Renew ..."));
                     startDate = originLicenceDto.getExpiryDate();
                     log.info(StringUtil.changeForLog("The  getLicenceDto originLicenceDto expiryday is " + startDate));
