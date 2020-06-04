@@ -328,17 +328,15 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         for(InspecUserRecUploadDto inspecUserRecUploadDto : inspectionPreTaskDto.getInspecUserRecUploadDtos()){
             AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto = inspecUserRecUploadDto.getAppPremisesPreInspectionNcItemDto();
             if(appPremisesPreInspectionNcItemDto != null){
+                appPremisesPreInspectionNcItemDto.setIsRecitfied(1);
+                appPremisesPreInspectionNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 for(String checkRecRfiNcItem : checkRecRfiNcItems) {
                     if(checkRecRfiNcItem.equals(appPremisesPreInspectionNcItemDto.getId())) {
                         appPremisesPreInspectionNcItemDto.setIsRecitfied(0);
                         appPremisesPreInspectionNcItemDto.setFeRectifiedFlag(0);
-                        appPremisesPreInspectionNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    } else {
-                        appPremisesPreInspectionNcItemDto.setIsRecitfied(1);
-                        appPremisesPreInspectionNcItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     }
-                    appPremisesPreInspectionNcItemDtos.add(appPremisesPreInspectionNcItemDto);
                 }
+                appPremisesPreInspectionNcItemDtos.add(appPremisesPreInspectionNcItemDto);
             }
         }
         appPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.saveAppPreNcItem(appPremisesPreInspectionNcItemDtos).getEntity();
