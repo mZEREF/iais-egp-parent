@@ -172,9 +172,11 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
                     }
                 }
             }
-
+          Map<String,String> map = getAllServiceByAuditTaskDataFillterDtoList(auditTaskDtos);
+            for(AuditTaskDataFillterDto auditTaskDataFillterDto : dtoList){
+                auditTaskDataFillterDto.setSvcCode(map.get(auditTaskDataFillterDto.getSvcName()));
+            }
           if(dto.getGenerateNum() != null && dto.getGenerateNum() >0)  {
-              Map<String,String> map = getAllServiceByAuditTaskDataFillterDtoList(auditTaskDtos);
               getRiskFillter(dto, auditTaskDtos,map);
           }
 
