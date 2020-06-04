@@ -101,7 +101,7 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
                 apptNonAvailabilityDateDto1.setUserCorrId(userSysCorrId);
                 apptNonAvailabilityDateDto1.setNonAvaStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 apptNonAvailabilityDateDto1.setAuditTrailDto(auditTrailDto);
-                appointmentClient.createNonAvailability(apptNonAvailabilityDateDto1);
+                //appointmentClient.createNonAvailability(apptNonAvailabilityDateDto1);
                 //add create ApptUserCalendarDto List
                 ApptUserCalendarDto apptUserCalendarDto = new ApptUserCalendarDto();
                 apptUserCalendarDto.setSysUserCorrId(userSysCorrId);
@@ -111,7 +111,7 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
                 apptUserCalendarDtos.add(apptUserCalendarDto);
             }
             //create do
-            appointmentClient.createApptUserCalendarDtoList(apptUserCalendarDtos);
+            //appointmentClient.createApptUserCalendarDtoList(apptUserCalendarDtos);
         }
         return null;
     }

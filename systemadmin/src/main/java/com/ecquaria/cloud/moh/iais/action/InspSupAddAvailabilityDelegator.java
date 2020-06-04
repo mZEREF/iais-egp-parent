@@ -86,6 +86,7 @@ public class InspSupAddAvailabilityDelegator {
         ParamUtil.setSessionAttr(bpc.request, "inspSupAddAvailabilityType", null);
         ParamUtil.setSessionAttr(bpc.request, "nonAvaUserName", null);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "containDate", null);
     }
 
     /**

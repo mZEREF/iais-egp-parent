@@ -629,6 +629,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     @Override
     public ApptInspectionDateDto getApptSpecificDate(String taskId, ApptInspectionDateDto apptInspectionDateDto) {
         TaskDto taskDto = taskService.getTaskById(taskId);
+        ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(taskDto.getRefNo()).getEntity();
+        String appType = applicationDto.getApplicationType();
         //get All app from the same Premises
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = getAppPremisesCorrelationsByPremises(taskDto.getRefNo());
         //filter cancel application
@@ -678,7 +680,11 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             //get service id by task refno
             String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
             //get manHours by service and stage
-            int manHours = getServiceManHours(tDto.getRefNo(), serviceId);
+            ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
+            apptAppInfoShowDto.setApplicationType(appType);
+            apptAppInfoShowDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
+            apptAppInfoShowDto.setServiceId(serviceId);
+            int manHours = getServiceManHours(tDto.getRefNo(), apptAppInfoShowDto);
             //Divide the time according to the number of people
             List<TaskDto> sizeTask = organizationClient.getCurrTaskByRefNo(tDto.getRefNo()).getEntity();
             double hours = manHours;
@@ -692,7 +698,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         return apptInspectionDateDto;
     }
 
-    private int getServiceManHours(String refNo, String serviceId) {
+    private int getServiceManHours(String refNo, ApptAppInfoShowDto apptAppInfoShowDto) {
         int manHours;
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(refNo, InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR).getEntity();
         if(appPremisesRecommendationDto != null){
@@ -700,10 +706,10 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             if(!StringUtil.isEmpty(hours)){
                 manHours = Integer.parseInt(hours);
             } else {
-                manHours = hcsaConfigClient.getManHour(serviceId, HcsaConsts.ROUTING_STAGE_INS).getEntity();
+                manHours = hcsaConfigClient.getManHour(apptAppInfoShowDto).getEntity();
             }
         } else {
-            manHours = hcsaConfigClient.getManHour(serviceId, HcsaConsts.ROUTING_STAGE_INS).getEntity();
+            manHours = hcsaConfigClient.getManHour(apptAppInfoShowDto).getEntity();
         }
         return manHours;
     }
