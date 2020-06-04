@@ -879,7 +879,7 @@ public class HcsaApplicationDelegator {
             String componentValue = historyExtDto.getComponentValue();
             if("N".equals(componentValue)){
                 List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),
-                        taskDto.getTaskKey(),applicationViewDto.getApplicationDto().getApplicationType());
+                        stageId,applicationViewDto.getApplicationDto().getApplicationType());
                 if(hcsaSvcRoutingStageDtoList != null){
                     HcsaSvcRoutingStageDto nextStage = hcsaSvcRoutingStageDtoList.get(0);
                     String stageCode = nextStage.getStageCode();
