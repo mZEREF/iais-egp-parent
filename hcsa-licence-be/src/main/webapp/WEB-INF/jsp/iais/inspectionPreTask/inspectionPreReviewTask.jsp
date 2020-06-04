@@ -213,6 +213,15 @@
                                   <textarea maxlength="300" id="preInspecComments" name="preInspecComments" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.reMarks}"></c:out></textarea>
                                 </iais:value>
                               </iais:row>
+                              <div id="rfiSelect">
+                                <iais:row>
+                                  <iais:field value="Sections Allowed for Change"
+                                              required="false"/>
+                                  <iais:value width="10">
+                                    <p id="selectDetail"></p>
+                                  </iais:value>
+                                </iais:row>
+                              </div>
                             </div>
                             <c:if test="${'APTY002' eq applicationViewDto.applicationDto.applicationType}">
                               <div class="row">
@@ -261,6 +270,7 @@
 <%@ include file="../inspectionncList/uploadFile.jsp" %>
 <script type="text/javascript">
     $(document).ready(function() {
+
         var actionValue = $("#actionValue").val();
         if(actionValue == "edit"){
             inspectionPreTaskJump("edit");
@@ -298,9 +308,9 @@
         var check = $("#appPreInspRfiCheck").prop("checked");
         if(check){
             showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
-            $("#comments").remove('hidden');
+            $("#preInspRfiComments").removeClass('hidden');
         } else {
-            $("#comments").addClass('hidden');
+            $("#preInspRfiComments").addClass('hidden');
         }
     });
 
