@@ -1,7 +1,5 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import java.io.Serializable;
 import java.util.Map;
@@ -29,7 +27,7 @@ public final class FilterParameter {
 
     public static class Builder{
         private int pageNo = 1;
-        private int pageSize = SpringContextHelper.getContext().getBean(SystemParamConfig.class).getPagingSize();
+        private int pageSize = 10;
         private Class<? extends Serializable> clz;
         private String searchAttr;
         private String resultAttr;
