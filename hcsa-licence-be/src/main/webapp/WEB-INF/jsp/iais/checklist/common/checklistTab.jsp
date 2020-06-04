@@ -1,5 +1,4 @@
-<div class="tab-pane" id="tabInspection" role="tabpanel">
-    <div class="row">
+<div class="row">
         <div class="col-xs-12">
             <div class="center-content">
                 <c:forEach var = "item" items="${inspectionChecklistAttr}" varStatus="status">
@@ -96,4 +95,3 @@
             </div>
         </div>
     </div>
-</div>

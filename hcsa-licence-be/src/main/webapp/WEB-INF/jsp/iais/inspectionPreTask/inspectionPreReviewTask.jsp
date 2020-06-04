@@ -152,9 +152,10 @@
                             </div>
                           </div>
                         </div>
-
-                        <%@ include file="../checklist/common/checklistTab.jsp" %>
-                        <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionPreTaskEdit()">Update</button>
+                        <div class="tab-pane" id="tabInspection" role="tabpanel">
+                          <%@ include file="../checklist/common/checklistTab.jsp" %>
+                          <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionPreTaskEdit()">Update</button>
+                        </div>
                         <div class="tab-pane" id="tabProcessing" role="tabpanel">
                           <div class="alert alert-info" role="alert">
                             <strong>

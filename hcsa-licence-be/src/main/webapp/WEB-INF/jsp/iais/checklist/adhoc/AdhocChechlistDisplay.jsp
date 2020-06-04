@@ -32,7 +32,9 @@
 
                 <br><br>
                 <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
-                <%@ include file="../common/checklistTab.jsp" %>
+                <div class="tab-pane" id="tabInspection" role="tabpanel">
+                    <%@ include file="../common/checklistTab.jsp" %>
+                </div>
                 <div class="row">
                 <div class="col-xs-12 col-sm-12">
                     <div class="text-right text-center-mobile">
