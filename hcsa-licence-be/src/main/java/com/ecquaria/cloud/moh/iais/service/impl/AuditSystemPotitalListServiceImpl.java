@@ -153,7 +153,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             Boolean isHaveSAndEndDate = StringUtil.isEmpty(dto.getLastInspectionStart()) && StringUtil.isEmpty(dto.getLastInspectionEnd());
             for (AuditTaskDataDto temp : searchResult.getRows()) {
                 AuditFillterDto auditFillterDto =  fillUpCheckListGetAppClient. getAuditTaskDataDtoByAuditTaskDataDto(temp).getEntity();
-                AuditTaskDataFillterDto auditTaskDataFillterDto = getAuditTaskDataFillterDto(temp,Boolean.TRUE,Boolean.FALSE,Boolean.FALSE);
+                AuditTaskDataFillterDto auditTaskDataFillterDto = getAuditTaskDataFillterDto(temp,Boolean.TRUE,Boolean.FALSE);
                 auditTaskDataFillterDto.setLastInspEnd(Formatter.formatDate(auditFillterDto.getLastEndDate()));
                 auditTaskDataFillterDto.setLastInspStart(Formatter.formatDate(auditFillterDto.getLastStartDate()));
                 auditTaskDataFillterDto.setResultComplicance(auditFillterDto.getCompliance());

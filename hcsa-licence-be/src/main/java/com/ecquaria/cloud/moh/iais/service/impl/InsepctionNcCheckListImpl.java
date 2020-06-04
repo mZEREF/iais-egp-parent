@@ -282,8 +282,10 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     public void saveLitterFile(InspectionFDtosDto serListDto){
         if(serListDto.getAppPremisesSpecialDocDto() != null ){
             AppPremisesSpecialDocDto appPremisesSpecialDocDto = serListDto.getAppPremisesSpecialDocDto();
-            if(StringUtil.isEmpty(appPremisesSpecialDocDto.getId())){
-                uploadFileClient.deleteAppIntranetDocsById(appPremisesSpecialDocDto.getId());
+            if( StringUtil.isEmpty(appPremisesSpecialDocDto.getId())){
+                if(serListDto.getCopyAppPremisesSpecialDocDto() != null){
+                    uploadFileClient.deleteAppIntranetDocsById(serListDto.getCopyAppPremisesSpecialDocDto().getId());
+                }
                 String oldFileGuid = serListDto.getOldFileGuid();
                 if(!StringUtil.isEmpty(oldFileGuid)){
                     fileRepoClient.removeFileById(oldFileGuid);
