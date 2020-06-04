@@ -55,6 +55,12 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
+                                            <iais:field value="Status :"/>
+                                            <iais:value width="18">
+                                                <iais:select id="rfiViewStatus" name="status" options="salutationStatusList" firstOption="Please Select"  filterValue="RFIST002"></iais:select>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
                                             <iais:value width="18">
                                                 <label>
                                                     <input type="checkbox" disabled name="reqType" checked/>Information
@@ -76,13 +82,25 @@
                                                 </label>
                                             </iais:value>
                                         </iais:row>
-                                        <iais:row style="text-align:center;">
-                                            <iais:value width="18">
-                                                <label>
-                                                    <textarea id="userReply" rows="10" cols="100">${licPreReqForInfoDto.userReply}</textarea>
-                                                </label>
-                                            </iais:value>
-                                        </iais:row>
+                                        <c:if test="${not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}">
+                                            <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}" var="rfiReply" varStatus="rfiReplyStatus">
+                                                <iais:row style="text-align:center;">
+                                                    <iais:value width="18">
+                                                        <label>
+                                                            <span>${rfiReply.title}</span>
+                                                        </label>
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row style="text-align:center;">
+                                                    <iais:value width="18">
+                                                        <label>
+                                                            <textarea id="userReply" rows="10" cols="100">${rfiReply.userReply}</textarea>
+                                                        </label>
+                                                    </iais:value>
+                                                </iais:row>
+                                            </c:forEach>
+                                        </c:if>
+
                                         <c:if test="${licPreReqForInfoDto.needDocument}">
                                             <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoDocDto}" var="rfiDoc">
                                                 <iais:row >
@@ -90,8 +108,8 @@
                                                         <div class="pop-up">
                                                             <div class="pop-up-body">
 
-                                                                <div class="field col-sm-4 control-label formtext"><label>Docment for Premise:</label></div>
-                                                                <span class="fileType" style="display:none">Docment1</span><span class="fileFilter" style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
+                                                                <div class="field col-sm-4 control-label formtext"><label>${rfiDoc.title} :</label></div>
+                                                                <span class="fileType" style="display:none">Document1</span><span class="fileFilter" style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
                                                                 <div class="control col-sm-5">
                                                                     <div class="fileList ">
                                                                     <span class="filename server-site" id="130">
@@ -105,8 +123,8 @@
                                                     </iais:value>
                                                 </iais:row>
                                             </c:forEach>
-
                                         </c:if>
+
                                         <iais:action style="text-align:left;">
                                             <a  onclick="javascript:doBack()">< Back</a>
                                         </iais:action>
@@ -128,7 +146,12 @@
         showWaiting();SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doExtends(reqInfoId) {
-        showWaiting();SOP.Crud.cfxSubmit("mainForm", "update",reqInfoId);
+        var status=$('.rfiViewStatus').val();
+        if(status==="RFI003"){
+            showWaiting();SOP.Crud.cfxSubmit("mainForm", "update",reqInfoId);
+        }else {
+            doCancel(reqInfoId)
+        }
     }
     function doCancel(reqInfoId) {
         showWaiting();SOP.Crud.cfxSubmit("mainForm", "cancel",reqInfoId);

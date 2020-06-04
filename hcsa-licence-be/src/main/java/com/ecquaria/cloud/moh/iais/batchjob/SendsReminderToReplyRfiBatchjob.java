@@ -97,10 +97,18 @@ public class SendsReminderToReplyRfiBatchjob {
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));
         StringBuilder stringBuilder=new StringBuilder();
-        stringBuilder.append("<p>   1. ").append("Information ").append(licPremisesReqForInfoDto.getOfficerRemarks().split("\\|")[0]).append("</p>");
-        if(licPremisesReqForInfoDto.isNeedDocument()){
-            stringBuilder.append("<p>   2. ").append("Documentations  ").append(licPremisesReqForInfoDto.getOfficerRemarks().split("\\|")[0]).append("</p>");
+        int i=0;
+        if(!IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos())){
+            for ( i=0;i<licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().size();i++) {
+                stringBuilder.append("<p>   ").append(i+1).append(". ").append("information  ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
+            }
         }
+        if(licPremisesReqForInfoDto.isNeedDocument()){
+            for (int j=0;j<licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().size();j++) {
+                stringBuilder.append("<p>   ").append(j+i+1).append(". ").append("Documentations  ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().get(i).getTitle()).append("</p>");
+            }
+        }
+
         map.put("DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
         map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
         String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
@@ -136,6 +144,13 @@ public class SendsReminderToReplyRfiBatchjob {
         Calendar cal = Calendar.getInstance();
         cal.setTime(licPremisesReqForInfoDto.getDueDateSubmission());
         cal.add(Calendar.DAY_OF_MONTH, RequestForInformationConstants.REMIND_INTERVAL_DAY);
+        Calendar calendar=Calendar.getInstance();
+        calendar.add(Calendar.DATE,-RequestForInformationConstants.REMINDER_DAYS_LIMIT);
+        Date outDate=calendar.getTime();
+        licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_RETRIGGER);
+        if(licPremisesReqForInfoDto.getReminder()>RequestForInformationConstants.MAX_REMINDERS_NUMBER && licPremisesReqForInfoDto.getRequestDate().after(outDate)){
+            licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_CLOSE);
+        }
         licPremisesReqForInfoDto.setDueDateSubmission(cal.getTime());
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
         licPremisesReqForInfoDto1.setAction("update");

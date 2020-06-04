@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoReplyDto;
@@ -115,7 +116,7 @@ public class ResponseForInformationDelegator {
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(crudActionValue);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        errorMap=validate(bpc.request);
+        errorMap=validate(bpc.request,licPremisesReqForInfoDto);
         if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
@@ -142,7 +143,7 @@ public class ResponseForInformationDelegator {
             info.setUserReply(userReply);
             i++;
         }
-
+        licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_CLOSE);
         licPremisesReqForInfoDto.setReplyDate(new Date());
         LicenseeDto licenseeDto=licenceViewService.getLicenseeDtoBylicenseeId(licPremisesReqForInfoDto.getLicenseeId());
         licPremisesReqForInfoDto.setReplyUser(licenseeDto.getName());
@@ -163,30 +164,45 @@ public class ResponseForInformationDelegator {
         log.debug(StringUtil.changeForLog("****The***** " +methodName +" ******Start ****"));
     }
 
-    public Map<String, String> validate(HttpServletRequest httpServletRequest) {
+    public Map<String, String> validate(HttpServletRequest httpServletRequest ,LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) httpServletRequest.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        CommonsMultipartFile commonsMultipartFile= (CommonsMultipartFile) mulReq.getFile( "UploadFile");
-        LicPremisesReqForInfoDto licPreReqForInfoDto= (LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(httpServletRequest ,"licPreReqForInfoDto");
-        if(licPreReqForInfoDto.isNeedDocument()){
-            if(commonsMultipartFile==null){
-                errMap.put("UploadFile","The file cannot be empty.");
-            }else{
-                Map<String, Boolean> booleanMap = ValidationUtils.validateFile(commonsMultipartFile);
-                Boolean fileSize = booleanMap.get("fileSize");
-                Boolean fileType = booleanMap.get("fileType");
-                //size
-                if(!fileSize){
-                    errMap.put("UploadFile","The file size must less than " + 4 + "M.");
+        int i=0;
+        if(IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto())){
+            for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
+                CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+i);
+                if(!(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename()))){
+                    errMap.put("UploadFile"+i,"The file cannot be empty.");
                 }
-                //type
-                if(!fileType){
-                    errMap.put("UploadFile","The file type is invalid.");
+                LicPremisesReqForInfoDto licPreReqForInfoDto= (LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(httpServletRequest ,"licPreReqForInfoDto");
+                if(licPreReqForInfoDto.isNeedDocument()){
+                    if(file==null){
+                        errMap.put("UploadFile"+i,"The file cannot be empty.");
+                    }else{
+                        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file);
+                        Boolean fileSize = booleanMap.get("fileSize");
+                        Boolean fileType = booleanMap.get("fileType");
+                        //size
+                        if(!fileSize){
+                            errMap.put("UploadFile"+i,"The file size must less than " + 4 + "M.");
+                        }
+                        //type
+                        if(!fileType){
+                            errMap.put("UploadFile"+i,"The file type is invalid.");
+                        }
+                    }
                 }
+                i++;
             }
-            String userReply=mulReq.getParameter("userReply");
-            if(userReply.isEmpty()){
-                errMap.put("userReply","ERR009");
+        }
+        i=0;
+        if(IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos())){
+            for(LicPremisesReqForInfoReplyDto info :licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos()){
+                String userReply=mulReq.getParameter("userReply"+i);
+                if(StringUtil.isEmpty(userReply)){
+                    errMap.put("userReply"+i,"ERR009");
+                }
+                i++;
             }
         }
 

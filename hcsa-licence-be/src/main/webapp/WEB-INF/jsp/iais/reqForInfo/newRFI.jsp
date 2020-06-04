@@ -49,6 +49,13 @@
                                 <span id="error_Due_date" name="iaisErrorMsg" class="error-msg" ></span>
                             </div>
                             <div class="row">
+                                <label class="col-xs-9 col-md-4 control-label" > Status</label>
+                                <label >
+                                    <iais:select name="status" options="salutationStatusList" firstOption="Please Select" value="${newRfi.status}"></iais:select>
+                                </label>
+                                <span id="error_Status" name="iaisErrorMsg" class="error-msg" ></span>
+                            </div>
+                            <div class="row">
                                 <label class="col-xs-9 col-md-3 control-label">
                                     <input type="checkbox" onchange="checkInfo()" value="information" name = "info" <c:if test="${newRfi.infoChk!=null}">checked</c:if> />&nbsp;Information
                                 </label>
@@ -61,6 +68,7 @@
                             <div class="row">
                                 <label class="col-xs-9 col-md-3 control-label" ></label><span class="error-msg" name="iaisErrorMsg" id="error_rfiSelect"></span>
                             </div>
+
 
                             <div id="infohidden" class="reqForInfoContentInfo  hidden">
                                 <input type="hidden" name="lengthsInfo" value="0" />
@@ -78,7 +86,7 @@
                                                     <label class="col-xs-9 col-md-3 control-label" ></label>
                                                     <div class=" col-xs-7 col-sm-4 col-md-5">
                                                         <label>
-                                                            <textarea  name="infoTitle0" rows="8" style=" font-weight:normal;" cols="70">${newRfi.infoTitle[0]}</textarea><span id="error_infoTitle0" name="iaisErrorMsg" class="error-msg" ></span>
+                                                            <textarea  name="infoTitle0" rows="8" style=" font-weight:normal;" maxlength="500" cols="70">${newRfi.infoTitle[0]}</textarea><span id="error_infoTitle0" name="iaisErrorMsg" class="error-msg" ></span>
                                                         </label>
                                                     </div>
                                                 </div>
@@ -108,7 +116,7 @@
                                                                 <label class="col-xs-9 col-md-3 control-label" ></label>
                                                                 <div class=" col-xs-7 col-sm-4 col-md-5">
                                                                     <label>
-                                                                        <textarea  name="infoTitle${statusInfo.index+1}" rows="8" style=" font-weight:normal;" cols="70">${newRfi.infoTitle[0]}</textarea><span id="error_infoTitle${statusInfo.index+1}" name="iaisErrorMsg" class="error-msg" ></span>
+                                                                        <textarea  name="infoTitle${statusInfo.index+1}" maxlength="500" rows="8" style=" font-weight:normal;" cols="70">${newRfi.infoTitle[0]}</textarea><span id="error_infoTitle${statusInfo.index+1}" name="iaisErrorMsg" class="error-msg" ></span>
                                                                     </label>
                                                                 </div>
                                                             </div>
@@ -140,7 +148,7 @@
                                                     <label class="col-xs-9 col-md-3 control-label" ></label>
                                                     <div class=" col-xs-7 col-sm-4 col-md-5">
                                                         <label>
-                                                            <textarea  name="docTitle0" rows="8" style=" font-weight:normal;" cols="70">${newRfi.docTitle[0]}</textarea><span id="error_docTitle0" name="iaisErrorMsg" class="error-msg" ></span>
+                                                            <textarea  name="docTitle0" rows="8" style=" font-weight:normal;" maxlength="500" cols="70">${newRfi.docTitle[0]}</textarea><span id="error_docTitle0" name="iaisErrorMsg" class="error-msg" ></span>
                                                         </label>
                                                     </div>
                                                 </div>
@@ -165,12 +173,12 @@
                                                         <div class="form-group">
                                                             <div class="row" >
                                                                 <div class="row" style="text-align:center;">
-                                                                    <div > #${statusDoc.index+1} Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div>
+                                                                    <div > ${statusDoc.index+1} Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div>
                                                                 </div>
                                                                 <label class="col-xs-9 col-md-3 control-label" ></label>
                                                                 <div class=" col-xs-7 col-sm-4 col-md-5">
                                                                     <label>
-                                                                        <textarea  name="docTitle0" rows="8" style=" font-weight:normal;" cols="70">${newRfi.docTitle[0]}</textarea><span id="error_docTitle" name="iaisErrorMsg" class="error-msg" ></span>
+                                                                        <textarea  name="docTitle0" maxlength="500" rows="8" style=" font-weight:normal;" cols="70">${newRfi.docTitle[0]}</textarea><span id="error_docTitle" name="iaisErrorMsg" class="error-msg" ></span>
                                                                     </label>
                                                                 </div>
                                                             </div>
@@ -273,7 +281,7 @@
 
     var removeRFI = function () {
         $('.removeRfiBtn').click(function () {
-            var $rfiContentEle = $(this).closest('div.reqForInfoContentInfo');
+            var $rfiContentEle = $(this).closest('div.reqForInfoContent');
             $rfiContentEle.remove();
             length=length-1;
         });
@@ -301,7 +309,7 @@
             };
             if(lengthInfo<4){
                 $.ajax({
-                    'url':'${pageContext.request.contextPath}/new-rfi-html',
+                    'url':'${pageContext.request.contextPath}/new-rfi-info-html',
                     'dataType':'text',
                     'data':jsonData,
                     'type':'GET',
@@ -310,11 +318,11 @@
                             return;
                         }
                         <!--use ph mark point -->
-                        $contentDivEle.find('div.rfiFormMarkPointInfo').addClass('rfiContent');
+                        $contentDivEle.find('div.rfiFormMarkPointInfo').addClass('rfiContentInfo');
                         <!--add html -->
-                        $contentDivEle.find('div.rfiContent').before(data);
+                        $contentDivEle.find('div.rfiContentInfo').before(data);
                         <!--init ph mark point -->
-                        $contentDivEle.find('div.rfiFormMarkPointInfo').removeClass('rfiContent');
+                        $contentDivEle.find('div.rfiFormMarkPointInfo').removeClass('rfiContentInfo');
                         <!--change hidden length value -->
                         //Prevent duplicate binding
                         $('.removeRfiBtnInfo').unbind('click');
