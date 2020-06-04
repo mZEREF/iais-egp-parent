@@ -70,7 +70,7 @@
                                             <iais:row style="text-align:center;">
                                                 <iais:value width="18">
                                                     <label>
-                                                        <textarea  name="userReply${infoStatus}" rows="8" style=" font-weight:normal;" cols="70">${infoReply.userReply}</textarea><span id="error_userReply${infoStatus}" name="iaisErrorMsg" class="error-msg" ></span>
+                                                        <textarea  name="userReply${infoReply.id}" rows="8" style=" font-weight:normal;" cols="70">${infoReply.userReply}</textarea><span id="error_userReply${infoReply.id}" name="iaisErrorMsg" class="error-msg" ></span>
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
@@ -81,9 +81,9 @@
                                                     <iais:value width="18">
                                                         <div class="file-upload-gp">
 
-                                                            &nbsp;&nbsp;&nbsp;${rfiDoc.title} : <div id="uploadFileName${docStatus}"></div>
-                                                            <input class="selectedFile commDoc"  name = "UploadFile${docStatus}" type="file" style="display: none;" aria-label="selectedFile1" >
-                                                            <a class="btn btn-file-upload btn-secondary" >Attachment</a><span id="error_UploadFile${docStatus}" name="iaisErrorMsg" class="error-msg" ></span><br/>
+                                                            &nbsp;&nbsp;&nbsp;${rfiDoc.title} : <div id="uploadFileName${rfiDoc.id}"></div>
+                                                            <input class="selectedFile commDoc" id="commonDoc${rfiDoc.id}" name = "UploadFile${rfiDoc.id}" type="file" style="display: none;" aria-label="selectedFile${rfiDoc.id}" >
+                                                            <a class="btn btn-file-upload btn-secondary" >Attachment</a><span id="error_UploadFile${rfiDoc.id}" name="iaisErrorMsg" class="error-msg" ></span><br/>
                                                         </div>
                                                     </iais:value>
                                                 </iais:row>

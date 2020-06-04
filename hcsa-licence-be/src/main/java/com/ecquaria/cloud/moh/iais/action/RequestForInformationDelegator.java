@@ -297,6 +297,7 @@ public class RequestForInformationDelegator {
                 licPremisesReqForInfoReplyDtos.add(licPremisesReqForInfoReplyDto);
             }
         }
+        licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_NEW);
         licPremisesReqForInfoDto.setNeedDocument(isNeedDoc);
         licPremisesReqForInfoDto.setOfficerRemarks(rfiTitle);
         licPremisesReqForInfoDto.setRequestDate(new Date());
@@ -387,7 +388,7 @@ public class RequestForInformationDelegator {
             log.error(e.getMessage(), e);
         }
 
-        ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("ACKRFI001"));
+        ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.getMessageDesc("ACKRFI001"));
 
 
 
@@ -400,6 +401,7 @@ public class RequestForInformationDelegator {
         requestForInformationService.deleteLicPremisesReqForInfo(reqInfoId);
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
         licPremisesReqForInfoDto.setId(reqInfoId);
+        licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_CLOSE);
         licPremisesReqForInfoDto.setAction("delete");
         EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
         eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -440,6 +442,24 @@ public class RequestForInformationDelegator {
         String reqInfoId = ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         String date=ParamUtil.getString(request, "Due_date");
         Date dueDate;
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if(date==null){
+            errorMap.put("Due_date","ERR0010");
+        }else {
+            date= ParamUtil.getString(request, "Due_date");
+            String now=new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(new Date());
+            if(date.compareTo(now) <0 ){
+                errorMap.put("Due_date","Due Date should be a future Date.");
+            }
+        }
+        if (!errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
+            //
+            return;
+        }
+
         Calendar calendar = Calendar.getInstance();
         if(!StringUtil.isEmpty(date)){
             dueDate= Formatter.parseDate(date);

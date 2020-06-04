@@ -125,8 +125,9 @@ public class ResponseForInformationDelegator {
         }
         int i=0;
         for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
-            CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+i);
+            CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
             if(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename())){
+                file.getFileItem().setFieldName("selectedFile"+doc.getId());
                 long size = file.getSize() / 1024;
                 doc.setDocName(file.getOriginalFilename());
                 doc.setDocSize(Integer.valueOf(String.valueOf(size)));
@@ -139,7 +140,7 @@ public class ResponseForInformationDelegator {
         }
         i=0;
         for(LicPremisesReqForInfoReplyDto info :licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos()){
-            String userReply=mulReq.getParameter("userReply"+i);
+            String userReply=mulReq.getParameter("userReply"+info.getId());
             info.setUserReply(userReply);
             i++;
         }
@@ -170,25 +171,25 @@ public class ResponseForInformationDelegator {
         int i=0;
         if(IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto())){
             for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
-                CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+i);
+                CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
                 if(!(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename()))){
-                    errMap.put("UploadFile"+i,"The file cannot be empty.");
+                    errMap.put("UploadFile"+doc.getId(),"The file cannot be empty.");
                 }
                 LicPremisesReqForInfoDto licPreReqForInfoDto= (LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(httpServletRequest ,"licPreReqForInfoDto");
                 if(licPreReqForInfoDto.isNeedDocument()){
                     if(file==null){
-                        errMap.put("UploadFile"+i,"The file cannot be empty.");
+                        errMap.put("UploadFile"+doc.getId(),"The file cannot be empty.");
                     }else{
                         Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file);
                         Boolean fileSize = booleanMap.get("fileSize");
                         Boolean fileType = booleanMap.get("fileType");
                         //size
                         if(!fileSize){
-                            errMap.put("UploadFile"+i,"The file size must less than " + 4 + "M.");
+                            errMap.put("UploadFile"+doc.getId(),"The file size must less than " + 4 + "M.");
                         }
                         //type
                         if(!fileType){
-                            errMap.put("UploadFile"+i,"The file type is invalid.");
+                            errMap.put("UploadFile"+doc.getId(),"The file type is invalid.");
                         }
                     }
                 }
@@ -198,9 +199,9 @@ public class ResponseForInformationDelegator {
         i=0;
         if(IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos())){
             for(LicPremisesReqForInfoReplyDto info :licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos()){
-                String userReply=mulReq.getParameter("userReply"+i);
+                String userReply=mulReq.getParameter("userReply"+info.getId());
                 if(StringUtil.isEmpty(userReply)){
-                    errMap.put("userReply"+i,"ERR009");
+                    errMap.put("userReply"+info.getId(),"ERR009");
                 }
                 i++;
             }

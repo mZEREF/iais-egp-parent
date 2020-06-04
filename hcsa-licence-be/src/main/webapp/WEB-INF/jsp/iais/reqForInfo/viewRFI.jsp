@@ -52,6 +52,7 @@
                                             <iais:field value="Due Date :"/>
                                             <iais:value width="18">
                                                 <iais:datePicker  name = "Due_date" dateVal="${licPreReqForInfoDto.dueDateSubmission}"></iais:datePicker>
+                                                <span id="error_Due_date" name="iaisErrorMsg" class="error-msg" ></span>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -141,6 +142,8 @@
         </div>
     </div>
 </form>
+<%@include file="/WEB-INF/jsp/include/validation.jsp"%>
+<%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
     function doBack(){
         showWaiting();SOP.Crud.cfxSubmit("mainForm", "back");
