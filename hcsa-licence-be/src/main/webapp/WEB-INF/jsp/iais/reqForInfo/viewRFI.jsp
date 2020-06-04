@@ -126,11 +126,9 @@
                                             </c:forEach>
                                         </c:if>
 
-                                        <iais:action style="text-align:left;">
-                                            <a  onclick="javascript:doBack()">< Back</a>
-                                        </iais:action>
+
                                         <iais:action style="text-align:right;">
-                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doCancel('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,licPreReqForInfoDto.id)}')">Cancel</button>
+                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Cancel</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>
@@ -146,19 +144,16 @@
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
     function doBack(){
-        showWaiting();SOP.Crud.cfxSubmit("mainForm", "back");
+        var status=$('.rfiViewStatus').val();
+        if(status==="RFI002"){
+            showWaiting();SOP.Crud.cfxSubmit("mainForm", "cancel",reqInfoId);
+        }else {
+            showWaiting();SOP.Crud.cfxSubmit("mainForm", "back");
+        }
+
     }
     function doExtends(reqInfoId) {
-        var status=$('.rfiViewStatus').val();
-        if(status==="RFI003"){
-            showWaiting();SOP.Crud.cfxSubmit("mainForm", "update",reqInfoId);
-        }else {
-            doCancel(reqInfoId)
-        }
-    }
-    function doCancel(reqInfoId) {
-        showWaiting();SOP.Crud.cfxSubmit("mainForm", "cancel",reqInfoId);
-
+        showWaiting();SOP.Crud.cfxSubmit("mainForm", "update",reqInfoId);
     }
 
 
