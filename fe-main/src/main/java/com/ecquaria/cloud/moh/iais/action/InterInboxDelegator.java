@@ -836,6 +836,10 @@ public class InterInboxDelegator {
         selectWithdrawalSelectList.add(new SelectOption(InboxConst.APP_ACTION_RECALL, InboxConst.APP_ACTION_RECALL));
         ParamUtil.setRequestAttr(request, "selectWithdrawApplication", selectWithdrawalSelectList);
 
+        List<SelectOption> selectRecalledSelectList = IaisCommonUtils.genNewArrayList();
+        selectRecalledSelectList.add(new SelectOption(InboxConst.DRAFT_APP_ACTION_CONTINUE, InboxConst.DRAFT_APP_ACTION_CONTINUE));
+        ParamUtil.setRequestAttr(request, "selectRecalledSelectList", selectRecalledSelectList);
+
         List<SelectOption> selectAppealSelectList = IaisCommonUtils.genNewArrayList();
         selectWithdrawalSelectList.add(new SelectOption(InboxConst.APP_ACTION_RECALL, InboxConst.APP_ACTION_RECALL));
         selectWithdrawalSelectList.add(new SelectOption(InboxConst.APP_ACTION_WITHDRAW, InboxConst.APP_ACTION_WITHDRAW));

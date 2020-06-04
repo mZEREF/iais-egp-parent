@@ -56,8 +56,19 @@
             //showWaiting();
             $("[name='action_no_value']").val(appNo);
             $('#deleteDraftModal').modal('show');
-
             // submit('appDoDelete');
+        }
+    });
+
+    $(".appRecalledAction").change(function () {
+        var appNo = $(this).closest("tr").find(".appNo").html();
+        var appType = $(this).closest("tr").find(".apptype").html();
+        showWaiting();
+        var action = $(this).val();
+        if ("Continue" == action) {
+            $("[name='action_no_value']").val(appNo);
+            $("[name='action_type_value']").val(appType);
+            // submit('appDoReload');
         }
     });
 
