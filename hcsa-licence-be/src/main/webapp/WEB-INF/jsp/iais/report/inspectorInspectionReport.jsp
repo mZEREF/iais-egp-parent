@@ -43,7 +43,7 @@
                                                         id="reportClink" href="#tabInspectionReport"
                                                         aria-controls="tabProcessing" role="tab"
                                                         data-toggle="tab">Inspection Report</a></li>
-                                                <li class="complete" role="presentation"><a href="#tabProcessing"
+                                                <li onclick="changePeriod()" class="complete" role="presentation"><a href="#tabProcessing"
                                                                                             aria-controls="tabProcessing"
                                                                                             role="tab"
                                                                                             data-toggle="tab">Processing</a>
@@ -145,7 +145,7 @@
                                                                         <iais:field value="Recommendation"
                                                                                     required="false"/>
                                                                         <iais:value width="10">
-                                                                            <c:out value="${readRecom}"></c:out>
+                                                                            <p id="periodValue"></p>
                                                                         </iais:value>
                                                                     </iais:row>
                                                                     <div class="fastTrack">
@@ -263,7 +263,6 @@
     <%@ include file="../inspectionncList/uploadFile.jsp" %>
 </div>
 <script>
-
     function insSubmit() {
         const s = $("#processSubmit").val();
         if (s == "" || s == null) {
@@ -273,7 +272,6 @@
             $("#error_submit").hide();
         }
     }
-
 
 </script>
 

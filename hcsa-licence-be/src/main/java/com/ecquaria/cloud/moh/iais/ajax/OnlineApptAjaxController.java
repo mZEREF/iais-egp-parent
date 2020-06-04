@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -111,7 +112,11 @@ public class OnlineApptAjaxController {
                         //get service id by task refno
                         String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
                         //get manHours by service and stage
-                        int manHours = getServiceManHours(tDto.getRefNo(), serviceId);
+                        ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
+                        apptAppInfoShowDto.setApplicationType(appType);
+                        apptAppInfoShowDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
+                        apptAppInfoShowDto.setServiceId(serviceId);
+                        int manHours = getServiceManHours(tDto.getRefNo(), apptAppInfoShowDto);
                         //Divide the time according to the number of people
                         List<TaskDto> sizeTask = organizationClient.getCurrTaskByRefNo(tDto.getRefNo()).getEntity();
                         double hours = manHours;
@@ -172,7 +177,11 @@ public class OnlineApptAjaxController {
                     //get service id by task refno
                     String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
                     //get manHours by service and stage
-                    int manHours = getServiceManHours(tDto.getRefNo(), serviceId);
+                    ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
+                    apptAppInfoShowDto.setApplicationType(appType);
+                    apptAppInfoShowDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
+                    apptAppInfoShowDto.setServiceId(serviceId);
+                    int manHours = getServiceManHours(tDto.getRefNo(), apptAppInfoShowDto);
                     //Divide the time according to the number of people
                     List<TaskDto> sizeTask = organizationClient.getCurrTaskByRefNo(tDto.getRefNo()).getEntity();
                     double hours = manHours;
@@ -189,7 +198,7 @@ public class OnlineApptAjaxController {
         return map;
     }
 
-    private int getServiceManHours(String refNo, String serviceId) {
+    private int getServiceManHours(String refNo, ApptAppInfoShowDto apptAppInfoShowDto) {
         int manHours;
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(refNo, InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR).getEntity();
         if(appPremisesRecommendationDto != null){
@@ -197,10 +206,10 @@ public class OnlineApptAjaxController {
             if(!StringUtil.isEmpty(hours)){
                 manHours = Integer.parseInt(hours);
             } else {
-                manHours = hcsaConfigClient.getManHour(serviceId, HcsaConsts.ROUTING_STAGE_INS).getEntity();
+                manHours = hcsaConfigClient.getManHour(apptAppInfoShowDto).getEntity();
             }
         } else {
-            manHours = hcsaConfigClient.getManHour(serviceId, HcsaConsts.ROUTING_STAGE_INS).getEntity();
+            manHours = hcsaConfigClient.getManHour(apptAppInfoShowDto).getEntity();
         }
         return manHours;
     }

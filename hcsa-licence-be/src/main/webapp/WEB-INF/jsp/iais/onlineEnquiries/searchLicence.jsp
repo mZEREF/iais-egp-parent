@@ -321,49 +321,52 @@
 <script type="text/javascript">
     function doLicSearch(){
         showWaiting();
-        var startTo=$('#start_to_date').val();
-        var startSub=$('#start_date').val();
-        var expiryTo=$('#expiry_date').val();
-        var expirySub=$('#expiry_start_date').val();
-        var periodTo=$('#to_date').val();
-        var periodSub=$('#sub_date').val();
-        var flag=true;
+        var flag = true;
 
-        if(startTo!==""){
-            if(startSub.split('/')[2]>startTo.split('/')[2]){
-                $("#startDateError").show();
-                flag=false;
-            }else if(startSub.split('/')[1]>startTo.split('/')[1]){
-                $("#startDateError").show();
-                flag=false;
-            }else if(startSub.split('/')[0]>startTo.split('/')[0]){
-                $("#startDateError").show();
-                flag=false;
-            }
-        }
-        if(expiryTo!==""){
-            if(expirySub.split('/')[2]>expiryTo.split('/')[2]){
-                $("#expiryDateError").show();
-                flag=false;
-            }else if(expirySub.split('/')[1]>expiryTo.split('/')[1]){
-                $("#expiryDateError").show();
-                flag=false;
-            }else if(expirySub.split('/')[0]>expiryTo.split('/')[0]){
-                $("#expiryDateError").show();
-                flag=false;
-            }
+        var chk= $("input[name='searchChk']").val();
+        if(chk!==2||chk!==3){
+            var startTo = $('#start_to_date').val();
+            var startSub = $('#start_date').val();
+            var expiryTo = $('#expiry_date').val();
+            var expirySub = $('#expiry_start_date').val();
+            var periodTo = $('#to_date').val();
+            var periodSub = $('#sub_date').val();
 
-        }
-        if(periodTo!==""){
-            if(periodSub.split('/')[2]>periodTo.split('/')[2]){
-                $("#submittedDateError").show();
-                flag=false;
-            }else if(periodSub.split('/')[1]>periodTo.split('/')[1]){
-                $("#submittedDateError").show();
-                flag=false;
-            }else if(periodSub.split('/')[0]>periodTo.split('/')[0]){
-                $("#submittedDateError").show();
-                flag=false;
+            if(startTo!==""){
+                if(startSub.split('/')[2]>startTo.split('/')[2]){
+                    $("#startDateError").show();
+                    flag=false;
+                }else if(startSub.split('/')[1]>startTo.split('/')[1]){
+                    $("#startDateError").show();
+                    flag=false;
+                }else if(startSub.split('/')[0]>startTo.split('/')[0]){
+                    $("#startDateError").show();
+                    flag=false;
+                }
+            }
+            if(expiryTo!==""){
+                if(expirySub.split('/')[2]>expiryTo.split('/')[2]){
+                    $("#expiryDateError").show();
+                    flag=false;
+                }else if(expirySub.split('/')[1]>expiryTo.split('/')[1]){
+                    $("#expiryDateError").show();
+                    flag=false;
+                }else if(expirySub.split('/')[0]>expiryTo.split('/')[0]){
+                    $("#expiryDateError").show();
+                    flag=false;
+                }
+            }
+            if(periodTo!==""){
+                if(periodSub.split('/')[2]>periodTo.split('/')[2]){
+                    $("#submittedDateError").show();
+                    flag=false;
+                }else if(periodSub.split('/')[1]>periodTo.split('/')[1]){
+                    $("#submittedDateError").show();
+                    flag=false;
+                }else if(periodSub.split('/')[0]>periodTo.split('/')[0]){
+                    $("#submittedDateError").show();
+                    flag=false;
+                }
             }
         }
         if(flag)

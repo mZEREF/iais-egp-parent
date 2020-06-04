@@ -36,12 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
@@ -1243,7 +1238,7 @@ public class HcsaApplicationDelegator {
         return recommendationSelectOption;
     }
 
-    private void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
+    public void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.info(StringUtil.changeForLog("The routingTask start ..."));
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
@@ -1290,7 +1285,7 @@ public class HcsaApplicationDelegator {
             }
         }
 
-        //complated this task and create the history
+        //completed this task and create the history
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
         taskDto =  completedTask(taskDto);
@@ -2015,20 +2010,26 @@ public class HcsaApplicationDelegator {
         //   rollback
         log.debug(StringUtil.changeForLog("the do prepareData get the rollBackMap"));
         Map<String,String> rollBackMap = IaisCommonUtils.genNewHashMap();
+        List<SelectOption> rollBackStage = IaisCommonUtils.genNewArrayList();
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList = applicationViewDto.getRollBackHistroyList();
         if(!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtoList)){
             for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:appPremisesRoutingHistoryDtoList) {
-                //String stageName=applicationViewService.getStageById(appPremisesRoutingHistoryDto.getStageId()).getStageName();
-                String userId=appPremisesRoutingHistoryDto.getActionby();
-                String wrkGrpId=appPremisesRoutingHistoryDto.getWrkGrpId();
-                OrgUserDto user=applicationViewService.getUserById(userId);
-                String actionBy=user.getDisplayName();
-                rollBackMap.put(actionBy+" ("+appPremisesRoutingHistoryDto.getRoleId()+")",appPremisesRoutingHistoryDto.getStageId()+","+wrkGrpId+","+userId+","+appPremisesRoutingHistoryDto.getRoleId());
+//                String displayName = applicationViewService.getStageById(appPremisesRoutingHistoryDto.getStageId()).getStageName();
+                String displayName = appPremisesRoutingHistoryDto.getRoleId();
+                String userId = appPremisesRoutingHistoryDto.getActionby();
+                String wrkGrpId = appPremisesRoutingHistoryDto.getWrkGrpId();
+                OrgUserDto user = applicationViewService.getUserById(userId);
+                String actionBy = user.getDisplayName();
+                rollBackMap.put(actionBy+" ("+displayName+")",appPremisesRoutingHistoryDto.getStageId()+","+wrkGrpId+","+userId+","+appPremisesRoutingHistoryDto.getRoleId());
+                String maskRollBackValue = MaskUtil.maskValue("rollBack",appPremisesRoutingHistoryDto.getStageId()+","+wrkGrpId+","+userId+","+appPremisesRoutingHistoryDto.getRoleId());
+                SelectOption selectOption = new SelectOption(maskRollBackValue,actionBy+" ("+displayName+")");
+                rollBackStage.add(selectOption);
             }
         }else{
             log.debug(StringUtil.changeForLog("the do prepareData do not have the rollback history"));
         }
         applicationViewDto.setRollBack(rollBackMap);
+        ParamUtil.setSessionAttr(request, "routeBackValues", (Serializable)rollBackStage);
     }
 
     public void setVerifiedDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto){

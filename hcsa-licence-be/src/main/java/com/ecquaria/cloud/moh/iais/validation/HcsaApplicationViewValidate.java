@@ -45,6 +45,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         String status = applicationViewDto.getApplicationDto().getStatus();
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
+        boolean isCessation = ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType);
         String roleId = "";
         boolean isAppealType = ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType);
         if(taskDto != null){
@@ -120,7 +121,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     ParamUtil.setRequestAttr(request, "selectNextStageReply", nextStageReplys);
                 }
                 //AO route back to
-                if (isAoRouteBackStatus(status)) {
+                //65189
+                if (isAoRouteBackStatus(status) && !isCessation) {
                     if (StringUtil.isEmpty(recommendationStr)) {
                         errMap.put("recommendation", "Please key in recommendation");
                     }

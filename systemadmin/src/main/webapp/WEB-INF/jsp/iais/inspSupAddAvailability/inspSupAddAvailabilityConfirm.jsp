@@ -52,7 +52,9 @@
                         </div>
                         <div class="col-md-6">
                           <span style="font-size: 16px"><fmt:formatDate value='${inspNonAvailabilityDto.blockOutStart}' pattern='dd/MM/yyyy'/> To <fmt:formatDate value='${inspNonAvailabilityDto.blockOutEnd}' pattern='dd/MM/yyyy' /></span>
-                          <br><span class="error-msg"><iais:message key="ACK027" escape="false"></iais:message></span>
+                          <c:if test="${'true' eq containDate}">
+                            <br><span class="error-msg"><iais:message key="ACK027" escape="false"></iais:message></span>
+                          </c:if>
                         </div>
                       </div>
                       <p></p>
@@ -61,7 +63,7 @@
                           <label style="font-size: 16px">Non-Available Date Description</label>
                         </div>
                         <div class="col-md-6">
-                          <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" maxlength="255" disabled><c:out value="${inspNonAvailabilityDto.nonAvaDescription}"></c:out></textarea>
+                          <textarea id="blockOutDesc" name="blockOutDesc" cols="70" readonly="readonly" rows="7" maxlength="255" disabled><c:out value="${inspNonAvailabilityDto.nonAvaDescription}"></c:out></textarea>
                         </div>
                       </div>
                       <div class="row">

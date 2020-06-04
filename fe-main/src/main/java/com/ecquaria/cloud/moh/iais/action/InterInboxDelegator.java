@@ -239,8 +239,9 @@ public class InterInboxDelegator {
                 ) {
             List<InboxMsgMaskDto> inboxMsgMaskDtoList = inboxService.getInboxMaskEntity(inboxQueryDto.getId());
             for (InboxMsgMaskDto inboxMsgMaskDto:inboxMsgMaskDtoList){
-                inboxQueryDto.setMsgContent(inboxQueryDto.getMsgContent().replaceAll(inboxMsgMaskDto.getParamValue(),
-                        MaskUtil.maskValue(inboxMsgMaskDto.getParamName(),inboxMsgMaskDto.getParamValue())));
+
+                inboxQueryDto.setMsgContent(inboxQueryDto.getMsgContent().replaceAll("="+inboxMsgMaskDto.getParamValue(),
+                        "="+MaskUtil.maskValue(inboxMsgMaskDto.getParamName(),inboxMsgMaskDto.getParamValue())));
             }
             String serviceName = inboxService.getServiceNameById(inboxQueryDto.getServiceId());
             inboxQueryDto.setServiceId(serviceName);

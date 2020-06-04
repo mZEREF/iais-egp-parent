@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
@@ -191,6 +192,7 @@ public class RequestForInformationDelegator {
         String infoChk=ParamUtil.getString(request, "info");
         String docChk=ParamUtil.getString(request, "doc");
         String licenceNo=ParamUtil.getString(request,"licenceNo");
+        String rfiStatus=ParamUtil.getString(request,"status");
         NewRfiPageListDto newRfiPageListDto=new NewRfiPageListDto();
         newRfiPageListDto.setDate(date);
         newRfiPageListDto.setDecision(decision);
@@ -198,10 +200,14 @@ public class RequestForInformationDelegator {
         newRfiPageListDto.setRfiTitle(rfiTitle);
         newRfiPageListDto.setInfoChk(infoChk);
         newRfiPageListDto.setDocChk(docChk);
+        newRfiPageListDto.setStatus(rfiStatus);
         newRfiPageListDto.setDocTitle(docTitle);
         newRfiPageListDto.setInfoTitle(infoTitle);
         ParamUtil.setRequestAttr(bpc.request, "newRfi", newRfiPageListDto);
 
+        String[] status=new String[]{RequestForInformationConstants.RFI_NEW};
+        List<SelectOption> salutationStatusList= MasterCodeUtil.retrieveOptionsByCodes(status);
+        ParamUtil.setSessionAttr(bpc.request, "salutationStatusList", (Serializable) salutationStatusList);
 
         List<LicPremisesDto> licPremisesDtos = (List<LicPremisesDto>) ParamUtil.getSessionAttr(request,"licPremisesDtos");
         List<SelectOption> salutationLicList= IaisCommonUtils.genNewArrayList();
@@ -278,6 +284,7 @@ public class RequestForInformationDelegator {
             for(String docTi :docTitle){
                 LicPremisesReqForInfoDocDto licPremisesReqForInfoDocDto1=new LicPremisesReqForInfoDocDto();
                 licPremisesReqForInfoDocDto1.setTitle(docTi);
+                licPremisesReqForInfoDocDto1.setDocName("");
                 licPremisesReqForInfoDocDtos.add(licPremisesReqForInfoDocDto1);
             }
         }
@@ -296,6 +303,7 @@ public class RequestForInformationDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         licPremisesReqForInfoDto.setRequestUser(loginContext.getUserName());
         licPremisesReqForInfoDto.setLicPremisesReqForInfoDocDto(licPremisesReqForInfoDocDtos);
+        licPremisesReqForInfoDto.setLicPremisesReqForInfoReplyDtos(licPremisesReqForInfoReplyDtos);
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
         String templateId= MsgTemplateConstants.MSG_TEMPLATE_RFI;
@@ -304,18 +312,21 @@ public class RequestForInformationDelegator {
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         StringBuilder stringBuilder=new StringBuilder();
+        int i=0;
         if(!StringUtil.isEmpty(reqTypeInfo)&&"information".equals(reqTypeInfo)){
-            for (int i=0;i<licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().size();i++) {
-                stringBuilder.append("<p>   ").append(i+1).append(". ").append("information  ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
+            for ( i=0;i<licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().size();i++) {
+                stringBuilder.append("<p>   ").append(i+1).append(". ").append("Information  ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
             }
         }
         if(licPremisesReqForInfoDto1.isNeedDocument()){
-            for (int i=0;i<licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().size();i++) {
-                stringBuilder.append("<p>   ").append(i+1).append(". ").append("Documentations  ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().get(i).getTitle()).append("</p>");
+            for (int j=0;j<licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().size();j++) {
+                stringBuilder.append("<p>   ").append(j+i+1).append(". ").append("Documentations  ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().get(j).getTitle()).append("</p>");
             }
         }
         map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));
+        map.put("APPLICATION_NUMBER",StringUtil.viewHtml(licenceNo));
         map.put("DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
+        map.put("EDITSELECT","");
         map.put("COMMENTS",StringUtil.viewHtml(""));
         String url = "https://" + systemParamConfig.getInterServerName() +
                 "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
@@ -417,6 +428,10 @@ public class RequestForInformationDelegator {
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(id);
         licPremisesReqForInfoDto.setOfficerRemarks(licPremisesReqForInfoDto.getOfficerRemarks());
         ParamUtil.setRequestAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
+
+        String[] status=new String[]{RequestForInformationConstants.RFI_RETRIGGER,RequestForInformationConstants.RFI_CLOSE};
+        List<SelectOption> salutationStatusList= MasterCodeUtil.retrieveOptionsByCodes(status);
+        ParamUtil.setSessionAttr(bpc.request, "salutationStatusList", (Serializable) salutationStatusList);
         // 		preViewRfi->OnStepProcess
     }
     public void doUpdate(BaseProcessClass bpc) throws ParseException {
@@ -435,6 +450,7 @@ public class RequestForInformationDelegator {
         }
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
         licPremisesReqForInfoDto.setDueDateSubmission(dueDate);
+        licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_RETRIGGER);
         requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
         licPremisesReqForInfoDto.setAction("update");
         EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();

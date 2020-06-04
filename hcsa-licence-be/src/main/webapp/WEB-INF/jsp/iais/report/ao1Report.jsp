@@ -288,11 +288,10 @@
                         </tr>
                         <tr>
                             <td class="col-xs-4">
-                                <p>Risk Level <strong style="color:#ff0000;"> *</strong></p>
+                                <p>Risk Level</p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:select name="riskLevel" options="riskLevelOptions"  firstOption="Please Select" value="${appPremisesRecommendationDto.riskLevel}"/>
-                                <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
+                                <p><c:out value="${appPremisesRecommendationDto.riskLevel}"/></p>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -408,30 +407,21 @@
                                 <p>Follow up Action</p>
                             </td>
                             <td class="col-xs-4">
-                                <textarea style="resize: none" name="followUpAction" cols="50" rows="6" title="content" maxlength="8000"><c:out value="${appPremisesRecommendationDto.followUpAction}"/></textarea>
+                                <textarea style="resize: none" disabled name="followUpAction" cols="50" rows="6" title="content" maxlength="8000"><c:out value="${appPremisesRecommendationDto.followUpAction}"/></textarea>
                             </td>
                             <td class="col-xs-4"/>
                         </tr>
-                        <tr>
+                        <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks!=null}">
+                        <tr id="engageRemarks">
                             <td class="col-xs-4">
-                                <p>To Engage Enforcement?</p>
+                                <p>Enforcement Remarks</p>
                             </td>
                             <td class="col-xs-4">
-                                <input type="checkbox" id="enforcement" name="engageEnforcement" onchange="javascirpt:changeEngage();"
-                                       <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if>>
-                            </td>
-                            <td class="col-xs-4"/>
-                        </tr>
-                        <tr id="engageRemarks" hidden>
-                            <td class="col-xs-4">
-                                <p>Enforcement Remarks <strong style="color:#ff0000;"> *</strong></p>
-                            </td>
-                            <td class="col-xs-4">
-                                <textarea style="resize: none" name="enforcementRemarks" cols="50" rows="6" title="content" MAXLENGTH="4000"><c:out value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
-                                <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                                <textarea style="resize: none" disabled  cols="50" rows="6" title="content" MAXLENGTH="4000"><c:out value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
                             </td>
                             <td class="col-xs-4"/>
                         </tr>
+                        </c:if>
                     </table>
                 </div>
             </div>
@@ -441,55 +431,55 @@
 
 <script type="text/javascript">
 
-    function reportaosubmit() {
-        if ($("#processingDecision").val() =="Approval"){
-            $("#mainForm").submit();
-        }else if ($("#processingDecision").val() =="Reject"){
-            $("[name='action_type']").val("back");
-             $("#mainForm").submit();
-        }else {
-            $("#mainForm").submit();
-        }
+    // function reportaosubmit() {
+    //     if ($("#processingDecision").val() =="Approval"){
+    //         $("#mainForm").submit();
+    //     }else if ($("#processingDecision").val() =="Reject"){
+    //         $("[name='action_type']").val("back");
+    //          $("#mainForm").submit();
+    //     }else {
+    //         $("#mainForm").submit();
+    //     }
+    //
+    // }
 
-    }
+    // function submit(action) {
+    //     $("[name='action_type']").val(action);
+    //     var mainPoolForm = document.getElementById('aomainForm');
+    //     mainPoolForm.submit();
+    //
+    // }
 
-    function submit(action) {
-        $("[name='action_type']").val(action);
-        var mainPoolForm = document.getElementById('aomainForm');
-        mainPoolForm.submit();
-
-    }
-
-    function changePeriod(obj) {
-        if (obj == "Others") {
-            $("#selfPeriod").show();
-        } else {
-            $("#selfPeriod").hide();
-        }
-    }
-
-    function changeRecommendation(obj) {
-        if (obj == "Others") {
-            $("#period").show();
-        } else {
-            $("#period").hide();
-        }
-    }
-
-    function changeEngage() {
-        if ($('#enforcement').is(':checked')) {
-            $("#engageRemarks").show();
-        } else {
-            $("#engageRemarks").hide();
-        }
-    }
-
-
-    $(document).ready(function () {
-        if ($('#enforcement').is(':checked')) {
-            $("#engageRemarks").show();
-        }
-    });
+    // function changePeriod(obj) {
+    //     if (obj == "Others") {
+    //         $("#selfPeriod").show();
+    //     } else {
+    //         $("#selfPeriod").hide();
+    //     }
+    // }
+    //
+    // function changeRecommendation(obj) {
+    //     if (obj == "Others") {
+    //         $("#period").show();
+    //     } else {
+    //         $("#period").hide();
+    //     }
+    // }
+    //
+    // function changeEngage() {
+    //     if ($('#enforcement').is(':checked')) {
+    //         $("#engageRemarks").show();
+    //     } else {
+    //         $("#engageRemarks").hide();
+    //     }
+    // }
+    //
+    //
+    // $(document).ready(function () {
+    //     if ($('#enforcement').is(':checked')) {
+    //         $("#engageRemarks").show();
+    //     }
+    // });
 
 </script>
 

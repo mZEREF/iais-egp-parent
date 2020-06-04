@@ -209,9 +209,6 @@ public class OfficerOnlineEnquiriesDelegator {
                             filter.put("licenseeId",r.getId());
                             licenseeIds.add(r.getId());
                         }
-                        if(licenseeIds.size()==0){
-                            licenseeIds.add(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID);
-                        }
                     }
                     break;
                 default:
@@ -844,23 +841,26 @@ public class OfficerOnlineEnquiriesDelegator {
         }
         ParamUtil.setSessionAttr(request,"count",count);
         String [] appIds=ParamUtil.getStrings(request,"appIds");
-        List<String> licIds=IaisCommonUtils.genNewArrayList();
-        List<String> licRfiIds=IaisCommonUtils.genNewArrayList();
+        Set<String> licIdsSet=IaisCommonUtils.genNewHashSet();
+        Set<String> licRfiIdsSet=IaisCommonUtils.genNewHashSet();
         try{
-            for(int i=0;i<appIds.length;i++){
-                String is=appIds[i].split("\\|")[1];
-                String isActive=appIds[i].split("\\|")[3];
-                if("1".equals(is)){
-                    licIds.add(appIds[i].split("\\|")[2]);
+            for (String appId : appIds) {
+                String is = appId.split("\\|")[1];
+                String isActive = appId.split("\\|")[3];
+                if ("1".equals(is)) {
+                    licIdsSet.add(appId.split("\\|")[2]);
                 }
-                if("Active".equals(isActive)){
-                    licRfiIds.add(appIds[i].split("\\|")[2]);
+                if ("Active".equals(isActive)) {
+                    licRfiIdsSet.add(appId.split("\\|")[2]);
                 }
             }
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
-
+        List<String> licIds=IaisCommonUtils.genNewArrayList();
+        licIds.addAll(licIdsSet);
+        List<String> licRfiIds=IaisCommonUtils.genNewArrayList();
+        licRfiIds.addAll(licRfiIdsSet);
         ParamUtil.setSessionAttr(request,"licIds", (Serializable) licIds);
         ParamUtil.setSessionAttr(request,"licRfiIds", (Serializable) licRfiIds);
         // 		doSearchLicenceAfter->OnStepProcess

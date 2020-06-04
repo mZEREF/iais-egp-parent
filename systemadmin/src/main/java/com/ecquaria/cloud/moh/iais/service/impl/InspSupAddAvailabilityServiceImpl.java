@@ -101,7 +101,7 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
                 apptNonAvailabilityDateDto1.setUserCorrId(userSysCorrId);
                 apptNonAvailabilityDateDto1.setNonAvaStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 apptNonAvailabilityDateDto1.setAuditTrailDto(auditTrailDto);
-                appointmentClient.createNonAvailability(apptNonAvailabilityDateDto1);
+                //appointmentClient.createNonAvailability(apptNonAvailabilityDateDto1);
                 //add create ApptUserCalendarDto List
                 ApptUserCalendarDto apptUserCalendarDto = new ApptUserCalendarDto();
                 apptUserCalendarDto.setSysUserCorrId(userSysCorrId);
@@ -111,7 +111,7 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
                 apptUserCalendarDtos.add(apptUserCalendarDto);
             }
             //create do
-            appointmentClient.createApptUserCalendarDtoList(apptUserCalendarDtos);
+            //appointmentClient.createApptUserCalendarDtoList(apptUserCalendarDtos);
         }
         return null;
     }
@@ -224,7 +224,7 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
     public List<String> getApptUserSysCorrIdByLoginId(String loginId, List<String> workGroupIds) {
         ApptAgencyUserDto apptAgencyUserDto = appointmentClient.getApptAgencyUserDtoLogin(loginId).getEntity();
         List<ApptUserSystemCorrelationDto> apptUserSystemCorrelationDtos;
-        if(apptAgencyUserDto == null){
+        if(apptAgencyUserDto == null || StringUtil.isEmpty(apptAgencyUserDto.getId())){
             ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
             List<String> workGroupNames = getWorkGroupNamesByIds(workGroupIds);
             apptAppInfoShowDto.setUserLoginId(loginId);
