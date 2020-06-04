@@ -510,7 +510,7 @@ public class WithOutRenewalDelegator {
                 renewTotal+=amount;
                 total +=amount;
                 appSubmissionDto.setAmount(amount);
-                String amountStr = Formatter.formatCurrency(amount);
+                String amountStr = Formatter.formatterMoney(amount);
                 appSubmissionDto.setAmountStr(amountStr);
             }
         }
@@ -541,7 +541,7 @@ public class WithOutRenewalDelegator {
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                 appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
                 appSubmissionDto.setAppGrpNo(appGroupNo);
-                appSubmissionDto.setAmount(0.0);
+                appSubmissionDto.setAmount(0d);
                 appSubmissionDto.setAutoRfc(true);
                 String draftNo = appSubmissionDto.getDraftNo();
                 if (StringUtil.isEmpty(draftNo)) {
@@ -613,6 +613,7 @@ public class WithOutRenewalDelegator {
         for(AppSubmissionDto appSubmissionDto : rfcAppSubmissionDtos){
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             appSvcRelatedInfoDtoList.get(0).setAmount(appSubmissionDto.getAmount());
+            appSvcRelatedInfoDtoList.get(0).setAmountStr(Formatter.formatterMoney(appSubmissionDto.getAmount()));
             appSvcRelatedInfoDtoList.get(0).setApplicationType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
             appSvcRelatedInfoDtoList.get(0).setGroupNo(appSubmissionDto.getAppGrpNo());
             appSvcRelatedInfoDtos.addAll(appSvcRelatedInfoDtoList);
@@ -622,6 +623,7 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.setAppGrpNo(appGrpNo);
             appSubmissionDto.setAppGrpId(appSubmissionDtos3.get(0).getAppGrpId());
             appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAmount(renewTotal);
+            appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAmountStr(Formatter.formatterMoney(renewTotal));
             appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setApplicationType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
             appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setGroupNo(appSubmissionDto.getAppGrpNo());
             appSubmissionDto.getAppSvcRelatedInfoDtoList().addAll(appSvcRelatedInfoDtos);
