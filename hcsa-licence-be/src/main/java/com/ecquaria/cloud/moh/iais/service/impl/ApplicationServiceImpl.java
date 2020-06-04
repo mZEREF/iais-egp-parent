@@ -259,7 +259,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
         }
         if(appEditSelectDto != null){
-            if(appEditSelectDto.isPremisesListEdit()){
+            if(appEditSelectDto.isPremisesEdit()){
                 editSelect = editSelect + "<li style=\"padding-left: 0px;\">Premises</li>";
             }
             if(appEditSelectDto.isDocEdit()){
