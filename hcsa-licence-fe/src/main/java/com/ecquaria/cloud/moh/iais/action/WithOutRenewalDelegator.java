@@ -541,7 +541,7 @@ public class WithOutRenewalDelegator {
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                 appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
                 appSubmissionDto.setAppGrpNo(appGroupNo);
-                appSubmissionDto.setAmount(0d);
+                appSubmissionDto.setAmount(0.0);
                 appSubmissionDto.setAutoRfc(true);
                 String draftNo = appSubmissionDto.getDraftNo();
                 if (StringUtil.isEmpty(draftNo)) {
