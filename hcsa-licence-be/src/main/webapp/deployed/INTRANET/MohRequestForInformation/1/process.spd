@@ -30,7 +30,7 @@
     <JavaCode defClass="" executor="" methodName="doCreateRequest_OnStepProcess_0" name="doCreateRequest_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doCancel" x="1660" y="660">
+  <AutomaticStep defClass="" executor="" icon="" name="doCancel" x="1540" y="730">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -51,7 +51,7 @@
     <JavaCode defClass="" executor="" methodName="preViewRfi_OnStepProcess_0" name="preViewRfi_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doUpdate" x="1800" y="560">
+  <AutomaticStep defClass="" executor="" icon="" name="doUpdate" x="1790" y="620">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -97,7 +97,7 @@
    <position>{(1700,480)(1560,520)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doCancel" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
-   <position>{(1930,750)(1680,680)}</position>
+   <position>{(1930,750)(1560,750)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preReqForInfo" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge2" style="oblique">
    <position>{(1560,520)(1450,440)}</position>
@@ -121,7 +121,7 @@
    <position>{(1920,480)(1930,630)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCancel" style="oblique">
-   <position>{(1680,680)(1560,520)}</position>
+   <position>{(1560,750)(1560,520)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch5" style="rectanular">
    <position>{(1930,750)(1560,520)}</position>
@@ -136,10 +136,10 @@
    <position>{(1470,180)(1570,180)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doUpdate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
-   <position>{(1930,750)(1820,580)}</position>
+   <position>{(1930,750)(1810,640)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doUpdate" style="oblique">
-   <position>{(1820,580)(1560,520)}</position>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(1650,640)(1560,520)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCreateRequest" style="oblique">
    <position>{(1770,380)(1840,480)}</position>
@@ -153,9 +153,18 @@
   <SynchronousLink destinationName="/Pages/WebPage/RFIPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preReqForInfo" style="rectanular">
    <position>{(1450,440)(1470,180)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doUpdate" style="oblique">
+   <position>{(1810,640)(1650,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preViewRfi" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(1650,640)(1920,480)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/preNewRfi" componentIfTrue="/Pages/WebPage/SuccessPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="1820" y="460">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/preViewRfi" componentIfTrue="/Merges/Merge/Merge2" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="1630" y="620">
    <Description/>
   </Condition>
  </Conditions>
@@ -166,7 +175,7 @@
    <SwitchCase component="/Steps/AutomaticStep/doCancel" value="&quot;cancel&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doUpdate" value="&quot;update&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch6" x="1910" y="160">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preViewRfi" executor="" icon="" leftOperand="crud_action_type" name="Switch6" x="1910" y="160">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/preViewRfi" value="&quot;view&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preNewRfi" value="&quot;new&quot;"/>
