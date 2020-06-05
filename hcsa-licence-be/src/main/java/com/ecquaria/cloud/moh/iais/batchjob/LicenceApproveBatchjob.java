@@ -741,25 +741,24 @@ public class LicenceApproveBatchjob {
         String mesContext = null;
         try {
             mesContext = MsgUtil.getTemplateMessageByContent(rejectTemplateDto.getMessageContent(), map);
+            email.setReqRefNum(applicationNo);
+            email.setSubject(rejectTemplateDto.getSubject());
+            email.setContent(mesContext);
+            email.setSender(mailSender);
+            email.setClientQueryCode(applicationNo);
+            email.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()));
+            licenceService.sendEmail(email);
+
+            String messageNo = inboxMsgService.getMessageNo();
+            InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION, MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
+                    messageNo, serviceId, mesContext, licenceDto.getLicenseeId(), IaisEGPHelper.getCurrentAuditTrailDto());
+            HashMap<String, String> mapParam = IaisCommonUtils.genNewHashMap();
+            mapParam.put("appNo", applicationNo);
+            interMessageDto.setMaskParams(mapParam);
+            inboxMsgService.saveInterMessage(interMessageDto);
         } catch (IOException | TemplateException e) {
             log.error(e.getMessage(), e);
         }
-
-        email.setReqRefNum(applicationNo);
-        email.setSubject(rejectTemplateDto.getSubject());
-        email.setContent(mesContext);
-        email.setSender(mailSender);
-        email.setClientQueryCode(applicationNo);
-        email.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()));
-        licenceService.sendEmail(email);
-
-        String messageNo = inboxMsgService.getMessageNo();
-        InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION, MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
-                messageNo, serviceId, mesContext, licenceDto.getLicenseeId(), IaisEGPHelper.getCurrentAuditTrailDto());
-        HashMap<String, String> mapParam = IaisCommonUtils.genNewHashMap();
-        mapParam.put("appNo", applicationNo);
-        interMessageDto.setMaskParams(mapParam);
-        inboxMsgService.saveInterMessage(interMessageDto);
     }
 
     private void newApplicationApproveSendEmail(LicenceDto licenceDto, String applicationNo, String licenceNo, String loginUrl, boolean isNew, String uenNo) {
@@ -1552,17 +1551,18 @@ public class LicenceApproveBatchjob {
         String mesContext = null;
         try {
             mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(mesContext);
+            emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + subject);
+            emailDto.setSender(mailSender);
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+            emailDto.setClientQueryCode(clientQueryCode);
+            //send
+            licenceService.sendEmail(emailDto);
         } catch (IOException | TemplateException e) {
             log.error(e.getMessage(), e);
         }
-        EmailDto emailDto = new EmailDto();
-        emailDto.setContent(mesContext);
-        emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + subject);
-        emailDto.setSender(mailSender);
-        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-        emailDto.setClientQueryCode(clientQueryCode);
-        //send
-        licenceService.sendEmail(emailDto);
     }
 
     //send email
@@ -1577,17 +1577,18 @@ public class LicenceApproveBatchjob {
                 String mesContext = null;
                 try {
                     mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+
+                    EmailDto emailDto = new EmailDto();
+                    emailDto.setContent(mesContext);
+                    emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + serviceName);
+                    emailDto.setSender(mailSender);
+                    emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()));
+                    emailDto.setClientQueryCode(licenceDto.getId());
+                    //send
+                    licenceService.sendEmail(emailDto);
                 } catch (IOException | TemplateException e) {
                     log.error(e.getMessage(), e);
                 }
-                EmailDto emailDto = new EmailDto();
-                emailDto.setContent(mesContext);
-                emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + serviceName);
-                emailDto.setSender(mailSender);
-                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()));
-                emailDto.setClientQueryCode(licenceDto.getId());
-                //send
-                licenceService.sendEmail(emailDto);
             }
         }
 
@@ -1610,10 +1611,11 @@ public class LicenceApproveBatchjob {
                 uenNo = "new UEN";
                 isNew = true;
             }
-            //send email
-            newApplicationApproveSendEmail(licenceDto, applicationNo, licenceDto.getLicenceNo(), loginUrl, isNew, uenNo);
             //send sms
             try {
+                //send email
+                newApplicationApproveSendEmail(licenceDto, applicationNo, licenceDto.getLicenceNo(), loginUrl, isNew, uenNo);
+
                 sendSMS(msgId, licenceDto.getLicenseeId(), msgInfoMap);
             } catch (IOException | TemplateException e) {
                 log.error(StringUtil.changeForLog("send sms error"));
@@ -1653,15 +1655,6 @@ public class LicenceApproveBatchjob {
             } catch (IOException | TemplateException e) {
                 log.error(StringUtil.changeForLog("send sms error"));
             }
-         //guying
-        } else if (ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationDto.getApplicationType())) {
-            Map<String, Object> notifyMap = IaisCommonUtils.genNewHashMap();
-            try {
-                sendSMS(msgId, licenceDto.getLicenseeId(), notifyMap);
-            } catch (IOException | TemplateException e) {
-                log.error(StringUtil.changeForLog("send sms error"));
-            }
-
         }
         log.info(StringUtil.changeForLog("The sendEmailAndSms end ..."));
     }
