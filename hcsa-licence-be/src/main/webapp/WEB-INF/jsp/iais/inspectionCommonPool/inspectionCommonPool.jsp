@@ -36,14 +36,14 @@
                   <div class="form-group">
                     <label class="col-xs-12 col-md-4 control-label">Role</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                      <iais:select name="commonRoleId" options="commonPoolRoleIds" id="commonPoolRole" value="${poolRoleCheckDto.checkCurRole}"></iais:select>
+                      <iais:select name="commonRoleId" cssClass="roleIds" options="commonPoolRoleIds" id="commonPoolRole" value="${poolRoleCheckDto.checkCurRole}"></iais:select>
                     </div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-xs-10 col-md-12">
                     <div class="components">
-                      <a class="btn btn-secondary" data-toggle="collapse"
+                      <a name="filterBtn" class="btn btn-secondary" data-toggle="collapse"
                          data-target="#commonPool">Filter</a>
                     </div>
                   </div>
@@ -89,8 +89,8 @@
                     </iais:value>
                   </iais:row>
                   <iais:action style="text-align:right;">
-                    <button class="btn btn-secondary" type="button" onclick="javascript:doInspectionCommonPoolClear()">Clear</button>
-                    <button class="btn btn-primary" type="button" onclick="javascript:doInspectionCommonPoolSearch()">Search</button>
+                    <button name="clearBtn" class="btn btn-secondary" type="button" onclick="javascript:doInspectionCommonPoolClear()">Clear</button>
+                    <button name="searchBtn" class="btn btn-primary" type="button" onclick="javascript:doInspectionCommonPoolSearch()">Search</button>
                   </iais:action>
                 </div>
               </iais:section>

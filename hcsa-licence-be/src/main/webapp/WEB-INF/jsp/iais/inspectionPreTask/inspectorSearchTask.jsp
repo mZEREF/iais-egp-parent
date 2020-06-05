@@ -35,14 +35,14 @@
                     <div class="form-group">
                       <label class="col-xs-12 col-md-4 control-label">Role</label>
                       <div class="col-xs-8 col-sm-6 col-md-5">
-                        <iais:select name="supervisorRoleId" options="superPoolRoleIds" id="supervisorPoolRole" value="${poolRoleCheckDto.checkCurRole}"></iais:select>
+                        <iais:select name="supervisorRoleId" cssClass="roleIds" options="superPoolRoleIds" id="supervisorPoolRole" value="${poolRoleCheckDto.checkCurRole}"></iais:select>
                       </div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-xs-10 col-md-12">
                       <div class="components">
-                        <a class="btn btn-secondary" data-toggle="collapse"
+                        <a name="filterBtn" class="btn btn-secondary" data-toggle="collapse"
                            data-target="#superPoolSearch">Filter</a>
                       </div>
                     </div>
@@ -92,8 +92,8 @@
                       </iais:value>
                     </iais:row>
                     <iais:action style="text-align:right;">
-                      <button class="btn btn-secondary" type="button" onclick="javascript:doInspectorSearchTaskClear()">Clear</button>
-                      <button class="btn btn-primary" type="button" onclick="javascript:doInspectorSearchTaskSearch()">Search</button>
+                      <button name="clearBtn" class="btn btn-secondary" type="button" onclick="javascript:doInspectorSearchTaskClear()">Clear</button>
+                      <button name="searchBtn" class="btn btn-primary" type="button" onclick="javascript:doInspectorSearchTaskSearch()">Search</button>
                     </iais:action>
                   </div>
                 </iais:section>
