@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
@@ -40,7 +41,6 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -54,12 +54,6 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -67,6 +61,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESSAGE;
 
@@ -78,6 +77,8 @@ import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESS
 @Slf4j
 @Delegator("MohRequestForChangeMenuDelegator")
 public class RequestForChangeMenuDelegator {
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     private FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(PersonnelQueryDto.class)
@@ -110,6 +111,8 @@ public class RequestForChangeMenuDelegator {
     public void start(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do start start ...."));
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
+        filterParameter.setPageSize(systemParamConfig.getPagingSize());
+        premiseFilterParameter.setPageSize(systemParamConfig.getPagingSize());
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
 
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
@@ -118,6 +121,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG, null);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, null);
         requestForInformation(bpc, appNo);
+
 
         log.debug(StringUtil.changeForLog("the do start end ...."));
     }
@@ -244,7 +248,6 @@ public class RequestForChangeMenuDelegator {
 
     public void doPage(BaseProcessClass bpc) {
         log.info("---------doPage -------");
-        premiseFilterParameter.setPageSize(10);
         premiseFilterParameter.setPageNo(1);
         SearchResultHelper.doPage(bpc.request, premiseFilterParameter);
     }
