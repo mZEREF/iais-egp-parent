@@ -1547,6 +1547,11 @@ public class HcsaApplicationDelegator {
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT;
             }
         }
+        //DMS go to main flow
+        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(appStatus)){
+            taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
+            TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
+        }
 
         TaskDto newTaskDto = TaskUtil.getTaskDto(stageId,taskType,
                 taskDto.getRefNo(),wrkGpId, userId,new Date(),0,TaskUrl,roleId,
@@ -1789,7 +1794,7 @@ public class HcsaApplicationDelegator {
                 }
             }
             //PSO 0062307
-            if(RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId) || broadcastAsoPso){
+            if(RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId) || broadcastAsoPso){
                 //pso back fill
                 checkRecommendationDropdownValue(recomInNumber,chronoUnit,codeDesc,applicationViewDto,bpc);
             }
