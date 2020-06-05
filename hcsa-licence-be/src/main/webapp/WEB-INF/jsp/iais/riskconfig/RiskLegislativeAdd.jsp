@@ -66,7 +66,7 @@
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" disabled readonly maxlength="2" value="0">
+                                                    <input type="text" disabled readonly maxlength="2" value="0"  style="border-color: white;">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
                                                     <input type="text" id="<c:out value="${leg.svcCode}"/>inleftmod" name = "<c:out value="${leg.svcCode}"/>inleftmod" maxlength="2"value="${leg.doLeftModCaseCounth == null ? "" : leg.doLeftModCaseCounth}"
@@ -75,14 +75,14 @@
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inlefthigh" readonly name = "<c:out value="${leg.svcCode}"/>inlefthigh" maxlength="2"value="${leg.doLeftHighCaseCounth == null ? 1 : leg.doLeftHighCaseCounth}">
+                                                    <input type="text" style="border-color: white;" id="<c:out value="${leg.svcCode}"/>inlefthigh" readonly name = "<c:out value="${leg.svcCode}"/>inlefthigh" maxlength="2"value="${leg.doLeftHighCaseCounth == null ? 1 : leg.doLeftHighCaseCounth}">
                                                 </div>
 
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inrightlow"  readonly name = "<c:out value="${leg.svcCode}"/>inrightlow"  maxlength="3" value="${leg.doRightLowCaseCounth == null ? 0 : leg.doRightLowCaseCounth}">
+                                                    <input type="text"  style="border-color: white;"id="<c:out value="${leg.svcCode}"/>inrightlow"  readonly name = "<c:out value="${leg.svcCode}"/>inrightlow"  maxlength="3" value="${leg.doRightLowCaseCounth == null ? 0 : leg.doRightLowCaseCounth}">
                                                 </div>
 
                                                 </div>
@@ -92,7 +92,7 @@
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" disabled readonly  maxlength="3" value="999">
+                                                    <input type="text" disabled readonly  maxlength="3" value="999" style="border-color: white;">
                                                 </div></div>
                                             </td>
                                             <td>

@@ -66,7 +66,7 @@
                                             <td>
                                                 <div><div style="width: 100px;">
                                                 </div><div style="width: 100px;float: left">
-                                                    <input type="text" disabled readonly maxlength="2" value="0">
+                                                    <input type="text" disabled readonly maxlength="2" value="0" style="border-color: white;">
                                                 </div>
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
@@ -74,13 +74,13 @@
                                                 </div>
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doCaLeftHighCountherr}">red</c:if>" readonly id="<c:out value="${fin.svcCode}"/>calefthigh" name = "<c:out value="${fin.svcCode}"/>calefthigh" maxlength="2"value="${fin.doCaLeftHighCounth == null ? 1 : fin.doCaLeftHighCounth }">
+                                                    <input type="text" style="border-color: white;color: <c:if test="${fin.doCaLeftHighCountherr}">red</c:if>" readonly id="<c:out value="${fin.svcCode}"/>calefthigh" name = "<c:out value="${fin.svcCode}"/>calefthigh" maxlength="2"value="${fin.doCaLeftHighCounth == null ? 1 : fin.doCaLeftHighCounth }">
                                                 </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text"  style="color: <c:if test="${fin.doCaRightLowCountherr}">red</c:if>" readonly id="<c:out value="${fin.svcCode}"/>carightlow" name = "<c:out value="${fin.svcCode}"/>carightlow"  maxlength="3" value="${fin.doCaRightLowCounth  == null ? 0 : fin.doCaRightLowCounth}">
+                                                    <input type="text"  style="border-color: white;color: <c:if test="${fin.doCaRightLowCountherr}">red</c:if>" readonly id="<c:out value="${fin.svcCode}"/>carightlow" name = "<c:out value="${fin.svcCode}"/>carightlow"  maxlength="3" value="${fin.doCaRightLowCounth  == null ? 0 : fin.doCaRightLowCounth}">
                                                 </div>
 
                                                 </div>
@@ -90,7 +90,7 @@
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" disabled readonly  maxlength="3" value="999">
+                                                    <input type="text" disabled readonly  maxlength="3" value="999" style="border-color: white;">
                                                 </div></div>
                                             </td>
                                             <td>
@@ -138,7 +138,7 @@
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" disabled readonly maxlength="2" value="0">
+                                                    <input type="text" disabled readonly maxlength="2" value="0" style="border-color: white;">
                                                 </div></div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
                                                     <input type="text" style="color: <c:if test="${fin.doMjLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjleftmod" name = "<c:out value="${fin.svcCode}"/>mjleftmod"  maxlength="2"value="${fin.doMjLeftModCounth == null ? "" : fin.doMjLeftModCounth}" onchange="doChangeMc('${fin.svcCode}','Ma',true)">
@@ -146,14 +146,14 @@
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" readonly  style="color: <c:if test="${fin.doMjLeftHighCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjlefthigh" name = "<c:out value="${fin.svcCode}"/>mjlefthigh"  maxlength="2"value="${fin.doMjLeftHighCounth == null ? 1 : fin.doMjLeftHighCounth}">
+                                                    <input type="text" readonly  style="border-color: white;color: <c:if test="${fin.doMjLeftHighCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mjlefthigh" name = "<c:out value="${fin.svcCode}"/>mjlefthigh"  maxlength="2"value="${fin.doMjLeftHighCounth == null ? 1 : fin.doMjLeftHighCounth}">
                                                 </div>
 
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMjRightLowCountherr}">red</c:if>" readonly  id="<c:out value="${fin.svcCode}"/>mjrightlow" name = "<c:out value="${fin.svcCode}"/>mjrightlow" maxlength="3" value="${fin.doMjRightLowCounth == null ? 0 :fin.doMjRightLowCounth}">
+                                                    <input type="text" style="border-color: white;color: <c:if test="${fin.doMjRightLowCountherr}">red</c:if>" readonly  id="<c:out value="${fin.svcCode}"/>mjrightlow" name = "<c:out value="${fin.svcCode}"/>mjrightlow" maxlength="3" value="${fin.doMjRightLowCounth == null ? 0 :fin.doMjRightLowCounth}">
                                                 </div>
 
                                                 </div>
@@ -163,7 +163,7 @@
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" disabled readonly maxlength="3" value="999">
+                                                    <input type="text" disabled readonly maxlength="3" value="999" style="border-color: white;">
                                                 </div></div>
                                             </td>
                                             <td>
@@ -209,7 +209,7 @@
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" disabled readonly maxlength="2" value="0">
+                                                    <input type="text" disabled readonly maxlength="2" value="0" style="border-color: white;">
                                                 </div></div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
                                                     <input type="text" style="color: <c:if test="${fin.doMiLeftModCountherr}">red</c:if>" id="<c:out value="${fin.svcCode}"/>mileftmod" name = "<c:out value="${fin.svcCode}"/>mileftmod"  maxlength="2"value="${fin.doMiLeftModCounth == null ? "" : fin.doMiLeftModCounth}" onchange="doChangeMc('${fin.svcCode}','Mi',true)">
@@ -217,14 +217,14 @@
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMiLeftHighCountherr}">red</c:if>" readonly  id="<c:out value="${fin.svcCode}"/>milefthigh" name = "<c:out value="${fin.svcCode}"/>milefthigh"  maxlength="2"value="${fin.doMiLeftHighCounth == null ? 1 : fin.doMiLeftHighCounth}">
+                                                    <input type="text" style="border-color: white;color: <c:if test="${fin.doMiLeftHighCountherr}">red</c:if>" readonly  id="<c:out value="${fin.svcCode}"/>milefthigh" name = "<c:out value="${fin.svcCode}"/>milefthigh"  maxlength="2"value="${fin.doMiLeftHighCounth == null ? 1 : fin.doMiLeftHighCounth}">
                                                 </div>
 
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.doMiRightLowCountherr}">red</c:if>"  readonly id="<c:out value="${fin.svcCode}"/>mirightlow" name = "<c:out value="${fin.svcCode}"/>mirightlow" maxlength="3" value="${fin.doMiRightLowCounth == null ? 0 :fin.doMiRightLowCounth}">
+                                                    <input type="text" style="border-color: white;color: <c:if test="${fin.doMiRightLowCountherr}">red</c:if>"  readonly id="<c:out value="${fin.svcCode}"/>mirightlow" name = "<c:out value="${fin.svcCode}"/>mirightlow" maxlength="3" value="${fin.doMiRightLowCounth == null ? 0 :fin.doMiRightLowCounth}">
                                                 </div>
 
                                                 </div>
@@ -234,7 +234,7 @@
 
                                                 </div>
                                                 <div><div style="width: 100px;"></div><div style="width: 100px;float: left">
-                                                    <input type="text" disabled readonly value="999">
+                                                    <input type="text" disabled readonly value="999" style="border-color: white;">
                                                 </div></div>
                                             </td>
                                             <td>

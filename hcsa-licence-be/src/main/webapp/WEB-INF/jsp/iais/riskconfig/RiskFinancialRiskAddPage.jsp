@@ -73,7 +73,7 @@
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" disabled readonly maxlength="2" value="0">
+                                                    <input type="text" disabled readonly maxlength="2" value="0" style="border-color: white;">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
                                                     <input type="text" style="color: <c:if test="${fin.inLeftModCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inleftmod" name = "<c:out value="${fin.serviceCode}"/>inleftmod" maxlength="2"value="${fin.inLeftModCaseCounth ==null ? "" : fin.inLeftModCaseCounth}"
@@ -82,14 +82,14 @@
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.inLeftHighCaseCounterr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inlefthigh" readonly name = "<c:out value="${fin.serviceCode}"/>inlefthigh" maxlength="2"value="${fin.inLeftHighCaseCount ==null ? 1 : fin.inLeftHighCaseCount}">
+                                                    <input type="text" style="border-color: white;color: <c:if test="${fin.inLeftHighCaseCounterr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inlefthigh" readonly name = "<c:out value="${fin.serviceCode}"/>inlefthigh" maxlength="2"value="${fin.inLeftHighCaseCount ==null ? 1 : fin.inLeftHighCaseCount}" >
                                                 </div>
 
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text"  style="color: <c:if test="${fin.inRightLowCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inrightlow" readonly name = "<c:out value="${fin.serviceCode}"/>inrightlow"  maxlength="3" value="${fin.inRightLowCaseCounth ==null ? 0 : fin.inRightLowCaseCounth}">
+                                                    <input type="text"  style="border-color: white;color: <c:if test="${fin.inRightLowCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inrightlow" readonly name = "<c:out value="${fin.serviceCode}"/>inrightlow"  maxlength="3" value="${fin.inRightLowCaseCounth ==null ? 0 : fin.inRightLowCaseCounth}">
                                                 </div>
 
                                                 </div>
@@ -99,7 +99,7 @@
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" disabled readonly  maxlength="3" value="999">
+                                                    <input type="text" disabled readonly  maxlength="3" value="999" style="border-color: white;">
                                                 </div></div>
                                             </td>
                                             <td>
@@ -152,7 +152,7 @@
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" disabled readonly maxlength="2" value="0">
+                                                    <input type="text" disabled readonly maxlength="2" value="0" style="border-color: white;">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
                                                     <input type="text" style="color: <c:if test="${fin.prLeftModCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prleftmod" name = "<c:out value="${fin.serviceCode}"/>prleftmod"  maxlength="2"value="${fin.prLeftModCaseCounth == null ? "" : fin.prLeftModCaseCounth}"
@@ -161,14 +161,14 @@
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.prLeftHighCaseCounterr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prlefthigh" readonly name = "<c:out value="${fin.serviceCode}"/>prlefthigh"  maxlength="2"value="${fin.prLeftHighCaseCount == null ? 1 : fin.prLeftHighCaseCount}">
+                                                    <input type="text" style="border-color: white;color: <c:if test="${fin.prLeftHighCaseCounterr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prlefthigh" readonly name = "<c:out value="${fin.serviceCode}"/>prlefthigh"  maxlength="2"value="${fin.prLeftHighCaseCount == null ? 1 : fin.prLeftHighCaseCount}">
                                                 </div>
 
                                                 </div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.prRightLowCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prrightlow"  readonly name = "<c:out value="${fin.serviceCode}"/>prrightlow" maxlength="3" value="${fin.prRightLowCaseCounth == null ? 0 : fin.prRightLowCaseCounth}">
+                                                    <input type="text" style="border-color: white;color: <c:if test="${fin.prRightLowCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prrightlow"  readonly name = "<c:out value="${fin.serviceCode}"/>prrightlow" maxlength="3" value="${fin.prRightLowCaseCounth == null ? 0 : fin.prRightLowCaseCounth}">
                                                 </div>
 
                                                 </div>
@@ -178,7 +178,7 @@
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" disabled readonly value="999">
+                                                    <input type="text" disabled readonly value="999" style="border-color: white;">
                                                 </div></div>
                                             </td>
                                             <td>
