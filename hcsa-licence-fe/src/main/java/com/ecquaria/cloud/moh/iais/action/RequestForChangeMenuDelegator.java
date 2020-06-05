@@ -112,10 +112,8 @@ public class RequestForChangeMenuDelegator {
     public void start(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do start start ...."));
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
-        filterParameter.setPageSize(systemParamConfig.getPagingSize());
         premiseFilterParameter.setPageSize(systemParamConfig.getPagingSize());
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
-
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
@@ -133,6 +131,7 @@ public class RequestForChangeMenuDelegator {
      */
     public void personnleListStart(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do personnleListStart start ...."));
+        filterParameter.setPageSize(systemParamConfig.getPagingSize());
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
