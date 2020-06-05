@@ -312,7 +312,7 @@ public class AppealServiceImpl implements AppealService {
             if(!maxCGOnumber){
                 request.getSession().setAttribute("maxCGOnumber",!maxCGOnumber);
             }
-          /*  AppFeeDetailsDto appFeeDetailsDto =
+            AppFeeDetailsDto appFeeDetailsDto =
                     applicationClient.getAppFeeDetailsDtoByApplicationNo(applicationDto.getApplicationNo()).getEntity();
             if(appFeeDetailsDto!=null){
                 try {
@@ -322,7 +322,7 @@ public class AppealServiceImpl implements AppealService {
                 } catch (Exception  e) {
                     log.error(e.getMessage()+"------",e);
                 }
-            }*/
+            }
             String serviceId = applicationDto.getServiceId();
             String id = applicationDto.getId();
             if(id!=null){
@@ -352,7 +352,7 @@ public class AppealServiceImpl implements AppealService {
             if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
                 requetForInformationGetMessage(request);
             }
-            if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status)){
+            if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(status)){
                 request.getSession().setAttribute("applicationAPPROVED","APPROVED");
             }
             request.getSession().setAttribute("appealNo",applicationDto.getApplicationNo());

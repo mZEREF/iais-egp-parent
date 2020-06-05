@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /****
  *
@@ -83,4 +84,6 @@ public interface RequestForChangeService {
     List<String> getAdminEmail(String orgId);
 
     Boolean isOtherOperation(String licenceId);
-}
+     Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, Object masterCodeDto );
+
+    }

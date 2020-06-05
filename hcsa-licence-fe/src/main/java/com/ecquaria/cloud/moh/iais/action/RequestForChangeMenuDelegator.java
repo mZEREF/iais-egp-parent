@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -39,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -54,6 +56,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
@@ -104,6 +107,8 @@ public class RequestForChangeMenuDelegator {
     private EventBusHelper eventBusHelper;
     @Autowired
     private GenerateIdClient generateIdClient;
+    @Autowired
+    private SystemAdminClient systemAdminClient;
 
     /**
      * @param bpc
@@ -429,7 +434,11 @@ public class RequestForChangeMenuDelegator {
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
 
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
-        Map<String, String> errorMap = NewApplicationDelegator.doValidatePremiss(bpc);
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,"oldAppSubmissionDto");
+
+        List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.PREMISES_HCI_LIST);
+        MasterCodeDto masterCodeDto = systemAdminClient.getMasterCodeById("B5E4744C-F96F-EA11-BE79-000C298A32C2").getEntity();
+        Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,masterCodeDto);
       /*  List<String> selectLicence = getSelectLicence(bpc.request);
         if (selectLicence.isEmpty()) {
             errorMap.put("selectLicence", "UC_CHKLMD001_ERR001");

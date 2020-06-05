@@ -36,7 +36,7 @@
           <label style="font-size: 25px">Reason For Appeal<span class="mandatory"> *</span></label>
           <select id="reasonSelect" name="reasonSelect">
             <option value="">Please Select</option>
-          <c:if test="${type=='application'}"><c:if test="${applicationAPPROVED==''||applicationAPPROVED==null}">
+          <c:if test="${type=='application'}"><c:if test="${applicationAPPROVED=='APPROVED'}">
             <option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option></c:if>
           </c:if>
           <c:if test="${lateFee==true}">

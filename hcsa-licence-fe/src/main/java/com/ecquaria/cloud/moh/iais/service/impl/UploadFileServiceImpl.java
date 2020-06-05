@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -361,6 +362,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppPremisesSpecialDocDto> appPremisesSpecialDocEntities = applicationListDto.getAppPremisesSpecialDocEntities();
         List<AppEditSelectDto> appEditSelects = applicationListDto.getAppEditSelects();
         List<AppGroupMiscDto> appGroupMiscs = applicationListDto.getAppGroupMiscs();
+        List<AppFeeDetailsDto> appFeeDetails = applicationListDto.getAppFeeDetails();
 
         List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
 
@@ -405,6 +407,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
             List<AppEditSelectDto> appEditSelectDtos=IaisCommonUtils.genNewArrayList();
             List<AppGroupMiscDto> appGroupMiscDtos=IaisCommonUtils.genNewArrayList();
+            List<AppFeeDetailsDto> appFeeDetailsDtos =IaisCommonUtils.genNewArrayList();
 
             groupDtos.add(every);
             String groupId = every.getId();
@@ -433,6 +436,14 @@ public class UploadFileServiceImpl implements UploadFileService {
             for(ApplicationDto applicationDto:application){
                 String applicationDtoId = applicationDto.getId();
                 String appGrpId = applicationDto.getAppGrpId();
+                String applicationNo = applicationDto.getApplicationNo();
+                if(appFeeDetails!=null){
+                    for(AppFeeDetailsDto appFeeDetailsDto : appFeeDetails){
+                        if(applicationNo.equals(appFeeDetailsDto.getApplicationNo())){
+                            appFeeDetailsDtos.add(appFeeDetailsDto);
+                        }
+                    }
+                }
                 if(groupId.equals(appGrpId)){
                     applicationDtos.add(applicationDto);
                     for(AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelation){
@@ -570,6 +581,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             applicationListFileDto.setAppPremisesSpecialDocEntities(appPremisesSpecialDocDtoList);
             applicationListFileDto.setAppEditSelects(appEditSelectDtos);
             applicationListFileDto.setAppGroupMiscs(appGroupMiscDtos);
+            applicationListFileDto.setAppFeeDetails(appFeeDetailsDtos);
             applicationListFileDtoList.add(applicationListFileDto);
         }
         return applicationListFileDtoList;

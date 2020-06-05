@@ -46,7 +46,7 @@
                                                         <p>Amendment</p>
                                                     </td>
                                                     <td>
-                                                        <p><c:out value="${AppSubmissionDto.appGrpNo}"></c:out></p>
+                                                        <p><c:out value="${svc.groupNo}"></c:out></p>
                                                     </td>
                                                     <td>
                                                         <p><c:out value="${svc.score}"></c:out></p>

@@ -604,7 +604,7 @@ public class WithOutRenewalDelegator {
             }
         }
         appFeeDetailsDto.setApplicationNo(appGrpNo+"-01");
-      /*  appSubmissionService.saveAppFeeDetails(appFeeDetailsDto);*/
+        appSubmissionService.saveAppFeeDetails(appFeeDetailsDto);
         appSubmissionDtos1.addAll(rfcAppSubmissionDtos);
 
         List<AppSubmissionDto> appSubmissionDtos3 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos1);

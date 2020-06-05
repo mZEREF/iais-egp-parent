@@ -7,6 +7,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
@@ -19,9 +21,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
+import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
@@ -39,10 +45,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import sop.webflow.rt.api.BaseProcessClass;
 
+import java.sql.Time;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import static java.util.regex.Pattern.compile;
 
 /****
  *
@@ -406,5 +420,779 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
         return   applicationClient.isLiscenceAppealOrCessation(licenceId).getEntity();
     }
+    @Override
+    public  Map<String, String> doValidatePremiss( AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, Object masterCodeDto ) {
+        log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
+        //do validate one premiss
+        List<String> list=IaisCommonUtils.genNewArrayList();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        Set<String> distinctVehicleNo = IaisCommonUtils.genNewHashSet();
+        for(int i=0;i<appGrpPremisesDtoList.size();i++){
+            String premiseType = appGrpPremisesDtoList.get(i).getPremisesType();
+            if (StringUtil.isEmpty(premiseType)) {
+                errorMap.put("premisesType"+i, "UC_CHKLMD001_ERR001");
+            }else {
+                String premisesSelect = appGrpPremisesDtoList.get(i).getPremisesSelect();
+                String appType = appSubmissionDto.getAppType();
+                boolean needValidate = false;
 
+                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                    String oldPremSel = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0).getPremisesSelect();
+                    if(!StringUtil.isEmpty(oldPremSel) && oldPremSel.equals(premisesSelect)){
+                        needValidate = true;
+                    }
+                }
+                AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
+                if (StringUtil.isEmpty(premisesSelect) || "-1".equals(premisesSelect)) {
+                    errorMap.put("premisesSelect"+i, "UC_CHKLMD001_ERR001");
+                } else if ( needValidate||!StringUtil.isEmpty(premisesSelect)||"newPremise".equals(premisesSelect) ) {
+                    StringBuilder stringBuilder=new StringBuilder();
+                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
+                        String onsiteStartHH = appGrpPremisesDtoList.get(i).getOnsiteStartHH();
+                        String onsiteStartMM = appGrpPremisesDtoList.get(i).getOnsiteStartMM();
+                        int startDate=0;
+                        int endDate=0;
+                        if(StringUtil.isEmpty(onsiteStartHH)||StringUtil.isEmpty(onsiteStartMM)){
+                            errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR001");
+                        }else {
+                            startDate = validateTime(errorMap, onsiteStartHH, onsiteStartMM, startDate, "onsiteStartMM", i);
+                        }
+
+                        String onsiteEndHH = appGrpPremisesDtoList.get(i).getOnsiteEndHH();
+                        String onsiteEndMM = appGrpPremisesDtoList.get(i).getOnsiteEndMM();
+                        if(StringUtil.isEmpty(onsiteEndHH)||StringUtil.isEmpty(onsiteEndMM)){
+                            errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR001");
+                        }else {
+                            endDate = validateTime(errorMap, onsiteEndHH, onsiteEndMM, endDate, "onsiteEndMM", i);
+                        }
+                        if(!StringUtil.isEmpty(onsiteStartHH)&&!StringUtil.isEmpty(onsiteStartMM)&&!StringUtil.isEmpty(onsiteEndHH)&&!StringUtil.isEmpty(onsiteEndMM)){
+                            if(endDate<startDate){
+                                errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR008");
+                            }
+                        }
+
+                        /*Boolean isOtherLic = appGrpPremisesDtoList.get(i).isLocateWithOthers();
+                        if(StringUtil.isEmpty(isOtherLic)){
+                            errorMap.put("isOtherLic"+i,"UC_CHKLMD001_ERR002");
+                        }*/
+
+                        //set  time
+                        if(!errorMap.containsKey("onsiteStartMM"+i) && !errorMap.containsKey("onsiteEndMM"+i)){
+                            LocalTime startTime = LocalTime.of(Integer.parseInt(onsiteStartHH),Integer.parseInt(onsiteStartMM));
+                            appGrpPremisesDtoList.get(i).setWrkTimeFrom(Time.valueOf(startTime));
+
+                            LocalTime endTime = LocalTime.of(Integer.parseInt(onsiteEndHH),Integer.parseInt(onsiteEndMM));
+                            appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(endTime));
+                        }
+
+                        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
+                        if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
+                            for(int j=0;j<appPremPhOpenPeriodList.size();j++){
+                                AppPremPhOpenPeriodDto appPremPhOpenPeriodDto = appPremPhOpenPeriodList.get(j);
+                                String convStartFromHH = appPremPhOpenPeriodDto.getOnsiteStartFromHH();
+                                String convStartFromMM = appPremPhOpenPeriodDto.getOnsiteStartFromMM();
+                                String onsiteEndToHH = appPremPhOpenPeriodDto.getOnsiteEndToHH();
+                                String onsiteEndToMM = appPremPhOpenPeriodDto.getOnsiteEndToMM();
+                                Date phDate = appPremPhOpenPeriodDto.getPhDate();
+                                if(!StringUtil.isEmpty(phDate)){
+                                    if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)){
+                                        errorMap.put("onsiteStartToMM"+i+j,"UC_CHKLMD001_ERR001");
+                                    }
+                                    if(StringUtil.isEmpty(onsiteEndToHH)||StringUtil.isEmpty(onsiteEndToMM)){
+                                        errorMap.put("onsiteEndToMM"+i+j,"UC_CHKLMD001_ERR001");
+                                    }
+                                }else if(StringUtil.isEmpty(phDate)){
+                                    errorMap.put("onsitephDate"+i+j,"UC_CHKLMD001_ERR001");
+                                }
+                                if(!StringUtil.isEmpty(convStartFromHH)&&!StringUtil.isEmpty(convStartFromMM)&&!StringUtil.isEmpty(onsiteEndToHH)
+                                        &&!StringUtil.isEmpty(onsiteEndToMM)||StringUtil.isEmpty(convStartFromHH)&&StringUtil.isEmpty(convStartFromMM)
+                                        &&StringUtil.isEmpty(onsiteEndToHH)&&StringUtil.isEmpty(onsiteEndToMM)){
+                                    if(!StringUtil.isEmpty(convStartFromHH)&&!StringUtil.isEmpty(convStartFromMM)&&!StringUtil.isEmpty(onsiteEndToHH)
+                                            &&!StringUtil.isEmpty(onsiteEndToMM)){
+                                        try {
+                                            int i1 = Integer.parseInt(convStartFromHH);
+                                            int i2 = Integer.parseInt(convStartFromMM);
+
+                                            if(i1>=24){
+                                                errorMap.put("onsiteStartToMM"+i+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i2>=60){
+                                                errorMap.put("onsiteStartToMM"+i+j,"UC_CHKLMD001_ERR010");
+                                            }
+
+                                        }catch (Exception e){
+                                            errorMap.put("onsiteStartToMM"+i+j,"CHKLMD001_ERR003");
+                                        }
+                                        try {
+                                            int i3 = Integer.parseInt(onsiteEndToHH);
+                                            int i4 = Integer.parseInt(onsiteEndToMM);
+                                            if(i3>=24){
+                                                errorMap.put("onsiteEndToMM"+i+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i4>=60){
+                                                errorMap.put("onsiteEndToMM"+i+j,"UC_CHKLMD001_ERR010");
+                                            }
+                                        }catch (Exception e){
+                                            errorMap.put("onsiteEndToMM"+i+j,"CHKLMD001_ERR003");
+                                        }
+                                        try {
+                                            int i1 = Integer.parseInt(convStartFromHH);
+                                            int i2 = Integer.parseInt(convStartFromMM);
+                                            int i3 = Integer.parseInt(onsiteEndToHH);
+                                            int i4 = Integer.parseInt(onsiteEndToMM);
+                                            if((i1*60+i2)>(i3*60+i4)){
+                                                errorMap.put("onsiteEndToMM"+i+j,"UC_CHKLMD001_ERR008");
+                                            }
+                                        }catch (Exception e){
+                                        }
+                                    }
+
+
+                                }else {
+                                    if(StringUtil.isEmpty(convStartFromHH)&&StringUtil.isEmpty(convStartFromMM)||StringUtil.isEmpty(convStartFromMM)||StringUtil.isEmpty(convStartFromHH)){
+                                        errorMap.put("onsiteStartToMM"+i+j,"UC_CHKLMD001_ERR001");
+                                    }else {
+                                        try {
+                                            int i1 = Integer.parseInt(convStartFromHH);
+                                            int i2 = Integer.parseInt(convStartFromMM);
+
+                                            if(i1>=24){
+                                                errorMap.put("onsiteStartToMM"+i+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i2>=60){
+                                                errorMap.put("onsiteStartToMM"+i+j,"UC_CHKLMD001_ERR010");
+                                            }
+
+                                        }catch (Exception e){
+                                            errorMap.put("onsiteStartToMM"+i+j,"CHKLMD001_ERR003");
+                                        }
+                                    }
+                                    if(StringUtil.isEmpty(onsiteEndToHH)&&StringUtil.isEmpty(onsiteEndToMM)||StringUtil.isEmpty(onsiteEndToHH)||StringUtil.isEmpty(onsiteEndToMM)){
+                                        errorMap.put("onsiteEndToMM"+i+j,"UC_CHKLMD001_ERR001");
+                                    }else {
+                                        try {
+                                            int i3 = Integer.parseInt(onsiteEndToHH);
+                                            int i4 = Integer.parseInt(onsiteEndToMM);
+                                            if(i3>=24){
+                                                errorMap.put("onsiteEndToMM"+i+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i4>=60){
+                                                errorMap.put("onsiteEndToMM"+i+j,"UC_CHKLMD001_ERR010");
+                                            }
+                                        }catch (Exception e){
+                                            errorMap.put("onsiteEndToMM"+i+j,"CHKLMD001_ERR003");
+                                        }
+
+                                    }
+                                }
+                                //set ph time
+                                String errorOnsiteStartToMM = errorMap.get("onsiteStartToMM"+i+j);
+                                String errorOnsiteEndToMM = errorMap.get("onsiteEndToMM"+i+j);
+                                if(StringUtil.isEmpty(errorOnsiteEndToMM) && StringUtil.isEmpty(errorOnsiteStartToMM) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
+                                    LocalTime startTime = LocalTime.of(Integer.parseInt(convStartFromHH),Integer.parseInt(convStartFromMM));
+                                    appPremPhOpenPeriodDto.setStartFrom(Time.valueOf(startTime));
+                                    LocalTime endTime = LocalTime.of(Integer.parseInt(onsiteEndToHH),Integer.parseInt(onsiteEndToMM));
+                                    appPremPhOpenPeriodDto.setEndTo(Time.valueOf(endTime));
+                                }
+                            }
+                        }
+                        String hciName = appGrpPremisesDtoList.get(i).getHciName();
+                        if(StringUtil.isEmpty(hciName)){
+                            errorMap.put("hciName"+i,"UC_CHKLMD001_ERR001");
+                        } {
+
+                            if(masterCodeDto!=null){
+                                MasterCodeDto masterCode=(MasterCodeDto)masterCodeDto;
+                                String codeValue = masterCode.getCodeValue();
+                                String[] s = codeValue.split(" ");
+                                for(int index=0;index<s.length;index++){
+                                    if(hciName.toUpperCase().contains(s[index].toUpperCase())){
+                                        errorMap.put("hciName"+i,"CHKLMD001_ERR002");
+                                    }
+                                }
+                            }
+                            List<AppGrpPremisesDto> entity = applicationClient.getAppGrpPremisesDtoByHciName(hciName).getEntity();
+                           /* if(!entity.isEmpty()){
+                                errorMap.put("hciName"+i,"HCI name that has been used by another Licensee");
+                            }*/
+                        }
+                        String offTelNo = appGrpPremisesDtoList.get(i).getOffTelNo();
+                        if(StringUtil.isEmpty(offTelNo)){
+                            errorMap.put("offTelNo"+i,"UC_CHKLMD001_ERR001");
+                        }else {
+                            boolean matches = offTelNo.matches("^[6][0-9]{7}$");
+                            if(!matches) {
+                                errorMap.put("offTelNo"+i,"CHKLMD001_ERR007");
+                            }
+                        }
+
+                        String streetName = appGrpPremisesDtoList.get(i).getStreetName();
+                        if(StringUtil.isEmpty(streetName)){
+                            errorMap.put("streetName"+i,"UC_CHKLMD001_ERR001");
+                        }
+
+                        String addrType = appGrpPremisesDtoList.get(i).getAddrType();
+
+                        if(StringUtil.isEmpty(addrType)){
+                            errorMap.put("addrType"+i, "UC_CHKLMD001_ERR001");
+                        }else {
+                            boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getFloorNo());
+                            boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getBlkNo());
+                            boolean empty2 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getUnitNo());
+                            if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
+
+                                if (empty) {
+                                    errorMap.put("floorNo"+i, "UC_CHKLMD001_ERR001");
+                                }
+                                if (empty1) {
+                                    errorMap.put("blkNo"+i, "UC_CHKLMD001_ERR001");
+                                }
+                                if (empty2) {
+                                    errorMap.put("unitNo"+i, "UC_CHKLMD001_ERR001");
+                                }
+                            }
+                            String floorNoErr = errorMap.get("floorNo"+i);
+                            String floorNo = appGrpPremisesDtoList.get(i).getFloorNo();
+                            if(StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)){
+                                Pattern pattern = compile("[0-9]*");
+                                boolean noFlag =  pattern.matcher(floorNo).matches();
+                                if (noFlag) {
+                                    int floorNum = Integer.parseInt(floorNo);
+                                    if (10 > floorNum) {
+                                        floorNo = "0" + floorNum;
+                                        appGrpPremisesDtoList.get(i).setFloorNo(floorNo);
+                                    }
+                                }
+
+                            }
+                            if(!empty&&!empty1&&!empty2){
+                                stringBuilder.append(appGrpPremisesDtoList.get(i).getFloorNo())
+                                        .append(appGrpPremisesDtoList.get(i).getBlkNo())
+                                        .append(appGrpPremisesDtoList.get(i).getUnitNo());
+                            }
+                        }
+                        String postalCode = appGrpPremisesDtoList.get(i).getPostalCode();
+                        if (!StringUtil.isEmpty(postalCode)) {
+                            if (!postalCode.matches("^[0-9]{6}$")) {
+                                errorMap.put("postalCode"+i, "UC_CHKLMD001_ERR004");
+                            }else {
+
+                                if(!StringUtil.isEmpty(stringBuilder.toString())){
+                                    stringBuilder.append(postalCode);
+                                    if(list.contains(stringBuilder.toString())){
+                                        errorMap.put("postalCode"+i,"There is a duplicated entry for this premises address");
+
+                                    }else {
+                                        list.add(stringBuilder.toString());
+                                    }
+                                }
+                            }
+                        }else {
+                            errorMap.put("postalCode"+i, "UC_CHKLMD001_ERR001");
+                        }
+                        //0062204
+                        String currentHci = hciName + IaisCommonUtils.genPremisesKey(postalCode,appGrpPremisesDto.getBlkNo(),appGrpPremisesDto.getFloorNo(),appGrpPremisesDto.getUnitNo());
+                        String hciNameErr = errorMap.get("hciName"+i);
+                        String postalCodeErr =errorMap.get("postalCode"+i);
+                        String blkNoErr =errorMap.get("blkNo"+i);
+                        String floorNoErr =errorMap.get("floorNo"+i);
+                        String unitNoErr =errorMap.get("unitNo"+i);
+                        boolean hciFlag =  StringUtil.isEmpty(hciNameErr) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
+                        log.info(StringUtil.changeForLog("hciFlag:"+hciFlag));
+                        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag){
+                            if(!IaisCommonUtils.isEmpty(premisesHciList) && premisesHciList.contains(currentHci)){
+                                errorMap.put("premisesHci"+i,"NEW_ERR0005");
+                            }
+                        }
+                    } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
+                        String conStartHH = appGrpPremisesDtoList.get(i).getConStartHH();
+                        String conStartMM = appGrpPremisesDtoList.get(i).getConStartMM();
+                        int conStartDate=0;
+                        int conEndDate=0;
+
+                        if(StringUtil.isEmpty(conStartHH)||StringUtil.isEmpty(conStartMM)){
+                            errorMap.put("conStartMM"+i,"UC_CHKLMD001_ERR001");
+                        }else {
+                            conStartDate = validateTime(errorMap, conStartHH, conStartMM, conStartDate, "conStartMM", i);
+                        }
+                        String conEndHH = appGrpPremisesDtoList.get(i).getConEndHH();
+                        String conEndMM = appGrpPremisesDtoList.get(i).getConEndMM();
+                        if(StringUtil.isEmpty(conEndHH)||StringUtil.isEmpty(conEndMM)){
+                            errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR001");
+                        }else {
+                            conEndDate = validateTime(errorMap, conEndHH, conEndMM, conEndDate, "conEndMM", i);
+                        }
+                        if(!StringUtil.isEmpty(conStartHH)&&!StringUtil.isEmpty(conStartMM)&&!StringUtil.isEmpty(conEndHH)&&!StringUtil.isEmpty(conEndMM)){
+                            if(conEndDate<conStartDate){
+                                errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR008");
+                            }
+                        }
+
+
+                        //set  time
+                        String errorStartMM = errorMap.get("conStartMM"+i);
+                        String errorEndMM = errorMap.get("conEndMM"+i);
+                        if(StringUtil.isEmpty(errorStartMM) && StringUtil.isEmpty(errorEndMM)){
+                            LocalTime startTime = LocalTime.of(Integer.parseInt(conStartHH),Integer.parseInt(conStartMM));
+                            appGrpPremisesDtoList.get(i).setWrkTimeFrom(Time.valueOf(startTime));
+
+                            LocalTime endTime = LocalTime.of(Integer.parseInt(conEndHH),Integer.parseInt(conEndMM));
+                            appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(endTime));
+                        }
+
+                        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
+                        if(appPremPhOpenPeriodList!=null){
+                            for(int j=0;j<appPremPhOpenPeriodList.size();j++){
+                                AppPremPhOpenPeriodDto appPremPhOpenPeriodDto = appPremPhOpenPeriodList.get(j);
+                                String convEndToHH = appPremPhOpenPeriodDto.getConvEndToHH();
+                                String convEndToMM = appPremPhOpenPeriodDto.getConvEndToMM();
+                                String convStartFromHH = appPremPhOpenPeriodDto.getConvStartFromHH();
+                                String convStartFromMM = appPremPhOpenPeriodDto.getConvStartFromMM();
+                                Date phDate = appPremPhOpenPeriodDto.getPhDate();
+                                if(!StringUtil.isEmpty(phDate)){
+                                    if(StringUtil.isEmpty(convEndToHH)||StringUtil.isEmpty(convEndToMM)){
+                                        errorMap.put("convEndToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                    }
+                                    if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)){
+                                        errorMap.put("convStartToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                    }
+                                }else if(StringUtil.isEmpty(phDate)){
+                                    errorMap.put("convphDate"+i+j,"UC_CHKLMD001_ERR001");
+                                }
+
+                                if(StringUtil.isEmpty(convEndToHH)&&StringUtil.isEmpty(convEndToMM)&StringUtil.isEmpty(convStartFromHH)
+                                        &StringUtil.isEmpty(convStartFromMM)||!StringUtil.isEmpty(convEndToHH)&&!StringUtil.isEmpty(convEndToMM)
+                                        &&!StringUtil.isEmpty(convStartFromHH)&!StringUtil.isEmpty(convStartFromMM)){
+                                    if(!StringUtil.isEmpty(convEndToHH)&&!StringUtil.isEmpty(convEndToMM)
+                                            &&!StringUtil.isEmpty(convStartFromHH)&!StringUtil.isEmpty(convStartFromMM)){
+                                        try {
+                                            int i1 = Integer.parseInt(convStartFromHH);
+                                            int i2 = Integer.parseInt(convStartFromMM);
+                                            if(i1>=24){
+                                                errorMap.put("convStartToHH"+i+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i2>=60){
+                                                errorMap.put("convStartToHH"+i+j,"UC_CHKLMD001_ERR010");
+                                            }
+
+                                        }catch (Exception e){
+                                            errorMap.put("convStartToHH"+i+j,"CHKLMD001_ERR003");
+                                        }
+                                        try {
+                                            int i3 = Integer.parseInt(convEndToHH);
+                                            int i4 = Integer.parseInt(convEndToMM);
+                                            if(i3>=24){
+                                                errorMap.put("convEndToHH"+i+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i4>=60){
+                                                errorMap.put("convEndToHH"+i+j,"UC_CHKLMD001_ERR010");
+                                            }
+                                        }catch (Exception e){
+                                            errorMap.put("convEndToHH"+i+j,"CHKLMD001_ERR003");
+                                        }
+                                        try {
+                                            int i1 = Integer.parseInt(convStartFromHH);
+                                            int i2 = Integer.parseInt(convStartFromMM);
+                                            int i3 = Integer.parseInt(convEndToHH);
+                                            int i4 = Integer.parseInt(convEndToMM);
+                                            if((i1*60+i2)>(i3*60+i4)){
+                                                errorMap.put("convEndToHH"+i+j,"UC_CHKLMD001_ERR008");
+                                            }
+                                        }catch (Exception e){
+
+                                        }
+                                    }
+                                }else {
+                                    if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)||StringUtil.isEmpty(convStartFromMM)&&StringUtil.isEmpty(convStartFromHH)){
+                                        errorMap.put("convStartToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                    }else {
+                                        try {
+                                            int i1 = Integer.parseInt(convStartFromHH);
+                                            int i2 = Integer.parseInt(convStartFromMM);
+                                            if(i1>=24){
+                                                errorMap.put("convStartToHH"+i+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i2>=60){
+                                                errorMap.put("convStartToHH"+i+j,"UC_CHKLMD001_ERR010");
+                                            }
+                                        }catch (Exception e){
+
+
+                                        }
+                                    }
+                                    if(StringUtil.isEmpty(convEndToHH)||StringUtil.isEmpty(convEndToMM)||StringUtil.isEmpty(convEndToHH)&&StringUtil.isEmpty(convEndToMM)){
+                                        errorMap.put("convEndToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                    }else {
+                                        try {
+                                            int i3 = Integer.parseInt(convEndToHH);
+                                            int i4 = Integer.parseInt(convEndToMM);
+                                            if(i3>=24){
+                                                errorMap.put("convEndToHH"+i+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i4>=60){
+                                                errorMap.put("convEndToHH"+i+j,"UC_CHKLMD001_ERR010");
+                                            }
+
+                                        }catch (Exception e){
+
+
+                                        }
+                                    }
+                                }
+                                //set ph time
+                                String errorConvStartToMM = errorMap.get("convStartToHH"+i+j);
+                                String errorConvEndToMM = errorMap.get("convEndToHH"+i+j);
+                                if(StringUtil.isEmpty(errorConvStartToMM) && StringUtil.isEmpty(errorConvEndToMM) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
+                                    LocalTime startTime = LocalTime.of(Integer.parseInt(convStartFromHH),Integer.parseInt(convStartFromMM));
+                                    appPremPhOpenPeriodDto.setStartFrom(Time.valueOf(startTime));
+                                    LocalTime endTime = LocalTime.of(Integer.parseInt(convEndToHH),Integer.parseInt(convEndToMM));
+                                    appPremPhOpenPeriodDto.setEndTo(Time.valueOf(endTime));
+                                }
+                            }
+                        }
+                        String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
+                        validateVehicleNo(errorMap, distinctVehicleNo, i, conveyanceVehicleNo);
+
+                        String cStreetName = appGrpPremisesDtoList.get(i).getConveyanceStreetName();
+                        if(StringUtil.isEmpty(cStreetName)){
+                            errorMap.put("conveyanceStreetName"+i,"UC_CHKLMD001_ERR001");
+                        }
+                        String conveyanceAddressType = appGrpPremisesDtoList.get(i).getConveyanceAddressType();
+                        if(StringUtil.isEmpty(conveyanceAddressType)){
+                            errorMap.put("conveyanceAddressType"+i, "UC_CHKLMD001_ERR001");
+                        }else {
+                            boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceFloorNo());
+                            boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceBlockNo());
+                            boolean empty2 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceUnitNo());
+                            if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(conveyanceAddressType)) {
+
+                                if (empty) {
+                                    errorMap.put("conveyanceFloorNo"+i, "UC_CHKLMD001_ERR001");
+                                }
+                                if (empty1) {
+                                    errorMap.put("conveyanceBlockNos"+i, "UC_CHKLMD001_ERR001");
+                                }
+                                if (empty2) {
+                                    errorMap.put("conveyanceUnitNo"+i, "UC_CHKLMD001_ERR001");
+                                }
+
+                            }
+                            String floorNoErr = errorMap.get("conveyanceFloorNo"+i);
+                            String floorNo = appGrpPremisesDtoList.get(i).getConveyanceFloorNo();
+                            if(StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)){
+                                Pattern pattern = compile("[0-9]*");
+                                boolean noFlag =  pattern.matcher(floorNo).matches();
+                                if (noFlag) {
+                                    int floorNum = Integer.parseInt(floorNo);
+                                    if (10 > floorNum) {
+                                        floorNo = "0" + floorNum;
+                                        appGrpPremisesDtoList.get(i).setConveyanceFloorNo(floorNo);
+                                    }
+                                }
+
+                            }
+                            if(!empty&&!empty1&&!empty2){
+                                stringBuilder.append(appGrpPremisesDtoList.get(i).getConveyanceFloorNo())
+                                        .append(appGrpPremisesDtoList.get(i).getConveyanceBlockNo())
+                                        .append(appGrpPremisesDtoList.get(i).getConveyanceUnitNo());
+                            }
+                        }
+                        String conveyancePostalCode = appGrpPremisesDtoList.get(i).getConveyancePostalCode();
+                        if(StringUtil.isEmpty(conveyancePostalCode)){
+                            errorMap.put("conveyancePostalCode"+i,"UC_CHKLMD001_ERR001");
+                        }else {
+                            if(!conveyancePostalCode.matches("^[0-9]{6}$")){
+                                errorMap.put("conveyancePostalCode"+i, "UC_CHKLMD001_ERR004");
+                            }else {
+                                if(!StringUtil.isEmpty(stringBuilder.toString())){
+                                    stringBuilder.append(conveyancePostalCode);
+                                    if(list.contains(stringBuilder.toString())){
+                                        errorMap.put("conveyancePostalCode"+i,"There is a duplicated entry for this premises address.");
+                                    }else {
+                                        list.add(stringBuilder.toString());
+                                    }
+                                }
+                            }
+                        }
+
+                        //0062204
+                        String currentHci = conveyanceVehicleNo + IaisCommonUtils.genPremisesKey(conveyancePostalCode,appGrpPremisesDto.getConveyanceBlockNo(),appGrpPremisesDto.getConveyanceFloorNo(),appGrpPremisesDto.getConveyanceUnitNo());
+                        String vehicleNo = errorMap.get("conveyanceVehicleNo"+i);
+                        String postalCodeErr =errorMap.get("conveyancePostalCode"+i);
+                        String blkNoErr =errorMap.get("conveyanceBlockNos"+i);
+                        String floorNoErr =errorMap.get("conveyanceFloorNo"+i);
+                        String unitNoErr =errorMap.get("conveyanceUnitNo"+i);
+                        boolean hciFlag =  StringUtil.isEmpty(vehicleNo) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
+                        log.info(StringUtil.changeForLog("hciFlag:"+hciFlag));
+                        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag){
+                            if(!IaisCommonUtils.isEmpty(premisesHciList) && premisesHciList.contains(currentHci)){
+                                errorMap.put("premisesHci"+i,"NEW_ERR0005");
+                            }
+                        }
+                    }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premiseType)){
+
+                        String offSitePostalCode = appGrpPremisesDtoList.get(i).getOffSitePostalCode();
+                        if (!StringUtil.isEmpty(offSitePostalCode)) {
+                            if (!offSitePostalCode.matches("^[0-9]{6}$")) {
+                                errorMap.put("offSitePostalCode"+i, "UC_CHKLMD001_ERR004");
+                            }else {
+
+                                if(!StringUtil.isEmpty(stringBuilder.toString())){
+                                    stringBuilder.append(offSitePostalCode);
+                                    if(list.contains(stringBuilder.toString())){
+                                        errorMap.put("offSitePostalCode"+i,"There is a duplicated entry for this premises address");
+
+                                    }else {
+                                        list.add(stringBuilder.toString());
+                                    }
+                                }
+                            }
+                        }else {
+                            errorMap.put("offSitePostalCode"+i, "UC_CHKLMD001_ERR001");
+                        }
+
+                        String offSiteStreetName = appGrpPremisesDtoList.get(i).getOffSiteStreetName();
+                        if(StringUtil.isEmpty(offSiteStreetName)){
+                            errorMap.put("offSiteStreetName"+i,"UC_CHKLMD001_ERR001");
+                        }
+
+                        String offSiteAddressType = appGrpPremisesDtoList.get(i).getOffSiteAddressType();
+
+                        if(StringUtil.isEmpty(offSiteAddressType)){
+                            errorMap.put("offSiteAddressType"+i, "UC_CHKLMD001_ERR001");
+                        }else {
+                            boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getOffSiteFloorNo());
+                            boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getOffSiteBlockNo());
+                            boolean empty2 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getOffSiteUnitNo());
+                            if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(offSiteAddressType)) {
+
+                                if (empty) {
+                                    errorMap.put("offSiteFloorNo"+i, "UC_CHKLMD001_ERR001");
+                                }
+                                if (empty1) {
+                                    errorMap.put("offSiteBlockNo"+i, "UC_CHKLMD001_ERR001");
+                                }
+                                if (empty2) {
+                                    errorMap.put("offSiteUnitNo"+i, "UC_CHKLMD001_ERR001");
+                                }
+                            }
+                            String floorNoErr = errorMap.get("offSiteFloorNo"+i);
+                            String floorNo = appGrpPremisesDtoList.get(i).getOffSiteFloorNo();
+                            if(StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)){
+                                Pattern pattern = compile("[0-9]*");
+                                boolean noFlag =  pattern.matcher(floorNo).matches();
+                                if (noFlag) {
+                                    int floorNum = Integer.parseInt(floorNo);
+                                    if (10 > floorNum) {
+                                        floorNo = "0" + floorNum;
+                                        appGrpPremisesDtoList.get(i).setOffSiteFloorNo(floorNo);
+                                    }
+                                }
+
+                            }
+                            if(!empty&&!empty1&&!empty2){
+                                stringBuilder.append(appGrpPremisesDtoList.get(i).getFloorNo())
+                                        .append(appGrpPremisesDtoList.get(i).getBlkNo())
+                                        .append(appGrpPremisesDtoList.get(i).getUnitNo());
+                            }
+                        }
+                        String offSiteStartHH = appGrpPremisesDtoList.get(i).getOffSiteStartHH();
+                        String offSiteStartMM = appGrpPremisesDtoList.get(i).getOffSiteStartMM();
+                        int startDate=0;
+                        int endDate=0;
+                        if(StringUtil.isEmpty(offSiteStartHH)||StringUtil.isEmpty(offSiteStartMM)){
+                            errorMap.put("offSiteStartMM"+i,"UC_CHKLMD001_ERR001");
+                        }else {
+                            startDate = validateTime(errorMap, offSiteStartHH, offSiteStartMM, startDate, "offSiteStartMM", i);
+                        }
+
+                        String offSiteEndHH = appGrpPremisesDtoList.get(i).getOffSiteEndHH();
+                        String offSiteEndMM = appGrpPremisesDtoList.get(i).getOffSiteEndMM();
+                        if(StringUtil.isEmpty(offSiteEndHH)||StringUtil.isEmpty(offSiteEndMM)){
+                            errorMap.put("offSiteEndMM"+i,"UC_CHKLMD001_ERR001");
+                        }else {
+                            endDate = validateTime(errorMap, offSiteEndHH, offSiteEndMM, endDate, "offSiteEndMM", i);
+                        }
+                        if(!StringUtil.isEmpty(offSiteStartHH)&&!StringUtil.isEmpty(offSiteStartMM)&&!StringUtil.isEmpty(offSiteEndHH)&&!StringUtil.isEmpty(offSiteEndMM)){
+                            if(endDate<startDate){
+                                errorMap.put("offSiteEndMM"+i,"UC_CHKLMD001_ERR008");
+                            }
+                        }
+
+                        //set  time
+                        String errorStartMM = errorMap.get("offSiteStartMM"+i);
+                        String errorEndMM = errorMap.get("offSiteEndMM"+i);
+                        if(StringUtil.isEmpty(errorStartMM) && StringUtil.isEmpty(errorEndMM)){
+                            LocalTime startTime = LocalTime.of(Integer.parseInt(offSiteStartHH),Integer.parseInt(offSiteStartMM));
+                            appGrpPremisesDtoList.get(i).setWrkTimeFrom(Time.valueOf(startTime));
+
+                            LocalTime endTime = LocalTime.of(Integer.parseInt(offSiteEndHH),Integer.parseInt(offSiteEndMM));
+                            appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(endTime));
+                        }
+
+                        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
+                        if(appPremPhOpenPeriodList!=null){
+
+                            for(int j=0;j<appPremPhOpenPeriodList.size();j++){
+                                AppPremPhOpenPeriodDto appPremPhOpenPeriodDto = appPremPhOpenPeriodList.get(j);
+                                String offSiteEndToHH = appPremPhOpenPeriodDto.getOffSiteEndToHH();
+                                String offSiteEndToMM = appPremPhOpenPeriodDto.getOffSiteEndToMM();
+                                String offSiteStartFromHH = appPremPhOpenPeriodDto.getOffSiteStartFromHH();
+                                String offSiteStartFromMM = appPremPhOpenPeriodDto.getOffSiteStartFromMM();
+                                Date phDate = appPremPhOpenPeriodDto.getPhDate();
+                                if(!StringUtil.isEmpty(phDate)){
+                                    if(StringUtil.isEmpty(offSiteEndToHH)||StringUtil.isEmpty(offSiteEndToMM)){
+                                        errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                    }
+                                    if(StringUtil.isEmpty(offSiteStartFromHH)||StringUtil.isEmpty(offSiteStartFromMM)){
+                                        errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                    }
+                                }else if(StringUtil.isEmpty(phDate)){
+                                    errorMap.put("offSitephDate"+i+j,"UC_CHKLMD001_ERR001");
+                                }
+
+                                if(StringUtil.isEmpty(offSiteEndToHH)&&StringUtil.isEmpty(offSiteEndToMM)&StringUtil.isEmpty(offSiteStartFromHH)
+                                        &StringUtil.isEmpty(offSiteStartFromMM)||!StringUtil.isEmpty(offSiteEndToHH)&&!StringUtil.isEmpty(offSiteEndToMM)
+                                        &&!StringUtil.isEmpty(offSiteStartFromHH)&!StringUtil.isEmpty(offSiteStartFromMM)){
+                                    if(!StringUtil.isEmpty(offSiteEndToHH)&&!StringUtil.isEmpty(offSiteEndToMM)
+                                            &&!StringUtil.isEmpty(offSiteEndToHH)&!StringUtil.isEmpty(offSiteStartFromMM)){
+                                        try {
+                                            int i1 = Integer.parseInt(offSiteStartFromHH);
+                                            int i2 = Integer.parseInt(offSiteStartFromMM);
+                                            if(i1>=24){
+                                                errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i2>=60){
+                                                errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR010");
+                                            }
+
+                                        }catch (Exception e){
+                                            errorMap.put("offSiteStartToHH"+i+j,"CHKLMD001_ERR003");
+                                        }
+                                        try {
+                                            int i3 = Integer.parseInt(offSiteEndToHH);
+                                            int i4 = Integer.parseInt(offSiteEndToMM);
+                                            if(i3>=24){
+                                                errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i4>=60){
+                                                errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR010");
+                                            }
+                                        }catch (Exception e){
+                                            errorMap.put("offSiteEndToHH"+i+j,"CHKLMD001_ERR003");
+                                        }
+                                        try {
+                                            int i1 = Integer.parseInt(offSiteStartFromHH);
+                                            int i2 = Integer.parseInt(offSiteStartFromMM);
+                                            int i3 = Integer.parseInt(offSiteEndToHH);
+                                            int i4 = Integer.parseInt(offSiteEndToMM);
+                                            if((i1*60+i2)>(i3*60+i4)){
+                                                errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR008");
+                                            }
+                                        }catch (Exception e){
+
+                                        }
+                                    }
+                                }else {
+                                    if(StringUtil.isEmpty(offSiteStartFromHH)||StringUtil.isEmpty(offSiteStartFromMM)||StringUtil.isEmpty(offSiteStartFromHH)&&StringUtil.isEmpty(offSiteStartFromMM)){
+                                        errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                    }else {
+                                        try {
+                                            int i1 = Integer.parseInt(offSiteStartFromHH);
+                                            int i2 = Integer.parseInt(offSiteStartFromMM);
+                                            if(i1>=24){
+                                                errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i2>=60){
+                                                errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR010");
+                                            }
+                                        }catch (Exception e){
+                                            errorMap.put("offSiteStartToHH"+i+j,"CHKLMD001_ERR003");
+
+                                        }
+                                    }
+                                    if(StringUtil.isEmpty(offSiteEndToHH)||StringUtil.isEmpty(offSiteEndToMM)||StringUtil.isEmpty(offSiteEndToHH)&&StringUtil.isEmpty(offSiteEndToMM)){
+                                        errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                    }else {
+
+                                        try {
+                                            int i3 = Integer.parseInt(offSiteEndToHH);
+                                            int i4 = Integer.parseInt(offSiteEndToMM);
+                                            if(i3>=24){
+                                                errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR009");
+                                            }else if(i4>=60){
+                                                errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR010");
+                                            }
+
+                                        }catch (Exception e){
+                                            errorMap.put("offSiteEndToHH"+i+j,"CHKLMD001_ERR003");
+
+                                        }
+                                    }
+                                }
+
+                                //set ph time
+                                String errorOffSiteStartToMM = errorMap.get("offSiteStartToHH"+i+j);
+                                String errorOffSiteEndToMM = errorMap.get("offSiteEndToHH"+i+j);
+                                if(StringUtil.isEmpty(errorOffSiteStartToMM) && StringUtil.isEmpty(errorOffSiteEndToMM) && !IaisCommonUtils.isEmpty(appPremPhOpenPeriodList)){
+                                    LocalTime startTime = LocalTime.of(Integer.parseInt(offSiteStartFromHH),Integer.parseInt(offSiteStartFromMM));
+                                    appPremPhOpenPeriodDto.setStartFrom(Time.valueOf(startTime));
+                                    LocalTime endTime = LocalTime.of(Integer.parseInt(offSiteEndToHH),Integer.parseInt(offSiteEndToMM));
+                                    appPremPhOpenPeriodDto.setEndTo(Time.valueOf(endTime));
+                                }
+                            }
+                        }
+                        //0062204
+                        String currentHci = IaisCommonUtils.genPremisesKey(offSitePostalCode,appGrpPremisesDto.getOffSiteBlockNo(),appGrpPremisesDto.getOffSiteFloorNo(),appGrpPremisesDto.getOffSiteUnitNo());
+                        String postalCodeErr =errorMap.get("offSitePostalCode"+i);
+                        String blkNoErr =errorMap.get("offSiteBlockNo"+i);
+                        String floorNoErr =errorMap.get("offSiteFloorNo"+i);
+                        String unitNoErr =errorMap.get("offSiteUnitNo"+i);
+                        boolean hciFlag = StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
+                        log.info(StringUtil.changeForLog("hciFlag:"+hciFlag));
+                        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag){
+                            if(!IaisCommonUtils.isEmpty(premisesHciList) && premisesHciList.contains(currentHci)){
+                                errorMap.put("premisesHci"+i,"NEW_ERR0005");
+                            }
+                        }
+
+                    }
+
+
+                } else {
+                    //premiseSelect = organization hci code
+
+                    if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)){
+                        String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
+                        validateVehicleNo(errorMap, distinctVehicleNo, i, conveyanceVehicleNo);
+                    }
+
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("the do doValidatePremiss end ...."));
+
+        return errorMap;
+    }
+    private  void validateVehicleNo(Map<String, String> errorMap, Set<String> distinctVehicleNo, int numberCount, String conveyanceVehicleNo){
+        if(StringUtil.isEmpty(conveyanceVehicleNo)){
+            errorMap.put("conveyanceVehicleNo"+numberCount,"UC_CHKLMD001_ERR001");
+        }else {
+            boolean b = VehNoValidator.validateNumber(conveyanceVehicleNo);
+            if(!b){
+                errorMap.put("conveyanceVehicleNo"+numberCount,"CHKLMD001_ERR008");
+            }
+
+            if (distinctVehicleNo.contains(conveyanceVehicleNo)){
+                errorMap.put("conveyanceVehicleNo"+numberCount, "CHKLMD001_ERR009");
+            }else {
+                distinctVehicleNo.add(conveyanceVehicleNo);
+            }
+        }
+    }
+    private  int validateTime(Map<String, String> errorMap, String onsiteHH, String onsiteMM, int date, String key, int i){
+        try {
+            int i1 = Integer.parseInt(onsiteHH);
+            int i2= Integer.parseInt(onsiteMM);
+            date=  i1*60+i2*1;
+            if(i1>=24){
+                errorMap.put(key+i,"UC_CHKLMD001_ERR009");
+            }else if(i2>=60){
+                errorMap.put(key+i,"UC_CHKLMD001_ERR010");
+            }
+        }catch (Exception e){
+            errorMap.put(key+i,"CHKLMD001_ERR003");
+        }
+        return date;
+    }
 }
