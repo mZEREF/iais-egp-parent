@@ -150,7 +150,15 @@ public class ProfessionalInformationDelegator {
 		if (!Objects.isNull(results)){
 			List<ProfessionalInformationQueryDto> queryList = results.getRows();
 			queryList.forEach(i -> i.setDesignation(MasterCodeUtil.getCodeDesc(i.getDesignation())));
-				file = ExcelWriter.exportExcel(queryList, ProfessionalInformationQueryDto.class, "Professional Information_Search_Template");
+
+			ExcelWriter excelWriter = new ExcelWriter();
+			excelWriter.setClz(ProfessionalInformationQueryDto.class);
+			excelWriter.setFileName("Professional Information_Search_Template");
+			try {
+				file = excelWriter.writerToExcel(queryList);
+			} catch (Exception e) {
+				log.error("=======>fileHandler error >>>>>", e);
+			}
 		}
 
 		try {

@@ -43,6 +43,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -402,7 +403,15 @@ public class RegulationDelegator {
         SearchResult searchResult =  regulationService.searchRegulation(searchParam);
         if (searchResult != null){
             List<RegulationQueryDto> regulationResult = searchResult.getRows();
-            file = ExcelWriter.exportExcel(regulationResult, RegulationQueryDto.class, "Checklist_Regulations_Upload_Template");
+
+            ExcelWriter excelWriter = new ExcelWriter();
+            excelWriter.setFileName("Checklist_Regulations_Upload_Template");
+            excelWriter.setClz(RegulationQueryDto.class);
+            try {
+                file = excelWriter.writerToExcel(regulationResult);
+            } catch (Exception  e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
         }
 
         if(file != null){

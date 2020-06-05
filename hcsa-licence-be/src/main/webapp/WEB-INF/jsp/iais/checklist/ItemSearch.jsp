@@ -28,6 +28,7 @@
     <input type="hidden" name="currentValidateId" value="">
     <input type="hidden" id="currentMaskId" name="currentMaskId" value="">
     <input type="hidden" id="itemCheckboxReDisplay" name="itemCheckboxReDisplay" value="${param.itemCheckbox}">
+
       <div class="bg-title"><h2>Checklist Item Management</h2></div>
 
     <span id="error_deleteItemMsg" name="iaisErrorMsg" class="error-msg"></span>
@@ -85,6 +86,7 @@
                 <div class="text-right">
                   <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
                   <a class="btn btn-secondary" id="exportButtonId" href="${pageContext.request.contextPath}/checklist-item-file?action=checklistItem" onclick="$('#exportButtonId').attr('class', 'btn btn-secondary disabled') ">Export Checklist Item</a>
+                  <a class="btn btn-secondary" id="exportTemplateButtonId"   onclick="$('#exportTemplateButtonId').attr('class', 'btn btn-secondary disabled'); exportToConfigTemplate()">Export To Template</a>
                   <a class="btn btn-primary next" id="crud_search_button" value="doSearch" href="#">Search</a>
                 </div>
               </div>
@@ -127,7 +129,8 @@
                         <c:forEach var="item" items="${checklistItemResult.rows}" varStatus="status">
                           <tr>
                             <td class="row_no">${(status.index + 1) + (checklistItemSearch.pageNo - 1) * checklistItemSearch.pageSize}</td>
-                            <td><input name="itemCheckbox" id="itemCheckbox" type="checkbox" value="${item.itemId}"/>
+                            <td><iais:checkbox name="itemCheckbox" checkboxId="itemCheckbox" request="${pageContext.request}"  value="${item.itemId}"></iais:checkbox></td>
+                            <%--<td><input name="itemCheckbox" id="itemCheckbox" type="checkbox" value=""/>--%>
                             </td>
                             <td>${item.regulationClauseNo}</td>
                             <td>${item.regulationClause}</td>
@@ -232,6 +235,42 @@
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
+    function exportToConfigTemplate(){
+        /*const selectVal = [];
+        $("input[name='itemCheckbox']:checked").each(function(i){
+          selectVal[i] = $(this).val();
+          });
+
+        if (selectVal == null || selectVal.length == 0){
+          return;
+        }*/
+
+
+        SOP.Crud.cfxSubmit("mainForm", "exportItemToConfigTemplate");
+
+        /*$.ajax({
+          url: url,
+          type: 'POST',
+          data: {'itemCheckbox': selectVal},
+         /!* data:$("#mainForm").serialize(),*!/
+          dataType:"text",
+          async: false,
+          traditional:true,
+          success: function(data, status, xhr){
+            console.log("Download file DONE!");
+            console.log(data);
+            console.log(status);
+            console.log(xhr);
+            console.log("=====================");
+            var a = document.createElement('a');
+            a.click();
+          },
+          error: function(res){
+
+          }
+        });*/
+      }
+
     function cancelConfig() {
         SOP.Crud.cfxSubmit("mainForm", "cancelConfig");
     }

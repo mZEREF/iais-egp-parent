@@ -1,7 +1,6 @@
 package sop.webflow.rt.java.code;
 
 import com.ecquaria.cloud.helper.EngineHelper;
-
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohChecklistItem___1 extends BaseProcessClass {
@@ -93,6 +92,10 @@ public class INTRANET___MohChecklistItem___1 extends BaseProcessClass {
 
 	public void changePage_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "changePage", this);
+	}
+
+	public void exportItemToConfigTemplate_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "exportItemToConfigTemplate", this);
 	}
 	
 	

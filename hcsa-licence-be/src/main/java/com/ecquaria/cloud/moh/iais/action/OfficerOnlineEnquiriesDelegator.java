@@ -930,7 +930,16 @@ public class OfficerOnlineEnquiriesDelegator {
 
              queryList = results.getRows();
         }
-        file = ExcelWriter.exportExcel(queryList, ReqForInfoSearchListDto.class, "Officer Online Enquiries Information_Search_Template");
+
+        ExcelWriter excelWriter = new ExcelWriter();
+        excelWriter.setClz(ReqForInfoSearchListDto.class);
+        excelWriter.setFileName("Officer Online Enquiries Information_Search_Template");
+
+        try {
+            file = excelWriter.writerToExcel(queryList);
+        } catch (Exception e) {
+            log.error("=======>fileHandler error >>>>>", e);
+        }
 
         try {
             FileUtils.writeFileResponseContent(response, file);

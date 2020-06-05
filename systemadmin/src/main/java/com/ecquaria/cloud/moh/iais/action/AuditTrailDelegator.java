@@ -39,7 +39,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -176,13 +175,18 @@ public class AuditTrailDelegator {
             return;
         }
 
-        File file = ExcelWriter.exportExcel(searchResult.getRows(), AuditTrailQueryDto.class, "Audit Trail Logging");
+
+        ExcelWriter excelWriter = new ExcelWriter();
+        excelWriter.setClz(AuditTrailQueryDto.class);
+        excelWriter.setFileName("Audit Trail Logging");
         try {
+            File file = excelWriter.writerToExcel(searchResult.getRows());
             FileUtils.writeFileResponseContent(response, file);
             FileUtils.deleteTempFile(file);
-        } catch (IOException e) {
-            log.debug(e.getMessage());
+        } catch (Exception e) {
+            log.error("=======>fileHandler error >>>>>", e);
         }
+
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
 
     }

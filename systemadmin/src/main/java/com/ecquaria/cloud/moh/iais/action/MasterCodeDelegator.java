@@ -17,9 +17,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -39,7 +39,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -296,17 +295,22 @@ public class MasterCodeDelegator {
     public @ResponseBody
     void fileHandler(HttpServletRequest request, HttpServletResponse response) {
         log.debug(StringUtil.changeForLog("fileHandler start ...."));
-        File file = null;
+
         List<MasterCodeToExcelDto> masterCodeToExcelDtoList = masterCodeService.findAllMasterCode();
         if (masterCodeToExcelDtoList != null) {
-            file = ExcelWriter.exportExcel(masterCodeToExcelDtoList, MasterCodeToExcelDto.class, "Master_Code_File");
+            ExcelWriter excelWriter = new ExcelWriter();
+            excelWriter.setClz(MasterCodeToExcelDto.class);
+            excelWriter.setFileName("Master_Code_File");
+            try {
+                File file = excelWriter.writerToExcel(masterCodeToExcelDtoList);
+                FileUtils.writeFileResponseContent(response, file);
+                FileUtils.deleteTempFile(file);
+
+            } catch (Exception e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
         }
-        try {
-            FileUtils.writeFileResponseContent(response, file);
-            FileUtils.deleteTempFile(file);
-        } catch (IOException e) {
-            log.debug(e.getMessage());
-        }
+
     }
 
     public void doUpload(BaseProcessClass bpc) throws Exception {

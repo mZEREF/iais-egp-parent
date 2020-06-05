@@ -419,6 +419,9 @@ public class BlastManagementDelegator {
         File file = null;
         QueryHelp.setMainSql("systemAdmin", "queryBlastManagementList",searchParam);
         SearchResult<BlastManagementListDto> searchResult = blastManagementListService.blastList(searchParam);
+        ExcelWriter excelWriter = new ExcelWriter();
+        excelWriter.setClz(BlastManagementListDto.class);
+        excelWriter.setFileName("Blast_Management_Upload_Template");
         if (!searchResult.getRows().isEmpty()){
             //master code to description
             List<BlastManagementListDto> blastManagementListDtos = searchResult.getRows();
@@ -448,12 +451,25 @@ public class BlastManagementDelegator {
                     item.setCreateDt(getDate(item.getCreateDt()));
                 }
             }
-            file = ExcelWriter.exportExcel(blastManagementListDtos, BlastManagementListDto.class, "Blast_Management_Upload_Template");
+
+
+            try {
+                file = excelWriter.writerToExcel(blastManagementListDtos);
+            } catch (Exception e) {
+                log.error("=======>fileDownload error >>>>>", e);
+            }
+
         }else{
             BlastManagementListDto blastManagementListDto = new BlastManagementListDto();
             List<BlastManagementListDto> blastManagementListDtos = IaisCommonUtils.genNewArrayList();
             blastManagementListDto.setCreateDt("");
-            file = ExcelWriter.exportExcel(blastManagementListDtos, BlastManagementListDto.class, "Blast_Management_Upload_Template");
+
+            try {
+                file = excelWriter.writerToExcel(blastManagementListDtos);
+            } catch (Exception e) {
+                log.error("=======>fileDownload error >>>>>", e);
+            }
+
         }
 
         if(file != null){

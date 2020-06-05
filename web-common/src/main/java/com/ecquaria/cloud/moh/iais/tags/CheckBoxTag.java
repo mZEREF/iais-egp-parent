@@ -9,7 +9,6 @@ package com.ecquaria.cloud.moh.iais.tags;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -33,6 +32,7 @@ public final class CheckBoxTag extends DivTagSupport {
     private String forName;
     private String spanClass;
     private String checked;
+    private String value;
 
     public HttpServletRequest getRequest() {
         return request;
@@ -44,8 +44,13 @@ public final class CheckBoxTag extends DivTagSupport {
 
     private HttpServletRequest request;
 
+    public String getValue() {
+        return value;
+    }
 
-
+    public void setValue(String value) {
+        this.value = value;
+    }
 
     public String getChecked() {
         return checked;
@@ -122,32 +127,30 @@ public final class CheckBoxTag extends DivTagSupport {
     // resets local state
     @Override
     protected void init() {
-        setName(null);
-        setLabelName("");
-        setCheckboxId("");
-        setCodeCategory("");
-        setAriaInvalid("");
-        setLabelClass("");
-        setForName("");
-        setSpanClass("");
+        name = null;
+        labelName = "";
+        checkboxId = "";
+        codeCategory = null;
+        ariaInvalid = "";
+        labelClass = "";
+        forName = "";
+        spanClass = "";
+        value = "";
     }
 
 
     @Override
     public int doStartTag() throws JspTagException {
+        StringBuilder html = new StringBuilder();
+        html.append("<div class=\"form-check-gp\">");
         try {
             if (!StringUtil.isEmpty(codeCategory)) {
+
+                //not in <c:forEach> style
                 codeCategory = MasterCodeUtil.getCategoryId(codeCategory);
-            }
-            StringBuilder html = new StringBuilder();
-            boolean isBackend = AccessUtil.isBackend();
-            if (!isBackend){
-                html.append("<div class=\"form-check-gp\">");
                 html.append("<label>");
                 html.append(labelName);
                 html.append("</label>");
-
-
                 if (!StringUtil.isEmpty(codeCategory)) {
                     List<SelectOption> valueOptions = MasterCodeUtil.retrieveOptionsByCate(codeCategory);
 
@@ -202,16 +205,19 @@ public final class CheckBoxTag extends DivTagSupport {
                         html.append("</div>");
                     }
                 }
-
-                html.append("</div>");
-
-                log.info(html.toString());
+            }else {
+                //in <c:forEach> style
+                html.append("<input name =\"" + name + "\"" + "id = \"" + checkboxId + "\"" + "type=\"checkbox\"" + "value=" + "\""  + value + "\"");
             }
+
+            html.append("</div>");
+
+            log.info(html.toString());
 
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (IOException e) {
             log.error("", e);
-            throw new JspTagException(StringUtil.changeForLog("CheckBoxTag: " + e.getMessage()));
+            throw new JspTagException("CheckBoxTag: " + e.getMessage());
         }
 
         release();

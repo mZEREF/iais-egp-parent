@@ -7,6 +7,7 @@ package com.ecquaria.cloud.moh.iais.action;
  */
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.IaisApiStatusCode;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
@@ -18,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChklConfigUploadTemplate;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -41,7 +43,6 @@ import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -64,6 +65,7 @@ import java.util.Map;
 public class HcsaChklItemDelegator {
 
     private HcsaChklService hcsaChklService;
+
     private FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(CheckItemQueryDto.class)
             .searchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH)
@@ -75,8 +77,8 @@ public class HcsaChklItemDelegator {
         this.hcsaChklService = hcsaChklService;
     }
 
-    @Value("${iais.system.clone.checklist.maxnum}")
-    private int cloneChecklistMaxNum;
+    @Autowired
+    private SystemParamConfig paramConfig;
 
     /**
      * StartStep: startStep
@@ -329,8 +331,8 @@ public class HcsaChklItemDelegator {
             return;
         }
 
-        int maxNum = cloneChecklistMaxNum <= 0 ? 10 : cloneChecklistMaxNum;
-        if(checkBoxItemId.length > cloneChecklistMaxNum){
+        int maxNum = paramConfig.getCloneChecklistMaxNum();
+        if(checkBoxItemId.length > maxNum){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("cloneItemMsg",
                     "CHKL_ERR026"));
@@ -704,12 +706,8 @@ public class HcsaChklItemDelegator {
 
     }
 
-    
     /**
     * @author: yichen 
-    * @description:
-    * @param: 
-    * @return:
     */
     @GetMapping(value = "checklist-item-file")
 	public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
@@ -732,7 +730,16 @@ public class HcsaChklItemDelegator {
                     checkItemQueryDto.setRiskLevel("".equals(riskLvl) ? "-" : riskLvl);
                     checkItemQueryDto.setStatus(MasterCodeUtil.getCodeDesc(checkItemQueryDto.getStatus()));
                 }
-                    file = ExcelWriter.exportExcel(checkItemQueryDtoList, CheckItemQueryDto.class, "Checklist_Items_Upload_Template");
+
+                ExcelWriter excelWriter = new ExcelWriter();
+                excelWriter.setClz(CheckItemQueryDto.class);
+                excelWriter.setFileName("Checklist_Items_Upload_Template");
+                try {
+                    file = excelWriter.writerToExcel(checkItemQueryDtoList);
+                } catch (Exception e) {
+                    log.error("=======>fileHandler error >>>>>", e);
+                }
+
                 break;
             default:
         }
@@ -748,4 +755,65 @@ public class HcsaChklItemDelegator {
 
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
+
+
+   /* @PostMapping(value = "item-export-template")
+    public @ResponseBody void exportConfigTemplate(HttpServletRequest request, HttpServletResponse response){
+
+    }*/
+
+
+    /**
+     * @Author yichen
+     * @Date: 10:36 2020/6/4
+     **/
+    public void exportItemToConfigTemplate(BaseProcessClass bpc){
+            HttpServletRequest request = bpc.request;
+            HttpServletResponse response = bpc.response;
+            log.debug(StringUtil.changeForLog("exportConfigTemplate start ...."));
+
+            String[] checkBoxItemId =  ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
+            if(checkBoxItemId == null || checkBoxItemId.length <= 0){
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+                return;
+            }
+
+            List<String> queryIds = Arrays.asList(checkBoxItemId);
+            File file = new File("D:\\workspace\\iais-egp-sz\\hcsa-licence-be\\src\\main\\resources\\template\\Checklist_Config_Upload_Template.xlsx");
+            if (file.exists() && file.isFile()){
+                List<ChecklistItemDto> item = hcsaChklService.listChklItemByItemId(queryIds);
+
+                List<ChklConfigUploadTemplate> uploadTemplate = IaisCommonUtils.genNewArrayList();
+                for (ChecklistItemDto i : item){
+                    ChklConfigUploadTemplate template = new ChklConfigUploadTemplate();
+                    template.setItemId(i.getItemId());
+                    template.setChecklistItem(i.getChecklistItem());
+                    uploadTemplate.add(template);
+                }
+
+                ExcelWriter excelWriter = new ExcelWriter();
+                int[][] unlockCell = new int[8][8];
+                excelWriter.setClz(ChklConfigUploadTemplate.class);
+                excelWriter.setUnlockCell(unlockCell);
+                excelWriter.setNewModule(false);
+                excelWriter.setFile(file);
+                excelWriter.setHasNeedCellName(false);
+                excelWriter.setFileName("Checklist_Config_Upload_Template");
+                try {
+                    file = excelWriter.writerToExcel(uploadTemplate);
+                } catch (Exception e) {
+                    log.error("=======>exportConfigTemplate error >>>>>");
+                }
+
+                String downName = file.getName();
+                byte[] bytes = FileUtils.readFileToByteArray(file);
+                request.setAttribute("processDownloadFileByteData", bytes);
+                request.setAttribute("processDownloadFileName", downName);
+                FileUtils.deleteTempFile(file);
+            }
+
+            log.debug(StringUtil.changeForLog("exportConfigTemplate end ...."));
+    }
+
+
 }
