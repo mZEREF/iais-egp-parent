@@ -140,7 +140,7 @@ public class KpiColourByWorkDaysBatchJob {
                     }
                     beginDates.add(startDate);
                     endDates.add(completeDate);
-                    workAndNonWorkDays = getWorkAndNonWorkDays(workAndNonWorkDays, startDate, completeDate);
+                    workAndNonWorkDays = getDaysWithoutAssignDay(workAndNonWorkDays, startDate, completeDate);
                 }
                 Date endDate = sortLastEndDate(endDates);
                 Date beginDate = sortFirstDate(beginDates);
@@ -170,10 +170,6 @@ public class KpiColourByWorkDaysBatchJob {
                     days = map.getKey();
                 }
             }
-        }
-        //Remove today
-        if(days > 0){
-            days--;
         }
         //set work days to current stage
         ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
@@ -319,7 +315,7 @@ public class KpiColourByWorkDaysBatchJob {
             beginDates.add(startDate);
             endDates.add(completeDate);
 
-            workAndNonWorkDays = getWorkAndNonWorkDays(workAndNonWorkDays, startDate, completeDate);
+            workAndNonWorkDays = getDaysWithoutAssignDay(workAndNonWorkDays, startDate, completeDate);
         }
         //get The scope of date
         Date endDate = sortLastEndDate(endDates);
@@ -347,11 +343,14 @@ public class KpiColourByWorkDaysBatchJob {
         return workAndNonMap;
     }
 
-    private List<Date> getWorkAndNonWorkDays(List<Date> workAndNonWorkDays, Date startDate, Date completeDate) {
+    private List<Date> getDaysWithoutAssignDay(List<Date> workAndNonWorkDays, Date startDate, Date completeDate) {
         List<Date> days = MiscUtil.getDateInPeriodByRecurrence(startDate, completeDate);
+        Date assignDay = sortFirstDate(days);
         if(!IaisCommonUtils.isEmpty(days)){
             for(Date date : days){
-                workAndNonWorkDays.add(date);
+                if(!date.equals(assignDay)) {
+                    workAndNonWorkDays.add(date);
+                }
             }
         }
         return workAndNonWorkDays;
