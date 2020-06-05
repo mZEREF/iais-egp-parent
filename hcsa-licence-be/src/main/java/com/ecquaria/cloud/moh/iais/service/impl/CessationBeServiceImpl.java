@@ -321,32 +321,39 @@ public class CessationBeServiceImpl implements CessationBeService {
         appSubmissionDto.setFromBe(true);
         appSubmissionDto.setPreInspection(true);
         appSubmissionDto.setRequirement(true);
-        appSubmissionDto.setLicenseeId("36F8537B-FE17-EA11-BE78-000C29D29DB0");
+        appSubmissionDto.setLicenseeId(licenseeId);
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         setRiskToDto(appSubmissionDto);
         AppSubmissionDto entity = applicationClient.saveApps(appSubmissionDto).getEntity();
         AppSubmissionDto appSubmissionDtoSave = applicationClient.saveSubmision(entity).getEntity();
         List<ApplicationDto> applicationDtos = appSubmissionDtoSave.getApplicationDtos();
+        List<String> hciCodes = IaisCommonUtils.genNewArrayList();
+        for (String premiseId : premiseIds) {
+            PremisesDto entity1 = hcsaLicenceClient.getLicPremisesDtoById(premiseId).getEntity();
+            String hciCode = entity1.getHciCode();
+            hciCodes.add(hciCode);
+        }
         for (ApplicationDto applicationDto : applicationDtos) {
             String id = applicationDto.getId();
             AppGrpPremisesDto dto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
             String hciCode = dto.getHciCode();
-            Map<String,String> hciCodesPremises = IaisCommonUtils.genNewHashMap();
-            for (String premiseId : premiseIds) {
-                PremisesDto entity1 = hcsaLicenceClient.getLicPremisesDtoById(premiseId).getEntity();
-                String hciCode1 = entity1.getHciCode();
-                hciCodesPremises.put(premiseId,hciCode);
-                if (hciCode1.equals(hciCode)) {
-                    String appId = id;
-                    map.put(premiseId, appId);
-                    applicationDto.setNeedNewLicNo(false);
-                    applicationDto.setGroupLicenceFlag(null);
-                } else {
-                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+            if (hciCodes.contains(hciCode)) {
+                String appId = id;
+                for (String premiseId : premiseIds) {
+                    PremisesDto entity1 = hcsaLicenceClient.getLicPremisesDtoById(premiseId).getEntity();
+                    String hciCode1 = entity1.getHciCode();
+                    hciCodes.add(hciCode);
+                    if (hciCode.equals(hciCode1)) {
+                        map.put(premiseId, appId);
+                    }
                 }
-                applicationClient.updateApplication(applicationDto);
+                applicationDto.setNeedNewLicNo(false);
+                applicationDto.setGroupLicenceFlag(null);
+            } else {
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             }
+            applicationClient.updateApplication(applicationDto);
         }
         return map;
     }

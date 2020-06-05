@@ -59,7 +59,6 @@ public class CessationEffectiveDateBatchjob {
                 List<ApplicationDto> applicationDtos = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
                 boolean grpLic = applicationDtos.get(0).isGrpLic();
                 if (grpLic) {
-                    List<ApplicationDto> activeAppDtos = IaisCommonUtils.genNewArrayList();
                     for (ApplicationDto applicationDto : applicationDtos) {
                         String appId = applicationDto.getId();
                         String status = applicationDto.getStatus();
@@ -76,8 +75,6 @@ public class CessationEffectiveDateBatchjob {
                                 String id = licenceDto.getId();
                                 cessationBeService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
                             }
-                        } else {
-                            activeAppDtos.add(applicationDto);
                         }
                     }
                     //create grp licence and ceased old licence
