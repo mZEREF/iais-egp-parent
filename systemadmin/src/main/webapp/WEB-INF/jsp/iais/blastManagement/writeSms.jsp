@@ -33,6 +33,13 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="col-xs-4 col-md-4 control-label">Select Recipients</label>
+                            <iais:value width="10">
+                                <iais:select name="distribution" firstOption="Please Select" options="distribution" value=""></iais:select>
+                            </iais:value>
+                        </div>
+
+                        <div class="form-group">
                             <iais:field value="Text" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
@@ -55,12 +62,6 @@
 
                         </div>
 
-                        <div class="form-group">
-                            <label class="col-xs-4 col-md-4 control-label">Select Recipients</label>
-                            <iais:value width="10">
-                                <iais:select name="distribution" firstOption="Please Select" options="distribution" value=""></iais:select>
-                            </iais:value>
-                        </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-6">
