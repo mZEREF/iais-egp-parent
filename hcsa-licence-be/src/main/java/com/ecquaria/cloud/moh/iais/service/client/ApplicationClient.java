@@ -72,6 +72,10 @@ public interface ApplicationClient {
     FeignResponseEntity<ApplicationDto> updateApplication(@RequestBody ApplicationDto applicationDto);
     @RequestMapping(path = "/iais-application-history",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesRoutingHistoryDto> create(@RequestBody AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto );
+
+    @PostMapping(value = "/iais-application-history/pre-insp-history", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getSubmitPreInspHistory(@RequestBody AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto);
+
     @RequestMapping(path = "/iais-application-be/application-group",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationLicenceDto>> getGroup(@RequestParam(name = "day",required = false)  Integer day);
 
