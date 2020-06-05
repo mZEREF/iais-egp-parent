@@ -35,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
@@ -206,8 +207,10 @@ public class OfficerOnlineEnquiriesDelegator {
                         SearchResult<LicenseeQueryDto> licenseeParamResult = onlineEnquiriesService.searchLicenseeIdsParam(licenseeParam);
                         for (LicenseeQueryDto r:licenseeParamResult.getRows()
                         ) {
-                            filter.put("licenseeId",r.getId());
                             licenseeIds.add(r.getId());
+                        }
+                        if(licenseeIds.size()==0){
+                            licenseeIds.add(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID);
                         }
                     }
                     break;
@@ -274,6 +277,13 @@ public class OfficerOnlineEnquiriesDelegator {
             SearchResultHelper.doPage(request,licenceParameter);
             licenceParameter.setFilters(filter);
             SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
+            String typeStr = SqlHelper.constructInCondition("lic.licensee_id",licenseeIds.size());
+            int indx = 0;
+            for (String s : licenseeIds){
+                licParam.addFilter("lic.licensee_id"+indx, s);
+                indx++;
+            }
+            licParam.addParam("licenseeId",typeStr);
             CrudHelper.doPaging(licParam,bpc.request);
             QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
             SearchResult<RfiLicenceQueryDto> licResult =requestForInformationService.licenceDoQuery(licParam);
@@ -561,7 +571,6 @@ public class OfficerOnlineEnquiriesDelegator {
                     SearchResult<LicenseeQueryDto> licenseeParamResult = onlineEnquiriesService.searchLicenseeIdsParam(licenseeParam);
                     for (LicenseeQueryDto r:licenseeParamResult.getRows()
                     ) {
-                        filters.put("licenseeId",r.getId());
                         licenseeIds.add(r.getId());
                     }
                     if(licenseeIds.size()==0){
@@ -636,11 +645,16 @@ public class OfficerOnlineEnquiriesDelegator {
             if(svcNames.size()!=0){
                 filters.put("svc_names", svcNames);
             }
-            if(licenseeIds.size()!=0){
-                filters.put("licenseeId", licenseeIds.get(0));
-            }
+
             licenceParameter.setFilters(filters);
             SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
+            String typeStr = SqlHelper.constructInCondition("lic.licensee_id",licenseeIds.size());
+            int indx = 0;
+            for (String s : licenseeIds){
+                licParam.addFilter("lic.licensee_id"+indx, s);
+                indx++;
+            }
+            licParam.addParam("licenseeId",typeStr);
             CrudHelper.doPaging(licParam,bpc.request);
             QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
             SearchResult<RfiLicenceQueryDto> licResult =requestForInformationService.licenceDoQuery(licParam);
@@ -664,9 +678,6 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(!StringUtil.isEmpty(lic.getAppId())){
                         filters.put("id", lic.getAppId());
                         filters.remove("svc_names");
-                        if(licenseeIds.size()!=0){
-                            filters.put("licenseeId", licenseeIds.get(0));
-                        }
                         applicationParameter.setFilters(filters);
 
                         SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);

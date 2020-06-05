@@ -87,7 +87,7 @@
             <#if svc_names??> AND lic.SVC_NAME in( :svc_names)</#if>
             <#if svc_name??> AND lic.SVC_NAME = :svc_name</#if>
             <#if licenseeRegnNo??> AND charindex( :licenseeRegnNo,keyPsnExt.PROF_REG_NO )>0</#if>
-            <#if licenseeId??>AND lic.licensee_id = :licenseeId</#if>
+            <#if licenseeId??>AND ${licenseeId}</#if>
 
             <#if licenseeIdNo??>AND :licenseeIdNo = :licenseeIdNo</#if>
             <#if licenseeName??> AND :licenseeName = :licenseeName</#if>
