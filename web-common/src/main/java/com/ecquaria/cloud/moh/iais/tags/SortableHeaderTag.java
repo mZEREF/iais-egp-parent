@@ -27,11 +27,11 @@ public class SortableHeaderTag extends DivTagSupport {
     // resets local state
     @Override
     protected void init() {
-        field = "";
-        value = "";
-        param = "";
-        jsFunc = "";
-        needSort = true;
+        setField("");
+        setValue("");
+        setParam("");
+        setJsFunc("");
+        setNeedSort(true);
     }
 
     // Releases any resources we may have (or inherit)
@@ -50,7 +50,7 @@ public class SortableHeaderTag extends DivTagSupport {
         if(!StringUtil.isEmpty(style)){
             sb.append("style=\"").append(style).append("\" >");
         }else{
-            sb.append(">");
+            sb.append('>');
         }
 
         if (needSort) {
