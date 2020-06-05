@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
@@ -217,6 +218,8 @@ public class SystemParameterDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, PRE_SAVE_USER_ID, null);
         String pid = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_VALUE);
+
+
         if (!StringUtils.isEmpty(pid)){
             SearchResult<SystemParameterQueryDto> result = (SearchResult<SystemParameterQueryDto>) ParamUtil.getSessionAttr(request, SystemParameterConstants.PARAM_SEARCHRESULT);
             if (result != null){
@@ -239,10 +242,10 @@ public class SystemParameterDelegator {
                         systemParameterDto.setModifiedAt(query.getModifiedAt());
                         systemParameterDto.setPropertiesKey(query.getPropertiesKey());
 
-                        OrgUserDto orgUserDto = parameterService.retrieveOrgUserAccountById(query.getModifiedBy());
-                        if (orgUserDto != null){
-                            systemParameterDto.setModifiedByName(orgUserDto.getDisplayName());
-                            systemParameterDto.setModifiedBy(orgUserDto.getId());
+                        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+                        if (loginContext != null){
+                            systemParameterDto.setModifiedByName(loginContext.getUserName());
+                            systemParameterDto.setModifiedBy(loginContext.getUserId());
                         }else {
                             systemParameterDto.setModifiedByName("System");
                             systemParameterDto.setModifiedBy(AppConsts.USER_ID_SYSTEM);
