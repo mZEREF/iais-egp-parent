@@ -109,6 +109,8 @@ public class AppealDelegator {
         bpc.getSession().removeAttribute("appealNo");
         bpc.getSession().removeAttribute("lateFee");
         bpc.getSession().removeAttribute("saveDraftNo");
+        bpc.getSession().removeAttribute("CgoMandatoryCount");
+        bpc.getSession().removeAttribute("GovernanceOfficersList");
         log.info("end**************start************");
     }
 

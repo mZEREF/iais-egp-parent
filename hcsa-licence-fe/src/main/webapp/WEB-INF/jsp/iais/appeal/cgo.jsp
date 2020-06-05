@@ -399,7 +399,7 @@
         </tr>
         <hr/>
         <c:if test="${'BLB'!=currentSvcCode && 'RDS'!=currentSvcCode && requestInformationConfig==null && 'APTY005' !=AppSubmissionDto.appType}">
-          <tr id="addInfo">
+          <tr id="addInfo" <c:if test="${CgoMandatoryCount >0}">hidden </c:if>>
             <td>
               <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Clinical Governance Officer</span>
             </td>

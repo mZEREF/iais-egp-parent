@@ -97,9 +97,26 @@
                                     </c:if>
 
                                     <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
+
                                       <div class="row">
                                         <div class="col-md-6">
-                                         Fire Safety Certificate Issued Date
+                                         Fire Safety Shelter Bureau Ref. No.
+                                        </div>
+                                        <div class="col-md-6">
+                                          <div class="col-md-6">
+                                             <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo}"
+                                                   style="display: none"><label><c:out value=""/></label></span>
+                                          </div>
+                                          <div class="col-md-6">
+                                                <span class="oldVal compareTdStyle"
+                                                      attr="${appGrpPremDto.scdfRefNo}"><label><c:out
+                                                        value="${appGrpPremDto.scdfRefNo}"/></label></span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-md-6">
+                                          Fire Safety Certificate Issued Date
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
@@ -119,29 +136,9 @@
                                                 </label>
                                               </span>
                                           </div>
-
-
-
-
                                         </div>
                                       </div>
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                         Fire Safety Shelter Bureau Ref. No.
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                             <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo}"
-                                                   style="display: none"><label><c:out value=""/></label></span>
-                                          </div>
-                                          <div class="col-md-6">
-                                                <span class="oldVal compareTdStyle"
-                                                      attr="${appGrpPremDto.scdfRefNo}"><label><c:out
-                                                        value="${appGrpPremDto.scdfRefNo}"/></label></span>
-                                          </div>
-                                        </div>
 
-                                      </div>
                                       <div class="row">
                                         <div class="col-md-6">
                                          Name of HCI

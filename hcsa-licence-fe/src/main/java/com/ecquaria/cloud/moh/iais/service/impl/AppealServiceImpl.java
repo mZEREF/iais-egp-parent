@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
@@ -255,13 +256,20 @@ public class AppealServiceImpl implements AppealService {
                 String appealFor = appealPageDto.getAppealFor();
                 String type = appealPageDto.getType();
                 byte[] file = appealPageDto.getFile();
-                String fileName = appealPageDto.getFileName();
-                File updateFile=new File(fileName);
-                inputStreamToFile(updateFile,file);
-                FileItem fileItem = getFileItem(updateFile, fileName);
-                CommonsMultipartFile commonsMultipartFile=new CommonsMultipartFile(fileItem);
-                request.getSession().setAttribute("file",commonsMultipartFile);
-                request.getSession().setAttribute("filename",fileName);
+                if(file!=null){
+                    String fileName = appealPageDto.getFileName();
+                    File updateFile=new File(fileName);
+                    inputStreamToFile(updateFile,file);
+                    FileItem fileItem = getFileItem(updateFile, fileName);
+                    CommonsMultipartFile commonsMultipartFile=new CommonsMultipartFile(fileItem);
+                    request.getSession().setAttribute("file",commonsMultipartFile);
+                    request.getSession().setAttribute("filename",fileName);
+                }
+                if(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(appealReason)){
+                    List<AppSvcCgoDto> appSvcCgoDto = appealPageDto.getAppSvcCgoDto();
+                    request.getSession().setAttribute("CgoMandatoryCount",appSvcCgoDto.size());
+                    request.getSession().setAttribute("GovernanceOfficersList",appSvcCgoDto);
+                }
                 typeApplicationOrLicence(request,type,appealFor);
                 request.setAttribute("appPremiseMiscDto",appPremiseMiscDto);
                 request.getSession().setAttribute(TYPE,type);
@@ -470,14 +478,9 @@ public class AppealServiceImpl implements AppealService {
         }
         String appealReason = appealPageDto.getAppealReason();
         String id = (String)request.getSession().getAttribute("id");
-       /* Boolean flag = applicationClient.isAppealEligibility(id).getEntity();
+        Boolean flag = applicationClient.isAppealEligibility(id).getEntity();
         if(!flag){
-            map.put("submit","Only one appeal may be submitted");
-            return;
-        }*/
-        Boolean entity = applicationClient.isUseReason(id, appealReason).getEntity();
-        if(!entity){
-            map.put("reason","An appeal has previously submitted under the same reason, please select another");
+            map.put("submit","An appeal has already been submitted for this licence/application");
             return;
         }
         if (StringUtil.isEmpty(appealReason)){
