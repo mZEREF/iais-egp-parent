@@ -121,7 +121,7 @@ public class InspecEmailDelegator {
         inspectionEmailTemplateDto.setApplicantName(licenseeName);
         inspectionEmailTemplateDto.setApplicationNumber(appNo);
         inspectionEmailTemplateDto.setHciCode(applicationViewDto.getHciCode());
-        inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
+        inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciName()+"/"+applicationViewDto.getHciAddress());
         HcsaServiceDto hcsaServiceDto=inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId());
         inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
         AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(correlationId,InspectionConstants.RECOM_TYPE_TCU);
