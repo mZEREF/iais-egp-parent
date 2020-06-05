@@ -1861,12 +1861,12 @@ public class HcsaApplicationDelegator {
             String appId = applicationDto.getId();
             AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
             if(premiseMiscDto != null){
-                String appealType = premiseMiscDto.getAppealType();
+                String reason = premiseMiscDto.getReason();
                 isOtherAppealType = true;
-                if (ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD.equals(appealType)) {
+                if (ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD.equals(reason)) {
                     isChangePeriodAppealType = true;
                     isOtherAppealType = false;
-                } else if (ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE.equals(appealType)) {
+                } else if (ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE.equals(reason)) {
                     isLateFeeAppealType = true;
                     isOtherAppealType = false;
                 }
