@@ -508,7 +508,7 @@ public class RequestForInformationDelegator {
         String infoChk=ParamUtil.getString(request, "info");
         String docChk=ParamUtil.getString(request, "doc");
         if(infoChk==null && docChk==null){
-            errMap.put("rfiSelect","ERR0010");
+            errMap.put("rfiSelect","Please select Type of Required Information.");
 
         }
         if(docChk!=null){
