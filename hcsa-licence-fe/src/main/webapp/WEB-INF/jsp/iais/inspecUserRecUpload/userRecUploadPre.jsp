@@ -79,12 +79,12 @@
                                 </c:if>
                                 <c:if test="${'SUCCESS' eq feRecNc.rectifyFlag}">
                                   <td>
-                                    <h4 class="text-success"><i class="fa fa-check-circle"></i></h4>
+                                    <h4 class="text-success"><em class="fa fa-check-circle"></em></h4>
                                   </td>
                                 </c:if>
                                 <c:if test="${'SUCCESS' ne feRecNc.rectifyFlag}">
                                   <td>
-                                    <h4 class="text-danger"><i class="fa fa-times-circle"></i></h4>
+                                    <h4 class="text-danger"><em class="fa fa-times-circle"></em></h4>
                                   </td>
                                 </c:if>
                               </tr>

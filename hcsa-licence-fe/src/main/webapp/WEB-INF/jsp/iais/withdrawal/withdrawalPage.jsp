@@ -84,9 +84,9 @@
                         </div>
                         <div id="delFile" class="col-md-9" style="margin-top: 13px;color: #1F92FF;margin-left: -20%"
                              hidden="hidden">
-                            <b id="fileName">${file_upload_withdraw}</b>
-                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"><i
-                                    class="fa fa-times"></i></button>
+                            <strong id="fileName">${file_upload_withdraw}</strong>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"><em
+                                    class="fa fa-times"></em></button>
                         </div>
                     </div>
                 </div>

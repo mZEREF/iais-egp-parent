@@ -49,11 +49,11 @@
                                                     <table class="table table-bordered">
                                                         <thead>
                                                         <tr>
-                                                            <td class="col-xs-2"><b>Licence No.</b></td>
-                                                            <td class="col-xs-2"><b>Type</b></td>
-                                                            <td class="col-xs-4"><b>Premises</b></td>
-                                                            <td class="col-xs-2"><b>Start date</b></td>
-                                                            <td class="col-xs-2"><b>Expires on</b></td>
+                                                            <td class="col-xs-2"><strong>Licence No.</strong></td>
+                                                            <td class="col-xs-2"><strong>Type</strong></td>
+                                                            <td class="col-xs-4"><strong>Premises</strong></td>
+                                                            <td class="col-xs-2"><strong>Start date</strong></td>
+                                                            <td class="col-xs-2"><strong>Expires on</strong></td>
                                                         </tr>
                                                         </thead>
                                                         <tbody>
@@ -169,9 +169,9 @@
                                 </div>
 
                                 <div class="tab-pane" id="tabAck" role="tabpanel">
-                                    <h2><b>Submission successful</b></h2>
-                                    <h3><b>-Clinical Laboratory</b>(Renewal+Amendment)</h3>
-                                    <h3><b>-Clinical Laboratory</b>(Amendment)</h3>
+                                    <h2><strong>Submission successful</strong></h2>
+                                    <h3><strong>-Clinical Laboratory</strong>(Renewal+Amendment)</h3>
+                                    <h3><strong>-Clinical Laboratory</strong>(Amendment)</h3>
                                     <br>
                                     <h4>A confirmation email will be sent to xxxxx</h4>
                                     <br>
