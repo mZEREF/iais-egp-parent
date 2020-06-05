@@ -173,9 +173,8 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
                 auditTaskDataFillterDto.setSvcCode(map.get(auditTaskDataFillterDto.getSvcName()));
             }
           if(dto.getGenerateNum() != null && dto.getGenerateNum()>0)  {
-              dtoList = getRiskFillter(dto, dtoList);
+             return getRiskFillter(dto,  removeDuplicates(dtoList));
           }
-
         return removeDuplicates(dtoList);
     }
 
