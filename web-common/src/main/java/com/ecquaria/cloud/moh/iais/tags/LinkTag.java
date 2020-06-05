@@ -31,9 +31,9 @@ public class LinkTag extends DivTagSupport {
     @Override
     protected void init() {
         super.init();
-        this.icon = null;
-        this.onclick = null;
-        this.title = null;
+        setIcon(null);
+        setOnclick(null);
+        setTitle(null);
     }
     @Override
     public void release() {

@@ -54,6 +54,12 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -61,11 +67,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESSAGE;
 
@@ -213,9 +214,9 @@ public class RequestForChangeMenuDelegator {
             StringBuilder stringBuilder = new StringBuilder();
             List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(premisesListQueryDto.getHciCode());
             for (LicenceDto licenceDto : licenceDtoByHciCode) {
-                stringBuilder.append(licenceDto.getSvcName()).append(",");
+                stringBuilder.append(licenceDto.getSvcName()).append(',');
             }
-            premisesListQueryDto.setSvcId(stringBuilder.toString().substring(0, stringBuilder.toString().lastIndexOf(",")));
+            premisesListQueryDto.setSvcId(stringBuilder.toString().substring(0, stringBuilder.toString().lastIndexOf(',')));
         }
         ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) rows);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Premises List");
@@ -1204,8 +1205,8 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
                 PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDtoByLicenceId);
                 if (preOrPostInspectionResultDto == null) {
-                    appSubmissionDtoByLicenceId.setPreInspection(Boolean.TRUE);
-                    appSubmissionDtoByLicenceId.setRequirement(Boolean.TRUE);
+                    appSubmissionDtoByLicenceId.setPreInspection(true);
+                    appSubmissionDtoByLicenceId.setRequirement(true);
                 } else {
                     appSubmissionDtoByLicenceId.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
                     appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
@@ -1299,7 +1300,7 @@ public class RequestForChangeMenuDelegator {
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         boolean changeHciName = compareHciName(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
         boolean changeLocation = compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
-        amendmentFeeDto.setChangeInLicensee(false);
+        amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
         amendmentFeeDto.setChangeInHCIName(!changeHciName);
         amendmentFeeDto.setChangeInLocation(!changeLocation);
         return amendmentFeeDto;

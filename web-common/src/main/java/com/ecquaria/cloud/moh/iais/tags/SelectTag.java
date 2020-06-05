@@ -41,20 +41,20 @@ public class SelectTag extends DivTagSupport {
     // resets local state
     @Override
     protected void init() {
-        id = null;
+        setId(null);
         name = null;
-        codeCategory = "";
-        filterCode = "";
-        filterValue = "";
-        firstOption = null;
-        options = null;
-        value = null;
-        cssClass = "";
-        style = "";
-        otherOption = null;
-        hidden = "";
-        needErrorSpan = true;
-        needMask = false;
+        setCodeCategory("");
+        setFilterCode("");
+        setFilterValue("");
+        setFirstOption(null);
+        setOptions(null);
+        setValue(null);
+        setCssClass("");
+        setStyle("");
+        setOtherOption(null);
+        setHidden("");
+        setNeedErrorSpan(true);
+        setNeedMask(false);
     }
 
     public void setHidden(String hidden) {
@@ -84,29 +84,29 @@ public class SelectTag extends DivTagSupport {
             if (!StringUtil.isEmpty(id)) {
                 id = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("id",
                         id, Object.class, this, pageContext));
-                html.append(" id=\"").append(id).append("\"");
+                html.append(" id=\"").append(id).append('\"');
             } else {
-                html.append(" id=\"").append(name).append("\"");
+                html.append(" id=\"").append(name).append('\"');
             }
             if (!StringUtil.isEmpty(cssClass)) {
-                html.append(" class=\"").append(cssClass).append("\"");
+                html.append(" class=\"").append(cssClass).append('\"');
             }
             if (!StringUtil.isEmpty(style)) {
-                html.append(" style=\"").append(style).append("\"");
+                html.append(" style=\"").append(style).append('\"');
             }
             if (!StringUtil.isEmpty(onchange)) {
-                html.append(" onchange=\"").append(onchange).append("\"");
+                html.append(" onchange=\"").append(onchange).append('\"');
             }
 
             if (disabled){
-                html.append(" disabled=\"").append("disabled").append("\"");
+                html.append(" disabled=\"").append("disabled").append('\"');
             }
 
             if (!StringUtil.isEmpty(hidden)){
-                html.append(" hidden=\"").append(onchange).append("\"");
+                html.append(" hidden=\"").append(onchange).append('\"');
             }
 
-            html.append(">");
+            html.append('>');
 
             generateOptionHtml(html);
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
@@ -150,19 +150,19 @@ public class SelectTag extends DivTagSupport {
                 String val = StringUtil.viewNonNullHtml(option.getValue());
                 String txt = StringUtil.escapeHtml(option.getText());
                 String selected = option.getValue().equals(value) ? " selected" : "";
-                html.append("<option value=\"").append(val).append("\"").append(selected).append(">").append(txt).append(ENDOPTION);
+                html.append("<option value=\"").append(val).append('\"').append(selected).append('>').append(txt).append(ENDOPTION);
             }
         }
 
         if (! StringUtil.isEmpty(otherOption)) {
             String selected = otherOptionValue.equals(value) ? " selected" : "";
             html.append("<option value=\"").append(StringUtil.viewNonNullHtml(otherOptionValue))
-                    .append("\"").append(selected).append(">").append(StringUtil.escapeHtml(otherOption)).append(ENDOPTION);
+                    .append('\"').append(selected).append('>').append(StringUtil.escapeHtml(otherOption)).append(ENDOPTION);
         }
 
         html.append("</select>");
         if (needErrorSpan) {
-            html.append("<span id=\"error_").append(name).append("\"");
+            html.append("<span id=\"error_").append(name).append('\"');
             html.append(" name=\"iaisErrorMsg\" class=\"error-msg\"></span>");
         }
     }

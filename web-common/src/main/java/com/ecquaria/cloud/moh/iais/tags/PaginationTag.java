@@ -34,10 +34,10 @@ public class PaginationTag extends DivTagSupport {
     // resets local state
     @Override
     protected void init() {
-        param = null;
-        result = null;
-        jsFunc = null;
-        needRowNum = false;
+        setParam(null);
+        setResult(null);
+        setJsFunc(null);
+        setNeedRowNum(false);
     }
 
     // Releases any resources we may have (or inherit)

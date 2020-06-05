@@ -42,19 +42,19 @@ public final class DatePickerTag extends DivTagSupport {
     @Override
     protected void init() {
         super.init();
-        name = null;
-        value = null;
-        dateVal = null;
-        onchange = null;
-        onblur = null;
-        onclick = null;
-        fromNow = false;
-        toNow = false;
-        workingDay = false;
-        title = null;
-        startDate = null;
-        endDate = null;
-        needErrorSpan = true;
+        setName(null);
+        setValue(null);
+        setDateVal(null);
+        setOnchange(null);
+        setOnblur(null);
+        setOnclick(null);
+        setFromNow(false);
+        setToNow(false);
+        setWorkingDay(false);
+        setTitle(null);
+        setStartDate(null);
+        setEndDate(null);
+        this.needErrorSpan = true;
     }
 
     // Releases any resources we may have (or inherit)
@@ -68,7 +68,7 @@ public final class DatePickerTag extends DivTagSupport {
         try {
             pageContext.getOut().print(generateHtml());
         } catch (Exception ex) {
-            throw new JspTagException("DatePickerTag: " + ex.getMessage());
+            throw new JspTagException(StringUtil.changeForLog("DatePickerTag: " + ex.getMessage()));
         }
         return SKIP_BODY;
     }

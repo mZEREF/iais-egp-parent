@@ -38,19 +38,19 @@ public final class BodyTag extends DivTagSupport {
         } else {
             html.append("<div class=\"subcontent col-lg-12 col-sm-12");
         }
-        html.append("\"");
+        html.append('\"');
         if (!StringUtil.isEmpty(id)) {
-            html.append(" id=\"").append(id).append("\"");
+            html.append(" id=\"").append(id).append('\"');
         }
         if (!StringUtil.isEmpty(style)) {
-            html.append(" style=\"").append(style).append("\"");
+            html.append(" style=\"").append(style).append('\"');
         }
-        html.append(">");
+        html.append('>');
         // body
         try {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {
-            throw new JspTagException("RowTag: " + ex.getMessage());
+            throw new JspTagException(StringUtil.changeForLog("RowTag: " + ex.getMessage()));
         }
         return EVAL_BODY_INCLUDE;
     }
@@ -59,7 +59,7 @@ public final class BodyTag extends DivTagSupport {
         try {
             pageContext.getOut().print("</div>");
         } catch (Exception ex) {
-            throw new JspTagException("RowTag: " + ex.getMessage());
+            throw new JspTagException(StringUtil.changeForLog("RowTag: " + ex.getMessage()));
         }
         return EVAL_PAGE;
     }

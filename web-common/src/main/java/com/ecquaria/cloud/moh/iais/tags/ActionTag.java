@@ -37,19 +37,19 @@ public final class ActionTag extends DivTagSupport {
         StringBuilder html = new StringBuilder();
         html.append("<div class=\"alignctr\"");
         if (!StringUtil.isEmpty(id)) {
-            html.append(" id=\"").append(id).append("\"");
+            html.append(" id=\"").append(id).append('\"');
         }
         if (!StringUtil.isEmpty(style)) {
-            html.append(" style=\"").append(style).append("\"");
+            html.append(" style=\"").append(style).append('\"');
         }
-        html.append(">");
+        html.append('>');
         try {
             if (!StringUtil.isEmpty(validator)) {
                 html.append("<input type=\"hidden\" class=\"not-clear\" id=\"form_validator\" value=\"").append(StringUtil.obscured(validator)).append("\"/>");
             }
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {
-            throw new JspTagException("ActionTag: " + ex.getMessage());
+            throw new JspTagException(StringUtil.changeForLog("ActionTag: " + ex.getMessage()));
         }
         return EVAL_BODY_INCLUDE;
     }
@@ -58,7 +58,7 @@ public final class ActionTag extends DivTagSupport {
         try {
             pageContext.getOut().print("</div>");
         } catch (Exception ex) {
-            throw new JspTagException("ActionTag: " + ex.getMessage());
+            throw new JspTagException(StringUtil.changeForLog("ActionTag: " + ex.getMessage()));
         }
         return EVAL_PAGE;
     }

@@ -134,8 +134,8 @@ public class ServiceMenuDelegator {
                 basecheckedlist.add(item);
             }
             //base
-            Map<String ,String> specifiedName = new HashMap<>();
-            Map<String ,String> baseName = new HashMap<>();
+            Map<String ,String> specifiedName = IaisCommonUtils.genNewHashMap();
+            Map<String ,String> baseName = IaisCommonUtils.genNewHashMap();
 
             for (HcsaServiceDto item:allbaseService
             ) {
@@ -407,7 +407,7 @@ public class ServiceMenuDelegator {
         StringBuilder sb = new StringBuilder("(");
         int i =0;
         for (String item: baselist) {
-            sb.append(":itemKey" + i).append(",");
+            sb.append(":itemKey" + i).append(',');
             i++;
         }
         String inSql = sb.substring(0, sb.length() - 1) + ")";
@@ -452,7 +452,7 @@ public class ServiceMenuDelegator {
     }
 
     private List<HcsaServiceDto> getBaseInSpe(List<String> sepcifiedlist){
-        Map<String ,HcsaServiceDto> baseIdMap = new HashMap<>();
+        Map<String ,HcsaServiceDto> baseIdMap = IaisCommonUtils.genNewHashMap();
         for (HcsaServiceDto item:allbaseService
         ) {
             baseIdMap.put(item.getId(),item);

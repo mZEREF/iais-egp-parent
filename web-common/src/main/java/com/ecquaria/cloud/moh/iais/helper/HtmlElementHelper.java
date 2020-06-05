@@ -81,9 +81,9 @@ public class HtmlElementHelper {
                     }
                 }
                 if (size < 0) {
-                    html.append("<option value=\"").append(StringUtil.viewNonNullHtml(val)).append("\"").append(selected).append(">").append(StringUtil.viewHtml(txt)).append("</option>");
+                    html.append("<option value=\"").append(StringUtil.viewNonNullHtml(val)).append('\"').append(selected).append('>').append(StringUtil.viewHtml(txt)).append("</option>");
                 } else {
-                    html.append("<option value=\"").append(StringUtil.viewNonNullHtml(val)).append("\" title=\"").append(StringUtil.viewHtml(txt)).append("\"").append(selected).append(">").append(StringUtil.viewHtml(StringUtil.getShortDots(txt, size))).append("</option>");
+                    html.append("<option value=\"").append(StringUtil.viewNonNullHtml(val)).append("\" title=\"").append(StringUtil.viewHtml(txt)).append('\"').append(selected).append('>').append(StringUtil.viewHtml(StringUtil.getShortDots(txt, size))).append("</option>");
                 }
             }
         }
@@ -130,10 +130,10 @@ public class HtmlElementHelper {
                 .append("</ul>")
                 .append("</div>");
         if (localHaveOthers && handleOthers) {
-            html.append("<div id=\"otherLabel\" style=\"display: none;\">Please specify:</div><input id=\"others").append(attributes.get("name")).append("\"");
+            html.append("<div id=\"otherLabel\" style=\"display: none;\">Please specify:</div><input id=\"others").append(attributes.get("name")).append('\"');
             html.append(" style=\"height:25px;\" name=\"others").append(attributes.get("name")).append("\" maxLength=255\"");
             if (otherSelected) {
-                html.append(" value=\"").append(StringUtil.viewNonNullHtml(value)).append("\"");
+                html.append(" value=\"").append(StringUtil.viewNonNullHtml(value)).append('\"');
             }
             html.append(" style=\"display: none;\"/>");
         }
@@ -141,7 +141,7 @@ public class HtmlElementHelper {
             html.append("<span style=\"color:#c00;\">*</span>");
         }
         if (!AppConsts.FALSE.equals(attributes.get("needErrorSpan"))) {
-            html.append("<span id=\"error_").append(attributes.get("name")).append("\"");
+            html.append("<span id=\"error_").append(attributes.get("name")).append('\"');
             html.append(" name=\"iaisErrorMsg\" class=\"error-msg\"></span>");
         }
         if (AppConsts.TRUE.equals(attributes.get("needMask"))) {
@@ -159,11 +159,11 @@ public class HtmlElementHelper {
 
     private static void prepareAttribute(StringBuffer html, String attr, String value) {
         if (!StringUtil.isEmpty(value)) {
-            html.append(" ");
+            html.append(' ');
             html.append(attr);
             html.append("=\"");
             html.append(value);
-            html.append("\"");
+            html.append('\"');
         }
     }
 }

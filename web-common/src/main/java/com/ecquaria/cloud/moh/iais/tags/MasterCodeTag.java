@@ -31,8 +31,8 @@ public class MasterCodeTag extends DivTagSupport {
     // resets local state
     protected void init() {
         code = "";
-        empty = false;
-        viewEmptyStr = false;
+        setEmpty(false);
+        setViewEmptyStr(false);
     }
 
     // Releases any resources we may have (or inherit)

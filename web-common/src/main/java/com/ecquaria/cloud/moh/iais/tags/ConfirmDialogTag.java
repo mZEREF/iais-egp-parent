@@ -40,15 +40,15 @@ public class ConfirmDialogTag extends TagSupport {
     private void init() {
         msg = "";
         callBack = "";
-        popupOrder = "";
-        title = "";
-        cancelFunc = "";
-        yesBtnDesc = "";
-        yesBtnCls = "";
-        cancelBtnDesc = "";
-        cancelBtnCls = "";
-        needCancel = true;
-        needFungDuoJi = true;
+        setPopupOrder("");
+        setTitle("");
+        setCancelFunc("");
+        setYesBtnDesc("");
+        setYesBtnCls("");
+        setCancelBtnCls("");
+        setCancelBtnDesc("");
+        setNeedCancel(true);
+        setNeedFungDuoJi(true);
     }
 
     // Releases any resources we may have (or inherit)

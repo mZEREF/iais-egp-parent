@@ -33,10 +33,10 @@ public final class SectionTag extends DivTagSupport {
     @Override
     protected void init() {
         super.init();
-        title = null;
-        collapse = false;
-        reload = false;
-        remove = false;
+        setTitle(null);
+        setCollapse(false);
+        setReload(false);
+        setRemove(false);
     }
     @Override
     public void release() {

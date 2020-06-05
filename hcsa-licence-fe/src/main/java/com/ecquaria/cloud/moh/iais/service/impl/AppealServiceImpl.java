@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
@@ -49,17 +48,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -67,7 +63,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -440,7 +435,7 @@ public class AppealServiceImpl implements AppealService {
                 map.put("file","UC_CHKLMD001_ERR007");
             }
             String filename = file.getOriginalFilename();
-            String fileType=  filename.substring(filename.lastIndexOf(".")+1);
+            String fileType=  filename.substring(filename.lastIndexOf('.')+1);
             //todo change
              if(!"PDF".equalsIgnoreCase(fileType)&&!"PNG".equalsIgnoreCase(fileType)&&
                     !"JPG".equalsIgnoreCase(fileType)&&!"DOC".equalsIgnoreCase(fileType)&&!"DOCX".equalsIgnoreCase(fileType)){
@@ -456,7 +451,7 @@ public class AppealServiceImpl implements AppealService {
                 }
 
                 String filename = sessionFile.getOriginalFilename();
-                String fileType=  filename.substring(filename.lastIndexOf(".")+1);
+                String fileType=  filename.substring(filename.lastIndexOf('.')+1);
                 //todo change
                 if(!"PDF".equalsIgnoreCase(fileType)&&!"PNG".equalsIgnoreCase(fileType)&&
                         !"JPG".equalsIgnoreCase(fileType)&&!"DOC".equalsIgnoreCase(fileType)&&!"DOCX".equalsIgnoreCase(fileType)){
@@ -659,7 +654,7 @@ public class AppealServiceImpl implements AppealService {
                     applicationDto.setVersion(entity1.getVersion()+1);
                     //if not need new group
                     applicationGroupDto.setId(entity1.getAppGrpId());
-                    applicationGroupDto.setGroupNo(entity1.getApplicationNo().substring(0,entity1.getApplicationNo().lastIndexOf("-")));
+                    applicationGroupDto.setGroupNo(entity1.getApplicationNo().substring(0,entity1.getApplicationNo().lastIndexOf('-')));
                     applicationDto.setApplicationNo(entity1.getApplicationNo());
                     applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
                     applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
@@ -793,7 +788,7 @@ public class AppealServiceImpl implements AppealService {
             applicationDto1.setVersion(applicationDto.getVersion()+1);
             //if need new group
             applicationGroupDto.setId(applicationDto.getId());
-            applicationGroupDto.setGroupNo(applicationDto.getAppGrpId().substring(0,applicationDto.getApplicationNo().lastIndexOf("-")));
+            applicationGroupDto.setGroupNo(applicationDto.getAppGrpId().substring(0,applicationDto.getApplicationNo().lastIndexOf('-')));
             applicationDto1.setApplicationNo(applicationDto.getApplicationNo());
             appealDto.setAppealType("APPEAL006");
             applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);

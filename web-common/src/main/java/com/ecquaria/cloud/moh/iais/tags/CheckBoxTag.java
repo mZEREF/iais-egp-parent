@@ -122,14 +122,14 @@ public final class CheckBoxTag extends DivTagSupport {
     // resets local state
     @Override
     protected void init() {
-        name = null;
-        labelName = "";
-        checkboxId = "";
-        codeCategory = null;
-        ariaInvalid = "";
-        labelClass = "";
-        forName = "";
-        spanClass = "";
+        setName(null);
+        setLabelName("");
+        setCheckboxId("");
+        setCodeCategory("");
+        setAriaInvalid("");
+        setLabelClass("");
+        setForName("");
+        setSpanClass("");
     }
 
 
@@ -211,7 +211,7 @@ public final class CheckBoxTag extends DivTagSupport {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (IOException e) {
             log.error("", e);
-            throw new JspTagException("CheckBoxTag: " + e.getMessage());
+            throw new JspTagException(StringUtil.changeForLog("CheckBoxTag: " + e.getMessage()));
         }
 
         release();

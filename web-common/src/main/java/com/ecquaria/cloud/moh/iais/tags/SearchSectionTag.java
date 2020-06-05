@@ -37,9 +37,9 @@ public final class SearchSectionTag extends DivTagSupport {
     @Override
     protected void init() {
         super.init();
-        title = null;
-        fieldName = "";
-        value = "";
+        setTitle(null);
+        setFieldName("");
+        setValue("");
     }
     @Override
     public void release() {
@@ -61,7 +61,7 @@ public final class SearchSectionTag extends DivTagSupport {
         try {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {
-            throw new JspTagException("RowTag: " + ex.getMessage());
+            throw new JspTagException(StringUtil.changeForLog("RowTag: " + ex.getMessage()));
         }
         return EVAL_BODY_INCLUDE;
     }
@@ -92,7 +92,7 @@ public final class SearchSectionTag extends DivTagSupport {
         if (hide) {
             html.append(" style=\"display:none;\"");
         }
-        html.append(">");
+        html.append('>');
     }
     private void generateFEHtml(StringBuilder html){
         html.append("<div class=\"epdtitle epdtitle_tb1\">");

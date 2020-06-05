@@ -28,13 +28,13 @@ public class MultipleSelectTag extends DivTagSupport {
     // resets local state
     @Override
     protected void init() {
-        id = null;
+        setId(null);
         name = null;
-        cssClass = "";
-        style = "";
-        selectValue = "";
-        needMask = false;
-        needErrorSpan = false;
+        setCssClass("");
+        setStyle("");
+        setSelectValue("");
+        setNeedMask(false);
+        setNeedMask(false);
     }
 
     // Releases any resources we may have (or inherit)

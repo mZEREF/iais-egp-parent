@@ -32,14 +32,14 @@ public class InputTag extends DivTagSupport{
     @Override
     protected void init() {
         super.init();
-        type = null;
-        name = null;
-        value = null;
-        autocomplete = "off";
-        maxLength = null;
-        onclick = null;
-        needErrorSpan = true;
-        needDisabled = false;
+        setType(null);
+        setName(null);
+        setValue(null);
+        setAutocomplete("off");
+        setMaxLength(null);
+        setOnclick(null);
+        setNeedErrorSpan(true);
+        setNeedDisabled(false);
     }
 
     @Override

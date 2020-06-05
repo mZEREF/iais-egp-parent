@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineA
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
@@ -394,7 +393,7 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> rfcAppSubmissionDtos=IaisCommonUtils.genNewArrayList();
         List<String> renewLicIds = IaisCommonUtils.genNewArrayList();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
-            appEditSelectDto.setPremisesEdit(Boolean.TRUE);
+            appEditSelectDto.setPremisesEdit(true);
             appEditSelectDto.setServiceEdit(false);
             appEditSelectDto.setDocEdit(false);
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
@@ -462,14 +461,14 @@ public class WithOutRenewalDelegator {
                                 appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
                                 PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDtoByLicenceId);
                                 if (preOrPostInspectionResultDto == null) {
-                                    appSubmissionDtoByLicenceId.setPreInspection(Boolean.TRUE);
-                                    appSubmissionDtoByLicenceId.setRequirement(Boolean.TRUE);
+                                    appSubmissionDtoByLicenceId.setPreInspection(true);
+                                    appSubmissionDtoByLicenceId.setRequirement(true);
                                 } else {
                                     appSubmissionDtoByLicenceId.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
                                     appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
                                 }
                                 appSubmissionDtoByLicenceId.setAutoRfc(equals);
-                                appEditSelectDto.setPremisesEdit(Boolean.TRUE);
+                                appEditSelectDto.setPremisesEdit(true);
                                 appEditSelectDto.setServiceEdit(false);
                                 appEditSelectDto.setDocEdit(false);
                                 appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
@@ -561,7 +560,7 @@ public class WithOutRenewalDelegator {
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
                 if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
                     for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                        appGrpPremisesDto.setNeedNewLicNo(false);
+                        appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
                     }
                 }
                 //judge is the preInspection

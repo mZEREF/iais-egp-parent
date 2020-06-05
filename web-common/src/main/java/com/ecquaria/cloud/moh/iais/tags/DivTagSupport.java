@@ -14,9 +14,9 @@ public class DivTagSupport extends BodyTagSupport {
     }
 
     protected void init() {
-        id = null;
-        cssClass = null;
-        style = null;
+        setId(null);
+        setCssClass(null);
+        setStyle(null);
     }
     @Override
     public void release() {
