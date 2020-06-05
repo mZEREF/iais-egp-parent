@@ -321,7 +321,7 @@ public class CessationBeServiceImpl implements CessationBeService {
         appSubmissionDto.setFromBe(true);
         appSubmissionDto.setPreInspection(true);
         appSubmissionDto.setRequirement(true);
-        appSubmissionDto.setLicenseeId(licenseeId);
+        appSubmissionDto.setLicenseeId("36F8537B-FE17-EA11-BE78-000C29D29DB0");
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         setRiskToDto(appSubmissionDto);
@@ -332,9 +332,11 @@ public class CessationBeServiceImpl implements CessationBeService {
             String id = applicationDto.getId();
             AppGrpPremisesDto dto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
             String hciCode = dto.getHciCode();
+            Map<String,String> hciCodesPremises = IaisCommonUtils.genNewHashMap();
             for (String premiseId : premiseIds) {
                 PremisesDto entity1 = hcsaLicenceClient.getLicPremisesDtoById(premiseId).getEntity();
                 String hciCode1 = entity1.getHciCode();
+                hciCodesPremises.put(premiseId,hciCode);
                 if (hciCode1.equals(hciCode)) {
                     String appId = id;
                     map.put(premiseId, appId);

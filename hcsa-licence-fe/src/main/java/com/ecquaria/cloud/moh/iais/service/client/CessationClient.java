@@ -42,6 +42,9 @@ public interface CessationClient {
     @GetMapping(value = "/appeal/appId-premise-cessation",produces =MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppId(@RequestParam("appId") String appId);
 
-    @PostMapping(value = "/list-can-ceased",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/appeal/list-can-ceased",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String,Boolean>> listCanCeased(@RequestBody List<String> licIds);
+
+    @PostMapping(value = "/appeal/is-all-ceased", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> isAllCeased(@RequestBody List<String> licIds);
 }

@@ -37,11 +37,13 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -169,28 +171,33 @@ public class CessationFeServiceImpl implements CessationFeService {
                 licIds.add(licId);
             }
         }
+        List<String> partCeasedLicIds = cessationClient.isAllCeased(licIds).getEntity();
+        if(!IaisCommonUtils.isEmpty(partCeasedLicIds)){
+            for(String licId : partCeasedLicIds){
+                LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
+                licenceDtos.remove(licenceDto);
+            }
+        }
         List<String> specLicIds = licenceClient.getSpecLicIdsByLicIds(licIds).getEntity();
-        if(!IaisCommonUtils.isEmpty(specLicIds) && !IaisCommonUtils.isEmpty(licenceDtos)){
-           for(String specId :specLicIds){
-               LicenceDto entity = licenceClient.getLicBylicId(specId).getEntity();
-               licenceDtos.add(entity);
-           }
+        if (!IaisCommonUtils.isEmpty(specLicIds) && !IaisCommonUtils.isEmpty(licenceDtos)) {
+            for (String specId : specLicIds) {
+                LicenceDto entity = licenceClient.getLicBylicId(specId).getEntity();
+                licenceDtos.add(entity);
+            }
         }
         if (licenceDtos != null && !licenceDtos.isEmpty()) {
             for (LicenceDto licenceDto : licenceDtos) {
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
                 licenceClient.doUpdate(licenceDto);
             }
-
-            }
-
+        }
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         feEicGatewayClient.updateLicenceStatus(licenceDtos, signature.date(), signature.authorization(), signature2.date(), signature2.authorization());
     }
 
     @Override
-    public List<String> saveCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext) {
+    public List<String> saveCessations(List<AppCessationDto> appCessationDtos, LoginContext loginContext) {
         String licenseeId = loginContext.getLicenseeId();
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
@@ -248,10 +255,10 @@ public class CessationFeServiceImpl implements CessationFeService {
     @Override
     public List<AppSpecifiedLicDto> getSpecLicInfo(List<String> licIds) {
         List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
-        if(IaisCommonUtils.isEmpty(licIds)){
+        if (IaisCommonUtils.isEmpty(licIds)) {
             return appSpecifiedLicDtos;
         }
-        for(String licId :licIds){
+        for (String licId : licIds) {
             LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
@@ -259,11 +266,11 @@ public class CessationFeServiceImpl implements CessationFeService {
             String svcType = hcsaServiceDto.getSvcType();
             if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)) {
                 List<String> specLicIds = licenceClient.getSpecIdsByBaseId(licId).getEntity();
-                if(!IaisCommonUtils.isEmpty(specLicIds)){
-                    for(String specLicId :specLicIds){
+                if (!IaisCommonUtils.isEmpty(specLicIds)) {
+                    for (String specLicId : specLicIds) {
                         AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
                         LicenceDto specLicenceDto = licenceClient.getLicBylicId(specLicId).getEntity();
-                        if(specLicenceDto!=null){
+                        if (specLicenceDto != null) {
                             String specLicenceNo = specLicenceDto.getLicenceNo();
                             String specSvcName = specLicenceDto.getSvcName();
                             appSpecifiedLicDto.setBaseLicNo(licenceNo);
@@ -285,11 +292,11 @@ public class CessationFeServiceImpl implements CessationFeService {
     }
 
     @Override
-    public void sendEmail(String msgId, Date date,String svcName,String appGrpId,String licenseeId,String licNo) throws IOException, TemplateException {
-        Map<String,Object> map = new HashMap<>(34);
+    public void sendEmail(String msgId, Date date, String svcName, String appGrpId, String licenseeId, String licNo) throws IOException, TemplateException {
+        Map<String, Object> map = new HashMap<>(34);
         String dateStr = DateUtil.formatDateTime(date, "dd/MM/yyyy");
-        map.put("date",dateStr);
-        map.put("licenceA",svcName+": "+licNo);
+        map.put("date", dateStr);
+        map.put("licenceA", svcName + ": " + licNo);
         MsgTemplateDto entity = appSubmissionService.getMsgTemplateById(msgId);
         String messageContent = entity.getMessageContent();
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
@@ -326,10 +333,10 @@ public class CessationFeServiceImpl implements CessationFeService {
             String hciAddress = appCessLicDto.getAppCessHciDtos().get(0).getHciAddress();
             String applicationNo = applicationDto.getApplicationNo();
             Date effectiveDate = appCessationDto.getEffectiveDate();
-            if(effectiveDate.after(new Date())){
-                sendEmail(FURTHERDATECESSATION,effectiveDate,svcName,licId,licenseeId,licenceNo);
-            }else {
-                sendEmail(PRESENTDATECESSATION,effectiveDate,svcName,licId,licenseeId,licenceNo);
+            if (effectiveDate.after(new Date())) {
+                sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
+            } else {
+                sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
             }
             AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
             appCessatonConfirmDto.setAppNo(applicationNo);
@@ -341,14 +348,14 @@ public class CessationFeServiceImpl implements CessationFeService {
             appCessationDtosConfirms.add(appCessatonConfirmDto);
         }
         List<String> licNos = IaisCommonUtils.genNewArrayList();
-        for(AppCessatonConfirmDto appCessatonConfirmDto :appCessationDtosConfirms){
+        for (AppCessatonConfirmDto appCessatonConfirmDto : appCessationDtosConfirms) {
             String licenceNo = appCessatonConfirmDto.getLicenceNo();
             Date effectiveDate = appCessatonConfirmDto.getEffectiveDate();
-            if(effectiveDate.before(new Date())){
+            if (effectiveDate.before(new Date())) {
                 licNos.add(licenceNo);
             }
         }
-        if(!licNos.isEmpty()){
+        if (!licNos.isEmpty()) {
             updateLicenceFe(licNos);
         }
         return appCessationDtosConfirms;
@@ -357,7 +364,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     /*
     utils
      */
-    private Map<String, String> transform(AppSubmissionDto appSubmissionDto,String licenseeId,List<String> premiseIds){
+    private Map<String, String> transform(AppSubmissionDto appSubmissionDto, String licenseeId, List<String> premiseIds) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         Double amount = 0.0;
         AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
@@ -384,19 +391,19 @@ public class CessationFeServiceImpl implements CessationFeService {
         AppSubmissionDto entity = applicationClient.saveSubmision(appSubmissionDto).getEntity();
         AppSubmissionDto appSubmissionDtoSave = applicationClient.saveApps(entity).getEntity();
         List<ApplicationDto> applicationDtos = appSubmissionDtoSave.getApplicationDtos();
-        for(ApplicationDto applicationDto :applicationDtos) {
+        for (ApplicationDto applicationDto : applicationDtos) {
             String id = applicationDto.getId();
             AppGrpPremisesDto dto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
             String hciCode = dto.getHciCode();
-            for(String premiseId :premiseIds){
+            for (String premiseId : premiseIds) {
                 PremisesDto entity1 = licenceClient.getLicPremisesDtoById(premiseId).getEntity();
                 String hciCode1 = entity1.getHciCode();
                 if (hciCode1.equals(hciCode)) {
-                    String appId = id ;
+                    String appId = id;
                     map.put(premiseId, appId);
                     applicationDto.setNeedNewLicNo(false);
                     applicationDto.setGroupLicenceFlag(null);
-                }else {
+                } else {
                     applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                 }
                 applicationClient.updateApplicationDto(applicationDto);
@@ -405,7 +412,7 @@ public class CessationFeServiceImpl implements CessationFeService {
         return map;
     }
 
-    private AppCessMiscDto setMiscData(AppCessationDto appCessationDto,String appId) {
+    private AppCessMiscDto setMiscData(AppCessationDto appCessationDto, String appId) {
         Date effectiveDate = appCessationDto.getEffectiveDate();
         String reason = appCessationDto.getReason();
         String otherReason = appCessationDto.getOtherReason();
