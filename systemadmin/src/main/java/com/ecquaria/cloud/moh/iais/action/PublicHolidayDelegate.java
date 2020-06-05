@@ -127,37 +127,41 @@ public class PublicHolidayDelegate {
      * @param bpc
      */
     public void doEditValidation(BaseProcessClass bpc) throws ParseException {
-        PublicHolidayDto publicHolidayDto = new PublicHolidayDto();
-        publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        publicHolidayDto.setDescription(ParamUtil.getRequestString(bpc.request,"description"));
-        String holidayId = ParamUtil.getRequestString(bpc.request,"holidayId");
-        publicHolidayDto.setId(holidayId);
-        Date fromDate = Formatter.parseDate(ParamUtil.getString(bpc.request, "sub_date"));
-        publicHolidayDto.setFromDate(fromDate);
-        publicHolidayDto.setStatus(ParamUtil.getString(bpc.request, "status"));
-
-        ParamUtil.setSessionAttr(bpc.request,"holiday",publicHolidayDto);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(publicHolidayDto,"create");
-        if(validationResult != null && validationResult.isHasErrors()){
-            Map<String,String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IntranetUserConstant.FALSE);
-
-        }else{
-            Date todate= new  Date();
-            Calendar   calendar = Calendar.getInstance();
-            calendar.setTime(fromDate);
-            calendar.add(Calendar.HOUR,23);
-            calendar.add(Calendar.MINUTE,59);
-            calendar.add(Calendar.SECOND,59);
-            todate=calendar.getTime();
-            publicHolidayDto.setToDate(todate);
-            publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            PublicHolidayDto resDto = publicHolidayService.updateHoliday(publicHolidayDto);
-            ParamUtil.setSessionAttr(bpc.request,"holiday",null);
+        String action = ParamUtil.getString(bpc.request, "action");
+        if("back".equals(action)){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IntranetUserConstant.TRUE);
-        }
+        }else{
+            PublicHolidayDto publicHolidayDto = new PublicHolidayDto();
+            publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            publicHolidayDto.setDescription(ParamUtil.getRequestString(bpc.request,"description"));
+            String holidayId = ParamUtil.getRequestString(bpc.request,"holidayId");
+            publicHolidayDto.setId(holidayId);
+            Date fromDate = Formatter.parseDate(ParamUtil.getString(bpc.request, "sub_date"));
+            publicHolidayDto.setFromDate(fromDate);
+            publicHolidayDto.setStatus(ParamUtil.getString(bpc.request, "status"));
 
+            ParamUtil.setSessionAttr(bpc.request,"holiday",publicHolidayDto);
+            ValidationResult validationResult = WebValidationHelper.validateProperty(publicHolidayDto,"create");
+            if(validationResult != null && validationResult.isHasErrors()){
+                Map<String,String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IntranetUserConstant.FALSE);
+
+            }else{
+                Date todate= new  Date();
+                Calendar   calendar = Calendar.getInstance();
+                calendar.setTime(fromDate);
+                calendar.add(Calendar.HOUR,23);
+                calendar.add(Calendar.MINUTE,59);
+                calendar.add(Calendar.SECOND,59);
+                todate=calendar.getTime();
+                publicHolidayDto.setToDate(todate);
+                publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                PublicHolidayDto resDto = publicHolidayService.updateHoliday(publicHolidayDto);
+                ParamUtil.setSessionAttr(bpc.request,"holiday",null);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IntranetUserConstant.TRUE);
+            }
+        }
     }
 
     /**
@@ -311,31 +315,35 @@ public class PublicHolidayDelegate {
      * @param bpc
      */
     public void doCreateValidation(BaseProcessClass bpc) throws ParseException {
-        PublicHolidayDto publicHolidayDto = new PublicHolidayDto();
-        publicHolidayDto.setDescription(ParamUtil.getRequestString(bpc.request,"description"));
-        Date fromDate = Formatter.parseDate(ParamUtil.getString(bpc.request, "sub_date"));
-        publicHolidayDto.setFromDate(fromDate);
-        publicHolidayDto.setStatus(ParamUtil.getString(bpc.request, "status"));
-        ParamUtil.setSessionAttr(bpc.request,"holiday",publicHolidayDto);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(publicHolidayDto,"edit");
-        if(validationResult != null && validationResult.isHasErrors()){
-            Map<String,String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IntranetUserConstant.FALSE);
-        }else{
-            Date todate= new  Date();
-            Calendar   calendar = Calendar.getInstance();
-            calendar.setTime(fromDate);
-            calendar.add(Calendar.HOUR,23);
-            calendar.add(Calendar.MINUTE,59);
-            calendar.add(Calendar.SECOND,59);
-            todate=calendar.getTime();
-            publicHolidayDto.setToDate(todate);
-            publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            PublicHolidayDto resDto = publicHolidayService.createHoliday(publicHolidayDto);
+        String action = ParamUtil.getString(bpc.request, "action");
+        if("back".equals(action)){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IntranetUserConstant.TRUE);
+        }else{
+            PublicHolidayDto publicHolidayDto = new PublicHolidayDto();
+            publicHolidayDto.setDescription(ParamUtil.getRequestString(bpc.request,"description"));
+            Date fromDate = Formatter.parseDate(ParamUtil.getString(bpc.request, "sub_date"));
+            publicHolidayDto.setFromDate(fromDate);
+            publicHolidayDto.setStatus(ParamUtil.getString(bpc.request, "status"));
+            ParamUtil.setSessionAttr(bpc.request,"holiday",publicHolidayDto);
+            ValidationResult validationResult = WebValidationHelper.validateProperty(publicHolidayDto,"edit");
+            if(validationResult != null && validationResult.isHasErrors()){
+                Map<String,String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IntranetUserConstant.FALSE);
+            }else{
+                Date todate= new  Date();
+                Calendar   calendar = Calendar.getInstance();
+                calendar.setTime(fromDate);
+                calendar.add(Calendar.HOUR,23);
+                calendar.add(Calendar.MINUTE,59);
+                calendar.add(Calendar.SECOND,59);
+                todate=calendar.getTime();
+                publicHolidayDto.setToDate(todate);
+                publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                PublicHolidayDto resDto = publicHolidayService.createHoliday(publicHolidayDto);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IntranetUserConstant.TRUE);
+            }
         }
-
     }
 
 
@@ -346,12 +354,16 @@ public class PublicHolidayDelegate {
         List<SelectOption> selectOptionList = IaisCommonUtils.genNewArrayList();
         if(isBig){
             count = count + 5;
+            for (;year <= count ;year ++) {
+                selectOptionList.add(new SelectOption(Integer.toString(year), Integer.toString(year)));
+            }
         }else{
             year = year - 5;
+            for (;count >= year;count --) {
+                selectOptionList.add(new SelectOption(Integer.toString(count), Integer.toString(count)));
+            }
         }
-        for (;count >= year;count --) {
-            selectOptionList.add(new SelectOption(Integer.toString(count), Integer.toString(count)));
-        }
+
         ParamUtil.setRequestAttr(bpc.request,"yearOption",selectOptionList);
     }
 

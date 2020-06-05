@@ -29,7 +29,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" >From Date</label>
+                            <label class="col-xs-12 col-md-4 control-label" >Non-working Date</label>
                             <div class="col-xs-8 col-sm-6 col-md-5" id="fromdatediv">
                                 <iais:datePicker id="sub_date"  name="sub_date" dateVal="${holiday.fromDate}"/>
                             </div>
@@ -55,9 +55,12 @@
                             </iais:value>
                         </div>
                     </div>
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-11 col-sm-11">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="text-right text-center-mobile">
                                 <div class="text-right text-center-mobile"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myCreateModal" id="editholiday">SUBMIT</button></div>
                             </div>
                         </div>
@@ -65,6 +68,7 @@
                 </div>
             </div>
         </div>
+        <input type="hidden" name="action"  id="action" value="default">
         <input type="hidden" name="holidayId" id="holidayId" value="${holiday.id}" >
     </form>
     <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
@@ -73,7 +77,10 @@
 
 
 <script type="text/javascript">
-
+    $("#back").click(function () {
+        $("#action").val("back");
+        SOP.Crud.cfxSubmit("mainForm");
+    })
     $('#editholiday').click(function(){
         SOP.Crud.cfxSubmit("mainForm");
     });
@@ -81,10 +88,13 @@
     $("#year").change(function () {
         var date =  $("#sub_date").val();
         console.log(date)
-        var time = date.substring(0,6);
-        time = time + $(this).val();
-        $("#sub_date").val(time)
-        // $("#fromdatediv").html("<input type=\"text\" autocomplete=\"off\" class=\"date_picker form-control\" name=\"sub_date\" id=\"sub_date\" data-date-start-date=\"01/01/1900\" value=\""+time+"\" placeholder=\"dd/mm/yyyy\" maxlength=\"10\"><span id=\"error_sub_date\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>")
+        if(date != ""){
+            var time = date.substring(0,6);
+            time = time + $(this).val();
+            $("#sub_date").val(time)
+            // $("#fromdatediv").html("<input type=\"text\" autocomplete=\"off\" class=\"date_picker form-control\" name=\"sub_date\" id=\"sub_date\" data-date-start-date=\"01/01/1900\" value=\""+time+"\" placeholder=\"dd/mm/yyyy\" maxlength=\"10\"><span id=\"error_sub_date\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>")
+
+        }
     })
 
 </script>
