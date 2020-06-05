@@ -91,8 +91,8 @@
                         <div class="row">
                             <div class="col-xs-11 col-md-11">
                                 <div class="text-right">
-                                    <button class="btn btn-secondary" type="button" id="clearBtn" >Clear</button>
-                                    <button class="btn btn-primary" type="button" id="searchBtn" >Search</button>
+                                    <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">Clear</button>
+                                    <button class="btn btn-primary" type="button" id="searchBtn" name="searchBtn">Search</button>
                                 </div>
                             </div>
                         </div>
