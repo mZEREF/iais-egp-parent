@@ -107,7 +107,7 @@
                                                                 <div class="control col-sm-5">
                                                                     <div class="fileList ">
                                                                     <span class="filename server-site" id="130">
-                                                                        <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo1&fileRo1=<iais:mask name="fileRo1" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}" title="Download" class="downloadFile">${rfiDoc.docName}(${rfiDoc.docSize} KB)</a>
+                                                                        <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo1&fileRo1=<iais:mask name="fileRo1" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}" title="Download" class="downloadFile">${rfiDoc.docName}<c:if test="${not empty rfiDoc.docSize}">(${rfiDoc.docSize} KB)</c:if></a>
                                                                     </span>
                                                                     </div>
                                                                 </div>

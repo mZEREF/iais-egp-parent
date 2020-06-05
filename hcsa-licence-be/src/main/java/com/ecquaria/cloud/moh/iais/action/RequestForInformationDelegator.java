@@ -320,12 +320,12 @@ public class RequestForInformationDelegator {
         int i=0;
         if(!StringUtil.isEmpty(reqTypeInfo)&&"information".equals(reqTypeInfo)){
             for ( i=0;i<licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().size();i++) {
-                stringBuilder.append("<p>   ").append(i+1).append(". ").append("Information  ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
+                stringBuilder.append("<p>   ").append(i+1).append(". ").append("Information : ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
             }
         }
         if(licPremisesReqForInfoDto1.isNeedDocument()){
             for (int j=0;j<licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().size();j++) {
-                stringBuilder.append("<p>   ").append(j+i+1).append(". ").append("Documentations  ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().get(j).getTitle()).append("</p>");
+                stringBuilder.append("<p>   ").append(j+i+1).append(". ").append("Documentations : ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().get(j).getTitle()).append("</p>");
             }
         }
         map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));
@@ -339,6 +339,7 @@ public class RequestForInformationDelegator {
         map.put("A_HREF", url);
         map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
         String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
+        mesContext.replace("<p>Comments : -</p>","");
         HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
         mapPrem.put("licenseeId",licenseeId);
 
@@ -391,7 +392,7 @@ public class RequestForInformationDelegator {
             log.error(e.getMessage(), e);
         }
         HashMap msg=IaisCommonUtils.genNewHashMap();
-        msg.put("<Date>",IaisEGPHelper.parseToString(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
+        msg.put("Date",IaisEGPHelper.parseToString(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
         ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.getMessageDesc("ACKRFI001",msg));
 
 
@@ -452,7 +453,11 @@ public class RequestForInformationDelegator {
             errorMap.put("Due_date","ERR0010");
         }else {
             date= ParamUtil.getString(request, "Due_date");
-            String now=new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(new Date());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 1);
+            Date tomorrow= calendar.getTime();
+            String now=new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(tomorrow);
             if(date.compareTo(now) <0 ){
                 errorMap.put("Due_date","Due Date should be a future Date.");
             }
