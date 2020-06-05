@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
@@ -39,7 +38,6 @@ import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicInspNcEmailService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -90,8 +88,6 @@ public class RequestForInformationDelegator {
     LicInspNcEmailService licInspNcEmailService;
     @Autowired
     private SystemParamConfig systemParamConfig;
-    @Autowired
-    private ApplicationClient applicationClient;
     @Autowired
     EmailClient emailClient;
     @Value("${iais.email.sender}")
@@ -176,6 +172,8 @@ public class RequestForInformationDelegator {
             ) {
                 docTitle.add(ParamUtil.getString(request,"docTitle"+len));
             }
+        }else {
+            docTitle=null;
         }
         String[] lengthsInfo=ParamUtil.getStrings(request,"lengthsInfo");
         List<String> infoTitle=IaisCommonUtils.genNewArrayList();
@@ -184,6 +182,8 @@ public class RequestForInformationDelegator {
             ) {
                 infoTitle.add(ParamUtil.getString(request,"infoTitle"+len));
             }
+        }else {
+            infoTitle=null;
         }
 
         String decision=ParamUtil.getString(request, "decision");
@@ -250,6 +250,8 @@ public class RequestForInformationDelegator {
             ) {
                 docTitle.add(ParamUtil.getString(request,"docTitle"+len));
             }
+        }else {
+            docTitle=null;
         }
         String[] lengthsInfo=ParamUtil.getStrings(request,"lengthsInfo");
         List<String> infoTitle=IaisCommonUtils.genNewArrayList();
@@ -258,6 +260,8 @@ public class RequestForInformationDelegator {
             ) {
                 infoTitle.add(ParamUtil.getString(request,"infoTitle"+len));
             }
+        }else {
+            infoTitle=null;
         }
 
         Map<String, String> lice= (Map<String, String>) ParamUtil.getSessionAttr(request, "licLicPremMap");
@@ -361,8 +365,7 @@ public class RequestForInformationDelegator {
         interMessageDto.setMaskParams(mapPrem);
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
         List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
-        ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
-        String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",applicationDto.getApplicationNo());
+        String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",StringUtil.viewHtml(licenceNo));
         interMessageDto.setSubject(subject);
         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
         String messageNo = inboxMsgService.getMessageNo();
@@ -387,8 +390,9 @@ public class RequestForInformationDelegator {
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
-
-        ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.getMessageDesc("ACKRFI001"));
+        HashMap msg=IaisCommonUtils.genNewHashMap();
+        msg.put("<Date>",IaisEGPHelper.parseToString(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
+        ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.getMessageDesc("ACKRFI001",msg));
 
 
 

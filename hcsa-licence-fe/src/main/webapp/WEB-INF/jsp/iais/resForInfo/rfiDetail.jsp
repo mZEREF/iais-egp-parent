@@ -82,7 +82,7 @@
                                                         <div class="file-upload-gp">
 
                                                             &nbsp;&nbsp;&nbsp;${rfiDoc.title} : <div id="uploadFileName${rfiDoc.id}"></div>
-                                                            <input class="selectedFile commDoc" id="commonDoc${rfiDoc.id}" name = "UploadFile${rfiDoc.id}" type="file" style="display: none;" aria-label="selectedFile${rfiDoc.id}" >
+                                                            <input class="selectedFile commDoc" id="commonDoc${rfiDoc.id}" name = "UploadFile${rfiDoc.id}" type="file" style="display: none;" aria-label="selectedFile" >
                                                             <a class="btn btn-file-upload btn-secondary" >Attachment</a><span id="error_UploadFile${rfiDoc.id}" name="iaisErrorMsg" class="error-msg" ></span><br/>
                                                         </div>
                                                     </iais:value>

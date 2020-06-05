@@ -45,7 +45,7 @@
                                         <iais:row>
                                             <iais:field value=""/>
                                             <iais:value width="18">
-                                                <button class="btn btn-secondary" type="button"  onclick="javascript:doExtends('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,licPreReqForInfoDto.reqInfoId)}')">Extends</button>
+                                                <button class="btn btn-secondary" type="button"  onclick="javascript:doExtends('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,licPreReqForInfoDto.id)}')">Extends</button>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -76,13 +76,6 @@
                                             </iais:value>
                                         </iais:row>
                                         <H3></H3>
-                                        <iais:row style="text-align:center;">
-                                            <iais:value width="18">
-                                                <label>
-                                                    <span>${licPreReqForInfoDto.officerRemarks}</span>
-                                                </label>
-                                            </iais:value>
-                                        </iais:row>
                                         <c:if test="${not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}">
                                             <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}" var="rfiReply" varStatus="rfiReplyStatus">
                                                 <iais:row style="text-align:center;">
@@ -128,7 +121,7 @@
 
 
                                         <iais:action style="text-align:right;">
-                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Cancel</button>
+                                            <button class="btn btn-secondary" type="button"  onclick="javascript:doBack('${licPreReqForInfoDto.id}')">Cancel</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>
@@ -143,7 +136,7 @@
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
-    function doBack(){
+    function doBack(reqInfoId){
         var status=$('.rfiViewStatus').val();
         if(status==="RFI002"){
             showWaiting();SOP.Crud.cfxSubmit("mainForm", "cancel",reqInfoId);

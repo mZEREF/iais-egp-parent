@@ -36,24 +36,23 @@
                             <br>
                             <div class="row">
                                 <label class="col-xs-9 col-md-3 control-label" > Licence No.<strong style="color:#ff0000;">*</strong></label>
-                                    <label>
-                                        <input type="text" maxlength="24" style="width:170%; font-weight:normal;" name="licenceNo" value="${newRfi.licenceNo}"/>
-                                    </label>
+                                <label class="col-xs-9 col-md-5 control-label">
+                                    <input type="text" maxlength="24" style=" font-weight:normal;" name="licenceNo" value="${newRfi.licenceNo}"/>
+                                </label>
                                 <span id="error_licenceNo" name="iaisErrorMsg" class="error-msg" ></span>
                             </div>
                             <div class="row">
                                 <label class="col-xs-9 col-md-3 control-label" >Due Date<strong style="color:#ff0000;">*</strong></label>
-                                <label >
+                                <label class="col-xs-9 col-md-5 control-label">
                                         <iais:datePicker value="${newRfi.date}"  name="Due_date"></iais:datePicker>
                                 </label>
                                 <span id="error_Due_date" name="iaisErrorMsg" class="error-msg" ></span>
                             </div>
                             <div class="row">
-                                <label class="col-xs-9 col-md-4 control-label" > Status</label>
-                                <label >
-                                    <iais:select name="status" options="salutationStatusList" firstOption="Please Select" value="${newRfi.status}"></iais:select>
-                                </label>
-                                <span id="error_Status" name="iaisErrorMsg" class="error-msg" ></span>
+                                <label class="col-xs-9 col-md-3 control-label" > Status</label>
+                                <div class="col-xs-9 col-md-5 control-label">
+                                    <iais:select id="rfiStatus" name="status" options="salutationStatusList" firstOption="Please Select" filterValue="${newRfi.status}"></iais:select>
+                                </div>
                             </div>
                             <div class="row">
                                 <label class="col-xs-9 col-md-3 control-label">
@@ -70,54 +69,58 @@
                             </div>
 
 
-                            <div id="infohidden" class="reqForInfoContentInfo  hidden">
-                                <input type="hidden" name="lengthsInfo" value="0" />
-                                <div class="col-xs-9 col-sm-5 col-md-1">
-                                    <button class="addNewRfiInfo btn btn-secondary" type="button">+</button>
-                                </div>
-                                <div class="panel panel-default">
-                                    <div class="panel-collapse collapse in" id="collapseOneInfo" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                                        <div class="panel-body">
-                                            <div class="form-group">
-                                                <div class="row" >
-                                                    <div class="row" style="text-align:center;">
-                                                        <div >  Title of Information Required <strong style="color:#ff0000;">*</strong></div>
-                                                    </div>
-                                                    <label class="col-xs-9 col-md-3 control-label" ></label>
-                                                    <div class=" col-xs-7 col-sm-4 col-md-5">
-                                                        <label>
-                                                            <textarea  name="infoTitle0" rows="8" style=" font-weight:normal;" maxlength="500" cols="70">${newRfi.infoTitle[0]}</textarea><span id="error_infoTitle0" name="iaisErrorMsg" class="error-msg" ></span>
-                                                        </label>
+                            <div id="infohidden" <c:if test="${not empty newRfi.infoTitle}">class="hidden" </c:if> >
+                                <div class="reqForInfoContentInfo">
+                                    <input type="hidden" name="lengthsInfo" value="0" />
+                                    <div class="col-xs-9 col-sm-5 col-md-1">
+                                        <button class="addNewRfiInfo btn btn-secondary" type="button">+</button>
+                                    </div>
+                                    <div class="panel panel-default">
+                                        <div class="panel-collapse collapse in" id="collapseOneInfo" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                                            <div class="panel-body">
+                                                <div class="form-group">
+                                                    <div class="row" >
+                                                        <div class="row" style="text-align:center;">
+                                                            <div >  Title of Information Required <strong style="color:#ff0000;">*</strong></div>
+                                                        </div>
+                                                        <label class="col-xs-9 col-md-3 control-label" ></label>
+                                                        <div class=" col-xs-7 col-sm-4 col-md-5">
+                                                            <label>
+                                                                <textarea  name="infoTitle0" rows="8" style=" font-weight:normal;" maxlength="500" cols="70">${newRfi.infoTitle[0]}</textarea><span id="error_infoTitle0" name="iaisErrorMsg" class="error-msg" ></span>
+                                                            </label>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <br><br><br>
                                 </div>
-                                <br><br><br>
 
                                 <c:if test="${not empty newRfi.infoTitle}">
                                     <c:forEach items="${newRfi.infoTitle}" var="newRfiInfo" varStatus="statusInfo">
                                         <c:if test="${statusInfo.index!=0}">
-                                            <input type="hidden" name="lengthsInfo" value="${statusInfo.index+1}" />
-                                            <div class=" col-xs-11 col-sm-4 col-md-1">
-                                                <div class="form-check removeRfiBtnInfo">
-                                                    <button class=" btn btn-secondary" type="button">-</button>
+                                            <div class="reqForInfoContentInfo">
+                                                <input type="hidden" name="lengthsInfo" value="${statusInfo.index}" />
+                                                <div class=" col-xs-11 col-sm-4 col-md-1">
+                                                    <div class="form-check removeRfiInfoBtn">
+                                                        <button class=" btn btn-secondary" type="button">-</button>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="panel panel-default">
-                                                <div class="panel-collapse collapse in"  role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                                                    <div class="panel-body">
-                                                        <div class="form-group">
-                                                            <div class="row" >
-                                                                <div class="row" style="text-align:center;">
-                                                                    <div > ${statusInfo.index+1} Title of Information Required <strong style="color:#ff0000;">*</strong></div>
-                                                                </div>
-                                                                <label class="col-xs-9 col-md-3 control-label" ></label>
-                                                                <div class=" col-xs-7 col-sm-4 col-md-5">
-                                                                    <label>
-                                                                        <textarea  name="infoTitle${statusInfo.index+1}" maxlength="500" rows="8" style=" font-weight:normal;" cols="70">${newRfi.infoTitle[0]}</textarea><span id="error_infoTitle${statusInfo.index+1}" name="iaisErrorMsg" class="error-msg" ></span>
-                                                                    </label>
+                                                <div class="panel panel-default">
+                                                    <div class="panel-collapse collapse in"  role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                                                        <div class="panel-body">
+                                                            <div class="form-group">
+                                                                <div class="row" >
+                                                                    <div class="row" style="text-align:center;">
+                                                                        <div > ${statusInfo.index} Title of Information Required <strong style="color:#ff0000;">*</strong></div>
+                                                                    </div>
+                                                                    <label class="col-xs-9 col-md-3 control-label" ></label>
+                                                                    <div class=" col-xs-7 col-sm-4 col-md-5">
+                                                                        <label>
+                                                                            <textarea  name="infoTitle${statusInfo.index}" maxlength="500" rows="8" style=" font-weight:normal;" cols="70">${newRfiInfo}</textarea><span id="error_infoTitle${statusInfo.index}" name="iaisErrorMsg" class="error-msg" ></span>
+                                                                        </label>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -132,54 +135,59 @@
                                 </div>
                             </div>
 
-                            <div id="dochidden" class="reqForInfoContent  hidden">
-                                <input type="hidden" name="lengths" value="0" />
-                                <div class="col-xs-9 col-sm-5 col-md-1">
-                                    <button class="addNewRfi btn btn-secondary" type="button">+</button>
-                                </div>
-                                <div class="panel panel-default">
-                                    <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                                        <div class="panel-body">
-                                            <div class="form-group">
-                                                <div class="row" >
-                                                    <div class="row" style="text-align:center;">
-                                                        <div >  Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div>
-                                                    </div>
-                                                    <label class="col-xs-9 col-md-3 control-label" ></label>
-                                                    <div class=" col-xs-7 col-sm-4 col-md-5">
-                                                        <label>
-                                                            <textarea  name="docTitle0" rows="8" style=" font-weight:normal;" maxlength="500" cols="70">${newRfi.docTitle[0]}</textarea><span id="error_docTitle0" name="iaisErrorMsg" class="error-msg" ></span>
-                                                        </label>
+                            <div id="dochidden" <c:if test="${not empty newRfi.docTitle}">class="hidden"</c:if> >
+                                <div class="reqForInfoContent">
+                                    <input type="hidden" name="lengths" value="0" />
+                                    <div class="col-xs-9 col-sm-5 col-md-1">
+                                        <button class="addNewRfi btn btn-secondary" type="button">+</button>
+                                    </div>
+                                    <div class="panel panel-default">
+                                        <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                                            <div class="panel-body">
+                                                <div class="form-group">
+                                                    <div class="row" >
+                                                        <div class="row" style="text-align:center;">
+                                                            <div >  Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div>
+                                                        </div>
+                                                        <label class="col-xs-9 col-md-3 control-label" ></label>
+                                                        <div class=" col-xs-7 col-sm-4 col-md-5">
+                                                            <label>
+                                                                <textarea  name="docTitle0" rows="8" style=" font-weight:normal;" maxlength="500" cols="70">${newRfi.docTitle[0]}</textarea><span id="error_docTitle0" name="iaisErrorMsg" class="error-msg" ></span>
+                                                            </label>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <br><br><br>
                                 </div>
-                                <br><br><br>
 
                                 <c:if test="${not empty newRfi.docTitle}">
                                     <c:forEach items="${newRfi.docTitle}" var="newRfiDoc" varStatus="statusDoc">
                                         <c:if test="${statusDoc.index!=0}">
-                                            <input type="hidden" name="lengths" value="${statusDoc.index}" />
-                                            <div class=" col-xs-11 col-sm-4 col-md-1">
-                                                <div class="form-check removeRfiBtn">
-                                                    <button class=" btn btn-secondary" type="button">-</button>
+                                            <div class="reqForInfoContent">
+
+                                                <input type="hidden" name="lengths" value="${statusDoc.index}" />
+                                                <div class=" col-xs-11 col-sm-4 col-md-1">
+                                                    <div class="form-check removeRfiBtn">
+                                                        <button class=" btn btn-secondary" type="button">-</button>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="panel panel-default">
-                                                <div class="panel-collapse collapse in"  role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
-                                                    <div class="panel-body">
-                                                        <div class="form-group">
-                                                            <div class="row" >
-                                                                <div class="row" style="text-align:center;">
-                                                                    <div > ${statusDoc.index+1} Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div>
-                                                                </div>
-                                                                <label class="col-xs-9 col-md-3 control-label" ></label>
-                                                                <div class=" col-xs-7 col-sm-4 col-md-5">
-                                                                    <label>
-                                                                        <textarea  name="docTitle0" maxlength="500" rows="8" style=" font-weight:normal;" cols="70">${newRfi.docTitle[0]}</textarea><span id="error_docTitle" name="iaisErrorMsg" class="error-msg" ></span>
-                                                                    </label>
+                                                <div class="panel panel-default">
+                                                    <div class="panel-collapse collapse in"  role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                                                        <div class="panel-body">
+                                                            <div class="form-group">
+                                                                <div class="row" >
+                                                                    <div class="row" style="text-align:center;">
+                                                                        <div > ${statusDoc.index} Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div>
+                                                                    </div>
+                                                                    <label class="col-xs-9 col-md-3 control-label" ></label>
+                                                                    <div class=" col-xs-7 col-sm-4 col-md-5">
+                                                                        <label>
+                                                                            <textarea  name="docTitle${statusDoc.index}" maxlength="500" rows="8" style=" font-weight:normal;" cols="70">${newRfiDoc}</textarea><span id="error_docTitle" name="iaisErrorMsg" class="error-msg" ></span>
+                                                                        </label>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -189,9 +197,8 @@
                                         </c:if>
                                     </c:forEach>
                                 </c:if>
-
-                                <div class="rfiFormMarkPoint">
-                                </div>
+                            </div>
+                            <div class="rfiFormMarkPoint">
                             </div>
                         </div>
                     </div>
@@ -325,12 +332,12 @@
                         $contentDivEle.find('div.rfiFormMarkPointInfo').removeClass('rfiContentInfo');
                         <!--change hidden length value -->
                         //Prevent duplicate binding
-                        $('.removeRfiBtnInfo').unbind('click');
-                        removeRFI();
+                        $('.removeRfiInfoBtn').unbind('click');
+                        removeRFIInfo();
                         $('.date_picker').datepicker({
                             format:"dd/mm/yyyy"
                         });
-                        length=length+1;
+                        lengthInfo=lengthInfo+1;
                     },
                     'error':function () {
                     }
@@ -342,10 +349,10 @@
     }
 
     var removeRFIInfo = function () {
-        $('.removeRfiBtnInfo').click(function () {
+        $('.removeRfiInfoBtn').click(function () {
             var $rfiContentEle = $(this).closest('div.reqForInfoContentInfo');
             $rfiContentEle.remove();
-            length=length-1;
+            lengthInfo=lengthInfo-1;
         });
     }
 

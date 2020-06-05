@@ -127,7 +127,7 @@ public class ResponseForInformationDelegator {
         for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
             CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
             if(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename())){
-                file.getFileItem().setFieldName("selectedFile"+doc.getId());
+                file.getFileItem().setFieldName("selectedFile");
                 long size = file.getSize() / 1024;
                 doc.setDocName(file.getOriginalFilename());
                 doc.setDocSize(Integer.valueOf(String.valueOf(size)));

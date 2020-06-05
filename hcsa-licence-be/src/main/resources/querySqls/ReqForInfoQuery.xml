@@ -210,8 +210,8 @@
                                     </div>
                                     <label class="col-xs-9 col-md-3 control-label" ></label>
                                     <div class=" col-xs-7 col-sm-4 col-md-5">
-                                        <label>
-                                            <textarea  name="docTitelindexRfi" rows="8" style=" maxlength="500" font-weight:normal;" cols="70"></textarea><span id="error_docTitleindexRfi" name="iaisErrorMsg" class="error-msg" ></span>
+                                        <label class=" col-xs-7 col-sm-4 col-md-5">
+                                            <textarea  name="docTitleindexRfi" rows="8" style=" maxlength="500" font-weight:normal;" cols="70"></textarea><span id="error_docTitleindexRfi" name="iaisErrorMsg" class="error-msg" ></span>
                                         </label>
                                     </div>
                                 </div>
@@ -246,7 +246,7 @@
                                     <label class="col-xs-9 col-md-3 control-label" ></label>
                                     <div class=" col-xs-7 col-sm-4 col-md-5">
                                         <label>
-                                            <textarea  name="infoTitelindexRfi" rows="8" style=" maxlength="500" font-weight:normal;" cols="70"></textarea><span id="error_infoTitleindexRfi" name="iaisErrorMsg" class="error-msg" ></span>
+                                            <textarea  name="infoTitleindexRfi" rows="8" style=" maxlength="500" font-weight:normal;" cols="70"></textarea><span id="error_infoTitleindexRfi" name="iaisErrorMsg" class="error-msg" ></span>
                                         </label>
                                     </div>
                                 </div>
