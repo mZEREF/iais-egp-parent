@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -261,15 +262,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     if("C".equals(level)){
                         caLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "caRightLowCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                        errMap.put(serviceCode + "caRightLowCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                         fdto.setDoCaLeftHighCountherr(true);
                     }else if("I".equals(level)){
                         miLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "miRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                        errMap.put(serviceCode + "miRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                         fdto.setDoMiLeftHighCountherr(false);
                     }else if("A".equals(level)){
                         mjLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "mjRightLowCaseCounth",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                        errMap.put(serviceCode + "mjRightLowCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                         fdto.setDoMjLeftHighCountherr(false);
                     }
                 }
@@ -277,15 +278,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         } catch (Exception e) {
             if("C".equals(level)){
                 caLeftHighNumFlag = false;
-                errMap.put(serviceCode + "caRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                errMap.put(serviceCode + "caRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                 fdto.setDoCaLeftHighCountherr(true);
             }else if("I".equals(level)){
                 miLeftHighNumFlag = false;
-                errMap.put(serviceCode + "miRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                errMap.put(serviceCode + "miRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                 fdto.setDoMiLeftHighCountherr(true);
              }else if("A".equals(level)){
                 mjLeftHighNumFlag = false;
-                errMap.put(serviceCode + "mjRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                errMap.put(serviceCode + "mjRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                 fdto.setDoMjLeftHighCountherr(true);
             }
             log.error(e.getMessage(), e);
@@ -322,15 +323,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
                     if("C".equals(level)){
                         caRightLowNumFlag = false;
-                        errMap.put(serviceCode + "caRightLowCaseCounth",  MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                        errMap.put(serviceCode + "caRightLowCaseCounth",  MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                         fdto.setDoCaRightLowCountherr(true);
                     }else if("I".equals(level)){
                         miRightLowNumFlag = false;
-                        errMap.put(serviceCode + "miRightLowCaseCounth",  MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                        errMap.put(serviceCode + "miRightLowCaseCounth",  MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                         fdto.setDoMiRightLowCountherr(true);
                     }else if("A".equals(level)){
                         mjRightLowNumFlag = false;
-                        errMap.put(serviceCode + "mjRightLowCaseCounth",  MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                        errMap.put(serviceCode + "mjRightLowCaseCounth",  MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                         fdto.setDoMjRightLowCountherr(true);
                     }
                 }
@@ -339,15 +340,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
             // TODO: handle exception
             if("C".equals(level)){
                 caRightLowNumFlag = false;
-                errMap.put(serviceCode + "caRightLowCaseCounth",  MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                errMap.put(serviceCode + "caRightLowCaseCounth",  MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                 fdto.setDoCaRightLowCountherr(true);
             }else if("I".equals(level)){
                 miRightLowNumFlag = false;
-                errMap.put(serviceCode + "miRightLowCaseCounth",  MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                errMap.put(serviceCode + "miRightLowCaseCounth",  MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                 fdto.setDoMiRightLowCountherr(true);
             }else if("A".equals(level)){
                 mjRightLowNumFlag = false;
-                errMap.put(serviceCode + "miRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                errMap.put(serviceCode + "miRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                 fdto.setDoMiRightLowCountherr(true);
             }
             log.error(e.getMessage(), e);
@@ -389,26 +390,26 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 inLeftModNum = Integer.valueOf(inLeftMod);
                 if(inLeftModNum<0||inLeftModNum>999){
                     if("C".equals(level)){
-                        errMap.put(serviceCode+"caLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
+                        errMap.put(serviceCode+"caLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC);
                         fdto.setDoCaLeftModCountherr(true);
                     }else if("I".equals(level)){
-                        errMap.put(serviceCode+"miLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
+                        errMap.put(serviceCode+"miLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC);
                         fdto.setDoMiLeftModCountherr(true);
                     }else if("A".equals(level)){
-                        errMap.put(serviceCode+"mjLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
+                        errMap.put(serviceCode+"mjLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC);
                         fdto.setDoMjLeftModCountherr(true);
                     }
                 }
                 numberFlag++;
             }catch (Exception e){
                 if("C".equals(level)){
-                    errMap.put(serviceCode+"caLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
+                    errMap.put(serviceCode+"caLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC);
                     fdto.setDoCaLeftModCountherr(true);
                 }else if("I".equals(level)){
-                    errMap.put(serviceCode+"miLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
+                    errMap.put(serviceCode+"miLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC);
                     fdto.setDoMiLeftModCountherr(true);
                 }else if("A".equals(level)){
-                    errMap.put(serviceCode+"mjLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Minimum Number of NCs");
+                    errMap.put(serviceCode+"mjLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC);
                     fdto.setDoMjLeftModCountherr(true);
                 }
                 log.error(e.getMessage(), e);
@@ -419,13 +420,13 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 inRightModNum = Integer.valueOf(inRightMod);
                 if(inRightModNum<0 || inRightModNum >999){
                     if("C".equals(level)){
-                        errMap.put(serviceCode+"caRightModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                        errMap.put(serviceCode+"caRightModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                         fdto.setDoCaRightModCountherr(true);
                     }else if("I".equals(level)){
-                        errMap.put(serviceCode+"miRightModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                        errMap.put(serviceCode+"miRightModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                         fdto.setDoMiRightModCountherr(true);
                     }else if("A".equals(level)){
-                        errMap.put(serviceCode+"mjRightModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                        errMap.put(serviceCode+"mjRightModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                         fdto.setDoMjRightModCountherr(true);
                     }
                 }
@@ -433,13 +434,13 @@ public class HcsaInspectionValidate implements CustomizeValidator {
             }catch (Exception e){
                 if(inRightModNum<0 || inRightModNum >999){
                     if("C".equals(level)){
-                        errMap.put(serviceCode+"caRightModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                        errMap.put(serviceCode+"caRightModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                         fdto.setDoCaRightModCountherr(true);
                     }else if("I".equals(level)){
-                        errMap.put(serviceCode+"miRightModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                        errMap.put(serviceCode+"miRightModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                         fdto.setDoMiRightModCountherr(true);
                     }else if("A".equals(level)){
-                        errMap.put(serviceCode+"mjRightModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + "for Maximum Number of NCs");
+                        errMap.put(serviceCode+"mjRightModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                         fdto.setDoMjRightModCountherr(true);
                     }
                 }
