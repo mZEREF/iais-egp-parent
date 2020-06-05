@@ -8,7 +8,7 @@
 <iais:row>
     <iais:field value="Salutation" width="11" required="true"/>
     <iais:value width="11">
-        <iais:select name="salutation" id="salutation" value="${inter_user_attr.salutation}"
+        <iais:select cssClass="Salutation" name="salutation" id="salutation" value="${inter_user_attr.salutation}"
                      codeCategory="CATE_ID_SALUTATION"  firstOption="Please Select" />
             <span class="error-msg" name="errorMsg" id="error_salutation"></span>
     </iais:value>

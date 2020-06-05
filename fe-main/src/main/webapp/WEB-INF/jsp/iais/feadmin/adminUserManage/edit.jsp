@@ -82,7 +82,7 @@
                                             <div class="col-xs-2 col-md-2">
                                                 <a   style="padding-left: 90px;" align="left" class="back" href="#" onclick="cancel()"><em class="fa fa-angle-left"></em> Back</a></div>
                                             <div class="text-right col-xs-9 col-md-9">
-                                                <button class="btn btn-primary" id="savebtn" onclick="javascript:save()">Save</button>
+                                                <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">Save</button>
                                             </div>
                                         </div>
                                     </div>
