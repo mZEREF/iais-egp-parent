@@ -1638,7 +1638,7 @@ public class LicenceApproveBatchjob {
             //Send notification to transferor when licence transfer application is approve
             Map<String, Object> notifyMap = IaisCommonUtils.genNewHashMap();
             LicenseeDto licDto = inspEmailService.getLicenseeDtoById(licenceDto.getLicenseeId());
-            notifyMap.put("licensee", licDto.getUenNo());
+            notifyMap.put("licensee", StringUtil.viewHtml(licDto.getUenNo()));
             notifyMap.put("licenceList", "<p>" + licenceDto.getLicenceNo() + " - " + licenceDto.getSvcName() + "</p>");
             notifyMap.put("status", "Is Approved.");
             //approve
