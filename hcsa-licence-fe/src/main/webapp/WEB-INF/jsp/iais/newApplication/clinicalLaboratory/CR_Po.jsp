@@ -58,6 +58,14 @@
                   </c:if>
                   <c:set var="suffix" value="${status.index}" />
                   <div class="po-content">
+                    <c:choose>
+                      <c:when test="${principalOfficer.licPerson}">
+                        <input type="hidden" name="poLicPerson" value="1"/>
+                      </c:when>
+                      <c:otherwise>
+                        <input type="hidden" name="poLicPerson" value="0"/>
+                      </c:otherwise>
+                    </c:choose>
                     <div class="row">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -289,6 +297,14 @@
                     <c:set var="deputy" value="${ReloadDeputyPrincipalOfficers[status.index]}"/>
                   </c:if>
                   <div class="dpo-content">
+                    <c:choose>
+                      <c:when test="${deputy.licPerson}">
+                        <input type="hidden" name="dpoLicPerson" value="1"/>
+                      </c:when>
+                      <c:otherwise>
+                        <input type="hidden" name="dpoLicPerson" value="0"/>
+                      </c:otherwise>
+                    </c:choose>
                     <div class="row" <c:if test="${status.first}">style="margin-top:-4%;"</c:if> >
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -468,6 +484,19 @@
         $('select.deputySelect').trigger('change');
         $('select.deputyPoSelect').trigger('change');
 
+        $('input[name="poLicPerson"]').each(function () {
+            if('1' == $(this).val()){
+                var $currentPsn = $(this).closest('.po-content').find('div.principalOfficers');
+                disabledPartPage($currentPsn);
+            }
+        });
+        $('input[name="dpoLicPerson"]').each(function () {
+            if('1' == $(this).val()){
+                var $currentPsn = $(this).closest('.dpo-content').find('div.deputyPrincipalOfficers');
+                disabledPartPage($currentPsn);
+            }
+        });
+
         //disabled
         if(${AppSubmissionDto.needEditController && !isClickEdit}){
             $('.po-content input[type="text"]').prop('disabled',true);
@@ -553,14 +582,17 @@
             var data= {};
             if("newOfficer" == selectVal){
                 $poContentEle.find('div.principalOfficers').removeClass('hidden');
+                unDisabledPartPage($poContentEle);
                 if(0 != init) {
                     fillPoData($poContentEle, data);
                 }
+                $poContentEle.find('input[name="poLicPerson"]').val('0');
             }else if('-1' == selectVal){
                 $poContentEle.find('div.principalOfficers').addClass('hidden');
                 if(0 != init) {
                     fillPoData($poContentEle, data);
                 }
+                $poContentEle.find('input[name="poLicPerson"]').val('0');
             }else{
                 $poContentEle.find('div.principalOfficers').removeClass('hidden');
                 if(init == 0){
@@ -578,14 +610,17 @@
             var data= {};
             if("newOfficer" == selectVal){
                 $dpoContentEle.find('div.deputyPrincipalOfficers').removeClass('hidden');
+                unDisabledPartPage($dpoContentEle);
                 if(0 != init) {
                     fillDpoData($dpoContentEle, data);
                 }
+                $dpoContentEle.find('input[name="poLicPerson"]').val('0');
             }else if('-1' == selectVal){
                 $dpoContentEle.find('div.deputyPrincipalOfficers').addClass('hidden');
                 if(0 != init) {
                     fillDpoData($dpoContentEle, data);
                 }
+                $dpoContentEle.find('input[name="poLicPerson"]').val('0');
             }else{
                 $dpoContentEle.find('div.deputyPrincipalOfficers').removeClass('hidden');
                 if(init == 0){
@@ -741,6 +776,12 @@
         $poContentEle.find('select[name="designation"]').val(designation);
         var designationVal = $poContentEle.find('option[value="' + designation + '"]').html();
         $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
+
+        var isLicPerson = data.licPerson;
+        if('1' == isLicPerson){
+            disabledPartPage($poContentEle.find('div.principalOfficers'));
+            $poContentEle.find('input[name="poLicPerson"]').val('1');
+        }
     }
 
     var fillDpoData = function ($poContentEle,data) {
@@ -773,6 +814,12 @@
         $poContentEle.find('select[name="deputyDesignation"]').val(designation);
         var designationVal = $poContentEle.find('option[value="' + designation + '"]').html();
         $poContentEle.find('select[name="deputyDesignation"]').next().find('.current').html(designationVal);
+
+        var isLicPerson = data.licPerson;
+        if('1' == isLicPerson){
+            disabledPartPage($poContentEle.find('div.deputyPrincipalOfficers'));
+            $poContentEle.find('input[name="dpoLicPerson"]').val('1');
+        }
     }
 
     var removePo = function () {

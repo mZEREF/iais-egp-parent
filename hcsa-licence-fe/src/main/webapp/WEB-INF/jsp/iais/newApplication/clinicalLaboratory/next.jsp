@@ -227,6 +227,7 @@
         var speciality = data.speciality;
         if('CGO' == psnTYpe){
             $CurrentPsnEle.find('div.specialtyDiv').html(data.specialityHtml);
+            showSpecialty();
         }else{
             if(speciality == null || speciality =='undefined' || speciality == ''){
                 speciality = '-1';
@@ -273,6 +274,16 @@
             $CurrentPsnEle.find('input.preferredMode').prop('checked',false);
         }
 
+        var isLicPerson = data.licPerson;
+        if('1' == isLicPerson){
+            if('CGO' == psnTYpe){
+                disabledPartPage($CurrentPsnEle.find('.new-officer-form'));
+            }else{
+                disabledPartPage($CurrentPsnEle.find('.medAlertPerson'));
+            }
+            $CurrentPsnEle.find('input[name="licPerson"]').val('1');
+        }
+
     }
     <!--cgo,medAlert -->
     var loadSelectPsn = function ($CurrentPsnEle, idType, idNo, psnType) {
@@ -297,6 +308,5 @@
             }
         });
     }
-
 
 </script>

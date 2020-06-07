@@ -19,11 +19,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -1074,7 +1076,77 @@ public class NewApplicationHelper {
         ParamUtil.setSessionAttr(request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
     }
 
-
+    public static Map<String,AppSvcPrincipalOfficersDto> setLicPsnIntoSelMap(HttpServletRequest request, List<PersonnelListQueryDto> licPsnDtos) {
+        Map<String,AppSvcPrincipalOfficersDto> personMap = IaisCommonUtils.genNewHashMap();
+        if (!IaisCommonUtils.isEmpty(licPsnDtos)) {
+            for (PersonnelListQueryDto psnDto : licPsnDtos) {
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(psnDto.getSvcName());
+                String svcCode = hcsaServiceDto.getSvcCode();
+                String personMapKey = psnDto.getIdType() + "," + psnDto.getIdNo();
+                AppSvcPrincipalOfficersDto person = personMap.get(personMapKey);
+                Map<String, String> specialtyAttr = IaisCommonUtils.genNewHashMap();
+                specialtyAttr.put("name", "specialty");
+                specialtyAttr.put("class", "specialty");
+                specialtyAttr.put("style", "display: none;");
+                if (person == null) {
+                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnDto.getPsnType())) {
+                        psnDto.setNeedSpcOptList(true);
+                        List<SelectOption> specialityOpts = genSpecialtySelectList(svcCode, true);
+                        psnDto.setSpcOptList(specialityOpts);
+                        String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, psnDto.getSpeciality());
+                        psnDto.setSpecialityHtml(specialtySelectStr);
+                    }
+                    AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = MiscUtil.transferEntityDto(psnDto, AppSvcPrincipalOfficersDto.class);
+                    appSvcPrincipalOfficersDto.setLicPerson(true);
+                    personMap.put(personMapKey, appSvcPrincipalOfficersDto);
+                } else {
+                    //set different page column
+                    person.setSalutation(psnDto.getSalutation());
+                    person.setName(psnDto.getName());
+                    person.setIdType(psnDto.getIdType());
+                    person.setIdNo(psnDto.getIdNo());
+                    person.setMobileNo(psnDto.getMobileNo());
+                    person.setEmailAddr(psnDto.getEmailAddr());
+                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnDto.getPsnType())) {
+                        person.setDesignation(psnDto.getDesignation());
+                        person.setProfessionType(psnDto.getProfessionType());
+                        person.setProfRegNo(psnDto.getProfRegNo());
+                        person.setSpeciality(psnDto.getSpeciality());
+                        person.setSpecialityOther(psnDto.getSpecialityOther());
+                        person.setSubSpeciality(psnDto.getSubSpeciality());
+                        //
+                        person.setNeedSpcOptList(true);
+                        List<SelectOption> spcOpts = person.getSpcOptList();
+                        List<SelectOption> specialityOpts = genSpecialtySelectList(svcCode, false);
+                        if (!IaisCommonUtils.isEmpty(spcOpts)) {
+                            for (SelectOption sp : spcOpts) {
+                                if (!specialityOpts.contains(sp)) {
+                                    specialityOpts.add(sp);
+                                }
+                            }
+                            person.setSpcOptList(specialityOpts);
+                        } else {
+                            SelectOption sp = new SelectOption("other", "Others");
+                            specialityOpts.add(sp);
+                            person.setSpcOptList(specialityOpts);
+                        }
+                        String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, person.getSpeciality());
+                        person.setSpecialityHtml(specialtySelectStr);
+                    }
+                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType()) || ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())) {
+                        person.setOfficeTelNo(psnDto.getOfficeTelNo());
+                    }
+                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())) {
+                        person.setPreferredMode(psnDto.getPreferredMode());
+                    }
+                    AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = MiscUtil.transferEntityDto(psnDto, AppSvcPrincipalOfficersDto.class);
+                    appSvcPrincipalOfficersDto.setLicPerson(true);
+                    personMap.put(personMapKey, appSvcPrincipalOfficersDto);
+                }
+            }
+        }
+        return personMap;
+    }
 
     public static List<SelectOption> genSpecialtySelectList(String svcCode, boolean needOtherOpt){
         List<SelectOption> specialtySelectList = null;
@@ -1312,6 +1384,26 @@ public class NewApplicationHelper {
         return premisesHci;
     }
 
+    public static boolean checkIsRfi(HttpServletRequest request){
+        Object requestInformationConfig = ParamUtil.getSessionAttr(request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
+        boolean isRfi = false;
+        if(requestInformationConfig != null){
+            isRfi = true;
+        }
+        return isRfi;
+    }
+
+    public static AppSvcPrincipalOfficersDto getPsnInfoFromLic(HttpServletRequest request,String personKey) {
+        AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
+        Map<String, AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
+        if (personMap != null) {
+            AppSvcPrincipalOfficersDto person = personMap.get(personKey);
+            if (person != null) {
+                appSvcPrincipalOfficersDto = person;
+            }
+        }
+        return appSvcPrincipalOfficersDto;
+    }
 
 
     //=============================================================================

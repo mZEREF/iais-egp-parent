@@ -54,6 +54,14 @@
         <c:forEach begin="0" end="${pageLength-1}" step="1" varStatus="status">
             <c:set var="medAlertPsn" value="${AppSvcMedAlertPsn[status.index]}"/>
             <div class="medAlertContent">
+                <c:choose>
+                    <c:when test="${medAlertPsn.licPerson}">
+                        <input type="hidden" name="licPerson" value="1"/>
+                    </c:when>
+                    <c:otherwise>
+                        <input type="hidden" name="licPerson" value="0"/>
+                    </c:otherwise>
+                </c:choose>
                 <div class="row">
                     <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -218,6 +226,13 @@
 
         $('select.assignSel').trigger('change');
 
+        $('input[name="licPerson"]').each(function (k,v) {
+            if('1' == $(this).val()){
+                var $currentPsn = $(this).closest('.medAlertContent').find('.medAlertPerson');
+                disabledPartPage($currentPsn);
+            }
+        });
+
         if(${AppSubmissionDto.needEditController && !isClickEdit}){
             disabledPage();
             $('.addMapBtn').addClass('hidden');
@@ -246,12 +261,15 @@
                 if(1 == init){
                     var emptyData = {};
                     fillPsnForm($medAlertContentEle,emptyData);
+                    $medAlertContentEle.find('input[name="licPerson"]').val('0');
                 }
             }else if('newOfficer' == assignSelVal){
                 $medAlertContentEle.find('div.medAlertPerson').removeClass('hidden');
+                unDisabledPartPage($medAlertContentEle.find('.medAlertPerson'));
                 if(1 == init){
                     var emptyData = {};
                     fillPsnForm($medAlertContentEle,emptyData);
+                    $medAlertContentEle.find('input[name="licPerson"]').val('0');
                 }
             }else{
                 $medAlertContentEle.find('div.medAlertPerson').removeClass('hidden');

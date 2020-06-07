@@ -34,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -576,11 +577,7 @@ public class NewApplicationDelegator {
         }
 
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
-        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
-        boolean isRfi = false;
-        if(requestInformationConfig != null){
-            isRfi = true;
-        }
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit, isRfi);
         log.info(StringUtil.changeForLog("isGetDataFromPage:"+isGetDataFromPage));
         if(isGetDataFromPage && !appSubmissionDto.isOnlySpecifiedSvc() ){
@@ -619,7 +616,7 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request,NewApplicationConstant.PREMISES_HCI_LIST, (Serializable) premisesHciList);
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
 
-            Map<String, String> errorMap= requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,masterCodeDto);
+            Map<String, String> errorMap= requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,masterCodeDto,isRfi);
 
             if(errorMap.size()>0){
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
@@ -2435,6 +2432,7 @@ public class NewApplicationDelegator {
     public static List<AppGrpPremisesDto> genAppGrpPremisesDtoList(HttpServletRequest request){
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,APPSUBMISSIONDTO);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
+        Object requestInformationConfig = ParamUtil.getSessionAttr(request,REQUESTINFORMATIONCONFIG);
         int count = 0;
         String [] premisesType = ParamUtil.getStrings(request, "premType");
         String [] hciName = ParamUtil.getStrings(request, "onSiteHciName");
@@ -2517,7 +2515,7 @@ public class NewApplicationDelegator {
             }
             String appType = appSubmissionDto.getAppType();
             if(!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
-                    && !ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                    && !ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) && requestInformationConfig ==null){
                 if(!StringUtil.isEmpty(premisesSel) && !premisesSel.equals("-1") && !premisesSel.equals(ApplicationConsts.NEW_PREMISES)){
                     if(appGrpPremisesDto != null){
                         appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
@@ -2734,7 +2732,8 @@ public class NewApplicationDelegator {
         HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
         List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(bpc.request,NewApplicationConstant.PREMISES_HCI_LIST);
         MasterCodeDto masterCodeDto = systemAdminClient.getMasterCodeById("B5E4744C-F96F-EA11-BE79-000C298A32C2").getEntity();
-        Map<String, String> premissMap = requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,masterCodeDto);
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        Map<String, String> premissMap = requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,masterCodeDto,isRfi);
         if(!premissMap.isEmpty()){
             previewAndSubmitMap.put("premiss","UC_CHKLMD001_ERR001");
             String premissMapStr = JsonUtil.parseToJson(premissMap);
@@ -3599,7 +3598,7 @@ public class NewApplicationDelegator {
                         hcsaServiceDtoList.add(hcsaServiceDto);
                         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
                     }
-                    String errMsg = "You hava already replied to this RFI";
+                    String errMsg = "You have already replied to this RFI";
                     jumpToAckPage(bpc,NewApplicationConstant.ACK_STATUS_ERROR,errMsg);
                 }
             }
@@ -4529,7 +4528,6 @@ public class NewApplicationDelegator {
             }
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         }else{
-            //set dropDown
             //set svc info,this fun will set oldAppSubmission
             appSubmissionDto = NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
             Object rfi = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
@@ -4607,8 +4605,6 @@ public class NewApplicationDelegator {
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
              /*   ParamUtil.setSessionAttr(bpc.request,"oldSubmitAppSubmissionDto",oldAppSubmissionDto);*/
             }
-
-
         }
         AppEditSelectDto changeSelectDto1 = appSubmissionDto.getChangeSelectDto()==null?new AppEditSelectDto():appSubmissionDto.getChangeSelectDto();
         appSubmissionDto.setChangeSelectDto(changeSelectDto1);
@@ -4616,6 +4612,11 @@ public class NewApplicationDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         if(loginContext != null){
             appSubmissionDto.setLicenseeId(loginContext.getLicenseeId());
+            List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
+            //Exchange order
+            Map<String,AppSvcPrincipalOfficersDto> personMap = NewApplicationHelper.setLicPsnIntoSelMap(bpc.request,licPersonList);
+            NewApplicationHelper.setLicPsnIntoSelMap(bpc.request,licPersonList);
+            ParamUtil.setSessionAttr(bpc.request,PERSONSELECTMAP, (Serializable) personMap);
         }else{
             appSubmissionDto.setLicenseeId("");
             log.info(StringUtil.changeForLog("user info is empty....."));

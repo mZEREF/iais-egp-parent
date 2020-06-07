@@ -438,7 +438,8 @@ public class RequestForChangeMenuDelegator {
 
         List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.PREMISES_HCI_LIST);
         MasterCodeDto masterCodeDto = systemAdminClient.getMasterCodeById("B5E4744C-F96F-EA11-BE79-000C298A32C2").getEntity();
-        Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,masterCodeDto);
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,masterCodeDto,isRfi);
       /*  List<String> selectLicence = getSelectLicence(bpc.request);
         if (selectLicence.isEmpty()) {
             errorMap.put("selectLicence", "UC_CHKLMD001_ERR001");

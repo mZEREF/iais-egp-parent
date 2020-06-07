@@ -24,12 +24,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
-import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -45,7 +44,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import sop.webflow.rt.api.BaseProcessClass;
 
 import java.sql.Time;
 import java.time.LocalTime;
@@ -421,13 +419,26 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return   applicationClient.isLiscenceAppealOrCessation(licenceId).getEntity();
     }
     @Override
-    public  Map<String, String> doValidatePremiss( AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, Object masterCodeDto ) {
+    public  Map<String, String> doValidatePremiss( AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, Object masterCodeDto, boolean rfi ) {
         log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate one premiss
         List<String> list=IaisCommonUtils.genNewArrayList();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         Set<String> distinctVehicleNo = IaisCommonUtils.genNewHashSet();
+        String oldPremiseHci = "";
+        //new rfi
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && rfi && oldAppSubmissionDto != null){
+            AppGrpPremisesDto oldAppGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0);
+            String premiseKey = NewApplicationHelper.getPremKey(oldAppGrpPremisesDto);
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(oldAppGrpPremisesDto.getPremisesType())){
+                oldPremiseHci = oldAppGrpPremisesDto.getHciName() + premiseKey;
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(oldAppGrpPremisesDto.getPremisesType())){
+                oldPremiseHci = oldAppGrpPremisesDto.getConveyanceVehicleNo() + premiseKey;
+            }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(oldAppGrpPremisesDto.getPremisesType())){
+                oldPremiseHci = premiseKey;
+            }
+        }
         for(int i=0;i<appGrpPremisesDtoList.size();i++){
             String premiseType = appGrpPremisesDtoList.get(i).getPremisesType();
             if (StringUtil.isEmpty(premiseType)) {
@@ -694,10 +705,17 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String blkNoErr =errorMap.get("blkNo"+i);
                         String floorNoErr =errorMap.get("floorNo"+i);
                         String unitNoErr =errorMap.get("unitNo"+i);
+                        boolean clickEdit = appGrpPremisesDto.isClickEdit();
                         boolean hciFlag =  StringUtil.isEmpty(hciNameErr) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:"+hciFlag));
-                        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag){
+                        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag && !rfi){
+                            //new
                             if(!IaisCommonUtils.isEmpty(premisesHciList) && premisesHciList.contains(currentHci)){
+                                errorMap.put("premisesHci"+i,"NEW_ERR0005");
+                            }
+                        }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag && rfi && clickEdit){
+                            //new rfi
+                            if(!IaisCommonUtils.isEmpty(premisesHciList) && !oldPremiseHci.equals(currentHci) && premisesHciList.contains(currentHci)){
                                 errorMap.put("premisesHci"+i,"NEW_ERR0005");
                             }
                         }
@@ -915,10 +933,17 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String blkNoErr =errorMap.get("conveyanceBlockNos"+i);
                         String floorNoErr =errorMap.get("conveyanceFloorNo"+i);
                         String unitNoErr =errorMap.get("conveyanceUnitNo"+i);
+                        boolean clickEdit = appGrpPremisesDto.isClickEdit();
                         boolean hciFlag =  StringUtil.isEmpty(vehicleNo) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:"+hciFlag));
-                        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag){
+                        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag && !rfi){
+                            //new
                             if(!IaisCommonUtils.isEmpty(premisesHciList) && premisesHciList.contains(currentHci)){
+                                errorMap.put("premisesHci"+i,"NEW_ERR0005");
+                            }
+                        }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag && rfi && clickEdit){
+                            //new rfi
+                            if(!IaisCommonUtils.isEmpty(premisesHciList) && !oldPremiseHci.equals(currentHci) && premisesHciList.contains(currentHci)){
                                 errorMap.put("premisesHci"+i,"NEW_ERR0005");
                             }
                         }
@@ -1138,10 +1163,17 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String blkNoErr =errorMap.get("offSiteBlockNo"+i);
                         String floorNoErr =errorMap.get("offSiteFloorNo"+i);
                         String unitNoErr =errorMap.get("offSiteUnitNo"+i);
+                        boolean clickEdit = appGrpPremisesDto.isClickEdit();
                         boolean hciFlag = StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:"+hciFlag));
-                        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag){
+                        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag && !rfi){
+                            //new
                             if(!IaisCommonUtils.isEmpty(premisesHciList) && premisesHciList.contains(currentHci)){
+                                errorMap.put("premisesHci"+i,"NEW_ERR0005");
+                            }
+                        }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag && rfi && clickEdit){
+                            //new rfi
+                            if(!IaisCommonUtils.isEmpty(premisesHciList) && !oldPremiseHci.equals(currentHci) && premisesHciList.contains(currentHci)){
                                 errorMap.put("premisesHci"+i,"NEW_ERR0005");
                             }
                         }

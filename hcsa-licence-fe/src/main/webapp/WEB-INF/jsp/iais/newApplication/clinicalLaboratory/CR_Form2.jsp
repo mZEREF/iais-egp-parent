@@ -85,6 +85,14 @@
                   <table class="assignContent control-grid" style="width:100%;">
                     <input type="hidden" name="isPartEdit" value="0"/>
                     <input type="hidden" name="cgoIndexNo" value="${currentCgo.cgoIndexNo}"/>
+                    <c:choose>
+                      <c:when test="${currentCgo.licPerson}">
+                        <input type="hidden" name="licPerson" value="1"/>
+                      </c:when>
+                      <c:otherwise>
+                        <input type="hidden" name="licPerson" value="0"/>
+                      </c:otherwise>
+                    </c:choose>
                     <tbody>
                     <tr height="1">
                       <td class="first last" style="width: 100%;">
@@ -407,7 +415,6 @@
         //init font-size
         $('.cgo-header').css('font-size',"18px");
 
-
         psnSelect();
 
         $('select.assignSel').trigger('change');
@@ -418,13 +425,19 @@
 
         removeCgo();
 
+        $('input[name="licPerson"]').each(function (k,v) {
+            if('1' == $(this).val()){
+                var $currentPsn = $(this).closest('.assignContent').find('.new-officer-form');
+                disabledPartPage($currentPsn);
+            }
+        });
+
         if(${AppSubmissionDto.needEditController && !isClickEdit}){
             disabledPage();
             //$('.addListBtn').addClass('hidden');
         }
 
         doEdit();
-
 
         //init end
         init =1;
@@ -437,11 +450,13 @@
             if ('newOfficer' == $(this).val()) {
                 $parentEle.find('> .new-officer-form').removeClass('hidden');
                 $parentEle.find('> .profile-info-gp').addClass('hidden');
+                unDisabledPartPage($CurrentPsnEle.find('.new-officer-form'));
                 if(1 == init){
                     var emptyData = {};
                     $CurrentPsnEle.find('div.specialtyDiv').html('${SpecialtyHtml}');
                     fillPsnForm($CurrentPsnEle,emptyData, 'CGO');
                     showSpecialty();
+                    $CurrentPsnEle.find('input[name="licPerson"]').val('0');
                 }
             } else if('-1' == $(this).val()) {
                 $parentEle.find('> .profile-info-gp').removeClass('hidden');
@@ -451,6 +466,7 @@
                     $CurrentPsnEle.find('div.specialtyDiv').html('${SpecialtyHtml}');
                     fillPsnForm($CurrentPsnEle,emptyData, 'CGO');
                     showSpecialty();
+                    $CurrentPsnEle.find('input[name="licPerson"]').val('0');
                 }
             } else{
                 $parentEle.find('> .new-officer-form').removeClass('hidden');

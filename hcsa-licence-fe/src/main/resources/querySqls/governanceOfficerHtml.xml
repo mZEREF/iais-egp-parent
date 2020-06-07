@@ -6,6 +6,7 @@
         <table class="assignContent control-grid" style="width:100%;">
             <input type="hidden" name="isPartEdit" value="1"/>
             <input type="hidden" name="cgoIndexNo" value=""/>
+            <input type="hidden" name="licPerson" value="0"/>
           <tbody>
           <tr height="1">
             <td class="first last" style="width: 100%;">
