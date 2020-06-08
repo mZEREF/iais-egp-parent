@@ -25,4 +25,6 @@ public class HcsaLicenceBeConstant {
     public static final String INCLUDE_RISK_TYPE_INSPECTION_KEY_TEXT = "Compliance Risk";
     public static final String ERROR_MESSAGE_MIN_NC = " for Minimum Number of NCs";
     public static final String ERROR_MESSAGE_MAX_NC = " for Maximum Number of NCs";
+    public static final String ERROR_MESSAGE_MIN_CASES = " for Minimum Number of Cases";
+    public static final String ERROR_MESSAGE_MAX_CASES = " for Maximum Number of Cases";
 }

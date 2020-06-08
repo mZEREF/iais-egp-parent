@@ -36,8 +36,8 @@
                                         <th width="10%">Threshold  (X Years)</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
-                                        <th  width="10%">Minimum Number of NCs</th>
-                                        <th  width="10%">Maximum Number of NCs</th>
+                                        <th  width="10%">Minimum Number of Cases</th>
+                                        <th  width="10%">Maximum Number of Cases</th>
                                         <th>Risk Rating</th>
                                     </tr>
                                     </thead>

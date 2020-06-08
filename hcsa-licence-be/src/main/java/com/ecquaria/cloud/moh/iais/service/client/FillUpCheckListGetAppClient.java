@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppPremInsDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditFillterDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -40,9 +39,8 @@ public interface FillUpCheckListGetAppClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremisesPreInspectChklDto> saveAppPreInspChkl(@RequestBody AppPremisesPreInspectChklDto dto);
 
-    @PostMapping(value = "/iais-application-be/get-last-insp-sec-insp-type",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AuditFillterDto> getAuditTaskDataDtoByAuditTaskDataDto(@RequestBody AuditTaskDataDto auditTaskDataDto);
-
+    @GetMapping(value = "/iais-application-be/get-last-insp-sec-insp-type", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AuditFillterDto> getAuditTaskDataDtoByAuditTaskDataDto(@RequestParam("licId") String licId);
     @PutMapping(path = "/iais-pre-ins-chkl-be/AppPremissChklupdate",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremisesPreInspectChklDto> updateAppPreInspChkl(@RequestBody AppPremisesPreInspectChklDto dto);
