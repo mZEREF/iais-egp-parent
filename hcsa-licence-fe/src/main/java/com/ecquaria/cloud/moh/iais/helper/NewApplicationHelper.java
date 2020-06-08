@@ -1061,9 +1061,11 @@ public class NewApplicationHelper {
                     String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, psnDto.getSpeciality());
                     psnDto.setSpecialityHtml(specialtySelectStr);
                 }
+                psnDto.setAssignSelect(getPersonKey(psnDto.getIdType(),psnDto.getIdNo()));
                 personMap.put(personMapKey,psnDto);
             }else{
                 //set different page column
+                person.setAssignSelect(getPersonKey(psnDto.getIdType(),psnDto.getIdNo()));
                 person.setSalutation(psnDto.getSalutation());
                 person.setName(psnDto.getName());
                 person.setIdType(psnDto.getIdType());
@@ -1095,20 +1097,31 @@ public class NewApplicationHelper {
                     }
                     String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, person.getSpeciality());
                     person.setSpecialityHtml(specialtySelectStr);
+                    person.setCgoPsn(true);
                 }
-                if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType()) || ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())){
+                if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType())){
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
+                    person.setPoPsn(true);
+                }
+                if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())){
+                    person.setOfficeTelNo(psnDto.getOfficeTelNo());
+                    person.setDpoPsn(true);
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())){
                     person.setPreferredMode(psnDto.getPreferredMode());
+                    person.setMapPsn(true);
                 }
+                person.setLicPerson(true);
+                //for person dtos
+                psnDto.setLicPerson(true);
+                psnDto.setAssignSelect(getPersonKey(psnDto.getIdType(),psnDto.getIdNo()));
                 personMap.put(personMapKey,person);
             }
         }
         ParamUtil.setSessionAttr(request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
     }
 
-    public static Map<String,AppSvcPrincipalOfficersDto> setLicPsnIntoSelMap(HttpServletRequest request, List<PersonnelListQueryDto> licPsnDtos) {
+    public static Map<String,AppSvcPrincipalOfficersDto> getLicPsnIntoSelMap(HttpServletRequest request, List<PersonnelListQueryDto> licPsnDtos) {
         Map<String,AppSvcPrincipalOfficersDto> personMap = IaisCommonUtils.genNewHashMap();
         if (!IaisCommonUtils.isEmpty(licPsnDtos)) {
             for (PersonnelListQueryDto psnDto : licPsnDtos) {
@@ -1460,6 +1473,7 @@ public class NewApplicationHelper {
         }
         return personKey;
     }
+
 
 
     //=============================================================================
