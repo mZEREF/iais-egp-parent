@@ -230,6 +230,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 licenceFeeDto.setRenewCount(1);
                 String licenceId = appSubmissionDto.getLicenceId();
                 List<String> licenceIds = IaisCommonUtils.genNewArrayList();
+                licenceFeeDto.setExpiryDate(appSubmissionDto.getLicExpiryDate());
                 licenceIds.add(licenceId);
                 List<HcsaLicenceGroupFeeDto> hcsaLicenceGroupFeeDtos =  hcsaLicenClient.retrieveHcsaLicenceGroupFee(licenceIds).getEntity();
                 if(!IaisCommonUtils.isEmpty(hcsaLicenceGroupFeeDtos)){
