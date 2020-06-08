@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskTotalDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GolbalRiskShowDto;
@@ -72,10 +73,10 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
     public List<SelectOption> PreOrPostOp() {
         List<SelectOption> autoRenew = IaisCommonUtils.genNewArrayList();
         SelectOption op = new SelectOption();
-        op.setValue("post");
+        op.setValue(HcsaConsts.HCSA_REQUIRED_POST_LICENSING_INSPECTION);
         op.setText("Post");
         SelectOption op2 = new SelectOption();
-        op2.setValue("pre");
+        op2.setValue(HcsaConsts.HCSA_REQUIRED_PRE_LICENSING_INSPECTION);
         op2.setText("Pre");
         autoRenew.add(op);
         autoRenew.add(op2);
@@ -212,7 +213,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
         newExt.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         newExt.setRsGolbalId(temp.getGalbalId());
         newExt.setInspectType(temp.getDonewInspectType());
-        if ("Y".equals(temp.getDonewIsPreInspect())) {
+        if (HcsaConsts.HCSA_REQUIRED_PRE_LICENSING_INSPECTION.equals(temp.getDonewIsPreInspect())) {
             newExt.setPreInspect(true);
         } else {
             newExt.setPreInspect(false);
@@ -225,7 +226,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
         renewExt.setInspectType(temp.getDorenewInspectType());
         renewExt.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         renewExt.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        if ("Y".equals(temp.getDorenewIsPreInspect())) {
+        if (HcsaConsts.HCSA_REQUIRED_PRE_LICENSING_INSPECTION.equals(temp.getDorenewIsPreInspect())) {
             renewExt.setPreInspect(true);
         } else {
             renewExt.setPreInspect(false);
