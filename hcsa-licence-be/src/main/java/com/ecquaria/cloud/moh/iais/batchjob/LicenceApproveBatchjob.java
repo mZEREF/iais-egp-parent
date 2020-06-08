@@ -1337,7 +1337,6 @@ public class LicenceApproveBatchjob {
                                      AppPremisesRecommendationDto appPremisesRecommendationDto,
                                      LicenceDto originLicenceDto,
                                      ApplicationDto applicationDto,
-                                     String relLicenceNo,
                                      List<ApplicationDto> applicationDtos,
                                      boolean isGrpLic) {
         log.info(StringUtil.changeForLog("The  getLicenceDto start ..."));
@@ -1368,13 +1367,22 @@ public class LicenceApproveBatchjob {
         } else {
             if (applicationGroupDto != null) {
                 Date startDate = null;
+                Date expiryDate = null;
                 if (applicationDto != null && originLicenceDto != null && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) {
                     log.info(StringUtil.changeForLog("The  getLicenceDto APPType is Renew ..."));
+                    //startDate
                     startDate = originLicenceDto.getExpiryDate();
                     log.info(StringUtil.changeForLog("The  getLicenceDto originLicenceDto expiryday is " + startDate));
                     startDate = DateUtils.addDays(startDate, 1);
-                    log.info(StringUtil.changeForLog("The  getLicenceDto startDate is " + startDate));
+                    log.info(StringUtil.changeForLog("The  getLicenceDto Renew startDate is " + startDate));
+                    if (startDate == null) {
+                        startDate = new Date();
+                    }
+                    //expiryDate
+                    expiryDate = LicenceUtil.getExpiryDate(licenceDto.getStartDate(), appPremisesRecommendationDto);
+                    log.info(StringUtil.changeForLog("The  getLicenceDto Renew expiryDate is " + expiryDate));
                 } else {
+                    //startDate
                     Date paymentDt = applicationGroupDto.getPaymentDt();
                     log.info(StringUtil.changeForLog("The  getLicenceDto paymentDt is " + paymentDt));
                     Date ao3ApprovedDt = applicationGroupDto.getAo3ApprovedDt();
@@ -1385,26 +1393,61 @@ public class LicenceApproveBatchjob {
                     }
                     log.info(StringUtil.changeForLog("The  getLicenceDto recommendDate is " + recommendDate));
                     startDate = LicenceUtil.getLasterDate(paymentDt, ao3ApprovedDt, recommendDate);
+                    log.debug(StringUtil.changeForLog("The getLicenceDto new startDate is -->:" + startDate));
+                    if (startDate == null) {
+                        startDate = new Date();
+                    }
+                    //expiryDate
+                    expiryDate = LicenceUtil.getExpiryDate(licenceDto.getStartDate(), appPremisesRecommendationDto);
+                    log.info(StringUtil.changeForLog("The  getLicenceDto new expiryDate is " + expiryDate));
+                    if(applicationDto != null){
+                        //relLicenceNo
+                        String relLicenceNo = applicationDto.getRelLicenceNo();
+                        log.debug(StringUtil.changeForLog("The getLicenceDto new relLicenceNo is -->:" + relLicenceNo));
+                        String alignLicenceNo = applicationDto.getAlignLicenceNo();
+                        log.debug(StringUtil.changeForLog("The getLicenceDto new alignLicenceNo is -->:" + alignLicenceNo));
+                        String baseApplicationNo = applicationDto.getBaseApplicationNo();
+                        log.debug(StringUtil.changeForLog("The getLicenceDto new baseApplicationNo is -->:" + baseApplicationNo));
+                        if (!StringUtil.isEmpty(relLicenceNo)) {
+                            LicenceDto relLicenceDto = licenceService.getLicenceDtoByLicNo(relLicenceNo);
+                            if (relLicenceDto != null) {
+                                Date relExpiryDate = relLicenceDto.getExpiryDate();
+                                log.info(StringUtil.changeForLog("The relExpiryDate is -->:" + relExpiryDate));
+                                if (expiryDate.after(relExpiryDate)) {
+                                    expiryDate = relExpiryDate;
+                                }
+                                licenceDto.setRelLicenceId(relLicenceDto.getRelLicenceId());
+                            }else{
+                                log.error(StringUtil.changeForLog("This relLicenceNo can not get the relLicenceDto -->:"+relLicenceNo));
+                            }
+                        }
+                        //alignLicenceNo
+                        else if (!StringUtil.isEmpty(alignLicenceNo)) {
+                            LicenceDto alignLicenceDto = licenceService.getLicenceDtoByLicNo(alignLicenceNo);
+                            if (alignLicenceDto != null) {
+                                Date alignExpiryDate = alignLicenceDto.getExpiryDate();
+                                log.info(StringUtil.changeForLog("The alignExpiryDate is -->:" + alignExpiryDate));
+                                if (expiryDate.after(alignExpiryDate)){
+                                    expiryDate = alignExpiryDate;
+                                }
+                            }else{
+                                log.error(StringUtil.changeForLog("This relLicenceNo can not get the relLicenceDto -->:"+relLicenceNo));
+                            }
+                        }//baseApplicationNo
+                        else if (!StringUtil.isEmpty(baseApplicationNo)) {
+
+                        }
+                    }else{
+                        log.error(StringUtil.changeForLog("Tha application is null ..."));
+                    }
 
                 }
-                log.debug(StringUtil.changeForLog("The startDate is -->:" + startDate));
-                if (startDate == null) {
-                    startDate = new Date();
-                }
-                licenceDto.setStartDate(startDate);
-                Date expiryDate = LicenceUtil.getExpiryDate(licenceDto.getStartDate(), appPremisesRecommendationDto);
+
+
+
                 log.info(StringUtil.changeForLog("The expiryDate is -->:" + expiryDate));
-                if (!StringUtil.isEmpty(relLicenceNo)) {
-                    LicenceDto relLicenceDto = licenceService.getLicenceDtoByLicNo(relLicenceNo);
-                    if (relLicenceDto != null) {
-                        Date relExpiryDate = relLicenceDto.getExpiryDate();
-                        log.info(StringUtil.changeForLog("The relExpiryDate is -->:" + relExpiryDate));
-                        if (expiryDate.after(relExpiryDate)) {
-                            expiryDate = relExpiryDate;
-                        }
-                        licenceDto.setRelLicenceId(relLicenceDto.getRelLicenceId());
-                    }
-                }
+
+                licenceDto.setStartDate(startDate);
                 licenceDto.setExpiryDate(expiryDate);
                 //licenceDto.setEndDate(licenceDto.getExpiryDate());
                 licenceDto.setGrpLic(isGrpLic);
