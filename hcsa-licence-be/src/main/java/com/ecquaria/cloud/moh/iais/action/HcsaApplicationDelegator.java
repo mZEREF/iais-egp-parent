@@ -468,8 +468,10 @@ public class HcsaApplicationDelegator {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String status = applicationDto.getStatus();
         String crud_action_type = (String) ParamUtil.getRequestAttr(bpc.request, "crud_action_type");
+        //isDMS
+        String isDMS = (String) ParamUtil.getSessionAttr(bpc.request, "isDMS");
         //replay "PROCREP"
-        if("PROCREP".equals(crud_action_type)){
+        if("isDMS".equals(isDMS)){
             if("decisionApproval".equals(decisionValue)){
                 //DMS APPROVAL
                 successInfo = MessageCodeKey.ACK013;
@@ -1760,6 +1762,10 @@ public class HcsaApplicationDelegator {
         boolean broadcastOther = false;
         boolean broadcastAso = false;
         String status = applicationViewDto.getApplicationDto().getStatus();
+        //DMS
+        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
+            ParamUtil.setSessionAttr(bpc.request,"isDMS","isDMS");
+        }
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
             if(RoleConsts.USER_ROLE_PSO.equals(currentRoleId) || RoleConsts.USER_ROLE_ASO.equals(currentRoleId)){
                 broadcastAsoPso = true;
