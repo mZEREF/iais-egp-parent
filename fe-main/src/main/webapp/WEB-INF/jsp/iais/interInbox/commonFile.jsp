@@ -42,40 +42,17 @@
         }
     }
 
-    $(".draftAction").change(function () {
-        var appNo = $(this).closest("tr").find(".appdraftNo").html();
-        var appType = $(this).closest("tr").find(".apptype").html();
-        showWaiting();
-        var action = $(this).val();
-        if ("Continue" == action) {
-            $("[name='action_no_value']").val(appNo);
-            $("[name='action_type_value']").val(appType);
-            submit('appDoReload');
-        }
-        if ("Delete" == action) {
-            //showWaiting();
-            $("[name='action_no_value']").val(appNo);
-            $('#deleteDraftModal').modal('show');
-            // submit('appDoDelete');
-        }
-    });
-
-    $(".appRecalledAction").change(function () {
-        var appNo = $(this).closest("tr").find(".appNo").html();
-        var appType = $(this).closest("tr").find(".apptype").html();
-        showWaiting();
-        var action = $(this).val();
-        if ("Continue" == action) {
-            $("[name='action_no_value']").val(appNo);
-            $("[name='action_type_value']").val(appType);
-            // submit('appDoReload');
-        }
-    });
-
-    $(".appAoRAction").change(function () {
+    $("#appDoActive").change(function () {
         var appNo = $(this).closest("tr").find(".appNo").html();
         var appId = $(this).closest("tr").find(".appId").html();
+        var appType = $(this).closest("tr").find(".apptype").html();
         var action = $(this).val();
+        if ("Continue" == action) {
+            showWaiting();
+            $("[name='action_no_value']").val($(this).closest("tr").find(".appdraftNo").html());
+            $("[name='action_type_value']").val(appType);
+            submit('appDraft');
+        }
         if ("Appeal" == action) {
             showWaiting();
             $("[name='action_no_value']").val(appNo);
@@ -87,29 +64,14 @@
             $("[name='action_id_value']").val(appId);
             submit("appDoRecall");
         }
-    });
-
-    $(".appAction").change(function () {
-        var appNo = $(this).closest("tr").find(".appNo").html();
-        var appId = $(this).closest("tr").find(".appId").html();
-        var action = $(this).val();
         if ("Withdraw" == action) {
             showWaiting();
             $("[name='action_no_value']").val(appNo);
             $("[name='action_id_value']").val(appId);
             submit("appRenew");
-        }if ("Appeal" == action) {
-            showWaiting();
-            $("[name='action_no_value']").val(appNo);
-            $("[name='action_id_value']").val(appId);
-            submit("appDoAppeal");
-        }if ("Recall" == action) {
-            showWaiting();
-            $("[name='action_no_value']").val(appNo);
-            $("[name='action_id_value']").val(appId);
-            submit("appDoRecall");
         }
     });
+
 
     $(".appdraftNo").click(function () {
         var appNo = $(this).closest("tr").find(".appdraftNo").html();

@@ -147,24 +147,55 @@
                                                                             pattern="dd/MM/yyyy HH:mm:ss"/></p>
                                 </td>
                                 <td>
-                                    <p class="visible-xs visible-sm table-row-title" for="appAction">Actions</p>
+                                    <p class="visible-xs visible-sm table-row-title">Actions</p>
                                     <c:choose>
-                                        <c:when test="${app.status == 'APST008'}">
-                                            <iais:select name="draftAction" cssClass="draftAction" id="draftAction" options="selectDraftApplication" firstOption="Select"/>
-                                        </c:when>
-                                        <c:when test="${app.status == 'APST038' || (app.status == 'APST007' && app.applicationType == 'APTY006') || (app.status == 'APST007' && app.applicationType == 'APTY001')}">
-                                            <p>N/A</p>
-                                        </c:when>
-                                        <c:when test="${app.status == 'APST006' || app.status == 'APST005'}">
-                                            <iais:select name="appAoRAction" cssClass="appAoRAction" id="appAoRAction" options="selectApproveOrRejectSelectList" firstOption="Select"/>
-                                        </c:when>
-                                        <c:when test="${app.status == 'APST060'}">
-                                            <iais:select name="appRecalledAction" cssClass="appRecalledAction" id="appRecalledAction" options="selectRecalledSelectList" firstOption="Select"/>
+                                        <c:when test="${app.status == 'APST038'
+                                                        || (app.status == 'APST007' && app.applicationType == 'APTY006')
+                                                        || (app.status == 'APST007' && app.applicationType == 'APTY001')
+                                                        || app.status == 'APST005' || app.status == 'APST006'}">
+                                            <select disabled>
+                                                <option>N/A</option>
+                                            </select>
                                         </c:when>
                                         <c:otherwise>
-                                            <iais:select name="appAction" id="appAction" cssClass="appAction" options="selectApplication" firstOption="Select" />
+                                            <select id="appDoActive">
+                                                <option value="" selected>Select</option>
+                                                <c:choose>
+                                                    <c:when test="${app.status == 'APST008'}">
+                                                        <option value="Continue">Continue</option>
+                                                        <option value="Delete">Delete</option>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <c:if test="${app.canRecall}">
+                                                            <option value="Recall">Recall</option>
+                                                        </c:if>
+                                                        <option value="Appeal">Appeal</option>
+                                                        <option value="Withdraw">Withdraw</option>
+                                                        <c:if test="${app.status == 'APST060'}">
+                                                            <option value="Continue">Continue</option>
+                                                        </c:if>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </select>
                                         </c:otherwise>
                                     </c:choose>
+                                    <%--<c:choose>--%>
+                                        <%--<c:when test="${app.status == 'APST008'}">--%>
+                                            <%--<iais:select name="draftAction" cssClass="draftAction" id="draftAction" options="selectDraftApplication" firstOption="Select"/>--%>
+                                        <%--</c:when>--%>
+                                        <%--<c:when test="${app.status == 'APST038' || (app.status == 'APST007' && app.applicationType == 'APTY006') || (app.status == 'APST007' && app.applicationType == 'APTY001')}">--%>
+                                            <%--<p>N/A</p>--%>
+                                        <%--</c:when>--%>
+                                        <%--<c:when test="${app.status == 'APST006' || app.status == 'APST005'}">--%>
+                                            <%--<iais:select name="appAoRAction" cssClass="appAoRAction" id="appAoRAction" options="selectApproveOrRejectSelectList" firstOption="Select"/>--%>
+                                        <%--</c:when>--%>
+                                        <%--<c:when test="${app.status == 'APST060'}">--%>
+                                            <%--<iais:select name="appRecalledAction" cssClass="appRecalledAction" id="appRecalledAction" options="selectRecalledSelectList" firstOption="Select"/>--%>
+                                        <%--</c:when>--%>
+                                        <%--<c:otherwise>--%>
+                                            <%--<iais:select name="appAction" id="appAction" cssClass="appAction" options="selectApplication" firstOption="Select" />--%>
+                                        <%--</c:otherwise>--%>
+                                    <%--</c:choose>--%>
                                 </td>
                             </tr>
                         </c:forEach>

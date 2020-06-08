@@ -174,6 +174,39 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
+    public Boolean canRecallApplication(RecallApplicationDto recallApplicationDto) {
+        List<String> refNoList = IaisCommonUtils.genNewArrayList();
+        String appId = recallApplicationDto.getAppId();
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = appInboxClient.listAppPremisesCorrelation(appId).getEntity();
+        for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtoList
+                ) {
+            refNoList.add(appPremisesCorrelationDto.getId());
+        }
+        recallApplicationDto.setRefNo(refNoList);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        try {
+            EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.InboxServiceImpl", "recallApplication",
+                    "main-web-internet", InspRectificationSaveDto.class.getName(), JsonUtil.parseToJson(recallApplicationDto));
+            String eicRefNo = eicRequestTrackingDto.getRefNo();
+            recallApplicationDto = eicGatewayFeMainClient.recallAppChangeTask(recallApplicationDto, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
+            //get eic record
+            eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
+            //update eic record status
+            eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+            List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
+            eicRequestTrackingDtos.add(eicRequestTrackingDto);
+            appEicClient.updateStatus(eicRequestTrackingDtos);
+
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+        return recallApplicationDto.getResult();
+    }
+
+    @Override
     public Boolean recallApplication(RecallApplicationDto recallApplicationDto) {
         boolean result = false;
         List<String> refNoList = IaisCommonUtils.genNewArrayList();

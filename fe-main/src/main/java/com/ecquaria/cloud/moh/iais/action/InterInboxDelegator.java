@@ -538,6 +538,13 @@ public class InterInboxDelegator {
         SearchResult appResult = inboxService.appDoQuery(appParam);
         if(!StringUtil.isEmpty(appResult)){
             clearParameter("IIAT");
+            List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
+            inboxAppQueryDtoList.forEach(h ->{
+                RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
+                recallApplicationDto.setAppId(h.getId());
+                recallApplicationDto.setAppNo(h.getApplicationNo());
+                h.setCanRecall(inboxService.canRecallApplication(recallApplicationDto));
+            });
             ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, appParam);
             ParamUtil.setRequestAttr(request,InboxConst.APP_RESULT, appResult);
         }
@@ -821,35 +828,6 @@ public class InterInboxDelegator {
         appServiceTypeSelectList.add(new SelectOption("A21ADD49-820B-EA11-BE7D-000C29F371DC", "Nuclear Medicine (Assay)"));
         appServiceTypeSelectList.add(new SelectOption("F27DD5E2-C90C-EA11-BE7D-000C29F371DC", "Nuclear Medicine (Imaging)"));
         ParamUtil.setRequestAttr(request, "appServiceType", appServiceTypeSelectList);
-
-        List<SelectOption> selectDraftApplicationSelectList = IaisCommonUtils.genNewArrayList();
-        selectDraftApplicationSelectList.add(new SelectOption(InboxConst.DRAFT_APP_ACTION_CONTINUE, InboxConst.DRAFT_APP_ACTION_CONTINUE));
-        selectDraftApplicationSelectList.add(new SelectOption(InboxConst.DRAFT_APP_ACTION_DELETE, InboxConst.DRAFT_APP_ACTION_DELETE));
-        ParamUtil.setRequestAttr(request, "selectDraftApplication", selectDraftApplicationSelectList);
-
-        List<SelectOption> selectApplicationSelectList = IaisCommonUtils.genNewArrayList();
-        selectApplicationSelectList.add(new SelectOption(InboxConst.APP_ACTION_RECALL, InboxConst.APP_ACTION_RECALL));
-        selectApplicationSelectList.add(new SelectOption(InboxConst.APP_ACTION_APPEAL, InboxConst.APP_ACTION_APPEAL));
-        selectApplicationSelectList.add(new SelectOption(InboxConst.APP_ACTION_WITHDRAW, InboxConst.APP_ACTION_WITHDRAW));
-        ParamUtil.setRequestAttr(request, "selectApplication", selectApplicationSelectList);
-
-        List<SelectOption> selectWithdrawalSelectList = IaisCommonUtils.genNewArrayList();
-        selectWithdrawalSelectList.add(new SelectOption(InboxConst.APP_ACTION_RECALL, InboxConst.APP_ACTION_RECALL));
-        ParamUtil.setRequestAttr(request, "selectWithdrawApplication", selectWithdrawalSelectList);
-
-        List<SelectOption> selectRecalledSelectList = IaisCommonUtils.genNewArrayList();
-        selectRecalledSelectList.add(new SelectOption(InboxConst.DRAFT_APP_ACTION_CONTINUE, InboxConst.DRAFT_APP_ACTION_CONTINUE));
-        ParamUtil.setRequestAttr(request, "selectRecalledSelectList", selectRecalledSelectList);
-
-        List<SelectOption> selectAppealSelectList = IaisCommonUtils.genNewArrayList();
-        selectWithdrawalSelectList.add(new SelectOption(InboxConst.APP_ACTION_RECALL, InboxConst.APP_ACTION_RECALL));
-        selectWithdrawalSelectList.add(new SelectOption(InboxConst.APP_ACTION_WITHDRAW, InboxConst.APP_ACTION_WITHDRAW));
-        ParamUtil.setRequestAttr(request, "selectWithdrawApplication", selectAppealSelectList);
-
-        List<SelectOption> selectApproveOrRejectSelectList = IaisCommonUtils.genNewArrayList();
-        selectApproveOrRejectSelectList.add(new SelectOption(InboxConst.APP_ACTION_RECALL, InboxConst.APP_ACTION_RECALL));
-        selectApproveOrRejectSelectList.add(new SelectOption(InboxConst.APP_ACTION_APPEAL, InboxConst.APP_ACTION_APPEAL));
-        ParamUtil.setRequestAttr(request, "selectApproveOrRejectSelectList", selectApproveOrRejectSelectList);
     }
 
     private void prepareLicSelectOption(HttpServletRequest request){
