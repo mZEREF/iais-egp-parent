@@ -111,7 +111,7 @@ public interface HcsaChklClient {
     @GetMapping(path = "/iais-hcsa-checklist/config/results/{svcCode}/{svcType}", produces = { MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<ChecklistQuestionDto>> getcheckListQuestionDtoList(@PathVariable(value = "svcCode") String svcCode, @PathVariable(value = "svcType") String svcType);
 
-    @GetMapping(path = "/iais-hcsa-checklist/self-desc/regulation/{id}", produces = { MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "/iais-hcsa-checklist/regulation/{id}", produces = { MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<HcsaChklSvcRegulationDto> getRegulationDtoById(@PathVariable(value = "id") String svcCode);
 
     @PostMapping(path = "/iais-hcsa-service/hcsa-service-by-ids", consumes = MediaType.APPLICATION_JSON_VALUE)

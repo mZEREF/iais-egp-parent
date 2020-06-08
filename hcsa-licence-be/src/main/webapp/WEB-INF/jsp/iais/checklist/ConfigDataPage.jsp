@@ -141,33 +141,15 @@
                     <td><fmt:formatDate value="${config.eftStartDate}" pattern="MM/dd/yyyy"/></td>
                     <td><fmt:formatDate value="${config.eftEndDate}" pattern = "MM/dd/yyyy"/></td>
 
-                    <div class="modal fade" id="DeleteTemplateModal" tabindex="-1" role="dialog" aria-labelledby="DeleteTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                      <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
-                          </div>
-                          <div class="modal-body">
-                            <div class="row">
-                              <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the delete ?</span></div>
-                            </div>
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="javascript:deleteRecord('<iais:mask name="currentMaskId" value="${config.id}"/>')" >Confirm</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
 
                     <td>
 
                       <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="javascript:loadEditData('<iais:mask name="currentMaskId" value="${config.id}"/>')" >Edit</button>
                       <button type="button" onclick="javascript:cloneConfig('<iais:mask name="currentMaskId" value="${config.id}"/>')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >Clone</button>
                       <button type="button" onclick="javascript:doView('<iais:mask name="currentMaskId" value="${config.id}"/>')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >View</button>
-                      <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" data-target="#DeleteTemplateModal" >Delete</button>
+                      <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="javascript:deleteRecord('<iais:mask name="currentMaskId" value="${config.id}"/>')" >Delete</button>
+
+
                     </td>
                   </tr>
                 </c:forEach>

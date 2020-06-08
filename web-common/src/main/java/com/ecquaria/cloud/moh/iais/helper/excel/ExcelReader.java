@@ -33,9 +33,6 @@ import static org.apache.poi.ss.usermodel.CellType.STRING;
 @Slf4j
 public final class ExcelReader {
     private static final String pattern = "yyyy-MM-dd HH:mm:ss";
-    private static final String DATE_TYPE_NAME             = "java.util.Date";
-
-    public static final String EXCEL_TYPE_HSSF			= "xls";
     public static final String EXCEL_TYPE_XSSF			= "xlsx";
 
     public static <T> List<T> excelReader(final File file, final Class<?> clazz) throws IaisRuntimeException {
