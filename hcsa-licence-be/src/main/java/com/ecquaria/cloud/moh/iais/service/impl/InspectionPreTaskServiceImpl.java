@@ -384,7 +384,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         taskService.createTasks(taskDtoList);
         String appPremCorrId = taskDto.getRefNo();
         //update inspection status
-        updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PENDING_REQUEST_FOR_INFORMATION);
+        updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PRE_INSPECTION_ROUTE_BACK_APSO);
         //update App
         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK);
         applicationDto1.setAuditTrailDto(auditTrailDto);
