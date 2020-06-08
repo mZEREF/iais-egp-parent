@@ -57,20 +57,20 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <input type="text" id="<c:out value="${leg.serviceCode}"/>last" name="<c:out value="${leg.serviceCode}"/>last"value="<c:out value="${leg.doLastInp}"></c:out>">
+                                                <input type="text" id="<c:out value="${leg.serviceCode}"/>last" name="<c:out value="${leg.serviceCode}"/>last"value="<c:out value="${leg.doLastInp}"></c:out>" maxlength="4"  oninput="doChangeValFor(this)">
                                             </td>
                                             <td>
-                                                <input type="text" id="<c:out value="${leg.serviceCode}"/>secLast" name="<c:out value="${leg.serviceCode}"/>secLast"value="<c:out value="${leg.doSecLastInp}"></c:out>">
+                                                <input type="text" id="<c:out value="${leg.serviceCode}"/>secLast" name="<c:out value="${leg.serviceCode}"/>secLast"value="<c:out value="${leg.doSecLastInp}"></c:out>" maxlength="4" oninput="doChangeValFor(this)">
                                             </td>
                                             <td>
-                                                <input type="text" id="<c:out value="${leg.serviceCode}"/>fin" name="<c:out value="${leg.serviceCode}"/>fin"value="<c:out value="${leg.doFinancial}"></c:out>">
+                                                <input type="text" id="<c:out value="${leg.serviceCode}"/>fin" name="<c:out value="${leg.serviceCode}"/>fin"value="<c:out value="${leg.doFinancial}"></c:out>" maxlength="4" oninput="doChangeValFor(this)">
                                             </td>
 
                                             <td>
-                                                <input type="text" id="<c:out value="${leg.serviceCode}"/>lea" name="<c:out value="${leg.serviceCode}"/>lea"value="<c:out value="${leg.doLeadship}"></c:out>">
+                                                <input type="text" id="<c:out value="${leg.serviceCode}"/>lea" name="<c:out value="${leg.serviceCode}"/>lea"value="<c:out value="${leg.doLeadship}"></c:out>" maxlength="4" oninput="doChangeValFor(this)">
                                             </td>
                                             <td>
-                                                <input type="text" id="<c:out value="${leg.serviceCode}"/>leg" name="<c:out value="${leg.serviceCode}"/>leg"value="<c:out value="${leg.doLegislative}"></c:out>">
+                                                <input type="text" id="<c:out value="${leg.serviceCode}"/>leg" name="<c:out value="${leg.serviceCode}"/>leg"value="<c:out value="${leg.doLegislative}"></c:out>" maxlength="4" oninput="doChangeValFor(this)">
                                             </td>
                                             <td>
                                                 <iais:datePicker id = "${leg.serviceCode}instartdate" name = "${leg.serviceCode}instartdate" value="${leg.doEffectiveDate}"></iais:datePicker>
@@ -125,5 +125,59 @@
     }
     function doBack(){
         SOP.Crud.cfxSubmit("mainForm","backToMenu");
+    }
+
+    function doChangeValFor(obj) {
+        if( $(obj).val() == null || $(obj).val() == "")
+            return;
+        var isInput = false;
+        var max = 1;
+        var input = "";
+        if($(obj).val().length == 1 &&($(obj).val() == 1 || $(obj).val() ==0)){
+            isInput = true;
+        }else if($(obj).val().length == 2 && ($(obj).val().indexOf(".") == 1)){
+            isInput = true;
+        }else if(($(obj).val().length == 3 ) && ($(obj).val().indexOf(".") == 1)){
+         try {
+             var s = $(obj).val().split(".");
+             var isN1 = Number.isNaN(s[0]);
+             var isN2 = Number.isNaN(s[1]);
+             var num =  parseInt(s[0]);
+             var num1 =  parseInt(s[1]);
+             if( !isN1 && num > 1){
+                 isInput = false;
+             }else if( (!isN1 && num == 1) && (!isN2 && num1 >0)){
+                 isInput = false;
+                 input = max;
+             }else if( !isN1 && !isN2){
+                 isInput = true;
+                 $(obj).val((Number.isNaN(num) ? "" : num) +"."+ (Number.isNaN(num1)? "" : num1 ));
+             }
+         }catch (e) {
+             isInput = false;
+         }
+        }else if($(obj).val().length == 4 && ($(obj).val().indexOf(".") == 1)){
+            try {
+                var s = $(obj).val().split(".");
+                var isN1 = Number.isNaN(s[0]);
+                var isN2 = Number.isNaN(s[1]);
+                var num =  parseInt(s[0]);
+                var num1 =  parseInt(s[1]);
+                if( !isN1 && num > 1){
+                    isInput = false;
+                }else if( (!isN1 && num == 1) && (!isN2 && num1 >0)){
+                    isInput = false;
+                    max = 1;
+                }else if( !isN1 && !isN2){
+                    isInput = true;
+                    $(obj).val((Number.isNaN(num) ? "" : num) +"."+ (Number.isNaN(num1)? "" : ( s[1].indexOf("0") == 0 ? "0" + num1 : num1)));
+                }
+            }catch (e) {
+                isInput = false;
+            }
+        }
+        if(!isInput){
+            $(obj).val( input);
+        }
     }
 </script>

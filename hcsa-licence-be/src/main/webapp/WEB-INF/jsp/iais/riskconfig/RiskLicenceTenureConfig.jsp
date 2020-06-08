@@ -89,7 +89,7 @@
                                                             <div>
                                                                 <c:set var="tenName" value="${ten.svcCode}${sub.orderNum}"> </c:set>
                                                                 <div style="width: 120px;float: left" id = "<c:out value="${tenName}leftdiv"/>">
-                                                                    <input type="text" maxlength="5" name="<c:out value="${tenName}left"/>" value="<c:out value="${sub.columLeft}"/>">
+                                                                    <input type="text" maxlength="4" name="<c:out value="${tenName}left"/>" value="<c:out value="${sub.columLeft}"/>" oninput="doChangeValFor(this)">
                                                                 </div>
                                                             </div>
                                                         </c:forEach>
@@ -110,7 +110,7 @@
                                                             <div>
                                                                 <c:set var="tenName" value="${ten.svcCode}${sub.orderNum}"> </c:set>
                                                                 <div style="width: 120px;float: left" id="<c:out value="${tenName}right"/>div">
-                                                                    <input type="text" maxlength="5" name="<c:out value="${tenName}right"/>" value="<c:out value="${sub.columRight}"/>">
+                                                                    <input type="text" maxlength="4" name="<c:out value="${tenName}right"/>" value="<c:out value="${sub.columRight}"/>" oninput="doChangeValFor(this)">
                                                                 </div>
                                                             </div>
                                                         </c:forEach>
@@ -239,5 +239,57 @@
     function addColum(str){
         $("#addValue").val(str);
         SOP.Crud.cfxSubmit("mainForm","next");
+    }
+    function doChangeValFor(obj) {
+        if( $(obj).val() == null || $(obj).val() == "")
+            return;
+        var isInput = false;
+        var max = 3;
+        var input = "";
+        if($(obj).val().length == 1 &&($(obj).val() == 1 || $(obj).val() ==0 || $(obj).val() == 2 || $(obj).val() == 3)){
+            isInput = true;
+        }else if($(obj).val().length == 2 && ($(obj).val().indexOf(".") == 1)){
+            isInput = true;
+        }else if(($(obj).val().length == 3 ) && ($(obj).val().indexOf(".") == 1)){
+            try {
+                var s = $(obj).val().split(".");
+                var isN1 = Number.isNaN(s[0]);
+                var isN2 = Number.isNaN(s[1]);
+                var num =  parseInt(s[0]);
+                var num1 =  parseInt(s[1]);
+                if( !isN1 && num > max){
+                    isInput = false;
+                }else if( (!isN1 && num == max) && (!isN2 && num1 >0)){
+                    isInput = false;
+                    input = max;
+                }else if( !isN1 && !isN2){
+                    isInput = true;
+                    $(obj).val((Number.isNaN(num) ? "" : num) +"."+ (Number.isNaN(num1)? "" : num1 ) );
+                }
+            }catch (e) {
+                isInput = false;
+            }
+        }else if($(obj).val().length == 4 && $(obj).val().indexOf(".") == 1){
+            try {
+                var s = $(obj).val().split(".");
+                var isN1 = Number.isNaN(s[0]);
+                var isN2 = Number.isNaN(s[1]);
+                var num =  parseInt(s[0]);
+                var num1 =  parseInt(s[1]);
+                if( !isN1 && num > 3){
+                    isInput = false;
+                }else if( (!isN1 && num == 3) && (!isN2 && num1 >0)){
+                    isInput = false;
+                }else if( !isN1 && !isN2){
+                    isInput = true;
+                    $(obj).val((Number.isNaN(num) ? "" : num) +"."+ (Number.isNaN(num1)? "" :( s[1].indexOf("0") == 0 ? "0" + num1 : num1) ) );
+                }
+            }catch (e) {
+                isInput = false;
+            }
+        }
+        if(!isInput){
+            $(obj).val(input);
+        }
     }
 </script>
