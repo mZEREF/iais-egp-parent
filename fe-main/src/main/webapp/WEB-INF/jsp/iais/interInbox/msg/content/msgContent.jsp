@@ -8,7 +8,7 @@
                     <div class="tab-content">
                         <div class="panel panel-info">
                             <h3 class="panel-heading">Message Content</h3>
-                            <div class="panel-body" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
+                            <div class="panel-body">
                                 ${IAIS_MSG_CONTENT}
                             </div>
                         </div>
