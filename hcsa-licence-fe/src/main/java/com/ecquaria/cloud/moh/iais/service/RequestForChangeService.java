@@ -84,6 +84,7 @@ public interface RequestForChangeService {
     List<String> getAdminEmail(String orgId);
 
     Boolean isOtherOperation(String licenceId);
+    // need delete
      Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, Object masterCodeDto ,boolean isRfi);
 
     }

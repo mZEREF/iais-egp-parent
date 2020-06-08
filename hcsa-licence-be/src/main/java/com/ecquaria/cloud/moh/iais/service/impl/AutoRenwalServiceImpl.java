@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -9,14 +10,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AutoRenwalService;
+import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -56,6 +62,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     private MsgTemplateClient msgTemplateClient;
     @Autowired
     private OrganizationClient organizationClient;
+    @Autowired
+    private InboxMsgService inboxMsgService;
     @Autowired
     private SystemBeLicClient systemBeLicClient;
     private SimpleDateFormat simpleDateFormat =new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
@@ -186,13 +194,12 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         String id = licenceDto.getId();
 
         List<String> list = useLicenceIdFindHciNameAndAddress(id);
-
             for(String every:list){
             String address = every.substring(every.indexOf('/')+1);
             String substring = every.substring(0, every.indexOf('/'));
             String format = simpleDateFormat.format(expiryDate);
             Map<String,Object> map =new HashMap();
-            map.put("IAIS_URL","aaaaa");
+            map.put("IAIS_URL","https://egp.sit.inter.iais.com/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal?licenceId="+licenceDto.getId());
             map.put("NAME_OF_HCI",substring);
             map.put("Name_of_Service",svcName);
             map.put("Licence_Expiry_Date",format);
@@ -206,14 +213,19 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 emailDto.setSubject(EMAIL_SUBJECT);
                 emailDto.setSender(mailSender);
                 emailDto.setClientQueryCode("isNotAuto");
-
                 if(!licenseeEmailAddrs.isEmpty()){
                     emailDto.setReceipts(licenseeEmailAddrs);
                     String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
                 }
-
-
-
+                String messageNo = inboxMsgService.getMessageNo();
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
+                InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(licenceDto.getId(), MessageConstants.MESSAGE_TYPE_NOTIFICATION,
+                        messageNo, hcsaServiceDto.getId(), templateMessageByContent, licenceDto.getLicenseeId(), IaisEGPHelper.getCurrentAuditTrailDto());
+                interMessageDto.setSubject("MOH IAIS – Licence is due to expiry");
+                HashMap<String,String> mapParam = IaisCommonUtils.genNewHashMap();
+                mapParam.put("licenceId",licenceDto.getId());
+                interMessageDto.setMaskParams(mapParam);
+                inboxMsgService.saveInterMessage(interMessageDto);
         }
 
     }
@@ -297,11 +309,16 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 emailDto.setSubject(EMAIL_SUBJECT);
                 emailDto.setSender(mailSender);
                 emailDto.setClientQueryCode("auto");
-
                 if(!licenseeEmailAddrs.isEmpty()){
                     emailDto.setReceipts(licenseeEmailAddrs);
                     String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
                 }
+                String messageNo = inboxMsgService.getMessageNo();
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
+                InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(licenceDto.getId(), MessageConstants.MESSAGE_TYPE_NOTIFICATION,
+                        messageNo, hcsaServiceDto.getId(), templateMessageByContent, licenceDto.getLicenseeId(), IaisEGPHelper.getCurrentAuditTrailDto());
+                interMessageDto.setSubject("MOH IAIS – Licence is due to expiry");
+                inboxMsgService.saveInterMessage(interMessageDto);
             }
         }
     }

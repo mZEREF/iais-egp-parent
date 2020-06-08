@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineA
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
@@ -125,10 +126,15 @@ public class WithOutRenewalDelegator {
         //init page value
         //instructions
         ParamUtil.setRequestAttr(bpc.request,"page_value",PAGE1);
+        String licenceId= ParamUtil.getMaskedString(bpc.request,"licenceId");
 
         //init data
         List<String> licenceIDList = (List<String>) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR);
-/*        licenceIDList = IaisCommonUtils.genNewArrayList();
+        if(licenceIDList==null&&licenceId!=null){
+            licenceIDList=new ArrayList<>(1);
+            licenceIDList.add(licenceId);
+        }
+        /*        licenceIDList = IaisCommonUtils.genNewArrayList();
         licenceIDList.add("B1DC1835-E161-EA11-BE7F-000C29F371DC");*/
         if (licenceIDList == null || IaisCommonUtils.isEmpty(licenceIDList)){
             log.info("can not find licence id for without renewal");
@@ -684,7 +690,7 @@ public class WithOutRenewalDelegator {
         List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         RenewDto renewDto = (RenewDto)ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         if(renewDto!=null){
-          /*  List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
+            List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
             for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
                 Boolean otherOperation = requestForChangeService.isOtherOperation(appSubmissionDto.getLicenceId());
@@ -723,7 +729,7 @@ public class WithOutRenewalDelegator {
                         }
                     }
                 }
-            }*/
+            }
         }
 
 

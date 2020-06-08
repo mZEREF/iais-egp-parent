@@ -158,10 +158,12 @@
     <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
   </c:if>--%>
 
-    <ias:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></ias:confirm>
+  <ias:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></ias:confirm>
 
   <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
   <iais:confirm msg="There is a pending application for a licence associated to this premises" callBack="" popupOrder="ackMessageConfim"></iais:confirm>
+  <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
+  <iais:confirm msg="The HCI name you have keyed in is currently in used" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" ></iais:confirm>
 
 </form>
 <script type="text/javascript">
@@ -177,6 +179,9 @@
         }
         if($('#saveDraftSuccess').val()=='success'){
             $('#saveDraft').modal('show');
+        }
+        if($('#hciNameUsedInput').val()=='hciNameUsed'){
+            $('#hciNameUsed').modal('show');
         }
         var checkedType = "";
 
@@ -263,6 +268,11 @@
 
   function jumpPage() {
       submit('premises','saveDraft','jumpPage');
+  }
+
+  function Continue() {
+      $('#hciNameUsed').modal('hide');
+      submit('documents',null,'continue');
   }
 
 </script>

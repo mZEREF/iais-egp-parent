@@ -440,7 +440,15 @@ public class RequestForChangeMenuDelegator {
         MasterCodeDto masterCodeDto = systemAdminClient.getMasterCodeById("B5E4744C-F96F-EA11-BE79-000C298A32C2").getEntity();
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,masterCodeDto,isRfi);
-      /*  List<String> selectLicence = getSelectLicence(bpc.request);
+        String crud_action_additional = bpc.request.getParameter("crud_action_additional");
+        if("continue".equals(crud_action_additional)){
+            errorMap.remove("hciNameUsed");
+        }
+        String string = errorMap.get("hciNameUsed");
+        if(string!=null){
+            bpc.request.setAttribute("hciNameUsed","hciNameUsed");
+        }
+        /*  List<String> selectLicence = getSelectLicence(bpc.request);
         if (selectLicence.isEmpty()) {
             errorMap.put("selectLicence", "UC_CHKLMD001_ERR001");
         } else {

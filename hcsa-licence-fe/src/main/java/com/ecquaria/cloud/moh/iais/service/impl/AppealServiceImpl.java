@@ -1041,7 +1041,7 @@ public class AppealServiceImpl implements AppealService {
                 os.write(buffer, 0, bytesRead);
             }
         } catch(IOException e) {
-            e.printStackTrace();
+          log.error("error",e);
         } finally {
             try {
                 if(os != null) {
@@ -1051,7 +1051,7 @@ public class AppealServiceImpl implements AppealService {
                     fis.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("error",e);
             }
         }
 

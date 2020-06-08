@@ -11,6 +11,7 @@
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
   <input type="hidden" name="crud_action_type_form_value" value="">
   <input type="hidden" name="crud_action_type_value" value="">
+  <input type="hidden" name="crud_action_additional" value="">
 
   <%@include file="dashboard.jsp" %>
   <%@include file="../common/dashboard.jsp" %>
@@ -69,7 +70,9 @@
       </div>
     <input type="text" style="display: none" value="${AckMessage}" id="ackMessage" name="ackMessage">
     <iais:confirm msg="There is a pending application for a licence associated to this premises" callBack="cancel()"  needCancel="false" popupOrder="ackMessageConfim"></iais:confirm>
-      <%--Validation Field--%>
+    <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
+    <iais:confirm msg="The HCI name you have keyed in is currently in used" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" ></iais:confirm>
+    <%--Validation Field--%>
       <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
       <%@include file="../common/premFun.jsp"%>
     </div>
@@ -83,6 +86,9 @@
         <!-- init start-->
         if($('#ackMessage').val()=='ACKMESSAGE'){
             $('#ackMessageConfim').modal('show');
+        }
+        if($('#hciNameUsedInput').val()=='hciNameUsed'){
+            $('#hciNameUsed').modal('show');
         }
         init = 0;
         <!--for reload -->
@@ -149,6 +155,10 @@
         $('#paymentli').unbind();
     }
 
+    function Continue() {
+        $('#hciNameUsed').modal('hide');
+        doSubmitForm('prePayment','','continue');
+    }
 
 
 </script>

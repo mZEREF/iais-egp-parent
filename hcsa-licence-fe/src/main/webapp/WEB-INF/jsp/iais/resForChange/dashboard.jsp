@@ -4,8 +4,7 @@
 
     function doSubmitForm(action,value,additional){
         $("[name='crud_action_type_form_value']").val(action);
-
-
+        $("[name='crud_action_additional']").val(additional);
         var mainForm = document.getElementById('menuListForm');
         mainForm.submit();
     }

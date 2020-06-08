@@ -618,7 +618,13 @@ public class NewApplicationDelegator {
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
 
             Map<String, String> errorMap= requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,masterCodeDto,isRfi);
-
+            if("continue".equals(crud_action_additional)){
+                errorMap.remove("hciNameUsed");
+            }
+            String string = errorMap.get("hciNameUsed");
+            if(string!=null){
+                bpc.request.setAttribute("hciNameUsed","hciNameUsed");
+            }
             if(errorMap.size()>0){
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
@@ -635,7 +641,7 @@ public class NewApplicationDelegator {
                     try {
                         doSaveDraft(bpc);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                       log.error("error",e);
                     }
                 }
             }
@@ -2735,6 +2741,7 @@ public class NewApplicationDelegator {
         MasterCodeDto masterCodeDto = systemAdminClient.getMasterCodeById("B5E4744C-F96F-EA11-BE79-000C298A32C2").getEntity();
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         Map<String, String> premissMap = requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,masterCodeDto,isRfi);
+        premissMap.remove("hciNameUsed");
         if(!premissMap.isEmpty()){
             previewAndSubmitMap.put("premiss","UC_CHKLMD001_ERR001");
             String premissMapStr = JsonUtil.parseToJson(premissMap);

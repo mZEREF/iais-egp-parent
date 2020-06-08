@@ -620,9 +620,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 }
                             }
                             List<AppGrpPremisesDto> entity = applicationClient.getAppGrpPremisesDtoByHciName(hciName).getEntity();
-                           /* if(!entity.isEmpty()){
-                                errorMap.put("hciName"+i,"HCI name that has been used by another Licensee");
-                            }*/
+                            if(!entity.isEmpty()){
+                                errorMap.put("hciNameUsed","The HCI name you have keyed in is currently in used");
+                            }
                         }
                         String offTelNo = appGrpPremisesDtoList.get(i).getOffTelNo();
                         if(StringUtil.isEmpty(offTelNo)){

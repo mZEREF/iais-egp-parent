@@ -134,6 +134,7 @@
 
     function doSubmitForm(action, value, additional) {
         $("[name='crud_action_type']").val(action);
+        $("[name='crud_action_additional']").val(additional);
         var mainForm = document.getElementById('menuListForm');
         mainForm.submit();
     }

@@ -229,6 +229,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
                 licenceFeeDto.setRenewCount(1);
                 String licenceId = appSubmissionDto.getLicenceId();
+                Date licExpiryDate = appSubmissionDto.getLicExpiryDate();
+                licenceFeeDto.setExpiryDate(licExpiryDate);
                 List<String> licenceIds = IaisCommonUtils.genNewArrayList();
                 licenceFeeDto.setExpiryDate(appSubmissionDto.getLicExpiryDate());
                 licenceIds.add(licenceId);
