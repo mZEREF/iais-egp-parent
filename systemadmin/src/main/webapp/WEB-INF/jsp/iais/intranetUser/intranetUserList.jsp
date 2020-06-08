@@ -21,7 +21,8 @@
     String webroot = IaisEGPConstant.BE_CSS_ROOT;
 %>
 <div class="main-content">
-    <form class="" method="post" id="IntranetUserForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
+    <form class="" method="post" id="IntranetUserForm" enctype="multipart/form-data"
+          action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
@@ -43,23 +44,23 @@
     </form>
 </div>
 <script type="text/javascript">
-    function submitUser(action){
+    function submitUser(action) {
         $("[name='crud_action_type']").val(action);
         $("#IntranetUserForm").submit();
     }
 
-    function doCreate(){
+    function doCreate() {
         submitUser('doSave');
     }
 
-    function doStatus(){
+    function doStatus() {
         submitUser('doStatus');
     }
 
-    $("#IU_Search").click(function() {
+    $("#IU_Search").click(function () {
         submitUser('doSearch');
     });
-    $("#IU_Clear").click(function() {
+    $("#IU_Clear").click(function () {
         $('#userId').val("");
         $('#emailAddress').val("");
         $('#displayName').val("");
@@ -72,18 +73,18 @@
 
     });
 
-    function doEdit(Id){
+    function doEdit(Id) {
         $('#maskUserId').val(Id)
         submitUser('doEdit');
     }
 
-    function doDelete(Id){
+    function doDelete(Id) {
         $('#maskUserId').val(Id)
         $("[name='crud_action_value']").val(Id);
         submitUser('doDelete');
     }
 
-    function doRole(Id){
+    function doRole(Id) {
         $('#maskUserId').val(Id)
         $("[name='crud_action_value']").val(Id);
         submitUser('doRole');
@@ -91,28 +92,31 @@
 
 
     function doExport() {
+        if ($("input[type='checkbox']").is(':checked')) {
+            $('#exportError').hide();
             submitUser('doExport');
+        } else {
+            $('#exportError').show();
+        }
     }
 
     function doImport() {
-        // document.getElementById("inputFileAgent").value = document.getElementById("inputFile").value;
-        var file=document.getElementById("inputFile").value;
-        //var form1=document.getElementById("form1");
-        var ext = file.slice(file.lastIndexOf(".")+1).toLowerCase();
+        const file = document.getElementById("inputFile").value;
+        const ext = file.slice(file.lastIndexOf(".") + 1).toLowerCase();
         if ("xml" != ext) {
             alert("please import .xml");
             return false;
-        }else {
+        } else {
             submitUser('doImport');
-    }
+        }
 
     }
 
-    function jumpToPagechangePage(){
+    function jumpToPagechangePage() {
         SOP.Crud.cfxSubmit("IntranetUserForm", "page");
     }
 
-    function sortRecords(sortFieldName,sortType){
-        SOP.Crud.cfxSubmit("IntranetUserForm","sort",sortFieldName,sortType);
+    function sortRecords(sortFieldName, sortType) {
+        SOP.Crud.cfxSubmit("IntranetUserForm", "sort", sortFieldName, sortType);
     }
 </script>
