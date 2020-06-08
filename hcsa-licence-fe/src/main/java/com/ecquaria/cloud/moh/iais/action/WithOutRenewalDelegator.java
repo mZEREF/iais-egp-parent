@@ -359,6 +359,7 @@ public class WithOutRenewalDelegator {
     //preparePayment
     public void preparePayment(BaseProcessClass bpc)throws Exception{
         RenewDto renewDto = (RenewDto)ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
+        ParamUtil.setRequestAttr(bpc.request,"hasDetail","Y");
         if(renewDto == null){
             return;
         }
