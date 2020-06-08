@@ -254,6 +254,7 @@ public class NewApplicationDelegator {
         bpc.request.getSession().removeAttribute("oldSubmitAppSubmissionDto");
         bpc.request.getSession().removeAttribute("submitAppSubmissionDto");
         bpc.request.getSession().removeAttribute("appSubmissionDtos");
+        bpc.request.getSession().removeAttribute("rfiHcsaService");
     }
     /**
      * StartStep: Prepare
