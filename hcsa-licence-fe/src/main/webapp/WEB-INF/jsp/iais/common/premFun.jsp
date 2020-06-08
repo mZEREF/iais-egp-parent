@@ -59,11 +59,9 @@
             if("onSiteSel" == thisId){
                 premDivName = 'new-premise-form-on-site';
                 //
-                var fireIssueDateHtml = '<input type="text" autocomplete="off" class="date_picker form-control fireIssuedDate" name="onSiteFireSafetyCertIssuedDate"  value="13/05/2020" placeholder="dd/mm/yyyy" maxlength="10">';
-                $premContent.find('div.fireIssuedDateDiv').html(fireIssueDateHtml);
-                $premContent.find('.date_picker').datepicker({
-                    format:"dd/mm/yyyy"
-                });
+                if('0' != init){
+                    replaceFireIssueDateHtml($premContent,'');
+                }
             }else if ("conveyanceSel" == thisId) {
                 premDivName = 'new-premise-form-on-site';
             }else if ('offSiteSel' == thisId){
@@ -291,6 +289,9 @@
             premContent.find('.retrieveAddr').removeClass('hidden');
             $('#isEditHiddenVal').val('1');
             premContent.find('input[name="isPartEdit"]').val('1');
+            <!--replace fire issued date -->
+            var fireIssueDate = premContent.find('.fireIssuedDate').val();
+            replaceFireIssueDateHtml(premContent,fireIssueDate);
         });
     }
 
@@ -648,6 +649,21 @@
             }
         });
 
+
+    }
+
+    var replaceFireIssueDateHtml = function($premContent,value){
+        var issueDate = "dd/mm/yyyy";
+        var val = '';
+        if('' != value){
+            issueDate = value;
+            val = value;
+        }
+        var fireIssueDateHtml = '<input type="text" autocomplete="off" class="date_picker form-control fireIssuedDate" name="onSiteFireSafetyCertIssuedDate"  value="'+val+'" placeholder="'+ issueDate +'" maxlength="10">';
+        $premContent.find('div.fireIssuedDateDiv').html(fireIssueDateHtml);
+        $premContent.find('.date_picker').datepicker({
+            format:"dd/mm/yyyy"
+        });
 
     }
 

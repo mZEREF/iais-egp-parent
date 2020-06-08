@@ -140,6 +140,7 @@ public class NewApplicationDelegator {
     public static final String FIRESTOPTION = "Please Select";
     public static final String LICAPPGRPPREMISESDTOMAP = "LicAppGrpPremisesDtoMap";
     public static final String PERSONSELECTMAP = "PersonSelectMap";
+    public static final String LICPERSONSELECTMAP = "LicPersonSelectMap";
 
     private static final String DRAFTCONFIG = "DraftConfig";
     private static final String GROUPLICENCECONFIG = "GroupLicenceConfig";
@@ -223,6 +224,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST, null);
         removeSession(bpc);
         ParamUtil.setSessionAttr(bpc.request,NewApplicationConstant.PREMISES_HCI_LIST, null);
+        ParamUtil.setSessionAttr(bpc.request,LICPERSONSELECTMAP, null);
 
         HashMap<String,String> coMap=new HashMap<>(4);
         coMap.put("premises","");
@@ -2752,7 +2754,8 @@ public class NewApplicationDelegator {
         }
         //
         List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto");
-        Map<String, String> poMap = NewApplicationHelper.doValidatePo(poDto);
+        Map<String,AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
+        Map<String, String> poMap = NewApplicationHelper.doValidatePo(poDto,licPersonMap);
         if(!poMap.isEmpty()){
             previewAndSubmitMap.put("po","UC_CHKLMD001_ERR001");
             String poMapStr = JsonUtil.parseToJson(poMap);
@@ -2760,7 +2763,7 @@ public class NewApplicationDelegator {
         }
         //
         List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, ClinicalLaboratoryDelegator.GOVERNANCEOFFICERSDTOLIST);
-        Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList);
+        Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList,licPersonMap);
         if(!govenMap.isEmpty()){
             previewAndSubmitMap.put("goven","UC_CHKLMD001_ERR001");
             String govenMapStr = JsonUtil.parseToJson(govenMap);
@@ -2912,7 +2915,8 @@ public class NewApplicationDelegator {
             }
         }
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
-        Map<String, String> map = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList);
+        Map<String,AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
+        Map<String, String> map = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList,licPersonMap);
         if(!map.isEmpty()){
             sB.append(serviceId);
         }
@@ -2924,7 +2928,7 @@ public class NewApplicationDelegator {
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
         doSvcDis(errorMap,appSvcDisciplineAllocationDtoList,serviceId,sB);
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
-        Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.getAppSvcCgoDtoList());
+        Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.getAppSvcCgoDtoList(),licPersonMap);
         if(!govenMap.isEmpty()){
             sB.append(serviceId);
         }
@@ -4621,10 +4625,19 @@ public class NewApplicationDelegator {
         if(loginContext != null){
             appSubmissionDto.setLicenseeId(loginContext.getLicenseeId());
             List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
-            //Exchange order
-            Map<String,AppSvcPrincipalOfficersDto> personMap = NewApplicationHelper.setLicPsnIntoSelMap(bpc.request,licPersonList);
+            //exchange order
+            Map<String,AppSvcPrincipalOfficersDto> licPersonMap = NewApplicationHelper.setLicPsnIntoSelMap(bpc.request,licPersonList);
+            ParamUtil.setSessionAttr(bpc.request,LICPERSONSELECTMAP, (Serializable) licPersonMap);
             NewApplicationHelper.setLicPsnIntoSelMap(bpc.request,licPersonList);
-            ParamUtil.setSessionAttr(bpc.request,PERSONSELECTMAP, (Serializable) personMap);
+            Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, PERSONSELECTMAP);
+            if(personMap != null){
+                licPersonMap.forEach((k,v)->{
+                    personMap.put(k,v);
+                });
+                ParamUtil.setSessionAttr(bpc.request,PERSONSELECTMAP, (Serializable) personMap);
+            }else{
+                ParamUtil.setSessionAttr(bpc.request,PERSONSELECTMAP, (Serializable) licPersonMap);
+            }
         }else{
             appSubmissionDto.setLicenseeId("");
             log.info(StringUtil.changeForLog("user info is empty....."));

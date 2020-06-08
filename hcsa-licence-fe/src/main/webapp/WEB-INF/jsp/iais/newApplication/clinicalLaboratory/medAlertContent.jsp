@@ -140,6 +140,17 @@
                         <div class="control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
                                 <div class="col-sm-3 control-label formtext col-md-5">
+                                </div>
+                                <div class="col-sm-7">
+                                    <span class="error-msg" id="error_idTypeNo${status.index}" name="iaisErrorMsg"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="col-sm-3 control-label formtext col-md-5">
                                     <label  class="control-label control-set-font control-font-label">Mobile No.</label>
                                     <span class="mandatory">*</span>
                                 </div>

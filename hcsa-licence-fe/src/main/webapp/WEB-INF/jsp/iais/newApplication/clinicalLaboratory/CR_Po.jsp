@@ -147,6 +147,19 @@
                         <div class="control control-caption-horizontal">
                           <div class=" form-group form-horizontal formgap">
                             <div class="col-sm-3 control-label formtext col-md-4">
+                            </div>
+                            <div class="col-sm-8">
+                              <div class="">
+                                <span class="error-msg" name="iaisErrorMsg" id="error_poIdTypeNo${status.index}"></span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="control control-caption-horizontal">
+                          <div class=" form-group form-horizontal formgap">
+                            <div class="col-sm-3 control-label formtext col-md-4">
                               <label  class="control-label control-set-font control-font-label">Designation</label>
                               <span class="mandatory">*</span>
                             </div>
@@ -372,6 +385,19 @@
                             <div class="col-sm-4">
                               <input autocomplete="off"  name="deputyIdNo" maxlength="9" type="text"  class=" form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
                               <span class="error-msg"  name="iaisErrorMsg" id="error_deputyIdNo${status.index}"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="control control-caption-horizontal">
+                          <div class=" form-group form-horizontal formgap">
+                            <div class="col-sm-3 control-label formtext col-md-4">
+                            </div>
+                            <div class="col-sm-8">
+                              <div class="">
+                                <span class="error-msg" name="iaisErrorMsg" id="error_dpoIdTypeNo${status.index}"></span>
+                              </div>
                             </div>
                           </div>
                         </div>

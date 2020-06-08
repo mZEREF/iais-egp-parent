@@ -222,6 +222,19 @@
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
+                                <div id="" class="control control-caption-horizontal">
+                                  <div class=" form-group form-horizontal formgap">
+                                    <div class="col-sm-4 control-label formtext ">
+                                    </div>
+                                    <div class="col-sm-5 col-md-7">
+                                      <span class="error-msg" name="iaisErrorMSg" id="error_idTypeNo${status.index}"></span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
                                 <div  class="control control-caption-horizontal">
                                   <div class="form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext">

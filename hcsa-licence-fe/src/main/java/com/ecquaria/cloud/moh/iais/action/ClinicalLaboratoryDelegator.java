@@ -618,7 +618,8 @@ public class ClinicalLaboratoryDelegator {
             String crud_action_additional = bpc.request.getParameter("nextStep");
             if ("next".equals(crud_action_additional)) {
                 List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST);
-                errList = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList);
+                Map<String,AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
+                errList = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList,licPersonMap);
                 if (appSubmissionDto.isNeedEditController()) {
                     /*Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_GOVERNANCE_OFFICERS);
@@ -816,7 +817,8 @@ public class ClinicalLaboratoryDelegator {
 
             if ("next".equals(crud_action_additional)) {
                 List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto");
-                map = NewApplicationHelper.doValidatePo(poDto);
+                Map<String,AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
+                map = NewApplicationHelper.doValidatePo(poDto,licPersonMap);
                 if (appSubmissionDto.isNeedEditController()) {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     if(isGetDataFromPagePo){
@@ -1215,8 +1217,8 @@ public class ClinicalLaboratoryDelegator {
                     appEditSelectDto.setServiceEdit(true);
                     appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                 }
-
-                Map<String,String> errorMap = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList);
+                Map<String,AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
+                Map<String,String> errorMap = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList,licPersonMap);
                 if(!errorMap.isEmpty()){
                     ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.MEDALERT_PERSON);
@@ -1541,6 +1543,7 @@ public class ClinicalLaboratoryDelegator {
                         isPartEdit = removeArrIndex(isPartEdit,i);
                         licPerson = removeArrIndex(licPerson,i);
                         //dropdown cannot disabled
+                        assignSelect = removeArrIndex(assignSelect,i);
                         salutation = removeArrIndex(salutation,i);
                         idType = removeArrIndex(idType,i);
                         designation = removeArrIndex(designation,i);
