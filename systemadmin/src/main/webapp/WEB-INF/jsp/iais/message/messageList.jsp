@@ -59,14 +59,14 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <iais:sortableHeader needSort="false"  field="" value="S/N"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="false"  field="" value="S/N" style="padding-bottom:20px"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true"  field="domain_type" value="Type"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true"   field="msg_type" value="Message Type"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true"   field="description" value="Description"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true"   field="message" value="Message"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true"   field="status" value="Status"></iais:sortableHeader>
-                            <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="false"   field="action" style="padding-bottom:22px" value="Action"></iais:sortableHeader>
                         </tr>
                         </thead>
                         <tbody style="text-align: center">
