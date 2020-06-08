@@ -11,7 +11,7 @@
             </p>
         </c:if>
         <c:if test="${isSingle == 'Y'}">
-            <p class="center">You are renewing the <strong>${firstSvcName} (Licence No. ${renewDto.appSubmissionDtos.get(0).licenceNo})</strong>
+            <p class="center">You are ${prefixTitle} the <strong>${firstSvcName} (Licence No. ${renewDto.appSubmissionDtos.get(0).licenceNo})</strong>
         </c:if>
     </c:if>
 </div>
