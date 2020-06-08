@@ -1,11 +1,5 @@
 package com.ecquaria.cloud.moh.iais.helper.excel;
 
-/*
- *author: yichen
- *date time:9/18/2019 1:07 PM
- *description:
- */
-
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
@@ -33,22 +27,50 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
+
+
+/**
+ * To use this class, you need to set the initial value, such as the class of the source data, and pass a list set
+ * @author yi chen
+ * @Date:2020/6/5
+ **/
 @Slf4j
 public final class ExcelWriter {
     private static String EXCEL_TYPE_XSSF = "xlsx";
 
+    /**
+     * Applies to the current makefile,
+     * if not set, it will be generated according to the {@code Class<?> clz} by simple name
+     * */
     private String fileName;
 
+    /**
+     * When creating new file instead of adding data to old file, you do not need set value.
+     * by default, {@code newModule is true}, always create new file.
+     */
     private File file;
 
+    /** {code unlockCell} is a matrix, such as [3][3].
+     * It will unlock the data of the first row and cell, first row and the second cell and so on,  until the end of the third row.
+     */
     private int[][] unlockCell = null;
 
+    /**
+     * Same as ${@code unlockCell}, This key is row, values store the coordinates of columns
+     */
     private Map<Integer, List<Integer>> unlockCellMap;
 
+    /**
+     * Cell color, locked status, hidden or not
+     */
     private  XSSFCellStyle lockStyle = null;
 
+    /**
+     * If without this value, the generated data will be locked
+     */
     private  XSSFCellStyle unlockStyle = null;
 
+    /** setting source data format through a {@code Class<?>} */
     private Class<?> clz;
 
     private int startCellIndex = 1;
@@ -171,7 +193,7 @@ public final class ExcelWriter {
         log.info(StringUtil.changeForLog("current workspace ") + sheetName);
         log.info("current filename " + localFileName);
         if (newModule){
-            out = new File(localFileName);
+                out = new File(localFileName);
             try (FileOutputStream fileOutputStream = new FileOutputStream(out)) {
                 workbook = XSSFWorkbookFactory.createWorkbook();
                 sheet  = workbook.createSheet(sheetName);
