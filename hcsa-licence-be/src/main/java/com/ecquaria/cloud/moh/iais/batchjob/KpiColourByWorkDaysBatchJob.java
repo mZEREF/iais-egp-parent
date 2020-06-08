@@ -305,7 +305,12 @@ public class KpiColourByWorkDaysBatchJob {
         List<Date> beginDates = IaisCommonUtils.genNewArrayList();
         List<Date> endDates = IaisCommonUtils.genNewArrayList();
         for(TaskDto td : taskDtoList){
-            Date startDate = td.getDateAssigned();
+            Date startDate;
+            if(td.getDateAssigned() != null){
+                startDate = td.getDateAssigned();
+            } else {
+                startDate = new Date();
+            }
             Date completeDate;
             if(td.getSlaDateCompleted() == null){
                 completeDate = new Date();
