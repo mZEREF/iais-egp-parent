@@ -142,6 +142,10 @@ public class HcsaApplicationDelegator {
     ApplicationClient applicationClient;
     @Autowired
     AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
+    @Autowired
+    OrganizationClient organizationClient;
+    @Autowired
+    private AppInspectionStatusClient appInspectionStatusClient;
 
 
     @Value("${iais.email.sender}")
@@ -849,17 +853,14 @@ public class HcsaApplicationDelegator {
         String roleId=appPremisesRoutingHistoryDto.getRoleId();
         String stageId=appPremisesRoutingHistoryDto.getStageId();
         String userId=appPremisesRoutingHistoryDto.getActionby();
+        String subStageId = appPremisesRoutingHistoryDto.getSubStage();
 
         if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)){
             nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING;
         }else if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)){
             nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING;
         }else if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
-            if(RoleConsts.USER_ROLE_AO1.equals(roleId)){
-                nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION;
-            }else{
-                nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW;
-            }
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS;
         }else if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)){
             nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01;
         }else if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_AO2.equals(stageId)){
@@ -1528,6 +1529,8 @@ public class HcsaApplicationDelegator {
 
         //complated this task and create the history
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        String refNo = taskDto.getRefNo();
+        String subStageId = null;
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
         taskDto =  completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);
@@ -1542,7 +1545,7 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto.setApplicationDto(applicationDto);
         String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
         String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
-        if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
+        if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId) && !ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(appStatus)){
             taskType = TaskConsts.TASK_TYPE_INSPECTION;
             if(RoleConsts.USER_ROLE_AO1.equals(roleId)){
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1;
@@ -1553,6 +1556,18 @@ public class HcsaApplicationDelegator {
             ){
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT;
             }
+            subStageId = HcsaConsts.ROUTING_STAGE_POT;
+            //update inspector status
+            updateInspectionStatus(applicationViewDto.getAppPremisesCorrelationId(),InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
+        }
+        //reply inspector
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(appStatus)){
+            List<TaskDto> taskDtos = organizationClient.getTaskByRefNoStatus(refNo, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
+            taskType = taskDtos.get(0).getTaskType();
+            TaskUrl = TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION;
+            subStageId = HcsaConsts.ROUTING_STAGE_PRE;
+            //update inspector status
+            updateInspectionStatus(applicationViewDto.getAppPremisesCorrelationId(),InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
         }
         //DMS go to main flow
         if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(appStatus)){
@@ -1565,7 +1580,7 @@ public class HcsaApplicationDelegator {
                 IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastOrganizationDto.setCreateTask(newTaskDto);
 
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),stageId,null,
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),stageId,subStageId,
                 taskDto.getWkGrpId(),null,null,null,roleId);
         broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
 
@@ -1596,6 +1611,15 @@ public class HcsaApplicationDelegator {
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
 
+    }
+
+    private void updateInspectionStatus(String appPremisesCorrelationId, String status) {
+        AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremisesCorrelationId).getEntity();
+        if (appInspectionStatusDto != null) {
+            appInspectionStatusDto.setStatus(status);
+            appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            appInspectionStatusClient.update(appInspectionStatusDto);
+        }
     }
 
     private List<UserGroupCorrelationDto> changeStatusUserGroupCorrelationDtos(List<UserGroupCorrelationDto> userGroupCorrelationDtos,String status){
