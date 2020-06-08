@@ -1817,19 +1817,19 @@ public class HcsaApplicationDelegator {
             if(recomInNumber == null || recomInNumber == 0){
                 recommendationOnlyShow = "Reject";
                 //set DMS decision value
-                if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
-                    ParamUtil.setRequestAttr(bpc.request,"selectDecisionValue","decisionReject");
-                }
+//                if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
+//                    ParamUtil.setRequestAttr(bpc.request,"selectDecisionValue","decisionReject");
+//                }
             }else{
                 codeDesc = MasterCodeUtil.getCodeDesc(chronoUnit);
                 recommendationOnlyShow = recomInNumber + " " + codeDesc;
                 //set DMS decision value
-                if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
-                    ParamUtil.setRequestAttr(bpc.request,"selectDecisionValue","decisionApproval");
-                }
+//                if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
+//                    ParamUtil.setRequestAttr(bpc.request,"selectDecisionValue","decisionApproval");
+//                }
             }
             //PSO 0062307
-            if(RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId) || broadcastAsoPso){
+            if((RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId) || broadcastAsoPso) && !ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
                 //pso back fill
                 checkRecommendationDropdownValue(recomInNumber,chronoUnit,codeDesc,applicationViewDto,bpc);
             }
