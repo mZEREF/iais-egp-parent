@@ -102,6 +102,10 @@
             </button>
             <button class="btn btn-primary next" type="button" onclick="javascript:doNext();">Search
             </button>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
         </iais:action>
 
         <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
