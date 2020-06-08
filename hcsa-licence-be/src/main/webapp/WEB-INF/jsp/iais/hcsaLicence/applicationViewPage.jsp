@@ -323,7 +323,7 @@
                                                                 <iais:value width="10">
                                                                     <p>
                                                                         <c:choose>
-                                                                            <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012' || (isRouteBackStatus && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC') || (isRouteBackStatus && taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC')}">
+                                                                            <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
                                                                                 <input class="form-check-input" id="fastTracking"
                                                                                 <c:if test="${applicationViewDto.applicationDto.fastTracking}">
                                                                                        checked disabled
