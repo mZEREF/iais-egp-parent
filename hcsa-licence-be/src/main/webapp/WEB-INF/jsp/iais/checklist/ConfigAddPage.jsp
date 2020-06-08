@@ -34,50 +34,45 @@
       <br><br>
       <div class="form-horizontal">
           <div class="form-group">
-            <iais:field value="Common" ></iais:field>
+            <iais:field value="Common" id="commonField"></iais:field>
             <div class="col-md-3">
               <input class="form-check-input"  id="common" type="radio" name="common" aria-invalid="false" value="1"> General Regulation
-              <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
             </div>
           </div>
 
           <div class="form-group">
-            <iais:field value="Service Name" ></iais:field>
+            <iais:field value="Service Name" id="serviceNameField"></iais:field>
             <div class="col-md-5">
                 <iais:select name="svcName" id="svcName" options="svcNameSelect"  firstOption="Please Select" value="${svcName}"></iais:select>
-              <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
             </div>
           </div>
 
 
           <div class="form-group">
-            <iais:field value="Service Sub-Type" ></iais:field>
+            <iais:field value="Service Sub-Type" id="subTypeField"></iais:field>
             <div class="col-md-5">
               <iais:select name="svcSubType" id="svcSubType" options="subtypeSelect" firstOption="Please Select" value="${svcSubType}"></iais:select>
-              <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
             </div>
           </div>
 
           <div class="form-group">
-            <iais:field value="Module" ></iais:field>
+            <iais:field value="Module" id="moduleField"></iais:field>
             <div class="col-md-3">
               <iais:select name="module" id="module" codeCategory="CATE_ID_CHECKLIST_MODULE" firstOption="Please Select" value="${module}"></iais:select>
-              <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
             </div>
           </div>
 
           <div class="form-group">
-            <iais:field value="Type" ></iais:field>
+            <iais:field value="Type" id="typeField"></iais:field>
             <div class="col-md-3">
               <iais:select name="type" id="type" codeCategory="CATE_ID_CHECKLIST_TYPE" firstOption="Please Select" value="${type}"></iais:select>
-              <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
             </div>
           </div>
 
           <div class="form-group">
             <iais:field value="HCI Code" ></iais:field>
             <div class="col-md-3">
-              <input type="text" id="hciCode" name="hciCode" maxlength="7" value="${hciCode}"/>
+              <input type="text" id="hciCode" name="hciCode" maxlength="7" value="${hciCode}" style="border-color: white"/>
             <span id="error_hciCode" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
@@ -107,7 +102,6 @@
           </div>
           <div class="col-xs-12 col-sm-6">
             <div class="text-right text-center-mobile">
-              <%--<a class="btn btn-secondary" href="javascript:void(0);" onclick="$('.nice-select').removeClass('disabled'); Utils.clearClickStatus('form-horizontal'); $('#common').val(1)">Clear</a>--%>
               <a class="btn btn-primary next"  onclick="javascript: doNext();">Next</a>
             </div>
           </div>
@@ -116,6 +110,7 @@
 </div>
 
 <script type="text/javascript">
+
     if(window.attachEvent) {
         window.attachEvent("onload", checkInputStatus);
     }else if(window.addEventListener) {
@@ -124,6 +119,18 @@
 
    function checkInputStatus() {
        var commonVal = $('#commonSelect').val();
+       if ($('#common').attr('checked')){
+
+           $('#commonField').append("<span style=\"color: red\"> *</span>");
+           $('#serviceNameField span').hide();
+           $('#moduleField span').hide();
+           $('#typeField span').hide();
+       }else {
+           $('#serviceNameField').append("<span style=\"color: red\"> *</span>");
+           $('#moduleField').append("<span style=\"color: red\"> *</span>");
+           $('#typeField').append("<span style=\"color: red\"> *</span>");
+       }
+
        if (commonVal == '1'){
            $('#common').attr('checked', 'checked')
            $('#common').val(1)
@@ -132,12 +139,15 @@
            $('#common').attr('disabled', 'disabled')
            $('#common').val(0)
        }
-   }
 
+   }
 
     function disableInput(){
         $('.nice-select').addClass('disabled');
-        $('#hciCode').attr('disabled', 'disabled')
+        $('#hciCode').attr('disabled', 'disabled');
+        $('#serviceNameField span').hide();
+        $('#moduleField span').hide();
+        $('#typeField span').hide();
     }
 
     $(".form-horizontal select").change(function () {
@@ -147,6 +157,7 @@
     common.onclick = function () {
         var checkedStatus = $('#common').attr("checked");
         if (checkedStatus != null){
+            $('#commonField').append("<span style=\"color: red\"> *</span>");
             disableInput();
         }
     }
