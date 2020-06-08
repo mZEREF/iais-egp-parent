@@ -37,7 +37,6 @@ import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloudfeign.FeignException;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -66,9 +65,6 @@ public class InspectionRectificationProDelegator {
 
     @Autowired
     private InspectionRectificationProService inspectionRectificationProService;
-
-    @Autowired
-    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     @Autowired
     private TaskService taskService;
