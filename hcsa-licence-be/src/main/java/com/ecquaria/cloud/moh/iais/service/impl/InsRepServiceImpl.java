@@ -182,11 +182,9 @@ public class InsRepServiceImpl implements InsRepService {
         list.add(serviceId);
         List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
         String svcName = "";
-        String svcCode = "";
         if (listHcsaServices != null && !listHcsaServices.isEmpty()) {
             for (HcsaServiceDto hcsaServiceDto : listHcsaServices) {
                 svcName = hcsaServiceDto.getSvcName();
-                svcCode = hcsaServiceDto.getSvcCode();
             }
         }
 
@@ -709,8 +707,6 @@ public class InsRepServiceImpl implements InsRepService {
                 createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, historyRemarks, null, roleId, groupId2, subStage);
             }
         }
-
-
     }
 
     @Override
