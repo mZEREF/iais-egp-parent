@@ -88,7 +88,7 @@
         </tbody>
         </table>
         </div>
-    <div class="panel-heading" id="exportError" hidden><h4><strong>Please select user.</strong></h4></div>
+    <div class="panel-heading" id="exportError" hidden style="color: red"><h4>Please select user.</h4></div>
         <iais:action style="text-align:center;">
             <div class="text-right">
                 <a class="btn btn-primary" onclick="doCreate()">Create</a>

@@ -82,10 +82,6 @@ public class InsReportDelegator {
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
         if (insRepDto == null) {
             insRepDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
-//            InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
-//            insRepDto.setReportedBy(inspectorUser.getReportedBy());
-//            insRepDto.setReportNoteBy(inspectorUser.getReportNoteBy());
-//            insRepDto.setInspectors(inspectorUser.getInspectors());
         }
         AppPremisesRecommendationDto accRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPECTYPE).getEntity();
         if(accRecommendationDto!=null){

@@ -80,10 +80,6 @@ public class InsReportAoDelegator {
         AuditTrailHelper.auditFunctionWithAppNo("Inspection Report", "AO1 process Report",
                 applicationViewDto.getApplicationDto().getApplicationNo());
         InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
-//        InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto,applicationViewDto);
-//        insRepDto.setInspectors(inspectorAo.getInspectors());
-//        insRepDto.setReportNoteBy(inspectorAo.getReportNoteBy());
-//        insRepDto.setReportedBy(inspectorAo.getReportedBy());
         initAoRecommendation(correlationId,bpc);
 
         String infoClassTop = "active";
@@ -130,25 +126,6 @@ public class InsReportAoDelegator {
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         AppPremisesRecommendationDto appPremisesRecommendationDto = (AppPremisesRecommendationDto)ParamUtil.getSessionAttr(bpc.request, RECOMMENDATION_DTO);
-//        AppPremisesRecommendationDto preapreRecommendationDto = prepareRecommendation(bpc,appPremisesRecommendationDto);
-//        ParamUtil.setSessionAttr(bpc.request, "preapreRecommendationDto", preapreRecommendationDto);
-//        ValidationResult validationResult = WebValidationHelper.validateProperty(preapreRecommendationDto, "edit");
-//        if (validationResult.isHasErrors()) {
-//            log.debug(StringUtil.changeForLog("the validationResult start ...."));
-//            Map<String, String> errorMap = validationResult.retrieveAll();
-//            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
-//            ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.FALSE);
-//            String reportClassTop = "active";
-//            String infoClassBelow = "tab-pane";
-//            String reportClassBelow = "tab-pane active";
-//            ParamUtil.setSessionAttr(bpc.request, "infoClassTop", null);
-//            ParamUtil.setSessionAttr(bpc.request, "reportClassTop", reportClassTop);
-//            ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", infoClassBelow);
-//            ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", reportClassBelow);
-//            log.debug(StringUtil.changeForLog("the validationResult end ...."));
-//            return;
-//        }
-        //saveAoRecommendation(appPremisesCorrelationId,preapreRecommendationDto);
         log.debug(StringUtil.changeForLog("the saveAoRecommendation start ...."));
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
         insRepService.routBackTaskToInspector(taskDto,applicationDto,appPremisesCorrelationId,historyRemarks);
@@ -162,22 +139,6 @@ public class InsReportAoDelegator {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         TaskDto taskDto =  (TaskDto)ParamUtil.getSessionAttr(bpc.request, TASKDTO);
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
-//        AppPremisesRecommendationDto preapreRecommendationDto = prepareRecommendation(bpc,appPremisesRecommendationDto);
-//        ParamUtil.setSessionAttr(bpc.request, "preapreRecommendationDto", preapreRecommendationDto);
-//        ValidationResult validationResult = WebValidationHelper.validateProperty(preapreRecommendationDto, "edit");
-//        if (validationResult.isHasErrors()) {
-//            Map<String, String> errorMap = validationResult.retrieveAll();
-//            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
-//            ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.FALSE);
-//            String reportClassTop = "active";
-//            String infoClassBelow = "tab-pane";
-//            String reportClassBelow = "tab-pane active";
-//            ParamUtil.setSessionAttr(bpc.request, "infoClassTop", null);
-//            ParamUtil.setSessionAttr(bpc.request, "reportClassTop", reportClassTop);
-//            ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", infoClassBelow);
-//            ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", reportClassBelow);
-//            return;
-//        }
         String[] fastTracking =  ParamUtil.getStrings(bpc.request,"fastTracking");
         if(fastTracking!=null){
             applicationDto.setFastTracking(true);
@@ -188,27 +149,10 @@ public class InsReportAoDelegator {
             return;
         }
         String historyRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
-        //saveAoRecommendation(appPremisesCorrelationId,preapreRecommendationDto);
         insRepService.routingTaskToAo2(taskDto,applicationDto,appPremisesCorrelationId,historyRemarks);
         ParamUtil.setSessionAttr(bpc.request, INSREPDTO, insRepDto);
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
     }
-
-//    private AppPremisesRecommendationDto prepareRecommendation (BaseProcessClass bpc,AppPremisesRecommendationDto appPremisesRecommendationDto){
-//        String riskLevel = ParamUtil.getRequestString(bpc.request, "riskLevel");
-//        String processingDecision = ParamUtil.getRequestString(bpc.request, "processingDecision");
-//        String followUpAction = ParamUtil.getRequestString(bpc.request, "followUpAction");
-//        String processRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
-//        String enforcement = ParamUtil.getRequestString(bpc.request, "engageEnforcement");
-//        String enforcementRemarks = ParamUtil.getRequestString(bpc.request, "enforcementRemarks");
-//        appPremisesRecommendationDto.setEngageEnforcement(enforcement);
-//        appPremisesRecommendationDto.setEngageEnforcementRemarks(enforcementRemarks);
-//        appPremisesRecommendationDto.setRiskLevel(riskLevel);
-//        appPremisesRecommendationDto.setFollowUpAction(followUpAction);
-//        appPremisesRecommendationDto.setProcessingDecision(processingDecision);
-//        appPremisesRecommendationDto.setProcessRemarks(processRemarks);
-//        return appPremisesRecommendationDto;
-//    }
 
     private void initAoRecommendation(String correlationId,BaseProcessClass bpc){
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -25,6 +26,7 @@ public class InsRepRecValidate implements CustomizeValidator {
         String enforcement = ParamUtil.getRequestString(httpServletRequest, "engageEnforcement");
         String enforcementRemarks = ParamUtil.getRequestString(httpServletRequest, "enforcementRemarks");
         String periods = ParamUtil.getRequestString(httpServletRequest, "periods");
+        String recommendation = ParamUtil.getRequestString(httpServletRequest, RECOMMENDATION);
         if (OTHERS.equals(periods)) {
             if (StringUtil.isEmpty(chrono)) {
                 errorMap.put("chronoUnit", "ERR0009");
@@ -40,6 +42,13 @@ public class InsRepRecValidate implements CustomizeValidator {
         }
         if(!StringUtil.isEmpty(enforcement)&&StringUtil.isEmpty(enforcementRemarks)){
             errorMap.put("enforcementRemarks", "ERR0009");
+        }
+        if(!StringUtil.isEmpty(recommendation)){
+            if(InspectionReportConstants.APPROVED.equals(recommendation) ||InspectionReportConstants.APPROVEDLTC.equals(recommendation)){
+                if(StringUtil.isEmpty(periods)){
+                    errorMap.put("periods", "ERR0009");
+                }
+            }
         }
             return errorMap;
     }

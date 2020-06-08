@@ -678,7 +678,16 @@ public class ClinicalLaboratoryDelegator {
         }
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:"+isGetDataFromPage));
-        if (isGetDataFromPage) {
+        Set<String> clickEditPage = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
+        boolean svcScopeEdit = false;
+        for(String item:clickEditPage){
+            if(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_LABORATORY.equals(item)){
+                svcScopeEdit = true;
+                break;
+            }
+        }
+
+        if (isGetDataFromPage || svcScopeEdit) {
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
             AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);

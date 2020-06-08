@@ -36,7 +36,7 @@ public interface IntranetUserClient {
     @DeleteMapping(value = "/iais-orguser-be/{id}")
     FeignResponseEntity<Void> delOrgUser (@PathVariable("id")String id);
 
-    @GetMapping(value = "/iais-orguser-be/users-account/{id}")
+    @GetMapping(value = "/iais-orguser-be/users-account/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrgUserDto> findIntranetUserById(@PathVariable("id")String id);
 
     @PostMapping(value = "/iais-task//task/results", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
