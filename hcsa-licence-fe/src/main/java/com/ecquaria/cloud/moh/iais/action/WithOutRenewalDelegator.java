@@ -90,6 +90,7 @@ public class WithOutRenewalDelegator {
     private static final String PAGE_SWITCH = "page_value";
     private static final String CONTROL_SWITCH = "controlSwitch";
     private static final String EDIT = "doEdit";
+    private static final String IS_AMEND = "isAmend";
     @Autowired
     WithOutRenewalService outRenewalService;
 
@@ -116,7 +117,8 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,null);
         ParamUtil.setSessionAttr(bpc.request,"totalStr",null);
         ParamUtil.setSessionAttr(bpc.request,"totalAmount",null);
-        ParamUtil.setSessionAttr(bpc.request,"userAgreement",null);
+        ParamUtil.setSessionAttr(bpc.request,"userAgreement",null);ParamUtil.setSessionAttr(bpc.request,IS_AMEND,false);
+
         //inbox draft number
         String oldDraftNumber= ParamUtil.getMaskedString(bpc.request, "DraftNumber");
         //init page value
@@ -897,6 +899,7 @@ public class WithOutRenewalDelegator {
         AppSubmissionDto appSubmissionDto = appSubmissionDtos.get(0);
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto()==null? new AppEditSelectDto():appSubmissionDto.getAppEditSelectDto();
         if(!StringUtil.isEmpty(editValue)){
+            ParamUtil.setSessionAttr(bpc.request,IS_AMEND,true);
             if(RfcConst.EDIT_PREMISES.equals(editValue)){
                 appEditSelectDto.setPremisesEdit(true);
                 ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_PREMISES);
