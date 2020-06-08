@@ -1098,20 +1098,25 @@ public class HcsaApplicationDelegator {
     }
 
     private void checkShowInspection(BaseProcessClass bpc,ApplicationViewDto applicationViewDto,TaskDto taskDto,String correlationId) throws FeignException {
+        String status = applicationViewDto.getApplicationDto().getStatus();
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =  appPremisesRoutingHistoryService.
                             getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS);
         if(appPremisesRoutingHistoryDto == null){
             ParamUtil.setRequestAttr(bpc.request,"isShowInspection","N");
         }else{
-            ParamUtil.setRequestAttr(bpc.request,"isShowInspection","Y");
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
-            InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto,applicationViewDto);
-            insRepDto.setInspectors(inspectorAo.getInspectors());
-            insRepDto.setReportNoteBy(inspectorAo.getReportNoteBy());
-            insRepDto.setReportedBy(inspectorAo.getReportedBy());
-            ParamUtil.setRequestAttr(bpc.request,"insRepDto",insRepDto);
-            initAoRecommendation(correlationId,bpc);
+            if(ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK.equals(status)){
+                ParamUtil.setRequestAttr(bpc.request,"isShowInspection","N");
+            }else{
+                ParamUtil.setRequestAttr(bpc.request,"isShowInspection","Y");
+                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+                InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
+                InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto,applicationViewDto);
+                insRepDto.setInspectors(inspectorAo.getInspectors());
+                insRepDto.setReportNoteBy(inspectorAo.getReportNoteBy());
+                insRepDto.setReportedBy(inspectorAo.getReportedBy());
+                ParamUtil.setRequestAttr(bpc.request,"insRepDto",insRepDto);
+                initAoRecommendation(correlationId,bpc);
+            }
         }
     }
 
