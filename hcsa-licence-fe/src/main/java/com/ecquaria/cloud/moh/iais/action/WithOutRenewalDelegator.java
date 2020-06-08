@@ -112,6 +112,7 @@ public class WithOutRenewalDelegator {
 
     public void start(BaseProcessClass bpc){
         log.info("**** the non auto renwal  start ******");
+        String draftNo = ParamUtil.getMaskedString(bpc.request,"DraftNumber");
         //init session
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, null);
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,null);
@@ -139,7 +140,13 @@ public class WithOutRenewalDelegator {
         String firstSvcName = "";
         List<String> serviceNameTitleList = IaisCommonUtils.genNewArrayList();
         List<String> serviceNameList = IaisCommonUtils.genNewArrayList();
-        List<AppSubmissionDto> appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
+        List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
+        if(StringUtil.isEmpty(draftNo)){
+            appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
+        }else{
+            appSubmissionDtoList.add(serviceConfigService.getAppSubmissionDtoDraft(draftNo));
+        }
+
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = IaisCommonUtils.genNewArrayList();
         List<Map<String,List<AppSvcDisciplineAllocationDto>>> reloadDisciplineAllocationMapList = IaisCommonUtils.genNewArrayList();
         List<List<AppSvcPrincipalOfficersDto>> principalOfficersDtosList = IaisCommonUtils.genNewArrayList();
