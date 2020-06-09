@@ -61,28 +61,24 @@ public final class IaisEGPHelper extends EGPHelper {
      */
     private static final String[] PSO_STATUS = new String[]{
             ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
-            ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE
+            ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK,
     };
 
     private static final String[] ASO_STATUS = new String[]{
             ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
-            ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
-            ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ENQUIRE,
-            ApplicationConsts.APPLICATION_STATUS_PROFESSIONAL_SCREENING_OFFICER_ENQUIRE
+            ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK,
+            ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK,
+            ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS
     };
 
     private static final String[] AO1_STATUS = new String[]{
-            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,
             ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW
     };
 
     private static final String[] AO2_STATUS = new String[]{
             ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
     };
 
     private static final String[] AO3_STATUS = new String[]{
@@ -113,7 +109,7 @@ public final class IaisEGPHelper extends EGPHelper {
 
     /**
      * @author: Shicheng on 2020/6/9 10:20
-     * @description: get Application status By Role Id
+     * @description: get Application status By Role Id (For Supervisor Pool and Reassign)
      */
     public static List<SelectOption> getAppStatusByRoleId(String roleId) {
         String[] statusStrs;
