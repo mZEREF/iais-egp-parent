@@ -574,7 +574,7 @@ public class LicenceViewServiceDelegator {
         }
         if (selectsList.contains("primary")) {
             appEditSelectDto.setDocEdit(true);
-            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Primary Doucument</li>";
+            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Primary Documents</li>";
         }
         if (selectsList.contains("service")) {
             appEditSelectDto.setServiceEdit(true);

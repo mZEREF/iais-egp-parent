@@ -205,7 +205,7 @@
                                                     <div id="comments" class="hidden">
                                                         <%String commentsValue = request.getParameter("comments");%>
                                                         <iais:row>
-                                                            <iais:field value="Comments" required="false"  width="12"/>
+                                                            <iais:field value="Comments to applicant" required="false"  width="12"/>
                                                             <iais:value width="10">
                                                                 <div class="input-group">
                                                                     <div class="ax_default text_area">
