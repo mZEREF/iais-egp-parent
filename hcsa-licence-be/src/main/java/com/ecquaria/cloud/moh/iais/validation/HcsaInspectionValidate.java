@@ -348,7 +348,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 fdto.setDoMiRightLowCountherr(true);
             }else if("A".equals(level)){
                 mjRightLowNumFlag = false;
-                errMap.put(serviceCode + "miRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
+                errMap.put(serviceCode + "mjRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                 fdto.setDoMiRightLowCountherr(true);
             }
             log.error(e.getMessage(), e);
@@ -432,7 +432,6 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 }
                 numberFlag++;
             }catch (Exception e){
-                if(inRightModNum<0 || inRightModNum >999){
                     if("C".equals(level)){
                         errMap.put(serviceCode+"caRightModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                         fdto.setDoCaRightModCountherr(true);
@@ -443,7 +442,6 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                         errMap.put(serviceCode+"mjRightModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                         fdto.setDoMjRightModCountherr(true);
                     }
-                }
                 log.error(e.getMessage(), e);
             }
         }
@@ -461,7 +459,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
             fdto.setDoMiRightModCountherr(true);
             fdto.setDoMiLeftModCountherr(true);
         }else if(lm>rm&&"A".equals(level)){
-            errMap.put(serviceCode+"miRightModCaseCounth","ERR0011");
+            errMap.put(serviceCode+"mjRightModCaseCounth","ERR0011");
             fdto.setDoMjRightModCountherr(true);
             fdto.setDoMjLeftModCountherr(true);
         }
@@ -469,7 +467,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
     public void mandatoryCaseCounthVad(Map<String, String> errMap, HcsaRiskInspectionMatrixDto fdto){
         //ca
         if(StringUtil.isEmpty(fdto.getDoCaLeftModCounth())){
-            errMap.put(fdto.getSvcCode()+"caLeftModCaseCounth",MessageUtil.replaceMessage("ERR0009","Minimum Number of NCs","The field"));
+            errMap.put(fdto.getSvcCode()+"caLeftModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC_NO_SPACE,"The field"));
             fdto.setDoCaLeftModCountherr(true);
         }else if(fdto.getDoCaLeftModCounth().length()> MIN_VALUE_LENGTH){
             errMap.put(fdto.getSvcCode()+"caLeftModCaseCounth","ERR0018");
@@ -477,7 +475,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         }
 
         if(StringUtil.isEmpty(fdto.getDoCaLeftHighCounth())){
-            errMap.put(fdto.getSvcCode()+"caLeftHighCaseCounth",MessageUtil.replaceMessage("ERR0009","Minimum Number of NCs","The field"));
+            errMap.put(fdto.getSvcCode()+"caLeftHighCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC_NO_SPACE,"The field"));
             fdto.setDoCaLeftHighCountherr(true);
         }else if(fdto.getDoCaLeftHighCounth().length() > MIN_VALUE_LENGTH){
             errMap.put(fdto.getSvcCode()+"caLeftHighCaseCounth","ERR0018");
@@ -485,7 +483,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         }
 
         if(StringUtil.isEmpty(fdto.getDoCaRightLowCounth())){
-            errMap.put(fdto.getSvcCode()+"caRightLowCaseCounth",MessageUtil.replaceMessage("ERR0009","Maximum Number of NCs","The field"));
+            errMap.put(fdto.getSvcCode()+"caRightLowCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC_NO_SPACE,"The field"));
             fdto.setDoCaRightLowCountherr(true);
         }else if (fdto.getDoCaRightLowCounth().length() > MAX_VALUE_LENGTH ){
             errMap.put(fdto.getSvcCode()+"caRightLowCaseCounth","ERR0019");
@@ -493,25 +491,25 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         }
 
         if(StringUtil.isEmpty(fdto.getDoCaRightModCounth())){
-            errMap.put(fdto.getSvcCode()+"caRightModCaseCounth()",MessageUtil.replaceMessage("ERR0009","Maximum Number of NCs","The field"));
+            errMap.put(fdto.getSvcCode()+"caRightModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC_NO_SPACE,"The field"));
             fdto.setDoCaRightModCountherr(true);
         }else if (fdto.getDoCaRightModCounth().length() >  MAX_VALUE_LENGTH ){
-            errMap.put(fdto.getSvcCode()+"caRightModCaseCounth()","ERR0019");
+            errMap.put(fdto.getSvcCode()+"caRightModCaseCounth","ERR0019");
             fdto.setDoCaRightModCountherr(true);
         }
 
         //mi
 
         if(StringUtil.isEmpty(fdto.getDoMiRightModCounth())){
-            errMap.put(fdto.getSvcCode()+"miRightModCaseCounth()",MessageUtil.replaceMessage("ERR0009","Minimum Number of NCs","The field"));
+            errMap.put(fdto.getSvcCode()+"miRightModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC_NO_SPACE,"The field"));
             fdto.setDoMiRightModCountherr(true);
         }else if(fdto.getDoMiRightModCounth().length() > MIN_VALUE_LENGTH){
-            errMap.put(fdto.getSvcCode()+"miRightModCaseCounth()","ERR0018");
+            errMap.put(fdto.getSvcCode()+"miRightModCaseCounth","ERR0018");
             fdto.setDoMiRightModCountherr(true);
         }
 
         if(StringUtil.isEmpty(fdto.getDoMiRightLowCounth())){
-            errMap.put(fdto.getSvcCode()+"miRightLowCaseCounth",MessageUtil.replaceMessage("ERR0009","Minimum Number of NCs","The field"));
+            errMap.put(fdto.getSvcCode()+"miRightLowCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC_NO_SPACE,"The field"));
             fdto.setDoMiRightLowCountherr(true);
         }else if(fdto.getDoMiRightLowCounth().length() >  MIN_VALUE_LENGTH){
             errMap.put(fdto.getSvcCode()+"miRightLowCaseCounth","ERR0018");
@@ -519,7 +517,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         }
 
         if(StringUtil.isEmpty(fdto.getDoMiLeftHighCounth())){
-            errMap.put(fdto.getSvcCode()+"miLeftHighCaseCounth",MessageUtil.replaceMessage("ERR0009","Maximum Number of NCs","The field"));
+            errMap.put(fdto.getSvcCode()+"miLeftHighCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC_NO_SPACE,"The field"));
             fdto.setDoMiLeftHighCountherr(true);
         }else if(fdto.getDoMiLeftHighCounth().length() > MAX_VALUE_LENGTH){
             errMap.put(fdto.getSvcCode()+"miLeftHighCaseCounth","ERR0019");
@@ -527,7 +525,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         }
 
         if(StringUtil.isEmpty(fdto.getDoMiLeftModCounth())){
-            errMap.put(fdto.getSvcCode()+"miLeftModCaseCounth",MessageUtil.replaceMessage("ERR0009","Maximum Number of NCs","The field"));
+            errMap.put(fdto.getSvcCode()+"miLeftModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC_NO_SPACE,"The field"));
             fdto.setDoMiLeftModCountherr(true);
         }else if(fdto.getDoMiLeftModCounth().length()> MAX_VALUE_LENGTH){
             errMap.put(fdto.getSvcCode()+"miLeftModCaseCounth","ERR0019");
@@ -536,15 +534,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
 
         //mj
         if(StringUtil.isEmpty(fdto.getDoMjRightModCounth())){
-            errMap.put(fdto.getSvcCode()+"mjRightModCaseCounth()",MessageUtil.replaceMessage("ERR0009","Minimum Number of NCs","The field"));
+            errMap.put(fdto.getSvcCode()+"mjRightModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC_NO_SPACE,"The field"));
             fdto.setDoMjRightModCountherr(true);
         }else if(fdto.getDoMjRightModCounth().length() >MIN_VALUE_LENGTH){
-            errMap.put(fdto.getSvcCode()+"mjRightModCaseCounth()","ERR0018");
+            errMap.put(fdto.getSvcCode()+"mjRightModCaseCounth","ERR0018");
             fdto.setDoMjRightModCountherr(true);
         }
 
         if(StringUtil.isEmpty(fdto.getDoMjRightLowCounth())){
-            errMap.put(fdto.getSvcCode()+"mjRightLowCaseCounth",MessageUtil.replaceMessage("ERR0009","Minimum Number of NCs","The field"));
+            errMap.put(fdto.getSvcCode()+"mjRightLowCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC_NO_SPACE,"The field"));
             fdto.setDoMjRightLowCountherr(true);
         }else if(fdto.getDoMjRightLowCounth().length() > MIN_VALUE_LENGTH){
             errMap.put(fdto.getSvcCode()+"mjRightLowCaseCounth","ERR0018");
@@ -552,7 +550,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         }
 
         if(StringUtil.isEmpty(fdto.getDoMjLeftHighCounth())){
-            errMap.put(fdto.getSvcCode()+"mjLeftHighCaseCounth",MessageUtil.replaceMessage("ERR0009","Maximum Number of NCs","The field"));
+            errMap.put(fdto.getSvcCode()+"mjLeftHighCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC_NO_SPACE,"The field"));
             fdto.setDoMjLeftHighCountherr(true);
         }else if(fdto.getDoMjLeftHighCounth().length()>MAX_VALUE_LENGTH){
             errMap.put(fdto.getSvcCode()+"mjLeftHighCaseCounth","ERR0019");
@@ -560,7 +558,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         }
 
         if(StringUtil.isEmpty(fdto.getDoMjLeftModCounth())){
-            errMap.put(fdto.getSvcCode()+"mjLeftModCaseCounth",MessageUtil.replaceMessage("ERR0009","Maximum Number of NCs","The field"));
+            errMap.put(fdto.getSvcCode()+"mjLeftModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC_NO_SPACE,"The field"));
             fdto.setDoMjLeftModCountherr(true);
         }else if(fdto.getDoMjLeftModCounth().length() >MAX_VALUE_LENGTH ){
             errMap.put(fdto.getSvcCode()+"mjLeftModCaseCounth","ERR0019");

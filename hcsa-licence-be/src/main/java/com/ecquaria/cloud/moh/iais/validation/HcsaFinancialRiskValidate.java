@@ -304,36 +304,36 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
     public void mandatoryCaseCounthVad(Map<String, String> errMap,HcsaRiskFinanceMatrixDto fdto){
         //in
         if(StringUtil.isEmpty(fdto.getInLeftModCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"inLeftModCaseCounth",MessageUtil.replaceMessage("ERR0009","Minimum Number of NCs","The field"));
+            errMap.put(fdto.getServiceCode()+"inLeftModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"The field"));
             fdto.setInLeftModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getInRightModCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"inRightModCaseCounth",MessageUtil.replaceMessage("ERR0009","Maximum Number of NCs","The field"));
+            errMap.put(fdto.getServiceCode()+"inRightModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"The field"));
             fdto.setInRightModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getInRightLowCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"inRightLowCaseCounth",MessageUtil.replaceMessage("ERR0009","Maximum Number of NCs","The field"));
+            errMap.put(fdto.getServiceCode()+"inRightLowCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"The field"));
             fdto.setInRightLowCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getInLeftHighCaseCount())){
-            errMap.put(fdto.getServiceCode()+"inLeftHighCaseCounth",MessageUtil.replaceMessage("ERR0009","Minimum Number of NCs","The field"));
+            errMap.put(fdto.getServiceCode()+"inLeftHighCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"The field"));
             fdto.setInLeftHighCaseCounterr(true);
         }
         //pr
         if(StringUtil.isEmpty(fdto.getPrLeftModCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"prLeftModCaseCounth",MessageUtil.replaceMessage("ERR0009","Minimum Number of NCs","The field"));
+            errMap.put(fdto.getServiceCode()+"prLeftModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"The field"));
             fdto.setPrLeftModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getPrRightModCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"prRightModCaseCounth",MessageUtil.replaceMessage("ERR0009","Maximum Number of NCs","The field"));
+            errMap.put(fdto.getServiceCode()+"prRightModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"The field"));
             fdto.setPrRightModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getPrRightLowCaseCounth())){
-            errMap.put(fdto.getServiceCode()+"prRightLowCaseCounth",MessageUtil.replaceMessage("ERR0009","Maximum Number of NCs","The field"));
+            errMap.put(fdto.getServiceCode()+"prRightLowCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"The field"));
             fdto.setPrRightLowCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getPrLeftHighCaseCount())){
-            errMap.put(fdto.getServiceCode()+"prLeftHighCaseCounth",MessageUtil.replaceMessage("ERR0009","Minimum Number of NCs","The field"));
+            errMap.put(fdto.getServiceCode()+"prLeftHighCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"The field"));
             fdto.setPrLeftHighCaseCounterr(true);
         }
     }

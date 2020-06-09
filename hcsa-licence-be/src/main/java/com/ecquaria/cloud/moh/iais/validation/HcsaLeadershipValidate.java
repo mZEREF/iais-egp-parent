@@ -283,37 +283,37 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
     public void mandatoryCaseCounthVad(Map<String, String> errMap,HcsaRiskLeadershipMatrixDto fdto){
         //in
         if(StringUtil.isEmpty(fdto.getAdLeftModCaseCounth())){
-            errMap.put(fdto.getSvcCode()+"inLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES);
+            errMap.put(fdto.getSvcCode()+"inLeftModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"The field"));
             fdto.setAdLeftModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getAdRightModCaseCounth())){
-            errMap.put(fdto.getSvcCode()+"inRightModCaseCounth()",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES);
+            errMap.put(fdto.getSvcCode()+"inRightModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"The field"));
             fdto.setAdRightModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getAdRightLowCaseCounth())){
             fdto.setAdRightLowCaseCountherr(true);
-            errMap.put(fdto.getSvcCode()+"inRightLowCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES);
+            errMap.put(fdto.getSvcCode()+"inRightLowCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"The field"));
         }
         if(StringUtil.isEmpty(fdto.getAdLeftHighCaseCounth())){
             fdto.setAdLeftHighCaseCountherr(true);
-            errMap.put(fdto.getSvcCode()+"inLeftHighCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES);
+            errMap.put(fdto.getSvcCode()+"inLeftHighCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"The field"));
         }
         //pr
         if(StringUtil.isEmpty(fdto.getDpLeftModCaseCounth())){
             fdto.setDpLeftModCaseCountherr(true);
-            errMap.put(fdto.getSvcCode()+"prLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES);
+            errMap.put(fdto.getSvcCode()+"prLeftModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"The field"));
         }
         if(StringUtil.isEmpty(fdto.getDpRightModCaseCounth())){
             fdto.setDpRightModCaseCountherr(true);
-            errMap.put(fdto.getSvcCode()+"prRightModCaseCounth()",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES);
+            errMap.put(fdto.getSvcCode()+"prRightModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"The field"));
         }
         if(StringUtil.isEmpty(fdto.getDpRightLowCaseCounth())){
             fdto.setDpRightLowCaseCountherr(true);
-            errMap.put(fdto.getSvcCode()+"prRightLowCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES);
+            errMap.put(fdto.getSvcCode()+"prRightLowCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"The field"));
         }
         if(StringUtil.isEmpty(fdto.getDpLeftHighCaseCounth())){
             fdto.setDpLeftHighCaseCountherr(true);
-            errMap.put(fdto.getSvcCode()+"prLeftHighCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES);
+            errMap.put(fdto.getSvcCode()+"prLeftHighCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"The field"));
         }
     }
 
