@@ -167,7 +167,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
             log.info(StringUtil.changeForLog("------------zip file name is"+backups+File.separator+ l+".zip"+"--------------------"));
             File file = new File(sharedPath + fileName + File.separator + rfiId);
 
-            zipFile(zos, file);
+            zipFile(zos, file,"backupsRec");
             log.info("----------------end zipFile ---------------------");
         } catch (IOException e) {
             log.error(e.getMessage(),e);
@@ -175,31 +175,32 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         return l+"";
     }
 
-    private void zipFile(ZipOutputStream zos,File file) throws IOException {
-        log.info("-----------start zipFile---------------------");
-        if (file.isDirectory()) {
-            zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))+File.separator));
-            zos.closeEntry();
+    private void zipFile(ZipOutputStream zos, File file, String curFileName)  {
+        if(file.isDirectory()){
+            String filePath = file.getPath().substring(file.getPath().indexOf(curFileName));
+            try {
+                zos.putNextEntry(new ZipEntry(filePath + File.separator));
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
             for(File f: Objects.requireNonNull(file.listFiles())){
-                zipFile(zos,f);
+                zipFile(zos, f, curFileName);
             }
         } else {
-            try (
-                    BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
-                zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))));
+            try(BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
+                String filePath = file.getPath().substring(file.getPath().indexOf(curFileName));
+                zos.putNextEntry(new ZipEntry(filePath));
                 int count ;
-                byte [] b =new byte[1024];
+                byte [] b = new byte[1024];
                 count = bis.read(b);
-                while(count!=-1){
-                    zos.write(b,0,count);
-                    count=bis.read(b);
+                while(count != -1){
+                    zos.write(b,0, count);
+                    count = bis.read(b);
                 }
-                zos.closeEntry();
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
+            }catch (IOException e){
+                log.error(e.getMessage(), e);
             }
         }
-
     }
 
     private void rename(String fileNamesss,String rfiId)  {
