@@ -108,7 +108,8 @@
             </div>
             </c:if>
             <div class="form-horizontal">
-                <div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if> >
+                <%--<div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if> >--%>
+                <div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004'==AppSubmissionDto.appType }">hidden</c:if> >
                     <label class="col-xs-12 col-md-4 control-label error-msg-type" for="premisesType">What is your premises type ? <span class="mandatory">*</span></label>
                     <input class="premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
                     <input class="premSelValue" type="hidden" value="${appGrpPremisesDto.premisesSelect}"/>

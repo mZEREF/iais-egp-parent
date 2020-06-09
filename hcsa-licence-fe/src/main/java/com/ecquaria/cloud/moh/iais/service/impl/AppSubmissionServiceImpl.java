@@ -168,8 +168,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<String> baseServiceIds = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtos = appConfigClient.serviceCorrelation().getEntity();
 
-        if(appSubmissionDto.isOnlySpecifiedSvc() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
-            baseServiceIds = appSubmissionDto.getExistBaseServiceList();
+//        if(appSubmissionDto.isOnlySpecifiedSvc() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
+        if(false){
+            //baseServiceIds = appSubmissionDto.getExistBaseServiceList();
             for(String baseSvcId:baseServiceIds){
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(baseSvcId);
                 LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
@@ -216,7 +217,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         }
                     }
                 }
-                if(appSubmissionDto.isOnlySpecifiedSvc()){
+//                if(appSubmissionDto.isOnlySpecifiedSvc()){
+                if(false){
                     licenceFeeDto.setIncludeBase(false);
                 }else{
                     licenceFeeDto.setIncludeBase(true);

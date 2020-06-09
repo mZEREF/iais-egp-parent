@@ -346,12 +346,13 @@ public class NewApplicationDelegator {
         if (!IaisCommonUtils.isEmpty(svcIds)) {
             log.info(StringUtil.changeForLog("svcId not null"));
             Set<String> premisesType  = IaisCommonUtils.genNewHashSet();
-            if(appSubmissionDto.isOnlySpecifiedSvc()){
-                List<String> baseSvcIds = appSubmissionDto.getExistBaseServiceList();
-                premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(baseSvcIds);
-            }else{
-                premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
-            }
+            premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
+//            if(appSubmissionDto.isOnlySpecifiedSvc()){
+//                List<String> baseSvcIds = appSubmissionDto.getExistBaseServiceList();
+//                premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(baseSvcIds);
+//            }else{
+//                premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
+//            }
             ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
         }else{
             log.error(StringUtil.changeForLog("do not have select the services"));
@@ -583,7 +584,8 @@ public class NewApplicationDelegator {
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit, isRfi);
         log.info(StringUtil.changeForLog("isGetDataFromPage:"+isGetDataFromPage));
-        if(isGetDataFromPage && !appSubmissionDto.isOnlySpecifiedSvc() ){
+//        if(isGetDataFromPage && !appSubmissionDto.isOnlySpecifiedSvc() ){
+        if(isGetDataFromPage){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
             if(appSubmissionDto.isNeedEditController()){
@@ -691,7 +693,8 @@ public class NewApplicationDelegator {
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT, isEdit, isRfi);
 
 
-        if(isGetDataFromPage && !appSubmissionDto.isOnlySpecifiedSvc()){
+//        if(isGetDataFromPage && !appSubmissionDto.isOnlySpecifiedSvc()){
+        if(isGetDataFromPage){
             List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO);
             List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO);
             List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -881,7 +884,8 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String isGroupLic = ParamUtil.getString(bpc.request,"isGroupLic");
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-        if(!appSubmissionDto.isOnlySpecifiedSvc() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
+//        if(!appSubmissionDto.isOnlySpecifiedSvc() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
             if(!StringUtil.isEmpty(isGroupLic) && AppConsts.YES.equals(isGroupLic)){
                 appSubmissionDto.setGroupLic(true);
             }else{
@@ -4815,9 +4819,9 @@ public class NewApplicationDelegator {
                     appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                 }
                 appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
-                appSubmissionDto.setOnlySpecifiedSvc(true);
+                //appSubmissionDto.setOnlySpecifiedSvc(true);
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-                appSubmissionDto.setExistBaseServiceList(baseSvcIds);
+                //appSubmissionDto.setExistBaseServiceList(baseSvcIds);
             }
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }

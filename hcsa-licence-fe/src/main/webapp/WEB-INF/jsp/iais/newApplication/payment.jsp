@@ -55,7 +55,8 @@
                                             </c:forEach>
                                         </c:when>
 
-                                        <c:when test="${AppSubmissionDto.groupLic && 'APTY002' == AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">
+                                        <%--<c:when test="${AppSubmissionDto.groupLic && 'APTY002' == AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">--%>
+                                        <c:when test="${AppSubmissionDto.groupLic && 'APTY002' == AppSubmissionDto.appType }">
                                             <c:forEach items="${AppSubmissionDto.feeInfoDtos}" var="feeInfoDto">
                                                 <c:set var="baseSvcFeeExt" value="${feeInfoDto.baseSvcFeeExt}"/>
                                                 <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
@@ -100,7 +101,8 @@
                                                     <c:set var="simpleSpecifiedFeeExt" value="${feeInfoDto.simpleSpecifiedFeeExt}"/>
                                                     <!--todo:includedSvcFeeExtList -->
                                                     <!--base -->
-                                                    <c:if test="${!AppSubmissionDto.onlySpecifiedSvc}">
+                                                    <%--<c:if test="${!AppSubmissionDto.onlySpecifiedSvc}">--%>
+                                                    <c:if test="true">
                                                     <tr>
                                                         <td>
                                                             <c:forEach var="svcName" items="${baseSvcFeeExt.svcNames}">

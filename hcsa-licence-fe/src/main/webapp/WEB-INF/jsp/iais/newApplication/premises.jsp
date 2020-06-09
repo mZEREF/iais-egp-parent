@@ -108,7 +108,8 @@
                 </div>
                 <div class="row">
                   <div class="col-xs-12" id="addPremBody" hidden>
-                    <c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">
+                    <%--<c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">--%>
+                    <c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType }">
                       <button id="addPremBtn" class="btn btn-primary" type="button">Add Premises</button>
                     </c:if>
                   </div>
@@ -219,8 +220,8 @@
                 $('input[type="radio"]').prop('disabled',false);
                 submit('premises','saveDraft',$('#selectDraftNo').val());
         });
-
-        <c:if test="${AppSubmissionDto.needEditController || AppSubmissionDto.onlySpecifiedSvc}">
+<%--<c:if test="${AppSubmissionDto.needEditController || AppSubmissionDto.onlySpecifiedSvc}">--%>
+        <c:if test="${AppSubmissionDto.needEditController }">
         readonlyPartPage($('div.premises-content'));
         </c:if>
 

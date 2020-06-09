@@ -89,7 +89,7 @@
                               </span>
                             </c:when>
                             <c:otherwise>
-                              <span class="existFile delBtn <c:if test="${!isClickEdit || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if>">
+                              <%--<span class="existFile delBtn <c:if test="${!isClickEdit || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if>">--%> <c:if test="${!isClickEdit}">hidden</c:if>">
                                 &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
                               </span>
                             </c:otherwise>
@@ -181,7 +181,8 @@
         if($('#saveDraftSuccess').val()=='success'){
             $('#saveDraft').modal('show');
         }
-        if(${(AppSubmissionDto.needEditController && !isClickEdit) || AppSubmissionDto.onlySpecifiedSvc }){
+        <%--if(${(AppSubmissionDto.needEditController && !isClickEdit) || AppSubmissionDto.onlySpecifiedSvc }){--%>
+        if(${(AppSubmissionDto.needEditController && !isClickEdit)}){
             disabledPage();
             $('.btn-file-upload').addClass('hidden');
         }
