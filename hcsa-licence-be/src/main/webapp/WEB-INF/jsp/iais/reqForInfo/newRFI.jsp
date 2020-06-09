@@ -254,7 +254,7 @@
             var jsonData={
                 'Length': length
             };
-            if(length<4){
+            if(length<5){
                 $.ajax({
                     'url':'${pageContext.request.contextPath}/new-rfi-html',
                     'dataType':'text',
@@ -314,7 +314,7 @@
             var jsonData={
                 'Length': lengthInfo
             };
-            if(lengthInfo<4){
+            if(lengthInfo<5){
                 $.ajax({
                     'url':'${pageContext.request.contextPath}/new-rfi-info-html',
                     'dataType':'text',

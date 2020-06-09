@@ -251,6 +251,9 @@ public class OfficerOnlineEnquiriesDelegator {
                                 String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
                                 reqForInfoSearchListDto.setLicenceId(lic.getId());
                                 licenceIds.add(lic.getId());
+                                List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(lic.getId()).getEntity();
+                                reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
+                                reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
                                 reqForInfoSearchListDto.setLicenceStatus(licStatus);
                                 reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
                                 reqForInfoSearchListDto.setStartDate(lic.getStartDate());
@@ -621,6 +624,9 @@ public class OfficerOnlineEnquiriesDelegator {
                                 String licStatus = MasterCodeUtil.retrieveOptionsByCodes(new String[]{lic.getLicenceStatus()}).get(0).getText();
                                 reqForInfoSearchListDto.setLicenceId(lic.getId());
                                 licenceIds.add(lic.getId());
+                                List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(lic.getId()).getEntity();
+                                reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
+                                reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
                                 reqForInfoSearchListDto.setLicenceStatus(licStatus);
                                 reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
                                 //reqForInfoSearchListDto.setServiceName(lic.getServiceName());
