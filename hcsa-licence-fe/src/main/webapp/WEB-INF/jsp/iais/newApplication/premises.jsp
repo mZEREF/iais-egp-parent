@@ -1,6 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib prefix="ias" uri="http://www.ecq.com/iais" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -24,6 +25,7 @@
   <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
   <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
   <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
+  <input type="hidden" name="crud_action_type_continue" value="">
   <%--Validation fields End--%>
   <div class="main-content">
     <div class="container">
@@ -97,11 +99,13 @@
                     </div>
                   </div>
                   <c:if test="${AppSubmissionDto.appType=='APTY005'||AppSubmissionDto.appType=='APTY004'}">
-                    <div class="form-check col-sm-12">
-                      <ul>
-                        <li>Changes made will be applied to other licences associated with this premises:</li>
-                      </ul>
-                    </div>
+                    <c:if test="${fn:length(appGrpPremisesDto.licenceDtos)>0}">
+                      <div class="form-check col-sm-12">
+                        <ul>
+                          <li>Changes made will be applied to other licences associated with this premises:</li>
+                        </ul>
+                      </div>
+                    </c:if>
                   </c:if>
                   <!--prem content -->
                   <%@include file="../common/premisesContent.jsp"%>
@@ -273,7 +277,8 @@
 
   function Continue() {
       $('#hciNameUsed').modal('hide');
-      submit('documents',null,'continue');
+      $("[name='crud_action_type_continue']").val("continue");
+      submit('documents',null,'rfcSaveDraft');
   }
 
 </script>

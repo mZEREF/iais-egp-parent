@@ -622,7 +622,9 @@ public class NewApplicationDelegator {
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
 
             Map<String, String> errorMap= requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,masterCodeDto,isRfi);
-            if("continue".equals(crud_action_additional)){
+            String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
+            String crud_action_type = bpc.request.getParameter("crud_action_type");
+            if("continue".equals(crud_action_type_continue)){
                 errorMap.remove("hciNameUsed");
             }
             String string = errorMap.get("hciNameUsed");

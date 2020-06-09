@@ -69,13 +69,14 @@
                                       </div>
                                       <div class="col-md-6">
                                           <div class="col-md-6">
-                                              <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"
-                                                    style="display: none"><label><c:out value=""/></label></span>
+                                            <span class="newVal compareTdStyle"
+                                                  attr="${appGrpPremDto.premisesType}"><c:out
+                                                    value="${appGrpPremDto.premisesType}"/></span>
+
                                           </div>
                                           <div class="col-md-6">
-                                              <span class="oldVal compareTdStyle"
-                                                    attr="${appGrpPremDto.premisesType}"><label><c:out
-                                                      value="${appGrpPremDto.premisesType}"/></label></span>
+                                                <span class="oldVal" attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"
+                                                      style="display: none"><c:out value="${ppSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"/></span>
                                           </div>
                                       </div>
                                     </div>
@@ -86,11 +87,11 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div  class="col-md-6">
-                                              <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"
-                                                    style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/></label></span>
+                                            <span class="newVal compareTdStyle" attr="${appGrpPremDto.conveyanceVehicleNo}"><c:out value="${appGrpPremDto.conveyanceVehicleNo}"/></span>
                                           </div>
                                           <div  class="col-md-6">
-                                            <span class="oldVal compareTdStyle" attr="${appGrpPremDto.conveyanceVehicleNo}"><label><c:out value="${appGrpPremDto.conveyanceVehicleNo}"/></label></span>
+                                             <span class="oldVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"
+                                                   style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/></span>
                                           </div>
                                         </div>
                                       </div>
@@ -104,13 +105,13 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
-                                             <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo}"
-                                                   style="display: none"><label><c:out value=""/></label></span>
+                                             <span class="newVal compareTdStyle"
+                                                   attr="${appGrpPremDto.scdfRefNo}"><c:out
+                                                     value="${appGrpPremDto.scdfRefNo}"/></span>
                                           </div>
                                           <div class="col-md-6">
-                                                <span class="oldVal compareTdStyle"
-                                                      attr="${appGrpPremDto.scdfRefNo}"><label><c:out
-                                                        value="${appGrpPremDto.scdfRefNo}"/></label></span>
+                                               <span class="oldVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo}"
+                                                     style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo}"/></span>
                                           </div>
                                         </div>
                                       </div>
@@ -120,21 +121,22 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
-                                             <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt}"
-                                                   style="display: none"><label><fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt}" pattern="dd/MM/yyyy"/></label>
-                                                </span>
-                                          </div>
-                                          <div class="col-md-6">
-                                               <span class="oldVal compareTdStyle"
-                                                     attr="${appGrpPremDto.certIssuedDt}"><label>
+                                             <span class="newVal compareTdStyle"
+                                                   attr="${appGrpPremDto.certIssuedDt}">
                                                <c:if test="${empty appGrpPremDto.certIssuedDt}">
                                                  <c:out value="${appGrpPremDto.certIssuedDt}"/>
                                                </c:if>
                                                 <c:if test="${not empty appGrpPremDto.certIssuedDt}">
                                                   <fmt:formatDate value="${appGrpPremDto.certIssuedDt}" pattern="dd/MM/yyyy"/>
                                                 </c:if>
-                                                </label>
+
                                               </span>
+                                          </div>
+                                          <div class="col-md-6">
+                                              <span class="oldVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt}"
+                                                    style="display: none"><fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt}" pattern="dd/MM/yyyy"/>
+                                                </span>
+
                                           </div>
                                         </div>
                                       </div>
@@ -145,13 +147,14 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
-                                               <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"
-                                                     style="display: none"><label><c:out value=""/></label></span>
+                                                <span class="newVal compareTdStyle"
+                                                      attr="${appGrpPremDto.hciName}"><c:out
+                                                        value="${appGrpPremDto.hciName}"/></span>
                                           </div>
                                           <div class="col-md-6">
-                                             <span class="oldVal compareTdStyle"
-                                                   attr="${appGrpPremDto.hciName}"><label><c:out
-                                                     value="${appGrpPremDto.hciName}"/></label></span>
+                                             <span class="oldVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"
+                                                   style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/></span>
+
                                           </div>
                                         </div>
                                       </div>
@@ -163,14 +166,13 @@
                                       </div>
                                       <div class="col-md-6">
                                         <div  class="col-md-6">
-                                            <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].postalCode ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].postalCode}"
-                                                  style="display: none"><label><c:out value=""/></label></span>
-
+                                           <span class="newVal compareTdStyle"
+                                                 attr="${appGrpPremDto.postalCode}"><c:out
+                                                   value="${appGrpPremDto.postalCode}"/></span>
                                         </div>
                                         <div  class="col-md-6">
-                                            <span class="oldVal compareTdStyle"
-                                                  attr="${appGrpPremDto.postalCode}"><label><c:out
-                                                    value="${appGrpPremDto.postalCode}"/></label></span>
+                                           <span class="oldVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].postalCode ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].postalCode}"
+                                                 style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].postalCode}"/></span>
                                         </div>
                                       </div>
                                     </div>
@@ -181,17 +183,21 @@
                                       </div>
                                       <div class="col-md-6">
                                           <div class="col-md-6">
-                                              <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType}"
-                                                    style="display: none"><label><c:out value=""/></label></span>
-                                          </div>
-                                          <div class="col-md-6">
-                                              <span class="oldVal compareTdStyle"
+                                              <span class="newVal compareTdStyle"
                                                     attr="${appGrpPremDto.addrType}">
-                                              <label>
+
                                               <c:if test="${appGrpPremDto.addrType=='ADDTY001'}"> Apt Blk</c:if>
                                               <c:if test="${appGrpPremDto.addrType=='ADDTY002'}"> Without Apt Blk</c:if>
-                                              </label>
+
                                               </span>
+
+                                          </div>
+                                          <div class="col-md-6">
+                                             <span class="oldVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType}"
+                                                   style="display: none">
+                                                  <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType=='ADDTY001'}"> Apt Blk</c:if>
+                                                  <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].addrType=='ADDTY002'}"> Without Apt Blk</c:if>
+                                             </span>
                                           </div>
                                       </div>
                                     </div>
@@ -201,15 +207,13 @@
                                       </div>
                                       <div class="col-md-6">
                                         <div class="col-md-6">
-                                            <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}"
-                                                  style="display: none"><label><c:out value=""/></label></span>
+                                           <span class="newVal compareTdStyle"
+                                                 attr="${appGrpPremDto.blkNo}"><c:out
+                                                   value="${appGrpPremDto.blkNo}"/></span>
                                         </div>
                                         <div class="col-md-6">
-                                          <span class="oldVal compareTdStyle"
-                                                attr="${appGrpPremDto.blkNo}"
-                                               ><label><c:out
-                                                  value="${appGrpPremDto.blkNo}"/></label></span>
-
+                                          <span class="oldVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}"
+                                                style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}"/></span>
                                         </div>
 
                                         </span>
@@ -222,13 +226,14 @@
                                       </div>
                                       <div class="col-md-6">
                                         <div class="col-md-6">
-                                            <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}"
-                                                  style="display: none"><label><c:out value=""/></label></span>
+                                           <span class="newVal compareTdStyle"
+                                                 attr="${appGrpPremDto.floorNo}"><c:out
+                                                   value="${appGrpPremDto.floorNo}"/></span>
+
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="oldVal compareTdStyle"
-                                                  attr="${appGrpPremDto.floorNo}"><label><c:out
-                                                    value="${appGrpPremDto.floorNo}"/></label></span>
+                                             <span class="oldVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}"
+                                                   style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}"/></span>
                                         </div>
                                       </div>
                                     </div>
@@ -240,13 +245,14 @@
                                       </div>
                                       <div class="col-md-6">
                                           <div class="col-md-6">
-                                                <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo}"
-                                                      style="display: none"><label><c:out value=""/></label></span>
+                                              <span class="newVal compareTdStyle"
+                                                    attr="${appGrpPremDto.unitNo}"><c:out
+                                                      value="${appGrpPremDto.unitNo}"/></span>
+
                                           </div>
                                           <div class="col-md-6">
-                                                <span class="oldVal compareTdStyle"
-                                                      attr="${appGrpPremDto.unitNo}"><label><c:out
-                                                        value="${appGrpPremDto.unitNo}"/></label></span>
+                                              <span class="oldVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo}"
+                                                    style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].unitNo}"/></span>
                                           </div>
                                       </div>
                                     </div>
@@ -258,13 +264,14 @@
                                       </div>
                                       <div class="col-md-6">
                                           <div class="col-md-6">
-                                              <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].streetName ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].streetName}"
-                                                    style="display: none"><label><c:out value=""/></label></span>
+                                             <span class="newVal compareTdStyle"
+                                                   attr="${appGrpPremDto.streetName}"><c:out
+                                                     value="${appGrpPremDto.streetName}"/></span>
+
                                           </div>
                                           <div class="col-md-6">
-                                              <span class="oldVal compareTdStyle"
-                                                    attr="${appGrpPremDto.streetName}"><label><c:out
-                                                      value="${appGrpPremDto.streetName}"/></label></span>
+                                             <span class="oldVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].streetName ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].streetName}"
+                                                   style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].streetName}"/></span>
                                           </div>
                                       </div>
 
@@ -275,13 +282,13 @@
                                       </div>
                                       <div class="col-md-6">
                                           <div class="col-md-6">
-                                              <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].buildingName ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].buildingName}"
-                                                    style="display: none"><label><c:out value=""/></label></span>
+                                            <span class="newVal compareTdStyle"
+                                                  attr="${appGrpPremDto.buildingName}"><c:out
+                                                    value="${appGrpPremDto.buildingName}"/></span>
                                           </div>
                                           <div class="col-md-6">
-                                              <span class="oldVal compareTdStyle"
-                                                    attr="${appGrpPremDto.buildingName}"><label><c:out
-                                                      value="${appGrpPremDto.buildingName}"/></label></span>
+                                               <span class="oldVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].buildingName ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].buildingName}"
+                                                     style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].buildingName }"/></span>
                                           </div>
                                       </div>
                                     </div>
@@ -303,13 +310,14 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="col-md-6">
-                                                <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}"
-                                                      style="display: none"><label><c:out value=""/></label></span>
+                                               <span class="newVal compareTdStyle"
+                                                     attr="${appGrpPremDto.offTelNo}"><c:out
+                                                       value="${appGrpPremDto.offTelNo}"/></span>
+
                                             </div>
                                             <div class="col-md-6">
-                                                <span class="oldVal compareTdStyle"
-                                                      attr="${appGrpPremDto.offTelNo}"><label><c:out
-                                                        value="${appGrpPremDto.offTelNo}"/></label></span>
+                                                <span class="oldVal" attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}"
+                                                      style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].offTelNo}"/></span>
                                             </div>
                                         </div>
                                       </div>
@@ -321,15 +329,17 @@
                                       </div>
                                       <div class="col-md-6">
                                           <div class="col-md-6">
-                                              <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}" style="display: none"><label><c:out
-                                                      value=""/></label></span>
+                                             <span class="newVal compareTdStyle"
+                                                   attr="${appGrpPremDto.wrkTimeFrom}">
+                                                    <fmt:formatDate value="${appGrpPremDto.wrkTimeFrom}"
+                                                                    pattern="HH : mm"></fmt:formatDate>
+                                                </span>
                                           </div>
                                           <div class="col-md-6">
-                                              <span class="oldVal compareTdStyle"
-                                                    attr="${appGrpPremDto.wrkTimeFrom}">
-                                                    <fmt:formatDate value="${appGrpPremDto.wrkTimeFrom}"
-                                                            pattern="HH : mm"></fmt:formatDate>
-                                                </span>
+                                             <span class=" oldVal" attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}" style="display: none">
+                                              <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"
+                                                              pattern="HH : mm"></fmt:formatDate></span>
+
                                           </div>
                                       </div>
                                     </div>
@@ -340,15 +350,17 @@
                                       </div>
                                       <div class="col-md-6">
                                           <div class="col-md-6">
-                                              <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"
-                                                    style="display: none"><label><c:out value=""/></label></span>
-                                          </div>
-                                          <div class="col-md-6">
-                                              <span class="oldVal compareTdStyle"
-                                                    attr="${appGrpPremDto.wrkTimeTo}">
+                                             <span class="newVal compareTdStyle"
+                                                   attr="${appGrpPremDto.wrkTimeTo}">
                                                   <fmt:formatDate value="${appGrpPremDto.wrkTimeTo}"
                                                                   pattern="HH : mm"></fmt:formatDate>
                                               </span>
+
+                                          </div>
+                                          <div class="col-md-6">
+                                               <span class="oldVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"
+                                                     style="display: none"> <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"
+                                                                                            pattern="HH : mm"></fmt:formatDate></span>
                                           </div>
                                       </div>
                                     </div>
@@ -361,13 +373,13 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="col-md-6">
-                                            <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].phDate ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].phDate}" style="display: none"><label><c:out
-                                                    value=""/></label></span>
+                                             <span class="newVal compareTdStyle" attr="${appPremPhOpenPeriod.phDate}">
+                                               <c:out value="${appPremPhOpenPeriod.dayName}"/></span>
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="oldVal compareTdStyle"
-                                                  attr="${appPremPhOpenPeriod.phDate}"><label><c:out
-                                                    value="${appPremPhOpenPeriod.dayName}"/></label></span>
+                                           <span class="oldVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].phDate ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].phDate}" style="display: none">
+                                             <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].phDate}"/></span>
+
                                         </div>
                                     </div>
                                   </div>
@@ -378,13 +390,14 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="col-md-6">
-                                            <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH}" style="display: none"><label><c:out
-                                                    value=""/></label></span>
+                                             <span class="newVal compareTdStyle"
+                                                   attr="${appPremPhOpenPeriod.convStartFromHH}"><label><c:out
+                                                     value="${appPremPhOpenPeriod.convStartFromHH} : ${appPremPhOpenPeriod.convStartFromMM}"/></label></span>
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="oldVal compareTdStyle"
-                                                  attr="${appPremPhOpenPeriod.convStartFromHH}"><label><c:out
-                                                    value="${appPremPhOpenPeriod.convStartFromHH} : ${appPremPhOpenPeriod.convStartFromMM}"/></label></span>
+                                          <span class="oldVal" attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH}" style="display: none">
+                                            <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH} : ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromMM}"/></span>
+
                                         </div>
                                     </div>
                                   </div>
@@ -395,15 +408,16 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="col-md-6">
-                                            <span class="newVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}"
-                                                  style="display: none"><label><c:out value=""/></label></span>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <span class="oldVal compareTdStyle"
-                                                  attr="${appPremPhOpenPeriod.endTo}">
+                                           <span class="newVal compareTdStyle"
+                                                 attr="${appPremPhOpenPeriod.endTo}">
                                               <fmt:formatDate value="${appPremPhOpenPeriod.endTo}"
                                                               pattern="HH : mm"></fmt:formatDate>
                                             </span>
+
+                                        </div>
+                                        <div class="col-md-6">
+                                               <span class="oldVal " attr="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo ? '-' : appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}"
+                                                     style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}"/></span>
                                         </div>
                                     </div>
                                   </div>
@@ -440,20 +454,22 @@
                                           <div class="field col-sm-4 control-label formtext"><label>${appGrpPrimaryDocDto.svcComDocName}:</label></div>
                                           <div class="control col-sm-12">
                                             <div class="fileList">
-                                              <span class="filename server-site col-xs-6 col-md-6" id="130">
-                                                <c:if test="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}">
+                                              <span class="filename server-site col-xs-12 col-md-12" id="130">
+                                                  <div class="col-xs-6 col-md-6">
+                                                  <span class="newVal compareTdStyle" attr="${appGrpPrimaryDocDto.docSize}${appGrpPrimaryDocDto.docName}" ><c:out value="${appGrpPrimaryDocDto.docName} (${appGrpPrimaryDocDto.docSize} KB)"/></span>
+
+                                                </div>
+                                                <div class="col-xs-6 col-md-6">
+                                                  <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/></span>
+                                                </div>
+                                              <%--  <c:if test="${empty appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}">
                                                   <c:out value="-"/>
                                                 </c:if>
                                                 <c:if test="${!empty appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}">
                                                   <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/>
-                                                </c:if>
+                                                </c:if>--%>
                                               </span>
-                                              <span class="col-xs-6 col-md-6">
-                                                <wrms:value width="7">
-                                                  <span class="newVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/></label></span>
-                                                  <span class="oldVal compareTdStyle" attr="${appGrpPrimaryDocDto.docSize}${appGrpPrimaryDocDto.docName}" style="display: none"><label><c:out value="${appGrpPrimaryDocDto.docName} (${appGrpPrimaryDocDto.docSize} KB)"/></label></span>
-                                                </wrms:value>
-                                              </span>
+
                                             </div>
                                           </div>
                                         </div>
@@ -510,7 +526,9 @@
                                           UEN Number
                                           </div>
                                           <div class="col-md-6">
-                                            <span>${newLicenceDto.uenNo}</span>
+                                            <div class="col-md-6">
+                                              <span>${newLicenceDto.uenNo}</span>
+                                            </div>
                                           </div>
                                         </div>
 
@@ -520,13 +538,14 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal " attr="${empty oldLicenceDto.name ? '-' : oldLicenceDto.name}"
-                                                        style="display: none"><label><c:out
-                                                          value="${oldLicenceDto.name}"/></label></span>
+                                                <span class="newVal compareTdStyle" attr="${newLicenceDto.name}"><c:out
+                                                        value="${newLicenceDto.name}"/></span>
+
                                               </div>
                                               <div class="col-md-6">
-                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.name}"><label><c:out
-                                                          value="${newLicenceDto.name}"/></label></span>
+                                                  <span class="oldVal " attr="${empty oldLicenceDto.name ? '-' : oldLicenceDto.name}"
+                                                        style="display: none"><c:out
+                                                          value="${oldLicenceDto.name}"/></span>
                                               </div>
                                           </div>
                                         </div>
@@ -537,13 +556,14 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal " attr="${empty oldLicenceDto.postalCode ? '-' : oldLicenceDto.postalCode}"
-                                                        style="display: none"><label><c:out
-                                                          value="${oldLicenceDto.postalCode}"/></label></span>
+                                                  <span class="newVal compareTdStyle" attr="${newLicenceDto.postalCode}"><c:out
+                                                          value="${newLicenceDto.postalCode}"/></span>
                                               </div>
                                               <div class="col-md-6">
-                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.postalCode}"><label><c:out
-                                                          value="${newLicenceDto.postalCode}"/></label></span>
+                                                 <span class="oldVal " attr="${empty oldLicenceDto.postalCode ? '-' : oldLicenceDto.postalCode}"
+                                                       style="display: none"><c:out
+                                                         value="${oldLicenceDto.postalCode}"/></span>
+
                                               </div>
                                           </div>
                                         </div>
@@ -554,13 +574,14 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal " attr="${empty oldLicenceDto.addrType ? '-' : oldLicenceDto.addrType}"
-                                                        style="display: none"><label><c:out
-                                                          value="${oldLicenceDto.addrType}"/></label></span>
+                                                 <span class="newVal compareTdStyle" attr="${newLicenceDto.addrType}"><c:out
+                                                         value="${newLicenceDto.addrType}"/></span>
+
                                               </div>
                                               <div class="col-md-6">
-                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.addrType}"><label><c:out
-                                                          value="${newLicenceDto.addrType}"/></label></span>
+                                                 <span class="oldVal" attr="${empty oldLicenceDto.addrType ? '-' : oldLicenceDto.addrType}"
+                                                       style="display: none"><c:out
+                                                         value="${oldLicenceDto.addrType}"/></span>
                                               </div>
                                           </div>
                                         </div>
@@ -571,13 +592,14 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal " attr="${empty oldLicenceDto.unitNo ? '-' : oldLicenceDto.unitNo}"
-                                                        style="display: none"><label><c:out
-                                                          value="${oldLicenceDto.unitNo}"/></label></span>
+                                                 <span class="newVal compareTdStyle" attr="${newLicenceDto.unitNo}"><c:out
+                                                         value="${newLicenceDto.unitNo}"/></span>
+
                                               </div>
                                               <div class="col-md-6">
-                                                   <span class="oldVal compareTdStyle" attr="${newLicenceDto.unitNo}"><label><c:out
-                                                           value="${newLicenceDto.unitNo}"/></label></span>
+                                                    <span class="oldVal " attr="${empty oldLicenceDto.unitNo ? '-' : oldLicenceDto.unitNo}"
+                                                          style="display: none"><c:out
+                                                            value="${oldLicenceDto.unitNo}"/></span>
                                               </div>
                                           </div>
                                         </div>
@@ -588,13 +610,14 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                   <span class="newVal " attr="${empty oldLicenceDto.floorNo ? '-' : oldLicenceDto.floorNo}"
-                                                         style="display: none"><label><c:out
-                                                           value="${oldLicenceDto.floorNo}"/></label></span>
+                                                 <span class="newVal compareTdStyle" attr="${newLicenceDto.floorNo}"><c:out
+                                                         value="${newLicenceDto.floorNo}"/></span>
+
                                               </div>
                                               <div class="col-md-6">
-                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.floorNo}"><label><c:out
-                                                          value="${newLicenceDto.floorNo}"/></label></span>
+                                                   <span class="oldVal " attr="${empty oldLicenceDto.floorNo ? '-' : oldLicenceDto.floorNo}"
+                                                         style="display: none"><c:out
+                                                           value="${oldLicenceDto.floorNo}"/></span>
                                               </div>
                                           </div>
                                         </div>
@@ -605,12 +628,13 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal " attr="${empty oldLicenceDto.unitNo ? '-' : oldLicenceDto.unitNo}"
-                                                        style="display: none"></span>
+                                                   <span class="newVal compareTdStyle" attr="${newLicenceDto.unitNo}"><label><c:out
+                                                           value="${newLicenceDto.unitNo}"/></label></span>
                                               </div>
                                               <div class="col-md-6">
-                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.unitNo}"><label><c:out
-                                                          value="${newLicenceDto.unitNo}"/></label></span>
+                                                 <span class="oldVal " attr="${empty oldLicenceDto.unitNo ? '-' : oldLicenceDto.unitNo}"
+                                                       style="display: none"></span>
+
                                               </div>
                                           </div>
                                         </div>
@@ -621,13 +645,14 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal " attr="${empty oldLicenceDto.streetName ? '-' : oldLicenceDto.streetName}"
-                                                        style="display: none"><label><c:out
-                                                          value="${oldLicenceDto.streetName}"/></label></span>
+                                                   <span class="newVal compareTdStyle" attr="${newLicenceDto.streetName}"><c:out
+                                                           value="${newLicenceDto.streetName}"/></span>
                                               </div>
                                               <div class="col-md-6">
-                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.streetName}"><label><c:out
-                                                          value="${newLicenceDto.streetName}"/></label></span>
+                                                 <span class="oldVal " attr="${empty oldLicenceDto.streetName ? '-' : oldLicenceDto.streetName}"
+                                                       style="display: none"><c:out
+                                                         value="${oldLicenceDto.streetName}"/></span>
+
                                               </div>
                                           </div>
                                         </div>
@@ -638,13 +663,14 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal " attr="${empty oldLicenceDto.buildingName ? '-' : oldLicenceDto.buildingName}"
-                                                        style="display: none"><label><c:out
-                                                          value="${oldLicenceDto.buildingName}"/></label></span>
+                                                  <span class="newVal compareTdStyle" attr="${newLicenceDto.buildingName}"><c:out
+                                                          value="${newLicenceDto.buildingName}"/></span>
                                               </div>
                                               <div class="col-md-6">
-                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.buildingName}"><label><c:out
-                                                          value="${newLicenceDto.buildingName}"/></label></span>
+                                                  <span class="oldVal " attr="${empty oldLicenceDto.buildingName ? '-' : oldLicenceDto.buildingName}"
+                                                        style="display: none"><c:out
+                                                          value="${oldLicenceDto.buildingName}"/></span>
+
                                               </div>
                                           </div>
                                         </div>
@@ -655,13 +681,14 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal " attr="${empty oldLicenceDto.officeTelNo ? '-' : oldLicenceDto.officeTelNo}"
-                                                        style="display: none"><label><c:out
-                                                          value="${oldLicenceDto.officeTelNo}"/></label></span>
+                                                  <span class="newVal compareTdStyle" attr="${newLicenceDto.officeTelNo}"><c:out
+                                                          value="${newLicenceDto.officeTelNo}"/></span>
                                               </div>
                                               <div class="col-md-6">
-                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.officeTelNo}"><label><c:out
-                                                          value="${newLicenceDto.officeTelNo}"/></label></span>
+                                                 <span class="oldVal " attr="${empty oldLicenceDto.officeTelNo ? '-' : oldLicenceDto.officeTelNo}"
+                                                       style="display: none"><c:out
+                                                         value="${oldLicenceDto.officeTelNo}"/></span>
+
                                               </div>
                                           </div>
                                         </div>
@@ -672,13 +699,14 @@
                                           </div>
                                           <div class="col-md-6">
                                               <div class="col-md-6">
-                                                  <span class="newVal " attr="${empty oldLicenceDto.emilAddr ? '-' : oldLicenceDto.emilAddr}"
-                                                        style="display: none"><label><c:out
-                                                          value="${oldLicenceDto.emilAddr}"/></label></span>
+                                                  <span class="newVal compareTdStyle" attr="${newLicenceDto.emilAddr}"><c:out
+                                                          value="${newLicenceDto.emilAddr}"/></span>
                                               </div>
                                               <div class="col-md-6">
-                                                  <span class="oldVal compareTdStyle" attr="${newLicenceDto.emilAddr}"><label><c:out
-                                                          value="${newLicenceDto.emilAddr}"/></label></span>
+                                                 <span class="oldVal " attr="${empty oldLicenceDto.emilAddr ? '-' : oldLicenceDto.emilAddr}"
+                                                       style="display: none"><c:out
+                                                         value="${oldLicenceDto.emilAddr}"/></span>
+
                                               </div>
                                           </div>
                                         </div>
@@ -993,12 +1021,12 @@
     });
 
 
-    hightLightChangeVal('oldVal', 'newVal');
+    hightLightChangeVal('newVal', 'oldVal');
 
     function hightLightChangeVal(newValClass, oldValClass) {
         $('.' + oldValClass).each(function () {
             var oldVal = $(this).attr('attr');
-            var newEle = $(this).parent().next().find('.' + newValClass);
+            var newEle = $(this).parent().prev().find('.' + newValClass);
             var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
             if (oldVal.length > 0 && newVal.length > 0) {
                 if (oldVal != newVal) {

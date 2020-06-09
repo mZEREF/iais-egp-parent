@@ -21,6 +21,7 @@
   <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
   <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
   <input type="hidden" name="licenceName" value=""/>
+  <input type="hidden" name="crud_action_type_continue" value="">
   <%--Validation fields End--%>
   <div class="main-content">
     <div class="container">
@@ -157,7 +158,8 @@
 
     function Continue() {
         $('#hciNameUsed').modal('hide');
-        doSubmitForm('prePayment','','continue');
+        $("[name='crud_action_type_continue']").val("continue");
+        doSubmitForm('prePayment','','rfcSaveDraft');
     }
 
 

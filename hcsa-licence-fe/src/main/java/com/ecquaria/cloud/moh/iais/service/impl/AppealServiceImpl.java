@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -31,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
@@ -64,6 +66,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -228,6 +231,13 @@ public class AppealServiceImpl implements AppealService {
         //todo
 
         appSubmissionDto.setLicenseeId(licenseeId);
+        String serviceName =(String)req.getSession().getAttribute("serviceName");
+        HcsaServiceDto serviceByServiceName = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList=new ArrayList<>(1);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto =new AppSvcRelatedInfoDto();
+        appSvcRelatedInfoDto.setServiceCode(serviceByServiceName.getSvcCode());
+        appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
+        appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         AppSubmissionDto entity = applicationClient.saveDraft(appSubmissionDto).getEntity();
         String draftNo = entity.getDraftNo();
         appPremiseMiscDto.setRemarks(remarks);
@@ -274,6 +284,7 @@ public class AppealServiceImpl implements AppealService {
                 request.setAttribute("appPremiseMiscDto",appPremiseMiscDto);
                 request.getSession().setAttribute(TYPE,type);
                 request.getSession().setAttribute(APPEALING_FOR,appealFor);
+                request.getSession().setAttribute("saveDraftNo",draftNumber);
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }

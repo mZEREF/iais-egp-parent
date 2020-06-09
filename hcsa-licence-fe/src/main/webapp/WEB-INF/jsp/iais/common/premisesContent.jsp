@@ -1,3 +1,4 @@
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
     <c:set value="${errorMap_premises[premIndexNo]}" var="errMsg"/>
     <c:set var="canEdit" value="true"/>
@@ -28,28 +29,27 @@
         <c:set var="premValue" value="${status.index}"/>
         <div class="col-xs-12">
             <c:if test="${AppSubmissionDto.appType=='APTY005'||AppSubmissionDto.appType=='APTY004'}">
-                <div class="form-check col-sm-12" >
-
-                    <table>
-                        <tr>
-                            <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence</td>
-                            <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence No.</td>
-                            <span id="error_selectLicence" class="error-msg"></span>
-                        </tr>
-                        <c:forEach items="${appGrpPremisesDto.licenceDtos}" var="licence">
+                <c:if test="${fn:length(appGrpPremisesDto.licenceDtos)>0}">
+                    <div class="form-check col-sm-12" >
+                        <table>
                             <tr>
-                                <td >
-                                    <div class="col-xs-12 col-md-12 form-check" style="padding:0px 15px;margin-top:15px">
-                                        <input class="form-check-input" disabled type="checkbox" checked="checked" value="<iais:mask name="licenceName${status.index}" value="${licence.id}"/>" name="licenceName${status.index}" aria-invalid="false">
-                                        <label class="form-check-label"><span class="check-square"></span>${licence.svcName}</label>
-                                    </div></td>
-                                <td class="form-check col-sm-3">${licence.licenceNo}</td>
+                                <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence  </td>
+                                <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence No.</td>
+                                <span id="error_selectLicence" class="error-msg"></span>
                             </tr>
-                        </c:forEach>
-
-                    </table>
-                </div>
-
+                            <c:forEach items="${appGrpPremisesDto.licenceDtos}" var="licence">
+                                <tr>
+                                    <td >
+                                        <div class="col-xs-12 col-md-12 form-check" style="padding:0px 15px;margin-top:15px">
+                                            <input class="form-check-input" disabled type="checkbox" checked="checked" value="<iais:mask name="licenceName${status.index}" value="${licence.id}"/>" name="licenceName${status.index}" aria-invalid="false">
+                                            <label class="form-check-label"><span class="check-square"></span>${licence.svcName}</label>
+                                        </div></td>
+                                    <td class="form-check col-sm-3">${licence.licenceNo}</td>
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </div>
+                </c:if>
             </c:if>
 
             <div class="form-horizontal">

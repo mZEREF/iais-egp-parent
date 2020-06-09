@@ -54,7 +54,7 @@
                 <c:forEach var="checkList" items="${appSvcLaboratoryDisciplinesDto.appSvcChckListDtoList}" varStatus="statuss">
                   <div class="form-check active">
                       <p class="form-check-label " aria-label="premise-1-cytology">
-                        <span class="check-square ">
+                        <span class="check-square " style="margin-top: 2%;">
                          <div class="col-xs-6 col-md-6">
                            <span class="newVal compareTdStyle" attr="${checkList.chkName}" ><label><c:out value="${checkList.chkName}"/></label></span>
 
@@ -405,10 +405,10 @@
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                        <div class="col-xs-6">
                       <div class="col-xs-6">
                         <span class="newVal compareTdStyle" attr="${po.idType}" ><label><c:out value="${po.idType}"/></label></span>
                       </div>
+                      <div class="col-xs-6">
                           <span class="oldVal " attr="<c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idType==null}">-</c:if><c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idType!=null}">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idType}</c:if>"  style="display: none"></span>
                         </div>
 
@@ -598,13 +598,14 @@
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                          <div class="col-xs-6 col-md-6">
+                            <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.name}" ><label><c:out value="${appSvcPersonnelDtoList.name}"/></label></span>
+                          </div>
                             <div class="col-xs-6 col-md-6">
-                              <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none"><label>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}</label></span>
+                              <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none"><label>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}</label></span>
 
                             </div>
-                            <div class="col-xs-6 col-md-6">
-                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.name}" ><label><c:out value="${appSvcPersonnelDtoList.name}"/></label></span>
-                            </div>
+
 
 
                           </p>
@@ -616,12 +617,13 @@
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                            <div class="col-xs-6">
-                              <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}" style="display: none"><label>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}</label></span>
+                          <div class="col-xs-6">
+                            <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.qualification}" ><label><c:out value="${appSvcPersonnelDtoList.qualification}"/></label></span>
+                          </div>
+                          <div class="col-xs-6">
+                              <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}" style="display: none"><label>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}</label></span>
                             </div>
-                            <div class="col-xs-6">
-                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.qualification}" ><label><c:out value="${appSvcPersonnelDtoList.qualification}"/></label></span>
-                            </div>
+
                           </p>
                         </td>
                       </tr>
@@ -631,12 +633,13 @@
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                          <div class="col-xs-6">
+                            <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.wrkExpYear}" ><label><c:out value="${appSvcPersonnelDtoList.wrkExpYear}"/></label></span>
+                          </div>
                             <div class="col-xs-6">
-                              <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}" style="display: none"><label>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}</label></span>
+                              <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}" style="display: none"><label>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}</label></span>
                             </div>
-                            <div class="col-xs-6">
-                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.wrkExpYear}" ><label><c:out value="${appSvcPersonnelDtoList.wrkExpYear}"/></label></span>
-                            </div>
+
 
                           </p>
                         </td>
@@ -658,13 +661,14 @@
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                            <div class="col-xs-6">
-                              <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}"/></label></span>
-                            </div>
-                            <div class="col-xs-6">
-                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.name}" ><label><c:out value="${appSvcPersonnelDtoList.name}"/></label></span>
+                          <div class="col-xs-6">
+                            <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.name}" ><label><c:out value="${appSvcPersonnelDtoList.name}"/></label></span>
 
+                          </div>
+                            <div class="col-xs-6">
+                              <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}"/></label></span>
                             </div>
+
 
                           </p>
                         </td>
@@ -675,14 +679,15 @@
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                          <div class="col-xs-6">
+                            <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.designation}" ><label><c:out value="${appSvcPersonnelDtoList.designation}"/></label></span>
+
+                          </div>
                             <div class="col-xs-6">
-                              <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].designation}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].designation}"/></label></span>
+                              <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].designation}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].designation}"/></label></span>
 
                             </div>
-                            <div class="col-xs-6">
-                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.designation}" ><label><c:out value="${appSvcPersonnelDtoList.designation}"/></label></span>
 
-                            </div>
 
                           </p>
                         </td>
@@ -693,12 +698,13 @@
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                          <div class="col-xs-6">
+                            <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.qualification}"><label><c:out value="${appSvcPersonnelDtoList.qualification}"/></label></span>
+                          </div>
                             <div class="col-xs-6">
-                              <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}"/></label></span>
+                              <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}"/></label></span>
                             </div>
-                            <div class="col-xs-6">
-                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.qualification}"><label><c:out value="${appSvcPersonnelDtoList.qualification}"/></label></span>
-                            </div>
+
                           </p>
                         </td>
                       </tr>
@@ -708,12 +714,13 @@
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                          <div class="col-xs-6">
+                            <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.wrkExpYear}" ><label><c:out value="${appSvcPersonnelDtoList.wrkExpYear}"/></label></span>
+                          </div>
                             <div class="col-xs-6">
-                              <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}"/></label></span>
+                              <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}"/></label></span>
                             </div>
-                            <div class="col-xs-6">
-                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.wrkExpYear}" ><label><c:out value="${appSvcPersonnelDtoList.wrkExpYear}"/></label></span>
-                            </div>
+
 
                           </p>
                         </td>
@@ -736,13 +743,14 @@
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                          <div class="col-xs-6">
+                            <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.name}" ><label><c:out value="${appSvcPersonnelDtoList.name}"/></label></span>
+                          </div>
                             <div class="col-xs-6">
-                              <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none"><label></label></span>
+                              <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none"><label></label></span>
 
                             </div>
-                            <div class="col-xs-6">
-                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.name}" ><label><c:out value="${appSvcPersonnelDtoList.name}"/></label></span>
-                            </div>
+
 
                           </p>
                         </td>
@@ -753,14 +761,15 @@
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                          <div  class="col-xs-6">
+                            <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.qualification}" ><label><c:out value="${appSvcPersonnelDtoList.qualification}"/></label></span>
+
+                          </div>
                             <div  class="col-xs-6">
-                             <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}" style="display: none"><label>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}</label></span>
+                             <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}" style="display: none"><label>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}</label></span>
 
                             </div>
-                            <div  class="col-xs-6">
-                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.qualification}" ><label><c:out value="${appSvcPersonnelDtoList.qualification}"/></label></span>
 
-                            </div>
 
                           </p>
                         </td>
@@ -771,14 +780,15 @@
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                          <div  class="col-xs-6">
+                            <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.wrkExpYear}" ><label><c:out value="${appSvcPersonnelDtoList.wrkExpYear}"/></label></span>
+
+                          </div>
                             <div  class="col-xs-6">
-                               <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}" style="display: none"><label></label></span>
+                               <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}" style="display: none"><label></label></span>
 
                             </div>
-                            <div  class="col-xs-6">
-                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.wrkExpYear}" ><label><c:out value="${appSvcPersonnelDtoList.wrkExpYear}"/></label></span>
 
-                           </div>
                           </p>
                         </td>
                       </tr>
@@ -800,13 +810,14 @@
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                          <div class="col-xs-6">
+                            <span class="newValcompareTdStyle" attr="${appSvcPersonnelDtoList.name}"><label><c:out value="${appSvcPersonnelDtoList.name}"/></label></span>
+                          </div>
                             <div class="col-xs-6">
-                              <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}"/></label></span>
+                              <span class="oldVal  " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}"/></label></span>
 
                             </div>
-                            <div class="col-xs-6">
-                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.name}"><label><c:out value="${appSvcPersonnelDtoList.name}"/></label></span>
-                            </div>
+
 
                           </p>
                         </td>
@@ -828,13 +839,14 @@
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                          <div class="col-xs-6">
+                            <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.name}" ><label><c:out value="${appSvcPersonnelDtoList.name}"/></label></span>
+                          </div>
                             <div class="col-xs-6">
-                                <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none"><label></label></span>
+                                <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none"><label></label></span>
 
                             </div>
-                            <div class="col-xs-6">
-                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.name}" ><label><c:out value="${appSvcPersonnelDtoList.name}"/></label></span>
-                            </div>
+
 
                           </p>
                         </td>
@@ -845,13 +857,14 @@
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                            <div class="col-xs-6">
-                              <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}" style="display: none"><label></label></span>
+                          <div class="col-xs-6">
+                            <span class="newVal compareTdStyle" attr="${appSvcPersonnelDtoList.profRegNo}"><label><c:out value="${appSvcPersonnelDtoList.profRegNo}"/></label></span>
+                          </div>
+                          <div class="col-xs-6">
+                              <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}" style="display: none"><label></label></span>
 
                             </div>
-                            <div class="col-xs-6">
-                              <span class="oldVal compareTdStyle" attr="${appSvcPersonnelDtoList.profRegNo}"><label><c:out value="${appSvcPersonnelDtoList.profRegNo}"/></label></span>
-                            </div>
+
                           </p>
                         </td>
                       </tr>
@@ -885,12 +898,13 @@
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                              <div  class="col-xs-6">
-                                <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].salutation}" style="display: none"><label><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].salutation}"/></label></span>
+                          <div  class="col-xs-6">
+                            <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.salutation}" ><label><c:out value="${appSvcMedAlertPerson.salutation}"/></label></span>
+                          </div>
+                          <div  class="col-xs-6">
+                                <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].salutation}" style="display: none"><label><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].salutation}"/></label></span>
                               </div>
-                              <div  class="col-xs-6">
-                                <span class="oldVal compareTdStyle" attr="${appSvcMedAlertPerson.salutation}" ><label><c:out value="${appSvcMedAlertPerson.salutation}"/></label></span>
-                              </div>
+
 
                           </p>
                         </td>
@@ -901,12 +915,13 @@
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                              <div class="col-xs-6">
-                                <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].name}" style="display: none"><label>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].name}</label></span>
-                              </div>
-                              <div class="col-xs-6">
-                                <span class="oldVal compareTdStyle" attr="${appSvcMedAlertPerson.name}" ><label><c:out value="${appSvcMedAlertPerson.name}"/></label></span>
-                              </div>
+                          <div class="col-xs-6">
+                            <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.name}" ><label><c:out value="${appSvcMedAlertPerson.name}"/></label></span>
+                          </div>
+                          <div class="col-xs-6">
+                                <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].name}" style="display: none"><label>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].name}</label></span>
+                          </div>
+
 
                           </p>
                         </td>
@@ -917,13 +932,14 @@
                         </td>
                         <td>
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                            <div class="col-xs-6">
-                                <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idType}" style="display: none"><label>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idType}</label></span>
-                            </div>
-                            <div class="col-xs-6">
-                              <span class="oldVal compareTdStyle" attr="${appSvcMedAlertPerson.idType}"><label><c:out value="${appSvcMedAlertPerson.idType}"/></label></span>
+                          <div class="col-xs-6">
+                            <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.idType}"><label><c:out value="${appSvcMedAlertPerson.idType}"/></label></span>
 
+                          </div>
+                          <div class="col-xs-6">
+                                <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idType}" style="display: none"><label>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idType}</label></span>
                             </div>
+
 
                           </p>
                         </td>
@@ -934,13 +950,13 @@
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                        <div class="col-xs-6">
-                          <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}" style="display: none"><label>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}</label></span>
+                      <div class="col-xs-6">
+                        <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.idNo}"><label><c:out value="${appSvcMedAlertPerson.idNo}"/></label></span>
+                      </div>
+                      <div class="col-xs-6">
+                          <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}" style="display: none"><label>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}</label></span>
+                        </div>
 
-                        </div>
-                        <div class="col-xs-6">
-                          <span class="oldVal compareTdStyle" attr="${appSvcMedAlertPerson.idNo}"><label><c:out value="${appSvcMedAlertPerson.idNo}"/></label></span>
-                        </div>
 
                       </p>
                     </td>
@@ -952,12 +968,11 @@
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                          <div class="col-xs-6">
-                            <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].mobileNo}" style="display: none"><label>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].mobileNo}</label></span>
-                          </div>
-                          <div class="col-xs-6">
-                            <span class="oldVal compareTdStyle" attr="${appSvcMedAlertPerson.mobileNo}" ><label><c:out value="${appSvcMedAlertPerson.mobileNo}"/></label></span>
-
+                      <div class="col-xs-6">
+                        <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.mobileNo}" ><label><c:out value="${appSvcMedAlertPerson.mobileNo}"/></label></span>
+                      </div>
+                      <div class="col-xs-6">
+                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].mobileNo}" style="display: none"><label>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].mobileNo}</label></span>
                           </div>
 
                       </p>
@@ -969,12 +984,13 @@
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                      <div class="col-xs-6">
+                        <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.emailAddr}" ><label><c:out value="${appSvcMedAlertPerson.emailAddr}"/></label></span>
+                      </div>
                         <div class="col-xs-6">
-                           <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].emailAddr}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].emailAddr}"/></label></span>
+                           <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].emailAddr}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].emailAddr}"/></label></span>
                         </div>
-                        <div class="col-xs-6">
-                          <span class="oldVal compareTdStyle" attr="${appSvcMedAlertPerson.emailAddr}" ><label><c:out value="${appSvcMedAlertPerson.emailAddr}"/></label></span>
-                        </div>
+
                       </p>
                     </td>
                   </tr>
@@ -984,20 +1000,8 @@
                     </td>
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                        <div class="col-xs-6">
-                      <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode}" style="display: none">
-                        <label>
-                           <c:choose>
-                             <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode=='1'}">Email</c:when>
-                             <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode=='2'}">SMS</c:when>
-                             <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode=='3'}">Email  SMS</c:when>
-                             <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode==null}">-</c:when>
-                           </c:choose>
-                        </label>
-                      </span>
-                    </div>
-                        <div class="col-xs-6">
-                           <span class="oldVal compareTdStyle" attr="${appSvcMedAlertPerson.preferredMode}"><label>
+                      <div class="col-xs-6">
+                           <span class="newVal compareTdStyle" attr="${appSvcMedAlertPerson.preferredMode}"><label>
                             <c:choose>
                               <c:when test="${appSvcMedAlertPerson.preferredMode=='1'}">
                                 <c:out value="Email"/>
@@ -1010,7 +1014,20 @@
                               </c:when>
                             </c:choose>
                           </label></span>
-                        </div>
+                      </div>
+
+                      <div class="col-xs-6">
+                      <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode}" style="display: none">
+                        <label>
+                           <c:choose>
+                             <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode=='1'}">Email</c:when>
+                             <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode=='2'}">SMS</c:when>
+                             <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode=='3'}">Email  SMS</c:when>
+                             <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode==null}">-</c:when>
+                           </c:choose>
+                        </label>
+                      </span>
+                    </div>
 
                       </p>
                     </td>
@@ -1052,25 +1069,21 @@
                     <td class="col-xs-12">
                         <%-- <a href="${pageContext.request.contextPath}/file-repo?filerepo=svcFileRoId${currentSvcCode}${status.index}&fileRo${status.index}=<iais:mask name="svcFileRoId${currentSvcCode}${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}" title="Download" class="downloadFile">${svcDoc.docName}</a>--%>
                       <div class="fileList">
-                     <span class="filename server-site col-xs-6" id="130" >
-                       <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
-                     value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}" title="Download" class="downloadFile">${svcDoc.docName}</a>
-
-                       (${svcDoc.docSize} KB)</span>
-                        <span class="col-xs-6">
-                                <wrms:value width="7">
-                                  <span class="newVal " attr="${svcDoc.docSize}${svcDoc.docName}" style="display: none"><label>
-                                    <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].fileRepoId}"/>&fileRepoName=${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}" title="Download" class="downloadFile">
-                                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}
-                                    </a> <c:out value="(${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize})KB"/>
-                                    </label></span>
-                                  <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}" style="display: none"><label>
+                        <span class="col-xs-12">
+                          <div class="col-xs-6">
+                             <span class="newVal " attr="${svcDoc.docSize}${svcDoc.docName}" >
+                                    <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
+                                      value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}" title="Download" class="downloadFile">${svcDoc.docName}</a>
+                                   </span>
+                          </div>
+                          <div class="col-xs-6">
+                                <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}" style="display: none"><label>
 
                                   <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].fileRepoId}"/>&fileRepoName=${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}" title="Download" class="downloadFile">
-                                    ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}
+                                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}
                                   </a>
                                   <c:out value="(${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize})KB"/></label></span>
-                                </wrms:value>
+                          </div>
 
                         </span>
 
@@ -1101,7 +1114,7 @@
     function hightLightChangeVal(newValClass, oldValClass) {
         $('.' + oldValClass).each(function () {
             var oldVal = $(this).attr('attr');
-            var newEle = $(this).parent().next().find('.' + newValClass);
+            var newEle = $(this).parent().prev().find('.' + newValClass);
             var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
             if (oldVal.length > 0 && newVal.length > 0) {
                 if (oldVal != newVal) {

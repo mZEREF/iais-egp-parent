@@ -682,7 +682,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String postalCode = appGrpPremisesDtoList.get(i).getPostalCode();
                         if (!StringUtil.isEmpty(postalCode)) {
                             if (!postalCode.matches("^[0-9]{6}$")) {
-                                errorMap.put("postalCode"+i, "UC_CHKLMD001_ERR004");
+                                errorMap.put("postalCode"+i, "NEW_ERR0004");
                             }else {
 
                                 if(!StringUtil.isEmpty(stringBuilder.toString())){
