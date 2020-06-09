@@ -292,6 +292,8 @@
             <!--replace fire issued date -->
             var fireIssueDate = premContent.find('.fireIssuedDate').val();
             replaceFireIssueDateHtml(premContent,fireIssueDate);
+            <!--remove ph hidden-->
+            premContent.find('.addPubHolDay').removeClass('hidden');
         });
     }
 
