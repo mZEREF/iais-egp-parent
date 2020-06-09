@@ -94,28 +94,17 @@ public final class IaisEGPHelper extends EGPHelper {
     };
 
     private static final String[] INSP_LEADER_STATUS = new String[]{
-            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
-            ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING
-    };
-
-    private static final String[] INSP_STATUS = new String[]{
-            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
-            ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
             ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING
+            ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION,
+            ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS
     };
 
     private static final String[] DEFAULT_STATUS = new String[]{
@@ -130,23 +119,18 @@ public final class IaisEGPHelper extends EGPHelper {
         String[] statusStrs;
         switch (roleId){
             case RoleConsts.USER_ROLE_PSO_LEAD:
-            case RoleConsts.USER_ROLE_PSO:
                 statusStrs = PSO_STATUS;
                 break;
             case RoleConsts.USER_ROLE_ASO_LEAD:
-            case RoleConsts.USER_ROLE_ASO:
                 statusStrs = ASO_STATUS;
                 break;
             case RoleConsts.USER_ROLE_AO1_LEAD:
-            case RoleConsts.USER_ROLE_AO1:
                 statusStrs = AO1_STATUS;
                 break;
             case RoleConsts.USER_ROLE_AO2_LEAD:
-            case RoleConsts.USER_ROLE_AO2:
                 statusStrs = AO2_STATUS;
                 break;
             case RoleConsts.USER_ROLE_AO3_LEAD:
-            case RoleConsts.USER_ROLE_AO3:
                 statusStrs = AO3_STATUS;
                 break;
             case RoleConsts.USER_ROLE_BROADCAST:
@@ -154,9 +138,6 @@ public final class IaisEGPHelper extends EGPHelper {
                 break;
             case RoleConsts.USER_ROLE_INSPECTION_LEAD:
                 statusStrs = INSP_LEADER_STATUS;
-                break;
-            case RoleConsts.USER_ROLE_INSPECTIOR:
-                statusStrs = INSP_STATUS;
                 break;
             default:
                 statusStrs = DEFAULT_STATUS;
