@@ -7,15 +7,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
@@ -60,6 +63,8 @@ public class BackendAjaxController {
     @Autowired
     private InspectionTaskMainClient inspectionTaskMainClient;
 
+    @Autowired
+    private InspEmailService inspEmailService;
 
 
     @RequestMapping(value = "appGroup.do", method = RequestMethod.POST)
@@ -105,6 +110,16 @@ public class BackendAjaxController {
                 item.setStatus(MasterCodeUtil.getCodeDesc(item.getStatus()));
                 if(item.getHciCode()==null){
                     item.setHciCode("N/A");
+                }
+                if(item.getLicenceId() != null){
+                    LicenceDto licenceDto = inspEmailService.getLicBylicId(item.getLicenceId());
+                    if(licenceDto.getExpiryDate() != null){
+                        item.setExpiryDate(Formatter.formatDate(licenceDto.getExpiryDate()));
+                    }else{
+                        item.setExpiryDate("N/A");
+                    }
+                }else{
+                    item.setExpiryDate("N/A");
                 }
 
                 //show kpi colour
