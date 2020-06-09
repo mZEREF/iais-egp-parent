@@ -1184,7 +1184,7 @@ public class HcsaApplicationDelegator {
     }
 
     private void checkRecommendationDropdownValue(Integer  recomInNumber,String chronoUnit,String codeDesc,ApplicationViewDto applicationViewDto,BaseProcessClass bpc){
-        if(StringUtil.isEmpty(codeDesc)){
+        if(StringUtil.isEmpty(recomInNumber)){
             ParamUtil.setRequestAttr(bpc.request,"recommendationStr","reject");
             return;
         }
@@ -1233,10 +1233,10 @@ public class HcsaApplicationDelegator {
         if(listRiskResultDto!=null && !listRiskResultDto.isEmpty()) {
             for (RiskResultDto riskResultDto : listRiskResultDto) {
                 String dateType = riskResultDto.getDateType();
-                String codeDesc = MasterCodeUtil.getCodeDesc(dateType);
+//                String codeDesc = MasterCodeUtil.getCodeDesc(dateType);
                 String count = String.valueOf(riskResultDto.getTimeCount());
-                String recommTime = count + " " + codeDesc;
-                recommendationSelectOption.add(new SelectOption(count + " " + dateType, recommTime));
+                //String recommTime = count + " " + codeDesc;
+                recommendationSelectOption.add(new SelectOption(count + " " + dateType, riskResultDto.getLictureText()));
             }
         }
         recommendationSelectOption.add(new SelectOption("other","Others"));
@@ -1821,15 +1821,17 @@ public class HcsaApplicationDelegator {
 //                    ParamUtil.setRequestAttr(bpc.request,"selectDecisionValue","decisionReject");
 //                }
             }else{
-                codeDesc = MasterCodeUtil.getCodeDesc(chronoUnit);
-                recommendationOnlyShow = recomInNumber + " " + codeDesc;
+//                codeDesc = MasterCodeUtil.getCodeDesc(chronoUnit);
+//                recommendationOnlyShow = recomInNumber + " " + codeDesc;
+                recommendationOnlyShow = getRecommendationOnlyShowStr(recomInNumber);
                 //set DMS decision value
 //                if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
 //                    ParamUtil.setRequestAttr(bpc.request,"selectDecisionValue","decisionApproval");
 //                }
             }
             //PSO 0062307
-            if((RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId) || broadcastAsoPso) && !ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
+            boolean needFillingBack = (RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId) || broadcastAsoPso) && !ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status);
+            if(needFillingBack){
                 //pso back fill
                 checkRecommendationDropdownValue(recomInNumber,chronoUnit,codeDesc,applicationViewDto,bpc);
             }
@@ -1854,6 +1856,41 @@ public class HcsaApplicationDelegator {
 
         //check route back review
         setRouteBackReview(bpc.request,applicationViewDto,roleId,taskDto,status);
+    }
+
+    private String getRecommendationOnlyShowStr (Integer recomInNumber){
+        String recommendationOnlyShow = "-";
+        if(recomInNumber >= 12){
+            if( recomInNumber % 12 == 0){
+                if(recomInNumber / 12 == 1){
+                    recommendationOnlyShow = "1 Year";
+                }else {
+                    recommendationOnlyShow = recomInNumber / 12 + " Year(s)";
+                }
+            }else {
+                if(recomInNumber / 12 == 1) {
+                    if(recomInNumber % 12 == 1){
+                        recommendationOnlyShow = 1 + " Year " + 1 + " Month";
+                    }else {
+                        recommendationOnlyShow = 1 + " Year " + recomInNumber % 12 + " Month(s)";
+                    }
+
+                }else {
+                    if(recomInNumber % 12 == 1){
+                        recommendationOnlyShow = recomInNumber / 12 + " Year(s) " + 1 + " Month";
+                    }else {
+                        recommendationOnlyShow = recomInNumber / 12 + " Year(s) " + recomInNumber % 12 + " Month(s)";
+                    }
+                }
+            }
+        }else {
+            if( recomInNumber == 1){
+                recommendationOnlyShow = recomInNumber + " Month";
+            }else {
+                recommendationOnlyShow = recomInNumber + " Month(s)";
+            }
+        }
+        return recommendationOnlyShow;
     }
 
     public void setSelectionValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto){
