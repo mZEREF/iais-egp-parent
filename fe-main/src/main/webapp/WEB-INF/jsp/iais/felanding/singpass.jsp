@@ -73,7 +73,7 @@
 <script>
   function submitSingPass() {
     var entityId = $('#entityId').val();
-    if (entityId == '' || corpPassId == ''){
+    if (entityId == ''){
       return;
     }else {
       Utils.submit('mainForm')

@@ -1,24 +1,9 @@
 package com.ecquaria.cloud.moh.iais.helper.excel;
 
-/*
- *author: huachong
- *date time:9/18/2019 1:05 PM
- *description:
- */
-
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.ecquaria.cloud.moh.iais.helper.excel.BooleanEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -28,64 +13,132 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import static org.apache.poi.ss.usermodel.CellType.STRING;
 
+/**
+ * @author yi chen
+ * @Date:2020/6/8
+ **/
+
 @Slf4j
-public final class ExcelReader {
+public class ExcelReader {
     private static final String pattern = "yyyy-MM-dd HH:mm:ss";
     public static final String EXCEL_TYPE_XSSF			= "xlsx";
 
-    public static <T> List<T> excelReader(final File file, final Class<?> clazz) throws IaisRuntimeException {
+    private Sheet sheet = null;
+
+    private boolean sequentialParse = true;
+
+    protected int startCellIndex = 1;
+
+    protected int sheetAt = 0;
+
+    private Map<Integer, List<Integer>> specifyReadMap = null;
+
+    public void setSequentialParse(boolean sequentialParse) {
+        this.sequentialParse = sequentialParse;
+    }
+
+    public void setSpecifyReadMap(Map<Integer, List<Integer>> specifyReadMap) {
+        this.specifyReadMap = specifyReadMap;
+    }
+
+    private void initSheetProperty(final File file, final Class<?> clz) throws Exception {
+
         if (file == null || !file.exists()){
-            throw new IaisRuntimeException("Please check excel source is exists");
+            throw new Exception("Please check excel source is exists");
         }
 
-        if (clazz == null){
-            throw new IaisRuntimeException("Please check excel bean class");
+        if (clz == null){
+            throw new Exception("excel bean class error");
         }
 
-        boolean canConver = canConvert(file, clazz);
-        if (!canConver){
-            throw new IaisRuntimeException("Excel conversion JavaBean failed");
+        ExcelSheetProperty property = clz.getAnnotation(ExcelSheetProperty.class);
+        if (property == null){
+            throw new Exception("excel bean class error");
         }
 
-        List<List<String>> result = parse(file);
-        return (List<T>) result.stream().map(x -> setField(clazz, x)).collect(Collectors.toList());
+        startCellIndex = property.startIndex();
+        sheetAt = property.sheetAt();
+
+        this.sheet = parseFile(file);
+
+        if (sheet == null){
+            throw new Exception("excel sheet error");
+        }
     }
 
-    private static boolean canConvert(final File file, final Class<?> clazz) {
-        Sheet sheet = parseFile(file);
-        String sheetName = sheet.getSheetName();
-        ExcelSheetProperty annotation = clazz.getAnnotation(ExcelSheetProperty.class);
 
-        if (annotation == null){
-            throw new IaisRuntimeException("Please check the sheet annotation for the excel source class.");
+    public <T> List<T> readerToBean(final File file, final Class<?> clz) throws Exception {
+        if (!sequentialParse) {
+            throw new Exception("excel read error when  read resource to dto!");
         }
 
-        if (!sheetName.equals(annotation.sheetName())){
-            return false;
-        }
+        initSheetProperty(file, clz);
 
-        return true;
+        List<List<String>> result = sequentialParse();
+
+        return (List<T>) result.stream().map(x -> setField(clz, x)).collect(Collectors.toList());
     }
 
-    private static List<List<String>> parse(final File file) {
-        Sheet sheet = parseFile(file);
-        int rowCount = sheet.getPhysicalNumberOfRows();
-        int cellCount = sheet.getRow(0).getPhysicalNumberOfCells();
+    public List<String> readerToList(final File file, final Class<?> clazz) throws Exception {
+        if (sequentialParse) {
+            throw new Exception("excel read error when read resource to list!");
+        }
 
-        List<List<String>> result = IaisCommonUtils.genNewArrayList();
-        for (int i = 1; i < rowCount; i++) {
+        initSheetProperty(file, clazz);
+
+
+        return specifyParse();
+    }
+
+
+    private List<String> specifyParse() throws Exception {
+        if (specifyReadMap == null || specifyReadMap.isEmpty()){
+            throw new Exception("specifyReadMap is null when read resource to list!");
+        }
+
+        return parseByMapValue(specifyReadMap);
+    }
+
+    private List<String> parseByMapValue(Map<Integer, List<Integer>> specifyReadMap){
+        List<String> values = new ArrayList<>();
+        for (Map.Entry<Integer, List<Integer>> entry : specifyReadMap.entrySet()){
+            Integer rowIndex = entry.getKey();
+            List<Integer> cellList = entry.getValue();
+            for (Integer cellIndex : cellList){
+                String val = getCellValue(sheet, rowIndex, cellIndex);
+                values.add(val);
+            }
+        }
+        return values;
+    }
+
+    private List<List<String>> sequentialParse() {
+        int rowCount = sheet.getLastRowNum();
+        //int realRowCount = sheet.getPhysicalNumberOfRows();
+        int realCellCount = sheet.getRow(startCellIndex).getLastCellNum();
+
+        List<List<String>> result = new ArrayList<>();
+        for (int i = startCellIndex; i <= rowCount; i++) {
             Row row = sheet.getRow(i);
-            if (row == null || row.getCell(0) == null || row.getCell(0).getNumericCellValue() == 0x0){
-                /*In iais excel template , the cell(0) is SN: sequence n + 1
-                Because the number of Excel physical lines uploaded by user may be greater than the actual number of lines.
-                If no line number is found, filter*/
+            if (row == null || row.getCell(0) == null ){
                 continue;
             }
 
-            List<String> cellResult = IaisCommonUtils.genNewArrayList();
-            for (int j = 0; j < cellCount; j++) {
+            List<String> cellResult = new ArrayList<>();
+            for (int j = 0; j < realCellCount; j++) {
                 cellResult.add(getCellValue(sheet, i, j));
             }
             result.add(cellResult);
@@ -93,32 +146,27 @@ public final class ExcelReader {
         return result;
     }
 
-    /**
-     *
-     * @param file
-     * @return
-     */
     @SuppressWarnings("resource")
-    private static Sheet parseFile(final File file) {
+    private Sheet parseFile(final File file) throws Exception {
         Workbook workBook = null;
         try (FileInputStream in = new FileInputStream(file)){
             String suffix = file.getName().substring(file.getName().indexOf(".") + 1);
             workBook = suffix.equals(EXCEL_TYPE_XSSF) ? new XSSFWorkbook(in) : new HSSFWorkbook(in);
-            return workBook.getSheetAt(0);
+            return workBook.getSheetAt(sheetAt);
         } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage(),e);
+            throw new Exception(e.getMessage(),e);
         }finally {
             try {
                 if (workBook != null){
                     workBook.close();
                 }
             } catch (IOException e) {
-                log.debug(e.getMessage());
+
             }
         }
     }
 
-    private static Object setField(final Class<?> clazz, final List<String> rowDatas) {
+    private static Object setField(final Class<?> clazz, final List<String> rowData) {
         try {
             Object obj = clazz.newInstance();
             Field[] fields = clazz.getDeclaredFields();
@@ -128,7 +176,7 @@ public final class ExcelReader {
                     ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
                     int index = excelProperty.index();
                     String format = excelProperty.format();
-                    Object value = getFieldValue(field, rowDatas.get(index), format);
+                    Object value = getFieldValue(field, rowData.get(index), format);
                     field.setAccessible(true);
                     field.set(obj, value);
                 }
@@ -138,10 +186,6 @@ public final class ExcelReader {
             throw new IllegalArgumentException(e);
         }
     }
-
-    private static String getCellName(final Sheet sheet, final int cellIndex){
-       return sheet.getRow(0).getCell(cellIndex).toString();
-   }
 
     private static String getCellValue(final Sheet sheet, final int rowIndex, final int cellIndex) {
         return getCellValue(sheet.getRow(rowIndex).getCell(cellIndex));
@@ -168,9 +212,6 @@ public final class ExcelReader {
                     break;
                 case FORMULA:
                     cellValue = String.valueOf(cell.getCellFormula());
-                    break;
-                case BLANK:
-                    cellValue = "";
                     break;
                 case ERROR:
                     cellValue = "";

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -77,9 +78,17 @@ public final class FileUtils {
 
     }
 
-    public static <T> List<T> transformToJavaBean(final File file, final Class<?> clz){
-        List<?> objects = ExcelReader.excelReader(file, clz);
+    public static <T> List<T> transformToJavaBean(final File file, final Class<?> clz) throws Exception {
+        ExcelReader excelReader = new ExcelReader();
+        List<?> objects = excelReader.readerToBean(file, clz);
         return (List<T>) objects;
+    }
+
+    public static List<String> transformToList(final File file, final Class<?> clz, Map<Integer, List<Integer>> specifyReadMap) throws Exception {
+        ExcelReader excelReader = new ExcelReader();
+        excelReader.setSequentialParse(false);
+        excelReader.setSpecifyReadMap(specifyReadMap);
+        return excelReader.readerToList(file, clz);
     }
 
     public static byte[] readFileToByteArray(final File file){

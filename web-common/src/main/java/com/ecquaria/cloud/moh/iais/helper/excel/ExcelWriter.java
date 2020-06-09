@@ -35,7 +35,7 @@ import java.util.Map;
  * @Date:2020/6/5
  **/
 @Slf4j
-public final class ExcelWriter {
+public class ExcelWriter {
     private static String EXCEL_TYPE_XSSF = "xlsx";
 
     /**
@@ -73,13 +73,15 @@ public final class ExcelWriter {
     /** setting source data format through a {@code Class<?>} */
     private Class<?> clz;
 
-    private int startCellIndex = 1;
-
     private boolean hasNeedCellName = true;
 
     private boolean newModule = true;
 
-    private String sheetName;
+    protected int startCellIndex = 0;
+
+    protected String sheetName;
+
+    protected int sheetAt = 0;
 
     private static XSSFWorkbook workbook;
 
@@ -135,10 +137,11 @@ public final class ExcelWriter {
 
         startCellIndex = property.startIndex();
         sheetName = property.sheetName();
+        sheetAt = property.sheetAt();
     }
 
     private  void setFieldName(final Class<?> clz, final Sheet sheet) {
-        Row sheetRow = sheet.createRow(startCellIndex - 1);
+        Row sheetRow = sheet.createRow(startCellIndex);
         Cell firstCell = sheetRow.createCell(0);
         firstCell.setCellValue("SN");
         firstCell.setCellStyle(lockStyle);
@@ -187,41 +190,39 @@ public final class ExcelWriter {
             throw new IaisRuntimeException("Please check the export excel parameters.");
         }
 
-        File out = file;
+        File out;
         final String localFileName = fileName;
-        Sheet sheet = null;
+        Sheet sheet;
         log.info(StringUtil.changeForLog("current workspace ") + sheetName);
         log.info("current filename " + localFileName);
         if (newModule){
-                out = new File(localFileName);
+            out = new File(localFileName);
             try (FileOutputStream fileOutputStream = new FileOutputStream(out)) {
                 workbook = XSSFWorkbookFactory.createWorkbook();
                 sheet  = workbook.createSheet(sheetName);
                 doParse(source, sheet);
-                try {
-                    workbook.write(fileOutputStream);
-                } catch (Exception e) {
-                    log.error(e.getMessage(), e);
-                }
-            } catch (IOException e) {
-                throw new ClassNotFoundException("has IO error when when export excel");
+                workbook.write(fileOutputStream);
+
+            } catch (Exception e) {
+                throw new Exception("has IO error when when export excel");
+            }finally {
+                workbook.close();
             }
         }else {
-            try (FileInputStream fileInputStream = new FileInputStream(out)) {
+            try (FileInputStream fileInputStream = new FileInputStream(file)) {
                 workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
-                sheet = workbook.getSheet(sheetName);
+                sheet = workbook.getSheetAt(sheetAt);
 
                 doParse(source, sheet);
 
-                try (OutputStream outputStream = new FileOutputStream(localFileName)){
-                    workbook.write(outputStream);
-                    out = new File(localFileName);
-                } catch (Exception e) {
-                    throw new ClassNotFoundException("has  error when when export excel");
-                }
-
-            } catch (IOException e) {
-                throw new ClassNotFoundException("has  error when when export excel");
+                OutputStream outputStream = new FileOutputStream(localFileName);
+                workbook.write(outputStream);
+                out = new File(localFileName);
+                workbook.close();
+            } catch (Exception e) {
+                throw new Exception("has error when when export excel, may be is resource corrupted");
+            }finally {
+                workbook.close();
             }
         }
 
@@ -243,7 +244,6 @@ public final class ExcelWriter {
 
         if (hasNeedCellName){
             setFieldName(clz, sheet);
-
         }
 
         try {
@@ -263,7 +263,7 @@ public final class ExcelWriter {
 
     private void createCellValue(final Sheet sheet, final List<?> source) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         //sequence number
-        int cellIndex = startCellIndex;
+        int cellIndex = startCellIndex + 1;
         int sequence = 1;
         for (Object t : source) {
             Row sheetRow = sheet.createRow(cellIndex);

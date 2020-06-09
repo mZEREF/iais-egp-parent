@@ -16,15 +16,20 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelTemplate;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.ChecklistConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.ChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -36,14 +41,19 @@ import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -768,6 +778,94 @@ public class HcsaChklConfigDelegator {
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doPaging(searchParam,bpc.request);
+    }
+
+
+    /**
+     * AutoStep: preUploadData
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void preUploadData(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+
+        ParamUtil.setSessionAttr(request, "switchUploadPage", "createConfigByTemplate");
+
+
+    }
+
+
+
+    /**
+     * AutoStep: setRequest
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void setRequest(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+
+        String currentAction = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
+    }
+
+
+    /**
+     * AutoStep: createUploadConfig
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void createUploadConfig(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        MultipartFile file = mulReq.getFile("selectedFile");
+
+        Map<String, String> errorMap = ChecklistHelper.validationFile(request, file);
+        if (errorMap != null && !errorMap.isEmpty()){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            return;
+        }
+
+        try {
+            Map<Integer, List<Integer>> map = new HashMap<>();
+            map.put(1, Arrays.asList(2));
+            map.put(3, Arrays.asList(2, 5));
+            map.put(5, Arrays.asList(2,5));
+            map.put(7, Arrays.asList(2,5,7));
+
+            File toFile = FileUtils.multipartFileToFile(file);
+            List<ConfigExcelItemDto> excelItemDtos = FileUtils.transformToJavaBean(toFile, ConfigExcelItemDto.class);
+            List<String> configInfo = FileUtils.transformToList(toFile, ConfigExcelItemDto.class, map);
+
+            if (!IaisCommonUtils.isEmpty(configInfo)){
+                ConfigExcelTemplate excelTemplate = new ConfigExcelTemplate();
+                excelTemplate.setCommon("Yes".equals(configInfo.get(0)) ? true : false);
+                excelTemplate.setModule(configInfo.get(1));
+                excelTemplate.setType(configInfo.get(2));
+                excelTemplate.setSvcName(configInfo.get(3));
+                excelTemplate.setSvcSubType(configInfo.get(4));
+                excelTemplate.setDtoList(excelItemDtos);
+
+            }
+
+
+
+
+
+
+
+
+
+
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+        } catch (Exception e) {
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            log.error(e.getMessage(), e);
+            return;
+        }
     }
 
 

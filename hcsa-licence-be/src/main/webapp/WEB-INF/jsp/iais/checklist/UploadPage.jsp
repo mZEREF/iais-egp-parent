@@ -51,6 +51,9 @@
           <c:if test="${switchUploadPage eq 'regulation'}">
             <h2>Checklist Regulation Upload</h2>
           </c:if>
+          <c:if test="${switchUploadPage eq 'createConfigByTemplate'}">
+            <h2>Checklist Config Upload</h2>
+          </c:if>
           <div class="document-upload-list">
             <div class="file-upload-gp">
               <div class="fileNameDisplay"></div>
