@@ -8,6 +8,9 @@ import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
+import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -18,7 +21,10 @@ import java.util.Map;
  * @author Jinhua
  * @date 2019/12/13 9:27
  */
+@Component
 public class UserValidator implements CustomizeValidator {
+    @Autowired
+    OrgUserManageService orgUserManageService;
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
@@ -41,6 +47,12 @@ public class UserValidator implements CustomizeValidator {
             if(dto.getOfficeTelNo() != null && !StringUtil.isEmpty(dto.getOfficeTelNo())) {
                 if (!dto.getOfficeTelNo().matches("^[6][0-9]{7}$")) {
                     map.put("officeTelNo", "Please key in a valid phone number");
+                }
+            }
+            if(dto.getUserId() != null){
+                FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNric(dto.getIdentityNo());
+                if(feUserDto != null){
+                    map.put("idNo", "The personnel of ID No. has already been registerted. ");
                 }
             }
         return map;

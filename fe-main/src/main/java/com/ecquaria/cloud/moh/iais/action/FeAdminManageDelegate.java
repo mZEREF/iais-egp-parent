@@ -148,16 +148,12 @@ public class FeAdminManageDelegate {
             if(feUserDto.getIdType() == null){
                 feUserDto.setIdType(idType);
             }
-            if(feUserDto.getUserId() == null){
-                if(feUserDto.getUenNo() != null){
-                    feUserDto.setUserId(feUserDto.getUenNo() + "_" + idNo);
-                }else{
-                    feUserDto.setUserId(idNo);
-                }
+            if(feUserDto.getUenNo() != null){
+                feUserDto.setUserId(feUserDto.getUenNo() + "_" + idNo);
+            }else{
+                feUserDto.setUserId(idNo);
             }
-            if(feUserDto.getIdentityNo() == null){
-                feUserDto.setIdentityNo(idNo);
-            }
+            feUserDto.setIdentityNo(idNo);
             feUserDto.setDisplayName(name);
             feUserDto.setSalutation(salutation);
             feUserDto.setDesignation(designation);

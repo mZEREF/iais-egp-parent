@@ -37,6 +37,7 @@
         <c:choose>
             <c:when test="${'Y'.equals(canEditFlag)}">
                 <input type="text" name="idNo" id="idNo" value="${inter_user_attr.identityNo}" maxlength="9"/>
+                <span class="error-msg" name="errorMsg" id="error_idNo"></span>
             </c:when>
             <c:otherwise>
                     <input type="text" name="idNo" id="idNo" value="${inter_user_attr.identityNo}" maxlength="9" readonly/>
