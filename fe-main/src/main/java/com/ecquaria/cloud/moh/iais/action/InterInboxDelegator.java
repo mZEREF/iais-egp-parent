@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -504,11 +505,21 @@ public class InterInboxDelegator {
 
     public void licDoCease(BaseProcessClass bpc) throws IOException {
         String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
-        if(licIds != null) {
-            List<String> licIdValue = IaisCommonUtils.genNewArrayList();
-            for (String item : licIds) {
-                licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
+        List<String> licIdValue = IaisCommonUtils.genNewArrayList();
+        boolean result= false;
+        for (String item : licIds) {
+            licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
+        }
+        Map<String,Boolean> resultMap = inboxService.listResultCeased(licIdValue);
+        for(Map.Entry<String,Boolean> entry : resultMap.entrySet()){
+            if (!entry.getValue()){
+                result = true;
+                break;
             }
+        }
+        if(result) {
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,true);
+        }else{
             ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())

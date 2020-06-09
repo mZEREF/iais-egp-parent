@@ -51,6 +51,10 @@
         if ('${licIsRenewed}' || '${licIsAppealed}' || '${licIsAmend}') {
             $('#isRenewedModal').modal('show');
         }
+
+        if ('${ceasedErrResult}') {
+            $('#ceasedModal').modal('show');
+        }
     });
 
     function licClick(status) {

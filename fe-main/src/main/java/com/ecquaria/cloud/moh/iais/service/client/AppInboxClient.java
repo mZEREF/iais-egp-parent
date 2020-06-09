@@ -66,7 +66,7 @@ public interface AppInboxClient {
     @PutMapping(value = "/app-fe-status")
     FeignResponseEntity<Void> updateFeAppStatus(@RequestParam(value = "appId") String appId,@RequestParam(value = "appStatus") String appStatus);
 
-    @PostMapping(value = "/list-can-ceased",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/appeal/list-can-ceased",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String,Boolean>> listCanCeased(@RequestBody List<String> licIds);
 
 }

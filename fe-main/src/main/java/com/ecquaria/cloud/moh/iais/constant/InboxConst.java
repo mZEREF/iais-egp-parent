@@ -83,6 +83,9 @@ public class InboxConst {
     public static final String APP_DO_DRAFT_TYPE_RFC        = "Request For Change";
     public static final String APP_DO_DRAFT_TYPE_RENEW      = "Renewal";
     public static final String APP_DO_DRAFT_TYPE_APPEAL     = "Appeal";
+
+    public static final String LIC_CEASED_ERR_MAP           = "ceasedErrMap";
+    public static final String LIC_CEASED_ERR_RESULT        = "ceasedErrResult";
     /**
      * URL
      */
