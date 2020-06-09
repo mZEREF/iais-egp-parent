@@ -277,13 +277,16 @@ public class OfficerOnlineEnquiriesDelegator {
             SearchResultHelper.doPage(request,licenceParameter);
             licenceParameter.setFilters(filter);
             SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
-            String typeStr = SqlHelper.constructInCondition("lic.licensee_id",licenseeIds.size());
-            int indx = 0;
-            for (String s : licenseeIds){
-                licParam.addFilter("lic.licensee_id"+indx, s);
-                indx++;
+            if(licenseeIds.size()!=0){
+                String typeStr = SqlHelper.constructInCondition("lic.licensee_id",licenseeIds.size());
+                int indx = 0;
+                for (String s : licenseeIds){
+                    licParam.addFilter("lic.licensee_id"+indx, s);
+                    indx++;
+                }
+                licParam.addParam("licenseeId",typeStr);
             }
-            licParam.addParam("licenseeId",typeStr);
+
             CrudHelper.doPaging(licParam,bpc.request);
             QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
             SearchResult<RfiLicenceQueryDto> licResult =requestForInformationService.licenceDoQuery(licParam);
@@ -648,13 +651,16 @@ public class OfficerOnlineEnquiriesDelegator {
 
             licenceParameter.setFilters(filters);
             SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
-            String typeStr = SqlHelper.constructInCondition("lic.licensee_id",licenseeIds.size());
-            int indx = 0;
-            for (String s : licenseeIds){
-                licParam.addFilter("lic.licensee_id"+indx, s);
-                indx++;
+            if(licenseeIds.size()!=0){
+                String typeStr = SqlHelper.constructInCondition("lic.licensee_id",licenseeIds.size());
+                int indx = 0;
+                for (String s : licenseeIds){
+                    licParam.addFilter("lic.licensee_id"+indx, s);
+                    indx++;
+                }
+                licParam.addParam("licenseeId",typeStr);
             }
-            licParam.addParam("licenseeId",typeStr);
+
             CrudHelper.doPaging(licParam,bpc.request);
             QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
             SearchResult<RfiLicenceQueryDto> licResult =requestForInformationService.licenceDoQuery(licParam);
