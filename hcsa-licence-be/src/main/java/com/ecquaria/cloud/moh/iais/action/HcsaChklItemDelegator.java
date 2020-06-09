@@ -162,7 +162,7 @@ public class HcsaChklItemDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         MultipartFile file = mulReq.getFile("selectedFile");
 
-        Map<String, String> errorMap = ChecklistHelper.validationFile(request, file);
+        Map<String, String> errorMap = ChecklistHelper.validateFile(request, file);
         if (errorMap != null && !errorMap.isEmpty()){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;

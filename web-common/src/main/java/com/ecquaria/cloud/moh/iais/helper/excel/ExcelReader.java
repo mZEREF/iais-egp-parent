@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.excel.BooleanEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -69,7 +68,7 @@ public class ExcelReader {
             throw new Exception("excel bean class error");
         }
 
-        startCellIndex = property.startIndex();
+        startCellIndex = property.startRowIndex();
         sheetAt = property.sheetAt();
 
         this.sheet = parseFile(file);
@@ -131,7 +130,7 @@ public class ExcelReader {
         int realCellCount = sheet.getRow(startCellIndex).getLastCellNum();
 
         List<List<String>> result = new ArrayList<>();
-        for (int i = startCellIndex; i <= rowCount; i++) {
+        for (int i =  startCellIndex + 1; i <= rowCount; i++) {
             Row row = sheet.getRow(i);
             if (row == null || row.getCell(0) == null ){
                 continue;
@@ -174,7 +173,7 @@ public class ExcelReader {
                 // Use iais project folder ExcelProperty Annotation Class
                 if (field.isAnnotationPresent(ExcelProperty.class)){
                     ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
-                    int index = excelProperty.index();
+                    int index = excelProperty.cellIndex();
                     String format = excelProperty.format();
                     Object value = getFieldValue(field, rowData.get(index), format);
                     field.setAccessible(true);

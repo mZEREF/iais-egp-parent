@@ -20,7 +20,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -135,7 +134,7 @@ public class ExcelWriter {
             System.out.println("can not find sheet property!");
         }
 
-        startCellIndex = property.startIndex();
+        startCellIndex = property.startRowIndex();
         sheetName = property.sheetName();
         sheetAt = property.sheetAt();
     }
@@ -152,14 +151,14 @@ public class ExcelWriter {
         for (Field field : fields) {
             if (field.isAnnotationPresent(ExcelProperty.class)) {
                 ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
-                int rowIndx = annotation.index();
+                int rowIndex = annotation.cellIndex();
                 String rowName = annotation.cellName();
 
-                Cell cell = sheetRow.createCell(rowIndx);
+                Cell cell = sheetRow.createCell(rowIndex);
                 cell.setCellStyle(unlockStyle);
                 cell.setCellValue(rowName);
 
-                autoSizeCell.add(rowIndx);
+                autoSizeCell.add(rowIndex);
             }
         }
 
@@ -278,8 +277,8 @@ public class ExcelWriter {
             for (Field field : fields) {
                 if (field.isAnnotationPresent(ExcelProperty.class)) {
                     ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
-                    int rowIndx = annotation.index();
-                    Cell cell = sheetRow.createCell(rowIndx);
+                    int rowIndex = annotation.cellIndex();
+                    Cell cell = sheetRow.createCell(rowIndex);
                     boolean readOnly = annotation.readOnly();
                     boolean hidden = annotation.hidden();
 
@@ -290,7 +289,7 @@ public class ExcelWriter {
                     }
 
                     if (hidden){
-                        sheet.setColumnHidden(rowIndx, true);
+                        sheet.setColumnHidden(rowIndex, true);
                     }
 
                     cell.setCellValue(setValue(clz.getDeclaredMethod("get" +

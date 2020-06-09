@@ -28,8 +28,10 @@
 </style>
 <div class="main-content">
   <form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
-    <span id="error_fileUploadError" name="iaisErrorMsg" class="error-msg"></span>
+
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+    <br>
+    <span id="error_fileUploadError" name="iaisErrorMsg" class="error-msg"></span>
     <br><br>
     <div class="tab-pane active" id="tabInbox" role="tabpanel">
         <div class="document-info-list">

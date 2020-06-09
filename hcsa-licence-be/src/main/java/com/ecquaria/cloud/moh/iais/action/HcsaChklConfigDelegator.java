@@ -822,12 +822,14 @@ public class HcsaChklConfigDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         MultipartFile file = mulReq.getFile("selectedFile");
 
-        Map<String, String> errorMap = ChecklistHelper.validationFile(request, file);
+        Map<String, String> errorMap = ChecklistHelper.validateFile(request, file);
         if (errorMap != null && !errorMap.isEmpty()){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
 
+        List<ConfigExcelItemDto> excelItemDtos;
+        List<String> configInfo;
         try {
             Map<Integer, List<Integer>> map = new HashMap<>();
             map.put(1, Arrays.asList(2));
@@ -836,36 +838,43 @@ public class HcsaChklConfigDelegator {
             map.put(7, Arrays.asList(2,5,7));
 
             File toFile = FileUtils.multipartFileToFile(file);
-            List<ConfigExcelItemDto> excelItemDtos = FileUtils.transformToJavaBean(toFile, ConfigExcelItemDto.class);
-            List<String> configInfo = FileUtils.transformToList(toFile, ConfigExcelItemDto.class, map);
+            excelItemDtos = FileUtils.transformToJavaBean(toFile, ConfigExcelItemDto.class);
+            configInfo = FileUtils.transformToList(toFile, ConfigExcelItemDto.class, map);
 
-            if (!IaisCommonUtils.isEmpty(configInfo)){
-                ConfigExcelTemplate excelTemplate = new ConfigExcelTemplate();
-                excelTemplate.setCommon("Yes".equals(configInfo.get(0)) ? true : false);
-                excelTemplate.setModule(configInfo.get(1));
-                excelTemplate.setType(configInfo.get(2));
-                excelTemplate.setSvcName(configInfo.get(3));
-                excelTemplate.setSvcSubType(configInfo.get(4));
-                excelTemplate.setDtoList(excelItemDtos);
-
-            }
-
-
-
-
-
-
-
-
-
-
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         } catch (Exception e) {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             log.error(e.getMessage(), e);
             return;
         }
+
+        if (IaisCommonUtils.isEmpty(configInfo)) {
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            return;
+        }
+
+
+        ConfigExcelTemplate excelTemplate = new ConfigExcelTemplate();
+        excelTemplate.setCommon("Yes".equals(configInfo.get(0)) ? true : false);
+        excelTemplate.setModule(configInfo.get(1));
+        excelTemplate.setType(configInfo.get(2));
+        excelTemplate.setSvcName(configInfo.get(3));
+        excelTemplate.setSvcSubType(configInfo.get(4));
+        excelTemplate.setHciCode(configInfo.get(5));
+
+        excelTemplate.setDtoList(excelItemDtos);
+
+        boolean hasTemplateError = ChecklistHelper.validateTemplate(request, excelTemplate);
+        if (hasTemplateError){
+
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            return;
+        }
+
+
+
+
     }
 
 
