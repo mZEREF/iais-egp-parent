@@ -70,10 +70,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Shicheng
@@ -566,11 +569,21 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         List<TaskDto> taskDtos = organizationClient.getTaskByRefNoStatus(taskRefNo, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY).getEntity();
         if(!IaisCommonUtils.isEmpty(taskDtos)){
             List<String> inspectorNames = IaisCommonUtils.genNewArrayList();
+            List<String> inspectorIds = IaisCommonUtils.genNewArrayList();
+            //get inspectorId
             for(TaskDto taskDto : taskDtos){
                 String userId = taskDto.getUserId();
-                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
-                String name = orgUserDto.getDisplayName();
-                inspectorNames.add(name);
+                inspectorIds.add(userId);
+            }
+            //filer id
+            if(!IaisCommonUtils.isEmpty(inspectorIds)){
+                Set<String> inspectorIdSet = new HashSet<>(inspectorIds);
+                inspectorIds = new ArrayList<>(inspectorIdSet);
+                for(String inspectorId : inspectorIds){
+                    OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(inspectorId).getEntity();
+                    String name = orgUserDto.getDisplayName();
+                    inspectorNames.add(name);
+                }
             }
             inspectionHistoryShowDto.setInspectors(inspectorNames);
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskRefNo, InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
