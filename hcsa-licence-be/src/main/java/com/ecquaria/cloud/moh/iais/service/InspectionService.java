@@ -37,8 +37,9 @@ public interface InspectionService {
      * @Param: null
      * @return: List<SelectOption>
      * @Descripation: get App Status
+     * @param loginContext
      */
-    List<SelectOption> getAppStatusOption();
+    List<SelectOption> getAppStatusOption(LoginContext loginContext);
 
     /**
      * @author: shicheng
