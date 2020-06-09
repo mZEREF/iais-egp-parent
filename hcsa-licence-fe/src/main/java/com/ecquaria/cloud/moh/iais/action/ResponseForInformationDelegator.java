@@ -151,11 +151,11 @@ public class ResponseForInformationDelegator {
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1=responseForInformationService.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
         logAbout("preparetionData");
-        String data = responseForInformationService.getData(licPremisesReqForInfoDto1);
+        responseForInformationService.getData(licPremisesReqForInfoDto1);
         log.info("------------------- getData  end --------------");
-        responseForInformationService.saveFile(data);
+        responseForInformationService.saveFile(licPremisesReqForInfoDto1);
         log.info("------------------- saveFile  end --------------");
-        responseForInformationService.compressFile(licPremisesReqForInfoDto1.getLicPremId());
+        responseForInformationService.compressFile(licPremisesReqForInfoDto1.getId());
         log.info("------------------- compressFile  end --------------");
 
 

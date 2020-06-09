@@ -18,9 +18,9 @@ public interface ResponseForInformationService {
     List<LicPremisesReqForInfoDto> searchLicPreRfiBylicenseeId(String licenseeId);
     LicPremisesReqForInfoDto getLicPreReqForInfo(String id);
     LicPremisesReqForInfoDto acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
-    void saveFile(String  str) throws IOException;
+    void saveFile(LicPremisesReqForInfoDto licPremisesReqForInfoDto) throws IOException;
     String getData(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
-    void compressFile(String licPreId);
+    void compressFile(String rfiId);
     String createBeRfiLicProcessFileTrack(ProcessFileTrackDto processFileTrackDto);
     void   updateSysAdmEicRequestTrackingDto(EicRequestTrackingDto licEicRequestTrackingDto);
 

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
@@ -63,7 +64,6 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     private String sharedPath;
     private String download;
     private String fileName;
-    private String fileFormat = ".text";
     private String backups;
 
     private Boolean flag=Boolean.TRUE;
@@ -95,33 +95,28 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     }
 
     @Override
-    public void saveFile(String data) throws IOException {
+    public void saveFile(LicPremisesReqForInfoDto licPremisesReqForInfoDto)  {
         fileName = "userRecFile";
         download = sharedPath + fileName;
         backups = sharedPath + "backupsRec";
 
+        String data = JsonUtil.parseToJson(licPremisesReqForInfoDto);
+        String reqInfoId=licPremisesReqForInfoDto.getId();
         String s = FileUtil.genMd5FileChecksum(data.getBytes(StandardCharsets.UTF_8));
-        File file=MiscUtil.generateFile(download+File.separator, s+fileFormat);
-        if(!file.exists()){
-            boolean createFlag = file.createNewFile();
-            if (!createFlag) {
-                log.error("Create File fail");
+
+        File file = MiscUtil.generateFile(backups+File.separator+reqInfoId, s+AppServicesConsts.FILE_FORMAT);
+        try (FileOutputStream fileOutputStream  = new FileOutputStream(file);) {
+            if(!file.exists()){
+                boolean newFile = file.createNewFile();
+                if(newFile){
+                    log.info("***newFile createNewFile***");
+                }
             }
-        }
-        File groupPath=new File(download+File.separator);
-
-        if(!groupPath.exists()){
-            groupPath.mkdirs();
-        }
-        try (FileOutputStream fileInputStream = new FileOutputStream(backups+File.separator+file.getName());
-             FileOutputStream fileOutputStream  =new FileOutputStream(file);){
-
-            fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
-            fileInputStream.write(data.getBytes(StandardCharsets.UTF_8));
-
+            fileOutputStream.write(data.getBytes());
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         }
+
     }
 
     @Override
@@ -153,35 +148,30 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
 
     @Override
-    public void compressFile(String licPreId){
-        String compress = compress();
+    public void compressFile(String rfiId){
+        String compress = compress( rfiId);
         log.info("-------------compress() end --------------");
-        rename(compress,licPreId);
+        rename(compress,rfiId);
 
         deleteFile();
     }
 
 
-    private String compress(){
+    private String compress(String rfiId){
         log.info("------------ start compress() -----------------------");
-        long l=   System.currentTimeMillis();
-        File c= new File(backups+File.separator);
-        if(!c.exists()){
-            c.mkdirs();
-        }
-        try (OutputStream is=new FileOutputStream(backups+File.separator+ l+".zip");
-             CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
-             ZipOutputStream zos=new ZipOutputStream(cos);){
-            log.info(StringUtil.changeForLog("------------zip file name is"+backups+File.separator+ l+".zip"+"--------------------"));
-            File file = new File(download+File.separator);
+        long l =   System.currentTimeMillis();
+        try (OutputStream outputStream = new FileOutputStream(backups + File.separator + l + AppServicesConsts.ZIP_NAME);
+             CheckedOutputStream cos=new CheckedOutputStream(outputStream,new CRC32());
+             ZipOutputStream zos=new ZipOutputStream(cos)) {
 
-            MiscUtil.checkDirs(file);
+            log.info(StringUtil.changeForLog("------------zip file name is"+backups+File.separator+ l+".zip"+"--------------------"));
+            File file = new File(sharedPath + fileName + File.separator + rfiId);
+
             zipFile(zos, file);
             log.info("----------------end zipFile ---------------------");
         } catch (IOException e) {
             log.error(e.getMessage(),e);
         }
-
         return l+"";
     }
 
@@ -194,11 +184,12 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                 zipFile(zos,f);
             }
         } else {
-            try  ( BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));){
+            try (
+                    BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))));
                 int count ;
                 byte [] b =new byte[1024];
-                count=bis.read(b);
+                count = bis.read(b);
                 while(count!=-1){
                     zos.write(b,0,count);
                     count=bis.read(b);
@@ -211,9 +202,9 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
     }
 
-    private void rename(String fileNamesss,String licPreId)  {
+    private void rename(String fileNamesss,String rfiId)  {
         log.info("--------------rename start ---------------------");
-        flag = Boolean.TRUE;
+        boolean flag = true;
         File zipFile =new File(backups);
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
@@ -224,8 +215,8 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                 return false;
             });
             for(File file:files){
-                try (FileInputStream is=new FileInputStream(file);
-                     ByteArrayOutputStream by=new ByteArrayOutputStream();){
+                try ( FileInputStream is=new FileInputStream(file);
+                      ByteArrayOutputStream by=new ByteArrayOutputStream();){
                     int count=0;
                     byte [] size=new byte[1024];
                     count=is.read(size);
@@ -236,16 +227,14 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
                     byte[] bytes = by.toByteArray();
                     String s = FileUtil.genMd5FileChecksum(bytes);
-                    File curFile =new File(backups + File.separator + s + ".zip");
-                    boolean renameFlag = file.renameTo(curFile);
-                    if (!renameFlag) {
-                        log.error("Rename file fail");
+                    File curFile = MiscUtil.generateFile(backups, s + ".zip");
+                    boolean b = file.renameTo(curFile);
+                    if(b){
+                        log.info(StringUtil.changeForLog("----------- new zip file name is"+backups+File.separator+s+".zip"));
                     }
-                    log.info(StringUtil.changeForLog("----------- new zip file name is"+backups+File.separator+fileNamesss+".zip"));
-                    String s1 = saveFileName(fileNamesss+".zip","backupsRec" + File.separator+fileNamesss+".zip",licPreId);
-                    if(!s1.equals("SUCCESS")){
+                    String string = saveFileName(s + AppServicesConsts.ZIP_NAME, AppServicesConsts.BACKUPS + File.separator + s + AppServicesConsts.ZIP_NAME, rfiId);
+                    if(!string.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
-                        flag=Boolean.FALSE;
                         break;
                     }
                 } catch (IOException e) {
@@ -271,7 +260,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         }
         {
             File[] files = filePath.listFiles((dir, name) -> {
-                if (name.endsWith(fileFormat)) {
+                if (name.endsWith(AppServicesConsts.FILE_FORMAT)) {
                     return true;
                 }
                 return false;
@@ -284,7 +273,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         }
         {
             File[] files = file.listFiles((dir, name) -> {
-                if (name.endsWith(fileFormat)) {
+                if (name.endsWith(AppServicesConsts.FILE_FORMAT)) {
                     return true;
                 }
                 return false;
@@ -297,13 +286,13 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         }
     }
 
-    private String saveFileName(String fileName ,String filePath,String licPreId){
+    private String saveFileName(String fileName ,String filePath,String rfiId){
         ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
         processFileTrackDto.setEventRefNo(System.currentTimeMillis()+"");
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         processFileTrackDto.setFileName(fileName);
         processFileTrackDto.setFilePath(filePath);
-        processFileTrackDto.setRefId(licPreId);
+        processFileTrackDto.setRefId(rfiId);
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
         AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
         processFileTrackDto.setAuditTrailDto(intenet);
