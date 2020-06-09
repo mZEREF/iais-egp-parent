@@ -28,17 +28,19 @@
                     <div class="row">
                         <div class="form-horizontal">
                             <div class="form-group">
-                                <label class="col-xs-12 col-md-4 control-label">SendDate Start</label>
+                                <label class="col-xs-12 col-md-4 control-label">Send Date From</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:datePicker id="start" name="start" value="${start}"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-xs-12 col-md-4 control-label">SendDate End</label>
+                                <label class="col-xs-12 col-md-4 control-label">Send Date End</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:datePicker id="end" name="end" value="${end}"/>
+                                    <span class="error-msg" name="errorMsg" id="error_date"></span>
                                 </div>
                             </div>
+
                         </div>
                         <div class="application-tab-footer">
                             <div class="row">

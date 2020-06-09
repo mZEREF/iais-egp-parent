@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /*
@@ -71,13 +75,27 @@ public class EmailResendDelegator {
         String end = ParamUtil.getRequestString(bpc.request,"end");
         searchParam.getParams().clear();
         searchParam.getFilters().clear();
-        CrudHelper.doPaging(searchParam,bpc.request);
         if(!StringUtil.isEmpty(start)){
             searchParam.addFilter("start", start,true);
         }
         if(!StringUtil.isEmpty(end)){
             searchParam.addFilter("end",  end,true);
         }
+        if(!StringUtil.isEmpty(end) && !StringUtil.isEmpty(start)){
+            try {
+                Date startDate = Formatter.parseDate(start);
+                Date endDate = Formatter.parseDate(end);
+                int comparatorValue = endDate.compareTo(startDate);
+                if (comparatorValue < 0){
+                    Map<String, String> errorMap = new HashMap<>(1);
+                    errorMap.put("date", "Sent Date From cannot be later than Sent Date End");
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                }
+            }catch (Exception e){
+                log.error(e.getMessage(), e);
+            }
+        }
+
         ParamUtil.setRequestAttr(bpc.request,"start",start);
         ParamUtil.setRequestAttr(bpc.request,"end",end);
     }
