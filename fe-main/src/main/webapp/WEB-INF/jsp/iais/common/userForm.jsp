@@ -36,10 +36,10 @@
     <iais:value width="11">
         <c:choose>
             <c:when test="${'Y'.equals(canEditFlag)}">
-                <input type="text" name="idNo" id="idNo" value="${inter_user_attr.identityNo}"/>
+                <input type="text" name="idNo" id="idNo" value="${inter_user_attr.identityNo}" maxlength="9"/>
             </c:when>
             <c:otherwise>
-                    <input type="text" name="idNo" id="idNo" value="${inter_user_attr.identityNo}" readonly/>
+                    <input type="text" name="idNo" id="idNo" value="${inter_user_attr.identityNo}" maxlength="9" readonly/>
             </c:otherwise>
         </c:choose>
             <span class="error-msg" name="errorMsg" id="error_identityNo"></span>
