@@ -471,6 +471,7 @@ public class InterInboxDelegator {
             for(String item:licIds){
                 licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
             }
+            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
             for (String licId:licIdValue
                  ) {
                 errorMap = inboxService.checkRenewalStatus(licId);
@@ -885,6 +886,7 @@ public class InterInboxDelegator {
     }
 
     private void clearSessionAttr(HttpServletRequest request){
+        ParamUtil.setSessionAttr(request,"licence_err_list", null);
         ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, null);
         ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, null);
         ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, null);

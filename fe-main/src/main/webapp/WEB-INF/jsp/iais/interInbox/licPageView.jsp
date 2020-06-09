@@ -55,9 +55,13 @@
         if ('${ceasedErrResult}') {
             $('#ceasedModal').modal('show');
         }
+
+        if ('${!empty licence_err_list}') {
+            licClick();
+        }
     });
 
-    function licClick(status) {
+    function licClick() {
         var checkedNum = $("[name='licenceNo']:checked").length;
         if ($('.licenceCheck').is(':checked')){
             if (checkedNum == 1){

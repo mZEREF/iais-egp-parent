@@ -1,4 +1,5 @@
 <form class="" method="post" id="licForm" action=<%=process.runtime.continueURL()%>>
+    <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
     <div class="tab-search">
         <input type="hidden" name="lic_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
@@ -136,7 +137,7 @@
                                         <div class="form-check">
                                             <c:if test="${licenceQuery.status == 'LICEST001'}">
                                                 <input class="form-check-input licenceCheck" id="licence1" type="checkbox"
-                                                       name="licenceNo" value="licenId${status.index}" aria-invalid="false" onclick="licClick('${licenceQuery.status}')">
+                                                       name="licenceNo" value="licenId${status.index}" aria-invalid="false" <c:if test="${fn:contains(licence_err_list, licenceQuery.id)}">checked</c:if> onclick="licClick()">
                                                 <label class="form-check-label" for="licence1"><span
                                                         class="check-square"></span>
                                                 </label>
