@@ -263,7 +263,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 editSelect = editSelect + "<li style=\"padding-left: 0px;\">Premises</li>";
             }
             if(appEditSelectDto.isDocEdit()){
-                editSelect = editSelect + "<li style=\"padding-left: 0px;\">Primary Doucument</li>";
+                editSelect = editSelect + "<li style=\"padding-left: 0px;\">Primary Documents</li>";
             }
             if(appEditSelectDto.isServiceEdit()){
                 editSelect = editSelect + "<li style=\"padding-left: 0px;\">Service Related Information - " + applicationViewDto.getServiceType() + "</li>";
