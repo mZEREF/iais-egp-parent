@@ -63,7 +63,7 @@ public class CessationEffectiveDateBatchjob {
                         String appId = applicationDto.getId();
                         String status = applicationDto.getStatus();
                         AppPremiseMiscDto appPremiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
-                        if (appPremiseMiscDto != null && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status)) {
+                        if (appPremiseMiscDto != null && (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status) || ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(status))) {
                             Date effectiveDate = appPremiseMiscDto.getEffectiveDate();
                             if (effectiveDate.compareTo(date) <= 0) {
                                 //send email
