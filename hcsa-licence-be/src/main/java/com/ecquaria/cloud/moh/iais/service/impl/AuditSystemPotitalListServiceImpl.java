@@ -172,10 +172,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             for(AuditTaskDataFillterDto auditTaskDataFillterDto : dtoList){
                 auditTaskDataFillterDto.setSvcCode(map.get(auditTaskDataFillterDto.getSvcName()));
             }
-          if(dto.getGenerateNum() != null && dto.getGenerateNum()>0)  {
-             return getRiskFillter(dto,  removeDuplicates(dtoList));
-          }
-        return removeDuplicates(dtoList);
+        return getRiskFillter(dto,  removeDuplicates(dtoList));
     }
 
     private List<AuditTaskDataFillterDto> removeDuplicates(List<AuditTaskDataFillterDto> ncFdtoList){
@@ -228,7 +225,10 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         }else {
             AuditTaskDataFillterDtos.sort((AuditTaskDataFillterDto d1, AuditTaskDataFillterDto d2) -> d1.getScore().compareTo(d2.getScore()));
         }
-        return  getNumberList(dto,AuditTaskDataFillterDtos);
+        if(dto.getGenerateNum() != null && dto.getGenerateNum()>0)  {
+            return  getNumberList(dto,AuditTaskDataFillterDtos);
+        }
+        return  AuditTaskDataFillterDtos;
     }
 
     private List<AuditTaskDataFillterDto> getNumberList(AuditSystemPotentialDto dto, List<AuditTaskDataFillterDto> dtoList) {
