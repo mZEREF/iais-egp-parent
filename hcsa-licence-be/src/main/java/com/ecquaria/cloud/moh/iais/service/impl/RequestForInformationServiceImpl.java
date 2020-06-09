@@ -332,6 +332,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                             log.error(e.getMessage(),e);
                             continue;
                         }
+                        String refId = processFileTrackDto.getRefId();
                         CheckedInputStream cos=null;
                         BufferedInputStream bis=null;
                         BufferedOutputStream bos=null;
@@ -339,7 +340,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         try (ZipFile zipFile=new ZipFile(path);)  {
                             for(Enumeration<? extends ZipEntry> entries = zipFile.entries(); entries.hasMoreElements();){
                                 ZipEntry zipEntry = entries.nextElement();
-                                zipFile(zipEntry,os,bos,zipFile,bis,cos,name);
+                                zipFile(zipEntry,os,bos,zipFile,bis,cos,name,refId);
                             }
 
                         } catch (IOException e) {
@@ -347,7 +348,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         }
 
                         try {
-                            String refId = processFileTrackDto.getRefId();
                             String submissionId = generateIdClient.getSeqId().getEntity();
                             this.download(processFileTrackDto,name,refId,submissionId);
                             //save success
@@ -361,18 +361,18 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         }
     }
 
-    private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos,String fileName)  {
+    private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos,String fileName,String refId)  {
 
 
         try {
             if(!zipEntry.getName().endsWith(File.separator)){
 
                 String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
-                File file =new File(compressPath+File.separator+fileName+File.separator+substring);
+                File file =new File(compressPath+File.separator+fileName+File.separator+refId+File.separator+substring);
                 if(!file.exists()){
                     file.mkdirs();
                 }
-                os=new FileOutputStream(compressPath+File.separator+fileName+File.separator+zipEntry.getName());
+                os=new FileOutputStream(compressPath+File.separator+fileName+File.separator+refId+File.separator+zipEntry.getName());
                 bos=new BufferedOutputStream(os);
                 InputStream is=zipFile.getInputStream(zipEntry);
                 bis=new BufferedInputStream(is);
@@ -387,7 +387,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
             }else {
 
-                new File(compressPath+File.separator+fileName+File.separator+zipEntry.getName()).mkdirs();
+                new File(compressPath+File.separator+fileName+File.separator+refId+File.separator+zipEntry.getName()).mkdirs();
             }
         }catch (IOException e){
 
@@ -427,7 +427,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     public boolean download( ProcessFileTrackDto processFileTrackDto,String fileName,String refId,String submissionId) {
 
         boolean flag=false;
-        File file =new File(downZip+File.separator+fileName+File.separator+"userRecFile");
+        File file =new File(downZip+File.separator+fileName+File.separator+refId+File.separator+"userRecFile");
         if(!file.exists()){
             file.mkdirs();
         }

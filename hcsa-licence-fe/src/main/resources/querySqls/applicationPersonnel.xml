@@ -12,7 +12,7 @@
     </sql>
     <sql remarks="Query" key="queryPremises">
         <![CDATA[
-                SELECT li.ID as LICENCE_ID,li.STATUS as LICENCE_STATUS, li.SVC_NAME as SVC_NAME,
+                SELECT li.ID as LICENCE_ID,li.LICENCE_NO as LICENCE_NO,li.STATUS as LICENCE_STATUS, li.SVC_NAME as SVC_NAME,
                 p.ID as PREMISES_ID, p.HCI_CODE , p.HCI_NAME, p.HCI_CONTACT_NO, p.SCDF_REF_NO,
                  p.CERT_ISSUED_DT, p.VEHICLE_NO, p.PREMISES_TYPE, p.POSTAL_CODE, p.ADDR_TYPE,
                   p.BLK_NO, p.FLOOR_NO, p.UNIT_NO, p.STREET_NAME, p.BUILDING_NAME, p.VERSION,

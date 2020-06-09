@@ -30,7 +30,7 @@
                     </div>
                     <div class="dashboard-tile-item">
                         <div class="dashboard-tile txt-only">
-                            <a href="#">
+                            <a href="/hcsa-licence-web/eservice/INTERNET/SelfAssessmentSchematics">
                                 <p class="dashboard-txt" style="line-height: 27px;">
                                     Not sure what to do? Let us guide you
                                     <em class="fa fa-angle-right"></em>
