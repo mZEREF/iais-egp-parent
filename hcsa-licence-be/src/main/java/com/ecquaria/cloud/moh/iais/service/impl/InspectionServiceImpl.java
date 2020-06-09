@@ -393,7 +393,7 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     private String getOptionValue(List<TaskDto> taskDtoList) {
-        StringBuilder value =new StringBuilder();
+        StringBuilder value = new StringBuilder();
         value.append(taskDtoList.get(0).getRefNo());
         taskDtoList.remove(0);
         if(!IaisCommonUtils.isEmpty(taskDtoList)) {
