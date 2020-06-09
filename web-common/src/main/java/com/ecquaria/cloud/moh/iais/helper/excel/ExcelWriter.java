@@ -83,7 +83,7 @@ public final class ExcelWriter {
 
     private static XSSFWorkbook workbook;
 
-    protected String password = "password$1";
+    protected String zheshigaisidemima = "password$1";
 
     private boolean needBlock = false;
 
@@ -257,7 +257,7 @@ public final class ExcelWriter {
         }
 
         if (needBlock){
-            sheet.protectSheet(password);
+            sheet.protectSheet(zheshigaisidemima);
         }
     }
 
