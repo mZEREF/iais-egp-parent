@@ -167,6 +167,8 @@ public class LicenceApproveBatchjob {
                     }
                     toDoResult(licenceGroupDtos, generalGenerateResult, groupGenerateResult, success, fail, applicationGroupDto);
                     if (success.size() > 0) {
+                        //update baseApplicationNo expiry Date
+                        updateExpiryDateByBaseApplicationNo(licenceGroupDtos);
                         //
                         AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
                         EventBusLicenceGroupDtos eventBusLicenceGroupDtos = new EventBusLicenceGroupDtos();
@@ -190,23 +192,61 @@ public class LicenceApproveBatchjob {
                         eventApplicationGroupDto.setApplicationDto(updateApplicationStatusToGenerated(applicationDtos));
                         eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
                         applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
-                        //step2 save licence to Fe DB
-//               EventBusLicenceGroupDtos eventBusLicenceGroupDtos1 =  licenceService.getEventBusLicenceGroupDtosByRefNo(eventRefNo);
-//               licenceService.createFESuperLicDto(eventBusLicenceGroupDtos1);
+
                     }
 
                 }
 
             }
         }
-
-        //todo:send the email to admin for fail Data.
-        //else{ rollback step1}
-        //step2 save licence to Fe DB
-        //if(step2) success  completed
-        //else{roll back step1 and step 2}
-
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is end ..."));
+    }
+
+    private void updateExpiryDateByBaseApplicationNo(List<LicenceGroupDto> licenceGroupDtos){
+        log.info(StringUtil.changeForLog("The updateExpiryDateByBaseApplicationNo is strat ..."));
+        if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
+            log.info(StringUtil.changeForLog("The updateExpiryDateByBaseApplicationNo licenceGroupDtos.size() is -->:"+licenceGroupDtos.size()));
+            for (LicenceGroupDto licenceGroupDto : licenceGroupDtos){
+                List<SuperLicDto>  superLicDtos = licenceGroupDto.getSuperLicDtos();
+                if(!IaisCommonUtils.isEmpty(superLicDtos)){
+                    log.info(StringUtil.changeForLog("The updateExpiryDateByBaseApplicationNo superLicDtos.size() is -->:"+superLicDtos.size()));
+                    for(SuperLicDto superLicDto : superLicDtos){
+                        LicenceDto licenceDto = superLicDto.getLicenceDto();
+                        String baseApplicationNo = licenceDto.getBaseApplicationNo();
+                        log.info(StringUtil.changeForLog("The updateExpiryDateByBaseApplicationNo licenceDto.getLicenceNo() is -->:"+licenceDto.getLicenceNo()));
+                        log.info(StringUtil.changeForLog("The updateExpiryDateByBaseApplicationNo baseApplicationNo is -->:"+baseApplicationNo));
+                        if(!StringUtil.isEmpty(baseApplicationNo)){
+                            LicenceDto baseLicenceDto = getBaseIdForApplicationNo(superLicDtos,baseApplicationNo);
+                            if(baseLicenceDto != null) {
+                                log.info(StringUtil.changeForLog("The updateExpiryDateByBaseApplicationNo baseLicenceDto.getLicenceNo() is -->:"+baseLicenceDto.getLicenceNo()));
+                                if(licenceDto.getExpiryDate().after(baseLicenceDto.getExpiryDate())){
+                                    licenceDto.setExpiryDate(baseLicenceDto.getExpiryDate());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("The updateExpiryDateByBaseApplicationNo is end ..."));
+    }
+
+    private LicenceDto getBaseIdForApplicationNo(List<SuperLicDto> superLicDtos,String baseApplicationNo){
+        log.info(StringUtil.changeForLog("The getBaseIdForApplicationNo  start ..."));
+        LicenceDto result = null;
+        if(!StringUtil.isEmpty(baseApplicationNo) && !IaisCommonUtils.isEmpty(superLicDtos)){
+            for (SuperLicDto superLicDto : superLicDtos){
+                LicenceDto licenceDto = superLicDto.getLicenceDto();
+                String svcType = licenceDto.getSvcType();
+                String applicationNo = licenceDto.getApplicationNo();
+                if(!StringUtil.isEmpty(svcType) && ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)
+                        && baseApplicationNo.equals(applicationNo)){
+                    result = licenceDto;
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("The getBaseIdForApplicationNo  end ..."));
+        return result;
     }
 
     private Map<String, ApplicationLicenceDto> sepaApplication(ApplicationLicenceDto applicationLicenceDto) {
@@ -1401,6 +1441,7 @@ public class LicenceApproveBatchjob {
                     expiryDate = LicenceUtil.getExpiryDate(licenceDto.getStartDate(), appPremisesRecommendationDto);
                     log.info(StringUtil.changeForLog("The  getLicenceDto new expiryDate is " + expiryDate));
                     if(applicationDto != null){
+                        licenceDto.setApplicationNo(applicationDto.getApplicationNo());
                         //relLicenceNo
                         String relLicenceNo = applicationDto.getRelLicenceNo();
                         log.debug(StringUtil.changeForLog("The getLicenceDto new relLicenceNo is -->:" + relLicenceNo));
@@ -1435,16 +1476,13 @@ public class LicenceApproveBatchjob {
                             }
                         }//baseApplicationNo
                         else if (!StringUtil.isEmpty(baseApplicationNo)) {
-
+                            licenceDto.setBaseApplicationNo(baseApplicationNo);
                         }
                     }else{
                         log.error(StringUtil.changeForLog("Tha application is null ..."));
                     }
 
                 }
-
-
-
                 log.info(StringUtil.changeForLog("The expiryDate is -->:" + expiryDate));
 
                 licenceDto.setStartDate(startDate);
@@ -1463,7 +1501,6 @@ public class LicenceApproveBatchjob {
             licenceDto.setLicenceNo(licenceNo);
             licenceDto.setVersion(version);
             licenceDto.setFeeRetroNeeded(false);
-            //todo:Judge the licence status
             licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
         }
         List<ApplicationDto> applicationDtos1 = IaisCommonUtils.genNewArrayList();
