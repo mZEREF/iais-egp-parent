@@ -195,7 +195,7 @@ public class InspectionSearchDelegator {
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
-        String userIdKey = ParamUtil.getMaskedString(bpc.request, "memberName");
+        String userIdKey = ParamUtil.getRequestString(bpc.request, "memberName");
         String roleIdCheck = ParamUtil.getRequestString(bpc.request, "supervisorRoleId");
         Map<String, String> roleMap = poolRoleCheckDto.getRoleMap();
         String roleId = getCheckRoleIdByMap(roleIdCheck, roleMap);
@@ -205,6 +205,9 @@ public class InspectionSearchDelegator {
             ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
         }
         GroupRoleFieldDto groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
+        //get Members Option
+        List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
+        groupRoleFieldDto = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds, groupRoleFieldDto);
         //get userId
         String memberValue = "";
         if(!StringUtil.isEmpty(userIdKey)) {
@@ -215,7 +218,6 @@ public class InspectionSearchDelegator {
             memberValue = inspectionService.getMemberValueByWorkGroupUserId(userId);
             ParamUtil.setSessionAttr(bpc.request, "memberId", userId);
         }
-        List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
         List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
         StringBuilder sb = new StringBuilder("(");
@@ -267,6 +269,7 @@ public class InspectionSearchDelegator {
         ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
+        ParamUtil.setSessionAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
     }
 
     private String getCheckRoleIdByMap(String roleIdCheck, Map<String, String> roleMap) {

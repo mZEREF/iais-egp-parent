@@ -322,7 +322,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     public LicenceDto getLicenceDtoByLicenceId(String originLicenceId) {
         LicenceDto licenceDto = new LicenceDto();
         if(!StringUtil.isEmpty(originLicenceId)){
-            licenceDto = hcsaLicenceClient.getLicenceDtoById(originLicenceId).getEntity();
+            licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
         }
         return licenceDto;
     }
@@ -407,7 +407,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                     if (index <= 1) {
                         InspectionHistoryShowDto inspectionHistoryShowDto = new InspectionHistoryShowDto();
                         String appId = applicationDto.getId();
-                        LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(originLicenceId).getEntity();
+                        LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
                         Date licStartDate = licenceDto.getStartDate();
                         Date licEndDate = licenceDto.getExpiryDate();
                         if (licStartDate != null && licEndDate != null) {
