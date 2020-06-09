@@ -63,7 +63,7 @@
                             </div>
                             <%--         Inspection start                       --%>
                             <div class="tab-pane" id="tabInspection" role="tabpanel">
-                                <%@include file="applicationInspection.jsp" %>
+                                <%@include file="/WEB-INF/jsp/iais/report/ao1Report.jsp" %>
                             </div>
                             <%--         Inspection end                       --%>
                             <div class="tab-pane" id="tabProcessing" role="tabpanel">

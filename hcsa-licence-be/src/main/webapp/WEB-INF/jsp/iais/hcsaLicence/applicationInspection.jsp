@@ -9,7 +9,7 @@
                 <table class="table">
                     <tr>
                         <td class="col-xs-4">
-                            <p>Licence No</p>
+                            <p>Licence No.</p>
                         </td>
                         <td class="col-xs-4">
                             <p><c:out value="${insRepDto.licenceNo}"/></p>
@@ -104,7 +104,6 @@
                             <p>Date of Inspection</p>
                         </td>
                         <td class="col-xs-4">
-                            <c:if test="${empty insRepDto.inspectionDate}">-</c:if>
                             <fmt:formatDate value="${insRepDto.inspectionDate}"
                                             pattern="dd/MM/yyyy"></fmt:formatDate>
                         </td>
@@ -115,7 +114,8 @@
                             <p>Time of Inspection</p>
                         </td>
                         <td class="col-xs-4">
-                            <c:out value="${insRepDto.inspectionStartTime}"></c:out>-<c:out value="${insRepDto.inspectionEndTime}"></c:out>
+                            <c:out value="${insRepDto.inspectionStartTime}"></c:out>-<c:out
+                                value="${insRepDto.inspectionEndTime}"></c:out>
                         </td>
                         <td class="col-xs-4"/>
                     </tr>
@@ -168,7 +168,7 @@
                             <p>Report Noted By</p>
                         </td>
                         <td class="col-xs-4">
-                            <p><c:out value="${insRepDto.reportedBy}"/></p>
+                            <p><c:out value="${insRepDto.reportNoteBy}"/></p>
                         </td>
                         <td class="col-xs-4"/>
                     </tr>
@@ -205,7 +205,7 @@
                             <p>Remarks</p>
                         </td>
                         <td class="col-xs-4">
-                            <p><c:out value="${insRepDto.taskRemarks == '' || insRepDto.taskRemarks == null ? '-' : insRepDto.taskRemarks}"/></p>
+                            <p><c:out value="${insRepDto.taskRemarks}"/></p>
                         </td>
                         <td class="col-xs-4">
                     </tr>
@@ -214,7 +214,8 @@
                             <p>Marked for Audit</p>
                         </td>
                         <td class="col-xs-4">
-                            <p><c:out value="${insRepDto.markedForAudit}"/> <fmt:formatDate value="${insRepDto.tcuDate}" pattern="dd/MM/yyyy"/></p>
+                            <p><c:out value="${insRepDto.markedForAudit}"/> <fmt:formatDate value="${insRepDto.tcuDate}"
+                                                                                            pattern="dd/MM/yyyy"/></p>
                         </td>
                         <td class="col-xs-4">
                         </td>
@@ -339,7 +340,7 @@
                         </td>
                         <div>
                             <td class="col-xs-4">
-                                <p><c:out value="${empty appPremisesRecommendationDto.remarks ? '-' : appPremisesRecommendationDto.remarks}"/></p>
+                                <p><c:out value="${insRepDto.inspectypeRemarks}"></c:out></p>
                             </td>
                         </div>
                         <td class="col-xs-4">
@@ -373,7 +374,7 @@
                             <p>Recommendation</p>
                         </td>
                         <td class="col-xs-4">
-                            ${empty recommendationOnlyShow ? "-" : recommendationOnlyShow}
+                            <p><iais:code code="${appPremisesRecommendationDto.period}"/></p>
                         </td>
                         <td class="col-xs-4"></td>
                     </tr>
@@ -395,38 +396,27 @@
                             <p>Follow up Action</p>
                         </td>
                         <td class="col-xs-4">
-                            <c:out value="${appPremisesRecommendationDto.followUpAction}"/>
+                            <textarea style="resize: none" disabled name="followUpAction" cols="50" rows="6"
+                                      title="content" maxlength="8000"><c:out
+                                    value="${appPremisesRecommendationDto.followUpAction}"/></textarea>
                         </td>
                         <td class="col-xs-4"/>
                     </tr>
-                    <tr>
-                        <td class="col-xs-4">
-                            <p>To Engage Enforcement?</p>
-                        </td>
-                        <td class="col-xs-4">
-                            <input type="checkbox" id="enforcement" disabled name="engageEnforcement" <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if>>
-                        </td>
-                        <td class="col-xs-4"/>
-                    </tr>
-                    <tr id="engageRemarks" hidden>
-                        <td class="col-xs-4">
-                            <p>Enforcement Remarks <strong style="color:#ff0000;"> *</strong></p>
-                        </td>
-                        <td class="col-xs-4">
-                            <c:out value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/>
-                        </td>
-                        <td class="col-xs-4"/>
-                    </tr>
+                    <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks!=null}">
+                        <tr id="engageRemarks">
+                            <td class="col-xs-4">
+                                <p>Enforcement Remarks</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <textarea style="resize: none" disabled cols="50" rows="6" title="content"
+                                          MAXLENGTH="4000"><c:out
+                                        value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
+                            </td>
+                            <td class="col-xs-4"/>
+                        </tr>
+                    </c:if>
                 </table>
             </div>
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        if ($('#enforcement').is(':checked')) {
-            $("#engageRemarks").show();
-        }
-    });
-</script>

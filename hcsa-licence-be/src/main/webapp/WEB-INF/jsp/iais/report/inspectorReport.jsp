@@ -14,10 +14,10 @@
 <input type="hidden" name="confirmAction" value="">
 <div class="tab-pane" id="tabInspection" role="tabpanel">
     <%--        <div class="row">--%>
-        <div class="alert alert-info" role="alert">
-            <strong>
-                <h4 style="border-bottom: none">Section A (HCI Details)</h4>
-            </strong>
+    <div class="alert alert-info" role="alert">
+        <strong>
+            <h4 style="border-bottom: none">Section A (HCI Details)</h4>
+        </strong>
     </div>
     <div class="row">
         <div class="col-xs-12">
@@ -107,10 +107,10 @@
             </div>
         </div>
     </div>
-        <div class="alert alert-info" role="alert">
-            <strong>
-                <h4 style="border-bottom: none">Section B (Type of Inspection)</h4>
-            </strong>
+    <div class="alert alert-info" role="alert">
+        <strong>
+            <h4 style="border-bottom: none">Section B (Type of Inspection)</h4>
+        </strong>
     </div>
     <div class="row">
         <div class="col-xs-12">
@@ -130,7 +130,8 @@
                             <p>Time of Inspection</p>
                         </td>
                         <td class="col-xs-8">
-                            <c:out value="${insRepDto.inspectionStartTime}"></c:out>-<c:out value="${insRepDto.inspectionEndTime}"></c:out>
+                            <c:out value="${insRepDto.inspectionStartTime}"></c:out>-<c:out
+                                value="${insRepDto.inspectionEndTime}"></c:out>
                         </td>
                     </tr>
                     <tr>
@@ -190,11 +191,11 @@
             </div>
         </div>
     </div>
-        <div class="alert alert-info" role="alert">
-            <strong>
-                <h4 style="border-bottom: none">Section C (Inspection Findings)</h4>
-            </strong>
-        </div>
+    <div class="alert alert-info" role="alert">
+        <strong>
+            <h4 style="border-bottom: none">Section C (Inspection Findings)</h4>
+        </strong>
+    </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
@@ -216,7 +217,7 @@
                     <p><h4><strong><span>Part II: Findings</span></strong></h4></p>
                 </div>
                 <div class="table-gp">
-                    <table class="table" >
+                    <table class="table">
                         <tr>
                             <td class="col-xs-4">
                                 <p>Remarks</p>
@@ -231,7 +232,8 @@
                                 <p>Marked for Audit</p>
                             </td>
                             <td class="col-xs-4">
-                                <p><c:out value="${insRepDto.markedForAudit}"/>&nbsp;&nbsp;<fmt:formatDate value="${insRepDto.tcuDate}" pattern="dd/MM/yyyy"/></p>
+                                <p><c:out value="${insRepDto.markedForAudit}"/>&nbsp;&nbsp;<fmt:formatDate
+                                        value="${insRepDto.tcuDate}" pattern="dd/MM/yyyy"/></p>
                             </td>
                             <td class="col-xs-4"/>
                         </tr>
@@ -295,7 +297,8 @@
                                 <p>Risk Level <strong style="color:#ff0000;"> *</strong></p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:select name="riskLevel" options="riskLevelOptions" firstOption="Please Select" value="${appPremisesRecommendationDto.riskLevel}"/>
+                                <iais:select name="riskLevel" options="riskLevelOptions" firstOption="Please Select"
+                                             value="${appPremisesRecommendationDto.riskLevel}"/>
                                 <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4">
@@ -306,11 +309,11 @@
             </div>
         </div>
     </div>
-        <div class="alert alert-info" role="alert">
-            <strong>
-                <h4 style="border-bottom: none">Section D (Rectification)</h4>
-            </strong>
-        </div>
+    <div class="alert alert-info" role="alert">
+        <strong>
+            <h4 style="border-bottom: none">Section D (Rectification)</h4>
+        </strong>
+    </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
@@ -378,11 +381,11 @@
             </div>
         </div>
     </div>
-        <div class="alert alert-info" role="alert">
-            <strong>
-                <h4 style="border-bottom: none">Section E (Recommendations)</h4>
-            </strong>
-        </div>
+    <div class="alert alert-info" role="alert">
+        <strong>
+            <h4 style="border-bottom: none">Section E (Recommendations)</h4>
+        </strong>
+    </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
@@ -391,9 +394,12 @@
                         <td class="col-xs-4">
                             <p>Recommendation <strong style="color:#ff0000;"> *</strong></p>
                         </td>
-                            <td class="col-xs-4">
-                                <iais:select id="recommendation" name="recommendation" options="recommendationOption" firstOption="Please Select" value="${appPremisesRecommendationDto.recommendation}" onchange="javascirpt:changeRecommendation(this.value);"/>
-                            </td>
+                        <td class="col-xs-4">
+                            <iais:select id="recommendation" name="recommendation" options="recommendationOption"
+                                         firstOption="Please Select"
+                                         value="${appPremisesRecommendationDto.recommendation}"
+                                         onchange="javascirpt:changeRecommendation(this.value);"/>
+                        </td>
                         <td class="col-xs-4"></td>
                     </tr>
                     <tr id="period" hidden>
@@ -401,7 +407,9 @@
                             <p>Period <strong style="color:#ff0000;"> *</strong></p>
                         </td>
                         <td class="col-xs-4">
-                            <iais:select name="periods" options="riskOption" firstOption="Please Select" onchange="javascirpt:changePeriod();" value="${appPremisesRecommendationDto.period}"/>
+                            <iais:select name="periods" options="riskOption" firstOption="${periodDefault}"
+                                         onchange="javascirpt:changePeriod();"
+                                         value="${appPremisesRecommendationDto.period}"/>
                             <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
                         </td>
                         <td class="col-xs-4"></td>
@@ -411,8 +419,10 @@
                             <p>Other Period <strong style="color:#ff0000;"> *</strong></p>
                         </td>
                         <td class="col-xs-4">
-                            <input id=recomInNumber type="text" name="number" maxlength="2" value="${appPremisesRecommendationDto.recomInNumber}">
-                            <iais:select id="chronoUnit" name="chrono" options="chronoOption" value="${appPremisesRecommendationDto.chronoUnit}"/>
+                            <input id=recomInNumber type="text" name="number" maxlength="2"
+                                   value="${appPremisesRecommendationDto.recomInNumber}">
+                            <iais:select id="chronoUnit" name="chrono" options="chronoOption"
+                                         value="${appPremisesRecommendationDto.chronoUnit}"/>
                             <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
                             <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
                         </td>
@@ -427,42 +437,48 @@
             <h4>Section F (After Action)</h4>
         </strong>
     </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="table-gp">
-                    <table class="table">
-                        <tr>
-                            <td class="col-xs-4">
-                                <p>Follow up Action</p>
-                            </td>
-                            <td class="col-xs-4">
-                                <P><textarea style="resize:none" name="followUpAction" cols="50" rows="6" title="content" maxlength="8000"><c:out value="${appPremisesRecommendationDto.followUpAction}"/></textarea></P>
-                            </td>
-                            <td class="col-xs-4"></td>
-                        </tr>
-                        <tr>
-                            <td class="col-xs-4">
-                                <p>To Engage Enforcement?</p>
-                            </td>
-                            <td class="col-xs-4">
-                                <input type="checkbox" id="enforcement" name="engageEnforcement" onchange="javascirpt:changeEngage();" <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if> >
-                            </td>
-                            <td class="col-xs-4"></td>
-                        </tr>
-                        <tr id="engageRemarks" hidden>
-                            <td class="col-xs-4">
-                                <p>Enforcement Remarks <strong style="color:#ff0000;"> *</strong></p>
-                            </td>
-                            <td class="col-xs-4">
-                                <textarea style="resize:none" name="enforcementRemarks" cols="50" rows="6" title="content" MAXLENGTH="4000"><c:out value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
-                                <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
-                            </td>
-                            <td class="col-xs-4"></td>
-                        </tr>
-                    </table>
-                </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="table-gp">
+                <table class="table">
+                    <tr>
+                        <td class="col-xs-4">
+                            <p>Follow up Action</p>
+                        </td>
+                        <td class="col-xs-4">
+                            <P><textarea style="resize:none" name="followUpAction" cols="50" rows="6" title="content"
+                                         maxlength="8000"><c:out
+                                    value="${appPremisesRecommendationDto.followUpAction}"/></textarea></P>
+                        </td>
+                        <td class="col-xs-4"></td>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-4">
+                            <p>To Engage Enforcement?</p>
+                        </td>
+                        <td class="col-xs-4">
+                            <input type="checkbox" id="enforcement" name="engageEnforcement"
+                                   onchange="javascirpt:changeEngage();"
+                                   <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if> >
+                        </td>
+                        <td class="col-xs-4"></td>
+                    </tr>
+                    <tr id="engageRemarks" hidden>
+                        <td class="col-xs-4">
+                            <p>Enforcement Remarks <strong style="color:#ff0000;"> *</strong></p>
+                        </td>
+                        <td class="col-xs-4">
+                            <textarea style="resize:none" name="enforcementRemarks" cols="50" rows="6" title="content"
+                                      MAXLENGTH="4000"><c:out
+                                    value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
+                            <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                        </td>
+                        <td class="col-xs-4"></td>
+                    </tr>
+                </table>
             </div>
         </div>
+    </div>
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 
@@ -471,70 +487,66 @@
     function insRepsubmit() {
         $("#mainForm").submit();
     }
-     function changePeriod() {
-         const val = $("#periods").val();
+
+    function changePeriod() {
+        const val = $("#periods").val();
         if (val == "Others") {
             $("#selfPeriod").show();
             const reg = /^[0-9]+.?[0-9]*$/;
             const num = $("#recomInNumber").val();
             const period = $("#chronoUnit").val();
-            if(reg.test(num)){
-                if(period.match("DTPE001")){
-                    $("#periodValue").html(num + ' '+ 'Year(s)');
-                }else if(period.match("DTPE002")){
-                    $("#periodValue").html(num + ' '+ 'Month(s)');
+            if (reg.test(num)) {
+                if (period.match("DTPE001")) {
+                    $("#periodValue").html(num + ' ' + 'Year(s)');
+                }
+                if (period.match("DTPE002")) {
+                    $("#periodValue").html(num + ' ' + 'Month(s)');
                 }
             }
         } else {
             $("#selfPeriod").hide();
-            const v = $("#periods").val();
-            if(v.match("DTPE001")){
-                const num = v.substring(0, 1);
-                $("#periodValue").html(num + ' '+ 'Year(s)');
-            }else if(v.match("DTPE002")){
-                const num = v.substring(0, 1);
-                $("#periodValue").html(num + ' '+ 'Month(s)');
+            const value = $("#periods").find("option:selected").text();
+            $("#periodValue").html(value);
+        }
+    }
+
+        function changeRecommendation(obj) {
+            if (obj == "IRE001" || obj == "IRE002") {
+                $("#period").show();
+            } else {
+                $("#period").hide();
+                $("#selfPeriod").hide();
             }
         }
-    }
-
-    function changeRecommendation(obj) {
-        if (obj == "IRE001" || obj == "IRE002") {
-            $("#period").show();
-        } else {
-            $("#period").hide();
-            $("#selfPeriod").hide();
-        }
-    }
 
 
-    function changeEngage() {
-        if ($('#enforcement').is(':checked')) {
-            $("#engageRemarks").show();
-        } else {
-            $("#engageRemarks").hide();
+        function changeEngage() {
+            if ($('#enforcement').is(':checked')) {
+                $("#engageRemarks").show();
+            } else {
+                $("#engageRemarks").hide();
+            }
         }
-    }
 
 
-    $(document).ready(function () {
-        if ($("#recommendation").val() == "IRE001") {
-            changeRecommendation("IRE001");
-        }
-        if ($("#recommendation").val() == "IRE002") {
-            changeRecommendation("IRE002");
-        }
-        if ($("#recommendation").val() == "IRE003") {
-            $("#period").hide();
-            $("#selfPeriod").hide();
-        }
-        if ($("#periods").val() == "Others") {
-            changePeriod("Others");
-        }
-        if ($('#enforcement').is(':checked')) {
-            $("#engageRemarks").show();
-        }
-    });
+        $(document).ready(function () {
+            if ($("#recommendation").val() == "IRE001") {
+                changeRecommendation("IRE001");
+            }
+            if ($("#recommendation").val() == "IRE002") {
+                changeRecommendation("IRE002");
+            }
+            if ($("#recommendation").val() == "IRE003") {
+                $("#period").hide();
+                $("#selfPeriod").hide();
+            }
+            if ($("#periods").val() == "Others") {
+                changePeriod("Others");
+            }
+            if ($('#enforcement').is(':checked')) {
+                $("#engageRemarks").show();
+            }
+        });
 
 </script>
 

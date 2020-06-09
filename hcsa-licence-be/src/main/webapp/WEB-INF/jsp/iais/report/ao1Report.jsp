@@ -1,15 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%
-    //handle to the Engine APIs
-    sop.webflow.rt.api.BaseProcessClass process =
-            (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
-%>
-<%
-    String webroot = IaisEGPConstant.BE_CSS_ROOT;
-%>
 <input type="hidden" name="action_type" value="">
 <div class="row">
     <div class="alert alert-info" role="alert">
@@ -416,6 +407,15 @@
                         <td class="col-xs-4"/>
                     </tr>
                     <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks!=null}">
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>To Engage Enforcement?</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <input type="checkbox" disabled checked >
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
                         <tr id="engageRemarks">
                             <td class="col-xs-4">
                                 <p>Enforcement Remarks</p>
@@ -428,64 +428,20 @@
                             <td class="col-xs-4"/>
                         </tr>
                     </c:if>
+                    <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks==null}">
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>To Engage Enforcement?</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <input type="checkbox" disabled  name="engageEnforcement" >
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                    </c:if>
                 </table>
             </div>
         </div>
     </div>
 </div>
-<%@include file="/WEB-INF/jsp/include/validation.jsp" %>
-
-<script type="text/javascript">
-
-    // function reportaosubmit() {
-    //     if ($("#processingDecision").val() =="Approval"){
-    //         $("#mainForm").submit();
-    //     }else if ($("#processingDecision").val() =="Reject"){
-    //         $("[name='action_type']").val("back");
-    //          $("#mainForm").submit();
-    //     }else {
-    //         $("#mainForm").submit();
-    //     }
-    //
-    // }
-
-    // function submit(action) {
-    //     $("[name='action_type']").val(action);
-    //     var mainPoolForm = document.getElementById('aomainForm');
-    //     mainPoolForm.submit();
-    //
-    // }
-
-    // function changePeriod(obj) {
-    //     if (obj == "Others") {
-    //         $("#selfPeriod").show();
-    //     } else {
-    //         $("#selfPeriod").hide();
-    //     }
-    // }
-    //
-    // function changeRecommendation(obj) {
-    //     if (obj == "Others") {
-    //         $("#period").show();
-    //     } else {
-    //         $("#period").hide();
-    //     }
-    // }
-    //
-    // function changeEngage() {
-    //     if ($('#enforcement').is(':checked')) {
-    //         $("#engageRemarks").show();
-    //     } else {
-    //         $("#engageRemarks").hide();
-    //     }
-    // }
-    //
-    //
-    // $(document).ready(function () {
-    //     if ($('#enforcement').is(':checked')) {
-    //         $("#engageRemarks").show();
-    //     }
-    // });
-
-</script>
 
