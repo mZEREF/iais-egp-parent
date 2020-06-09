@@ -1062,6 +1062,7 @@ public class NewApplicationHelper {
                     psnDto.setSpecialityHtml(specialtySelectStr);
                 }
                 psnDto.setAssignSelect(getPersonKey(psnDto.getIdType(),psnDto.getIdNo()));
+                psnDto.setLicPerson(person.isLicPerson());
                 personMap.put(personMapKey,psnDto);
             }else{
                 //set different page column
@@ -1113,7 +1114,7 @@ public class NewApplicationHelper {
                 }
                 person.setLicPerson(true);
                 //for person dtos
-                psnDto.setLicPerson(true);
+                psnDto.setLicPerson(person.isLicPerson());
                 psnDto.setAssignSelect(getPersonKey(psnDto.getIdType(),psnDto.getIdNo()));
                 personMap.put(personMapKey,person);
             }
@@ -1152,6 +1153,7 @@ public class NewApplicationHelper {
                     }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())){
                         appSvcPrincipalOfficersDto.setMapPsn(true);
                     }
+                    appSvcPrincipalOfficersDto.setLicPerson(true);
                     personMap.put(personMapKey, appSvcPrincipalOfficersDto);
                 } else {
                     //set different page column
