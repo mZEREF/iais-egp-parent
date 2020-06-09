@@ -140,7 +140,7 @@ public class LicenceServiceImpl implements LicenceService {
         }
         log.info(StringUtil.changeForLog("The getGroupLicenceNo yearLength -->:"+yearLength));
         log.info(StringUtil.changeForLog("The getGroupLicenceNo end ..."));
-        return   systemClient.groupLicence(serviceCode,String.valueOf(yearLength),no).getEntity();
+        return   systemClient.groupLicence(serviceCode,String.valueOf(yearLength),no,null).getEntity();
     }
 
     @Override

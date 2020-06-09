@@ -45,7 +45,9 @@ public interface SystemBeLicClient {
                                         @RequestParam("yearLength") Integer yearLength, @RequestParam("licenceSeq") Integer licenceSeq) ;
     @RequestMapping(value = "/group-licence")
     FeignResponseEntity<String> groupLicence(@RequestParam("hscaCode") String hscaCode,
-                                             @RequestParam("yearLength") String yearLength,@RequestParam("licence") String licence);
+                                             @RequestParam("yearLength") String yearLength,
+                                             @RequestParam("licence") String licence,
+                                             @RequestParam("oldGrpNo") String oldGrpNo);
 
     @PostMapping(value = "/iais-messageTemplate" ,consumes =  MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<InspectionEmailTemplateDto> loadingEmailTemplate(@RequestBody String id);
