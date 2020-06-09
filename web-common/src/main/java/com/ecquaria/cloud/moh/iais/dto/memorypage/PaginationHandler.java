@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2020/5/27 17:50
  */
 
-public class PaginationHandler<T> implements Serializable {
+public class PaginationHandler<T extends Serializable> implements Serializable {
     private static final long serialVersionUID = 9007930371131074000L;
 
     private static final String STARTLI =  "<li><a href=\"#\" onclick=\"javascript:";
@@ -437,7 +437,7 @@ public class PaginationHandler<T> implements Serializable {
         ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr", null);
     }
 
-    public static class PageRecords<T> implements Serializable {
+    public static class PageRecords<T extends Serializable> implements Serializable {
         private static final long serialVersionUID = 6003157429959104172L;
 
         private boolean checked;
