@@ -98,6 +98,37 @@
         $("#eed").attr("data-date-start-date",startDate);
     }
 
+
+    $(".appDoSelectActive").change(function () {
+        var appNo = $(this).closest("tr").find(".appNo").html();
+        var appId = $(this).closest("tr").find(".appId").html();
+        var appType = $(this).closest("tr").find(".apptype").html();
+        var action = $(this).val();
+        if ("Continue" == action) {
+            showWaiting();
+            $("[name='action_no_value']").val($(this).closest("tr").find(".appdraftNo").html());
+            $("[name='action_type_value']").val(appType);
+            submit('appDraft');
+        }
+        if ("Appeal" == action) {
+            showWaiting();
+            $("[name='action_no_value']").val(appNo);
+            $("[name='action_id_value']").val(appId);
+            submit("appDoAppeal");
+        }if ("Recall" == action) {
+            showWaiting();
+            $("[name='action_no_value']").val(appNo);
+            $("[name='action_id_value']").val(appId);
+            submit("appDoRecall");
+        }
+        if ("Withdraw" == action) {
+            showWaiting();
+            $("[name='action_no_value']").val(appNo);
+            $("[name='action_id_value']").val(appId);
+            submit("appRenew");
+        }
+    });
+
     function appAjax(){
         $.ajax({
             data:{

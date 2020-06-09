@@ -150,15 +150,15 @@
                                     <p class="visible-xs visible-sm table-row-title">Actions</p>
                                     <c:choose>
                                         <c:when test="${app.status == 'APST038'
-                                                        || (app.status == 'APST007' && app.applicationType == 'APTY006')
+                                                        || (app.applicationType == 'APTY006')
                                                         || (app.status == 'APST007' && app.applicationType == 'APTY001')
-                                                        || app.status == 'APST005' || app.status == 'APST006'}">
+                                                        || app.status == 'APST006'}">
                                             <select disabled>
                                                 <option>N/A</option>
                                             </select>
                                         </c:when>
                                         <c:otherwise>
-                                            <select id="appDoActive">
+                                            <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                 <option value="" selected>Select</option>
                                                 <c:choose>
                                                     <c:when test="${app.status == 'APST008'}">
@@ -179,23 +179,6 @@
                                             </select>
                                         </c:otherwise>
                                     </c:choose>
-                                    <%--<c:choose>--%>
-                                        <%--<c:when test="${app.status == 'APST008'}">--%>
-                                            <%--<iais:select name="draftAction" cssClass="draftAction" id="draftAction" options="selectDraftApplication" firstOption="Select"/>--%>
-                                        <%--</c:when>--%>
-                                        <%--<c:when test="${app.status == 'APST038' || (app.status == 'APST007' && app.applicationType == 'APTY006') || (app.status == 'APST007' && app.applicationType == 'APTY001')}">--%>
-                                            <%--<p>N/A</p>--%>
-                                        <%--</c:when>--%>
-                                        <%--<c:when test="${app.status == 'APST006' || app.status == 'APST005'}">--%>
-                                            <%--<iais:select name="appAoRAction" cssClass="appAoRAction" id="appAoRAction" options="selectApproveOrRejectSelectList" firstOption="Select"/>--%>
-                                        <%--</c:when>--%>
-                                        <%--<c:when test="${app.status == 'APST060'}">--%>
-                                            <%--<iais:select name="appRecalledAction" cssClass="appRecalledAction" id="appRecalledAction" options="selectRecalledSelectList" firstOption="Select"/>--%>
-                                        <%--</c:when>--%>
-                                        <%--<c:otherwise>--%>
-                                            <%--<iais:select name="appAction" id="appAction" cssClass="appAction" options="selectApplication" firstOption="Select" />--%>
-                                        <%--</c:otherwise>--%>
-                                    <%--</c:choose>--%>
                                 </td>
                             </tr>
                         </c:forEach>
