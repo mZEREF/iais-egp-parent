@@ -29,6 +29,7 @@ public interface InsRepService {
     void updateFollowRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     void updateRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     List<SelectOption> getRiskOption(ApplicationViewDto applicationViewDto);
+    String getPeriodDefault(ApplicationViewDto applicationViewDto);
     List<String> getPeriods(ApplicationViewDto applicationViewDto);
     ApplicationViewDto getApplicationViewDto (String appNo);
     ApplicationDto updateApplicaiton(ApplicationDto applicationDto);
@@ -42,6 +43,7 @@ public interface InsRepService {
 
     InspectionReportDto getInspectorUser(TaskDto taskDto,LoginContext loginContext);
     InspectionReportDto getInspectorAo(TaskDto taskDto,ApplicationViewDto applicationViewDto);
+    InspectionReportDto getInspectorAo2(TaskDto taskDto,ApplicationViewDto applicationViewDto);
 
 
     void sendPostInsTaskFeData(String submissionId,String eventRefNum) throws FeignException;

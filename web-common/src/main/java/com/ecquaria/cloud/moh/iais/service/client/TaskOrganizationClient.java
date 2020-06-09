@@ -25,7 +25,7 @@ import java.util.Set;
  * @author suocheng
  * @date 12/4/2019
  */
-@FeignClient(name = "iais-organization", configuration = FeignConfiguration.class,
+@FeignClient(name = "iais-organization",configuration = FeignConfiguration.class,
         fallback = TaskOrganizationClientFallback.class)
 public interface TaskOrganizationClient {
     @RequestMapping(path = "/iais-task",method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -57,8 +57,8 @@ public interface TaskOrganizationClient {
     @GetMapping(path = "/iais-task/inspector-task/{appCorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getInspectorByAppCorrId(@PathVariable(name = "appCorrId") String appCorrId);
 
-    @GetMapping(value = "/iais-task/corrid-inspectors/{corrId}/{status}/{roleId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Set<String>> getInspectors(@PathVariable(name = "corrId") String corrId, @PathVariable(name = "status") String status, @PathVariable(name = "roleId") String roleId);
+    @GetMapping(value = "/iais-task/corrid-inspectors",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Set<String>> getInspectors(@RequestParam(name = "corrId") String corrId, @RequestParam(name = "processUrl") String processUrl, @RequestParam(name = "roleId") String roleId);
 
     @RequestMapping(path = "/iais-task/Tasks/date",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getTaskDtoByDate(@RequestParam(name ="date") String date);

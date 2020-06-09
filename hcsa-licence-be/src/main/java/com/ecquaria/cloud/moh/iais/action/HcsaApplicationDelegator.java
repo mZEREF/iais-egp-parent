@@ -1111,7 +1111,7 @@ public class HcsaApplicationDelegator {
                 ParamUtil.setRequestAttr(bpc.request,"isShowInspection","Y");
                 LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
                 InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
-                InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto,applicationViewDto);
+                InspectionReportDto inspectorAo = insRepService.getInspectorAo2(taskDto,applicationViewDto);
                 insRepDto.setInspectors(inspectorAo.getInspectors());
                 insRepDto.setReportNoteBy(inspectorAo.getReportNoteBy());
                 insRepDto.setReportedBy(inspectorAo.getReportedBy());
@@ -1128,15 +1128,13 @@ public class HcsaApplicationDelegator {
         AppPremisesRecommendationDto followRecommendationDto = uploadFileClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
 
         AppPremisesRecommendationDto initRecommendationDto = new AppPremisesRecommendationDto();
-        String period;
         if (appPremisesRecommendationDto != null) {
             String reportRemarks = appPremisesRecommendationDto.getRemarks();
             initRecommendationDto.setRemarks(reportRemarks);
-            String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
-            String codeDesc = MasterCodeUtil.getCodeDesc(chronoUnit);
+            initRecommendationDto.setRemarks(reportRemarks);
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
-            period  = recomInNumber+" " + codeDesc;
-            initRecommendationDto.setPeriod(period);
+            String recommendationOnlyShowStr = getRecommendationOnlyShowStr(recomInNumber);
+            initRecommendationDto.setPeriod(recommendationOnlyShowStr);
             String remarks = appPremisesRecommendationDto.getRemarks();
             initRecommendationDto.setRemarks(remarks);
         }

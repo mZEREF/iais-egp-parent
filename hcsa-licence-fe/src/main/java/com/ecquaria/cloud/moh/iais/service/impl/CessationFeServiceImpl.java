@@ -171,13 +171,13 @@ public class CessationFeServiceImpl implements CessationFeService {
                 licIds.add(licId);
             }
         }
-        List<String> partCeasedLicIds = cessationClient.isAllCeased(licIds).getEntity();
-        if(!IaisCommonUtils.isEmpty(partCeasedLicIds)){
-            for(String licId : partCeasedLicIds){
-                LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
-                licenceDtos.remove(licenceDto);
-            }
-        }
+//        List<String> partCeasedLicIds = cessationClient.isAllCeased(licIds).getEntity();
+//        if(!IaisCommonUtils.isEmpty(partCeasedLicIds)){
+//            for(String licId : partCeasedLicIds){
+//                LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
+//                licenceDtos.remove(licenceDto);
+//            }
+//        }
         List<String> specLicIds = licenceClient.getSpecLicIdsByLicIds(licIds).getEntity();
         if (!IaisCommonUtils.isEmpty(specLicIds) && !IaisCommonUtils.isEmpty(licenceDtos)) {
             for (String specId : specLicIds) {

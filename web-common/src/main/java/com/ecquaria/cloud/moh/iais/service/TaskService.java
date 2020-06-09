@@ -82,7 +82,7 @@ public interface TaskService {
      *@return :
      *@Description :
      */
-    Set<String> getInspectiors(String corrId , String status, String roleId);
+    Set<String> getInspectiors(String corrId , String processUrl, String roleId);
 
     /**
      * @description: get the Task before the date

@@ -82,6 +82,8 @@ public class InsReportDelegator {
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
         if (insRepDto == null) {
             insRepDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
+            InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
+            insRepDto.setInspectors(inspectorUser.getInspectors());
         }
         AppPremisesRecommendationDto accRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPECTYPE).getEntity();
         if(accRecommendationDto!=null){
@@ -100,6 +102,8 @@ public class InsReportDelegator {
         List<SelectOption> recommendationOption = getRecommendationOption();
         List<SelectOption> riskLevelOptions = getriskLevel();
         List<SelectOption> processingDe = getProcessingDecision(appStatus);
+        String periodDefault = insRepService.getPeriodDefault(applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request, "periodDefault", periodDefault);
         String infoClassTop = "active";
         String infoClassBelow = "tab-pane active";
         String reportClassBelow = "tab-pane";

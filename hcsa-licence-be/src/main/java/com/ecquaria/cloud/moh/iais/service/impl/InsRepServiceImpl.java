@@ -484,16 +484,48 @@ public class InsRepServiceImpl implements InsRepService {
         if (listRiskResultDto != null && !listRiskResultDto.isEmpty()) {
             for (RiskResultDto riskResultDto : listRiskResultDto) {
                 String dateType = riskResultDto.getDateType();
-                String codeDesc = MasterCodeUtil.getCodeDesc(dateType);
+                //String codeDesc = MasterCodeUtil.getCodeDesc(dateType);
                 String count = String.valueOf(riskResultDto.getTimeCount());
-                String recommTime = count + " " + codeDesc;
-                SelectOption so = new SelectOption(count + " " + dateType, recommTime);
+                //String recommTime = count + " " + codeDesc;
+                String lictureText = riskResultDto.getLictureText();
+                SelectOption so = new SelectOption(count + " " + dateType, lictureText);
                 riskResult.add(so);
             }
         }
         SelectOption so = new SelectOption("Others", "Others");
         riskResult.add(so);
         return riskResult;
+    }
+
+    @Override
+    public String getPeriodDefault(ApplicationViewDto applicationViewDto) {
+        String defaultOption = null;
+        String serviceId = applicationViewDto.getApplicationDto().getServiceId();
+        List<String> list = IaisCommonUtils.genNewArrayList();
+        list.add(serviceId);
+        List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
+        String svcCode = "";
+        if (listHcsaServices != null && !listHcsaServices.isEmpty()) {
+            for (HcsaServiceDto hcsaServiceDto : listHcsaServices) {
+                svcCode = hcsaServiceDto.getSvcCode();
+            }
+        }
+        RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
+        riskAcceptiionDto.setScvCode(svcCode);
+        List<RiskAcceptiionDto> listRiskAcceptiionDto = IaisCommonUtils.genNewArrayList();
+        listRiskAcceptiionDto.add(riskAcceptiionDto);
+        List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
+        if (listRiskResultDto != null && !listRiskResultDto.isEmpty()) {
+            for (RiskResultDto riskResultDto : listRiskResultDto) {
+                String dateType = riskResultDto.getDateType();
+                String count = String.valueOf(riskResultDto.getTimeCount());
+                Boolean dafLicture = riskResultDto.getDafLicture();
+                if(dafLicture){
+                    defaultOption =   count + " " + dateType ;
+                }
+            }
+        }
+        return defaultOption;
     }
 
     @Override
@@ -730,7 +762,7 @@ public class InsRepServiceImpl implements InsRepService {
         String leadName = leadList.get(0).getDisplayName();
         reportDtoForInspector.setReportedBy(reportBy);
         reportDtoForInspector.setReportNoteBy(leadName);
-        Set<String> inspectiors = taskService.getInspectiors(correlationId, "TSTATUS003", "INSPECTOR");
+        Set<String> inspectiors = taskService.getInspectiors(correlationId, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR);
         List<String> inspectors = IaisCommonUtils.genNewArrayList();
         for (String inspector : inspectiors) {
             inspectors.add(inspector);
@@ -776,7 +808,7 @@ public class InsRepServiceImpl implements InsRepService {
             String leadName = leadList.get(0).getDisplayName();
             reportDtoForAo.setReportedBy(reportBy);
             reportDtoForAo.setReportNoteBy(leadName);
-            Set<String> inspectiors = taskService.getInspectiors(correlationId, "TSTATUS003", "INSPECTOR");
+            Set<String> inspectiors = taskService.getInspectiors(correlationId, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR);
             List<String> inspectors = IaisCommonUtils.genNewArrayList();
             for (String inspector : inspectiors) {
                 inspectors.add(inspector);
@@ -788,6 +820,64 @@ public class InsRepServiceImpl implements InsRepService {
                 inspectorsName.add(displayName);
             }
             reportDtoForAo.setInspectors(inspectorsName);
+        }
+        return reportDtoForAo;
+    }
+
+    @Override
+    public InspectionReportDto getInspectorAo2(TaskDto taskDto, ApplicationViewDto applicationViewDto) {
+        List<String> listUserId = IaisCommonUtils.genNewArrayList();
+        String correlationId = taskDto.getRefNo();
+        InspectionReportDto reportDtoForAo = new InspectionReportDto();
+        Set<String> inspectorReportS = taskService.getInspectiors(correlationId, TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR);
+        List<String> inspectorReportList = IaisCommonUtils.genNewArrayList();
+        for (String inspector : inspectorReportS) {
+            inspectorReportList.add(inspector);
+        }
+        List<OrgUserDto> reported = organizationClient.retrieveOrgUserAccount(inspectorReportList).getEntity();
+        List<String> inspectorsName = IaisCommonUtils.genNewArrayList();
+        for (OrgUserDto orgUserDto : reported) {
+            String displayName = orgUserDto.getDisplayName();
+            inspectorsName.add(displayName);
+        }
+        reportDtoForAo.setReportedBy(inspectorsName.get(0));
+
+        String userId = reported.get(0).getId();
+        List<String> wkGrpIds = comSystemAdminClient.getWorkGrpsByUserId(userId).getEntity();
+        if (wkGrpIds != null && !wkGrpIds.isEmpty()) {
+            listUserId.add(userId);
+            List<OrgUserDto> userList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
+            String reportBy = userList.get(0).getDisplayName();
+            listUserId.clear();
+            //get inspection lead
+            String workId = null;
+            for (String id : wkGrpIds) {
+                WorkingGroupDto entity = organizationClient.getWrkGrpById(id).getEntity();
+                String groupDomain = entity.getGroupDomain();
+                if ("hcsa".equals(groupDomain)) {
+                    workId = entity.getId();
+                    break;
+                }
+            }
+            List<String> leadId = organizationClient.getInspectionLead(workId).getEntity();
+            for (String lead : leadId) {
+                listUserId.add(lead);
+            }
+            List<OrgUserDto> leadList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
+            String leadName = leadList.get(0).getDisplayName();
+            reportDtoForAo.setReportNoteBy(leadName);
+            Set<String> inspectiors = taskService.getInspectiors(correlationId, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR);
+            List<String> inspectors = IaisCommonUtils.genNewArrayList();
+            for (String inspector : inspectiors) {
+                inspectors.add(inspector);
+            }
+            List<OrgUserDto> inspectorList = organizationClient.retrieveOrgUserAccount(inspectors).getEntity();
+            List<String> inspectorsNames = IaisCommonUtils.genNewArrayList();
+            for (OrgUserDto orgUserDto : inspectorList) {
+                String displayName = orgUserDto.getDisplayName();
+                inspectorsNames.add(displayName);
+            }
+            reportDtoForAo.setInspectors(inspectorsNames);
         }
         return reportDtoForAo;
     }
@@ -894,7 +984,7 @@ public class InsRepServiceImpl implements InsRepService {
     private List<TaskDto> prepareTaskToAo1(TaskDto taskDto, ApplicationDto applicationDto, HcsaSvcStageWorkingGroupDto dto) throws FeignException {
         String refNo = taskDto.getRefNo();
         String userId = null;
-        Set<String> inspectors = taskService.getInspectiors(refNo, TaskConsts.TASK_STATUS_COMPLETED, RoleConsts.USER_ROLE_AO1);
+        Set<String> inspectors = taskService.getInspectiors(refNo, TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1, RoleConsts.USER_ROLE_AO1);
         if (!inspectors.isEmpty()) {
             userId = inspectors.iterator().next();
             taskDto.setUserId(userId);

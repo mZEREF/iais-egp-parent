@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -499,7 +500,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         String leadName = leadList.get(0).getDisplayName();
         inspectionReportDto.setReportedBy(reportBy);
         inspectionReportDto.setReportNoteBy(leadName);
-        Set<String> inspectiors = taskService.getInspectiors(appPremisesCorrelationId, "TSTATUS003", "INSPECTOR");
+        Set<String> inspectiors = taskService.getInspectiors(appPremisesCorrelationId, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, "INSPECTOR");
         //get inspectiors
         List<String> inspectors = IaisCommonUtils.genNewArrayList();
         for (String inspector : inspectiors) {
