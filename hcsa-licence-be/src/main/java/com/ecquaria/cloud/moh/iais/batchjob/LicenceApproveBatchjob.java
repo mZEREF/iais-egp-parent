@@ -620,7 +620,7 @@ public class LicenceApproveBatchjob {
                 }
 
                 LicenceDto licenceDto = getLicenceDto(licenceNo, hcsaServiceDto.getSvcName(), null, applicationGroupDto, appPremisesRecommendationDto,
-                        originLicenceDto, firstApplicationDto, firstApplicationDto.getRelLicenceNo(), applicationDtos, true);
+                        originLicenceDto, firstApplicationDto, applicationDtos, true);
                 superLicDto.setLicenceDto(licenceDto);
                 //if PostInspNeeded send email
                 if (isPostInspNeeded == Integer.parseInt(AppConsts.YES)) {
@@ -882,7 +882,7 @@ public class LicenceApproveBatchjob {
                 LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
                 superLicDto.setOriginLicenceDto(originLicenceDto);
                 LicenceDto licenceDto = getLicenceDto(licenceNo, hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
-                        originLicenceDto, applicationDto, applicationDto.getRelLicenceNo(), null, false);
+                        originLicenceDto, applicationDto, null, false);
                 superLicDto.setLicenceDto(licenceDto);
 
                 //create the lic_app_correlation
