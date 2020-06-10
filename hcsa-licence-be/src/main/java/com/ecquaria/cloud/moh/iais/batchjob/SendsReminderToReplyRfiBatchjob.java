@@ -14,8 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -97,13 +95,6 @@ public class SendsReminderToReplyRfiBatchjob {
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto.getId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
         String applicantName=licenseeDto.getName();
-        try {
-            List<OrgUserRoleDto> orgUserRoleDtos=organizationClient.getSendEmailUser(licenseeDto.getOrganizationId()).getEntity();
-            OrgUserDto userAccountDto=organizationClient.retrieveOrgUserAccountById(orgUserRoleDtos.get(0).getUserAccId()).getEntity();
-            applicantName=userAccountDto.getDisplayName();
-        }catch (Exception e){
-            log.error(e.getMessage(), e);
-        }
         HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
         mapPrem.put("licenseeId",licenseeId);
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();

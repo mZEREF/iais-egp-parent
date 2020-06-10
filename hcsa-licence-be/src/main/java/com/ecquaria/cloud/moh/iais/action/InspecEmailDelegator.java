@@ -20,8 +20,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -122,13 +120,6 @@ public class InspecEmailDelegator {
         String licenseeId=applicationViewDto.getApplicationGroupDto().getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
         String applicantName=licenseeDto.getName();
-        try {
-            List<OrgUserRoleDto> orgUserRoleDtos=organizationClient.getSendEmailUser(licenseeDto.getOrganizationId()).getEntity();
-            OrgUserDto userAccountDto=organizationClient.retrieveOrgUserAccountById(orgUserRoleDtos.get(0).getUserAccId()).getEntity();
-            applicantName=userAccountDto.getDisplayName();
-        }catch (Exception e){
-            log.error(e.getMessage(), e);
-        }
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
         inspectionEmailTemplateDto.setAppPremCorrId(correlationId);
         inspectionEmailTemplateDto.setApplicantName(applicantName);

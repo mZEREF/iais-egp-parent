@@ -22,8 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.NewRfiPageListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -43,7 +41,6 @@ import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -91,8 +88,6 @@ public class RequestForInformationDelegator {
     LicInspNcEmailService licInspNcEmailService;
     @Autowired
     private SystemParamConfig systemParamConfig;
-    @Autowired
-    OrganizationClient organizationClient;
     @Autowired
     EmailClient emailClient;
     @Value("${iais.email.sender}")
@@ -321,13 +316,6 @@ public class RequestForInformationDelegator {
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto1.getId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
         String applicantName=licenseeDto.getName();
-        try {
-            List<OrgUserRoleDto> orgUserRoleDtos=organizationClient.getSendEmailUser(licenseeDto.getOrganizationId()).getEntity();
-            OrgUserDto userAccountDto=organizationClient.retrieveOrgUserAccountById(orgUserRoleDtos.get(0).getUserAccId()).getEntity();
-            applicantName=userAccountDto.getDisplayName();
-        }catch (Exception e){
-            log.error(e.getMessage(), e);
-        }
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         StringBuilder stringBuilder=new StringBuilder();
         int i=0;
