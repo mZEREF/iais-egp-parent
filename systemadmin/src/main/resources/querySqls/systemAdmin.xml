@@ -14,7 +14,8 @@
                    status,
                    effective_from,
                    effective_to,
-                   version
+                   version,
+                   is_centrally_manage
             FROM CM_MASTER_CODE as mc) AS ACM
             WHERE ACM.STATUS != 'CMSTAT002'
             <#if id??> AND CHARINDEX(:id, ACM.master_code_id) >0</#if>

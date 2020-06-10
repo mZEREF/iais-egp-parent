@@ -22,6 +22,7 @@
                                 <th>Filter Value</th>
                                 <th>Sequence</th>
                                 <th>Version</th>
+                                <th>Centrally managed Flag</th>
                                 <th>Effective Start Date</th>
                                 <th>Effective End Date</th>
                                 <th>Status</th>
@@ -67,6 +68,10 @@
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Version</p>
                                                 <p>${masterCodeResult.version}</p>
+                                            </td>
+                                            <td>
+                                                <p class="visible-xs visible-sm table-row-title">Version</p>
+                                                <p>${masterCodeResult.isCentrallyManage == 1 ?"Y":"N"}</p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Effective Start
