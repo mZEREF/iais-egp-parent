@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -311,13 +310,9 @@ public class NewApplicationDelegator {
             licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
             if(licAppGrpPremisesDtoMap != null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
                 Map<String,AppGrpPremisesDto> newLicAppGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
-                List<String> pendPremisesHci = IaisCommonUtils.genNewArrayList();
                 //remove premise info when pending premises hci same
                 List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST);
-                List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = appSubmissionService.getPendAppPremises(licenseeId,hcsaServiceDtos);
-                for(AppGrpPremisesEntityDto premisesDto:appGrpPremisesEntityDtos){
-                    NewApplicationHelper.setPremiseHciList(premisesDto,pendPremisesHci);
-                }
+                List<String> pendAndLicPremHci = appSubmissionService.getHciFromPendAppAndLic(licenseeId,hcsaServiceDtos);
                 licAppGrpPremisesDtoMap.forEach((k,v)->{
                     String premisesKey = NewApplicationHelper.getPremKey(v);
                     String premisesHci = "";
@@ -328,7 +323,7 @@ public class NewApplicationDelegator {
                     }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(v.getPremisesType())){
                         premisesHci = premisesKey;
                     }
-                    if(!pendPremisesHci.contains(premisesHci)){
+                    if(!pendAndLicPremHci.contains(premisesHci)){
                         newLicAppGrpPremisesDtoMap.put(k,v);
                     }
                 });
