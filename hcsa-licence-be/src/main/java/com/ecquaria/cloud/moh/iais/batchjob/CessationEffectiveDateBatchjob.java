@@ -74,6 +74,7 @@ public class CessationEffectiveDateBatchjob {
                                 String licenceNo = licenceDto.getLicenceNo();
                                 String id = licenceDto.getId();
                                 cessationBeService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
+                                break;
                             }
                         }
                     }

@@ -65,6 +65,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -697,6 +698,12 @@ public class WithOutRenewalDelegator {
         AppSubmissionDto oldAppSubmissionDto  =(AppSubmissionDto)bpc.request.getSession().getAttribute("oldAppSubmissionDto");
         List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         RenewDto renewDto = (RenewDto)ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
+        String renewEffectiveDate = ParamUtil.getDate(bpc.request, "renewEffectiveDate");
+        if(!StringUtil.isEmpty(renewEffectiveDate)){
+            Date date = Formatter.parseDate(renewEffectiveDate);
+            renewDto.getAppSubmissionDtos().get(0).setEffectiveDate(date);
+            renewDto.getAppSubmissionDtos().get(0).setEffectiveDateStr(renewEffectiveDate);
+        }
         if(renewDto!=null){
             List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
             for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
@@ -732,15 +739,12 @@ public class WithOutRenewalDelegator {
                                     ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE2);
                                     return;
                                 }
-
                             }
                         }
                     }
                 }
             }
         }
-
-
         //go page3
         ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE3);
     }
