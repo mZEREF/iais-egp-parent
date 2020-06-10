@@ -1062,7 +1062,6 @@ public class NewApplicationHelper {
                     psnDto.setSpecialityHtml(specialtySelectStr);
                 }
                 psnDto.setAssignSelect(getPersonKey(psnDto.getIdType(),psnDto.getIdNo()));
-                psnDto.setLicPerson(person.isLicPerson());
                 personMap.put(personMapKey,psnDto);
             }else{
                 //set different page column
