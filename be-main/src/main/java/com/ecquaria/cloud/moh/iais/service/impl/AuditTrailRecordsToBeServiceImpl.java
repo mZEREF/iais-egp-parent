@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
@@ -13,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.service.AuditTrailRecordsToBeService;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicMainClient;
+import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -97,27 +99,27 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
 
                     ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
                     if(processFileTrackDto!=null){
-//                        //check file is changed
-//                        try (FileInputStream is=new FileInputStream(fil);
-//                             ByteArrayOutputStream by=new ByteArrayOutputStream();) {
-//                            int count;
-//                            byte [] size=new byte[1024];
-//                            count=is.read(size);
-//                            while(count!=-1){
-//                                by.write(size,0,count);
-//                                count= is.read(size);
-//                            }
-//
-//                            byte[] bytes = by.toByteArray();
-//                            String s = FileUtil.genMd5FileChecksum(bytes);
-//                            s = s + AppServicesConsts.ZIP_NAME;
-//                            if( !s.equals(name)){
-//                                continue;
-//                            }
-//                        }catch (Exception e){
-//                            log.error(e.getMessage(),e);
-//                            continue;
-//                        }
+                        //check file is changed
+                        try (FileInputStream is=new FileInputStream(fil);
+                             ByteArrayOutputStream by=new ByteArrayOutputStream();) {
+                            int count;
+                            byte [] size=new byte[1024];
+                            count=is.read(size);
+                            while(count!=-1){
+                                by.write(size,0,count);
+                                count= is.read(size);
+                            }
+
+                            byte[] bytes = by.toByteArray();
+                            String s = FileUtil.genMd5FileChecksum(bytes);
+                            s = s + AppServicesConsts.ZIP_NAME;
+                            if( !s.equals(name)){
+                                continue;
+                            }
+                        }catch (Exception e){
+                            log.error(e.getMessage(),e);
+                            continue;
+                        }
                         CheckedInputStream cos=null;
                         BufferedInputStream bis=null;
                         BufferedOutputStream bos=null;
@@ -211,7 +213,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
     @Override
     public void download(ProcessFileTrackDto processFileTrackDto, String fileName, String refId, String submissionId) {
 
-        File file =new File(downZip+File.separator+fileName+File.separator+"userRecFile");
+        File file =new File(downZip+File.separator+fileName+File.separator+"auditRecFile");
         if(!file.exists()){
             file.mkdirs();
         }

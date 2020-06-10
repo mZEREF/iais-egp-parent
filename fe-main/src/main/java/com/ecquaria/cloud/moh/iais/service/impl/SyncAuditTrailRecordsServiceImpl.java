@@ -82,7 +82,8 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
     @Override
     public String getData(List<AuditTrailEntityDto> auditTrailDtos) {
-        fileName = "userRecFile";
+        deleteFile();
+        fileName = "auditRecFile";
         download = sharedPath +fileName;
         backups = sharedPath + "backupsAudit";
         //if path is not exists create path
@@ -97,7 +98,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
     @Override
     public void saveFile(String data)  {
-        fileName = "userRecFile";
+        fileName = "auditRecFile";
         download = sharedPath + fileName;
         backups = sharedPath + "backupsAudit";
 
