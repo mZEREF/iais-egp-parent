@@ -69,7 +69,7 @@
                 lic.start_date,
                 lic.expiry_date
             FROM LICENCE AS lic
-            WHERE lic.status != 'LICEST002'
+            WHERE 1=1
             <#if id??> AND CHARINDEX(:id, lic.id) >0</#if>
             <#if serviceType??> AND lic.svc_name = :serviceType</#if>
             <#if licStatus??> AND lic.status = :licStatus</#if>
