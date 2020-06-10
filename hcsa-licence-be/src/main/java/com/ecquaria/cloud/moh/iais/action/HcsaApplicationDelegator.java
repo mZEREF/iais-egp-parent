@@ -1540,6 +1540,10 @@ public class HcsaApplicationDelegator {
         broadcastOrganizationDto.setComplateTask(taskDto);
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
         String processDecision = ParamUtil.getString(bpc.request,"nextStage");
+        String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
+        if(!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)){
+            processDecision = nextStageReplys;
+        }
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
                 applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),internalRemarks,null,processDecision,taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
@@ -2076,7 +2080,7 @@ public class HcsaApplicationDelegator {
         if(!ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
             nextStageReplyList.add(new SelectOption("", "Please Select"));
         }
-        nextStageReplyList.add(new SelectOption("PROCREP", "Give Clarification"));
+        nextStageReplyList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REPLY, "Give Clarification"));
         ParamUtil.setSessionAttr(request, "nextStageReply", (Serializable)nextStageReplyList);
     }
 
