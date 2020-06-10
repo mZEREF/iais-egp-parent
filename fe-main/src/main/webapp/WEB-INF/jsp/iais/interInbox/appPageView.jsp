@@ -127,11 +127,10 @@
             $("[name='action_id_value']").val(appId);
             submit("appRenew");
         }
-        
+
         if ("Delete" == action) {
-            showWaiting();
-            $("[name='action_no_value']").val(appNo);
-            submit('appDoDelete');
+            $("[name='action_no_value']").val($(this).closest("tr").find(".appdraftNo").html());
+            $('#deleteDraftModal').modal('show');
         }
     });
 
