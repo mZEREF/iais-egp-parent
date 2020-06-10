@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -32,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -103,7 +105,7 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
         }else if (ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT.equals(appType)){
             return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.REINSTATEMENT);
         }else if (ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)){
-            return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.AUDIT_INSPECTION);
+            return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.AUDIT);
         }
         return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.NEW);
     }
@@ -112,6 +114,7 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
     @Override
     public List<ChecklistConfigDto> getInspectionChecklist(ApplicationDto application) {
         String appId = application.getId();
+
         List<AppPremisesCorrelationDto> correlation = taskApplicationClient.getAppPremisesCorrelationsByAppId(appId).getEntity();
 
         String svcId = application.getServiceId();
@@ -126,20 +129,39 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
         log.info(StringUtil.changeForLog("get checklist for pre , type " + type));
 
         List<ChecklistConfigDto> inspChecklist = IaisCommonUtils.genNewArrayList();
-        ChecklistConfigDto commonConfig = hcsaChklClient.getMaxVersionCommonConfig().getEntity();
-        if (commonConfig != null){
-            log.info(StringUtil.changeForLog("inspection checklist for common info: " + commonConfig));
-            inspChecklist.add(commonConfig);
-        }
+        boolean oneTime = false;
+        for (AppPremisesCorrelationDto corr : correlation){
+            String corrId = corr.getId();
+            String premId = corr.getAppGrpPremId();
 
-        ChecklistConfigDto svcConfig = hcsaChklClient.getMaxVersionConfigByParams(svcCode, type, chklModule).getEntity();
-        if (svcConfig != null){
-            inspChecklist.add(svcConfig);
-        }
+            if (!oneTime){
+                String hciCode = "";
+                AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getAppGrpPremise(premId).getEntity();
+                if (appGrpPremisesEntityDto != null){
+                    hciCode  = appGrpPremisesEntityDto.getHciCode();
+                }
 
-        correlation.forEach(corre -> {
-            String correId = corre.getId();
-            List<AppSvcPremisesScopeDto> premScope = applicationClient.getAppSvcPremisesScopeListByCorreId(correId).getEntity();
+                ChecklistConfigDto commonConfig = hcsaChklClient.getMaxVersionCommonConfig().getEntity();
+                if (commonConfig != null){
+                    log.info(StringUtil.changeForLog("inspection checklist for common info: " + commonConfig));
+                    inspChecklist.add(commonConfig);
+                }
+
+                ChecklistConfigDto svcConfig;
+                if (StringUtils.isEmpty(hciCode)){
+                    svcConfig = hcsaChklClient.getMaxVersionServiceConfigByParams(svcCode, type, chklModule, "", "").getEntity();
+                }else {
+                    svcConfig = hcsaChklClient.getMaxVersionServiceConfigByParams(svcCode, type, chklModule, "", hciCode).getEntity();
+                }
+
+                if (svcConfig != null){
+                    inspChecklist.add(svcConfig);
+                }
+
+                oneTime = true;
+            }
+
+            List<AppSvcPremisesScopeDto> premScope = applicationClient.getAppSvcPremisesScopeListByCorreId(corrId).getEntity();
 
             if(!IaisCommonUtils.isEmpty(premScope)){
                 premScope.stream().filter(scope -> scope.isSubsumedType() == false)
@@ -154,7 +176,8 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
                         });
             }
 
-        });
+        }
+
         return inspChecklist;
     }
 

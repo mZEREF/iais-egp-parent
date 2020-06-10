@@ -262,6 +262,14 @@ public class HcsaChklFallback implements HcsaChklClient{
     }
 
     @Override
+    public FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(String svcCode, String type, String module, String subTypeName, String hciCode) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<ChecklistConfigDto> getMaxVersionCommonConfig() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -293,4 +301,11 @@ public class HcsaChklFallback implements HcsaChklClient{
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<ChecklistConfigDto> getMaxVersionServiceConfigByParams(String svcCode, String type, String module, String subTypeName, String hciCode) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
