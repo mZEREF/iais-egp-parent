@@ -419,8 +419,7 @@
                             <p>Other Period <strong style="color:#ff0000;"> *</strong></p>
                         </td>
                         <td class="col-xs-4">
-                            <input id=recomInNumber type="text" name="number" maxlength="2"
-                                   value="${appPremisesRecommendationDto.recomInNumber}">
+                            <input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" id=recomInNumber type="text" name="number" maxlength="2" value="${appPremisesRecommendationDto.recomInNumber}">
                             <iais:select id="chronoUnit" name="chrono" options="chronoOption"
                                          value="${appPremisesRecommendationDto.chronoUnit}"/>
                             <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
