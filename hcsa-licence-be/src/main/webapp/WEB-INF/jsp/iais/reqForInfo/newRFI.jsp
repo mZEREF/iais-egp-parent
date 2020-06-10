@@ -204,10 +204,8 @@
                     </div>
                 </div>
                 <div class="row">
-                    <iais:action style="text-align:left;">
-                        <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Cancel</button>
-                    </iais:action>
                     <iais:action style="text-align:right;">
+                        <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Cancel</button>
                         <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit()">Submit</button>
                     </iais:action>
                 </div>
