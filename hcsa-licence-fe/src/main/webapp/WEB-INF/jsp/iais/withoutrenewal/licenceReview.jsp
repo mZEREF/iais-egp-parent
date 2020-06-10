@@ -35,7 +35,7 @@
                                     <div class="tab-gp side-tab clearfix">
                                         <ul class="nav nav-pills nav-stacked hidden-xs hidden-sm"  ${isSingle == 'Y' ? 'hidden' : ''} role="tablist">
                                             <c:forEach var="serviceName" items="${serviceNames}" varStatus="status">
-                                                <li class="complete ${status.index == '0' ? 'active' : ''}" role="presentation"><a href="#serviceName${status.index}" aria-controls="lorem1" role="tab" data-toggle="tab">${serviceName}</a></li>
+                                                <li class="complete ${status.index == '0' ? 'active' : ''} tableMain" id="dtoList${status.index}" role="presentation"><a href="#serviceName${status.index}" aria-controls="lorem1" role="tab" data-toggle="tab">${serviceName}</a></li>
                                             </c:forEach>
                                         </ul>
                                         <div class="mobile-side-nav-tab visible-xs visible-sm" ${isSingle == 'Y' ? 'hidden' : ''}>
@@ -52,6 +52,7 @@
                                                 <c:if test="${isSingle == 'Y'}">
                                                     <p>Please review your licence details and click edit to make necessary changes before renewal.</p>
                                                 </c:if>
+                                                <input hidden id="DtoSize" value="${renewDto.appSubmissionDtos.size() - 1}"/>
                                             <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}" varStatus="status">
                                                 <c:set var="AppSubmissionDto" value="${AppSubmissionDto}" scope="request"/>
                                                 <c:set var="documentIndex" value="${status.index}" scope="request"/>
@@ -135,7 +136,8 @@
                                     </div>
                                 </c:if>
                                 <div class="col-xs-12 col-sm-3">
-                                    <div class="text-right text-center-mobile"><a id="Next" class="btn btn-primary">${isSingle == 'Y'? 'Submit and Pay' : 'Preview the Next Service'}</a></div>
+                                    <div class="text-right text-center-mobile" id="submitButton"><a id="SUBMIT" class="btn btn-primary">Submit and Pay</a></div>
+                                    <div class="text-right text-center-mobile hidden" id="nextButton"><a id="Next" class="btn btn-primary">Preview the Next Service</a></div>
                                 </div>
                             </div>
                         </div>
@@ -146,11 +148,53 @@
     </div>
 </form>
 <script>
+
+    $(document).ready(function () {
+        checkSubmitButton();
+    });
+
+    $('.tableMain').click(function () {
+        var DtoSize = $('#DtoSize').val();
+        var lastId = 'dtoList' + DtoSize;
+        var thisId = $(this).attr('id');
+        //if the last service is selected
+        if(thisId == lastId){
+            $('#submitButton').removeClass("hidden");
+            $('#nextButton').addClass("hidden");
+        }else{
+            $('#submitButton').addClass("hidden");
+            $('#nextButton').removeClass("hidden");
+        }
+    });
+
+    function checkSubmitButton(){
+        var DtoSize = $('#DtoSize').val();
+        var lastId = 'dtoList' + DtoSize;
+        var thisId = $(this).attr('id');
+        //if the last service is selected
+        if(thisId == lastId){
+            $('#submitButton').removeClass("hidden");
+            $('#nextButton').addClass("hidden");
+        }else{
+            $('#submitButton').addClass("hidden");
+            $('#nextButton').removeClass("hidden");
+        }
+    }
+
+    $('#nextButton').click(function (){
+        var currentId =  $('.tableMain.active').attr('id');
+        var nextId = '#'+currentId;
+        // $(nextId).removeClass('active');
+        // $(nextId).next().addClass('active');
+        $(nextId).next().trigger('click');
+        $(nextId).next().find('a').trigger('click');
+    });
+
     $('#BACK').click(function () {
         $('[name="switch_value"]').val('instructions');
         $('#LicenceReviewForm').submit();
     });
-    $('#Next').click(function () {
+    $('#SUBMIT').click(function () {
         let jQuery = $('#verifyInfoCheckbox').prop("checked");
         let isSingle = $('#checkSingle').val();
         if(!jQuery && (isSingle == 'Y')){
