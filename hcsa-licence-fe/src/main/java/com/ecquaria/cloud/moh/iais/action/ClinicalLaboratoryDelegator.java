@@ -596,7 +596,7 @@ public class ClinicalLaboratoryDelegator {
      * @param bpc
      * @throws
      */
-    public void doGovernanceOfficers(BaseProcessClass bpc) throws CloneNotSupportedException {
+    public void doGovernanceOfficers(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
@@ -1494,7 +1494,7 @@ public class ClinicalLaboratoryDelegator {
     }
 
 
-    private List<AppSvcCgoDto> genAppSvcCgoDto(HttpServletRequest request) throws CloneNotSupportedException {
+    private List<AppSvcCgoDto> genAppSvcCgoDto(HttpServletRequest request) {
         ParamUtil.setSessionAttr(request, ERRORMAP_GOVERNANCEOFFICERS, null);
         Object requestInformationConfig = ParamUtil.getSessionAttr(request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         List<AppSvcCgoDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
