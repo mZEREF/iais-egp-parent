@@ -107,7 +107,7 @@ public class SubmitInspectionDateDelegator {
         String endDate = ParamUtil.getString(bpc.request, "inspEndDate");
 
         if (StringUtil.isEmpty(startDate) || StringUtil.isEmpty(endDate)){
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("dateError", "Please input inspection start date and end date"));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("dateError", "UC_INSTA004_ERR010"));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return;
         }
@@ -120,7 +120,7 @@ public class SubmitInspectionDateDelegator {
 
         Date currentDate = new Date();
         if (!IaisEGPHelper.isAfterDate(currentDate, sDate)){
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("dateError", "Please enter the future time"));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("dateError", "UC_INSTA004_ERR007"));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return;
         }
