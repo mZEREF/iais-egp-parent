@@ -109,7 +109,7 @@ public class SelfAssessmentSchematicsDelegator {
         appParam.addFilter("appStatus", ApplicationConsts.APPLICATION_STATUS_DRAFT,true);
 
         QueryHelp.setMainSql("assessmentSchematicsQuery","applicationQuery", appParam);
-        SearchResult<InboxAppQueryDto> appResult = assessmentSchematicsClient.searchResultFromApp(searchParam).getEntity();
+        SearchResult<InboxAppQueryDto> appResult = assessmentSchematicsClient.searchResultFromApp(appParam).getEntity();
         List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
         for (InboxAppQueryDto inboxAppQueryDto:inboxAppQueryDtoList) {
             if (ApplicationConsts.APPLICATION_STATUS_DRAFT.equals(inboxAppQueryDto.getStatus())){
