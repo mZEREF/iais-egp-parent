@@ -666,9 +666,11 @@ public class NewApplicationDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
+        String crud_action_additional = mulReq.getParameter("crud_action_additional");
 
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
+        ParamUtil.setRequestAttr(bpc.request,crud_action_additional,crud_action_additional);
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         Map<String,CommonsMultipartFile> commonsMultipartFileMap = IaisCommonUtils.genNewHashMap();
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
@@ -1869,6 +1871,13 @@ public class NewApplicationDelegator {
             crudActionValue = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         }
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
+        if((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
+                ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) && requestInformationConfig == null){
+            String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
+            if("rfcSaveDraft".equals(crud_action_additional)){
+                crudActionValue = "saveDraft";
+            }
+        }
         if ("saveDraft".equals(crudActionValue) || "ack".equals(crudActionValue)) {
             switch2 = crudActionValue;
         }else if("doSubmit".equals(crudActionValue)){
@@ -1890,7 +1899,7 @@ public class NewApplicationDelegator {
     }
 
     /**
-     * StartStep: ControlSwitch
+     * StartStep: jumpbank
      *
      * @param bpc
      * @throws
