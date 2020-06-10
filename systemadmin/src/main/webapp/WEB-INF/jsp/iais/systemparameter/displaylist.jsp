@@ -168,15 +168,11 @@
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
     function prepareEdit(id){
-        if(confirm('Are you sure you want to edit ? ')){
-            SOP.Crud.cfxSubmit("mainForm", "prepareEdit", id);
-        }
+        SOP.Crud.cfxSubmit("mainForm", "prepareEdit", id);
     }
 
     function disable(id){
-        if(confirm('Are sure you want to disable ? ')){
-            SOP.Crud.cfxSubmit("mainForm", "disableStatus", id);
-        }
+        SOP.Crud.cfxSubmit("mainForm", "disableStatus", id);
     }
 
     function displaySection(){
