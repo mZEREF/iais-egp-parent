@@ -30,8 +30,6 @@
       <span id="error_user" name="iaisErrorMsg" class="error-msg"></span>
     </iais:value>
 
-
-
     <iais:field value="Operation Start Date Time" required="true"></iais:field>
     <iais:value width="7">
       <iais:datePicker id = "startDate" name = "startDate"  value="${param.startDate}"></iais:datePicker>
@@ -49,7 +47,7 @@
 
   <iais:action style="text-align:center;">
     <div class="row">
-      <div class="col-xs-12 col-md-11">
+      <div class="col-xs-5 col-md-10">
         <div class="text-right">
           <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
           <a class="btn btn-primary" id="crud_search_export" href="${pageContext.request.contextPath}/audit-trail-file"  onclick="$('#crud_search_export').attr('class', 'btn btn-primary disabled')" value="doQuery" href="#">Export Audit Trail</a>
