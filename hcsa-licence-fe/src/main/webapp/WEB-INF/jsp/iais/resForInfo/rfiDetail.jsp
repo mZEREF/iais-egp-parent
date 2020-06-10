@@ -70,7 +70,7 @@
                                             <iais:row style="text-align:center;">
                                                 <iais:value width="18">
                                                     <label>
-                                                        <textarea  name="userReply${infoReply.id}" rows="8" style=" font-weight:normal;" cols="70">${infoReply.userReply}</textarea><span id="error_userReply${infoReply.id}" name="iaisErrorMsg" class="error-msg" ></span>
+                                                        <textarea  maxlength="1000" name="userReply${infoReply.id}" rows="8" style=" font-weight:normal;" cols="70">${infoReply.userReply}</textarea><span id="error_userReply${infoReply.id}" name="iaisErrorMsg" class="error-msg" ></span>
                                                     </label>
                                                 </iais:value>
                                             </iais:row>
