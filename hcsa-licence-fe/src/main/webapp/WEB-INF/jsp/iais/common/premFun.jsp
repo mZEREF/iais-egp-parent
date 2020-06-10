@@ -122,7 +122,6 @@
                     $premContent.find('.new-premise-form-conv').addClass('hidden');
                     $premContent.find('.new-premise-form-off-site').removeClass('hidden');
                 }
-
                 if(init == 0){
                     return;
                 }

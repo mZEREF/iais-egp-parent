@@ -279,7 +279,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         return flag;
     }
 
-    private String eicGateway( String fileName ,String filePath,String groupId){
+    private String eicGateway(String fileName ,String filePath,String groupId){
         ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         processFileTrackDto.setFileName(fileName);
@@ -343,6 +343,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     }
     @Override
     public  List<ApplicationListFileDto> parse(String str){
+        List<ApplicationDto> applicationDtoList =IaisCommonUtils.genNewArrayList();
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
         List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = applicationListDto.getAppPremPhOpenPeriods();
         List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
@@ -365,7 +366,22 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppFeeDetailsDto> appFeeDetails = applicationListDto.getAppFeeDetails();
 
         List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
-
+        for(ApplicationDto applicationDto : application){
+            String status = applicationDto.getStatus();
+            if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(status)){
+                applicationDtoList.add(applicationDto);
+            }
+        }
+        for( ApplicationDto applicationDto : applicationDtoList){
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+        }
+        try {
+            log.info(applicationDtoList.toString());
+            applicationClient.saveApplicationDtos(applicationDtoList);
+            log.info("update application status");
+        }catch (Exception e){
+            log.error("update applcaition status is error",e);
+        }
         for(ApplicationGroupDto every :applicationGroup){
 
             Set<String> appliGrpPremisesIds=IaisCommonUtils.genNewHashSet();

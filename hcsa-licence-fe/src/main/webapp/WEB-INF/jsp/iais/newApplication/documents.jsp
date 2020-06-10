@@ -152,8 +152,10 @@
                         <div class="col-xs-12 col-sm-6"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
                         <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
                         <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
+
                         <div class="col-xs-12 col-sm-6">
-                          <div class="button-group"><a class="btn btn-secondary" id = "SaveDraft" >Save as Draft</a><a class="btn btn-primary next" id="Next">Next</a></div>
+                          <div class="button-group"> <c:if test="${requestInformationConfig==null}"><a class="btn btn-secondary" id = "SaveDraft" >Save as Draft</a></c:if>
+                            <a class="btn btn-primary next" id="Next">Next</a></div>
                         </div>
                       </div>
                     </c:otherwise>

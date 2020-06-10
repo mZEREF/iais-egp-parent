@@ -1396,7 +1396,6 @@ public class NewApplicationDelegator {
                         AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string.getId());
                         appSubmissionService.transform(appSubmissionDtoByLicenceId,appSubmissionDto.getLicenseeId());
                         boolean groupLic = appSubmissionDtoByLicenceId.isGroupLic();
-                        List<AppGrpPremisesDto> oldappGrpPremisesDtoList = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
                         boolean equals=false;
                         String address = appSubmissionDto.getAppGrpPremisesDtoList().get(i).getAddress();
                             if(groupLic){

@@ -225,6 +225,7 @@
                 submit('premises','saveDraft',$('#selectDraftNo').val());
         });
 <%--<c:if test="${AppSubmissionDto.needEditController || AppSubmissionDto.onlySpecifiedSvc}">--%>
+
         <c:if test="${AppSubmissionDto.needEditController }">
         readonlyPartPage($('div.premises-content'));
         </c:if>
