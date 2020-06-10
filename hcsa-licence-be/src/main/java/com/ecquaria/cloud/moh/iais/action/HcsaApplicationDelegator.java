@@ -1371,19 +1371,25 @@ public class HcsaApplicationDelegator {
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             }
         }else{
-            List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
-            applicationDtoList = removeFastTracking(applicationDtoList);
-            boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
-                    ApplicationConsts.APPLICATION_STATUS_APPROVED);
-            if(isAllSubmit || applicationDto.isFastTracking()){
-                //update application Group status
-                ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-                broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
-                applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
-                applicationGroupDto.setAo3ApprovedDt(new Date());
-                applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
+            //0065354
+            if(!ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(appStatus)){
+                List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+                applicationDtoList = removeFastTracking(applicationDtoList);
+                boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
+                        ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                if(isAllSubmit || applicationDto.isFastTracking()){
+                    //update application Group status
+                    ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+                    broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
+                    applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                    applicationGroupDto.setAo3ApprovedDt(new Date());
+                    applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
+                }
+            }else{
+                log.info(StringUtil.changeForLog("This RFI  this application -->:"+applicationDto.getApplicationNo()));
             }
+
         }
         //save the broadcast
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
