@@ -14,6 +14,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -26,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +70,8 @@ public class SendsReminderToReplyRfiBatchjob {
     HcsaConfigClient hcsaConfigClient;
     @Value("${iais.email.sender}")
     private String mailSender;
-
+    @Autowired
+    OrganizationClient organizationClient;
     public void start(BaseProcessClass bpc){
         logAbout("start");
     }
@@ -92,10 +96,12 @@ public class SendsReminderToReplyRfiBatchjob {
         ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto.getId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
+        List<OrgUserRoleDto> orgUserRoleDtos=organizationClient.getSendEmailUser(licenseeDto.getOrganizationId()).getEntity();
+        OrgUserDto userAccountDto=organizationClient.retrieveOrgUserAccountById(orgUserRoleDtos.get(0).getUserAccId()).getEntity();
         HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
         mapPrem.put("licenseeId",licenseeId);
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));
+        map.put("APPLICANT_NAME",StringUtil.viewHtml(userAccountDto.getDisplayName()));
         StringBuilder stringBuilder=new StringBuilder();
         int i=0;
         if(!IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos())){

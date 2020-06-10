@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
@@ -25,6 +26,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -46,6 +49,7 @@ import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListItemValidate;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
@@ -100,7 +104,8 @@ public class InspectReviseNcEmailDelegator {
     AppInspectionStatusClient appInspectionStatusClient;
     @Autowired
     ApplicationService applicationService;
-
+    @Autowired
+    OrganizationClient organizationClient;
     private static final String ADCHK_DTO="adchklDto";
     private static final String TASK_DTO="taskDto";
     private static final String APP_VIEW_DTO="applicationViewDto";
@@ -455,10 +460,12 @@ public class InspectReviseNcEmailDelegator {
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
         String appNo=applicationViewDto.getApplicationDto().getApplicationNo();
         String licenseeId=applicationViewDto.getApplicationGroupDto().getLicenseeId();
-        String licenseeName=inspEmailService.getLicenseeDtoById(licenseeId).getName();
+        LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
+        List<OrgUserRoleDto> orgUserRoleDtos=organizationClient.getSendEmailUser(licenseeDto.getOrganizationId()).getEntity();
+        OrgUserDto userAccountDto=organizationClient.retrieveOrgUserAccountById(orgUserRoleDtos.get(0).getUserAccId()).getEntity();
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
         inspectionEmailTemplateDto.setAppPremCorrId(correlationId);
-        inspectionEmailTemplateDto.setApplicantName(licenseeName);
+        inspectionEmailTemplateDto.setApplicantName(userAccountDto.getDisplayName());
         inspectionEmailTemplateDto.setApplicationNumber(appNo);
         inspectionEmailTemplateDto.setHciCode(applicationViewDto.getHciCode());
         inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciName()+"/"+applicationViewDto.getHciAddress());
