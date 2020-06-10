@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -64,6 +63,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     private String sharedPath;
     private String download;
     private String fileName;
+    private String fileFormat = ".text";
     private String backups;
 
     private Boolean flag=Boolean.TRUE;
@@ -95,33 +95,40 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     }
 
     @Override
-    public void saveFile(LicPremisesReqForInfoDto licPremisesReqForInfoDto)  {
-        fileName = "userRecFile";
+    public void saveFile(LicPremisesReqForInfoDto licPremisesReqForInfoDto) throws IOException {
+        fileName = "rfiRecFile";
         download = sharedPath + fileName;
         backups = sharedPath + "backupsRec";
 
         String data = JsonUtil.parseToJson(licPremisesReqForInfoDto);
-        String reqInfoId=licPremisesReqForInfoDto.getId();
         String s = FileUtil.genMd5FileChecksum(data.getBytes(StandardCharsets.UTF_8));
-
-        File file = MiscUtil.generateFile(backups+File.separator+reqInfoId, s+AppServicesConsts.FILE_FORMAT);
-        try (FileOutputStream fileOutputStream  = new FileOutputStream(file);) {
-            if(!file.exists()){
-                boolean newFile = file.createNewFile();
-                if(newFile){
-                    log.info("***newFile createNewFile***");
-                }
+        File file=MiscUtil.generateFile(download+File.separator, s+fileFormat);
+        if(!file.exists()){
+            boolean createFlag = file.createNewFile();
+            if (!createFlag) {
+                log.error("Create File fail");
             }
-            fileOutputStream.write(data.getBytes());
+        }
+        File groupPath=new File(download+File.separator);
+
+        if(!groupPath.exists()){
+            groupPath.mkdirs();
+        }
+        try (FileOutputStream fileInputStream = new FileOutputStream(backups+File.separator+file.getName());
+             FileOutputStream fileOutputStream  =new FileOutputStream(file);){
+
+            fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
+            fileInputStream.write(data.getBytes(StandardCharsets.UTF_8));
+
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         }
-
     }
 
     @Override
     public String getData(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
-        fileName = "userRecFile";
+        deleteFile();
+        fileName = "rfiRecFile";
         download = sharedPath +fileName;
         backups = sharedPath + "backupsRec";
         //if path is not exists create path
@@ -132,7 +139,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         String entity1= JsonUtil.parseToJson(licPremisesReqForInfoDto);
         if(licPremisesReqForInfoDto.isNeedDocument()){
             for (LicPremisesReqForInfoDocDto doc:licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()
-                 ) {
+            ) {
                 byte[] entity = fileRepositoryClient.getFileFormDataBase(doc.getFileRepoId()).getEntity();
                 File file = MiscUtil.generateFile(download + File.separator + "files",
                         doc.getFileRepoId() + "@" + doc.getDocName());
@@ -159,94 +166,91 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
     private String compress(String rfiId){
         log.info("------------ start compress() -----------------------");
-        long l =   System.currentTimeMillis();
-        try (OutputStream outputStream = new FileOutputStream(backups + File.separator + l + AppServicesConsts.ZIP_NAME);
-             CheckedOutputStream cos=new CheckedOutputStream(outputStream,new CRC32());
-             ZipOutputStream zos=new ZipOutputStream(cos)) {
-
+        long l=   System.currentTimeMillis();
+        File c= new File(backups+File.separator);
+        if(!c.exists()){
+            c.mkdirs();
+        }
+        try (OutputStream is=new FileOutputStream(backups+File.separator+ l+".zip");
+             CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
+             ZipOutputStream zos=new ZipOutputStream(cos);){
             log.info(StringUtil.changeForLog("------------zip file name is"+backups+File.separator+ l+".zip"+"--------------------"));
-            File file = new File(sharedPath + fileName + File.separator + rfiId);
+            File file = new File(download+File.separator);
 
-            zipFile(zos, file,"backupsRec");
+            MiscUtil.checkDirs(file);
+            zipFile(zos, file);
             log.info("----------------end zipFile ---------------------");
         } catch (IOException e) {
             log.error(e.getMessage(),e);
         }
+
         return l+"";
     }
 
-    private void zipFile(ZipOutputStream zos, File file, String curFileName)  {
-        if(file.isDirectory()){
-            String filePath = file.getPath().substring(file.getPath().indexOf(curFileName));
-            try {
-                zos.putNextEntry(new ZipEntry(filePath + File.separator));
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
+    private void zipFile(ZipOutputStream zos,File file) throws IOException {
+        log.info("-----------start zipFile---------------------");
+        if (file.isDirectory()) {
+            zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))+File.separator));
+            zos.closeEntry();
             for(File f: Objects.requireNonNull(file.listFiles())){
-                zipFile(zos, f, curFileName);
+                zipFile(zos,f);
             }
         } else {
-            try(BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
-                String filePath = file.getPath().substring(file.getPath().indexOf(curFileName));
-                zos.putNextEntry(new ZipEntry(filePath));
+            try  ( BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));){
+                zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))));
                 int count ;
-                byte [] b = new byte[1024];
-                count = bis.read(b);
-                while(count != -1){
-                    zos.write(b,0, count);
-                    count = bis.read(b);
+                byte [] b =new byte[1024];
+                count=bis.read(b);
+                while(count!=-1){
+                    zos.write(b,0,count);
+                    count=bis.read(b);
                 }
-            }catch (IOException e){
-                log.error(e.getMessage(), e);
+                zos.closeEntry();
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
             }
         }
+
     }
 
     private void rename(String fileNamesss, String rfiId)  {
         flag = Boolean.TRUE;
-        File zipFile = new File(backups);
+        File zipFile =new File(backups);
+        MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
             File[] files = zipFile.listFiles((dir, name) -> {
-                if (name.endsWith(fileNamesss + ".zip")) {
+                if (name.endsWith(fileNamesss+".zip")) {
                     return true;
                 }
                 return false;
             });
             for(File file:files){
-                try (FileInputStream is = new FileInputStream(file);
-                     ByteArrayOutputStream by = new ByteArrayOutputStream()){
-                    byte [] size = new byte[1024];
-                    int count = is.read(size);
-                    while(count != -1){
-                        by.write(size,0, count);
-                        count = is.read(size);
+                try (FileInputStream is=new FileInputStream(file);
+                     ByteArrayOutputStream by=new ByteArrayOutputStream();){
+                    int count=0;
+                    byte [] size=new byte[1024];
+                    count=is.read(size);
+                    while(count!=-1){
+                        by.write(size,0,count);
+                        count= is.read(size);
                     }
+
                     byte[] bytes = by.toByteArray();
                     String s = FileUtil.genMd5FileChecksum(bytes);
-                    File curFile = new File(backups, s + ".zip");
-                    if (!curFile.exists()){
-                        boolean createFlag = curFile.createNewFile();
-                        if (!createFlag) {
-                            log.error("Create file fail");
-                        }
+                    File curFile =new File(backups + File.separator + s + ".zip");
+                    boolean renameFlag = file.renameTo(curFile);
+                    if (!renameFlag) {
+                        log.error("Rename file fail");
                     }
-                    boolean reNameFlag = file.renameTo(curFile);
-                    if(reNameFlag) {
-                        String s1 = saveFileName(s + ".zip", "backupsRec" + File.separator + s + ".zip", rfiId);
-                        if(!s1.equals(AppConsts.SUCCESS)){
-                            boolean fileDelStatus = new File(backups + File.separator + s + ".zip").delete();
-                            if(!fileDelStatus){
-                                log.debug(StringUtil.changeForLog(file.getName() + "delete false"));
-                            }
-                            flag = Boolean.FALSE;
-                            break;
-                        }
-                    } else {
-                        log.debug(StringUtil.changeForLog("file rename fail!!!"));
+                    log.info(StringUtil.changeForLog("----------- new zip file name is"+backups+File.separator+s+".zip"));
+                    String s1 = saveFileName(s+".zip","backupsRec" + File.separator+s+".zip",rfiId);
+                    if(!s1.equals("SUCCESS")){
+                        MiscUtil.deleteFile(curFile);
+                        flag=Boolean.FALSE;
+                        break;
                     }
                 } catch (IOException e) {
-                    log.error(e.getMessage(), e);
+                    log.error(e.getMessage(),e);
                 }
             }
         }
@@ -268,7 +272,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         }
         {
             File[] files = filePath.listFiles((dir, name) -> {
-                if (name.endsWith(AppServicesConsts.FILE_FORMAT)) {
+                if (name.endsWith(fileFormat)) {
                     return true;
                 }
                 return false;
@@ -281,7 +285,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         }
         {
             File[] files = file.listFiles((dir, name) -> {
-                if (name.endsWith(AppServicesConsts.FILE_FORMAT)) {
+                if (name.endsWith(fileFormat)) {
                     return true;
                 }
                 return false;

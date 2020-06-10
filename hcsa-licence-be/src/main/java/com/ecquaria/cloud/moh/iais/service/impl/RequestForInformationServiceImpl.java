@@ -427,7 +427,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     public boolean download( ProcessFileTrackDto processFileTrackDto,String fileName,String refId,String submissionId) {
 
         boolean flag=false;
-        File file =new File(downZip+File.separator+fileName+File.separator+refId+File.separator+"userRecFile");
+        File file =new File(downZip+File.separator+fileName+File.separator+refId+File.separator+"rfiRecFile");
         if(!file.exists()){
             file.mkdirs();
         }
@@ -484,7 +484,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     private void saveFileRepo(String fileNames,String submissionId,String eventRefNo){
         boolean aBoolean=false;
-        File file =new File(downZip+File.separator+fileNames+File.separator+"userRecFile"+File.separator+"files");
+        File file =new File(downZip+File.separator+fileNames+File.separator+"rfiRecFile"+File.separator+"files");
         if(!file.exists()){
             file.mkdirs();
         }
@@ -520,7 +520,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                     fileRepoDto.setId(split[0]);
                     fileRepoDto.setAuditTrailDto(intranet);
                     fileRepoDto.setFileName(fileName.toString());
-                    fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+"userRecFile"+File.separator+"files");
+                    fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+"rfiRecFile"+File.separator+"files");
                     fileRepoDtos.add(fileRepoDto);
                     FileRepoEventDto eventDto = new FileRepoEventDto();
                     eventDto.setFileRepoList(fileRepoDtos);
@@ -533,7 +533,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 //                    fileRepoDto.setId(split[0]);
 //                    fileRepoDto.setAuditTrailDto(intranet);
 //                    fileRepoDto.setFileName(fileName.toString());
-//                    fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+"userRecFile"+File.separator+"files");
+//                    fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+"rfiRecFile"+File.separator+"files");
 //                    //eventBus
 //                    aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
 
