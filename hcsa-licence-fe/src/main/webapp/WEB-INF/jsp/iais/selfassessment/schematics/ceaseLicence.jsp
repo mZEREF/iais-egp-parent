@@ -7,14 +7,6 @@
         <table class="table">
             <thead>
             <tr align="center">
-                <th class="form-check">
-                    <c:if test="${!empty PremisesSearchResult.rows}">
-                        <input class="form-check-input licenceCheck" type="checkbox" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll('${isASO}');"/>
-                        <label class="form-check-label" for="checkboxAll">
-                            <span class="check-square"></span>
-                        </label>
-                    </c:if>
-                </th>
                 <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name"/>
                 <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."/>

@@ -1,6 +1,7 @@
 <div class="form-check-gp">
 
     <p class="form-check-title">Please select a draft application to resume</p>
+    <iais:pagination  param="appParam" result="appResult"/>
 
     <div class="table-gp">
         <table class="table">
@@ -15,7 +16,7 @@
             </thead>
             <tbody>
             <c:choose>
-                <c:when test="${empty SearchResult.rows}">
+                <c:when test="${empty appResult.rows}">
                     <tr>
                         <td colspan="15">
                             <iais:message key="ACK018" escape="true"/>
@@ -23,7 +24,7 @@
                     </tr>
                 </c:when>
                 <c:otherwise>
-                    <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
+                    <c:forEach var="pool" items="${appResult.rows}" varStatus="status">
                         <tr>
                             <td>
                                 <label>
