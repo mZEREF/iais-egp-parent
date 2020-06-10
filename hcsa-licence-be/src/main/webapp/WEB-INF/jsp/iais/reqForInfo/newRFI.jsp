@@ -51,7 +51,7 @@
                             <div class="row">
                                 <label class="col-xs-9 col-md-3 control-label" > Status</label>
                                 <div class="col-xs-9 col-md-5 control-label">
-                                    <iais:select id="rfiStatus" name="status" options="salutationStatusList" firstOption="Please Select" filterValue="${newRfi.status}"></iais:select>
+                                    <iais:select id="rfiStatus" name="status" options="salutationStatusList"  ></iais:select>
                                 </div>
                             </div>
                             <div class="row">
@@ -205,7 +205,7 @@
                 </div>
                 <div class="row">
                     <iais:action style="text-align:left;">
-                        <a  onclick="javascript:doBack()">< Back</a>
+                        <button class="btn btn-secondary" type="button"  onclick="javascript:doBack()">Cancel</button>
                     </iais:action>
                     <iais:action style="text-align:right;">
                         <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit()">Submit</button>
