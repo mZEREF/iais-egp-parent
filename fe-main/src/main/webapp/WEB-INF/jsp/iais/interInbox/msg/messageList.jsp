@@ -67,7 +67,7 @@
                         <c:otherwise>
                             <c:forEach var="inboxQuery" items="${inboxResult.rows}" varStatus="status">
                                 <c:choose>
-                                    <c:when test="${inboxQuery.status == 'MSGRS001'}">
+                                    <c:when test="${inboxQuery.status == 'MSGRS001' || inboxQuery.status == 'MSGRS002'}">
                                         <tr style="font-weight:bold">
                                     </c:when>
                                     <c:otherwise>
