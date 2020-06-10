@@ -96,12 +96,18 @@ public class SendsReminderToReplyRfiBatchjob {
         ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto.getId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
-        List<OrgUserRoleDto> orgUserRoleDtos=organizationClient.getSendEmailUser(licenseeDto.getOrganizationId()).getEntity();
-        OrgUserDto userAccountDto=organizationClient.retrieveOrgUserAccountById(orgUserRoleDtos.get(0).getUserAccId()).getEntity();
+        String applicantName=licenseeDto.getName();
+        try {
+            List<OrgUserRoleDto> orgUserRoleDtos=organizationClient.getSendEmailUser(licenseeDto.getOrganizationId()).getEntity();
+            OrgUserDto userAccountDto=organizationClient.retrieveOrgUserAccountById(orgUserRoleDtos.get(0).getUserAccId()).getEntity();
+            applicantName=userAccountDto.getDisplayName();
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+        }
         HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
         mapPrem.put("licenseeId",licenseeId);
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        map.put("APPLICANT_NAME",StringUtil.viewHtml(userAccountDto.getDisplayName()));
+        map.put("APPLICANT_NAME",StringUtil.viewHtml(applicantName));
         StringBuilder stringBuilder=new StringBuilder();
         int i=0;
         if(!IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos())){

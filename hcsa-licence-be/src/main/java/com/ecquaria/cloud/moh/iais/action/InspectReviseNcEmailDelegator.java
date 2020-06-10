@@ -461,11 +461,17 @@ public class InspectReviseNcEmailDelegator {
         String appNo=applicationViewDto.getApplicationDto().getApplicationNo();
         String licenseeId=applicationViewDto.getApplicationGroupDto().getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
-        List<OrgUserRoleDto> orgUserRoleDtos=organizationClient.getSendEmailUser(licenseeDto.getOrganizationId()).getEntity();
-        OrgUserDto userAccountDto=organizationClient.retrieveOrgUserAccountById(orgUserRoleDtos.get(0).getUserAccId()).getEntity();
+        String applicantName=licenseeDto.getName();
+        try {
+            List<OrgUserRoleDto> orgUserRoleDtos=organizationClient.getSendEmailUser(licenseeDto.getOrganizationId()).getEntity();
+            OrgUserDto userAccountDto=organizationClient.retrieveOrgUserAccountById(orgUserRoleDtos.get(0).getUserAccId()).getEntity();
+            applicantName=userAccountDto.getDisplayName();
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+        }
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
         inspectionEmailTemplateDto.setAppPremCorrId(correlationId);
-        inspectionEmailTemplateDto.setApplicantName(userAccountDto.getDisplayName());
+        inspectionEmailTemplateDto.setApplicantName(applicantName);
         inspectionEmailTemplateDto.setApplicationNumber(appNo);
         inspectionEmailTemplateDto.setHciCode(applicationViewDto.getHciCode());
         inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciName()+"/"+applicationViewDto.getHciAddress());

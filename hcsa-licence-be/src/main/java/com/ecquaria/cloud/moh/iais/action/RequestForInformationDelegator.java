@@ -320,8 +320,14 @@ public class RequestForInformationDelegator {
         InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto1.getId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
-        List<OrgUserRoleDto> orgUserRoleDtos=organizationClient.getSendEmailUser(licenseeDto.getOrganizationId()).getEntity();
-        OrgUserDto userAccountDto=organizationClient.retrieveOrgUserAccountById(orgUserRoleDtos.get(0).getUserAccId()).getEntity();
+        String applicantName=licenseeDto.getName();
+        try {
+            List<OrgUserRoleDto> orgUserRoleDtos=organizationClient.getSendEmailUser(licenseeDto.getOrganizationId()).getEntity();
+            OrgUserDto userAccountDto=organizationClient.retrieveOrgUserAccountById(orgUserRoleDtos.get(0).getUserAccId()).getEntity();
+            applicantName=userAccountDto.getDisplayName();
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+        }
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         StringBuilder stringBuilder=new StringBuilder();
         int i=0;
@@ -335,7 +341,7 @@ public class RequestForInformationDelegator {
                 stringBuilder.append("<p>   ").append(j+i+1).append(". ").append("Documentations : ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().get(j).getTitle()).append("</p>");
             }
         }
-        map.put("APPLICANT_NAME",StringUtil.viewHtml(userAccountDto.getDisplayName()));
+        map.put("APPLICANT_NAME",StringUtil.viewHtml(applicantName));
         map.put("APPLICATION_NUMBER",StringUtil.viewHtml(licenceNo));
         map.put("DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
         map.put("EDITSELECT","");
