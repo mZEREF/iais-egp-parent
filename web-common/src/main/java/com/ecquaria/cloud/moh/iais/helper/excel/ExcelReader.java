@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
 
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -56,26 +57,30 @@ public class ExcelReader {
     private void initSheetProperty(final File file, final Class<?> clz) throws Exception {
 
         if (file == null || !file.exists()){
-            throw new Exception("Please check excel source is exists");
+            throw new IaisRuntimeException("Please check excel source is exists");
         }
 
         if (clz == null){
-            throw new Exception("excel bean class error");
+            throw new IaisRuntimeException("excel bean class error");
         }
 
         ExcelSheetProperty property = clz.getAnnotation(ExcelSheetProperty.class);
         if (property == null){
-            throw new Exception("excel bean class error");
+            throw new IaisRuntimeException("excel bean class error");
         }
 
         startCellIndex = property.startRowIndex();
         sheetAt = property.sheetAt();
 
-        this.sheet = parseFile(file);
-
         if (sheet == null){
-            throw new Exception("excel sheet error");
+            sheet = parseFile(file);
         }
+
+        String sheetName = sheet.getSheetName();
+        if (!property.sheetName().equals(sheetName)){
+            throw new IaisRuntimeException("excel sheet name error");
+        }
+
     }
 
 
@@ -160,7 +165,7 @@ public class ExcelReader {
                     workBook.close();
                 }
             } catch (IOException e) {
-
+                log.error(e.getMessage(), e);
             }
         }
     }

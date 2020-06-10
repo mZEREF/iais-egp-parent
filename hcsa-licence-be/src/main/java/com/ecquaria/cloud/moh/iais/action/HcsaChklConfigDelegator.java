@@ -848,12 +848,11 @@ public class HcsaChklConfigDelegator {
             return;
         }
 
-        if (IaisCommonUtils.isEmpty(configInfo)) {
+        if (IaisCommonUtils.isEmpty(excelItemDtos) || IaisCommonUtils.isEmpty(configInfo)) {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
-
 
         ConfigExcelTemplate excelTemplate = new ConfigExcelTemplate();
         excelTemplate.setCommon("Yes".equals(configInfo.get(0)) ? true : false);
@@ -867,14 +866,11 @@ public class HcsaChklConfigDelegator {
 
         boolean hasTemplateError = ChecklistHelper.validateTemplate(request, excelTemplate);
         if (hasTemplateError){
-
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
 
-
-
-
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
     }
 
 
