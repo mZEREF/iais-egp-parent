@@ -240,11 +240,13 @@ public class WithOutRenewalDelegator {
             String licenseeId = interInboxUserDto.getLicenseeId();
             appSubmissionDto.setLicenseeId(licenseeId);
             LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
-            String licenseeName = licenseeDto.getName();
-            ParamUtil.setSessionAttr(bpc.request,"licenseeName", licenseeName);
+            String licenseeName = "-";
+            if(licenseeDto!=null){
+                licenseeName = licenseeDto.getName();
+                ParamUtil.setSessionAttr(bpc.request,"licenseeName", licenseeName);
+            }
 
             String groupNumber =  appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-
 
             log.info(StringUtil.changeForLog("without renewal group number =====>" + groupNumber));
             if(StringUtil.isEmpty(oldDraftNumber)){
