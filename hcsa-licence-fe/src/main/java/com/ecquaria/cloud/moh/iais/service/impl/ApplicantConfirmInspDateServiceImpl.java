@@ -637,7 +637,18 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
         eicRequestTrackingDtos.add(eicRequestTrackingDto);
         appEicClient.updateStatus(eicRequestTrackingDtos);
-
+        //send email and create task
+        Date date = apptFeConfirmDateDto.getSaveDate();
+        String dateStr = "no date";
+        if(date != null){
+            dateStr = Formatter.formatDateTime(date, "yyyy-MM-dd");
+        }
+        EmailDto emailDto = new EmailDto();
+        emailDto.setContent(dateStr);
+        emailDto.setSubject("Applicant submits a request for a particular date");
+        emailDto.setSender(mailSender);
+        emailDto.setClientQueryCode(apptFeConfirmDateDto.getAppPremCorrId());
+        apptFeConfirmDateDto.setEmailDto(emailDto);
         createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE);
         //cancel or confirm appointment date
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
