@@ -150,7 +150,9 @@
 <script>
 
     $(document).ready(function () {
-        checkSubmitButton();
+        if('Y' != '${isSingle}'){
+            checkSubmitButton();
+        }
     });
 
     $('.tableMain').click(function () {
