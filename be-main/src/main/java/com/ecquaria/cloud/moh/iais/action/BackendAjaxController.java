@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +102,7 @@ public class BackendAjaxController {
             for (String key : lastestResultMap.keySet()) {
                 lastestResultList.add(lastestResultMap.get(key));
             }
-            Collections.reverse(lastestResultList);
+            lastestResultList.sort(Comparator.comparing(InspectionAppInGroupQueryDto::getApplicationNo));
 
             for (InspectionAppInGroupQueryDto item:lastestResultList) {
                 HcsaServiceDto hcsaServiceDto = inspectionAssignTaskService.getHcsaServiceDtoByServiceId(item.getServiceId());
