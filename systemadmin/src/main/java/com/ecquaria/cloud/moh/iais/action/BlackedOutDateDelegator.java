@@ -215,27 +215,33 @@ public class BlackedOutDateDelegator {
 
         if (!StringUtils.isEmpty(groupName)){
             blackQuery.addFilter("shortName", groupName, true);
+            ParamUtil.setRequestAttr(request, "shortName", groupName);
         }
 
         if (!StringUtils.isEmpty(dropYear)){
             blackQuery.addFilter("startDate", dropYear + "-01-01", true);
             blackQuery.addFilter("endDate", dropYear + "-12-31", true);
+            ParamUtil.setRequestAttr(request, "dropYear", dropYear);
         }
 
         if (!StringUtils.isEmpty(startDate)){
             blackQuery.addFilter("bkStartDate", startDate, true);
+            ParamUtil.setRequestAttr(request, "startDate", startDate);
         }
 
         if (!StringUtils.isEmpty(endDate)){
             blackQuery.addFilter("bkEndDate", endDate, true);
+            ParamUtil.setRequestAttr(request, "endDate", endDate);
         }
 
         if (!StringUtils.isEmpty(desc)){
             blackQuery.addFilter("desc", desc, true);
+            ParamUtil.setRequestAttr(request, "desc", desc);
         }
 
         if (!StringUtils.isEmpty(status)){
             blackQuery.addFilter("status", status, true);
+            ParamUtil.setRequestAttr(request, "status", status);
         }
     }
 
