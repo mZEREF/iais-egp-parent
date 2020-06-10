@@ -81,7 +81,7 @@ public class MessageUtil {
         String msg = MessageUtil.getMessageDesc(codeKey);
         return msg.replace("<Date>", IaisEGPHelper.parseToString(new Date(),
                 pattern)).replace("<Time>", IaisEGPHelper.parseToString(new Date(),
-                "hh:mm"));
+                "HH:mm"));
     }
 
     //only replace first or only one curly brace

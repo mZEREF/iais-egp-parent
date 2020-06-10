@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -51,6 +52,7 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.validation.PaymentValidate;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -63,6 +65,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -107,6 +110,8 @@ public class WithOutRenewalDelegator {
     private GenerateIdClient generateIdClient;
     @Autowired
     private EventBusHelper eventBusHelper;
+    @Autowired
+    private OrganizationLienceseeClient organizationLienceseeClient;
 
     @Value("${iais.email.sender}")
     private String mailSender;
@@ -235,10 +240,14 @@ public class WithOutRenewalDelegator {
             //set licensee ID
             String licenseeId = interInboxUserDto.getLicenseeId();
             appSubmissionDto.setLicenseeId(licenseeId);
-
+            LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
+            String licenseeName = "-";
+            if(licenseeDto!=null){
+                licenseeName = licenseeDto.getName();
+                ParamUtil.setSessionAttr(bpc.request,"licenseeName", licenseeName);
+            }
 
             String groupNumber =  appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-
 
             log.info(StringUtil.changeForLog("without renewal group number =====>" + groupNumber));
             if(StringUtil.isEmpty(oldDraftNumber)){
@@ -689,6 +698,12 @@ public class WithOutRenewalDelegator {
         AppSubmissionDto oldAppSubmissionDto  =(AppSubmissionDto)bpc.request.getSession().getAttribute("oldAppSubmissionDto");
         List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         RenewDto renewDto = (RenewDto)ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
+        String renewEffectiveDate = ParamUtil.getDate(bpc.request, "renewEffectiveDate");
+        if(!StringUtil.isEmpty(renewEffectiveDate)){
+            Date date = Formatter.parseDate(renewEffectiveDate);
+            renewDto.getAppSubmissionDtos().get(0).setEffectiveDate(date);
+            renewDto.getAppSubmissionDtos().get(0).setEffectiveDateStr(renewEffectiveDate);
+        }
         if(renewDto!=null){
             List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
             for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
@@ -724,15 +739,12 @@ public class WithOutRenewalDelegator {
                                     ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE2);
                                     return;
                                 }
-
                             }
                         }
                     }
                 }
             }
         }
-
-
         //go page3
         ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE3);
     }
