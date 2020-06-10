@@ -59,10 +59,10 @@
                         <table class="table">
                             <thead>
                             <tr align="center">
-                                <th>From</th>
+                                <th>Sender's Email</th>
                                 <th>Subject</th>
-                                <th>To</th>
-                                <th>Send Date</th>
+                                <th>Recipients' List Email</th>
+                                <th>Send Date/Time</th>
                                 <th>Status</th>
                                 <th>Reason for Failure</th>
                                 <th>Action</th>
