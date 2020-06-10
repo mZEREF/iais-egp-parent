@@ -396,12 +396,11 @@ public class HcsaChklConfigDelegator {
                 }
             }
 
-            if (common != null) {
+            if ("1".equals(common)) {
                 configDto.setCommon(true);
                 ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_COMMON, "1");
             }else {
-                configDto.setCommon(false);
-                ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_COMMON, "0");
+                ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_COMMON, null);
             }
 
             if (module != null){
