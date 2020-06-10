@@ -110,13 +110,11 @@
 
         $('#RfcSave').click(function () {
             $("[name='nextStep']").val('next');
-            submit('preview',null,null);
             submit('preview','saveDraft',null);
         });
 
         $('#RenewSave').click(function () {
             $("[name='nextStep']").val('next');
-            submit('jump',null,null);
             submit('jump','saveDraft',null);
         });
 
