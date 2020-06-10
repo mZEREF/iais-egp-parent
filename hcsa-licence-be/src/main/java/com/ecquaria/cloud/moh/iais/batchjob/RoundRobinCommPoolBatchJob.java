@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -40,17 +41,21 @@ public class RoundRobinCommPoolBatchJob {
         if(!IaisCommonUtils.isEmpty(taskDtoList)){
             log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskDtoList.size() -- >:" +taskDtoList.size()));
           for (TaskDto taskDto : taskDtoList){
-              try{
-                  String workGroupId = taskDto.getWkGrpId();
-                  log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskId -- >:" +taskDto.getId()));
-                  log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob workGroupId -- >:" +workGroupId));
-                  TaskDto taskScoreDto = taskService.getUserIdForWorkGroup(workGroupId);
-                  taskDto.setUserId(taskScoreDto.getUserId());
-                  taskDto.setDateAssigned(new Date());
-                  taskDto.setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET));
-                  taskDto = taskService.updateTask(taskDto);
-              }catch (Exception e){
-                  log.error(StringUtil.changeForLog("This  Task can not assign id-->:"+taskDto.getId()));
+              if(!RoleConsts.USER_ROLE_BROADCAST.equals(taskDto.getRoleId())){
+                  try{
+                      String workGroupId = taskDto.getWkGrpId();
+                      log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskId -- >:" +taskDto.getId()));
+                      log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob workGroupId -- >:" +workGroupId));
+                      TaskDto taskScoreDto = taskService.getUserIdForWorkGroup(workGroupId);
+                      taskDto.setUserId(taskScoreDto.getUserId());
+                      taskDto.setDateAssigned(new Date());
+                      taskDto.setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET));
+                      taskDto = taskService.updateTask(taskDto);
+                  }catch (Exception e){
+                      log.error(StringUtil.changeForLog("This  Task can not assign id-->:"+taskDto.getId()));
+                  }
+              }else{
+                  log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob broadcast taskId -- >:" +taskDto.getId()));
               }
           }
         }else{
