@@ -46,6 +46,7 @@ public final class FeSelfChecklistHelper {
         List<ChecklistSectionDto> checklistSectionDtos = configDto.getSectionDtos();
         if (!IaisCommonUtils.isEmpty(checklistSectionDtos)){
             for(ChecklistSectionDto i : checklistSectionDtos){
+                String sectionName = i.getSection();
                 List<ChecklistItemDto> item = i.getChecklistItemDtos();
                 if (!IaisCommonUtils.isEmpty(item)){
                     for (ChecklistItemDto j : item){
@@ -56,6 +57,7 @@ public final class FeSelfChecklistHelper {
                             premCheckItem.setConfigId(configDto.getId());
                         }
 
+                        premCheckItem.setSectionName(sectionName);
                         premCheckItem.setSubType(isSubType);
                         premCheckItem.setRegulationId(j.getRegulationId());
                         premCheckItem.setRegulation(j.getRegulationClauseNo());

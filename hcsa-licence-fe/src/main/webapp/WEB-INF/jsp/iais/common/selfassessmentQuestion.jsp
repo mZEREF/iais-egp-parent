@@ -57,12 +57,13 @@
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th>No.</th>
-                                    <th>Regulation Clause Number</th>
-                                    <th>Item</th>
-                                    <th>Yes</th>
-                                    <th>No</th>
-                                    <th>N/A</th>
+                                    <th width="5%">No.</th>
+                                    <th width="15%">Section Name</th>
+                                    <th width="25%">Regulation Clause Number</th>
+                                    <th width="40%">Item</th>
+                                    <th width="5%">Yes</th>
+                                    <th width="5%">No</th>
+                                    <th width="5%">N/A</th>
                                 </tr>
                                 </thead>
                                 <tbody id="general">

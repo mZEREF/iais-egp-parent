@@ -11,6 +11,11 @@
 
                 <td>
                     <p class="visible-xs visible-sm table-row-title"></p>
+                    <p><c:out value="${item.sectionName}"></c:out></p>
+                </td>
+
+                <td>
+                    <p class="visible-xs visible-sm table-row-title"></p>
                     <p><a id="regOutsideWindow${status.index + 1}" data-toggle="modal" data-target="#DeleteTemplateModal${status.index + 1}">${item.regulation}</a> </p>
                 </td>
 
@@ -35,7 +40,7 @@
 
                 <td>
                     <p class="visible-xs visible-sm table-row-title"></p>
-                    <p>${item.checklistItem}</p>
+                    <p><c:out value="${item.checklistItem}"></c:out></p>
                 </td>
 
                 <td>
