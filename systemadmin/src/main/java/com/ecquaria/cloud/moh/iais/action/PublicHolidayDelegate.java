@@ -294,21 +294,53 @@ public class PublicHolidayDelegate {
         String status = ParamUtil.getRequestString(bpc.request,"searchStatus");
         if(description != null && !StringUtil.isEmpty(description)){
             holidaySearchParam.addFilter("description", "%" + description + "%",true);
+            ParamUtil.setSessionAttr(bpc.request,"description",description);
+        }else{
+            ParamUtil.setSessionAttr(bpc.request,"description",null);
         }
         if(year != null && !StringUtil.isEmpty(year)){
             holidaySearchParam.addFilter("year", "%" + year + "%",true);
+            ParamUtil.setSessionAttr(bpc.request,"year",year);
+        }else{
+            ParamUtil.setSessionAttr(bpc.request,"year",null);
         }
         if(nonWorking != null && !StringUtil.isEmpty(nonWorking)){
-            holidaySearchParam.addFilter("nonWorking", nonWorking,true);
+            try {
+                Date work = Formatter.parseDate(nonWorking);
+                String workString = Formatter.formatDateTime(work,"yyyy-MM-dd");
+                holidaySearchParam.addFilter("nonWorking", workString,true);
+                ParamUtil.setSessionAttr(bpc.request,"nonWorking",nonWorking);
+            }catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        }else{
+            ParamUtil.setSessionAttr(bpc.request,"nonWorking",null);
         }
         if(status != null && !StringUtil.isEmpty(status)){
             holidaySearchParam.addFilter("status",  status,true);
+            ParamUtil.setSessionAttr(bpc.request,"searchStatus",status);
+        }else{
+            ParamUtil.setSessionAttr(bpc.request,"searchStatus",null);
         }
+
     }
 
     public void searchPage(BaseProcessClass bpc){
         CrudHelper.doPaging(holidaySearchParam,bpc.request);
     }
+
+
+    /**
+     * AutoStep: sortRecords
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void sortRecords(BaseProcessClass bpc){
+        CrudHelper.doSorting(holidaySearchParam,bpc.request);
+        System.out.println("111");
+    }
+
+
 
     /**
      * doEditValidation
@@ -317,6 +349,7 @@ public class PublicHolidayDelegate {
     public void doCreateValidation(BaseProcessClass bpc) throws ParseException {
         String action = ParamUtil.getString(bpc.request, "action");
         if("back".equals(action)){
+
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IntranetUserConstant.TRUE);
         }else{
             PublicHolidayDto publicHolidayDto = new PublicHolidayDto();

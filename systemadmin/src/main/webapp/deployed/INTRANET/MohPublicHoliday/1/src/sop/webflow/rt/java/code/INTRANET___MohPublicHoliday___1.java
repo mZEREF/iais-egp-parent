@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohPublicHoliday___1 extends BaseProcessClass {
@@ -73,6 +74,10 @@ public class INTRANET___MohPublicHoliday___1 extends BaseProcessClass {
 	public void editPrepare_OnStepProcess_0() throws Exception {
 	// 		editPrepare->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "editPrepare", this);
+	}
+	public void doSort_OnStepProcess_0() throws Exception {
+	// 		doSort->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "sortRecords", this);
 	}
 	
 	

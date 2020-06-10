@@ -93,6 +93,13 @@
     <JavaCode defClass="" executor="" methodName="createPerpare_OnStepProcess_0" name="createPerpare_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doSort" x="1180" y="340">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doSort_OnStepProcess_0" name="doSort_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PublicHolidayPage" stageIndicator="" x="400" y="100">
@@ -194,6 +201,12 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/createPerpare" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
    <position>{(240,440)(430,450)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSort" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(720,120)(1200,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSort" style="oblique">
+   <position>{(1200,360)(270,120)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/createPerpare" componentIfTrue="/Steps/AutomaticStep/prepare" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="220" y="420">
@@ -212,6 +225,7 @@
    <SwitchCase component="/Steps/AutomaticStep/delete" value="&quot;delete&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/search" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/searchPage" value="&quot;page&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doSort" value="&quot;sortRecords&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

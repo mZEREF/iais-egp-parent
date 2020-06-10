@@ -334,9 +334,9 @@
             from public_holiday
             WHERE  1 = 1
             <#if description??> AND DESCRIPTION like :description</#if>
-            <#if nonWorking??> AND FROM_DATE <= CONVERT(datetime, :nonWorking, 103) AND TO_DATE > CONVERT(datetime, :nonWorking, 103)</#if>
+            <#if nonWorking??> AND (FROM_DATE between :nonWorking and :nonWorking)</#if>
             <#if status??> AND STATUS = :status</#if>
-            <#if year??> AND (FROM_DATE like :year or TO_DATE like :year)</#if>
+            <#if year??> AND FROM_DATE like :year</#if>
         ]]>
     </sql>
 

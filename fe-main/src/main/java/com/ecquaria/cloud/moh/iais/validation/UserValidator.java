@@ -52,7 +52,7 @@ public class UserValidator implements CustomizeValidator {
             if(dto.getUserId() != null){
                 FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNric(dto.getIdentityNo());
                 if(feUserDto != null){
-                    map.put("idNo", "The personnel of ID No. has already been registerted. ");
+                    map.put("idNo", "A user account has already been created for this ID");
                 }
             }
         return map;

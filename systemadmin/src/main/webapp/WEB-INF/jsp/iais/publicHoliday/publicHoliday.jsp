@@ -15,6 +15,7 @@
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
     <form method="post" id="mainForm"  enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
+        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" id="crud_action_type" value=""/>
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -28,25 +29,25 @@
                                     <label class="col-md-2 control-label">Description</label>
                                     <div class="col-md-4">
                                         <input id="des" name="des" type="text" maxlength="255"
-                                               value="${param.des}">
+                                               value="${des}">
                                     </div>
                                     <label class="col-md-2 control-label">Year</label>
                                     <div class="col-md-4">
                                         <iais:select name="year" options="yearOption" cssClass="yearOption"
-                                                     value="${param.year}"></iais:select>
+                                                     value="${year}"></iais:select>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-horizontal">
+                            <div class="form-horizontal" id="searchdiv">
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">Non-working Date</label>
                                     <div class="col-md-4">
-                                        <iais:datePicker id="nonWorking" name="nonWorking" value="${param.nonWorking}"/>
+                                        <iais:datePicker id="nonWorking" name="nonWorking" value="${nonWorking}"/>
                                     </div>
                                     <label class="col-md-2 control-label">Status</label>
                                     <div class="col-md-4">
-                                        <iais:select name="searchStatus" options="statusOption" cssClass="statusOption" firstOption="Please Select"
-                                                     value="${param.searchStatus}"></iais:select>
+                                        <iais:select id="searchStatus" name="searchStatus" options="statusOption" cssClass="statusOption" firstOption="Please Select"
+                                                     value="${searchStatus}"></iais:select>
                                     </div>
                                 </div>
                             </div>
@@ -70,11 +71,11 @@
                                 <tr align="center">
                                     <th></th>
                                     <th>S/N</th>
-                                    <th>Year</th>
-                                    <th>Non-working Date</th>
-                                    <th>Holiday Description</th>
-                                    <th>Status</th>
-                                    <th>Edit</th>
+                                    <iais:sortableHeader needSort="true" field="FROM_DATE" value="Year"/>
+                                    <iais:sortableHeader needSort="true"  field="FROM_DATE" value="Non-working Date"/>
+                                    <iais:sortableHeader needSort="true"  field="DESCRIPTION" value="Holiday Description"/>
+                                    <iais:sortableHeader needSort="true" field="status" value="Status"/>
+                                    <th>Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -95,7 +96,7 @@
                                                     <td><c:out value="${item.nonWorking}"/></td>
                                                     <td><c:out value="${item.description}"/></td>
                                                     <td><iais:code code="${item.status}"></iais:code></td>
-                                                    <td><a class="editHoliday" data-holiday="<iais:mask name="holidayId" value="${item.id}"/>">edit</a></td>
+                                                    <td><a class="editHoliday" data-holiday="<iais:mask name="holidayId" value="${item.id}"/>">Edit</a></td>
                                                 </tr>
                                             </c:forEach>
                                         </c:otherwise>
@@ -152,8 +153,8 @@
     $('#clear').click(function () {
         $('input[name="description"]').val("");
         $('input[name="nonWorking"]').val("");
-        $("#statusOption option:first").prop("selected", 'selected');
-        $("#statusOption .current").text("Please Select");
+        $("#searchStatus option:first").prop("selected", 'selected');
+        $("#searchdiv .current").text("Please Select");
 
     })
 
