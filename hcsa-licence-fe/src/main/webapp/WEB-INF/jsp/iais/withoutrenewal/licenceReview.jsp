@@ -86,6 +86,21 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
+                                                                    <div class="row">
+                                                                        <div class="col-xs-5">
+                                                                            Please indicate an effective date of change for your licence information to be updated.The date of change will be effected on the indicated date or approval date, whichever is the later date
+                                                                        </div>
+                                                                        <div class="col-xs-7">
+                                                                            <iais:datePicker cssClass="renewEffectiveDate" name="renewEffectiveDate" value="${AppSubmissionDto.effectiveDateStr}" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-xs-5">
+                                                                        </div>
+                                                                        <div class="col-xs-7">
+                                                                            <span class="error-msg" name="iaisErrorMsg" id="error_rfcEffectiveDate"></span>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
