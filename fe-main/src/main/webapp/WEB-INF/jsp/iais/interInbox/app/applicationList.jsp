@@ -166,11 +166,13 @@
                                                         <option value="Delete">Delete</option>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <c:if test="${app.canRecall}">
-                                                            <option value="Recall">Recall</option>
-                                                        </c:if>
                                                         <option value="Appeal">Appeal</option>
-                                                        <option value="Withdraw">Withdraw</option>
+                                                        <c:if test="${app.status != 'APST005' && app.status != 'APST006'}">
+                                                            <option value="Withdraw">Withdraw</option>
+                                                            <c:if test="${app.canRecall}">
+                                                                <option value="Recall">Recall</option>
+                                                            </c:if>
+                                                        </c:if>
                                                         <c:if test="${app.status == 'APST060'}">
                                                             <option value="Continue">Continue</option>
                                                         </c:if>
