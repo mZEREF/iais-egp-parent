@@ -91,17 +91,7 @@ public class SelfAssessmentSchematicsDelegator {
 
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
-        SearchResultHelper.doPage(bpc.request, premiseFilterParameter);
-        SearchResultHelper.doSort(bpc.request, premiseFilterParameter);
-        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, premiseFilterParameter, true);
-        searchParam.addFilter("licenseeId", licenseeId, true);
 
-        QueryHelp.setMainSql("applicationPersonnelQuery", "queryPremises", searchParam);
-        SearchResult<PremisesListQueryDto> searchResult = requestForChangeService.searchPreInfo(searchParam);
-        if (!StringUtil.isEmpty(searchResult)) {
-            ParamUtil.setSessionAttr(bpc.request, "PremisesSearchParam", searchParam);
-            ParamUtil.setRequestAttr(bpc.request, "PremisesSearchResult", searchResult);
-        }
 
 
         SearchParam appParam = SearchResultHelper.getSearchParam(bpc.request,appParameter,true);
@@ -140,7 +130,27 @@ public class SelfAssessmentSchematicsDelegator {
             ParamUtil.setRequestAttr(bpc.request,"appResult", appResult);
         }
 
+        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, premiseFilterParameter, true);
+        searchParam.addFilter("licenseeId", licenseeId, true);
+
+        QueryHelp.setMainSql("applicationPersonnelQuery", "queryPremises", searchParam);
+        SearchResult<PremisesListQueryDto> searchResult = requestForChangeService.searchPreInfo(searchParam);
+        if (!StringUtil.isEmpty(searchResult)) {
+            ParamUtil.setSessionAttr(bpc.request, "PremisesSearchParam", searchParam);
+            ParamUtil.setRequestAttr(bpc.request, "PremisesSearchResult", searchResult);
+        }
+
     }
+
+    public void page(BaseProcessClass bpc){
+        SearchResultHelper.doPage(bpc.request, premiseFilterParameter);
+        SearchResultHelper.doPage(bpc.request, appParameter);
+    }
+
+    public void sort(BaseProcessClass bpc){
+        SearchResultHelper.doSort(bpc.request, premiseFilterParameter);
+    }
+
 
     public void doSearch(BaseProcessClass bpc){
 

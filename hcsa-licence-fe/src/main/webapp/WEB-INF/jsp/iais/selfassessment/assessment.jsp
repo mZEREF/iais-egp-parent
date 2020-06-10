@@ -279,11 +279,11 @@
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script>
     function jumpToPagechangePage(){
-        SOP.Crud.cfxSubmit("menuListForm", "search");
+        SOP.Crud.cfxSubmit("mainForm", "page");
     }
 
     function sortRecords(sortFieldName,sortType){
-        SOP.Crud.cfxSubmit("menuListForm","search",sortFieldName,sortType);
+        SOP.Crud.cfxSubmit("mainForm","sort",sortFieldName,sortType);
     }
 
 </script>

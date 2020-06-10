@@ -597,25 +597,11 @@ public class RequestForInformationDelegator {
         if(length==null){
             length="0";
         }
-
+        Integer len=Integer.parseInt(length);
         String sql = SqlMap.INSTANCE.getSql("ReqForInfoQuery", "rfi-new").getSqlStr();
 
 
-//        List<LicPremisesDto> licPremisesDtos = (List<LicPremisesDto>) ParamUtil.getSessionAttr(request,"licPremisesDtos");
-//        List<SelectOption> salutationLicList= IaisCommonUtils.genNewArrayList();
-//        for(LicPremisesDto licPremisesDto:licPremisesDtos){
-//            SelectOption selectLicOption=new SelectOption();
-//            selectLicOption.setValue(licPremisesDto.getId());
-//            LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(licPremisesDto.getLicenceId()).getEntity();
-//            selectLicOption.setText(licenceDto.getLicenceNo());
-//            salutationLicList.add(selectLicOption);
-//        }
-//        Map<String,String> rfiLicSelect = IaisCommonUtils.genNewHashMap();
-//        rfiLicSelect.put("name", "licenceNo"+length);
-//        rfiLicSelect.put("style", "display: none;");
-//        String salutationLicSelectStr = generateDropDownHtml(rfiLicSelect, salutationLicList,"Please Select", null);
-//        sql = sql.replace("(rfiLicSelect)", salutationLicSelectStr);
-
+        sql=sql.replaceAll("indexTitleRfi",String.valueOf((len+1)));
         sql=sql.replaceAll("indexRfi",length);
 
         return sql;
@@ -629,10 +615,10 @@ public class RequestForInformationDelegator {
         if(length==null){
             length="0";
         }
-
+        Integer len=Integer.parseInt(length);
         String sql = SqlMap.INSTANCE.getSql("ReqForInfoQuery", "rfi-info-new").getSqlStr();
 
-
+        sql=sql.replaceAll("indexTitleRfi",String.valueOf((len+1)));
         sql=sql.replaceAll("indexRfi",length);
 
         return sql;

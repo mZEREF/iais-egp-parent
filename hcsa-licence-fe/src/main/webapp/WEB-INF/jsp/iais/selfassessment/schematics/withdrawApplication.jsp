@@ -8,10 +8,10 @@
             <thead>
             <tr align="center">
 
-                <iais:sortableHeader needSort="true"  field="APPLICATION_NO" value="Application NumBer"/>
-                <iais:sortableHeader needSort="true"  field="TYPE" value="Type"/>
-                <iais:sortableHeader needSort="true"  field="SERVICE" value="Service"/>
-                <iais:sortableHeader needSort="true"  field="STATUS" value="Status"/>
+                <iais:sortableHeader needSort="false"  field="APPLICATION_NO" value="Application NumBer"/>
+                <iais:sortableHeader needSort="false"  field="app_type" value="Type"/>
+                <iais:sortableHeader needSort="false"  field="service_id" value="Service"/>
+                <iais:sortableHeader needSort="false"  field="STATUS" value="Status"/>
             </tr>
             </thead>
             <tbody>
@@ -31,8 +31,8 @@
                                     <input id="licence${status.index + 1}" type="radio" name="appNos" value="${pool.applicationNo}"   >${pool.applicationNo}
                                 </label>
                             </td>
-                            <td>${pool.type}</td>
-                            <td>${pool.svcId}</td>
+                            <td>${pool.applicationType}</td>
+                            <td>${pool.serviceId}</td>
                             <td>${pool.status}</td>
                         </tr>
                     </c:forEach>
