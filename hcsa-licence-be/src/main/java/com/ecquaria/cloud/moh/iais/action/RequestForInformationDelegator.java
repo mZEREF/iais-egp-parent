@@ -177,7 +177,7 @@ public class RequestForInformationDelegator {
         }
         String[] lengthsInfo=ParamUtil.getStrings(request,"lengthsInfo");
         List<String> infoTitle=IaisCommonUtils.genNewArrayList();
-        if(lengths!=null){
+        if(lengthsInfo!=null){
             for (String len:lengthsInfo
             ) {
                 infoTitle.add(ParamUtil.getString(request,"infoTitle"+len));
@@ -255,7 +255,7 @@ public class RequestForInformationDelegator {
         }
         String[] lengthsInfo=ParamUtil.getStrings(request,"lengthsInfo");
         List<String> infoTitle=IaisCommonUtils.genNewArrayList();
-        if(lengths!=null){
+        if(lengthsInfo!=null){
             for (String len:lengthsInfo
             ) {
                 infoTitle.add(ParamUtil.getString(request,"infoTitle"+len));
@@ -393,7 +393,7 @@ public class RequestForInformationDelegator {
             log.error(e.getMessage(), e);
         }
         HashMap msg=IaisCommonUtils.genNewHashMap();
-        msg.put("Date",IaisEGPHelper.parseToString(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
+        msg.put("<Date>",IaisEGPHelper.parseToString(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
         ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.getMessageDesc("ACKRFI001",msg));
 
 

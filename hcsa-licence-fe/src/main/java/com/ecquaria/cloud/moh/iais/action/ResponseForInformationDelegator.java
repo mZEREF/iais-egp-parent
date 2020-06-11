@@ -75,13 +75,15 @@ public class ResponseForInformationDelegator {
     public void preDetail(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do preDetail start ...."));
         HttpServletRequest request=bpc.request;
-        LicPremisesReqForInfoDto licPremisesReqForInfoDto;
-        try {
-            String id =  ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-             licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(id);
-             logAbout("ReqForInfoId:"+licPremisesReqForInfoDto.getId());
-        }catch (Exception e){
-             licPremisesReqForInfoDto= (LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(request,"licPreReqForInfoDto");
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto= (LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(request,"licPreReqForInfoDto");
+        if(licPremisesReqForInfoDto==null){
+            try {
+                String id =  ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+                licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(id);
+                logAbout("ReqForInfoId:"+licPremisesReqForInfoDto.getId());
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }
         }
         ParamUtil.setSessionAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
         // 		doRFI->OnStepProcess
@@ -96,10 +98,8 @@ public class ResponseForInformationDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
 
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-        String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
 
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
         // 		doBack->OnStepProcess
     }
 
@@ -108,12 +108,37 @@ public class ResponseForInformationDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
 
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-        String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
 
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
 
-        LicPremisesReqForInfoDto licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(crudActionValue);
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto=(LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(bpc.request,"licPreReqForInfoDto");;
+        int i=0;
+        try {
+            for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
+                CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
+                if(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename())){
+                    file.getFileItem().setFieldName("selectedFile");
+                    long size = file.getSize() / 1024;
+                    doc.setDocName(file.getOriginalFilename());
+                    doc.setDocSize(Integer.valueOf(String.valueOf(size)));
+                    String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
+                    doc.setFileRepoId(fileRepoGuid);
+                    doc.setSubmitDt(new Date());
+                    doc.setSubmitBy(licPremisesReqForInfoDto.getLicenseeId());
+                }
+                i++;
+            }
+            i=0;
+            for(LicPremisesReqForInfoReplyDto info :licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos()){
+                String userReply=mulReq.getParameter("userReply"+info.getId());
+                info.setUserReply(userReply);
+                i++;
+            }
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
+        ParamUtil.setSessionAttr(bpc.request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
+
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         errorMap=validate(bpc.request,licPremisesReqForInfoDto);
@@ -123,27 +148,8 @@ public class ResponseForInformationDelegator {
             //
             return;
         }
-        int i=0;
-        for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
-            CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
-            if(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename())){
-                file.getFileItem().setFieldName("selectedFile");
-                long size = file.getSize() / 1024;
-                doc.setDocName(file.getOriginalFilename());
-                doc.setDocSize(Integer.valueOf(String.valueOf(size)));
-                String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
-                doc.setFileRepoId(fileRepoGuid);
-                doc.setSubmitDt(new Date());
-                doc.setSubmitBy(licPremisesReqForInfoDto.getLicenseeId());
-            }
-            i++;
-        }
-        i=0;
-        for(LicPremisesReqForInfoReplyDto info :licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos()){
-            String userReply=mulReq.getParameter("userReply"+info.getId());
-            info.setUserReply(userReply);
-            i++;
-        }
+
+
         licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_CLOSE);
         licPremisesReqForInfoDto.setReplyDate(new Date());
         LicenseeDto licenseeDto=licenceViewService.getLicenseeDtoBylicenseeId(licPremisesReqForInfoDto.getLicenseeId());
@@ -157,6 +163,7 @@ public class ResponseForInformationDelegator {
         log.info("------------------- saveFile  end --------------");
         responseForInformationService.compressFile(licPremisesReqForInfoDto1.getId());
         log.info("------------------- compressFile  end --------------");
+        ParamUtil.setSessionAttr(bpc.request,"licPreReqForInfoDto",null);
 
 
         // 		doSubmit->OnStepProcess
@@ -168,7 +175,6 @@ public class ResponseForInformationDelegator {
     public Map<String, String> validate(HttpServletRequest httpServletRequest ,LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) httpServletRequest.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        int i=0;
         if(IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto())){
             for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
                 CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
@@ -193,17 +199,15 @@ public class ResponseForInformationDelegator {
                         }
                     }
                 }
-                i++;
+
             }
         }
-        i=0;
         if(IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos())){
             for(LicPremisesReqForInfoReplyDto info :licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos()){
                 String userReply=mulReq.getParameter("userReply"+info.getId());
                 if(StringUtil.isEmpty(userReply)){
                     errMap.put("userReply"+info.getId(),"ERR009");
                 }
-                i++;
             }
         }
 

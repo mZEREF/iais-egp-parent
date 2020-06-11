@@ -74,9 +74,7 @@
     </div>
 </form>
 <script type="text/javascript">
-    function doBack(){
-        SOP.Crud.cfxSubmit("mainForm", "back");
-    }
+
     function doView(reqInfoId) {
         SOP.Crud.cfxSubmit("mainForm", "detail",reqInfoId);
     }
