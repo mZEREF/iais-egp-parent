@@ -1545,7 +1545,7 @@ public class ClinicalLaboratoryDelegator {
         }
         for (int i = 0; i < size; i++) {
             String cgoIndexNo = cgoIndexNos[i];
-            if (i < oldAppSvcCgoDtoList.size()) {
+            if (i < oldAppSvcCgoDtoList.size() && !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
                 AppSvcCgoDto oldAppSvcCgoDto = oldAppSvcCgoDtoList.get(i);
                 AppSvcCgoDto newAppSvcCgoDto = new AppSvcCgoDto();
                 if (StringUtil.isEmpty(cgoIndexNo)) {
@@ -1670,6 +1670,7 @@ public class ClinicalLaboratoryDelegator {
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDto(HttpServletRequest request, Boolean isGetDataFromPagePo, Boolean isGetDataFromPageDpo) {
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         String deputySelect = ParamUtil.getString(request, "deputyPrincipalOfficer");
         if (isGetDataFromPagePo) {
             String[] poLicPerson = ParamUtil.getStrings(request, "poLicPerson");
@@ -1700,7 +1701,7 @@ public class ClinicalLaboratoryDelegator {
                 for (int i = 0; i < length; i++) {
                     AppSvcPrincipalOfficersDto poDto = new AppSvcPrincipalOfficersDto();
                     AppSvcPrincipalOfficersDto oldPoDto = null;
-                    if (i < oldPoList.size()) {
+                    if (i < oldPoList.size() && !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
                         oldPoDto = oldPoList.get(i);
                         if (name != null && idType != null && idNo != null && designation != null && mobileNo != null && officeTelNo != null && emailAddress != null) {
                             poDto.setName(name[i]);
@@ -2140,6 +2141,7 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcMedAlertPerson(HttpServletRequest request) {
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         String[] licPerson = ParamUtil.getStrings(request, "licPerson");
         String[] assignSelect = ParamUtil.getStrings(request, "assignSel");
         String[] salutation = ParamUtil.getStrings(request, "salutation");
@@ -2166,7 +2168,7 @@ public class ClinicalLaboratoryDelegator {
         for (int i = 0; i < length; i++) {
             AppSvcPrincipalOfficersDto medAlertPerson = new AppSvcPrincipalOfficersDto();
             AppSvcPrincipalOfficersDto oldMat = null;
-            if (i < oldMatList.size()) {
+            if (i < oldMatList.size() && !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
                 if (name != null && idType != null && idNo != null && assignSelect != null && mobileNo != null && salutation != null && emailAddress != null) {
                     String[] preferredModes = ParamUtil.getStrings(request, "preferredMode" + i);
                     oldMat = oldMatList.get(i);
