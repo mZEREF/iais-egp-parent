@@ -352,6 +352,7 @@
                                                                         required="false"/>
                                                             <iais:value width="10">
                                                                 <p id="selectDetail"></p>
+                                                                <input type="hidden" id="rfiSelectValue" name="rfiSelectValue" value="" />
                                                             </iais:value>
                                                         </iais:row>
                                                     </div>
@@ -525,6 +526,10 @@
 
     $("#submitButton").click(function () {
         showWaiting();
+        var selectDetail = $('#selectDetail').html();
+        if(selectDetail != null && selectDetail != ''){
+            $('#rfiSelectValue').val(selectDetail);
+        }
         document.getElementById("mainForm").submit();
         $("#submitButton").attr("disabled", true);
     });

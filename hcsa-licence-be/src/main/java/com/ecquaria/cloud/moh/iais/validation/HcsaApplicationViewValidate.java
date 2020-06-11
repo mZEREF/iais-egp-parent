@@ -164,6 +164,12 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         if (StringUtil.isEmpty(rollBack)) {
                             errMap.put("rollBack", "The field is mandatory.");
                         }
+                    } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
+                        //rfiSelectValue
+                        String rfiSelectValue = ParamUtil.getRequestString(request, "rfiSelectValue");
+                        if(StringUtil.isEmpty(rfiSelectValue)){
+                            errMap.put("nextStage", "Please select at least 1 section to unlock");
+                        }
                     }
                 }
             }
