@@ -1111,7 +1111,7 @@ public class NewApplicationHelper {
                     person.setPreferredMode(psnDto.getPreferredMode());
                     person.setMapPsn(true);
                 }
-                person.setLicPerson(true);
+                //person.setLicPerson(true);
                 //for person dtos
                 psnDto.setLicPerson(person.isLicPerson());
                 psnDto.setAssignSelect(getPersonKey(psnDto.getIdType(),psnDto.getIdNo()));

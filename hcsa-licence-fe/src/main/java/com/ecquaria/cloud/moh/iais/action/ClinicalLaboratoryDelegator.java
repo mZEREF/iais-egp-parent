@@ -45,7 +45,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
-import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -1619,6 +1618,7 @@ public class ClinicalLaboratoryDelegator {
                     isPartEdit = removeArrIndex(isPartEdit, i);
                     licPerson = removeArrIndex(licPerson, i);
                     //dropdown cannot disabled
+                    assignSelect = removeArrIndex(assignSelect,i);
                     salutation = removeArrIndex(salutation, i);
                     idType = removeArrIndex(idType, i);
                     designation = removeArrIndex(designation, i);

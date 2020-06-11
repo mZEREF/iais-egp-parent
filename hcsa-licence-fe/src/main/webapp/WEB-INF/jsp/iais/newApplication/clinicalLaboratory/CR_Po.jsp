@@ -807,6 +807,9 @@
         if('1' == isLicPerson){
             disabledPartPage($poContentEle.find('div.principalOfficers'));
             $poContentEle.find('input[name="poLicPerson"]').val('1');
+        }else{
+            unDisabledPartPage($poContentEle.find('div.principalOfficers'));
+            $poContentEle.find('input[name="poLicPerson"]').val('0');
         }
     }
 
@@ -845,6 +848,9 @@
         if('1' == isLicPerson){
             disabledPartPage($poContentEle.find('div.deputyPrincipalOfficers'));
             $poContentEle.find('input[name="dpoLicPerson"]').val('1');
+        }else{
+            unDisabledPartPage($poContentEle.find('div.deputyPrincipalOfficers'));
+            $poContentEle.find('input[name="dpoLicPerson"]').val('0');
         }
     }
 

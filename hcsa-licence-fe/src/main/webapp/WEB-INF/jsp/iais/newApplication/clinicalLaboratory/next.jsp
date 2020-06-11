@@ -280,6 +280,13 @@
                 disabledPartPage($CurrentPsnEle.find('.medAlertPerson'));
             }
             $CurrentPsnEle.find('input[name="licPerson"]').val('1');
+        }else{
+            if('CGO' == psnTYpe){
+                unDisabledPartPage($CurrentPsnEle.find('.new-officer-form'));
+            }else{
+                unDisabledPartPage($CurrentPsnEle.find('.medAlertPerson'));
+            }
+            $CurrentPsnEle.find('input[name="licPerson"]').val('0');
         }
 
     }
