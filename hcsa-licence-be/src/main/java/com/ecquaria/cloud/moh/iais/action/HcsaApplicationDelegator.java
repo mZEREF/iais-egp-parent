@@ -239,7 +239,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void chooseStage(BaseProcessClass bpc) throws ParseException {
+    public void chooseStage(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the do chooseStage start ...."));
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         //do upload file
@@ -264,6 +264,7 @@ public class HcsaApplicationDelegator {
         Map<String, String> errorMap = hcsaApplicationViewValidate.validate(bpc.request);
         //do not have the rfi applicaiton can approve.
         String approveSelect = ParamUtil.getString(bpc.request,"nextStage");
+        String nextStageReplys = ParamUtil.getString(bpc.request,"nextStageReplys");
         validateCanApprove(approveSelect,applicationViewDto,errorMap);
         if(!errorMap.isEmpty()){
             String doProcess = "Y";
@@ -273,6 +274,7 @@ public class HcsaApplicationDelegator {
         }else{
             TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
             String roleId = taskDto.getRoleId();
+            String status = applicationViewDto.getApplicationDto().getStatus();
             boolean isAsoPso = RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId);
 //            String appPremCorreId=taskDto.getRefNo();
             String appPremCorreId = applicationViewDto.getNewAppPremisesCorrelationDto().getId();
@@ -309,7 +311,21 @@ public class HcsaApplicationDelegator {
             String dateStr = ParamUtil.getDate(bpc.request, "tuc");
             String dateTimeShow = ParamUtil.getString(bpc.request,"dateTimeShow");
             if(StringUtil.isEmpty(recommendationStr)){
-
+                //PSO route back to ASO,PSO clear recommendation or licence start date
+                if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(status) && RoleConsts.USER_ROLE_PSO.equals(roleId) && ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(approveSelect)){
+                    AppPremisesRecommendationDto clearRecommendationDto = getClearRecommendationDto(appPremCorreId, dateStr, dateTimeShow);
+                    insRepService.updateRecommendation(clearRecommendationDto);
+                }
+                //PSO route back to ASO,ASO clear recommendation or licence start date
+                if(ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK.equals(status) && RoleConsts.USER_ROLE_ASO.equals(roleId) && ApplicationConsts.PROCESSING_DECISION_REPLY.equals(nextStageReplys)){
+                    AppPremisesRecommendationDto clearRecommendationDto = getClearRecommendationDto(appPremCorreId, dateStr, dateTimeShow);
+                    insRepService.updateRecommendation(clearRecommendationDto);
+                }
+                //ASO route to PSO
+                if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(status) && RoleConsts.USER_ROLE_ASO.equals(roleId) && ApplicationConsts.PROCESSING_DECISION_VERIFIED.equals(approveSelect)){
+                    AppPremisesRecommendationDto clearRecommendationDto = getClearRecommendationDto(appPremCorreId, dateStr, dateTimeShow);
+                    insRepService.updateRecommendation(clearRecommendationDto);
+                }
             }else if(("reject").equals(recommendationStr)){
                 AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
                 appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
@@ -1088,6 +1104,22 @@ public class HcsaApplicationDelegator {
     //private methods
     //*************************************
 
+    private AppPremisesRecommendationDto getClearRecommendationDto(String appPremCorreId, String dateStr, String dateTimeShow) throws Exception{
+        AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+        appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
+        appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
+        appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        //save date
+        if(!StringUtil.isEmpty(dateStr)){
+            Date date = Formatter.parseDate(dateStr);
+            appPremisesRecommendationDto.setRecomInDate(date);
+        }else if(!StringUtil.isEmpty(dateTimeShow)){
+            Date date = Formatter.parseDate(dateTimeShow);
+            appPremisesRecommendationDto.setRecomInDate(date);
+        }
+        return appPremisesRecommendationDto;
+    }
+
     private void checkRecommendationShowName(BaseProcessClass bpc,ApplicationViewDto applicationViewDto){
         String recommendationShowName = "Recommendation";
         if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
@@ -1183,6 +1215,9 @@ public class HcsaApplicationDelegator {
 
     private void checkRecommendationDropdownValue(Integer  recomInNumber,String chronoUnit,String codeDesc,ApplicationViewDto applicationViewDto,BaseProcessClass bpc){
         if(StringUtil.isEmpty(recomInNumber)){
+            ParamUtil.setRequestAttr(bpc.request,"recommendationStr","");
+            return;
+        }else if(recomInNumber == 0){
             ParamUtil.setRequestAttr(bpc.request,"recommendationStr","reject");
             return;
         }
@@ -1219,12 +1254,13 @@ public class HcsaApplicationDelegator {
         return recommendationOtherSelectOption;
     }
 
-    private List<SelectOption> getRecommendationDropdown(ApplicationViewDto applicationViewDto){
+    private List<SelectOption> getRecommendationDropdown(ApplicationViewDto applicationViewDto,HttpServletRequest request){
         List<SelectOption> recommendationSelectOption = IaisCommonUtils.genNewArrayList();
         HcsaServiceDto hcsaServiceDto=applicationViewService.getHcsaServiceDtoById(applicationViewDto.getApplicationDto().getServiceId());
         String svcCode=hcsaServiceDto.getSvcCode();
-        RiskAcceptiionDto riskAcceptiionDto=new RiskAcceptiionDto();
+        RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
         riskAcceptiionDto.setScvCode(svcCode);
+        riskAcceptiionDto.setRiskScore(applicationViewDto.getApplicationDto().getRiskScore());
         List<RiskAcceptiionDto> listRiskAcceptiionDto = IaisCommonUtils.genNewArrayList();
         listRiskAcceptiionDto.add(riskAcceptiionDto);
         List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
@@ -1235,6 +1271,10 @@ public class HcsaApplicationDelegator {
                 String count = String.valueOf(riskResultDto.getTimeCount());
                 //String recommTime = count + " " + codeDesc;
                 recommendationSelectOption.add(new SelectOption(count + " " + dateType, riskResultDto.getLictureText()));
+                if(riskResultDto.getDafLicture()){
+                    //recommendationStr
+                    ParamUtil.setRequestAttr(request,"recommendationStr",count + " " + dateType);
+                }
             }
         }
         recommendationSelectOption.add(new SelectOption("other","Others"));
@@ -1789,6 +1829,8 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
+        //set recommendation dropdown value
+        setRecommendationDropdownValue(bpc.request,applicationViewDto);
 
         AppPremisesRoutingHistoryDto userHistory = appPremisesRoutingHistoryService.getAppHistoryByAppNoAndActionBy(applicationViewDto.getApplicationDto().getApplicationNo(), taskDto.getUserId());
         String currentRoleId = "";
@@ -1913,7 +1955,7 @@ public class HcsaApplicationDelegator {
         //set verified dropdown value
         setVerifiedDropdownValue(request,applicationViewDto,taskDto);
         //set recommendation dropdown value
-        setRecommendationDropdownValue(request,applicationViewDto);
+//        setRecommendationDropdownValue(request,applicationViewDto);
         //set recommendation other dropdown value
         setRecommendationOtherDropdownValue(request);
         //set appeal recommendation dropdown value
@@ -2145,7 +2187,7 @@ public class HcsaApplicationDelegator {
 
     public void setRecommendationDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
         //set recommendation dropdown
-        ParamUtil.setSessionAttr(request, "recommendationDropdown", (Serializable)getRecommendationDropdown(applicationViewDto));
+        ParamUtil.setSessionAttr(request, "recommendationDropdown", (Serializable)getRecommendationDropdown(applicationViewDto,request));
     }
 
     public void setRecommendationOtherDropdownValue(HttpServletRequest request){
