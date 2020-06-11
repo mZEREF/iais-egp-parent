@@ -13,6 +13,7 @@ public interface MasterCodeService {
     SearchResult<MasterCodeQueryDto> doQuery(SearchParam param);
     List<MasterCodeToExcelDto> findAllMasterCode();
     void deleteMasterCodeById(String id);
+    List<String> suggestCodeDescription(String masterCode);
     String findCodeKeyByDescription(String description);
     MasterCodeDto saveMasterCode(MasterCodeDto masterCode);
     MasterCodeDto updateMasterCode(MasterCodeDto masterCode);

@@ -57,6 +57,9 @@ public interface MasterCodeClient {
     @GetMapping(path = "/iais-mastercode/master-code/master-code-key")
     FeignResponseEntity<Boolean> masterCodeKeyIsExist(@RequestParam(value = "masterCodeKey") String masterCodeKey);
 
+    @GetMapping(path = "/iais-mastercode/master-code/suggest-code-description")
+    FeignResponseEntity<List<String>> suggestCodeDescription(@RequestParam(value = "codeDescription") String codeDescription);
+
     @PostMapping(value = "/iais-mastercode/master-code/master-code-excel",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> saveMasterCodeExcel(@RequestBody List<MasterCodeToExcelDto> masterCodeToExcelDtoList);
 

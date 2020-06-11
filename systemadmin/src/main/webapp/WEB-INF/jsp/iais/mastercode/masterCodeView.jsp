@@ -8,7 +8,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <%@ include file="mainContent.jsp" %>
-
+<%@ include file="suggestJs.jsp" %>
 <script type="text/javascript">
     function submit(action){
         $("[name='crud_action_type']").val(action);
@@ -62,4 +62,32 @@
         submit('createCode');
     }
 
+    var admdirector = $("#suggestDescription").bsSuggest({
+        indexId: 0,
+        indexKey: 0,
+        allowNoKeyword: false,
+        multiWord: false,
+        separator: ",",
+        getDataMethod: "url",
+        effectiveFields:["codeDescription"],
+        // effectiveFields:["name","ename","departName","jobtitle"],
+        // effectiveFieldsAlias:{codeDescription: "codeDescription",ename:"英文名",departName:"部门",jobtitle:"职位"},
+        effectiveFieldsAlias:{codeDescription: "codeDescription"},
+        showHeader: true,
+        url: '${pageContext.request.contextPath}/suggest-code-description?description=',
+        processData: function(json){
+            var i, len, data = {value: []};
+            if(!json || json.length == 0) {
+                return false;
+            }
+            len = json.length;
+            for (i = 0; i < len; i++) {
+                data.value.push({
+                    "codeDescription": json[i]
+                });
+            }
+            console.log(data);
+            return data;
+        }
+    });
 </script>

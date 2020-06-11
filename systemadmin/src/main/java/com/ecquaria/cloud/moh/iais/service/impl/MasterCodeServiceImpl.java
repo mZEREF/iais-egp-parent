@@ -51,6 +51,11 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     }
 
     @Override
+    public List<String> suggestCodeDescription(String codeDescription) {
+        return masterCodeClient.suggestCodeDescription(codeDescription).getEntity();
+    }
+
+    @Override
     public MasterCodeDto findMasterCodeByMcId(String id) {
         return masterCodeClient.getMasterCodeById(id).getEntity();
     }

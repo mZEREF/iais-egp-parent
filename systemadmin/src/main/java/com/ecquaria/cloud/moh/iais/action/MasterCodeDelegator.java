@@ -29,7 +29,9 @@ import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -312,6 +314,19 @@ public class MasterCodeDelegator {
             }
         }
 
+    }
+
+
+    @GetMapping(value = "suggest-code-description")
+    public @ResponseBody
+    List<String> suggerMasterCode(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        String codeDescription = request.getParameter("description");
+        List<String> codeDescriptionList = IaisCommonUtils.genNewArrayList();
+        if (!StringUtil.isEmpty(codeDescription)){
+            codeDescriptionList = masterCodeService.suggestCodeDescription(codeDescription);
+        }
+        return codeDescriptionList;
     }
 
     public void doUpload(BaseProcessClass bpc) throws Exception {

@@ -115,6 +115,14 @@ public class MasterCodeClientFallback implements MasterCodeClient{
     }
 
     @Override
+    public FeignResponseEntity<List<String>> suggestCodeDescription(String codeDescription) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<Boolean> saveMasterCodeExcel(List<MasterCodeToExcelDto> masterCodeToExcelDtoList) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

@@ -27,8 +27,12 @@
                     <%String codeDescription = request.getParameter("codeDescription")==null?"":request.getParameter("codeDescription");%>
                     <label class="col-xs-4 col-md-4 control-label">Code Description</label>
                     <div class="col-xs-6 col-sm-6 col-md-6">
-                        <form><textarea cols="86" rows="6" id="description" name="codeDescription"
-                                        maxlength="255"><%=codeDescription%></textarea></form>
+                        <form><textarea cols="86" rows="6" id="suggestDescription" name="codeDescription"
+                                        maxlength="255"><%=codeDescription%></textarea>
+                            <div class="input-group-btn">
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
+                            </div>
+                        </form>
                     </div>
                 </iais:value>
             </div>
