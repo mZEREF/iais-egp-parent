@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.SendEmailClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -75,6 +76,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     @Autowired
     private LicenceClient licenceClient;
+
+    @Autowired
+    private SendEmailClient sendEmailClient;
 
     @Autowired
     private OrgEicClient orgEicClient;
@@ -649,6 +653,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         emailDto.setSender(mailSender);
         emailDto.setClientQueryCode(apptFeConfirmDateDto.getAppPremCorrId());
         apptFeConfirmDateDto.setEmailDto(emailDto);
+        sendEmailClient.sendEmailByRefNo(apptFeConfirmDateDto);
         createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE);
         //cancel or confirm appointment date
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
