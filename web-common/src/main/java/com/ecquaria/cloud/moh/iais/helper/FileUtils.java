@@ -2,10 +2,12 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -25,6 +27,13 @@ import java.util.Objects;
 public final class FileUtils {
     private FileUtils(){
         throw new IaisRuntimeException("FileUtils structure error.");
+    }
+
+
+    public static void writeFileResponseProcessContent(HttpServletRequest request, File outputFile){
+        byte[] bytes = FileUtils.readFileToByteArray(outputFile);
+        request.setAttribute(IaisEGPConstant.PROCESS_DOWNLOAD_FILE_BYTE_DATA, bytes);
+        request.setAttribute(IaisEGPConstant.PROCESS_DOWNLOAD_FILE_NAME, outputFile.getName());
     }
 
     public static void writeFileResponseContent(final HttpServletResponse response, final File file) throws IOException {

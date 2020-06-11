@@ -731,19 +731,20 @@ public class HcsaChklItemDelegator {
      **/
     public void exportItemToConfigTemplate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        HttpServletResponse response = bpc.response;
         log.debug(StringUtil.changeForLog("exportConfigTemplate start ...."));
-
-        String[] checkBoxItemId = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
-        if (checkBoxItemId == null || checkBoxItemId.length <= 0) {
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-            return;
-        }
-
-        List<String> queryIds = Arrays.asList(checkBoxItemId);
 
         try {
             File inputFile = ResourceUtils.getFile("classpath:template/Checklist_Config_Upload_Template.xlsx");
+
+            String[] checkBoxItemId = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
+            if (checkBoxItemId == null || checkBoxItemId.length <= 0) {
+                FileUtils.writeFileResponseProcessContent(request, inputFile);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+                return;
+            }
+
+            List<String> queryIds = Arrays.asList(checkBoxItemId);
+
             if (inputFile.exists() && inputFile.isFile()) {
                 List<ChecklistItemDto> item = hcsaChklService.listChklItemByItemId(queryIds);
 
@@ -765,11 +766,12 @@ public class HcsaChklItemDelegator {
                 excelWriter.setHasNeedCellName(false);
                 excelWriter.setFileName("Checklist_Config_Upload_Template");
                 File outputFile = excelWriter.writerToExcel(uploadTemplate);
-                String downName = outputFile.getName();
-                byte[] bytes = FileUtils.readFileToByteArray(outputFile);
-                request.setAttribute("processDownloadFileByteData", bytes);
-                request.setAttribute("processDownloadFileName", downName);
+
+                FileUtils.writeFileResponseProcessContent(request, outputFile);
+
                 FileUtils.deleteTempFile(outputFile);
+
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
 
         } catch (Exception e) {

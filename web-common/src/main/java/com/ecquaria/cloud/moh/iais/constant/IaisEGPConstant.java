@@ -32,6 +32,9 @@ public class IaisEGPConstant {
     public static final String BE_CSS_ROOT                         = "/be/";
     public static final String COMMON_CSS_ROOT                     = "/common/";
 
+    public static final String PROCESS_DOWNLOAD_FILE_BYTE_DATA = "processDownloadFileByteData";
+    public static final String PROCESS_DOWNLOAD_FILE_NAME = "processDownloadFileName";
+
 
 
 
