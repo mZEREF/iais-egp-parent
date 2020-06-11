@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author Shicheng
  * @date 2020/6/10 18:11
  **/
-@FeignClient(url = "http://192.168.6.52:8879/", configuration = FeignConfiguration.class,
+@FeignClient(name = "email-sms", configuration = FeignConfiguration.class,
         fallback = SendEmailClientFallback.class)
 public interface SendEmailClient {
     @PostMapping(value = "/iais-task/fe-email-task", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
