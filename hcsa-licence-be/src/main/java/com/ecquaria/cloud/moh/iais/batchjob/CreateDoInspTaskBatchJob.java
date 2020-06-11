@@ -119,6 +119,8 @@ public class CreateDoInspTaskBatchJob {
                         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
                         hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
                         String userId = getPreInspActionByHistory(applicationDto.getApplicationNo());
+                        log.debug(StringUtil.changeForLog("Current Application No. = " + applicationDto.getApplicationNo()));
+                        log.debug(StringUtil.changeForLog("Current User Id = " + userId));
                         List<TaskDto> taskDtos = getTaskByHistoryTasks(aRecoDto.getAppPremCorreId(), userId);
                         createTasksByHistory(taskDtos, intranet, hcsaSvcStageWorkingGroupDtos.get(0).getCount(), aRecoDto.getAppPremCorreId());
                         updateInspectionStatus(aRecoDto.getAppPremCorreId(), InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY, intranet);
@@ -165,34 +167,37 @@ public class CreateDoInspTaskBatchJob {
 
     private void createTasksByHistory(List<TaskDto> taskDtos, AuditTrailDto intranet, Integer score, String appPremCorrId) {
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
-        for(TaskDto td:taskDtos){
-            TaskDto taskDto = new TaskDto();
-            taskDto.setId(null);
-            taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
-            taskDto.setPriority(td.getPriority());
-            taskDto.setRefNo(td.getRefNo());
-            taskDto.setSlaAlertInDays(td.getSlaAlertInDays());
-            taskDto.setSlaDateCompleted(null);
-            taskDto.setSlaInDays(td.getSlaInDays());
-            taskDto.setSlaRemainInDays(null);
-            taskDto.setTaskKey(td.getTaskKey());
-            taskDto.setTaskType(td.getTaskType());
-            taskDto.setWkGrpId(td.getWkGrpId());
-            taskDto.setUserId(td.getUserId());
-            taskDto.setDateAssigned(new Date());
-            taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
-            taskDto.setAuditTrailDto(intranet);
-            taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY);
-            taskDto.setScore(score);
-            taskDtoList.add(taskDto);
-            ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
-            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-            createAppPremisesRoutingHistory(intranet, applicationDto.getApplicationNo(),applicationDto.getStatus(),taskDto.getTaskKey(),null, InspectionConstants.PROCESS_DECI_PENDING_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR, HcsaConsts.ROUTING_STAGE_INP, taskDto.getWkGrpId());
+        log.debug(StringUtil.changeForLog("Current taskDtos Size = " + taskDtos.size()));
+        if(!IaisCommonUtils.isEmpty(taskDtos)) {
+            for (TaskDto td : taskDtos) {
+                TaskDto taskDto = new TaskDto();
+                taskDto.setId(null);
+                taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                taskDto.setPriority(td.getPriority());
+                taskDto.setRefNo(td.getRefNo());
+                taskDto.setSlaAlertInDays(td.getSlaAlertInDays());
+                taskDto.setSlaDateCompleted(null);
+                taskDto.setSlaInDays(td.getSlaInDays());
+                taskDto.setSlaRemainInDays(null);
+                taskDto.setTaskKey(td.getTaskKey());
+                taskDto.setTaskType(td.getTaskType());
+                taskDto.setWkGrpId(td.getWkGrpId());
+                taskDto.setUserId(td.getUserId());
+                taskDto.setDateAssigned(new Date());
+                taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
+                taskDto.setAuditTrailDto(intranet);
+                taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY);
+                taskDto.setScore(score);
+                taskDtoList.add(taskDto);
+                ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
+                ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                createAppPremisesRoutingHistory(intranet, applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, InspectionConstants.PROCESS_DECI_PENDING_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR, HcsaConsts.ROUTING_STAGE_INP, taskDto.getWkGrpId());
+            }
+            taskService.createTasks(taskDtoList);
         }
-        taskService.createTasks(taskDtoList);
     }
 
-    private List<TaskDto> getTaskByHistoryTasks(String userId, String appCorrId) {
+    private List<TaskDto> getTaskByHistoryTasks(String appCorrId, String userId)  {
         List<TaskDto> taskDtos = organizationClient.getTaskByRefNoStatus(appCorrId, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
         if(taskDtos == null || taskDtos.isEmpty()){
             return null;
