@@ -34,7 +34,6 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -172,18 +171,10 @@ public class HcsaChklItemDelegator {
         try {
             List<ChecklistItemDto> checklistItemDtoList = FileUtils.transformToJavaBean(toFile, ChecklistItemDto.class);
             List<ErrorMsgContent> errorMsgContentList  = hcsaChklService.submitUploadItems(checklistItemDtoList);
-            for (ErrorMsgContent errorMsgContent : errorMsgContentList){
-                int idx = 0;
-                for(String error : errorMsgContent.getErrorMsgList()){
-                    String msg = MessageUtil.getMessageDesc(error);
-                    errorMsgContent.getErrorMsgList().set(idx++, msg);
-                }
-            }
-
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
-            ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
+            ChecklistHelper.replaceErrorMsgContentMasterCode(request, errorMsgContentList);
             FileUtils.deleteTempFile(toFile);
-
+            ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         }catch (IaisRuntimeException e){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);

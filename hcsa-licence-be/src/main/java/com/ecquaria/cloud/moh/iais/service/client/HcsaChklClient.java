@@ -156,4 +156,6 @@ public interface HcsaChklClient {
     @PostMapping(value = "/iais-regulation/results",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<RegulationQueryDto>> searchRegulation(@RequestBody SearchParam searchParam);
 
+    @PostMapping(value = "/iais-hcsa-checklist/config-excel-template", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ErrorMsgContent>> saveConfigByTemplate(@RequestBody ChecklistConfigDto excelTemplate);
 }

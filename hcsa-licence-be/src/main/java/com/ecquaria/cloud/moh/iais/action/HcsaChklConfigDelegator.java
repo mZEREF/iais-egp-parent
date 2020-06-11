@@ -17,9 +17,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQuer
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelTemplate;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.helper.ChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -49,16 +50,15 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Delegator(value = "hcsaChklConfigDelegator")
 @Slf4j
@@ -361,7 +361,6 @@ public class HcsaChklConfigDelegator {
         String eftStartDate = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_START_DATE);
         String eftEndDate = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_END_DATE);
 
-
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE, module);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE, type);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_HCI_CODE, hciCode);
@@ -371,9 +370,6 @@ public class HcsaChklConfigDelegator {
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_END_DATE, eftEndDate);
 
         try {
-            Date starteDate = Formatter.parseDate(eftStartDate);
-            Date endDate = Formatter.parseDate(eftEndDate);
-
             ChecklistConfigDto configDto;
             String operationType = (String) ParamUtil.getSessionAttr(request, "operationType");
             if (!StringUtils.isEmpty(operationType) && HcsaChecklistConstants.ACTION_CLONE.equals(operationType)){
@@ -414,8 +410,8 @@ public class HcsaChklConfigDelegator {
             configDto.setSvcName(svcName);
             configDto.setSvcSubType(svcSubType);
             configDto.setHciCode(hciCode);
-            configDto.setEftStartDate(starteDate);
-            configDto.setEftEndDate(endDate);
+            configDto.setEftStartDate(eftStartDate);
+            configDto.setEftEndDate(eftEndDate);
             configDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
             //field validate
@@ -436,7 +432,7 @@ public class HcsaChklConfigDelegator {
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             }
 
-        } catch (ParseException e) {
+        } catch (Exception e) {
             log.error("when add section item of config has error ", e);
         }
 
@@ -839,6 +835,43 @@ public class HcsaChklConfigDelegator {
             File toFile = FileUtils.multipartFileToFile(file);
             excelItemDtos = FileUtils.transformToJavaBean(toFile, ConfigExcelItemDto.class);
             configInfo = FileUtils.transformToList(toFile, ConfigExcelItemDto.class, map);
+            FileUtils.deleteTempFile(toFile);
+
+
+            //uncheck ArrayIndexOutOfBoundsException
+            ChecklistConfigDto excelTemplate = new ChecklistConfigDto();
+            excelTemplate.setCommon("Yes".equals(configInfo.get(0)) ? true : false);
+            excelTemplate.setModule(configInfo.get(1));
+            excelTemplate.setType(configInfo.get(2));
+            excelTemplate.setSvcName(configInfo.get(3));
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(configInfo.get(3));
+            excelTemplate.setSvcCode(hcsaServiceDto.getSvcCode());
+            excelTemplate.setSvcSubType(configInfo.get(4));
+            excelTemplate.setHciCode(configInfo.get(5));
+            excelTemplate.setEftStartDate(configInfo.get(6));
+            excelTemplate.setEftEndDate(configInfo.get(7));
+            excelTemplate.setWebAction(HcsaChecklistConstants.CREATE);
+            excelTemplate.setExcelTemplate(excelItemDtos);
+
+            boolean hasTemplateError = ChecklistHelper.validateTemplate(request, excelTemplate);
+            if (hasTemplateError){
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+                return;
+            }
+
+            //record validate
+            boolean existsRecord = hcsaChklService.isExistsRecord(excelTemplate);
+            if (existsRecord){
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR019"));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+                return;
+            }
+
+            List<ErrorMsgContent> errorMsgContentList = hcsaChklService.createConfigTemplate(excelTemplate);
+            errorMsgContentList = errorMsgContentList.stream().filter(i -> !i.getErrorMsgList().isEmpty()).collect(Collectors.toList());
+            ChecklistHelper.replaceErrorMsgContentMasterCode(request, errorMsgContentList);
+            ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
 
         } catch (Exception e) {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
@@ -846,31 +879,9 @@ public class HcsaChklConfigDelegator {
             log.error(e.getMessage(), e);
             return;
         }
-
-        if (IaisCommonUtils.isEmpty(excelItemDtos) || IaisCommonUtils.isEmpty(configInfo)) {
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
-            return;
-        }
-
-        ConfigExcelTemplate excelTemplate = new ConfigExcelTemplate();
-        excelTemplate.setCommon("Yes".equals(configInfo.get(0)) ? true : false);
-        excelTemplate.setModule(configInfo.get(1));
-        excelTemplate.setType(configInfo.get(2));
-        excelTemplate.setSvcName(configInfo.get(3));
-        excelTemplate.setSvcSubType(configInfo.get(4));
-        excelTemplate.setHciCode(configInfo.get(5));
-
-        excelTemplate.setDtoList(excelItemDtos);
-
-        boolean hasTemplateError = ChecklistHelper.validateTemplate(request, excelTemplate);
-        if (hasTemplateError){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
-            return;
-        }
-
-        ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
     }
+
+
 
 
     /**

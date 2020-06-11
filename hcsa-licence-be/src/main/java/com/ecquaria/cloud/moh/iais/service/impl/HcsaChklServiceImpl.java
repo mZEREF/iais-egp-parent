@@ -112,4 +112,15 @@ public class HcsaChklServiceImpl implements HcsaChklService {
         IaisApiResult<List<ErrorMsgContent>> iaisApiResult = chklClient.saveUploadItems(uploadItems).getEntity();
         return iaisApiResult.getEntity();
     }
+
+
+    @Override
+    public List<ErrorMsgContent> createConfigTemplate(ChecklistConfigDto excelTemplate) {
+        return chklClient.saveConfigByTemplate(excelTemplate).getEntity();
+    }
+
+    @Override
+    public List<ErrorMsgContent> updateConfigTemplate(ChecklistConfigDto excelTemplate) {
+        return chklClient.saveConfigByTemplate(excelTemplate).getEntity();
+    }
 }

@@ -20,10 +20,6 @@ import java.util.List;
 
 @Service
 public interface HcsaChklService {
-
-    Boolean deleteRecord(String configId);
-    Boolean inActiveItem(String itemId);
-
     /**
      * list checklist item by SearchParam
      * backend method: listChecklistItem
@@ -96,12 +92,17 @@ public interface HcsaChklService {
      */
     List<String> listServiceName();
 
-
     ChecklistConfigDto getChecklistConfigById(String id);
 
     Boolean isExistsRecord(ChecklistConfigDto dto);
 
+    List<ErrorMsgContent> createConfigTemplate(ChecklistConfigDto excelTemplate);
 
+    List<ErrorMsgContent> updateConfigTemplate(ChecklistConfigDto excelTemplate);
+
+    Boolean deleteRecord(String configId);
+
+    Boolean inActiveItem(String itemId);
 
     List<ErrorMsgContent> submitUploadItems(List<ChecklistItemDto> uploadItems);
 }

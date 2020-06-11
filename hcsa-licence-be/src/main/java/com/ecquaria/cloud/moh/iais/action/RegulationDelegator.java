@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.ChecklistConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.ChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -245,18 +246,11 @@ public class RegulationDelegator {
             regulationDtoList.forEach(i -> i.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto()));
             List<ErrorMsgContent> errorMsgContentList = regulationService.submitUploadRegulation(regulationDtoList);
 
-            for (ErrorMsgContent errorMsgContent : errorMsgContentList){
-                int idx = 0;
-                for(String error : errorMsgContent.getErrorMsgList()){
-                    String msg = MessageUtil.getMessageDesc(error);
-                    errorMsgContent.getErrorMsgList().set(idx++, msg);
-                }
-            }
-
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
-            ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
             FileUtils.deleteTempFile(toFile);
 
+            ChecklistHelper.replaceErrorMsgContentMasterCode(request, errorMsgContentList);
+            ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         }catch (IaisRuntimeException e){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);

@@ -308,4 +308,12 @@ public class HcsaChklFallback implements HcsaChklClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<ErrorMsgContent>> saveConfigByTemplate(ChecklistConfigDto excelTemplate) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

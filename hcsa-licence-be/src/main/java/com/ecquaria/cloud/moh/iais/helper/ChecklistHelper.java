@@ -1,7 +1,8 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelTemplate;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -11,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,15 +56,15 @@ public final class ChecklistHelper {
         }
     }
 
-    public static boolean validateTemplate(HttpServletRequest request, ConfigExcelTemplate excelTemplate){
-        boolean isCommon = excelTemplate.getCommon();
+    public static boolean validateTemplate(HttpServletRequest request, ChecklistConfigDto excelTemplate){
+        boolean isCommon = excelTemplate.isCommon();
         String type = excelTemplate.getType();
         String module = excelTemplate.getModule();
         String service = excelTemplate.getSvcName();
         String subType = excelTemplate.getSvcSubType();
         String hciCode = excelTemplate.getHciCode();
-        String effectiveStartDate = excelTemplate.getEffectiveStartDate();
-        String effectiveEndDate = excelTemplate.getEffectiveEndDate();
+        String effectiveStartDate = excelTemplate.getEftStartDate();
+        String effectiveEndDate = excelTemplate.getEftEndDate();
 
         if (StringUtils.isEmpty(effectiveStartDate) || StringUtils.isEmpty(effectiveEndDate)){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "Effective Start Date and end date is mandatory , format should be DD/MM/YYYY"));
@@ -89,5 +91,17 @@ public final class ChecklistHelper {
         }
 
         return false;
+    }
+
+    public static void replaceErrorMsgContentMasterCode(HttpServletRequest request, List<ErrorMsgContent> errorMsgContentList) {
+        for (ErrorMsgContent errorMsgContent : errorMsgContentList){
+            int idx = 0;
+            for(String error : errorMsgContent.getErrorMsgList()){
+                String msg = MessageUtil.getMessageDesc(error);
+                errorMsgContent.getErrorMsgList().set(idx++, msg);
+            }
+        }
+
+
     }
 }
