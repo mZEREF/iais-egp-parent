@@ -1495,30 +1495,30 @@ public class ClinicalLaboratoryDelegator {
 
 
     private List<AppSvcCgoDto> genAppSvcCgoDto(HttpServletRequest request) {
-        ParamUtil.setSessionAttr(request, ERRORMAP_GOVERNANCEOFFICERS,null);
-        Object requestInformationConfig = ParamUtil.getSessionAttr(request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
+        ParamUtil.setSessionAttr(request, ERRORMAP_GOVERNANCEOFFICERS, null);
+        Object requestInformationConfig = ParamUtil.getSessionAttr(request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         List<AppSvcCgoDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
         AppSvcCgoDto appSvcCgoDto;
         String[] assignSelect = ParamUtil.getStrings(request, "assignSelect");
-        int size = 0 ;
-        if(assignSelect != null && assignSelect.length>0){
+        int size = 0;
+        if (assignSelect != null && assignSelect.length > 0) {
             size = assignSelect.length;
         }
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         String appType = "";
-        if(appSubmissionDto != null){
+        if (appSubmissionDto != null) {
             appType = appSubmissionDto.getAppType();
         }
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(request,currentSvcId);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(request, currentSvcId);
         //cgoIndexNo
-        String[] cgoIndexNos = ParamUtil.getStrings(request,"cgoIndexNo");
+        String[] cgoIndexNos = ParamUtil.getStrings(request, "cgoIndexNo");
         boolean needEdit = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || requestInformationConfig != null;
-        if(needEdit){
+        if (needEdit) {
             size = cgoIndexNos.length;
         }
-        String[] licPerson = ParamUtil.getStrings(request,"licPerson");
-        String[] isPartEdit = ParamUtil.getStrings(request,"isPartEdit");
+        String[] licPerson = ParamUtil.getStrings(request, "licPerson");
+        String[] isPartEdit = ParamUtil.getStrings(request, "isPartEdit");
         String[] salutation = ParamUtil.getStrings(request, "salutation");
         String[] name = ParamUtil.getStrings(request, "name");
         String[] idType = ParamUtil.getStrings(request, "idType");
@@ -1531,27 +1531,73 @@ public class ClinicalLaboratoryDelegator {
         String[] qualification = ParamUtil.getStrings(request, "qualification");
         String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
-        for(int i = 0; i<size; i++){
+        List<String> licenceIDList = (List<String>) ParamUtil.getSessionAttr(request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR);
+        List<AppSubmissionDto> appSubmissionDtos;
+        List<AppSvcCgoDto> oldAppSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
+        boolean editRenew = Boolean.TRUE;
+        boolean isRenew = Boolean.TRUE;
+        if (!IaisCommonUtils.isEmpty(licenceIDList)) {
+            appSubmissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
+            oldAppSvcCgoDtoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList().get(0).getAppSvcCgoDtoList();
+            String renew = appSubmissionDtos.get(0).getAppType();
+            if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(renew)) {
+                isRenew = Boolean.FALSE;
+            }
+        }
+        for (int i = 0; i < size; i++) {
+            String cgoIndexNo = cgoIndexNos[i];
+            if (i < oldAppSvcCgoDtoList.size()) {
+                AppSvcCgoDto oldAppSvcCgoDto = oldAppSvcCgoDtoList.get(i);
+                AppSvcCgoDto newAppSvcCgoDto = new AppSvcCgoDto();
+                if (StringUtil.isEmpty(cgoIndexNo)) {
+                    newAppSvcCgoDto.setCgoIndexNo(UUID.randomUUID().toString());
+                } else {
+                    newAppSvcCgoDto.setCgoIndexNo(cgoIndexNos[i]);
+                }
+                if (name != null && idType != null && idNo != null && designation != null && professionType != null && professionRegoNo != null && specialty != null && qualification != null && mobileNo != null && emailAddress != null) {
+                    newAppSvcCgoDto.setAssignSelect(assignSelect[i]);
+                    newAppSvcCgoDto.setSalutation(salutation[i]);
+                    newAppSvcCgoDto.setName(name[i]);
+                    newAppSvcCgoDto.setIdType(idType[i]);
+                    newAppSvcCgoDto.setIdNo(idNo[i]);
+                    newAppSvcCgoDto.setDesignation(designation[i]);
+                    newAppSvcCgoDto.setProfessionType(professionType[i]);
+                    newAppSvcCgoDto.setProfRegNo(professionRegoNo[i]);
+                    String specialtyStr = specialty[i];
+                    newAppSvcCgoDto.setSpeciality(specialtyStr);
+                    if ("other".equals(specialtyStr)) {
+                        newAppSvcCgoDto.setSpecialityOther(specialtyOther[i]);
+                    }
+                    //qualification(before)
+                    newAppSvcCgoDto.setSubSpeciality(qualification[i]);
+                    newAppSvcCgoDto.setMobileNo(mobileNo[i]);
+                    newAppSvcCgoDto.setEmailAddr(emailAddress[i]);
+                    if (!oldAppSvcCgoDto.equals(newAppSvcCgoDto) && !isRenew) {
+                        editRenew = Boolean.FALSE;
+                    }
+                }
+            }
             appSvcCgoDto = new AppSvcCgoDto();
             //had value when rfi,rfc,renew
-            String cgoIndexNo = cgoIndexNos[i];
-            if(!StringUtil.isEmpty(cgoIndexNo)){
+            //String cgoIndexNo = cgoIndexNos[i];
+            if (!StringUtil.isEmpty(cgoIndexNo)) {
                 //needEdit
-                if(needEdit){
+                if (needEdit) {
                     //not click edit
-                    if(AppConsts.NO.equals(isPartEdit[i])){
-                        appSvcCgoDto = getAppSvcCgoByIndexNo(appSvcRelatedInfoDto,cgoIndexNo);
+                    if (AppConsts.NO.equals(isPartEdit[i])) {
+                        appSvcCgoDto = getAppSvcCgoByIndexNo(appSvcRelatedInfoDto, cgoIndexNo);
                         appSvcCgoDtoList.add(appSvcCgoDto);
                         //change arr
-                        cgoIndexNos = removeArrIndex(cgoIndexNos,i);
-                        isPartEdit = removeArrIndex(isPartEdit,i);
-                        licPerson = removeArrIndex(licPerson,i);
+                        cgoIndexNos = removeArrIndex(cgoIndexNos, i);
+                        isPartEdit = removeArrIndex(isPartEdit, i);
+                        licPerson = removeArrIndex(licPerson, i);
                         //dropdown cannot disabled
-                        salutation = removeArrIndex(salutation,i);
-                        idType = removeArrIndex(idType,i);
-                        designation = removeArrIndex(designation,i);
-                        professionType = removeArrIndex(professionType,i);
-                        specialty = removeArrIndex(specialty,i);
+                        assignSelect = removeArrIndex(assignSelect, i);
+                        salutation = removeArrIndex(salutation, i);
+                        idType = removeArrIndex(idType, i);
+                        designation = removeArrIndex(designation, i);
+                        professionType = removeArrIndex(professionType, i);
+                        specialty = removeArrIndex(specialty, i);
 
                         //change arr index
                         --i;
@@ -1560,36 +1606,35 @@ public class ClinicalLaboratoryDelegator {
                     }
                 }
             }
-            if(assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1")){
-                if(AppConsts.YES.equals(licPerson[i]) ){
-                    AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request,assignSelect[i]);
-                    appSvcCgoDto = MiscUtil.transferEntityDto(appSvcPrincipalOfficersDto,AppSvcCgoDto.class);
+            if (assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1") && editRenew) {
+                if (AppConsts.YES.equals(licPerson[i])) {
+                    AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
+                    appSvcCgoDto = MiscUtil.transferEntityDto(appSvcPrincipalOfficersDto, AppSvcCgoDto.class);
                     appSvcCgoDto.setAssignSelect(assignSelect[i]);
                     appSvcCgoDto.setLicPerson(true);
                     appSvcCgoDto.setSelectDropDown(true);
                     appSvcCgoDtoList.add(appSvcCgoDto);
                     //change arr
-                    cgoIndexNos = removeArrIndex(cgoIndexNos,i);
-                    isPartEdit = removeArrIndex(isPartEdit,i);
-                    licPerson = removeArrIndex(licPerson,i);
+                    cgoIndexNos = removeArrIndex(cgoIndexNos, i);
+                    isPartEdit = removeArrIndex(isPartEdit, i);
+                    licPerson = removeArrIndex(licPerson, i);
                     //dropdown cannot disabled
-                    salutation = removeArrIndex(salutation,i);
-                    idType = removeArrIndex(idType,i);
-                    designation = removeArrIndex(designation,i);
-                    professionType = removeArrIndex(professionType,i);
-                    specialty = removeArrIndex(specialty,i);
+                    salutation = removeArrIndex(salutation, i);
+                    idType = removeArrIndex(idType, i);
+                    designation = removeArrIndex(designation, i);
+                    professionType = removeArrIndex(professionType, i);
+                    specialty = removeArrIndex(specialty, i);
                     //change arr index
                     --i;
                     --size;
                     continue;
-                }else{
+                } else {
                     appSvcCgoDto.setSelectDropDown(true);
                 }
             }
-
-            if(StringUtil.isEmpty(cgoIndexNo)){
+            if (StringUtil.isEmpty(cgoIndexNo)) {
                 appSvcCgoDto.setCgoIndexNo(UUID.randomUUID().toString());
-            }else{
+            } else {
                 appSvcCgoDto.setCgoIndexNo(cgoIndexNos[i]);
             }
             appSvcCgoDto.setAssignSelect(assignSelect[i]);
@@ -1602,13 +1647,20 @@ public class ClinicalLaboratoryDelegator {
             appSvcCgoDto.setProfRegNo(professionRegoNo[i]);
             String specialtyStr = specialty[i];
             appSvcCgoDto.setSpeciality(specialtyStr);
-            if("other".equals(specialtyStr)){
+            if ("other".equals(specialtyStr)) {
                 appSvcCgoDto.setSpecialityOther(specialtyOther[i]);
             }
             //qualification(before)
             appSvcCgoDto.setSubSpeciality(qualification[i]);
             appSvcCgoDto.setMobileNo(mobileNo[i]);
             appSvcCgoDto.setEmailAddr(emailAddress[i]);
+            if (!IaisCommonUtils.isEmpty(oldAppSvcCgoDtoList) && i < oldAppSvcCgoDtoList.size()) {
+                AppSvcCgoDto oldAppSvcCgoDto = oldAppSvcCgoDtoList.get(i);
+                String idNo1 = oldAppSvcCgoDto.getIdNo();
+                if (appSvcCgoDto.getIdNo().equals(idNo1)) {
+                    appSvcCgoDto.setLicPerson(true);
+                }
+            }
             appSvcCgoDtoList.add(appSvcCgoDto);
         }
         ParamUtil.setSessionAttr(request, GOVERNANCEOFFICERSDTOLIST, (Serializable) appSvcCgoDtoList);
@@ -1619,40 +1671,69 @@ public class ClinicalLaboratoryDelegator {
     private List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDto(HttpServletRequest request, Boolean isGetDataFromPagePo, Boolean isGetDataFromPageDpo) {
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
         String deputySelect = ParamUtil.getString(request, "deputyPrincipalOfficer");
-        if(isGetDataFromPagePo){
-            String [] poLicPerson = ParamUtil.getStrings(request,"poLicPerson");
-            String [] assignSelect = ParamUtil.getStrings(request, "poSelect");
-            String [] salutation = ParamUtil.getStrings(request, "salutation");
-            String [] name = ParamUtil.getStrings(request, "name");
-            String [] idType = ParamUtil.getStrings(request, "idType");
-            String [] idNo = ParamUtil.getStrings(request, "idNo");
-            String [] designation = ParamUtil.getStrings(request, "designation");
-            String [] mobileNo = ParamUtil.getStrings(request, "mobileNo");
-            String [] officeTelNo = ParamUtil.getStrings(request, "officeTelNo");
-            String [] emailAddress = ParamUtil.getStrings(request, "emailAddress");
+        if (isGetDataFromPagePo) {
+            String[] poLicPerson = ParamUtil.getStrings(request, "poLicPerson");
+            String[] assignSelect = ParamUtil.getStrings(request, "poSelect");
+            String[] salutation = ParamUtil.getStrings(request, "salutation");
+            String[] name = ParamUtil.getStrings(request, "name");
+            String[] idType = ParamUtil.getStrings(request, "idType");
+            String[] idNo = ParamUtil.getStrings(request, "idNo");
+            String[] designation = ParamUtil.getStrings(request, "designation");
+            String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
+            String[] officeTelNo = ParamUtil.getStrings(request, "officeTelNo");
+            String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
             int length = assignSelect.length;
-            if(assignSelect!=null && length>0){
-                for(int i=0 ;i<length;i++){
+            List<String> licenceIDList = (List<String>) ParamUtil.getSessionAttr(request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR);
+            List<AppSubmissionDto> appSubmissionDtos;
+            List<AppSvcPrincipalOfficersDto> oldPoList = IaisCommonUtils.genNewArrayList();
+            boolean editRenew = Boolean.TRUE;
+            boolean isRenew = Boolean.TRUE;
+            if (!IaisCommonUtils.isEmpty(licenceIDList)) {
+                appSubmissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
+                oldPoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList().get(0).getAppSvcPrincipalOfficersDtoList();
+                String renew = appSubmissionDtos.get(0).getAppType();
+                if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(renew)) {
+                    isRenew = Boolean.FALSE;
+                }
+            }
+            if (assignSelect != null && length > 0) {
+                for (int i = 0; i < length; i++) {
                     AppSvcPrincipalOfficersDto poDto = new AppSvcPrincipalOfficersDto();
-                    if(assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1")){
-                        if(AppConsts.YES.equals(poLicPerson[i]) ){
-                            poDto = NewApplicationHelper.getPsnInfoFromLic(request,assignSelect[i]);
+                    AppSvcPrincipalOfficersDto oldPoDto = null;
+                    if (i < oldPoList.size()) {
+                        oldPoDto = oldPoList.get(i);
+                        if (name != null && idType != null && idNo != null && designation != null && mobileNo != null && officeTelNo != null && emailAddress != null) {
+                            poDto.setName(name[i]);
+                            poDto.setIdType(idType[i]);
+                            poDto.setIdNo(idNo[i]);
+                            poDto.setOfficeTelNo(officeTelNo[i]);
+                            poDto.setDesignation(designation[i]);
+                            poDto.setMobileNo(mobileNo[i]);
+                            poDto.setEmailAddr(emailAddress[i]);
+                            if (!oldPoDto.equals(poDto) && !isRenew) {
+                                editRenew = Boolean.FALSE;
+                            }
+                        }
+                    }
+                    if (assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1") && editRenew) {
+                        if (AppConsts.YES.equals(poLicPerson[i])) {
+                            poDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
                             poDto.setAssignSelect(assignSelect[i]);
                             poDto.setLicPerson(true);
                             poDto.setSelectDropDown(true);
                             poDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
                             appSvcPrincipalOfficersDtos.add(poDto);
                             //change arr
-                            poLicPerson = removeArrIndex(poLicPerson,i);
+                            poLicPerson = removeArrIndex(poLicPerson, i);
                             //dropdown cannot disabled
-                            salutation = removeArrIndex(salutation,i);
-                            idType = removeArrIndex(idType,i);
-                            designation = removeArrIndex(designation,i);
+                            salutation = removeArrIndex(salutation, i);
+                            idType = removeArrIndex(idType, i);
+                            designation = removeArrIndex(designation, i);
                             //change arr index
                             --i;
                             --length;
                             continue;
-                        }else{
+                        } else {
                             poDto.setSelectDropDown(true);
                         }
                     }
@@ -1666,45 +1747,51 @@ public class ClinicalLaboratoryDelegator {
                     poDto.setDesignation(designation[i]);
                     poDto.setMobileNo(mobileNo[i]);
                     poDto.setEmailAddr(emailAddress[i]);
+                    if (oldPoDto != null) {
+                        String idNo1 = oldPoDto.getIdNo();
+                        String idNo2 = poDto.getIdNo();
+                        if (idNo2.equals(idNo1)) {
+                            poDto.setLicPerson(true);
+                        }
+                    }
                     appSvcPrincipalOfficersDtos.add(poDto);
                 }
             }
         }
-
         //depo
-        if("1".equals(deputySelect) && isGetDataFromPageDpo){
-            String [] dpoLicPerson = ParamUtil.getStrings(request,"dpoLicPerson");
-            String [] assignSelect = ParamUtil.getStrings(request, "deputyPoSelect");
-            String [] deputySalutation = ParamUtil.getStrings(request, "deputySalutation");
-            String [] deputyDesignation = ParamUtil.getStrings(request, "deputyDesignation");
-            String [] deputyName = ParamUtil.getStrings(request, "deputyName");
-            String [] deputyIdType = ParamUtil.getStrings(request, "deputyIdType");
-            String [] deputyIdNo = ParamUtil.getStrings(request, "deputyIdNo");
-            String [] deputyMobileNo = ParamUtil.getStrings(request, "deputyMobileNo");
-            String [] deputyOfficeTelNo = ParamUtil.getStrings(request, "deputyOfficeTelNo");
-            String [] deputyEmailAddr = ParamUtil.getStrings(request, "deputyEmailAddr");
-            if(assignSelect != null && assignSelect.length>0){
-                for(int i=0 ;i <assignSelect.length;i++){
+        if ("1".equals(deputySelect) && isGetDataFromPageDpo) {
+            String[] dpoLicPerson = ParamUtil.getStrings(request, "dpoLicPerson");
+            String[] assignSelect = ParamUtil.getStrings(request, "deputyPoSelect");
+            String[] deputySalutation = ParamUtil.getStrings(request, "deputySalutation");
+            String[] deputyDesignation = ParamUtil.getStrings(request, "deputyDesignation");
+            String[] deputyName = ParamUtil.getStrings(request, "deputyName");
+            String[] deputyIdType = ParamUtil.getStrings(request, "deputyIdType");
+            String[] deputyIdNo = ParamUtil.getStrings(request, "deputyIdNo");
+            String[] deputyMobileNo = ParamUtil.getStrings(request, "deputyMobileNo");
+            String[] deputyOfficeTelNo = ParamUtil.getStrings(request, "deputyOfficeTelNo");
+            String[] deputyEmailAddr = ParamUtil.getStrings(request, "deputyEmailAddr");
+            if (assignSelect != null && assignSelect.length > 0) {
+                for (int i = 0; i < assignSelect.length; i++) {
                     AppSvcPrincipalOfficersDto dpoDto = new AppSvcPrincipalOfficersDto();
-                    if(assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1")){
-                        if(AppConsts.YES.equals(dpoLicPerson[i]) ){
-                            dpoDto = NewApplicationHelper.getPsnInfoFromLic(request,assignSelect[i]);
+                    if (assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1")) {
+                        if (AppConsts.YES.equals(dpoLicPerson[i])) {
+                            dpoDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
                             dpoDto.setAssignSelect(assignSelect[i]);
                             dpoDto.setLicPerson(true);
                             dpoDto.setSelectDropDown(true);
                             dpoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
                             appSvcPrincipalOfficersDtos.add(dpoDto);
                             //change arr
-                            dpoLicPerson = removeArrIndex(dpoLicPerson,i);
+                            dpoLicPerson = removeArrIndex(dpoLicPerson, i);
                             //dropdown cannot disabled
-                            assignSelect = removeArrIndex(assignSelect,i);
-                            deputySalutation = removeArrIndex(deputySalutation,i);
-                            deputyIdType = removeArrIndex(deputyIdType,i);
-                            deputyDesignation = removeArrIndex(deputyDesignation,i);
+                            assignSelect = removeArrIndex(assignSelect, i);
+                            deputySalutation = removeArrIndex(deputySalutation, i);
+                            deputyIdType = removeArrIndex(deputyIdType, i);
+                            deputyDesignation = removeArrIndex(deputyDesignation, i);
                             //change arr index
                             --i;
                             continue;
-                        }else{
+                        } else {
                             dpoDto.setSelectDropDown(true);
                         }
                     }
@@ -1722,8 +1809,7 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
         }
-
-        return  appSvcPrincipalOfficersDtos;
+        return appSvcPrincipalOfficersDtos;
     }
 
 
@@ -2054,39 +2140,77 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcMedAlertPerson(HttpServletRequest request) {
-        String [] licPerson = ParamUtil.getStrings(request,"licPerson");
-        String [] assignSelect = ParamUtil.getStrings(request, "assignSel");
-        String [] salutation = ParamUtil.getStrings(request, "salutation");
-        String [] name = ParamUtil.getStrings(request, "name");
-        String [] idType = ParamUtil.getStrings(request, "idType");
-        String [] idNo = ParamUtil.getStrings(request, "idNo");
-        String [] mobileNo = ParamUtil.getStrings(request, "mobileNo");
-        String [] emailAddress = ParamUtil.getStrings(request, "emailAddress");
+        String[] licPerson = ParamUtil.getStrings(request, "licPerson");
+        String[] assignSelect = ParamUtil.getStrings(request, "assignSel");
+        String[] salutation = ParamUtil.getStrings(request, "salutation");
+        String[] name = ParamUtil.getStrings(request, "name");
+        String[] idType = ParamUtil.getStrings(request, "idType");
+        String[] idNo = ParamUtil.getStrings(request, "idNo");
+        String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
+        String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
         int length = assignSelect.length;
+        List<String> licenceIDList = (List<String>) ParamUtil.getSessionAttr(request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR);
+        List<AppSubmissionDto> appSubmissionDtos;
+        List<AppSvcPrincipalOfficersDto> oldMatList = IaisCommonUtils.genNewArrayList();
+        boolean editRenew = Boolean.TRUE;
+        boolean isRenew = Boolean.TRUE;
+        if (!IaisCommonUtils.isEmpty(licenceIDList)) {
+            appSubmissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
+            oldMatList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList().get(0).getAppSvcMedAlertPersonList();
+            String renew = appSubmissionDtos.get(0).getAppType();
+            if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(renew)) {
+                isRenew = Boolean.FALSE;
+            }
+        }
         List<AppSvcPrincipalOfficersDto> medAlertPersons = IaisCommonUtils.genNewArrayList();
-        for(int i=0; i<length; i++){
+        for (int i = 0; i < length; i++) {
             AppSvcPrincipalOfficersDto medAlertPerson = new AppSvcPrincipalOfficersDto();
-            if(assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1")){
-                if(AppConsts.YES.equals(licPerson[i]) ){
-                    medAlertPerson = NewApplicationHelper.getPsnInfoFromLic(request,assignSelect[i]);
+            AppSvcPrincipalOfficersDto oldMat = null;
+            if (i < oldMatList.size()) {
+                if (name != null && idType != null && idNo != null && assignSelect != null && mobileNo != null && salutation != null && emailAddress != null) {
+                    String[] preferredModes = ParamUtil.getStrings(request, "preferredMode" + i);
+                    oldMat = oldMatList.get(i);
+                    medAlertPerson.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
+                    medAlertPerson.setAssignSelect(assignSelect[i]);
+                    medAlertPerson.setSalutation(salutation[i]);
+                    medAlertPerson.setName(name[i]);
+                    medAlertPerson.setIdType(idType[i]);
+                    medAlertPerson.setIdNo(idNo[i]);
+                    medAlertPerson.setMobileNo(mobileNo[i]);
+                    medAlertPerson.setEmailAddr(emailAddress[i]);
+                    if (preferredModes != null) {
+                        if (preferredModes.length == 2) {
+                            medAlertPerson.setPreferredMode("3");
+                        } else {
+                            medAlertPerson.setPreferredMode(preferredModes[0]);
+                        }
+                    }
+                    if (!oldMat.equals(medAlertPerson) && !isRenew) {
+                        editRenew = Boolean.FALSE;
+                    }
+                }
+            }
+            if (assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1") && editRenew) {
+                if (AppConsts.YES.equals(licPerson[i])) {
+                    medAlertPerson = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
                     medAlertPerson.setAssignSelect(assignSelect[i]);
                     medAlertPerson.setLicPerson(true);
                     medAlertPerson.setSelectDropDown(true);
                     medAlertPersons.add(medAlertPerson);
                     //change arr
-                    licPerson = removeArrIndex(licPerson,i);
+                    licPerson = removeArrIndex(licPerson, i);
                     //dropdown cannot disabled
-                    salutation = removeArrIndex(salutation,i);
-                    idType = removeArrIndex(idType,i);
+                    salutation = removeArrIndex(salutation, i);
+                    idType = removeArrIndex(idType, i);
                     //change arr index
                     --i;
                     --length;
                     continue;
-                }else{
+                } else {
                     medAlertPerson.setSelectDropDown(true);
                 }
             }
-            String [] preferredModes = ParamUtil.getStrings(request,"preferredMode"+i);
+            String[] preferredModes = ParamUtil.getStrings(request, "preferredMode" + i);
             medAlertPerson.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
             medAlertPerson.setAssignSelect(assignSelect[i]);
             medAlertPerson.setSalutation(salutation[i]);
@@ -2095,11 +2219,16 @@ public class ClinicalLaboratoryDelegator {
             medAlertPerson.setIdNo(idNo[i]);
             medAlertPerson.setMobileNo(mobileNo[i]);
             medAlertPerson.setEmailAddr(emailAddress[i]);
-            if(preferredModes != null){
-                if(preferredModes.length == 2){
+            if (preferredModes != null) {
+                if (preferredModes.length == 2) {
                     medAlertPerson.setPreferredMode("3");
-                }else{
+                } else {
                     medAlertPerson.setPreferredMode(preferredModes[0]);
+                }
+            }
+            if (oldMat != null) {
+                if (medAlertPerson.getIdNo().equals(oldMat.getIdNo())) {
+                    medAlertPerson.setLicPerson(true);
                 }
             }
             medAlertPersons.add(medAlertPerson);
