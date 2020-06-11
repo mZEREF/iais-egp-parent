@@ -32,6 +32,7 @@ public interface LicenceService {
     PremisesDto getLatestVersionPremisesByHciCode(String hciCode);
     KeyPersonnelDto getLatestVersionKeyPersonnelByIdNoAndOrgId(String idNo,String orgId);
     LicenceDto getLicenceDto(String licenceId);
+    LicenceDto getCeasedGroupLicDto(String licenceId);
     LicenceDto getLicenceDtoByLicNo(String licNo);
 
     List<LicenceGroupDto> createSuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos);
