@@ -419,7 +419,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return   applicationClient.isLiscenceAppealOrCessation(licenceId).getEntity();
     }
     @Override
-    public  Map<String, String> doValidatePremiss( AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, Object masterCodeDto, boolean rfi ) {
+    public  Map<String, String> doValidatePremiss( AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, String masterCodeDto, boolean rfi ) {
         log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate one premiss
         List<String> list=IaisCommonUtils.genNewArrayList();
@@ -610,9 +610,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         } {
 
                             if(masterCodeDto!=null){
-                                MasterCodeDto masterCode=(MasterCodeDto)masterCodeDto;
-                                String codeValue = masterCode.getCodeValue();
-                                String[] s = codeValue.split(" ");
+                                String[] s = masterCodeDto.split(" ");
                                 for(int index=0;index<s.length;index++){
                                     if(hciName.toUpperCase().contains(s[index].toUpperCase())){
                                         errorMap.put("hciName"+i,"CHKLMD001_ERR002");

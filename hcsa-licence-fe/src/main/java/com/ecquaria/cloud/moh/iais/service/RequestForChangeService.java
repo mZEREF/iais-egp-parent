@@ -85,6 +85,6 @@ public interface RequestForChangeService {
 
     Boolean isOtherOperation(String licenceId);
     // need delete
-     Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, Object masterCodeDto ,boolean isRfi);
+     Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, String  masterCodeDto ,boolean isRfi);
 
     }

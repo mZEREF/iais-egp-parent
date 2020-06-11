@@ -596,7 +596,7 @@ public class NewApplicationDelegator {
         String crud_action_value = ParamUtil.getString(bpc.request, "crud_action_value");
         String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
         if(!"saveDraft".equals(crud_action_value)){
-            MasterCodeDto masterCodeDto = systemAdminClient.getMasterCodeById("B5E4744C-F96F-EA11-BE79-000C298A32C2").getEntity();
+            String keywords = MasterCodeUtil.getCodeDesc("MS001");
 
             Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
             List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -616,7 +616,7 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request,NewApplicationConstant.PREMISES_HCI_LIST, (Serializable) premisesHciList);
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
 
-            Map<String, String> errorMap= requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,masterCodeDto,isRfi);
+            Map<String, String> errorMap= requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,keywords,isRfi);
             String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
             String crud_action_type = bpc.request.getParameter("crud_action_type");
             if("continue".equals(crud_action_type_continue)){
@@ -2761,9 +2761,9 @@ public class NewApplicationDelegator {
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
         HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
         List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(bpc.request,NewApplicationConstant.PREMISES_HCI_LIST);
-        MasterCodeDto masterCodeDto = systemAdminClient.getMasterCodeById("B5E4744C-F96F-EA11-BE79-000C298A32C2").getEntity();
+        String keyWord = MasterCodeUtil.getCodeDesc("MS001");
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
-        Map<String, String> premissMap = requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,masterCodeDto,isRfi);
+        Map<String, String> premissMap = requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,keyWord,isRfi);
         premissMap.remove("hciNameUsed");
         if(!premissMap.isEmpty()){
             previewAndSubmitMap.put("premiss","UC_CHKLMD001_ERR001");
