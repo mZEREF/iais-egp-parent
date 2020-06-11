@@ -297,6 +297,7 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request,"txnRefNo",null);
 
         log.info("**** the non auto renwal  end ******");
+        ParamUtil.setSessionAttr(bpc.request,"isRenew","Y");
     }
 
     /**
