@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -27,8 +26,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -44,14 +41,11 @@ import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SendEmailClient;
-import com.ecquaria.sz.commons.util.MsgUtil;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -190,6 +184,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                     inspectionDateMap.put(appPremisesInspecApptDto.getId(), startDate);
                     SelectOption so = new SelectOption(appPremisesInspecApptDto.getId(), dateStr);
                     inspectionDate.add(so);
+                    break;
                 }
             }
         }
@@ -208,12 +203,24 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         //Exclude a selected date
         List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
+        String apptRefNo = "";
         for(AppPremisesInspecApptDto apptDto : apptFeConfirmDateDto.getAppPremisesInspecApptDtoList()){
-            if(!(apptDto.getId().equals(checkDate))){
+            if(apptDto.getId().equals(checkDate)){
+                apptRefNo = apptDto.getApptRefNo();
+            }
+        }
+        for(AppPremisesInspecApptDto apptDto : apptFeConfirmDateDto.getAppPremisesInspecApptDtoList()){
+            if(!(apptDto.getApptRefNo().equals(apptRefNo))){
                 appPremisesInspecApptDtoList.add(apptDto);
                 cancelRefNo.add(apptDto.getApptRefNo());
             }
         }
+        //if get new 3 Appt Date need remove
+        Map<String, String> refNoMap = apptFeConfirmDateDto.getRefNoMap();
+        cancelRefNo = removeNewApptDate(refNoMap, cancelRefNo);
+        //filter
+        Set<String> cancelRefNoSet = new HashSet<>(cancelRefNo);
+        cancelRefNo = new ArrayList<>(cancelRefNoSet);
         apptFeConfirmDateDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
         //update appt
         setApptUpdateList(apptFeConfirmDateDto, apptInspectionDateDto);
@@ -252,6 +259,15 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
         apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
         ccCalendarStatusEic(apptCalendarStatusDto);
+    }
+
+    private List<String> removeNewApptDate(Map<String, String> refNoMap, List<String> cancelRefNo) {
+        if(refNoMap != null){
+            for(Map.Entry<String, String> map : refNoMap.entrySet()){
+                cancelRefNo.add(map.getValue());
+            }
+        }
+        return cancelRefNo;
     }
 
     private void ccCalendarStatusEic(ApptCalendarStatusDto apptCalendarStatusDto) {
@@ -350,14 +366,36 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     private List<AppointmentUserDto> getUserCalendarDtosByMap(Map<String, List<ApptUserCalendarDto>> apptInspDateMap) {
         List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
         for(Map.Entry<String, List<ApptUserCalendarDto>> map : apptInspDateMap.entrySet()){
-            AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
             List<ApptUserCalendarDto> apptUserCalendarDtos = map.getValue();
-            appointmentUserDto.setWorkHours(apptUserCalendarDtos.size());
-            appointmentUserDto.setWorkGrpName(apptUserCalendarDtos.get(0).getGroupName());
-            appointmentUserDto.setLoginUserId(apptUserCalendarDtos.get(0).getLoginUserId());
-            appointmentUserDtos.add(appointmentUserDto);
+            for(ApptUserCalendarDto apptUserCalendarDto : apptUserCalendarDtos) {
+                AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
+                appointmentUserDto.setWorkHours(apptUserCalendarDto.getStartSlot().size());
+                appointmentUserDto.setWorkGrpName(apptUserCalendarDto.getGroupName());
+                appointmentUserDto.setLoginUserId(apptUserCalendarDto.getLoginUserId());
+                appointmentUserDtos.add(appointmentUserDto);
+            }
         }
+        //filter same appointmentUserDtos
+        appointmentUserDtos = filterApptUsers(appointmentUserDtos);
         return appointmentUserDtos;
+    }
+
+    private List<AppointmentUserDto> filterApptUsers(List<AppointmentUserDto> appointmentUserDtos) {
+        List<AppointmentUserDto> appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
+        List<String> loginUserIds = null;
+        for(AppointmentUserDto appointmentUserDto : appointmentUserDtos){
+            if(IaisCommonUtils.isEmpty(loginUserIds)){
+                loginUserIds = IaisCommonUtils.genNewArrayList();
+                appointmentUserDtoList.add(appointmentUserDto);
+                loginUserIds.add(appointmentUserDto.getLoginUserId());
+            } else {
+                if(!loginUserIds.contains(appointmentUserDto.getLoginUserId())){
+                    appointmentUserDtoList.add(appointmentUserDto);
+                    loginUserIds.add(appointmentUserDto.getLoginUserId());
+                }
+            }
+        }
+        return appointmentUserDtoList;
     }
 
     @Override
@@ -391,6 +429,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 cancelRefNo.add(apptRefNo);
             }
         }
+        //filter
+        Set<String> cancelRefNoSet = new HashSet<>(cancelRefNo);
+        cancelRefNo = new ArrayList<>(cancelRefNoSet);
 
         setApptUpdateList(apptFeConfirmDateDto, apptInspectionDateDto);
         setApptCreateList(apptFeConfirmDateDto, apptInspectionDateDto, null);
@@ -458,30 +499,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         appEicClient.updateStatus(eicRequestTrackingDtos);
 
         createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
-        EmailDto emailDto = getApptInspEmailDto(apptFeConfirmDateDto.getAppPremCorrId());
-        apptFeConfirmDateDto.setEmailDto(emailDto);
-        //todo
-        //send email
-
-    }
-
-    private EmailDto getApptInspEmailDto(String appPremCorrId) {
-        MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_REMIND_NC_RECTIFICATION);
-        EmailDto emailDto = new EmailDto();
-        if(msgTemplateDto != null) {
-            String mesContext;
-            try {
-                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), null);
-            } catch (IOException | TemplateException e) {
-                log.error(e.getMessage(), e);
-                throw new IaisRuntimeException(e);
-            }
-            emailDto.setContent(mesContext);
-            emailDto.setSubject(msgTemplateDto.getTemplateName());
-            emailDto.setSender(mailSender);
-            emailDto.setClientQueryCode(appPremCorrId);
-        }
-        return emailDto;
     }
 
     private void setCreateInspectionStatus(ApptInspectionDateDto apptInspectionDateDto, String status) {
@@ -619,6 +636,13 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 cancelRefNo.add(appPremisesInspecApptDto.getApptRefNo());
             }
         }
+        //if get new 3 Appt Date need remove
+        Map<String, String> refNoMap = apptFeConfirmDateDto.getRefNoMap();
+        cancelRefNo = removeNewApptDate(refNoMap, cancelRefNo);
+        //filter
+        Set<String> cancelRefNoSet = new HashSet<>(cancelRefNo);
+        cancelRefNo = new ArrayList<>(cancelRefNoSet);
+
         setApptUpdateList(apptFeConfirmDateDto, apptInspectionDateDto);
         setApptCreateList(apptFeConfirmDateDto, apptInspectionDateDto, InspectionConstants.SWITCH_ACTION_REJECT);
         setUpdateApplicationDto(apptFeConfirmDateDto, apptInspectionDateDto, ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING);
