@@ -985,7 +985,11 @@ public class NewApplicationDelegator {
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
                 //send email
-               sendNewApplicationPaymentOnlineSuccesedEmail(appSubmissionDto,pmtMethod,pmtRefNo);
+                try{
+                    sendNewApplicationPaymentOnlineSuccesedEmail(appSubmissionDto,pmtMethod,pmtRefNo);
+                }catch(Exception e){
+                    log.error(StringUtil.changeForLog("send email error ...."));
+                }
             }
         }
 
@@ -1913,7 +1917,11 @@ public class NewApplicationDelegator {
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)){
             //send email
-            inspectionDateSendNewApplicationPaymentOnlineEmail(appSubmissionDto,bpc);
+            try {
+                inspectionDateSendNewApplicationPaymentOnlineEmail(appSubmissionDto,bpc);
+            }catch (Exception e){
+                log.error(StringUtil.changeForLog("send email error ...."));
+            }
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/payment-web/eservice/INTERNET/PaymentRequest")
@@ -1925,7 +1933,11 @@ public class NewApplicationDelegator {
             return;
         }else if(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
             //send email
-            sendNewApplicationPaymentGIROEmail(appSubmissionDto,bpc);
+            try {
+                sendNewApplicationPaymentGIROEmail(appSubmissionDto,bpc);
+            }catch (Exception e){
+                log.error(StringUtil.changeForLog("send email error ...."));
+            }
             String appGrpId = appSubmissionDto.getAppGrpId();
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
