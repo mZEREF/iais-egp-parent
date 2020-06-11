@@ -317,10 +317,10 @@ public class HcsaApplicationDelegator {
                     insRepService.updateRecommendation(clearRecommendationDto);
                 }
                 //PSO route back to ASO,ASO clear recommendation or licence start date
-               /* if(ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK.equals(status) && RoleConsts.USER_ROLE_ASO.equals(roleId) && ApplicationConsts.PROCESSING_DECISION_REPLY.equals(nextStageReplys)){
+                if(ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK.equals(status) && RoleConsts.USER_ROLE_ASO.equals(roleId) && ApplicationConsts.PROCESSING_DECISION_REPLY.equals(nextStageReplys)){
                     AppPremisesRecommendationDto clearRecommendationDto = getClearRecommendationDto(appPremCorreId, dateStr, dateTimeShow);
                     insRepService.updateRecommendation(clearRecommendationDto);
-                }*/
+                }
                 //ASO route to PSO
                 if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(status) && RoleConsts.USER_ROLE_ASO.equals(roleId) && ApplicationConsts.PROCESSING_DECISION_VERIFIED.equals(approveSelect)){
                     AppPremisesRecommendationDto clearRecommendationDto = getClearRecommendationDto(appPremCorreId, dateStr, dateTimeShow);
@@ -2118,12 +2118,12 @@ public class HcsaApplicationDelegator {
     }
 
     public void setReplyProcessingDecisionDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
-        /*List<SelectOption> nextStageReplyList = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> nextStageReplyList = IaisCommonUtils.genNewArrayList();
         if(!ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
             nextStageReplyList.add(new SelectOption("", "Please Select"));
         }
         nextStageReplyList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REPLY, "Give Clarification"));
-        ParamUtil.setSessionAttr(request, "nextStageReply", (Serializable)nextStageReplyList);*/
+        ParamUtil.setSessionAttr(request, "nextStageReply", (Serializable)nextStageReplyList);
     }
 
     public void setDmsProcessingDecisionDropdownValue(HttpServletRequest request){
