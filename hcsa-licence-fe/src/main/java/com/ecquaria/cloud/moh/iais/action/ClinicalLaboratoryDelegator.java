@@ -1654,7 +1654,7 @@ public class ClinicalLaboratoryDelegator {
             appSvcCgoDto.setSubSpeciality(qualification[i]);
             appSvcCgoDto.setMobileNo(mobileNo[i]);
             appSvcCgoDto.setEmailAddr(emailAddress[i]);
-            if (IaisCommonUtils.isEmpty(oldAppSvcCgoDtoList) && i < oldAppSvcCgoDtoList.size()) {
+            if (!IaisCommonUtils.isEmpty(oldAppSvcCgoDtoList) && i < oldAppSvcCgoDtoList.size()) {
                 AppSvcCgoDto oldAppSvcCgoDto = oldAppSvcCgoDtoList.get(i);
                 String idNo1 = oldAppSvcCgoDto.getIdNo();
                 if (appSvcCgoDto.getIdNo().equals(idNo1)) {
@@ -1699,7 +1699,7 @@ public class ClinicalLaboratoryDelegator {
             if (assignSelect != null && length > 0) {
                 for (int i = 0; i < length; i++) {
                     AppSvcPrincipalOfficersDto poDto = new AppSvcPrincipalOfficersDto();
-                    AppSvcPrincipalOfficersDto oldPoDto = new AppSvcPrincipalOfficersDto();
+                    AppSvcPrincipalOfficersDto oldPoDto = null;
                     if (i < oldPoList.size()) {
                         oldPoDto = oldPoList.get(i);
                         if (name != null && idType != null && idNo != null && designation != null && mobileNo != null && officeTelNo != null && emailAddress != null) {
@@ -1754,7 +1754,6 @@ public class ClinicalLaboratoryDelegator {
                             poDto.setLicPerson(true);
                         }
                     }
-
                     appSvcPrincipalOfficersDtos.add(poDto);
                 }
             }
@@ -1869,16 +1868,13 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private void doValidateSvcDocument(HttpServletRequest request, Map<String, String> errorMap) {
-
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute("AppSubmissionDto");
-
         if (appSubmissionDto != null) {
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if (appSvcRelatedInfoDtoList != null) {
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
                     List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
                     if (appSvcDocDtoLit != null) {
-
                         for (int i = 0; i < appSvcDocDtoLit.size(); i++) {
                             Integer docSize = appSvcDocDtoLit.get(i).getDocSize();
                             String docName = appSvcDocDtoLit.get(i).getDocName();
@@ -1886,7 +1882,6 @@ public class ClinicalLaboratoryDelegator {
                             if (docSize > 4 * 1024 * 1024) {
                                 errorMap.put(id + "selectedFile", "UC_CHKLMD001_ERR007");
                             }
-
                             Boolean flag = Boolean.FALSE;
                             String substring = docName.substring(docName.lastIndexOf('.') + 1);
                             FileType[] fileType = FileType.values();
@@ -1895,7 +1890,6 @@ public class ClinicalLaboratoryDelegator {
                                     flag = Boolean.TRUE;
                                 }
                             }
-
                             if (!flag) {
                                 errorMap.put(id + "selectedFile", "Wrong file type");
                             }
