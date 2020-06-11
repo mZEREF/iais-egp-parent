@@ -1271,7 +1271,7 @@ public class HcsaApplicationDelegator {
                 String count = String.valueOf(riskResultDto.getTimeCount());
                 //String recommTime = count + " " + codeDesc;
                 recommendationSelectOption.add(new SelectOption(count + " " + dateType, riskResultDto.getLictureText()));
-                if(riskResultDto.getDafLicture()){
+                if(riskResultDto.isDafLicture()){
                     //recommendationStr
                     ParamUtil.setRequestAttr(request,"recommendationStr",count + " " + dateType);
                 }
