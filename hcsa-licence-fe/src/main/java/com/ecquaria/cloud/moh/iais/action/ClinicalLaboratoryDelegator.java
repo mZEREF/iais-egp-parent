@@ -1517,7 +1517,6 @@ public class ClinicalLaboratoryDelegator {
         if (needEdit) {
             size = cgoIndexNos.length;
         }
-        boolean editRenew = Boolean.TRUE;
         String[] licPerson = ParamUtil.getStrings(request, "licPerson");
         String[] isPartEdit = ParamUtil.getStrings(request, "isPartEdit");
         String[] salutation = ParamUtil.getStrings(request, "salutation");
@@ -1535,12 +1534,13 @@ public class ClinicalLaboratoryDelegator {
         List<String> licenceIDList = (List<String>) ParamUtil.getSessionAttr(request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR);
         List<AppSubmissionDto> appSubmissionDtos;
         List<AppSvcCgoDto> oldAppSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
-        Boolean isRenew = Boolean.TRUE;
-        if(!IaisCommonUtils.isEmpty(licenceIDList)){
+        boolean editRenew = Boolean.TRUE;
+        boolean isRenew = Boolean.TRUE;
+        if (!IaisCommonUtils.isEmpty(licenceIDList)) {
             appSubmissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
             oldAppSvcCgoDtoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList().get(0).getAppSvcCgoDtoList();
-            String isRenewS = (String)ParamUtil.getSessionAttr(request, "isRenew");
-            if(!StringUtil.isEmpty(isRenewS)){
+            String isRenewS = (String) ParamUtil.getSessionAttr(request, "isRenew");
+            if (!StringUtil.isEmpty(isRenewS)) {
                 isRenew = Boolean.FALSE;
             }
         }
@@ -1572,7 +1572,7 @@ public class ClinicalLaboratoryDelegator {
                     newAppSvcCgoDto.setSubSpeciality(qualification[i]);
                     newAppSvcCgoDto.setMobileNo(mobileNo[i]);
                     newAppSvcCgoDto.setEmailAddr(emailAddress[i]);
-                    if (!oldAppSvcCgoDto.equals(newAppSvcCgoDto)&&!isRenew) {
+                    if (!oldAppSvcCgoDto.equals(newAppSvcCgoDto) && !isRenew) {
                         editRenew = Boolean.FALSE;
                     }
                 }
@@ -1654,10 +1654,12 @@ public class ClinicalLaboratoryDelegator {
             appSvcCgoDto.setSubSpeciality(qualification[i]);
             appSvcCgoDto.setMobileNo(mobileNo[i]);
             appSvcCgoDto.setEmailAddr(emailAddress[i]);
-            AppSvcCgoDto oldAppSvcCgoDto = oldAppSvcCgoDtoList.get(i);
-            String idNo1 = oldAppSvcCgoDto.getIdNo();
-            if (idNo1.equals(appSvcCgoDto.getIdNo())) {
-                appSvcCgoDto.setLicPerson(true);
+            if (IaisCommonUtils.isEmpty(oldAppSvcCgoDtoList) && i < oldAppSvcCgoDtoList.size()) {
+                AppSvcCgoDto oldAppSvcCgoDto = oldAppSvcCgoDtoList.get(i);
+                String idNo1 = oldAppSvcCgoDto.getIdNo();
+                if (appSvcCgoDto.getIdNo().equals(idNo1)) {
+                    appSvcCgoDto.setLicPerson(true);
+                }
             }
             appSvcCgoDtoList.add(appSvcCgoDto);
         }
@@ -1681,16 +1683,16 @@ public class ClinicalLaboratoryDelegator {
             String[] officeTelNo = ParamUtil.getStrings(request, "officeTelNo");
             String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
             int length = assignSelect.length;
-            boolean editRenew = Boolean.TRUE;
-            boolean isRenew = Boolean.TRUE;
             List<String> licenceIDList = (List<String>) ParamUtil.getSessionAttr(request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR);
             List<AppSubmissionDto> appSubmissionDtos;
             List<AppSvcPrincipalOfficersDto> oldPoList = IaisCommonUtils.genNewArrayList();
+            boolean editRenew = Boolean.TRUE;
+            boolean isRenew = Boolean.TRUE;
             if (!IaisCommonUtils.isEmpty(licenceIDList)) {
                 appSubmissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
                 oldPoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList().get(0).getAppSvcPrincipalOfficersDtoList();
-                String isRenewS = (String)ParamUtil.getSessionAttr(request, "isRenew");
-                if(!StringUtil.isEmpty(isRenewS)){
+                String isRenewS = (String) ParamUtil.getSessionAttr(request, "isRenew");
+                if (!StringUtil.isEmpty(isRenewS)) {
                     isRenew = Boolean.FALSE;
                 }
             }
@@ -1708,7 +1710,7 @@ public class ClinicalLaboratoryDelegator {
                             poDto.setDesignation(designation[i]);
                             poDto.setMobileNo(mobileNo[i]);
                             poDto.setEmailAddr(emailAddress[i]);
-                            if (!oldPoDto.equals(poDto)&&!isRenew) {
+                            if (!oldPoDto.equals(poDto) && !isRenew) {
                                 editRenew = Boolean.FALSE;
                             }
                         }
@@ -1745,11 +1747,14 @@ public class ClinicalLaboratoryDelegator {
                     poDto.setDesignation(designation[i]);
                     poDto.setMobileNo(mobileNo[i]);
                     poDto.setEmailAddr(emailAddress[i]);
-                    String idNo1 = oldPoDto.getIdNo();
-                    String idNo2 = poDto.getIdNo();
-                    if (idNo1.equals(idNo2)) {
-                        poDto.setLicPerson(true);
+                    if (oldPoDto != null) {
+                        String idNo1 = oldPoDto.getIdNo();
+                        String idNo2 = poDto.getIdNo();
+                        if (idNo2.equals(idNo1)) {
+                            poDto.setLicPerson(true);
+                        }
                     }
+
                     appSvcPrincipalOfficersDtos.add(poDto);
                 }
             }
@@ -2150,23 +2155,23 @@ public class ClinicalLaboratoryDelegator {
         String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
         int length = assignSelect.length;
-        boolean editRenew = Boolean.TRUE;
-        boolean isRenew = Boolean.TRUE;
         List<String> licenceIDList = (List<String>) ParamUtil.getSessionAttr(request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR);
         List<AppSubmissionDto> appSubmissionDtos;
         List<AppSvcPrincipalOfficersDto> oldMatList = IaisCommonUtils.genNewArrayList();
-       if(!IaisCommonUtils.isEmpty(licenceIDList)){
-           appSubmissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
-           oldMatList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList().get(0).getAppSvcMedAlertPersonList();
-           String isRenewS = (String)ParamUtil.getSessionAttr(request, "isRenew");
-           if(!StringUtil.isEmpty(isRenewS)){
-               isRenew = Boolean.FALSE;
-           }
-       }
+        boolean editRenew = Boolean.TRUE;
+        boolean isRenew = Boolean.TRUE;
+        if (!IaisCommonUtils.isEmpty(licenceIDList)) {
+            appSubmissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
+            oldMatList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList().get(0).getAppSvcMedAlertPersonList();
+            String isRenewS = (String) ParamUtil.getSessionAttr(request, "isRenew");
+            if (!StringUtil.isEmpty(isRenewS)) {
+                isRenew = Boolean.FALSE;
+            }
+        }
         List<AppSvcPrincipalOfficersDto> medAlertPersons = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < length; i++) {
             AppSvcPrincipalOfficersDto medAlertPerson = new AppSvcPrincipalOfficersDto();
-            AppSvcPrincipalOfficersDto oldMat = new AppSvcPrincipalOfficersDto();
+            AppSvcPrincipalOfficersDto oldMat = null;
             if (i < oldMatList.size()) {
                 if (name != null && idType != null && idNo != null && assignSelect != null && mobileNo != null && salutation != null && emailAddress != null) {
                     String[] preferredModes = ParamUtil.getStrings(request, "preferredMode" + i);
@@ -2186,7 +2191,7 @@ public class ClinicalLaboratoryDelegator {
                             medAlertPerson.setPreferredMode(preferredModes[0]);
                         }
                     }
-                    if (!oldMat.equals(medAlertPerson)&&!isRenew) {
+                    if (!oldMat.equals(medAlertPerson) && !isRenew) {
                         editRenew = Boolean.FALSE;
                     }
                 }
@@ -2227,8 +2232,10 @@ public class ClinicalLaboratoryDelegator {
                     medAlertPerson.setPreferredMode(preferredModes[0]);
                 }
             }
-            if (medAlertPerson.getIdNo().equals(oldMat.getIdNo())) {
-                medAlertPerson.setLicPerson(true);
+            if (oldMat != null) {
+                if (medAlertPerson.getIdNo().equals(oldMat.getIdNo())) {
+                    medAlertPerson.setLicPerson(true);
+                }
             }
             medAlertPersons.add(medAlertPerson);
         }
