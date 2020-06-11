@@ -72,6 +72,11 @@ public class FeAdminManageDelegate {
                 item.setSalutation(MasterCodeUtil.getCodeDesc(item.getSalutation()));
                 item.setIdType(MasterCodeUtil.getCodeDesc(item.getIdType()));
                 item.setDesignation(MasterCodeUtil.getCodeDesc(item.getDesignation()));
+                if(AppConsts.COMMON_STATUS_ACTIVE.equals(item.getIsActive())){
+                    item.setIsActive("1");
+                }else{
+                    item.setIsActive("0");
+                }
             }
             CrudHelper.doPaging(searchParam,bpc.request);
             ParamUtil.setRequestAttr(bpc.request, "feAdmin",feAdminQueryDtoSearchResult);

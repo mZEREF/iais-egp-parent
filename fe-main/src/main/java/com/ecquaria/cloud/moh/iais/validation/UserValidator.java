@@ -49,7 +49,7 @@ public class UserValidator implements CustomizeValidator {
                     map.put("officeTelNo", "Please key in a valid phone number");
                 }
             }
-            if(dto.getUserId() != null){
+            if(dto.getId() == null){
                 FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNric(dto.getIdentityNo());
                 if(feUserDto != null){
                     map.put("idNo", "A user account has already been created for this ID");

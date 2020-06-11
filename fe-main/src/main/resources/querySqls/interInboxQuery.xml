@@ -91,7 +91,7 @@
                acc.ID_TYPE,
                acc.ID_NO,
                acc.DESIGNATION,
-               acc.IS_AVAILABLE,
+               acc.STATUS,
                role.ROLE_ID
                FROM user_account acc
                JOIN organization org ON acc.ORGANIZATION_ID = org.ID
