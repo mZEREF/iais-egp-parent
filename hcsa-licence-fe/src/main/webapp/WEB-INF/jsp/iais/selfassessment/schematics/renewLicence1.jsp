@@ -29,7 +29,7 @@
                         <tr>
                             <td>
                                 <label>
-                                    <input id="licence${status.index + 1}" type="checkbox" name="renew1LicId" value="${pool.licenceId}"   >${pool.hciName}
+                                    <input id="licence${status.index + 1}" type="checkbox" name="renew1LicId" value="${pool.licenceId}">${pool.hciName}
                                 </label>
                             </td>
                             <td>${pool.addrType}</td>

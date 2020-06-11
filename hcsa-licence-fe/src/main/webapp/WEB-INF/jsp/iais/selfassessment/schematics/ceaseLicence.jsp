@@ -1,7 +1,5 @@
 <div class="form-check-gp">
-
     <p class="form-check-title">Please select licence(s) to cease:</p>
-
     <iais:pagination  param="PremisesSearchParam" result="PremisesSearchResult"/>
     <div class="table-gp">
         <table class="table">

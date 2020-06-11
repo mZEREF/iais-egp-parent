@@ -51,7 +51,6 @@ public class SelfAssessmentSchematicsDelegator {
     @Autowired
     AssessmentSchematicsClient assessmentSchematicsClient;
 
-
     private final FilterParameter premiseFilterParameter = new FilterParameter.Builder()
             .clz(PremisesListQueryDto.class)
             .searchAttr("PremisesSearchParam")

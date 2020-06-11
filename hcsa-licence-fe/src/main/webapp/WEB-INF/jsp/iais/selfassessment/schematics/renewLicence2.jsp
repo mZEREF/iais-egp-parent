@@ -1,13 +1,9 @@
-<div class="form-check-gp">
-
     <p class="form-check-title">Select the licence(s) to renew.</p>
-
     <iais:pagination  param="PremisesSearchParam" result="PremisesSearchResult"/>
     <div class="table-gp">
         <table class="table">
             <thead>
             <tr align="center">
-
                 <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name"/>
                 <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."/>
@@ -29,7 +25,7 @@
                         <tr>
                             <td>
                                 <label>
-                                    <input id="licence${status.index + 1}" type="checkbox" name="renew2LicId" value="${pool.licenceId}"   >${pool.hciName}
+                                    <input id="licence${status.index + 1}" type="checkbox" name="renew2LicId" value="${pool.licenceId}">${pool.hciName}
                                 </label>
                             </td>
                             <td>${pool.addrType}</td>
@@ -43,6 +39,4 @@
             </tbody>
         </table>
     </div>
-
     <a class="btn btn-primary "  onclick="Utils.submit('mainForm','cease')" style="background: #1F92FF; color: white"  >NEXT</a>
-</div>

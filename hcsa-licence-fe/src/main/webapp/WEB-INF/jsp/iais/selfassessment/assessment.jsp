@@ -12,26 +12,13 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
-
+<%@include file="./dashboard.jsp" %>
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <div class="dashboard" style="background-image:url('/web/themes/fe/img/Masthead-banner.jpg')">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <div class="prelogin-title">
-                            <h1>Self Assessment Guide</h1>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="main-content">
             <div class="row">
                 <div class="col-xs-12">
-
                     <div class="prelogin-content">
                         <div class="row">
                             <div class="col-xs-12">
@@ -39,13 +26,10 @@
                                     <div class="row">
                                         <div class="col-xs-12 col-md-12">
                                             <div class="self-assessment-gp">
-                                                <%--                                                1--%>
                                                 <div class="self-assessment-item completed">
                                                     <div class="amendLicence">
                                                         <div class="form-check-gp">
-                                                            <p class="form-check-title">What would you like to do
-                                                                today?</p>
-
+                                                            <p class="form-check-title">What would you like to do today?</p>
                                                             <div class="form-check progress-step-check" style="width: 900px">
                                                                 <input class="form-check-input" id="applyLicence"
                                                                        type="radio" name="selfAssessmentType"
@@ -60,7 +44,8 @@
                                                                     <span>| For new services or premises</span>
                                                                 </label>
                                                             </div>
-                                                            <div class="form-check progress-step-check" style="width: 900px">
+                                                            <div class="form-check progress-step-check"
+                                                                 style="width: 900px">
                                                                 <input class="form-check-input" id="renewLicence"
                                                                        type="radio" name="selfAssessmentType"
                                                                        aria-invalid="false">
@@ -70,8 +55,8 @@
                                                                     <span>| For expiring licences</span>
                                                                 </label>
                                                             </div>
-
-                                                            <div class="form-check progress-step-check" style="width: 900px">
+                                                            <div class="form-check progress-step-check"
+                                                                 style="width: 900px">
                                                                 <input class="form-check-input" id="amendLicence"
                                                                        type="radio" name="selfAssessmentType"
                                                                        aria-invalid="false">
@@ -85,7 +70,8 @@
                                                                     <span>| For changes in address, personnel, or subsumed services</span>
                                                                 </label>
                                                             </div>
-                                                            <div class="form-check progress-step-check" style="width: 900px">
+                                                            <div class="form-check progress-step-check"
+                                                                 style="width: 900px">
                                                                 <input class="form-check-input" id="ceaseLicence"
                                                                        type="radio" name="selfAssessmentType"
                                                                        aria-invalid="false">
@@ -99,7 +85,8 @@
                                                                     <span>| For service cessation and premises removal</span>
                                                                 </label>
                                                             </div>
-                                                            <div class="form-check progress-step-check" style="width: 900px">
+                                                            <div class="form-check progress-step-check"
+                                                                 style="width: 900px">
                                                                 <input class="form-check-input" id="withdrawApplication"
                                                                        type="radio" name="selfAssessmentType"
                                                                        aria-invalid="false">
@@ -110,7 +97,8 @@
                                                                     <span>| For withdrawing my application</span>
                                                                 </label>
                                                             </div>
-                                                            <div class="form-check progress-step-check" style="width: 900px">
+                                                            <div class="form-check progress-step-check"
+                                                                 style="width: 900px">
                                                                 <input class="form-check-input"
                                                                        id="resumeDraftApplication" type="radio"
                                                                        name="selfAssessmentType" aria-invalid="false">
@@ -121,7 +109,8 @@
                                                                     <span>| For resuming a draft application</span>
                                                                 </label>
                                                             </div>
-                                                            <div class="form-check progress-step-check" style="width: 900px">
+                                                            <div class="form-check progress-step-check"
+                                                                 style="width: 900px">
                                                                 <input class="form-check-input" id="submitDataMoh"
                                                                        type="radio" name="selfAssessmentType"
                                                                        aria-invalid="false">
@@ -131,7 +120,8 @@
                                                                     <span>| For submission of data to MOH (e.g. Lab Development Tests)</span>
                                                                 </label>
                                                             </div>
-                                                            <div class="form-check progress-step-check" style="width: 900px">
+                                                            <div class="form-check progress-step-check"
+                                                                 style="width: 900px">
                                                                 <input class="form-check-input"
                                                                        id="updateAdminPersonnel" type="radio"
                                                                        name="selfAssessmentType" aria-invalid="false">
@@ -145,13 +135,12 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <%--    2--%>
+
                                                 <div class="self-assessment-item">
-
-
                                                     <div class="applyLicence hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/applyLicence.jsp" %>
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/applyLicence.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="renewLicence hidden">
@@ -161,36 +150,42 @@
                                                     </div>
                                                     <div class="amendLicence hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence.jsp" %>
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="ceaseLicence hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/ceaseLicence.jsp" %>
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/ceaseLicence.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="withdrawApplication hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/withdrawApplication.jsp" %>
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/withdrawApplication.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="resumeDraftApplication hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/resumeDraftApplication.jsp" %>
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/resumeDraftApplication.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="submitDataMoh hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/submitDataMoh.jsp" %>
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/submitDataMoh.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="updateAdminPersonnel hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/updateAdminPersonnel.jsp" %>
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/updateAdminPersonnel.jsp" %>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <%--    3--%>
+
                                                 <div class="self-assessment-item">
                                                     <div class="renewLicence1 hidden">
                                                         <div class="form-check-gp">
@@ -202,63 +197,67 @@
                                                             <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/renewLicence2.jsp" %>
                                                         </div>
                                                     </div>
-
                                                     <div class="amendLicence1 hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence1.jsp" %>
-
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence1.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="amendLicence2 hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence2.jsp" %>
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence2.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="amendLicence3 hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence3.jsp" %>
-
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence3.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="amendLicence4 hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence4.jsp" %>
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence4.jsp" %>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <%--    4--%>
+
                                                 <div class="self-assessment-item">
                                                     <div class="amendLicence1_1 hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence1_1.jsp" %>
-
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence1_1.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="amendLicence1_2 hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence1_2.jsp" %>
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence1_2.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="amendLicence3_1 hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence3_1.jsp" %>
-
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence3_1.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="amendLicence3_2 hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence3_2.jsp" %>
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence3_2.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="amendLicence4_1 hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence4_1.jsp" %>
-
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence4_1.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="amendLicence4_2 hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence4_2.jsp" %>
+                                                            <%@include
+                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence4_2.jsp" %>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -278,12 +277,12 @@
 
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script>
-    function jumpToPagechangePage(){
+    function jumpToPagechangePage() {
         SOP.Crud.cfxSubmit("mainForm", "page");
     }
 
-    function sortRecords(sortFieldName,sortType){
-        SOP.Crud.cfxSubmit("mainForm","sort",sortFieldName,sortType);
+    function sortRecords(sortFieldName, sortType) {
+        SOP.Crud.cfxSubmit("mainForm", "sort", sortFieldName, sortType);
     }
 
 </script>
