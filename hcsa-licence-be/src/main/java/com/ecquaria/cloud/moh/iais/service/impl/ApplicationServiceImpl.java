@@ -258,6 +258,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 }
             }
         }
+        //0065135
         if(appEditSelectDto != null){
             if(appEditSelectDto.isPremisesEdit()){
                 editSelect = editSelect + "Premises";
