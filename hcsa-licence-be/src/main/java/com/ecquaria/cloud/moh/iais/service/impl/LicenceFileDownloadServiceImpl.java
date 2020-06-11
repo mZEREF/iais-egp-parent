@@ -29,6 +29,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationNewAndRequstDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -51,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EventClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
@@ -115,6 +118,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private EventBusHelper eventBusHelper;
     @Autowired
     private GenerateIdClient generateIdClient;
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
     @Value("${spring.application.name}")
@@ -395,14 +400,60 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             every.setAuditTrailDto(intranet);
         }
         List<ApplicationDto> application = applicationListDto.getApplication();
+        List<GobalRiskAccpetDto> accpetDtos=IaisCommonUtils.genNewArrayList();
         for(ApplicationDto every:application){
+            GobalRiskAccpetDto gobalRiskAccpetDto=new GobalRiskAccpetDto();
+            gobalRiskAccpetDto.setServiceId(every.getServiceId());
+            gobalRiskAccpetDto.setOldLicId(every.getOriginLicenceId());
+            gobalRiskAccpetDto.setAppType(every.getApplicationType());
+            accpetDtos.add(gobalRiskAccpetDto);
             every.setAuditTrailDto(intranet);
         }
+        GobalRiskAccpetDto gobalRiskAccpetDtos=new GobalRiskAccpetDto();
+        gobalRiskAccpetDtos.setRequired(true);
+        gobalRiskAccpetDtos.setGobalRiskAccpetDtos(accpetDtos);
+        try {
+            GobalRiskAccpetDto entity = hcsaConfigClient.getGobalRiskAccpetDtoByGobalRiskAccpetDto(gobalRiskAccpetDtos).getEntity();
+            String isPreInspect = entity.getIsPreInspect();
+            log.info(isPreInspect+"isPreInspect");
+            for(ApplicationGroupDto applicationGroupDto : applicationListDto.getApplicationGroup()){
+                if(HcsaConsts.HCSA_REQUIRED_PRE_LICENSING_INSPECTION.equals(isPreInspect)){
+                    applicationGroupDto.setIsPreInspection(1);
+                }else if(HcsaConsts.HCSA_REQUIRED_POST_LICENSING_INSPECTION.equals(isPreInspect)){
+                    applicationGroupDto.setIsPreInspection(0);
+                }
+            }
+        }catch (Exception e){
+            log.info("gobalRiskAccpetDtos is error");
+        }
+
+
         List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
         for(ApplicationGroupDto every:applicationGroup){
             every.setAuditTrailDto(intranet);
         }
         List<AppPremisesCorrelationDto> appPremisesCorrelation = applicationListDto.getAppPremisesCorrelation();
+        for(ApplicationDto applicationDto : application){
+            String id = applicationDto.getId();
+            for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelation){
+                String applicationId = appPremisesCorrelationDto.getApplicationId();
+                if(id.equals(applicationId)){
+                    HcsaRiskScoreDto hcsaRiskScoreDto=new HcsaRiskScoreDto();
+                    hcsaRiskScoreDto.setAppType(applicationDto.getApplicationType());
+                    hcsaRiskScoreDto.setServiceId(applicationDto.getServiceId());
+                    hcsaRiskScoreDto.setLicId(applicationDto.getOriginLicenceId());
+                    try {
+                        HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
+                        appPremisesCorrelationDto.setRiskScore(entity.getRiskScore());
+                        log.info(" getHcsaRiskScoreDtoByHcsaRiskScoreDto ok",+entity.getRiskScore());
+                    }catch (Exception e){
+                        log.error("getHcsaRiskScoreDtoByHcsaRiskScoreDto is error ",e);
+                    }
+
+
+                }
+            }
+        }
         for(AppPremisesCorrelationDto every:appPremisesCorrelation){
             every.setAuditTrailDto(intranet);
         }

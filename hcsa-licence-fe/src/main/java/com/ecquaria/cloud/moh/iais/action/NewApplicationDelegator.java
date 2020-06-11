@@ -1159,11 +1159,12 @@ public class NewApplicationDelegator {
             appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
         }
 
-       /* applicationClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto);*/
+
         //update message status
         String msgId = (String) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         appSubmissionService.updateMsgStatus(msgId,MessageConstants.MESSAGE_STATUS_RESPONSE);
-        appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
+        applicationClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto);
+       /* appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);*/
         // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","Y");
         ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE,"The request for information save success");
@@ -2895,10 +2896,12 @@ public class NewApplicationDelegator {
                     if(mandatoryCount>0) {
                         errorMap.put("error", "error");
                         sB.append(serviceId);
+                        log.info("PO null");
                     }
                 }else if(appSvcPrincipalOfficersDtoList.size()<mandatoryCount){
                     errorMap.put("error", "error");
                     sB.append(serviceId);
+                    log.info("PO mandatoryCount");
                 }
             }else if("SVCPSN".equals(psnType)){
                 List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
@@ -2906,10 +2909,12 @@ public class NewApplicationDelegator {
                     if(mandatoryCount>0) {
                         errorMap.put("error", "error");
                         sB.append(serviceId);
+                        log.info("SVCPSN null");
                     }
                 }else if(appSvcPersonnelDtoList.size()<mandatoryCount){
                     errorMap.put("error", "error");
                     sB.append(serviceId);
+                    log.info("SVCPSN mandatoryCount");
                 }
             }else if("CGO".equals(psnType)){
                 List<AppSvcCgoDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
@@ -2917,10 +2922,12 @@ public class NewApplicationDelegator {
                     if(mandatoryCount>0) {
                         errorMap.put("error", "error");
                         sB.append(serviceId);
+                        log.info("CGO null");
                     }
                 }else if(appSvcCgoDtoList.size()<mandatoryCount){
                     errorMap.put("error", "error");
                     sB.append(serviceId);
+                    log.info("CGO mandatoryCount");
                 }
             }else if("MAP".equals(psnType)){
                 List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
@@ -2928,39 +2935,47 @@ public class NewApplicationDelegator {
                     if(mandatoryCount>0) {
                         errorMap.put("error", "error");
                         sB.append(serviceId);
+                        log.info("CGO null");
                     }
                 }else if(appSvcMedAlertPersonList.size()<mandatoryCount){
                     errorMap.put("error", "error");
                     sB.append(serviceId);
+                    log.info("CGO mandatoryCount");
                 }
             }
         }
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
         Map<String,AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
         Map<String, String> map = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList,licPersonMap);
+        log.info(JsonUtil.parseToJson(map));
         if(!map.isEmpty()){
             sB.append(serviceId);
         }
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = allSvcAllPsnConfig.get(serviceId);
         dolabory(errorMap,appSvcLaboratoryDisciplinesDtoList,serviceId,sB);
+        log.info(sB.toString());
         List<AppSvcCgoDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
         doAppSvcCgoDto(hcsaSvcPersonnelDtos,errorMap,appSvcCgoDtoList,serviceId,sB);
+        log.info(sB.toString());
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
         doSvcDis(errorMap,appSvcDisciplineAllocationDtoList,serviceId,sB);
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
         Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.getAppSvcCgoDtoList(),licPersonMap);
+       log.info(JsonUtil.parseToJson(govenMap));
         if(!govenMap.isEmpty()){
             sB.append(serviceId);
         }
         doPO(hcsaSvcPersonnelDtos,errorMap,appSvcPrincipalOfficersDtoList,serviceId,sB);
-
+        log.info(sB.toString());
         List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
         doAppSvcPersonnelDtoList(hcsaSvcPersonnelDtos,errorMap,appSvcPersonnelDtoList,serviceId,sB);
+        log.info(sB.toString());
         List<AppSvcDocDto> appSvcDocDtoLit = dto.getAppSvcDocDtoLit();
         doSvcDocument(errorMap,appSvcDocDtoLit,serviceId,sB);
+        log.info(sB.toString());
 
-
+        log.info(JsonUtil.parseToJson(errorMap));
 
         return  errorMap;
     }
