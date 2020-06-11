@@ -1,7 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.WithOutRenewalDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
@@ -27,7 +29,13 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
 
     @Override
     public List<AppSubmissionDto> getAppSubmissionDtos(List<String> licenceIds) {
-        return licenceClient.getAppSubmissionDtos(licenceIds).getEntity();
+        List<AppSubmissionDto> entity = licenceClient.getAppSubmissionDtos(licenceIds).getEntity();
+        if(!IaisCommonUtils.isEmpty(entity)){
+            for(AppSubmissionDto appSubmissionDto :entity){
+                appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+            }
+        }
+        return entity;
     }
 
     @Override

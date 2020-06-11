@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -224,7 +225,6 @@ public class NewApplicationDelegator {
         removeSession(bpc);
         ParamUtil.setSessionAttr(bpc.request,NewApplicationConstant.PREMISES_HCI_LIST, null);
         ParamUtil.setSessionAttr(bpc.request,LICPERSONSELECTMAP, null);
-
         HashMap<String,String> coMap=new HashMap<>(4);
         coMap.put("premises","");
         coMap.put("document","");

@@ -1539,8 +1539,8 @@ public class ClinicalLaboratoryDelegator {
         if (!IaisCommonUtils.isEmpty(licenceIDList)) {
             appSubmissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
             oldAppSvcCgoDtoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList().get(0).getAppSvcCgoDtoList();
-            String isRenewS = (String) ParamUtil.getSessionAttr(request, "isRenew");
-            if (!StringUtil.isEmpty(isRenewS)) {
+            String renew = appSubmissionDtos.get(0).getAppType();
+            if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(renew)) {
                 isRenew = Boolean.FALSE;
             }
         }
@@ -1691,8 +1691,8 @@ public class ClinicalLaboratoryDelegator {
             if (!IaisCommonUtils.isEmpty(licenceIDList)) {
                 appSubmissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
                 oldPoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList().get(0).getAppSvcPrincipalOfficersDtoList();
-                String isRenewS = (String) ParamUtil.getSessionAttr(request, "isRenew");
-                if (!StringUtil.isEmpty(isRenewS)) {
+                String renew = appSubmissionDtos.get(0).getAppType();
+                if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(renew)) {
                     isRenew = Boolean.FALSE;
                 }
             }
@@ -2157,8 +2157,8 @@ public class ClinicalLaboratoryDelegator {
         if (!IaisCommonUtils.isEmpty(licenceIDList)) {
             appSubmissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
             oldMatList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList().get(0).getAppSvcMedAlertPersonList();
-            String isRenewS = (String) ParamUtil.getSessionAttr(request, "isRenew");
-            if (!StringUtil.isEmpty(isRenewS)) {
+            String renew = appSubmissionDtos.get(0).getAppType();
+            if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(renew)) {
                 isRenew = Boolean.FALSE;
             }
         }
