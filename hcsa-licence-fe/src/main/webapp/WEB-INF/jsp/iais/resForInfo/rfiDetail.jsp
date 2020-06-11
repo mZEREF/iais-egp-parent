@@ -54,11 +54,11 @@
                                             <iais:value width="18">
                                                 <label>
                                                     <input type="checkbox" disabled name="reqType"
-                                                           <c:if test="${not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}">checked</c:if> />Information
+                                                           <c:if test="${not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}">checked</c:if> />&nbsp;Information
                                                 </label>
                                                 <label>
                                                     <input type="checkbox" disabled name="reqType"
-                                                           <c:if test="${licPreReqForInfoDto.needDocument}">checked</c:if> />Supporting
+                                                           <c:if test="${licPreReqForInfoDto.needDocument}">checked</c:if> />&nbsp;Supporting
                                                     Documents
                                                 </label>
                                             </iais:value>
